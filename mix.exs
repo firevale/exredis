@@ -1,0 +1,78 @@
+defmodule Acs.Mixfile do
+  use Mix.Project
+
+  def project do
+    [app: :acs,
+     version: "0.0.1",
+     elixir: "~> 1.2",
+     elixirc_paths: elixirc_paths(Mix.env),
+     compilers: [:phoenix, :gettext] ++ Mix.compilers,
+     build_embedded: Mix.env == :prod,
+     start_permanent: Mix.env == :prod,
+     aliases: aliases(),
+     deps: deps()]
+  end
+
+  # Configuration for the OTP application.
+  #
+  # Type `mix help compile.app` for more information.
+  def application do
+    [mod: {Acs, []},
+     included_applications: [:exredis, :logger_file_backend],
+     applications: [:inets, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :logger_file_backend, 
+                    :gettext, :phoenix_ecto, :mariaex, :redis_poolex, :ssl, :idna, :ibrowse, :httpotion,
+                    :mogrify, :pbkdf2, :comeonin, :des_ecb3, :sweet_xml, :bugsnag, :oauth2, :oauther,
+                    :mailer, :mandrill, :gen_smtp, :exsyslog, :jiffy]]
+  end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
+  defp elixirc_paths(_),     do: ["lib", "web"]
+
+  # Specifies your project dependencies.
+  #
+  # Type `mix help deps` for examples and options.
+  defp deps do
+    [{:phoenix, "~> 1.2.1"},
+     {:phoenix_pubsub, "~> 1.0"},
+     {:phoenix_ecto, "~> 3.0"},
+     {:mariaex, ">= 0.0.0"},
+     {:phoenix_html, "~> 2.6"},
+     {:phoenix_live_reload, "~> 1.0", only: :dev},
+     {:ecto, "2.1.0-rc.3", override: true},
+     {:gettext, "~> 0.11"},
+     {:cowboy, "~> 1.0"},
+     {:httpotion, "~> 3.0"},
+     {:redis_poolex, ">= 0.0.6"},
+     {:poolboy, "~> 1.5"},
+     {:logger_file_backend, ">= 0.0.9"},
+     {:jiffy, github: "xbinxu/jiffy", branch: "stable", override: true},
+     {:pbkdf2, "~> 2.0"}, # should modify rebar.config
+     {:comeonin, "~> 2.6"},
+     {:des_ecb3, github: "xbinxu/des_ecb3"},
+     {:bugsnag, "~> 1.3"}, # should modify rebar.config
+     {:mogrify, "~> 0.5"},
+     {:exsyslog, "~> 1.0"},
+     {:poison, "~> 3.0", override: true},
+     {:sweet_xml, "~> 0.6"},
+     {:mailer, "~> 1.1"},
+     {:mandrill, "~> 0.5"},
+     {:gen_smtp, "~> 0.11", override: true},
+     {:oauth2, "~> 0.6", hex: :oauth2_erlang},
+     {:oauther, "~> 1.1"},
+     {:exrm, "~> 1.0" },
+    ]
+  end
+
+  # Aliases are shortcuts or tasks specific to the current project.
+  # For example, to create, migrate and run the seeds file at once:
+  #
+  #     $ mix ecto.setup
+  #
+  # See the documentation for `Mix` for more info on aliases.
+  defp aliases do
+    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+  end
+end

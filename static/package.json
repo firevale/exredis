@@ -1,0 +1,79 @@
+{
+  "name": "acs",
+  "version": "0.0.1",
+  "description": "Account Center Server",
+  "license": "MIT",
+  "author": {
+    "name": "xiaobin",
+    "email": "xiaobin@firevale.com"
+  },
+  "keywords": [
+    "account",
+    "vue"
+  ],
+  "engines": {
+    "node": ">=4",
+    "npm": ">=3"
+  },
+  "scripts": {
+    "watch": "NODE_ENV=dev webpack --watch-stdin --colors  --display-error-detail",
+    "build_dev": "NODE_ENV=dev webpack --progress --colors --bail --display-error-details",
+    "build_production": "NODE_ENV=production webpack -p"
+  },
+  "dependencies": {
+    "animate.css": "^3.5.2",
+    "animejs": "^1.1.1",
+    "bulma": "^0.2.3",
+    "vue": "^2.0.5",
+    "vue-bulma-breadcrumb": "github:vue-bulma/breadcrumb",
+    "vue-bulma-collapse": "1.0.3",
+    "vue-bulma-datepicker": "github:vue-bulma/datepicker",
+    "vue-bulma-emoji": "github:vue-bulma/emoji",
+    "vue-bulma-expanding": "github:vue-bulma/expanding",
+    "vue-bulma-jump": "github:vue-bulma/jump",
+    "vue-bulma-message": "1.1.0",
+    "vue-bulma-modal": "github:vue-bulma/modal",
+    "vue-bulma-notification": "1.1.0",
+    "vue-bulma-progress-bar": "github:vue-bulma/progress-bar",
+    "vue-bulma-rating": "github:vue-bulma/rating",
+    "vue-bulma-slider": "github:vue-bulma/slider",
+    "vue-bulma-switch": "github:vue-bulma/switch",
+    "vue-bulma-tabs": "github:vue-bulma/tabs",
+    "vue-bulma-tooltip": "github:vue-bulma/tooltip",
+    "vue-dragula": "^1.3.0",
+    "vue-nprogress": "^0.1.2",
+    "vue-resource": "^1.0.3",
+    "vue-router": "^2.0.1",
+    "vuex": "^2.0.0",
+    "webpack-zepto": "0.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.5.1",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.0",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "compression-webpack-plugin": "^0.3.2",
+    "copy-webpack-plugin": "^4.0.0",
+    "css-loader": "^0.25.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.24.1",
+    "imports-loader": "^0.6.5",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.11.2",
+    "postcss-loader": "^1.1.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.3.1",
+    "url-loader": "^0.5.7",
+    "vue-loader": "^9.8.0",
+    "vue-template-compiler": "^2.0.5",
+    "webpack": "^1.13.3",
+    "webpack-manifest-plugin": "^1.1.0",
+    "webpack-md5-hash": "0.0.5",
+    "webpack-merge": "^0.15.0"
+  }
+}

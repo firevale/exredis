@@ -1,0 +1,124 @@
+#!/bin/sh
+
+PWD=`dirname $0`
+
+build() {
+	docker pull xiaobin/ass_dev:latest
+	docker build ${PWD} -f ${PWD}/Dockerfile -t xiaobin/acs_dev
+}
+
+check_build_image() {
+	docker images | grep -qi 'acs_dev' || build 
+}
+
+docker_run() {
+	docker run -it --workdir /code \
+								 --privileged \
+								 --rm \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -p 80:4000 \
+								 -v ${PWD}:/code \
+								 --network acs_default \
+								 --link acs_mysql:acs_mysql \
+								 --link acs_elasticsearch:acs_elasticsearch \
+								 --link acs_redis:acs_redis \
+								 xiaobin/acs_dev $1 
+}
+
+console() {
+	docker-compose up -d
+	check_build_image
+	docker_run /start.sh
+}
+
+run() {
+	docker-compose up -d
+	check_build_image
+	docker run -it --workdir /code \
+								 --privileged \
+								 --rm \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -p 80:4000 \
+								 -v ${PWD}:/code \
+								 --network acs_default \
+								 --link acs_mysql:acs_mysql \
+								 --link acs_elasticsearch:acs_elasticsearch \
+								 --link acs_redis:acs_redis \
+								 xiaobin/acs_dev -c 'iex -S mix phoenix.server' 	
+}
+
+test() {
+	docker-compose up -d
+	check_build_image
+	docker run -it --workdir /code \
+								 --privileged \
+								 --rm \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -v ${PWD}:/code \
+								 --network acs_default \
+								 --link acs_mysql:acs_mysql \
+								 --link acs_elasticsearch:acs_elasticsearch \
+								 --link acs_redis:acs_redis \
+								 xiaobin/acs_dev -c 'mix test' 
+}
+
+shell() {
+	docker-compose up -d
+	check_build_image
+	docker_run 
+}
+
+update() {
+	docker-compose pull
+	docker pull xiaobin/ass_dev
+	build
+}
+
+cd ${PWD}
+
+case "$1" in
+	shell)
+		shell
+		;;
+	console)
+		console
+		;;
+	update)
+		update
+		;;
+	run)
+		run
+		;;
+	build)
+		build
+		;;
+	test)
+		test
+		;;
+	*)
+		echo "$0 COMMAND"
+		echo "COMMAND: shell -- run shell command in acs container"
+		echo "COMMAND: update -- update docker images used by ACS server"
+		;;
+esac
+
+
+
+
+
+
+
+
+

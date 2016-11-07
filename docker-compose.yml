@@ -1,0 +1,14 @@
+version: '2'
+services:
+  mysql:
+    image: xiaobin/mysql:latest
+    container_name: acs_mysql
+    environment:
+      - MYSQL_DATABASE=acs_dev
+      - MYSQL_ROOT_PASSWORD=firevale
+  redis:
+    image: redis:alpine   
+    container_name: acs_redis
+  elasticsearch:
+    container_name: acs_elasticsearch
+    image: xiaobin/elasticsearch:latest

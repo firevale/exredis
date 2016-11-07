@@ -14,6 +14,7 @@ RUN  mkdir -p /code && \
         echo 'cd /code && mix compile'; \
         echo 'sysctl -e -w fs.inotify.max_user_watches=524288'; \
         echo 'cd /code/static && npm install --no-optional --verbose'; \
+        echo 'cd /code && mix ecto.setup'; \
         echo 'cd /code && iex -S mix phoenix.server'; \
     } > /start.sh && \
     chmod a+x /start.sh && \

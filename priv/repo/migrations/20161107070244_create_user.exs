@@ -23,13 +23,13 @@ defmodule Acs.Repo.Migrations.CreateUser do
     create index(:users, [:email], unique: true)
     create index(:users, [:mobile], unique: true)
 
-    create table(:sdk_users) do 
+    create table(:user_sdk_bindings) do 
       add :sdk, :string
       add :sdk_user_id, :string
       add :user_id, references(:users, type: :integer, on_delete: :delete_all)
     end
 
-    create index(:sdk_users, [:sdk, :sdk_user_id], unique: true)
+    create index(:user_sdk_bindings, [:sdk, :sdk_user_id], unique: true)
   end
 
 end

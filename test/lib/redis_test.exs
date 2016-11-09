@@ -3,7 +3,7 @@ defmodule Acs.RedisTest do
 
   require Redis
   require Utils
-
+  alias   Utils.JSON
   alias   Acs.RedisUser
 
   setup_all do 
@@ -62,7 +62,6 @@ defmodule Acs.RedisTest do
     assert find_result.mobile == @user_mobile_3
   end
 
-
   test "create/save/restore/delete redis user" do 
     user = RedisUser.create!("xiaobin@firevale.com", "123456")
     assert user.id == 0
@@ -88,9 +87,40 @@ defmodule Acs.RedisTest do
     assert RedisUser.exists?("18101329172")
     refute RedisUser.exists?("18101329000")
 
-    assert_raise ArgumentError, fn() ->
+    assert_raise Acs.RedisUser.OpException, fn() ->
       RedisUser.save!(%{find_result | mobile: "18101329172"})
     end
+
+    RedisUser.delete!("18101329172")
+   
+    test_user = RedisUser.find!("xiaobin@firevale.com")
+    test_user = %{test_user | mobile: "18101329172"}
+    RedisUser.save!(test_user)
+
+    1..1000 |> Enum.each(fn(n) ->
+      mobile = 18101329170 + n
+      RedisUser.bind_sdk_user(%{
+        sdk: "qq",
+        fvac_app_id: "some_app",
+        sdk_user_id: "#{262356+n}",
+        email: nil,
+        mobile: "#{mobile}",
+        nickname: "qq#{262356 + n}",
+        device_id: nil,
+        picture_url: nil
+      })
+    end)
+
+    test_user = RedisUser.find!("xiaobin@firevale.com")
+
+    assert test_user.mobile == "18101329172"
+    refute test_user.bindings == %{}
+  end
+
+  test "redis model can add/remove fields as needed" do 
+    json_str = %{id: 10001, email: "xxx@firevale.com", scope: "xxx", unlock_token: "yyyy", timezone: "", picture_url: ""} |> JSON.encode!  
+    user = RedisUser.from_json(json_str)
+    assert user.email == "xxx@firevale.com"
   end
 
 end

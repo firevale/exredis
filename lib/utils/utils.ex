@@ -209,6 +209,16 @@ defmodule Utils do
 		end
 	end
 
+
+  def nonce do 
+    << x :: size(32) >> =  :crypto.strong_rand_bytes(4)
+    x    
+  end
+
+  def generate_token(length \\ 32) do
+    :crypto.strong_rand_bytes(length) |> to_hex
+  end
+
   def to_hex(data) when is_binary(data) do 
     bin_to_hex(data, <<>>)
   end

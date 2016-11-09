@@ -265,7 +265,7 @@ defmodule Redis do
             do_lock(lock_key, lock_value, attempts - 1)
 
           current_lock_value ->
-            {lock_ts, lock_pid} = current_lock_value |> Base.decode64! |> :erlang.binary_to_term
+            {lock_ts, _lock_pid} = current_lock_value |> Base.decode64! |> :erlang.binary_to_term
 
             if lock_ts < now do  
               case getset(lock_key, lock_value) do 

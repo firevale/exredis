@@ -22,6 +22,9 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Config bugsnag exception reporter
+config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
+
 # Config UCloud UFile Management
 config :acs, :ufile,
   public_key: "ucloudxiaobin@firevale.com1368084534286667901",
@@ -34,7 +37,37 @@ config :acs, :pbkdf2,
   mac_func: :sha,
   salt: "gGshJCGHNVVltq9n+Bji6w==",
   iterations: 4096,
-  derived_length: 2
+  derived_length: 20
+
+config :acs, :mailer_templates, "priv/mail_templates"
+
+config :acs, :mandrill, 
+  key: "lT0K0Wk-ZELrCy2CC5BPDg",
+  from: "noreply@fvac.firevale.com",
+  fromname: "Firevale Account Center"
+
+config :acs, :sendcloud, 
+  user: "fvac_cn",
+  key: "iXkBkVUk3OEfF5MY",
+  from: "noreply@sdmail.firevale.com",
+  fromname: "Firevale Account Center"
+
+# Configure mailer smtp 
+config :mailer, :smtp_client,
+  server: "smtp.exmail.qq.com",
+  ssl: true,
+  port: 465,
+  username: "admin@firevale.com",
+  password: "P76M4tDn4kuo",
+  transport: :smtp
+
+config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
+
+config :acs, :alipay,
+  certs_root: "priv/certs",
+  notify_url: "https://fvac.firevale.com/api/alipay/notify",
+  callback_url: "https://fvac.firevale.com/api/alipay/callback?platform=%{platform}",
+  merchant_url: "https://fvac.firevale.com/mobile/native_bridge/%{platform}"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

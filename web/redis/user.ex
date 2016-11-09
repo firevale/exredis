@@ -32,6 +32,20 @@ defmodule Acs.RedisUser do
     defredis_script :del_user,  file_path: "lua/delete_user.lua"
   end
 
+  defmodule OpException do 
+    defexception message: "redis user operation error"
+  end
+  defmodule KeyInUse do 
+    defexception message: "user key not found"
+  end
+  defmodule KeyNotFound do 
+    defexception message: "user key not found"
+  end
+  defmodule KeyInvalid do 
+    defexception message: "user key is not valid"
+  end
+
+
   @uid_counter_key     "fvac.counter.uid"
   @user_table_key      "fvac.tables.users"
   @email_index_key     "fvac.indexes.user_email"
@@ -53,10 +67,10 @@ defmodule Acs.RedisUser do
                       encrypted_password: Utils.hash_password(password)}
 
         _ ->
-          raise ArgumentError, message: "invalid user key #{key}"
+          raise KeyInvalid, message: "invalid user key #{key}"
       end
     else
-      raise ArgumentError, message: "user key #{key} is already used by other user"
+      raise KeyInUse, message: "user key #{key} is already used by other user"
     end
   end
 
@@ -147,7 +161,7 @@ defmodule Acs.RedisUser do
   def save!(%__MODULE__{} = user) do
     case save(user) do
       {:error, reason} ->
-        raise ArgumentError, message: "save user to redis failed: #{reason}"
+        raise OpException, message: "save user to redis failed: #{reason}"
       result ->
         result
     end
@@ -173,7 +187,7 @@ defmodule Acs.RedisUser do
   def find!(id) when is_integer(id) do
     case find(id) do
       nil ->
-        raise ArgumentError, "user[#{id}] not found"
+        raise KeyNotFound, message: "user by id #{id} not found"
       user ->
         user
     end
@@ -181,7 +195,7 @@ defmodule Acs.RedisUser do
   def find!(key) when is_bitstring(key) do
     case find(key) do
       nil ->
-        raise ArgumentError, "find user by #{key} failed"
+        raise KeyNotFound, message: "user by key #{key} not found"
       user ->
         user
     end
@@ -220,14 +234,28 @@ defmodule Acs.RedisUser do
   def delete(key) when is_bitstring(key) do
     case parse_key(key) do 
       :unknown ->
-        :error
+        :error 
       type ->
          Scripts.del_user([type |> to_string], [key]) |> String.to_atom 
     end
   end
-
   def delete(id) when is_integer(id) do
      Scripts.del_user(["id"], [id]) |> String.to_atom 
+  end
+
+  def delete!(id) when is_integer(id) do 
+    case delete(id) do 
+      :ok -> :ok
+      _ ->
+        raise OpException, message: "can not delete user by id #{id}"
+    end
+  end
+  def delete!(key) when is_bitstring(key) do 
+    case delete(key) do 
+      :ok -> :ok
+      _ ->
+        raise OpException, message: "can not delete user by key #{key}"
+    end
   end
 
   def nickname(user = %__MODULE__{}) do

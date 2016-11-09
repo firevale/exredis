@@ -1,6 +1,5 @@
 defmodule Acs.User do
   use   Acs.Web, :model
-  alias Acs.Repo
 
   @primary_key false
   schema "users" do
@@ -15,6 +14,8 @@ defmodule Acs.User do
     field :age, :integer
     field :picture_url, :string
     field :last_login_at, :utc_datetime
+
+    has_many :sdk_bindings, Acs.UserSdkBinding, references: :id
 
     timestamps()
   end

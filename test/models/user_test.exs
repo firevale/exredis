@@ -3,7 +3,7 @@ defmodule Acs.UserTest do
 
   alias Acs.User
 
-  @valid_attrs %{user_id: 100001}
+  @valid_attrs %{id: 100001}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

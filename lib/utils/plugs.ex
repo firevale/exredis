@@ -1,7 +1,11 @@
-defmodule Ass.Plugs do 
-
+defmodule Acs.Plugs do 
   import Plug.Conn
   require Logger
+
+  def no_cache(conn, _options) do 
+    conn |> delete_resp_header("cache-control")
+         |> put_resp_header("cache-control", "no-cache, no-store, must-revalidate")
+  end
 
   def allow_origin(conn, options) do 
     case get_req_header(conn, "origin") do 
@@ -103,6 +107,22 @@ defmodule Ass.Plugs do
               true -> conn
             end
         end
+    end
+  end
+
+  def detect_user_key(conn, _options) do 
+    case conn.params["user_key"] do 
+      "" -> conn
+      nil -> conn
+      user_key ->
+        cond do 
+          Regex.match?(~r/([^@]+)@([^@]+)/, user_key) -> 
+            %{conn | params: Map.put(conn.params, "email", user_key)}
+          Regex.match?(~r/1\d{10}$/, user_key) ->
+            %{conn | params: Map.put(conn.params, "mobile", user_key)}
+          true ->
+            conn
+        end  
     end
   end
 

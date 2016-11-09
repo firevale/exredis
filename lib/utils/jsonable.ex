@@ -8,7 +8,7 @@ defmodule Utils.Jsonable do
       end
 
       def from_json(json_string) when is_bitstring(json_string) do 
-        JSON.decode!(json_string, as: __MODULE__, keys: :atoms) 
+        JSON.decode!(json_string, as: %__MODULE__{}, keys: :atoms) 
       end
     end
   end

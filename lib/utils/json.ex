@@ -1,57 +1,27 @@
 defmodule Utils.JSON do
-  require :jiffy
+  require Poison
 
-  def encode(v) do 
-    try do 
-      {:ok, :jiffy.encode(v, [:uescape, :force_utf8])}
-    rescue 
-      e ->
-        {:error, e}
-    end
+  def encode(value, options \\ []) do 
+    Poison.encode(value, options)
   end
 
-  def encode!(v) do 
-    :jiffy.encode(v, [:uescape, :force_utf8])
+  def encode!(value, options \\ []) do 
+    Poison.encode!(value, options)
   end 
 
-  def encode_to_iodata!(v) do 
-    :jiffy.encode(v, [:uescape, :force_utf8])
+  def encode_to_iodata(value, options \\ []) do 
+    Poison.encode_to_iodata(value, options)
   end 
 
-  def decode(v, opt \\ []) do 
-    try do 
-      result = case opt[:keys] do 
-        :atoms -> 
-          :jiffy.decode(v, [:return_maps, :atomize_map_key, :use_nil])
-        _ ->
-          :jiffy.decode(v, [:return_maps, :use_nil])
-      end
+  def encode_to_iodata!(value, options \\ []) do 
+    Poison.encode_to_iodata!(value, options)
+  end 
 
-      case opt[:as] do 
-        nil -> {:ok, result}
-        module when is_atom(module) ->
-          {:ok, Map.put(result, :__struct__, module)}
-        _ -> {:ok, result}
-      end
-    rescue
-      e ->
-        {:error, e}
-    end
+  def decode(value, options \\ []) do 
+    Poison.decode(value, options)
   end
 
-  def decode!(v, opt \\ []) do 
-    result = case opt[:keys] do 
-      :atoms -> 
-        :jiffy.decode(v, [:return_maps, :atomize_map_key, :use_nil])
-      _ ->
-        :jiffy.decode(v, [:return_maps, :use_nil])
-    end
-
-    case opt[:as] do 
-      nil -> result
-      module when is_atom(module) ->
-        Map.put(result, :__struct__, module)
-      _ -> result
-    end
+  def decode!(value, options \\ []) do 
+    Poison.decode!(value, options)
   end
 end

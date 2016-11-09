@@ -30,6 +30,12 @@ config :acs, :ufile,
   cdn_scheme: "https",
   cdn_domain: "fvvrres.firevale.com"
 
+config :acs, :pbkdf2,
+  mac_func: :sha,
+  salt: "gGshJCGHNVVltq9n+Bji6w==",
+  iterations: 4096,
+  derived_length: 2
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

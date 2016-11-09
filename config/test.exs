@@ -14,6 +14,7 @@ config :acs, Acs.Repo,
   username: System.get_env("ACS_MYSQL_USER") || "root",
   password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
   database: "acs_test",
+  ownership_timeout: 30_000,
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
@@ -28,5 +29,5 @@ config :redis_poolex,
   password: "",
   db: 15,
   reconnect: :no_reconnect,
-  pool_size: 20,
-  pool_max_overflow: 10
+  pool_size: 100,
+  pool_max_overflow: 100 

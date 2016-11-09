@@ -192,6 +192,12 @@ defmodule Redis do
   ################################################################################
   # redis lock
   ################################################################################
+  defmodule Redis.LockFailed do 
+    @moduledoc """
+    Raised at compilation time when the query cannot be compiled.
+    """
+    defexception [:message]
+  end 
 
   @doc """
     Lock a given key for updating
@@ -205,22 +211,24 @@ defmodule Redis do
       DataRedis.decr "beers_on_the_wall"
     end)
   """
-  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 100) do 
+  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 60_000) do 
     if lock(key, ttl, max_attempts) do 
       try do
         fun.()
       after
         unlock(key)
       end
+    else 
+      raise Redis.LockFailed, message: "failed fetch redis lock for key: #{key}"
     end
   end
 
-  @wait_duration 100
+  @wait_duration 1
 
   @doc """
     Lock a given key
   """
-  def lock(key, ttl \\ 60, max_attempts \\ 100) do 
+  def lock(key, ttl \\ 60, max_attempts \\ 60_000) do 
     do_lock(lock_key(key), lock_value(ttl), max_attempts)
   end
 

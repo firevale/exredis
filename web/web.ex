@@ -28,14 +28,19 @@ defmodule Acs.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller
+      use     Phoenix.Controller
 
-      alias Acs.Repo
-      import Ecto
-      import Ecto.Query
+      alias   Acs.Repo
+      import  Ecto
+      import  Ecto.Query
 
-      import Acs.Router.Helpers
-      import Acs.Gettext
+      import  Acs.Router.Helpers
+      import  Acs.Gettext
+
+      import  Acs.Plugs
+
+      require Utils
+      alias   Acs.User
     end
   end
 

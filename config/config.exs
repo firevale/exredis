@@ -8,7 +8,8 @@ use Mix.Config
 # General application configuration
 config :acs,
   ecto_repos: [Acs.Repo]
-
+  
+config :acs, static_page_root: "/"
 # Configures the endpoint
 config :acs, Acs.Endpoint,
   url: [host: "localhost"],

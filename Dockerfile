@@ -1,4 +1,4 @@
-FROM xiaobin/ass_dev:latest 
+FROM docker-registry.firevale.com/ass_dev:latest 
 
 EXPOSE 4005
 

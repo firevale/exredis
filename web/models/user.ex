@@ -1,5 +1,10 @@
 defmodule Acs.User do
   use   Acs.Web, :model
+  alias Acs.Repo
+  alias Acs.UserSdkBinding
+  alias Acs.RedisUser
+
+  @email_check_regex ~r/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/iu
 
   @primary_key false
   schema "users" do
@@ -15,7 +20,7 @@ defmodule Acs.User do
     field :picture_url, :string
     field :last_login_at, :utc_datetime
 
-    has_many :sdk_bindings, Acs.UserSdkBinding, references: :id
+    has_many :sdk_bindings, UserSdkBinding, references: :id
 
     timestamps()
   end
@@ -28,24 +33,13 @@ defmodule Acs.User do
     |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :resident_id, :resident_name, 
                      :gender, :age, :picture_url, :last_login_at])
     |> validate_required([:id])
+    |> validate_format(:email, @email_check_regex)
+    |> validate_format(:mobile, ~r/^(00)?(86)?0?1\d{10}/)
   end
 
-  def to_map(%__MODULE__{} = user) do 
-    %{
-      user_id: user.user_id,
-      email: user.email,
-      mobile: user.mobile,
-      sdk: user.sdk,
-      sdk_user_id: user.sdk_user_id,
-      device_id: user.device_id,
-      encrypted_password: user.encrypted_password,
-      nickname: user.nickname,
-      picture_url: user.picture_url,
-      gender_male: user.gender_male,
-      device_model: user.device_model,
-      last_login_at: user.last_login_at,
-      inserted_at: user.inserted_at,
-      updated_at: user.updated_at,
-    }
+
+  def save(%RedisUser{} = user) do 
+     
   end
+
 end

@@ -14,7 +14,7 @@
               name="user" @focusout="handleValidate" />
           </validity>
         </div>
-        <p v-if="usernameInvalid">{{  }}</p>
+        <p v-if="usernameInvalid">{{ }}</p>
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
@@ -41,8 +41,13 @@
 
 
   export default {
+    created(){
+      this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+    },
+
     data: function(){
       return {
+        supportPhone: false,
         userName: '',
         passWord: '',
       }

@@ -9,8 +9,6 @@ import VueI18n from 'vue-i18n'
 import locales from './i18n'
 // import   'vue-awesome'
 
-console.log(VueValidator)
-
 Vue.use(VueI18n)
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -21,7 +19,8 @@ Object.keys(locales).forEach(function(lang) {
   Vue.locale(lang, locales[lang])
 })
 let router = routerMap(VueRouter)
-
-let App = new Vue({
-  router,
-}).$mount('#app')
+console.log(router)
+router.start(Vue, '#app')
+// let App = new Vue({
+//   router,
+// }).$mount('#app')

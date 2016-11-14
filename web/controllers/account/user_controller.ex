@@ -14,6 +14,7 @@ defmodule Acs.UserController do
                               v -> v |> Base.url_decode64!
                             end
     login_manifests =  %{
+      "phoneSupport" => true,
       "login_commons.js" => Path.join(@static_page_root, "/js/login_commons.js"),
       "login.js" => Path.join(@static_page_root, "/js/login.js"),
       "login.css" => Path.join(@static_page_root, "/css/login.css")            

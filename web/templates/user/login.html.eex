@@ -25,6 +25,7 @@
     <meta content="app" name="x5-page-mode"/>
     <meta content="no" name="msapplication-tap-highlight"/>
     <meta content="no-siteapp" http-equiv="Cache-Control"/>
+    <meta content="<%= @login_manifests['phoneSupport'] %>" http-equiv="phone-register-support"/>
     <script type="text/javascript">
       !function(a, b) {
         function c() {

@@ -54,7 +54,7 @@
       usernameTip: function() {
         let res=''
         if(this.$refs.username.result.invalid){
-          res = this.$refs.username.result.errors[0].message
+          res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
       },

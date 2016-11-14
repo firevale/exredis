@@ -19,8 +19,7 @@ Object.keys(locales).forEach(function(lang) {
   Vue.locale(lang, locales[lang])
 })
 let router = routerMap(VueRouter)
-console.log(router)
-router.start(Vue, '#app')
-// let App = new Vue({
-//   router,
-// }).$mount('#app')
+
+let App = new Vue({
+  router,
+}).$mount('#app')

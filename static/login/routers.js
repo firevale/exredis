@@ -6,9 +6,7 @@ export default function (VueRouter) {
       path: '/',
       name: 'login',
       component: require('./login.vue'),
-      children: [
-
-      ]
+      children: []
     }, {
       path: '/register',
       name: 'register',

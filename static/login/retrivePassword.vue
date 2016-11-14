@@ -10,7 +10,7 @@
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxLength: {rule: 50,message: $t('account.error.userNameTooLong')},
                 }">
-            <input type="text" :placeholder="$t('account.login_page.userPlaceHolder')" v-model.lazy.trim="userName" autocomplete="off"
+            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')" v-model.lazy.trim="userName" autocomplete="off"
               name="user"/>
           </validity>
         </div>
@@ -29,8 +29,13 @@
   import VueValidator from 'vue-validator'
 
   export default {
+    created(){
+      this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+    },
+
     data: function(){
       return {
+        supportPhone: false,
         userName: '',
         passWord: '',
       }
@@ -54,45 +59,5 @@
   }
 </script>
 <style lang="scss">
-  input.invalid {
-    border-color: red;
-  }
-  
-  .errors {
-    color: red;
-  }
-  
-  .g-con {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .login-box {
-      width: 50%;
-      height: 30%;
-      margin: auto;
-      .row-login {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-top: 10px;
-        p {
-          flex: 1;
-          font-size: .5rem;
-          text-align: center;
-        }
-        input {
-          padding: 5px;
-          font-size: .4rem;
-          flex: 1;
-          height: 100%;
-          border-bottom: solid 1px #cccccc;
-        }
-        a {
-          font-size: .3rem;
-        }
-      }
-    }
-  }
+  @import './common';
 </style>

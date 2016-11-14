@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var utils = require('./webpack.utils')
-var consts = require('./webpack.consts') 
+var consts = require('./webpack.consts')
 var merge = require('webpack-merge')
 
 const autoprefixer = require('autoprefixer');
@@ -14,11 +14,11 @@ var WebpackMd5Hash = require('webpack-md5-hash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var CompressionPlugin = require("compression-webpack-plugin");
 
-var isProduction = function() {
+var isProduction = function () {
   return process.env.NODE_ENV === 'production'
 };
 
-var outputPath = function() {
+var outputPath = function () {
   return path.resolve(__dirname, '../priv/static/')
 }
 
@@ -32,7 +32,7 @@ var plugins = [
     name: "admin_commons",
     filename: isProduction() ? 'js/admin_commons-[hash].js' : 'js/admin_commons.js',
     chunks: ['admin'],
-    minChunks: function(module, count) {
+    minChunks: function (module, count) {
       return (
         (module.resource &&
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
@@ -44,7 +44,7 @@ var plugins = [
     name: "login_commons",
     filename: isProduction() ? 'js/login_commons-[hash].js' : 'js/login_commons.js',
     chunks: ['login'],
-    minChunks: function(module, count) {
+    minChunks: function (module, count) {
       return (
         (module.resource &&
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
@@ -56,7 +56,7 @@ var plugins = [
     name: "forum_commons",
     filename: isProduction() ? 'js/forum_commons-[hash].js' : 'js/forum_commons.js',
     chunks: ['forum'],
-    minChunks: function(module, count) {
+    minChunks: function (module, count) {
       return (
         (module.resource &&
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
@@ -127,7 +127,11 @@ module.exports = {
   babel: {
     presets: ['es2015', 'stage-2']
   },
-
+  resolve: {
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
+  },
   postcss: [autoprefixer]
 };
 

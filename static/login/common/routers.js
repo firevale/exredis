@@ -5,16 +5,16 @@ export default function (VueRouter) {
     routes: [{
       path: '/',
       name: 'login',
-      component: require('./login.vue'),
+      component: require('../views/login.vue'),
       children: []
     }, {
       path: '/register',
       name: 'register',
-      component: require('./register.vue')
+      component: require('../views/register.vue')
     }, {
       path: '/retrive',
       name: 'retrive',
-      component: require('./retrivePassword.vue')
+      component: require('../views/retrivePassword.vue')
     }]
   });
 }

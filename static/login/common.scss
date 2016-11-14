@@ -1,0 +1,41 @@
+input.invalid {
+    border-color: red;
+}
+
+.errors {
+    color: red;
+    font-size: .2rem;
+}
+
+.g-con {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .login-box {
+        width: 50%;
+        height: 30%;
+        margin: auto;
+        .row-login {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 10px;
+            p {
+                flex: 1;
+                font-size: .5rem;
+                text-align: center;
+            }
+            input{
+                padding: 8px;
+                font-size: .4rem;
+                flex: 1;
+                height: 100%;
+            }
+            a {
+                font-size: .3rem;
+            }
+        }
+    }
+}

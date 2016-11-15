@@ -8,6 +8,7 @@ defmodule Acs.Repo.Migrations.CreateUser do
       add :id, :integer, primary_key: true
       add :email, :string, size: 50 
       add :mobile, :string, size: 20
+      add :device_id, :string
       add :encrypted_password, :string
       add :nickname, :string
       add :resident_id, :string, size: 25
@@ -21,6 +22,7 @@ defmodule Acs.Repo.Migrations.CreateUser do
 
     create index(:users, [:email], unique: true)
     create index(:users, [:mobile], unique: true)
+    create index(:users, [:device_id], unique: true)
   end
 
 end

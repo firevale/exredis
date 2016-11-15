@@ -12,6 +12,7 @@ defmodule Acs.User do
     field :email, :string
     field :mobile, :string
     field :encrypted_password, :string
+    field :device_id, :string
     field :nickname, :string
     field :resident_id, :string
     field :resident_name, :string
@@ -29,16 +30,12 @@ defmodule Acs.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :resident_id, :resident_name, 
-                     :gender, :age, :picture_url])
+    |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :device_id, 
+                     :resident_id, :resident_name, :gender, :age, :avatar_url])
     |> validate_required([:id])
     |> validate_format(:email, @email_check_regex)
     |> validate_format(:mobile, ~r/^\d+/)
   end
 
-
-  def save(%RedisUser{} = _user) do 
-     
-  end
 
 end

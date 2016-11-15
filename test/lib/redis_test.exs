@@ -74,14 +74,14 @@ defmodule Acs.RedisTest do
    
     ts1 = Utils.unix_timestamp
 
-    1..1000 |> Enum.each(fn(n) ->
+    # saving to mysql
+    1..100 |> Enum.each(fn(n) ->
       mobile = 18101329170 + n
       password = 123456 + n
       %RedisUser{mobile: "#{mobile}", encrypted_password: "#{password}"} |> RedisUser.save!
     end)
 
     ts2 = Utils.unix_timestamp
-
     assert ts2 - ts1 <= 1       
 
     assert RedisUser.exists?("18101329172")
@@ -107,7 +107,7 @@ defmodule Acs.RedisTest do
         mobile: "#{mobile}",
         nickname: "qq#{262356 + n}",
         device_id: nil,
-        picture_url: nil
+        avatar_url: nil
       })
     end)
 

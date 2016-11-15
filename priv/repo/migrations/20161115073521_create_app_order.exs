@@ -2,7 +2,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
   use Ecto.Migration
 
   def change do
-    create table(:orders, primary_key: false) do
+    create table(:app_orders, primary_key: false) do
       add :id, :string, primary_key: true
       add :platform, :string, size: 10
       add :sdk, :string, size: 20
@@ -22,10 +22,10 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       timestamps()
     end
 
-    create index(:orders, [:app_user_id])
-    create index(:orders, [:goods_id])
-    create index(:orders, [:cp_order_id])
-    create index(:orders, [:status])
-    create index(:orders, [:transaction_id])
+    create index(:app_orders, [:app_user_id])
+    create index(:app_orders, [:goods_id])
+    create index(:app_orders, [:cp_order_id])
+    create index(:app_orders, [:status])
+    create index(:app_orders, [:transaction_id])
   end
 end

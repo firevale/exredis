@@ -7,7 +7,6 @@ defmodule Acs.AppGoods do
     field :name, :string
     field :description, :string
     field :price, :integer
-    field :currency, :string
     field :icon, :string
 
     has_many   :product_ids, Acs.AppGoodsProductId, references: :id
@@ -21,7 +20,7 @@ defmodule Acs.AppGoods do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :description, :price, :currency, :icon])
-    |> validate_required([:name, :description, :price, :currency, :icon])
+    |> cast(params, [:name, :description, :price, :icon])
+    |> validate_required([:name, :price])
   end
 end

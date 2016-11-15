@@ -1,47 +1,47 @@
 <template>
-  <div class="g-con">
-    <div class="login-box">
-      <validation name="validationLogin">
-        <div class="row-login">
-          <p>{{ $t('account.login_page.title') }}</p>
-        </div>
-        <div class="row-login">
-          <validity ref="username" field="username" :validators="{
+	<div class="g-con">
+		<div class="login-box">
+			<validation name="validationLogin">
+				<div class="row-login">
+					<p>{{ $t('account.login_page.title') }}</p>
+				</div>
+				<div class="row-login">
+					<validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
-          </validity>
-          <div class="clearTimes" @click="userName=''">
-            <icon name="times"></icon>
-          </div>
-        </div>
-        <p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
-        <div class="row-login">
-          <validity ref="password" field="password" :validators="{
+						<input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+								v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+					</validity>
+					<div class="clearTimes" @click="userName=''">
+						<icon name="times"></icon>
+					</div>
+				</div>
+				<p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
+				<div class="row-login">
+					<validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
-              name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
-          </validity>
-          <div class="clearTimes" @click="passWord=''">
-            <icon name="times"></icon>
-          </div>
-        </div>
-        <p v-if="passwordInvalid" class="errors">{{ passwordTip }}</p>
-        <div class="row-login">
-          <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
-          <router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
-        </div>
-        <div class="row-login">
-          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
-        </div>
-      </validation>
-    </div>
-  </div>
+						<input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
+								name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
+					</validity>
+					<div class="clearTimes" @click="passWord=''">
+						<icon name="times"></icon>
+					</div>
+				</div>
+				<p v-if="passwordInvalid" class="errors">{{ passwordTip }}</p>
+				<div class="row-login">
+					<router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
+					<router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
+				</div>
+				<div class="row-login">
+					<input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+				</div>
+			</validation>
+		</div>
+	</div>
 </template>
 <script>
   import Icon from 'vue-awesome/components/Icon.vue'
@@ -123,10 +123,21 @@
           
         })
       },
-
+			
       onLogin: function () {
         if(this.$validation.validationLogin.valid){
-
+          this.$http({
+              method: 'POST',
+              url: '',
+              params: {}
+            }).then(response => {
+						let result = response.json()
+						if (result.success) {
+							
+						} else {
+							return Promise.reject('account.error.invalidPassword')
+						}
+					})
         }
       },
     },
@@ -138,5 +149,5 @@
   }
 </script>
 <style lang="scss">
-  @import '../scss/common';
+	@import '../scss/common';
 </style>

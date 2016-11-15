@@ -11,11 +11,11 @@
                 maxLength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')" v-model.trim="userName" autocomplete="off"
-              name="user" @focusout="handleValidate"/>
+            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <div class="clearTimes" @click="userName=''">
-            <icon name="times" ></icon>
+            <icon name="times"></icon>
           </div>
         </div>
         <p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
@@ -23,7 +23,7 @@
           <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
         </div>
         <div class="row-login">
-          <input type="button" :value="$t('account.login_page.btnSendverificationCode')"/>
+          <input type="button" :value="$t('account.login_page.btnSendverificationCode')" @click.prevent="onReport" />
         </div>
       </validation>
     </div>
@@ -90,6 +90,23 @@
         e.target.$validity.validate(function () {
           
         })
+      },
+
+      onReport: function(e){
+        if(this.$validation.validationRetrive.valid){
+          this.$http({
+              method: 'POST',
+              url: '',
+              params: {}
+            }).then(response => {
+						let result = response.json()
+						if (result.success) {
+							
+						} else {
+							return Promise.reject('account.error.invalidPassword')
+						}
+					})
+        }
       },
     },
 

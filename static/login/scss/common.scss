@@ -1,71 +1,169 @@
-
-html,body{
+html,
+body {
     margin: 0;
     padding: 0;
 }
 
 input.invalid {
-    border-color: red;
+    border-color: #ff3860;
 }
 
 .errors {
-    color: red;
-    font-size: .2rem;
+    color: #ff3860;
 }
 
-.g-con {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .login-box {
-        width: 50%;
-        height: 30%;
-        margin: auto;
-        .row-login {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            margin-top: 10px;
-            p {
-                flex: 1;
-                font-size: .5rem;
-                text-align: center;
-            }
-            input {
-                padding: 8px;
-                font-size: .4rem;
-                flex: 1;
-                height: 100%;
-            }
-            a {
-                font-size: .3rem;
-            }
-            .clearTimes {
-                right: 10px;
-                height: 100%;
-                position: absolute;
-                display: none;
-                svg {
+@media screen and (max-width: 768px) {
+    .g-con {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .login-box {
+            width: 80vw;
+            height: 60vh;
+            margin: auto;
+            .row-login {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: .5rem;
+                p {
+                    flex: 1;
+                    font-size: .5rem;
+                    text-align: center;
+                }
+                input {
+                    padding: 9px;
+                    font-size: .6rem;
+                    flex: 1;
+                }
+                a {
+                    font-size: .4rem;
+                }
+                .clearTimes {
+                    right: 0;
                     height: 100%;
-                    path {
-                        display: block;
-                        margin: auto;
+                    width: .6rem;
+                    position: absolute;
+                    display: none;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
                     }
                 }
             }
-        }
-        .row-login:hover .clearTimes {
-            display: block;
+            .row-login:hover .clearTimes {
+                display: block;
+            }
         }
     }
 }
 
-@media screen and (-webkit-min-device-pixel-ratio: 2){
-    .login-box {
-        width: 100%;
-        height: 100%;
+@media screen and (min-width: 769px) {
+    .g-con {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .login-box {
+            width: 40vw;
+            height: 30vh;
+            margin: auto;
+            .row-login {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: .5rem;
+                p {
+                    flex: 1;
+                    font-size: .5rem;
+                    text-align: center;
+                }
+                input {
+                    padding: 9px;
+                    font-size: .4rem;
+                    flex: 1;
+                }
+                a {
+                    font-size: .4rem;
+                }
+                .clearTimes {
+                    right: 0;
+                    width: .6rem;
+                    height: 100%;
+                    position: absolute;
+                    display: none;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
+                }
+            }
+            .row-login:hover .clearTimes {
+                display: block;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 980px) {
+    .g-con {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .login-box {
+            width: 40%;
+            height: 30%;
+            margin: auto;
+            .row-login {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: .5rem;
+                p {
+                    flex: 1;
+                    font-size: .5rem;
+                    text-align: center;
+                }
+                input {
+                    padding: 9px;
+                    
+                    flex: 1;
+                }
+                a {
+                    font-size: .4rem;
+                }
+                .clearTimes {
+                    right: 0;
+                    width: .6rem;
+                    height: 100%;
+                    position: absolute;
+                    display: none;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
+                }
+            }
+            .row-login:hover .clearTimes {
+                display: block;
+            }
+        }
     }
 }

@@ -8,9 +8,9 @@
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50,message: $t('account.error.userNameTooLong')},
+                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')" v-model.lazy.trim="userName" autocomplete="off"
+            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')" v-model.trim="userName" autocomplete="off"
               name="user" @focusout="handleValidate" />
           </validity>
         </div>
@@ -18,9 +18,9 @@
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
-                maxlength: {rule: 50,message: $t('account.error.passwordTooLong')},
+                maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.lazy.trim="passWord" autocomplete="off"
+            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
               name="password" @focusout="handleValidate" @keyup.enter="goLogin"/>
           </validity>
         </div>
@@ -30,16 +30,13 @@
           <router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
         </div>
         <div class="row-login">
-          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="goLogin"/>
+          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin"/>
         </div>
       </validation>
     </div>
   </div>
 </template>
 <script>
-  import VueValidator from 'vue-validator'
-
-
   export default {
     created(){
       this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
@@ -69,13 +66,11 @@
       },
 
       usernameTip: function() {
-        let res = '';
-        this.$validation.validationLogin.errors.map(error => {
-          if(error.field == 'username'){
-            res = error.message
-          }
-        })
-        return res;
+        let res=''
+        if(this.$refs.username.result.invalid){
+          res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
+        }
+        return res
       },
 
       passwordInvalid: function() {
@@ -85,13 +80,11 @@
       },
 
       passwordTip: function() {
-        let res = '';
-        this.$validation.validationLogin.errors.map(error => {
-          if(error.field == 'password'){
-            res = error.message
-          }
-        })
-        return res;
+        let res=''
+        if(this.$refs.password.result.invalid){
+          res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
+        }
+        return res
       }
 
     },
@@ -103,7 +96,7 @@
         })
       },
 
-      goLogin: function () {
+      onLogin: function () {
         if(this.$validation.validationLogin.valid){
 
         }
@@ -115,5 +108,5 @@
   }
 </script>
 <style lang="scss">
-  @import './common';
+  @import '../scss/common';
 </style>

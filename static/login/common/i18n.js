@@ -21,6 +21,7 @@ export default {
         userNameTooLong: '用户名超长',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
+        passwordDifferent: '两次输入的密码不一致',
       },
       
     },

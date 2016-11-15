@@ -1,25 +1,32 @@
 defmodule Acs.Endpoint do
   use Phoenix.Endpoint, otp_app: :acs
+  import Acs.Plugs
 
   socket "/socket", Acs.UserSocket
+ 
+  @allow_origin Application.get_env(:fvac, :allow_origin, "//*.firevale.com")
+  @valid_static_pattern ~w(js css images assets fonts favicon.ico robots.txt)
+
+  # check origin
+  plug :allow_origin, @allow_origin
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
-  if Mix.env == :prod do 
+  if Mix.env == :dev or Mix.env == :test do 
+    plug Plug.Static,
+      at: "/", from: :acs, 
+      cache_control_for_etags: "no-cache, no-store, must-revalidate",
+      cache_control_for_vsn_requests: "no-cache, no-store, must-revalidate",
+      only: @valid_static_pattern
+  else 
     plug Plug.Static,
       at: "/", from: :acs, 
       gzip: true,
       cache_control_for_etags: "public, max-age=31536000",
       cache_control_for_vsn_requests: "public, max-age=31536000",
-      only: ~w(js css images assets fonts favicon.ico robots.txt)
-  else 
-    plug Plug.Static,
-      at: "/", from: :acs, 
-      cache_control_for_etags: "no-cache, no-store, must-revalidate",
-      cache_control_for_vsn_requests: "no-cache, no-store, must-revalidate",
-      only: ~w(js css images assets fonts favicon.ico robots.txt)
+      only: @valid_static_pattern
   end
 
   # Code reloading can be explicitly enabled under the

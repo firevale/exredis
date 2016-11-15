@@ -94,6 +94,8 @@ defmodule Acs.Plugs do
             end
 
             cond do 
+              user_agent =~ ~r/fvacwebview/iu -> 
+                %{conn | params: Map.put(conn.params, "channel", "webview")}
               user_agent =~ ~r/micromessenger/iu -> 
                 %{conn | params: Map.put(conn.params, "channel", "weixin")}
               user_agent =~ ~r/QQ/iu -> 
@@ -126,4 +128,35 @@ defmodule Acs.Plugs do
     end
   end
 
+  def fetch_user_id(conn, _options) do 
+    case fetch_session_user_id(conn) || fetch_header_user_id(conn) do 
+      nil -> conn
+      user_id -> 
+        %{conn | params: Map.put(conn.params, "user_id", user_id)}
+    end
+  end
+
+  defp fetch_session_user_id(%{private: private} = conn) do 
+    case Map.fetch(private, :plug_session_fetch) do 
+      {:ok, :done} -> get_session(conn, :user_id) 
+      _ -> nil
+    end
+  end
+
+  defp fetch_header_user_id(conn) do 
+    case get_req_header(conn, "user-id") do 
+      nil -> nil
+      [] -> nil
+      [user_id | _] -> user_id
+    end
+  end
+
+  def log_user_id(conn, _options) do 
+    case conn.params["user_id"] do 
+      nil -> conn
+      user_id ->
+        Logger.metadata(user_id: user_id) 
+        conn
+    end
+  end
 end

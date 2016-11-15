@@ -8,7 +8,7 @@ build() {
 }
 
 check_build_image() {
-	docker images | grep -qi 'acs_dev' || build 
+	docker images | grep -qi 'docker-registry.firevale.com/acs_dev' || build 
 }
 
 docker_run() {

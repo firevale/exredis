@@ -1,6 +1,6 @@
 defmodule Acs.User do
   use   Acs.Web, :model
-  alias Acs.Repo
+  # alias Acs.Repo
   alias Acs.UserSdkBinding
   alias Acs.RedisUser
 
@@ -17,8 +17,7 @@ defmodule Acs.User do
     field :resident_name, :string
     field :gender, :string
     field :age, :integer
-    field :picture_url, :string
-    field :last_login_at, :utc_datetime
+    field :avatar_url, :string
 
     has_many :sdk_bindings, UserSdkBinding, references: :id
 
@@ -31,14 +30,14 @@ defmodule Acs.User do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :resident_id, :resident_name, 
-                     :gender, :age, :picture_url, :last_login_at])
+                     :gender, :age, :picture_url])
     |> validate_required([:id])
     |> validate_format(:email, @email_check_regex)
-    |> validate_format(:mobile, ~r/^(00)?(86)?0?1\d{10}/)
+    |> validate_format(:mobile, ~r/^\d+/)
   end
 
 
-  def save(%RedisUser{} = user) do 
+  def save(%RedisUser{} = _user) do 
      
   end
 

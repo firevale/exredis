@@ -9,10 +9,14 @@
           <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxLength: {rule: 50, message: $t('account.error.userNameTooLong')},
+                validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
             <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')" v-model.trim="userName" autocomplete="off"
               name="user" @focusout="handleValidate"/>
           </validity>
+          <div class="clearTimes" @click="userName=''">
+            <icon name="times" ></icon>
+          </div>
         </div>
         <p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
         <div class="row-login">
@@ -26,10 +30,21 @@
   </div>
 </template>
 <script>
-
+  import Icon from 'vue-awesome/components/Icon.vue'
+  import 'vue-awesome/icons/times'
   export default {
     created(){
       this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+    },
+
+    validators: {
+      validateUserName: function(val){
+        if(this.supportPhone){
+          return this.validateEmail && this.validatePhoneNumber
+        }else{
+          return this.validateEmail
+        }
+      }
     },
 
     data: function(){
@@ -58,6 +73,16 @@
         }
         return res
       },
+
+      validateEmail: function() {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(this.userName);
+      },
+
+      validatePhoneNumber: function() {
+        return /^1[34578]\d{9}$/.test(this.userName); 
+      },
+
     },
 
     methods: { 
@@ -67,6 +92,10 @@
         })
       },
     },
+
+    components: {
+      'icon': Icon,
+    }
 
   }
 </script>

@@ -26,6 +26,12 @@ config :logger, :console,
 # Config bugsnag exception reporter
 config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
 
+config :acs, :platforms, ~w(android ios wp8 pc)
+
+config :acs, :sdks, ~w(alipay appstore ggplay anzhi baidu ccplay coolpad downjoy facebook gfan haima htc huawei i4 iiapple \
+                       itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc vivo wdj wechat xiaomi \
+                       xy youku yyh)
+
 # Config UCloud UFile Management
 config :acs, :ufile,
   public_key: "ucloudxiaobin@firevale.com1368084534286667901",

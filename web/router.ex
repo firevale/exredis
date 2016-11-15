@@ -5,18 +5,24 @@ defmodule Acs.Router do
   require Bugsnag
   require Exception
 
+  import  Acs.Plugs
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    # plug :fetch_flash
+    plug :fetch_user_id
     plug :log_user_id
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :detect_platform
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_user_id
     plug :log_user_id
+    plug :detect_platform
   end
 
   scope "/", Acs do
@@ -29,6 +35,7 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/index", UserController, :index # show login page
+    get  "/login", UserController, :index # show login page
     get  "/logout", UserController, :logout
     get  "/reset_password", UserController, :reset_password # show reset password page
     get  "/reset_password.html", UserController, :reset_password # show reset password page
@@ -53,21 +60,4 @@ defmodule Acs.Router do
   # end
 
 
-  require Logger
-
-  defp log_user_id(conn, _params) do 
-    case conn.params["user_id"] do 
-      nil -> 
-        case Plug.Conn.get_session(conn, :user_id) do 
-          nil -> nil
-          "" -> nil
-          user_id ->
-            Logger.metadata(user_id: user_id) 
-        end
-      user_id ->
-        Logger.metadata(user_id: user_id) 
-    end
-
-    conn
-  end
 end

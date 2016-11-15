@@ -1,12 +1,11 @@
-defmodule Acs.UserSdkBinding do
+defmodule Acs.AppSdkBinding do
   use Acs.Web, :model
 
-  schema "user_sdk_bindings" do
+  schema "app_sdk_bindings" do
     field :sdk, :string
-    field :sdk_user_id, :string
-
+    field :bindings, :map
+    
     belongs_to :app, Acs.App
-    belongs_to :user, Acs.User
 
     timestamps()
   end
@@ -16,7 +15,7 @@ defmodule Acs.UserSdkBinding do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk, :sdk_user_id])
-    |> validate_required([:sdk, :sdk_user_id])
+    |> cast(params, [:sdk, :bindings])
+    |> validate_required([:sdk, :bindings])
   end
 end

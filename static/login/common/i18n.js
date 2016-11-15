@@ -19,6 +19,9 @@ export default {
       error: {
         requireUserName: '请输入用户名',
         userNameTooLong: '用户名超长',
+        userNameWrong: '请输入正确的邮箱或手机号码',
+        userNameEmailWrong: '请输入正确的邮箱',
+        userNameExist: '用户名已存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
         passwordDifferent: '两次输入的密码不一致',

@@ -10,8 +10,8 @@ defmodule Acs.AppUser do
     field :pay_amount, :integer, default: 0
     field :last_pay_at, :naive_datetime
 
-    belongs_to :app, Acs.App
-    belongs_to :user, Acs.User
+    belongs_to :app, Acs.App, type: :string
+    belongs_to :user, Acs.User, type: :string
 
     timestamps()
   end

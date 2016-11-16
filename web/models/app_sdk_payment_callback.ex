@@ -5,11 +5,13 @@ defmodule Acs.AppSdkPaymentCallback do
     field :platform, :string
     field :sdk, :string
     field :payment_callback, :string
-    
-    belongs_to :app, Acs.App
+
+    belongs_to :app, Acs.App, type: :string
 
     timestamps()
   end
+
+  @sdks Application.get_env(:acs, :sdks, [])
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
@@ -18,5 +20,6 @@ defmodule Acs.AppSdkPaymentCallback do
     struct
     |> cast(params, [:platform, :sdk, :payment_callback])
     |> validate_required([:platform, :sdk, :payment_callback])
+    |> validate_inclusion(:sdk, @sdks)
   end
 end

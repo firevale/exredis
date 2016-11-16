@@ -5,10 +5,12 @@ defmodule Acs.AppGoodsProductId do
     field :sdk, :string
     field :product_id, :string
 
-    belongs_to :app_goods, Acs.AppGoods
+    belongs_to :app_goods, Acs.AppGoods, type: :string
 
     timestamps()
   end
+
+  @sdks Application.get_env(:acs, :sdks, [])
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
@@ -17,5 +19,6 @@ defmodule Acs.AppGoodsProductId do
     struct
     |> cast(params, [:sdk, :product_id])
     |> validate_required([:sdk, :product_id])
+    |> validate_inclusion(:sdk, @sdks)
   end
 end

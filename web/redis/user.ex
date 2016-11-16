@@ -155,7 +155,6 @@ defmodule Acs.RedisUser do
 
     case Scripts.save_user(["json"], [to_json(user)]) do 
       ["error", reason] -> 
-        Logger.error "save user: #{inspect user, pretty: true} to redis failed: #{reason}"
         {:error, reason}
       ["ok", id] -> 
         new_user = %{user | id: String.to_integer(id)}
@@ -168,6 +167,16 @@ defmodule Acs.RedisUser do
             %User{} = old_user ->
               User.changeset(old_user, Map.from_struct(new_user)) |> Repo.update!
           end
+
+          new_user.bindings |> Enum.each(fn({k, v}) -> 
+            [sdk, app_id] = String.split(k, ".", parts: 2, trim: true)
+            case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do 
+              nil ->
+                UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: new_user.id}) |> Repo.insert!
+              %UserSdkBinding{} = binding ->
+                UserSdkBinding.changeset(binding, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: new_user.id}) |> Repo.update!
+            end
+          end)
         end)
        
        new_user

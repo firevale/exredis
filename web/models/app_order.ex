@@ -18,8 +18,8 @@ defmodule Acs.AppOrder do
     field :transaction_id, :string
     field :transaction_status, :string
 
-    belongs_to :app_user, Acs.AppUser
-    belongs_to :goods, Acs.Goods
+    belongs_to :app_user, Acs.AppUser, type: :string
+    belongs_to :goods, Acs.Goods, type: :string
 
     timestamps()
   end

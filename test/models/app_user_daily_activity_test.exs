@@ -3,7 +3,7 @@ defmodule Acs.AppUserDailyActivityTest do
 
   alias Acs.AppUserDailyActivity
 
-  @valid_attrs %{active_minutes: 42, date: %{day: 17, month: 4, year: 2010}, pay_amount: 42}
+  @valid_attrs %{active_minutes: 42, date: ~D[2012-03-19], pay_amount: 42}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

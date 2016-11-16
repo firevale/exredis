@@ -10,7 +10,7 @@ defmodule Acs.AppGoods do
     field :icon, :string
 
     has_many   :product_ids, Acs.AppGoodsProductId, references: :id
-    belongs_to :app, Acs.App
+    belongs_to :app, Acs.App, type: :string
 
     timestamps()
   end

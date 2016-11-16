@@ -6,6 +6,7 @@ defmodule Acs.App do
     field :id, :string, primary_key: true
     field :secret, :string
     field :name, :string
+    field :currency, :string, default: "CNY"
     field :payment_callback, :string
 
     has_many :sdk_bindings, Acs.AppSdkBinding, references: :id
@@ -20,7 +21,7 @@ defmodule Acs.App do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:secret, :name, :payment_callback])
-    |> validate_required([:secret, :name, :payment_callback])
+    |> cast(params, [:secret, :name, :currency, :payment_callback])
+    |> validate_required([:secret, :name, :currency, :payment_callback])
   end
 end

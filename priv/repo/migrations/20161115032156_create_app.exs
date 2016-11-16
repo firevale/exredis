@@ -6,7 +6,7 @@ defmodule Acs.Repo.Migrations.CreateApp do
       add :id, :string, primary_key: true
       add :secret, :string
       add :name, :string, size: 30
-      add :currency, :string, size: 3 # goods currency
+      add :currency, :string, size: 5 # goods currency
       add :payment_callback, :string 
 
       timestamps()

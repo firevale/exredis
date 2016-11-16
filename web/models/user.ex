@@ -2,7 +2,6 @@ defmodule Acs.User do
   use   Acs.Web, :model
   # alias Acs.Repo
   alias Acs.UserSdkBinding
-  alias Acs.RedisUser
 
   @email_check_regex ~r/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/iu
 
@@ -30,8 +29,8 @@ defmodule Acs.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :device_id, 
-                     :resident_id, :resident_name, :gender, :age, :avatar_url])
+    |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :resident_id, :resident_name, 
+                     :gender, :age, :avatar_url])
     |> validate_required([:id])
     |> validate_format(:email, @email_check_regex)
     |> validate_format(:mobile, ~r/^\d+/)

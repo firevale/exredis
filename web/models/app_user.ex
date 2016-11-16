@@ -1,7 +1,6 @@
 defmodule Acs.AppUser do
   use Acs.Web, :model
 
-
   schema "app_users" do
     field :app_user_id, :string
     field :app_zone_id, :string

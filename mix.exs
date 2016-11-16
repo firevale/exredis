@@ -4,7 +4,7 @@ defmodule Acs.Mixfile do
   def project do
     [app: :acs,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.3",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -21,8 +21,8 @@ defmodule Acs.Mixfile do
      included_applications: [:exredis, :logger_file_backend],
      applications: [:inets, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :logger_file_backend, 
                     :gettext, :phoenix_ecto, :mariaex, :redis_poolex, :ssl, :idna, :ibrowse, :httpotion,
-                    :mogrify, :pbkdf2, :comeonin, :des_ecb3, :sweet_xml, :bugsnag, :oauth2, :oauther,
-                    :mailer, :mandrill, :gen_smtp, :exsyslog, :jiffy]]
+                    :mogrify, :pbkdf2, :comeonin, :des_ecb3, :sweet_xml, :bugsnag, :plugsnag, :oauth2, :oauther,
+                    :mailer, :mandrill, :gen_smtp, :exsyslog, :jiffy, :timex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -51,6 +51,7 @@ defmodule Acs.Mixfile do
      {:comeonin, "~> 2.6"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:bugsnag, "~> 1.3"}, # should modify rebar.config
+     {:plugsnag, "~> 1.2"},
      {:mogrify, "~> 0.5"},
      {:exsyslog, "~> 1.0"},
      {:poison, "~> 3.0", override: true},
@@ -60,6 +61,7 @@ defmodule Acs.Mixfile do
      {:gen_smtp, "~> 0.11", override: true},
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},
      {:oauther, "~> 1.1"},
+     {:timex, "~> 3.1", override: true},
      {:exrm, "~> 1.0" },
     ]
   end

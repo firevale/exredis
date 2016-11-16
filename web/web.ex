@@ -40,7 +40,21 @@ defmodule Acs.Web do
       import  Acs.Plugs
 
       require Utils
-      alias   Acs.User
+      require Logger
+
+      alias   Utils.JSON
+      alias   Utils.Httpc
+
+      alias  Acs.RedisApp
+      alias  Acs.RedisAppOrder
+      alias  Acs.RedisUser
+      alias  Acs.RedisAppUser
+
+      alias  Acs.App
+      alias  Acs.AppSdkBinding
+      alias  Acs.AppUser
+      alias  Acs.AppOrder
+      alias  Acs.AppGoods
     end
   end
 

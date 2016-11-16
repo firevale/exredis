@@ -2,12 +2,16 @@ defmodule Acs.Plugs do
   import Plug.Conn
   require Logger
 
-  def no_cache(conn, _options) do 
+  alias   Acs.RedisApp
+  alias   Acs.RedisUser
+  alias   Acs.App
+
+  def no_cache(%Plug.Conn{} = conn, _options) do 
     conn |> delete_resp_header("cache-control")
          |> put_resp_header("cache-control", "no-cache, no-store, must-revalidate")
   end
 
-  def allow_origin(conn, options) do 
+  def allow_origin(%Plug.Conn{} = conn, options) do 
     case get_req_header(conn, "origin") do 
       nil -> conn
       [] -> conn
@@ -69,7 +73,7 @@ defmodule Acs.Plugs do
   defp compare_host?(request_host, allowed_host),
     do: request_host == allowed_host
 
-  def detect_platform(conn, _options) do 
+  def detect_platform(%Plug.Conn{} = conn, _options) do 
     case conn.params["platform"] do 
       "android" -> conn
       "ios" -> conn
@@ -112,7 +116,7 @@ defmodule Acs.Plugs do
     end
   end
 
-  def detect_user_key(conn, _options) do 
+  def detect_user_key(%Plug.Conn{} = conn, _options) do 
     case conn.params["user_key"] do 
       "" -> conn
       nil -> conn
@@ -128,22 +132,23 @@ defmodule Acs.Plugs do
     end
   end
 
-  def fetch_user_id(conn, _options) do 
+  def detect_user_id(%Plug.Conn{} = conn, _options) do 
     case fetch_session_user_id(conn) || fetch_header_user_id(conn) do 
       nil -> conn
       user_id -> 
+        Logger.metadata(user_id: user_id) 
         %{conn | params: Map.put(conn.params, "user_id", user_id)}
     end
   end
 
-  defp fetch_session_user_id(%{private: private} = conn) do 
+  defp fetch_session_user_id(%Plug.Conn{private: private} = conn) do 
     case Map.fetch(private, :plug_session_fetch) do 
       {:ok, :done} -> get_session(conn, :user_id) 
       _ -> nil
     end
   end
 
-  defp fetch_header_user_id(conn) do 
+  defp fetch_header_user_id(%Plug.Conn{} = conn) do 
     case get_req_header(conn, "user-id") do 
       nil -> nil
       [] -> nil
@@ -151,12 +156,73 @@ defmodule Acs.Plugs do
     end
   end
 
-  def log_user_id(conn, _options) do 
-    case conn.params["user_id"] do 
+  def detect_device_id(%Plug.Conn{} = conn, _options) do 
+    case fetch_device_id(conn.params) || fetch_header_device_id(conn) do 
       nil -> conn
-      user_id ->
-        Logger.metadata(user_id: user_id) 
-        conn
+      device_id ->
+        Logger.metadata(device_id: device_id) 
+        %{conn | params: Map.put(conn.params, "device_id", device_id)}
     end
   end
+
+  defp fetch_device_id(%{"idfa" => idfa}) when is_bitstring(idfa) and byte_size(idfa) > 5,  do: "idfa.#{idfa}"
+  defp fetch_device_id(%{"idfv" => idfv}) when is_bitstring(idfv) and byte_size(idfv) > 5,  do: "idfv.#{idfv}"
+  defp fetch_device_id(%{"android_id" => android_id}) when is_bitstring(android_id) and byte_size(android_id) > 5,  do: "android_id.#{android_id}"
+  defp fetch_device_id(%{}), do: nil 
+
+  defp fetch_header_device_id(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "device-id") do 
+      nil -> nil
+      [] -> nil
+      [device_id | _] -> device_id
+    end
+  end
+
+  def detect_app_id(%Plug.Conn{} = conn, _options) do 
+    case fetch_app_id(conn.params) || fetch_header_app_id(conn) do 
+      nil -> conn
+      app_id ->
+        Logger.metadata(app_id: app_id) 
+        %{conn | params: Map.put(conn.params, "app_id", app_id)}
+    end
+  end
+
+  defp fetch_app_id(%{"client_id" => client_id}) when is_bitstring(client_id) and byte_size(client_id) > 5,  do: client_id
+  defp fetch_app_id(%{}), do: nil 
+
+  defp fetch_header_app_id(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "app-id") do 
+      nil -> nil
+      [] -> nil
+      [app_id | _] -> app_id
+    end
+  end
+
+  def fetch_app(%Plug.Conn{params: %{"app_id" => app_id}} = conn, _options) do 
+    case RedisApp.find(app_id) do 
+      nil -> conn
+      %App{} = app ->
+        %{conn | params: Map.put(conn.params, "app", app)}
+    end
+  end
+  def fetch_app(%Plug.Conn{} = conn, _options), do: conn
+
+  def fetch_user(%Plug.Conn{params: %{"user_id" => user_id}} = conn, _options) do 
+    case RedisUser.find(user_id |> String.to_integer) do 
+      nil -> conn
+      %RedisUser{} = user ->
+        %{conn | params: Map.put(conn.params, "user", user)}
+    end
+  end
+  def fetch_user(%Plug.Conn{} = conn, _options), do: conn
+
+  def detect_access_token(%Plug.Conn{} = conn, _options) do 
+    case get_req_header(conn, "access-token") do 
+      nil -> conn
+      [] -> conn
+      [access_token | _] -> 
+        %{conn | params: Map.put(conn.params, "access_token", access_token)}
+    end
+  end
+
 end

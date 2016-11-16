@@ -57,5 +57,7 @@ defmodule Acs.Endpoint do
     signing_salt: "xPmjtHMg",
     encryption_salt: "NW3SXpkS"
 
+  plug :no_cache
+  
   plug Acs.Router
 end

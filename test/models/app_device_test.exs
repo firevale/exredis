@@ -3,7 +3,7 @@ defmodule Acs.AppDeviceTest do
 
   alias Acs.AppDevice
 
-  @valid_attrs %{sdk: "some content"}
+  @valid_attrs %{sdk: "facebook"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

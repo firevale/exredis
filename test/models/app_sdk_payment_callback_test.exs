@@ -3,7 +3,7 @@ defmodule Acs.AppSdkPaymentCallbackTest do
 
   alias Acs.AppSdkPaymentCallback
 
-  @valid_attrs %{payment_callback: "some content", platform: "some content", sdk: "some content"}
+  @valid_attrs %{payment_callback: "some content", platform: "some content", sdk: "ccplay"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

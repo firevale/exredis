@@ -4,6 +4,9 @@ defmodule Acs.RedisUser do
   require Utils
   require Logger
 
+  alias   Acs.Repo
+  alias   Acs.User
+  alias   Acs.UserSdkBinding
 
   ########################################
   defstruct id: 0,
@@ -16,7 +19,7 @@ defmodule Acs.RedisUser do
             resident_name: nil,  # 实名
             gender: "male",      # 性别 ()
             age: 1,              # 年龄
-            picture_url: nil,
+            avatar_url: nil,
             last_login_at: nil,
             failed_attempts: 0,
             bindings: %{}       
@@ -103,7 +106,7 @@ defmodule Acs.RedisUser do
                       mobile: mobile,
                       nickname: nickname,
                       device_id: device_id,
-                      picture_url: picture_url}) do 
+                      avatar_url: avatar_url}) do 
 
     bkey = "#{sdk}.#{app_id}"
 
@@ -113,7 +116,7 @@ defmodule Acs.RedisUser do
                     email: email, # make email case insensitive
                     nickname: nickname,
                     mobile: mobile,
-                    picture_url: picture_url,
+                    avatar_url: avatar_url,
                     bindings: Map.put(%{}, bkey, sdk_user_id)
                   }
 
@@ -122,7 +125,7 @@ defmodule Acs.RedisUser do
 
       user ->
         user = %{user | nickname: nickname}
-        user = %{user | picture_url: picture_url}
+        user = %{user | avatar_url: avatar_url}
         user = %{user | bindings: Map.put(user.bindings, bkey, sdk_user_id)}
 
         user = save!(user)
@@ -152,10 +155,31 @@ defmodule Acs.RedisUser do
 
     case Scripts.save_user(["json"], [to_json(user)]) do 
       ["error", reason] -> 
-        Logger.error "save user: #{inspect user, pretty: true} to redis failed: #{reason}"
         {:error, reason}
       ["ok", id] -> 
-        %{user | id: String.to_integer(id)}
+        new_user = %{user | id: String.to_integer(id)}
+
+        Repo.transaction(fn -> 
+          # ecto's upset is not stable for now
+          case Repo.get(User, id) do 
+            nil ->
+              User.changeset(%User{}, Map.from_struct(new_user)) |> Repo.insert!
+            %User{} = old_user ->
+              User.changeset(old_user, Map.from_struct(new_user)) |> Repo.update!
+          end
+
+          new_user.bindings |> Enum.each(fn({k, v}) -> 
+            [sdk, app_id] = String.split(k, ".", parts: 2, trim: true)
+            case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do 
+              nil ->
+                UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: new_user.id}) |> Repo.insert!
+              %UserSdkBinding{} = binding ->
+                UserSdkBinding.changeset(binding, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: new_user.id}) |> Repo.update!
+            end
+          end)
+        end)
+       
+       new_user
     end
   end
   def save!(%__MODULE__{} = user) do
@@ -236,16 +260,40 @@ defmodule Acs.RedisUser do
       :unknown ->
         :error 
       type ->
-         Scripts.del_user([type |> to_string], [key]) |> String.to_atom 
+        case Scripts.del_user([type |> to_string], [key]) do 
+          "ok" ->
+            if type in [:email, :mobile] do 
+              case Repo.get_by(User, [{type, key}]) do 
+                %User{} = user ->
+                  Repo.delete(user)
+                _ ->
+                  :ok
+               end
+            else 
+              :ok
+            end
+           _ -> :ok
+        end
     end
   end
   def delete(id) when is_integer(id) do
-     Scripts.del_user(["id"], [id]) |> String.to_atom 
+    case Scripts.del_user(["id"], [id]) do 
+      "ok" ->
+        case Repo.get_by(User, id: id) do 
+          %User{} = user ->
+            Repo.delete(user)
+          _ ->
+            :ok
+        end
+      _ ->
+        :error
+    end
   end
 
   def delete!(id) when is_integer(id) do 
     case delete(id) do 
       :ok -> :ok
+      {:ok, _} -> :ok
       _ ->
         raise OpException, message: "can not delete user by id #{id}"
     end
@@ -253,6 +301,7 @@ defmodule Acs.RedisUser do
   def delete!(key) when is_bitstring(key) do 
     case delete(key) do 
       :ok -> :ok
+      {:ok, _} -> :ok
       _ ->
         raise OpException, message: "can not delete user by key #{key}"
     end

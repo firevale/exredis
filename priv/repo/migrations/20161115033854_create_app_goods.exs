@@ -7,7 +7,6 @@ defmodule Acs.Repo.Migrations.CreateAppGoods do
       add :name, :string
       add :description, :string
       add :price, :integer
-      add :currency, :string
       add :icon, :string      
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)

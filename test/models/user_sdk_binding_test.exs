@@ -3,7 +3,7 @@ defmodule Acs.UserSdkBindingTest do
 
   alias Acs.UserSdkBinding
 
-  @valid_attrs %{sdk: "some content", sdk_user_id: "some content"}
+  @valid_attrs %{sdk: "pp", sdk_user_id: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

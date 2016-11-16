@@ -11,7 +11,7 @@
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-						<input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+						<input type="text" :placeholder="this.supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
 								v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
 					</validity>
 					<div class="clearTimes" @click="userName=''">
@@ -48,8 +48,13 @@
   import 'vue-awesome/icons/times'
   export default {
     created(){
-      this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
-    },
+     let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+		 if(res == "true"){
+			 this.supportPhone = true; 
+		 }else{
+			 this.supportPhone = false; 
+		 }
+		},
 
     validators: {
       validateUserName: function(val){

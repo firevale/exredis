@@ -769,7 +769,9 @@ function addClass (el, cls) {
 
 function removeClass (el, cls) {
   if (el.classList) {
-    el.classList.remove(cls);
+    if(el.classList && el.classList.remove){
+      el.classList.remove(cls);
+    }
   } else {
     var cur = ' ' + getClass(el) + ' ';
     var tar = ' ' + cls + ' ';

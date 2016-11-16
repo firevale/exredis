@@ -68,7 +68,7 @@
     validators: {
       validateUserName: function(val){
         if(this.supportPhone){
-          return this.validateEmail && this.validatePhoneNumber
+          return this.validateEmail || this.validatePhoneNumber
         }else{
           return this.validateEmail
         }

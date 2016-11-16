@@ -773,7 +773,9 @@ function addClass (el, cls) {
 
 function removeClass (el, cls) {
   if (el.classList) {
-    el.classList.remove(cls);
+    if(el.classList&& el.classList.remove){
+      el.classList.remove(cls);
+    }
   } else {
     var cur = ' ' + getClass(el) + ' ';
     var tar = ' ' + cls + ' ';
@@ -1351,7 +1353,11 @@ var Event = function (Vue) {
 };
 
 function getModelDirective (child) {
-  return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
+  if(((child.data && child.data.directives) || [])&&((child.data && child.data.directives) || []).find){
+    return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
+  }else{
+    return null;
+  }
 }
 
 function getEventSources (child) {

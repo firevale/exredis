@@ -34,13 +34,18 @@
   import 'vue-awesome/icons/times'
   export default {
     created(){
-      this.supportphone = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+      let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
+      if(res == "true"){
+			  this.supportPhone = true; 
+      }else{
+        this.supportPhone = false; 
+      }
     },
 
     validators: {
       validateUserName: function(val){
         if(this.supportPhone){
-          return this.validateEmail && this.validatePhoneNumber
+          return this.validateEmail || this.validatePhoneNumber
         }else{
           return this.validateEmail
         }

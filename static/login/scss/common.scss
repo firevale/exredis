@@ -21,8 +21,7 @@ input.invalid {
         justify-content: center;
         .login-box {
             width: 80vw;
-            height: 60vh;
-            margin: auto;
+            margin: 0 auto;
             .row-login {
                 position: relative;
                 display: flex;
@@ -36,7 +35,7 @@ input.invalid {
                 }
                 input {
                     padding: 9px;
-                    font-size: .6rem;
+                    font-size: .4rem;
                     flex: 1;
                 }
                 a {
@@ -44,9 +43,9 @@ input.invalid {
                 }
                 .clearTimes {
                     right: 0;
-                    height: 100%;
-                    width: .6rem;
+                    width: .5rem;
                     position: absolute;
+                    height: 100%;
                     display: none;
                     svg {
                         height: 100%;
@@ -73,8 +72,7 @@ input.invalid {
         justify-content: center;
         .login-box {
             width: 40vw;
-            height: 30vh;
-            margin: auto;
+            margin: 0 auto;
             .row-login {
                 position: relative;
                 display: flex;
@@ -125,8 +123,7 @@ input.invalid {
         justify-content: center;
         .login-box {
             width: 40%;
-            height: 30%;
-            margin: auto;
+            margin: 0 auto;
             .row-login {
                 position: relative;
                 display: flex;
@@ -140,7 +137,7 @@ input.invalid {
                 }
                 input {
                     padding: 9px;
-                    
+                    font-size: .4rem;
                     flex: 1;
                 }
                 a {

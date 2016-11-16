@@ -1351,7 +1351,11 @@ var Event = function (Vue) {
 };
 
 function getModelDirective (child) {
-  return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
+  if(((child.data && child.data.directives) || [])&&((child.data && child.data.directives) || []).find){
+    return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
+  }else{
+    return null;
+  }
 }
 
 function getEventSources (child) {

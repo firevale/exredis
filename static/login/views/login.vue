@@ -4,6 +4,7 @@
 			<validation name="validationLogin">
 				<div class="row-login">
 					<p>{{ $t('account.login_page.title') }}</p>
+          <icon name="times" scale="2" fill-color="#666"></icon>
 				</div>
 				<div class="row-login">
 					<validity ref="username" field="username" :validators="{
@@ -14,11 +15,14 @@
 						<input type="text" :placeholder="this.supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
 								v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
 					</validity>
+          <div class="headerIcon">
+						<icon name="user-o" fill-color="#aaa"></icon>
+					</div>
 					<div class="clearTimes" @click="userName=''">
-						<icon name="times"></icon>
+						<icon name="times" fill-color="#aaa"></icon>
 					</div>
 				</div>
-				<p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
+				<p v-if="usernameInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
 				<div class="row-login">
 					<validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
@@ -27,17 +31,34 @@
 						<input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
 								name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
 					</validity>
+          <div class="headerIcon">
+						<icon name="lock" fill-color="#aaa"></icon>
+					</div>
 					<div class="clearTimes" @click="passWord=''">
-						<icon name="times"></icon>
+						<icon name="times" fill-color="#aaa"></icon>
 					</div>
 				</div>
-				<p v-if="passwordInvalid" class="errors">{{ passwordTip }}</p>
+				<p v-if="passwordInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
+				
 				<div class="row-login">
+					<input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+				</div>
+        <div class="row-login">
 					<router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
 					<router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
 				</div>
-				<div class="row-login">
-					<input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+        <div class="row-login">
+					<hr>
+          <span>{{ $t('account.login_page.otherWays') }}</span>
+          <hr>
+				</div>
+        <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
+          <div class="tileWays" v-for="item in otherWays">
+            <figure>
+              <img :src="item.img"></img>
+            </figure>
+            <p>{{ item.name }}</p>
+          </div>
 				</div>
 			</validation>
 		</div>
@@ -46,6 +67,9 @@
 <script>
   import Icon from 'vue-awesome/components/Icon.vue'
   import 'vue-awesome/icons/times'
+  import 'vue-awesome/icons/info-circle'
+  import 'vue-awesome/icons/user-o'
+  import 'vue-awesome/icons/lock'
   export default {
     created(){
      let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
@@ -71,6 +95,12 @@
         supportPhone: false,
         userName: '',
         passWord: '',
+        otherWays:[
+          {img: '', name: '快速游戏'},
+          {img: '', name: '微博'},
+          {img: '', name: 'QQ'},
+          {img: '', name: '微信'},
+        ]
       }
     },
 

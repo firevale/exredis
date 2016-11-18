@@ -59,7 +59,7 @@ defmodule Acs.SdkPay.AppOrderController do
         Logger.error "can't get app vivo binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application vivo binding not set"})
 
-       %{app_id: vivo_app_id, cp_id: vivo_cp_id, cp_key: vivo_cp_key} ->
+      %{"app_id" => vivo_app_id, "cp_id" => vivo_cp_id, "cp_key" => vivo_cp_key} ->
         create_time = Timex.format!(Timex.local, "%Y%m%d%H%M%S", :strftime)        
         notify_url = params["notifyUrl"] || ""
 
@@ -126,7 +126,7 @@ defmodule Acs.SdkPay.AppOrderController do
         Logger.error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application meizu binding not set"})        
 
-      %{app_id: meizu_app_id, app_key: _meizu_app_key, app_secret: meizu_app_secret} ->
+      %{"app_id" => meizu_app_id, "app_key" => _meizu_app_key, "app_secret" => meizu_app_secret} ->
         create_time = Utils.unix_timestamp
         subject = "购买" <> app_order.goods_name
         

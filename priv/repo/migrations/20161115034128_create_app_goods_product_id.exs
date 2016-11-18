@@ -9,7 +9,9 @@ defmodule Acs.Repo.Migrations.CreateAppGoodsProductId do
 
       timestamps()
     end
+
     create index(:app_goods_product_ids, [:app_goods_id])
+    create index(:app_goods_product_ids, [:app_goods_id, :sdk], unique: true)
 
   end
 end

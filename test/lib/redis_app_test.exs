@@ -7,8 +7,9 @@ defmodule Acs.RedisAppTest do
   alias   Acs.App
   alias   Acs.AppSdkBinding
   alias   Acs.AppGoods
+  alias   Acs.AppGoodsProductId
   alias   Utils.JSON
-  alias   Acs.RedisUser
+  alias   Acs.RedisApp
 
   setup_all do 
     Redis.flushdb
@@ -44,12 +45,24 @@ defmodule Acs.RedisAppTest do
             AppGoods.changeset(x, %{name: info.name, description: info.title, price: info.price}) |> Repo.update!
         end  
 
+        if not is_nil(info.product_ids) do 
+          info.product_ids |> Enum.each(fn({sdk, product_id}) -> 
+            sdk = "#{sdk}"
+            case Repo.get_by(AppGoodsProductId, app_goods_id: id, sdk: sdk) do 
+              nil ->
+                AppGoodsProductId.changeset(%AppGoodsProductId{}, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.insert!
+              x ->
+                AppGoodsProductId.changeset(x, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.update!
+            end               
+          end)
+        end
       end)
-
-  
 
     end)
 
+    app = RedisApp.find("53A993ABE3A1CB110E1DC59AE557F5C9")
+
+    assert client.bindings.anzhi.app_key== app.sdk_bindings.anzhi["app_key"]
   end
 
 end

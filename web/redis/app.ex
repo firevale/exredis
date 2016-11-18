@@ -49,8 +49,8 @@ defmodule Acs.RedisApp do
     case Repo.one(query) do 
       nil -> nil 
       %App{} = app ->
-        sdk_bindings = app.sdk_bindings |> Enum.map(fn(%AppSdkBinding{} = app_sdk_binding) ->
-          {app_sdk_binding.sdk |> String.to_atom, app_sdk_binding.binding} 
+        sdk_bindings = app.sdk_bindings |> Enum.map(fn(%AppSdkBinding{sdk: sdk, binding: binding}) ->
+          {sdk |> String.to_atom, binding} 
         end) |> Enum.into(%{})
 
         cache = %__MODULE__{

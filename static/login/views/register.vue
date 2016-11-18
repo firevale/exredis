@@ -53,7 +53,7 @@
           <div class="headerIcon">
             <icon name="check-circle-o" fill-color="#aaa"></icon>
           </div>
-          <div class="clearTimes" @click="clearConfirmWord" style="right: 35%;">
+          <div class="clearTimes" @click="clearConfirmWord" style="right: 34%;">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>

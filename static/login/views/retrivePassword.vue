@@ -40,7 +40,7 @@
             <icon v-show="!hasSentCode" name="user-o" fill-color="#aaa"></icon>
             <icon v-show="hasSentCode" name="pencil-square-o" fill-color="#aaa"></icon>
           </div>
-          <div class="clearTimes" @click="clearUserNameOrCode" style="right: 35%;">
+          <div class="clearTimes" @click="clearUserNameOrCode" style="right: 34%;">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>

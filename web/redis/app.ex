@@ -50,7 +50,7 @@ defmodule Acs.RedisApp do
       nil -> nil 
       %App{} = app ->
         sdk_bindings = app.sdk_bindings |> Enum.map(fn(%AppSdkBinding{} = app_sdk_binding) ->
-          {app_sdk_binding.sdk |> String.to_atom, app_sdk_binding.bindings} 
+          {app_sdk_binding.sdk |> String.to_atom, app_sdk_binding.binding} 
         end) |> Enum.into(%{})
 
         cache = %__MODULE__{

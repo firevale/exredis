@@ -4,7 +4,6 @@ defmodule Acs.Plugs do
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
-  alias   Acs.App
 
   def no_cache(%Plug.Conn{} = conn, _options) do 
     conn |> delete_resp_header("cache-control")
@@ -205,7 +204,7 @@ defmodule Acs.Plugs do
   def fetch_app(%Plug.Conn{params: %{"app_id" => app_id}} = conn, _options) do 
     case RedisApp.find(app_id) do 
       nil -> conn
-      %App{} = app ->
+      %RedisApp{} = app ->
         conn |> put_private(:acs_app, app)
     end
   end

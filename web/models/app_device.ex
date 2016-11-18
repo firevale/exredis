@@ -21,7 +21,7 @@ defmodule Acs.AppDevice do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk])
+    |> cast(params, [:sdk, :active_minutes, :pay_amount, :last_pay_at, :app_id, :device_id])
     |> validate_required([:sdk])
     |> validate_inclusion(:sdk, @sdks)
   end

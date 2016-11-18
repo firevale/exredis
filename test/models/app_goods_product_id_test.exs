@@ -3,7 +3,7 @@ defmodule Acs.AppGoodsProductIdTest do
 
   alias Acs.AppGoodsProductId
 
-  @valid_attrs %{product_id: "some content", sdk: "alipay"}
+  @valid_attrs %{product_id: "some content", sdk: "alipay", app_goods_id: "13134123"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

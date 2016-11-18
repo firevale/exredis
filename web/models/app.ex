@@ -21,7 +21,7 @@ defmodule Acs.App do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:secret, :name, :currency, :payment_callback])
-    |> validate_required([:secret, :name, :currency, :payment_callback])
+    |> cast(params, [:id, :secret, :name, :currency, :payment_callback])
+    |> validate_required([:secret, :name, :currency])
   end
 end

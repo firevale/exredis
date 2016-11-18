@@ -10,7 +10,7 @@ defmodule Acs.AppUser do
     field :last_pay_at, :naive_datetime
 
     belongs_to :app, Acs.App, type: :string
-    belongs_to :user, Acs.User, type: :string
+    belongs_to :user, Acs.User, type: :integer
 
     timestamps()
   end
@@ -20,7 +20,7 @@ defmodule Acs.AppUser do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:app_user_id, :app_zone_id, :active_minutes, :pay_amount, :last_pay_at])
+    |> cast(params, [:app_user_id, :app_zone_id, :active_minutes, :pay_amount, :last_pay_at, :app_id, :user_id])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_minutes, greater_than_or_equal_to: 0, message: "active_minutes should be greater than or equal to 0")
   end

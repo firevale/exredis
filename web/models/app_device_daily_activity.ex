@@ -15,7 +15,7 @@ defmodule Acs.AppDeviceDailyActivity do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:date, :active_minutes, :pay_amount])
-    |> validate_required([:date, :active_minutes, :pay_amount])
+    |> cast(params, [:date, :active_minutes, :pay_amount, :app_device_id])
+    |> validate_required([:date, :active_minutes, :pay_amount, :app_device_id])
   end
 end

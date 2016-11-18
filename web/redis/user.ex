@@ -23,7 +23,6 @@ defmodule Acs.RedisUser do
             age: 1,              # 年龄
             avatar_url: nil,
             last_login_at: nil,
-            failed_attempts: 0,
             bindings: %{}       
 
 
@@ -52,11 +51,11 @@ defmodule Acs.RedisUser do
   end
 
 
-  @user_base_key       "fvac.user."
-  @email_index_key     "fvac.indexes.user_email."
-  @binding_index_key   "fvac.indexes.sdk_binding."
-  @mobile_index_key    "fvac.indexes.user_mobile."
-  @device_index_key    "fvac.indexes.user_device."
+  @user_base_key       "acs.user."
+  @email_index_key     "acs.indexes.user_email."
+  @binding_index_key   "acs.indexes.sdk_binding."
+  @mobile_index_key    "acs.indexes.user_mobile."
+  @device_index_key    "acs.indexes.user_device."
 
 
   def create!(key, password) when is_bitstring(key) and is_bitstring(password) do
@@ -139,6 +138,7 @@ defmodule Acs.RedisUser do
     case find(device_id) do 
       %{email: nil, mobile: nil, nickname: "anonymous"} = anonymous_user -> 
         anonymous_user 
+
       _ -> 
         save!(%__MODULE__{
           nickname: "anonymous",
@@ -204,7 +204,8 @@ defmodule Acs.RedisUser do
   end
 
   def save_cache(%__MODULE__{} = user) do 
-    Redis.setex(@user_base_key <> "#{user.id}", 604_800, to_json(user))
+    "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
+    :ok
   end
 
   def find(nil), do: nil
@@ -326,7 +327,6 @@ defmodule Acs.RedisUser do
               gender: user.gender,      # 性别 ()
               age: user.age,              # 年龄
               avatar_url: user.avatar_url,
-              failed_attempts: 0,
               bindings: sdk_bindings
           }
     save_cache(cache)
@@ -338,15 +338,9 @@ defmodule Acs.RedisUser do
       :undefined -> {:error, :notfound}
       user ->
         if Utils.check_password(password, user.encrypted_password) do
-          # update last_login_at
-          user = %__MODULE__{user | failed_attempts: 0}
-          save_cache(user)
           {:ok, user}
         else
-          # update failed_attemps
-          user = %__MODULE__{user | failed_attempts: user.failed_attempts + 1}
-          save_cache(user)
-          {:error, user.failed_attempts}
+          {:error, :password_dismatch}
         end
     end
   end

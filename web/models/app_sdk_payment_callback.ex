@@ -18,8 +18,8 @@ defmodule Acs.AppSdkPaymentCallback do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:platform, :sdk, :payment_callback])
-    |> validate_required([:platform, :sdk, :payment_callback])
+    |> cast(params, [:platform, :sdk, :payment_callback, :app_id])
+    |> validate_required([:platform, :sdk, :payment_callback, :app_id])
     |> validate_inclusion(:sdk, @sdks)
   end
 end

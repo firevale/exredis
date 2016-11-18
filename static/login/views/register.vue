@@ -37,7 +37,7 @@
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
-        <div class="row-login" v-if="validateEmail || validatePhoneNumber">
+        <div class="row-login" v-if="validateEmail || validatePhoneNumber && supportPhone">
           <validity ref="confirmPassword" field="confirmPassword" :validators="{
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
@@ -47,8 +47,8 @@
             <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
               autocomplete="off" name="confirmPassword" @focusout="handleValidate" />
           </validity>
-          <input v-if="validateEmail &&! validatePhoneNumber" type="button" :value="confirmWorld" readonly="readonly" style="flex: 0.5;"></input>
-          <input v-if="!validateEmail && validatePhoneNumber" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
+          <input v-if="validateEmail &&! validatePhoneNumber || !supportPhone" type="button" :value="confirmWorld" readonly="readonly" style="flex: 0.5;"></input>
+          <input v-if="!validateEmail && validatePhoneNumber && supportPhone" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
             :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
           <div class="headerIcon">
             <icon name="check-circle-o" fill-color="#aaa"></icon>

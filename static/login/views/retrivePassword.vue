@@ -4,6 +4,7 @@
       <validation name="validationRetrive">
         <div class="row-login">
           <p>{{ $t('account.login_page.titleRetrive') }}</p>
+          <icon name="times" scale="2" fill-color="#666"></icon>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
@@ -14,16 +15,19 @@
             <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
+          <div class="headerIcon">
+						<icon name="user-o" fill-color="#aaa"></icon>
+					</div>
           <div class="clearTimes" @click="userName=''">
-            <icon name="times"></icon>
+            <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
-        <p v-if="usernameInvalid" class="errors">{{ usernameTip }}</p>
-        <div class="row-login">
-          <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
-        </div>
+        <p v-if="usernameInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
         <div class="row-login">
           <input type="button" :value="$t('account.login_page.btnSendverificationCode')" @click.prevent="onReport" />
+        </div>
+        <div class="row-login">
+          <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
         </div>
       </validation>
     </div>

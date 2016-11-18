@@ -4,12 +4,19 @@ body {
     padding: 0;
 }
 
+input.inputDisabled
+{
+    background: #aaa !important;
+}
+
 input.invalid {
     border-color: #ff3860;
 }
 
 .errors {
     color: #ff3860;
+    padding-left: 5px;
+    margin: 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -27,7 +34,7 @@ input.invalid {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-top: .5rem;
+                margin-top: .4rem;
                 p {
                     flex: 1;
                     font-size: .5rem;
@@ -35,15 +42,63 @@ input.invalid {
                 }
                 input {
                     padding: 9px;
+                    padding-left: 25px; 
                     font-size: .4rem;
                     flex: 1;
                 }
+                input[type=button] {
+                    -webkit-appearance: none;
+                    color: white;
+                    background: #1765E3;
+                    border: none;
+                    padding: 9px;
+                    font-size: .5rem;
+                }
+                hr{
+                    width: 50%;
+                    height: 1px;
+                    background: #aaa;
+                    border: none;
+                }
+                span{
+                    white-space: nowrap;
+                    margin: auto .2rem;
+                }
+                .tileWays{
+                    width: 25%;
+                    float: left;
+                    text-align: center;
+                    figure{
+                        width: 65px;
+                        height: 65px;
+                        border: 1px solid;
+                        margin: auto;
+                    }
+                    p{
+                        color: #aaa;
+                        font-size: .25rem;
+                    }
+                }
                 a {
+                    color: #AB5739;
                     font-size: .4rem;
+                }
+                .headerIcon {
+                    left: 8px;
+                    width: .5rem;
+                    height: 100%;
+                    position: absolute;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
                 }
                 .clearTimes {
                     right: 0;
-                    width: .5rem;
+                    width: .4rem;
                     position: absolute;
                     height: 100%;
                     display: none;
@@ -63,6 +118,8 @@ input.invalid {
     }
 }
 
+
+
 @media screen and (min-width: 769px) {
     .g-con {
         width: 100vw;
@@ -78,23 +135,71 @@ input.invalid {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-top: .5rem;
+                margin-top: .4rem;
                 p {
                     flex: 1;
-                    font-size: .5rem;
+                    font-size: .4rem;
                     text-align: center;
                 }
                 input {
-                    padding: 9px;
-                    font-size: .4rem;
+                    padding: 5px;
+                    padding-left: 25px; 
+                    font-size: .25rem;
                     flex: 1;
                 }
+                input[type=button] {
+                    -webkit-appearance: none;
+                    color: white;
+                    background: #1765E3;
+                    border: none;
+                    padding: 9px;
+                    font-size: .3rem;
+                }
+                hr{
+                    width: 50%;
+                    height: 1px;
+                    background: #aaa;
+                    border: none;
+                }
+                span{
+                    white-space: nowrap;
+                    margin: auto .2rem;
+                }
+                .tileWays{
+                    width: 25%;
+                    float: left;
+                    text-align: center;
+                    figure{
+                        width: 65px;
+                        height: 65px;
+                        border: 1px solid;
+                        margin: auto;
+                    }
+                    p{
+                        color: #aaa;
+                        font-size: .25rem;
+                    }
+                }
                 a {
-                    font-size: .4rem;
+                    color: #AB5739;
+                    font-size: .25rem;
+                }
+                .headerIcon {
+                    left: 8px;
+                    width: .5rem;
+                    height: 100%;
+                    position: absolute;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
                 }
                 .clearTimes {
                     right: 0;
-                    width: .6rem;
+                    width: .4rem;
                     height: 100%;
                     position: absolute;
                     display: none;
@@ -122,32 +227,180 @@ input.invalid {
         flex-direction: column;
         justify-content: center;
         .login-box {
-            width: 40%;
+            width: 30%;
             margin: 0 auto;
             .row-login {
                 position: relative;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-top: .5rem;
+                margin-top: .2rem;
                 p {
                     flex: 1;
-                    font-size: .5rem;
+                    font-size: .35rem;
                     text-align: center;
                 }
                 input {
                     padding: 9px;
-                    font-size: .4rem;
+                    padding-left: 25px; 
+                    font-size: .25rem;
                     flex: 1;
                 }
+                input[type=button] {
+                    -webkit-appearance: none;
+                    color: white;
+                    background: #1765E3;
+                    border: none;
+                    padding: 9px;
+                    font-size: .3rem;
+                }
+                hr{
+                    width: 50%;
+                    height: 1px;
+                    background: #aaa;
+                    border: none;
+                }
+                span{
+                    white-space: nowrap;
+                    margin: auto .2rem;
+                }
+                .tileWays{
+                    width: 25%;
+                    float: left;
+                    text-align: center;
+                    figure{
+                        width: 65px;
+                        height: 65px;
+                        border: 1px solid;
+                        margin: auto;
+                    }
+                    p{
+                        color: #aaa;
+                        font-size: .25rem;
+                    }
+                }
                 a {
-                    font-size: .4rem;
+                    color: #AB5739;
+                    font-size: .25rem;
+                }
+                .headerIcon {
+                    left: 8px;
+                    width: .5rem;
+                    height: 100%;
+                    position: absolute;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
                 }
                 .clearTimes {
                     right: 0;
-                    width: .6rem;
+                    width: .3rem;
                     height: 100%;
                     position: absolute;
+                    display: none;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
+                }
+            }
+            .row-login:hover .clearTimes {
+                display: block;
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 768px) and (max-height: 768px) {
+    .g-con {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .login-box {
+            width: 60vw;
+            margin: 0 auto;
+            .row-login {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: .2rem;
+                p {
+                    flex: 1;
+                    font-size: .4rem;
+                    text-align: center;
+                }
+                input {
+                    padding: 9px;
+                    padding-left: 25px; 
+                    font-size: .3rem;
+                    flex: 1;
+                }
+                input[type=button] {
+                    -webkit-appearance: none;
+                    color: white;
+                    background: #1765E3;
+                    border: none;
+                    padding: 9px;
+                    font-size: .3rem;
+                }
+                hr{
+                    width: 50%;
+                    height: 1px;
+                    background: #aaa;
+                    border: none;
+                }
+                span{
+                    white-space: nowrap;
+                    margin: auto .2rem;
+                }
+                .tileWays{
+                    width: 25%;
+                    float: left;
+                    text-align: center;
+                    figure{
+                        width: 65px;
+                        height: 65px;
+                        border: 1px solid;
+                        margin: auto;
+                    }
+                    p{
+                        color: #aaa;
+                        font-size: .25rem;
+                    }
+                }
+                a {
+                    color: #AB5739;
+                    font-size: .3rem;
+                }
+                .headerIcon {
+                    left: 8px;
+                    width: .5rem;
+                    height: 100%;
+                    position: absolute;
+                    svg {
+                        height: 100%;
+                        path {
+                            display: block;
+                            margin: auto;
+                        }
+                    }
+                }
+                .clearTimes {
+                    right: 0;
+                    width: .4rem;
+                    position: absolute;
+                    height: 100%;
                     display: none;
                     svg {
                         height: 100%;

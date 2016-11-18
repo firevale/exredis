@@ -14,7 +14,10 @@ defmodule Acs.OrderTest do
                  trade_currency: "USD", 
                  trade_fee: 42, 
                  trade_no: "some content", 
-                 trade_status: "some content"}
+                 trade_status: "some content",
+                 app_id: "test-app",
+                 user_id: 12341234
+                }
 
   @invalid_attrs %{}
 

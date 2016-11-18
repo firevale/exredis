@@ -20,7 +20,7 @@ defmodule Acs.AppGoods do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :description, :price, :icon])
+    |> cast(params, [:id, :name, :description, :price, :icon, :app_id])
     |> validate_required([:name, :price])
   end
 end

@@ -4,7 +4,6 @@ defmodule Acs.Plugs do
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
-  alias   Acs.App
 
   def no_cache(%Plug.Conn{} = conn, _options) do 
     conn |> delete_resp_header("cache-control")

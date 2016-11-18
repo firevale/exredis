@@ -6,7 +6,7 @@ defmodule Acs.UserSdkBinding do
     field :sdk_user_id, :string
 
     belongs_to :app, Acs.App, type: :string
-    belongs_to :user, Acs.User, type: :string
+    belongs_to :user, Acs.User, type: :integer
 
     timestamps()
   end
@@ -18,8 +18,8 @@ defmodule Acs.UserSdkBinding do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk, :sdk_user_id])
-    |> validate_required([:sdk, :sdk_user_id])
+    |> cast(params, [:sdk, :sdk_user_id, :app_id, :user_id])
+    |> validate_required([:sdk, :sdk_user_id, :app_id, :user_id])
     |> validate_inclusion(:sdk, @sdks)
   end
 end

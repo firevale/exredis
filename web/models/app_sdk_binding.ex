@@ -3,7 +3,7 @@ defmodule Acs.AppSdkBinding do
 
   schema "app_sdk_bindings" do
     field :sdk, :string
-    field :bindings, :map
+    field :binding, :map
 
     belongs_to :app, Acs.App, type: :string
 
@@ -17,8 +17,8 @@ defmodule Acs.AppSdkBinding do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk, :bindings])
-    |> validate_required([:sdk, :bindings])
+    |> cast(params, [:sdk, :binding, :app_id])
+    |> validate_required([:sdk, :binding, :app_id])
     |> validate_inclusion(:sdk, @sdks)
   end
 

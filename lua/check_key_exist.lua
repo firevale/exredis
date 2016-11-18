@@ -1,13 +1,12 @@
 local key_field = KEYS[1]
 local key_value = ARGV[1]
 
-local uid_counter_key      = 'fvac.counter.uid'
-local user_base_key        = 'fvac.user.'
-local email_index_key      = 'fvac.indexes.user_email.'
-local mobile_index_key     = 'fvac.indexes.user_mobile.'
-local nickname_index_key   = 'fvac.indexes.user_nickname.'
-local device_index_key     = 'fvac.indexes.user_device.'
-local binding_index_key    = 'fvac.indexes.sdk_binding.'
+local user_base_key        = 'acs.user.'
+local email_index_key      = 'acs.indexes.user_email.'
+local mobile_index_key     = 'acs.indexes.user_mobile.'
+local nickname_index_key   = 'acs.indexes.user_nickname.'
+local device_index_key     = 'acs.indexes.user_device.'
+local binding_index_key    = 'acs.indexes.sdk_binding.'
 
 
 local user = nil

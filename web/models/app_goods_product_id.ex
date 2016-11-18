@@ -17,8 +17,8 @@ defmodule Acs.AppGoodsProductId do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk, :product_id])
-    |> validate_required([:sdk, :product_id])
+    |> cast(params, [:sdk, :product_id, :app_goods_id])
+    |> validate_required([:sdk, :product_id, :app_goods_id])
     |> validate_inclusion(:sdk, @sdks)
   end
 end

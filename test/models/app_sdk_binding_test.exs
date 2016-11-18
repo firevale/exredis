@@ -3,7 +3,7 @@ defmodule Acs.AppSdkBindingTest do
 
   alias Acs.AppSdkBinding
 
-  @valid_attrs %{bindings: %{}, sdk: "vivo"}
+  @valid_attrs %{binding: %{}, sdk: "vivo", app_id: "test-app"}
   @invalid_attrs %{sdk: "unknown"}
 
   test "changeset with valid attributes" do

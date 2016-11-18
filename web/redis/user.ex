@@ -204,7 +204,7 @@ defmodule Acs.RedisUser do
   end
 
   def save_cache(%__MODULE__{} = user) do 
-    Redis.setex(@user_base_key <> user.id, 604_800, to_json(user))
+    Redis.setex(@user_base_key <> "#{user.id}", 604_800, to_json(user))
   end
 
   def find(nil), do: nil
@@ -322,11 +322,10 @@ defmodule Acs.RedisUser do
               device_id: user.device_id,
               nickname: user.nickname,
               resident_id: user.resident_id,    # 身份证号码, 参考<<中华人民共和国网络安全法>> 
-              resident_name: user.redident_name,  # 实名
+              resident_name: user.resident_name,  # 实名
               gender: user.gender,      # 性别 ()
               age: user.age,              # 年龄
               avatar_url: user.avatar_url,
-              last_login_at: user.last_login_at,
               failed_attempts: 0,
               bindings: sdk_bindings
           }
@@ -340,13 +339,13 @@ defmodule Acs.RedisUser do
       user ->
         if Utils.check_password(password, user.encrypted_password) do
           # update last_login_at
-          user = %__MODULE__{user | last_login_at: Utils.unix_timestamp, failed_attempts: 0}
-          save!(user)
+          user = %__MODULE__{user | failed_attempts: 0}
+          save_cache(user)
           {:ok, user}
         else
           # update failed_attemps
           user = %__MODULE__{user | failed_attempts: user.failed_attempts + 1}
-          save!(user)
+          save_cache(user)
           {:error, user.failed_attempts}
         end
     end

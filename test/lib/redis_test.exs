@@ -115,6 +115,12 @@ defmodule Acs.RedisTest do
 
     assert test_user.mobile == "18101329172"
     refute test_user.bindings == %{}
+
+    Redis.del "fvac.user.#{test_user.id}"
+
+    # should recover user data from mysql db
+    test_user = RedisUser.find!("xiaobin@firevale.com")
+    assert test_user.mobile == "18101329172"
   end
 
   test "redis model can add/remove fields as needed" do 

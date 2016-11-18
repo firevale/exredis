@@ -3,7 +3,9 @@ body {
     margin: 0;
     padding: 0;
 }
-
+input{
+    -webkit-appearance: none;
+}
 input.inputDisabled
 {
     background: #aaa !important;
@@ -34,16 +36,16 @@ input.invalid {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin-top: .4rem;
+                margin-top: .25rem;
                 p {
                     flex: 1;
-                    font-size: .5rem;
+                    font-size: .4rem;
                     text-align: center;
                 }
                 input {
-                    padding: 9px;
+                    padding: 5px;
                     padding-left: 25px; 
-                    font-size: .4rem;
+                    font-size: .3rem;
                     flex: 1;
                 }
                 input[type=button] {
@@ -51,8 +53,8 @@ input.invalid {
                     color: white;
                     background: #1765E3;
                     border: none;
-                    padding: 9px;
-                    font-size: .5rem;
+                    padding: 5px;
+                    font-size: .35rem;
                 }
                 hr{
                     width: 50%;
@@ -62,15 +64,15 @@ input.invalid {
                 }
                 span{
                     white-space: nowrap;
-                    margin: auto .2rem;
+                    margin: auto 5px;
                 }
                 .tileWays{
                     width: 25%;
                     float: left;
                     text-align: center;
                     figure{
-                        width: 65px;
-                        height: 65px;
+                        width: 45px;
+                        height: 45px;
                         border: 1px solid;
                         margin: auto;
                     }
@@ -81,7 +83,7 @@ input.invalid {
                 }
                 a {
                     color: #AB5739;
-                    font-size: .4rem;
+                    font-size: .3rem;
                 }
                 .headerIcon {
                     left: 8px;
@@ -97,7 +99,7 @@ input.invalid {
                     }
                 }
                 .clearTimes {
-                    right: 0;
+                    right: 8px;
                     width: .4rem;
                     position: absolute;
                     height: 100%;
@@ -319,101 +321,3 @@ input.invalid {
 }
 
 
-@media screen and (min-width: 768px) and (max-height: 768px) {
-    .g-con {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .login-box {
-            width: 60vw;
-            margin: 0 auto;
-            .row-login {
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin-top: .2rem;
-                p {
-                    flex: 1;
-                    font-size: .4rem;
-                    text-align: center;
-                }
-                input {
-                    padding: 9px;
-                    padding-left: 25px; 
-                    font-size: .3rem;
-                    flex: 1;
-                }
-                input[type=button] {
-                    -webkit-appearance: none;
-                    color: white;
-                    background: #1765E3;
-                    border: none;
-                    padding: 9px;
-                    font-size: .3rem;
-                }
-                hr{
-                    width: 50%;
-                    height: 1px;
-                    background: #aaa;
-                    border: none;
-                }
-                span{
-                    white-space: nowrap;
-                    margin: auto .2rem;
-                }
-                .tileWays{
-                    width: 25%;
-                    float: left;
-                    text-align: center;
-                    figure{
-                        width: 65px;
-                        height: 65px;
-                        border: 1px solid;
-                        margin: auto;
-                    }
-                    p{
-                        color: #aaa;
-                        font-size: .25rem;
-                    }
-                }
-                a {
-                    color: #AB5739;
-                    font-size: .3rem;
-                }
-                .headerIcon {
-                    left: 8px;
-                    width: .5rem;
-                    height: 100%;
-                    position: absolute;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-                .clearTimes {
-                    right: 0;
-                    width: .4rem;
-                    position: absolute;
-                    height: 100%;
-                    display: none;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-            }
-            .row-login:hover .clearTimes {
-                display: block;
-            }
-        }
-    }
-}

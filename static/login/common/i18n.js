@@ -17,6 +17,15 @@ export default {
         registration: '点此注册',
         otherWays: '其他方式',
       },
+      
+      retrive_page: {
+        nextStep: '下一步',
+        sendPhoneCodeTipPre: '我们已向您的手机号',
+        sendPhoneCodeTipEnd: '发送了验证短信',
+        sendEmailCodeTipPre: '我们已向您的邮箱',
+        sendEmailCodeTipEnd: '发送了验证信息',
+      },
+
       error: {
         requireUserName: '请输入用户名',
         userNameTooLong: '用户名超长',
@@ -25,8 +34,7 @@ export default {
         userNameExist: '用户名已存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
-        codeTooShort: '验证码长度有误',
-        confirmWordDifferent: '验证码输入有误',
+        confirmWordDifferent: '6位验证码输入有误',
       },
       
     },

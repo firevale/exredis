@@ -16,13 +16,12 @@
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
-						<icon name="user-o" fill-color="#aaa"></icon>
-					</div>
-          <div class="clearTimes" @click="userName=''">
+            <icon name="user-o" fill-color="#aaa"></icon>
+          </div>
+          <div class="clearTimes" @click="clearUserName">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
-        <p v-if="usernameInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
@@ -32,30 +31,38 @@
               name="password" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
-						<icon name="lock" fill-color="#aaa"></icon>
-					</div>
-          <div class="clearTimes" @click="passWord=''">
+            <icon name="lock" fill-color="#aaa"></icon>
+          </div>
+          <div class="clearTimes" @click="clearPassword">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
-        <p v-if="passwordInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
-        <div class="row-login">
+        <div class="row-login" v-if="validateEmail || validatePhoneNumber && supportPhone">
           <validity ref="confirmPassword" field="confirmPassword" :validators="{
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
-                minlength: {rule: 6, message: $t('account.error.codeTooShort')},
-                maxlength: {rule: 6, message: $t('account.error.codeTooShort')},
-                validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')},
+                minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
+                maxlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
+                validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')}
                 }">
-            <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
+            <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
               autocomplete="off" name="confirmPassword" @focusout="handleValidate" />
-            <input v-if="validateEmail &&! validatePhoneNumber" type="text" :value="confirmWorld" readonly="readonly"></input>
-            <input v-if="!validateEmail && validatePhoneNumber" type="button"  :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
           </validity>
+          <input v-if="validateEmail &&! validatePhoneNumber || !supportPhone" type="button" :value="confirmWorld" readonly="readonly" style="flex: 0.5;"></input>
+          <input v-if="!validateEmail && validatePhoneNumber && supportPhone" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
+            :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
           <div class="headerIcon">
-						<icon name="check-circle-o" fill-color="#aaa"></icon>
-					</div>
+            <icon name="check-circle-o" fill-color="#aaa"></icon>
+          </div>
+          <div class="clearTimes" @click="clearConfirmWord" style="right: 34%;">
+            <icon name="times" fill-color="#aaa"></icon>
+          </div>
         </div>
-        <p v-if="confirmPasswordInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ confirmTip }}</p>
+        <p v-if="usernameInvalid" class="errors">
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
+        <p v-if="!usernameInvalid && passwordInvalid" class="errors">
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
+        <p v-if="!usernameInvalid && !passwordInvalid && confirmPasswordInvalid" class="errors">
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ confirmTip }}</p>
         <div class="row-login">
           <input type="button" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
         </div>
@@ -91,9 +98,10 @@
           return this.validateEmail
         }
       },
+      
       validateSendCode: function(val){
-        return this.validatePhoneNumber?this.confirmWorldInput == this.phoneCodeSent:
-          this.validateEmail?this.confirmWorldInput == this.confirmWorld: false
+        return this.validatePhoneNumber?this.confirmPassword == this.phoneCodeSent:
+          this.validateEmail?this.confirmPassword == this.confirmWorld: false
       }
     },
 
@@ -106,7 +114,6 @@
         passWord: '',
         phoneCodeSent: 'frffw3',
         confirmWorld: 'y2394j',
-        confirmWorldInput: '',
         confirmPassword: '',
       }
     },
@@ -169,7 +176,6 @@
         } 
         return /^1[34578]\d{9}$/.test(this.userName)
       },
-
 		},
 
     methods: { 
@@ -177,6 +183,21 @@
         e.target.$validity.validate(function () {
           
         })
+      },
+
+      clearUserName: function(){
+        this.userName = ''
+        this.$refs.username.$el.focus()
+      },
+
+			clearPassword: function(){
+        this.passWord = ''
+        this.$refs.password.$el.focus()
+      },
+
+      clearConfirmWord: function(){
+        this.confirmPassword = ''
+        this.$refs.confirmPassword.$el.focus()
       },
 
       timerCount: function(){
@@ -190,18 +211,51 @@
       },
 
       sendCode: function(){
-        if(!this.hasSentCode){
+        if(this.$validation.validationRegister.username.valid && this.userName.length && !this.hasSentCode){
           this.hasSentCode = true
           setTimeout(this.timerCount,1000)
+        }
+
+        return false
+
+
+        if(this.$validation.validationRegister.username.valid && this.userName.length && !this.hasSentCode){
+          let urlApi = ''
+          if(this.supportPhone && this.validatePhoneNumber){
+            urlApi='sendCodeToPhone'
+          }else if(this.validateEmail){
+            urlApi='sendCodeToEmail'
+          }
+          this.$http({
+              method: 'POST',
+              url: urlApi,
+              params: {
+                userName: this.userName
+              }
+            }).then(response => {
+						let result = response.json()
+						if (result.success) {
+							if(!this.hasSentCode){
+                this.hasSentCode = true
+                setTimeout(this.timerCount,1000)
+              }
+						} else {
+							return Promise.reject('error')
+						}
+					})
         }
       },
 
       onRegister: function () {
-        if(this.$validation.validationRegister.valid && this.confirmWorld == this.confirmWorldInput){
+        if(this.$validation.validationRegister.valid && this.userName.length && this.passWord.length && this.confirmPassword){
           this.$http({
               method: 'POST',
               url: '',
-              params: {}
+              params: {
+                userName: '',
+                passWord: '',
+                confirmWord: '',
+              }
             }).then(response => {
 						let result = response.json()
 						if (result.success) {

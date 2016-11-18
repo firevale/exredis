@@ -1,57 +1,58 @@
 <template>
-	<div class="g-con">
-		<div class="login-box">
-			<validation name="validationLogin">
-				<div class="row-login">
-					<p>{{ $t('account.login_page.title') }}</p>
+  <div class="g-con">
+    <div class="login-box">
+      <validation name="validationLogin">
+        <div class="row-login">
+          <p>{{ $t('account.login_page.title') }}</p>
           <icon name="times" scale="2" fill-color="#666"></icon>
-				</div>
-				<div class="row-login">
-					<validity ref="username" field="username" :validators="{
+        </div>
+        <div class="row-login">
+          <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-						<input type="text" :placeholder="this.supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-								v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
-					</validity>
+            <input type="text" :placeholder="this.supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+          </validity>
           <div class="headerIcon">
-						<icon name="user-o" fill-color="#aaa"></icon>
-					</div>
-					<div class="clearTimes" @click="userName=''">
-						<icon name="times" fill-color="#aaa"></icon>
-					</div>
-				</div>
-				<p v-if="usernameInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
-				<div class="row-login">
-					<validity ref="password" field="password" :validators="{
+            <icon name="user-o" fill-color="#aaa"></icon>
+          </div>
+          <div class="clearTimes" @click="clearUserName">
+            <icon name="times" fill-color="#aaa"></icon>
+          </div>
+        </div>
+        <div class="row-login">
+          <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-						<input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
-								name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
-					</validity>
+            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
+              name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
+          </validity>
           <div class="headerIcon">
-						<icon name="lock" fill-color="#aaa"></icon>
-					</div>
-					<div class="clearTimes" @click="passWord=''">
-						<icon name="times" fill-color="#aaa"></icon>
-					</div>
-				</div>
-				<p v-if="passwordInvalid" class="errors"><icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
-				
-				<div class="row-login">
-					<input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
-				</div>
+            <icon name="lock" fill-color="#aaa"></icon>
+          </div>
+          <div class="clearTimes" @click="clearPassword">
+            <icon name="times" fill-color="#aaa"></icon>
+          </div>
+        </div>
+        <p v-if="usernameInvalid" class="errors">
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
+        <p v-else v-if="passwordInvalid" class="errors">
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
         <div class="row-login">
-					<router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
-					<router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
-				</div>
+          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+        </div>
         <div class="row-login">
-					<hr>
+          <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
+          <router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
+        </div>
+        <div class="row-login">
+          <hr>
           <span>{{ $t('account.login_page.otherWays') }}</span>
           <hr>
-				</div>
+        </div>
         <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
           <div class="tileWays" v-for="item in otherWays">
             <figure>
@@ -59,10 +60,10 @@
             </figure>
             <p>{{ item.name }}</p>
           </div>
-				</div>
-			</validation>
-		</div>
-	</div>
+        </div>
+      </validation>
+    </div>
+  </div>
 </template>
 <script>
   import Icon from 'vue-awesome/components/Icon.vue'
@@ -158,9 +159,19 @@
           
         })
       },
-			
+
+      clearUserName: function(){
+        this.userName = ''
+        this.$refs.username.$el.focus()
+      },
+
+			clearPassword: function(){
+        this.passWord = ''
+        this.$refs.password.$el.focus()
+      },
+      
       onLogin: function () {
-        if(this.$validation.validationLogin.valid){
+        if(this.$validation.validationLogin.valid && this.userName.length && this.passWord.length){
           this.$http({
               method: 'POST',
               url: '',
@@ -184,5 +195,5 @@
   }
 </script>
 <style lang="scss">
-	@import '../scss/common';
+  @import '../scss/common';
 </style>

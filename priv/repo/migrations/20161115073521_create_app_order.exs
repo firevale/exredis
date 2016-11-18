@@ -8,6 +8,8 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :device_id, :string
       add :sdk, :string, size: 20
       add :cp_order_id, :string
+      add :zone_id, :string
+      add :market, :string
       add :status, :integer
       add :paid_at, :naive_datetime
       add :deliver_at, :naive_datetime
@@ -23,8 +25,8 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :transaction_id, :string
       add :transaction_status, :string, size: 20
 
-      add :app_id, references(:apps, on_delete: :nothing)
-      add :user_id, references(:users, on_delete: :nothing)
+      add :app_id, references(:apps, type: :string, on_delete: :nothing)
+      add :user_id, references(:users, type: :integer, on_delete: :nothing)
       add :app_user_id, references(:app_users, on_delete: :nothing)
       add :goods_id, references(:app_goods, type: :string, on_delete: :nothing)
 

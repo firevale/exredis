@@ -23,6 +23,8 @@ defmodule Acs.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+
+      alias  Acs.Repo
     end
   end
 
@@ -55,6 +57,8 @@ defmodule Acs.Web do
       alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
+
+      alias  Acs.PaymentHelper
     end
   end
 

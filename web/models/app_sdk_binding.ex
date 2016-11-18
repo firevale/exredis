@@ -21,4 +21,5 @@ defmodule Acs.AppSdkBinding do
     |> validate_required([:sdk, :bindings])
     |> validate_inclusion(:sdk, @sdks)
   end
+
 end

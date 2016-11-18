@@ -75,22 +75,19 @@ defmodule Acs.Plugs do
 
   def detect_platform(%Plug.Conn{} = conn, _options) do 
     case conn.params["platform"] do 
-      "android" -> conn
-      "ios" -> conn
-      "wp8" -> conn
-      _ ->
+      nil ->
         case get_req_header(conn, "user-agent") do 
           nil -> conn
           [] -> conn
           [user_agent | _] when is_bitstring(user_agent) ->
             if user_agent =~ ~r/windows phone 8/iu do 
-              %{conn | params: Map.put(conn.params, "platform", "wp8")}
+              conn |> put_private(:acs_platform, "wp8")
             else
               if user_agent =~ ~r/android/iu do 
-                %{conn | params: Map.put(conn.params, "platform", "android")}
+                conn |> put_private(:acs_platform, "android")
               else 
                 if user_agent =~ ~r/iphone/iu do 
-                  %{conn | params: Map.put(conn.params, "platform", "ios")}
+                  conn |> put_private(:acs_platform, "ios")
                 else 
                   conn
                 end
@@ -99,20 +96,27 @@ defmodule Acs.Plugs do
 
             cond do 
               user_agent =~ ~r/fvacwebview/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "webview")}
+                conn |> put_private(:acs_channel, "webview")
               user_agent =~ ~r/micromessenger/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "weixin")}
+                conn |> put_private(:acs_channel, "weixin")
               user_agent =~ ~r/QQ/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "qq")}
+                conn |> put_private(:acs_channel, "qq")
               user_agent =~ ~r/IEMobile\/11/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "ie11")}
+                conn |> put_private(:acs_channel, "ie11")
+              user_agent =~ ~r/IEMobile\/10/iu -> 
+                conn |> put_private(:acs_channel, "ie10")
+              user_agent =~ ~r/IEMobile/iu -> 
+                conn |> put_private(:acs_channel, "ie")
               user_agent =~ ~r/Chrome/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "chrome")}
+                conn |> put_private(:acs_channel, "chrome")
               user_agent =~ ~r/Safari/iu -> 
-                %{conn | params: Map.put(conn.params, "channel", "safari")}
+                conn |> put_private(:acs_channel, "safari")
               true -> conn
             end
         end
+
+      platform -> 
+        conn |> put_private(:acs_platform, platform)
     end
   end
 
@@ -123,9 +127,9 @@ defmodule Acs.Plugs do
       user_key ->
         cond do 
           Regex.match?(~r/([^@]+)@([^@]+)/, user_key) -> 
-            %{conn | params: Map.put(conn.params, "email", user_key)}
+            conn |> put_private(:acs_email, user_key)
           Regex.match?(~r/1\d{10}$/, user_key) ->
-            %{conn | params: Map.put(conn.params, "mobile", user_key)}
+            conn |> put_private(:acs_mobile, user_key)
           true ->
             conn
         end  
@@ -137,7 +141,7 @@ defmodule Acs.Plugs do
       nil -> conn
       user_id -> 
         Logger.metadata(user_id: user_id) 
-        %{conn | params: Map.put(conn.params, "user_id", user_id)}
+        conn |> put_private(:acs_user_id, user_id)
     end
   end
 
@@ -161,7 +165,7 @@ defmodule Acs.Plugs do
       nil -> conn
       device_id ->
         Logger.metadata(device_id: device_id) 
-        %{conn | params: Map.put(conn.params, "device_id", device_id)}
+        conn |> put_private(:acs_device_id, device_id)
     end
   end
 
@@ -183,7 +187,7 @@ defmodule Acs.Plugs do
       nil -> conn
       app_id ->
         Logger.metadata(app_id: app_id) 
-        %{conn | params: Map.put(conn.params, "app_id", app_id)}
+        conn |> put_private(:acs_app_id, app_id)
     end
   end
 
@@ -202,7 +206,7 @@ defmodule Acs.Plugs do
     case RedisApp.find(app_id) do 
       nil -> conn
       %App{} = app ->
-        %{conn | params: Map.put(conn.params, "app", app)}
+        conn |> put_private(:acs_app, app)
     end
   end
   def fetch_app(%Plug.Conn{} = conn, _options), do: conn
@@ -211,7 +215,7 @@ defmodule Acs.Plugs do
     case RedisUser.find(user_id |> String.to_integer) do 
       nil -> conn
       %RedisUser{} = user ->
-        %{conn | params: Map.put(conn.params, "user", user)}
+        conn |> put_private(:acs_user, user)
     end
   end
   def fetch_user(%Plug.Conn{} = conn, _options), do: conn
@@ -221,7 +225,7 @@ defmodule Acs.Plugs do
       nil -> conn
       [] -> conn
       [access_token | _] -> 
-        %{conn | params: Map.put(conn.params, "access_token", access_token)}
+        conn |> put_private(:acs_access_token, access_token)
     end
   end
 

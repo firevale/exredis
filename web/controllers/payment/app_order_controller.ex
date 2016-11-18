@@ -6,9 +6,9 @@ defmodule Acs.SdkPay.AppOrderController do
   plug :fetch_user
   plug :create_order
 
-  defp create_order(%Plug.Conn{params: %{"user" => %RedisUser{} = user,
-                                         "app" => %App{} = app, 
-                                         "cp_order_id" => cp_order_id} = params} = conn, _options) do 
+  defp create_order(%Plug.Conn{private: %{acs_user:  %RedisUser{} = user,
+                                          acs_app: %App{} = app },
+                               params: %{"cp_order_id" => cp_order_id} = params} = conn, _options) do 
     case RedisAppUser.find(app.id, user.id) do 
       nil ->
         Logger.error "can't find app user for app: #{app.id}, user_id: #{user.id}"
@@ -45,7 +45,7 @@ defmodule Acs.SdkPay.AppOrderController do
         
         {:ok, app_order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert
 
-        %{conn | params: Map.put(conn.params, "app_order", app_order)}
+        conn |> put_private(:acs_app_order, app_order)
     end    
   end
   defp create_order(%Plug.Conn{} = conn, _options) do 
@@ -53,7 +53,7 @@ defmodule Acs.SdkPay.AppOrderController do
   end
 
   #vivo订单
-  def add_vivo_order(conn, %{"app_order" => app_order, "app" => app} = params) do 
+  def add_vivo_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, params) do 
     case app.sdk_bindings |> Enum.find(&(&1.sdk == "vivo")) do
       nil ->
         Logger.error "can't get app vivo binding info for app: #{inspect app, pretty: true}"
@@ -121,7 +121,8 @@ defmodule Acs.SdkPay.AppOrderController do
   end
 
   #魅族带签名的订单
-  def add_meizu_order(conn, %{"app_order" => app_order, "app" => app, "product_id" => product_id} = params) do 
+  def add_meizu_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, 
+                      %{"product_id" => product_id} = params) do 
     case app.sdk_bindings |> Enum.find(&(&1.sdk == "meizu")) do 
       nil ->
         Logger.error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
@@ -161,7 +162,7 @@ defmodule Acs.SdkPay.AppOrderController do
   end
 
   # api interface
-  def add_order(conn, %{"app_order" => app_order}) do 
+  def add_order(%Plug.Conn{private: %{acs_app_order: app_order}} = conn, _params) do 
     conn |> json(%{success: true, order_id: app_order.id})
   end
 

@@ -14,24 +14,15 @@ local user = nil
 local user_id = nil
 
 if key_field == 'email' then 
-  user_id = redis.call('get', email_index_key..string.lower(key_value))
+  return redis.call('exists', email_index_key..string.lower(key_value))
 elseif key_field == 'mobile' then 
-  user_id = redis.call('get', mobile_index_key..key_value)
+  return redis.call('exists', mobile_index_key..key_value)
 elseif key_field == 'device' then 
-  user_id = redis.call('get', device_index_key..key_value)
+  return redis.call('exists', device_index_key..key_value)
 elseif key_field == 'sdk' then 
-  user_id = redis.call('get', binding_index_key..key_value)
-elseif key_field == 'id' then 
-  user_id = key_field
+  return redis.call('exists', binding_index_key..key_value)
 end
 
-if user_id then 
-  local json = redis.call('get', user_base_key..user_id)
+return false
 
-  if json then 
-  	return json
-  end   
-end
-
-return 'undefined'
 

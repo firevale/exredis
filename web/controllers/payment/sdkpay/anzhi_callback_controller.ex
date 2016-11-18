@@ -4,14 +4,13 @@ defmodule Acs.SdkPay.AnzhiCallbackController do
   plug :detect_app_id
   plug :fetch_app
 
-  def purchase_callback(conn, %{"data" => notify_data, "app" => %App{} = app} = params) do 
-
+  def purchase_callback(%Plug.Conn{private: %{acs_app: app}} = conn, %{"data" => notify_data} = params) do 
     case app.sdk_bindings |> Enum.find(&(&1.sdk == "anzhi")) do 
-      _ ->
+      nil ->
         Logger.error "can't get app anzhi binding info for app: #{inspect app, pretty: true}"
         conn |> text("anzhi settings not found ")
 
-      %AppSdkBinding{bindings: %{app_key: _app_key, app_secret: app_secret}} ->
+      %AppSdkBinding{bindings: %{app_key: _app_key, app_secret: app_secret}, sdk: "anzhi"} ->
         case DesEcb3.decrypt(app_secret, notify_data |> Base.decode64!) do
           nil -> 
             Logger.error "anzhi DesEcb3 fail"
@@ -30,40 +29,22 @@ defmodule Acs.SdkPay.AnzhiCallbackController do
              } = JSON.decode!(notify_data)
 
             if (code |> to_string) == "1" do 
-              # case Repo.get(AppOrder, order_id) do 
-              #   order = %AppOrder{} ->
-              #     {:ok, order} = AppOrder.changeset(order, %{
-              #       status: AppOrder.Status.paid,
-              #       paid_at: 
-              #     })
-              #     order = %{order | status: :paid, 
-              #                       paid_at: Utils.unix_timestamp, 
-              #                       trade_status: "TRADE_FINISHED",
-              #                       trade_no: "anzhi." <> sdk_order_id,
-              #                       total_fee: amount |> to_string  }
+              case Repo.get(AppOrder, order_id) do 
+                order = %AppOrder{} ->
+                  {:ok, order} = AppOrder.changeset(order, %{
+                    status: AppOrder.Status.paid,
+                    paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                    transaction_id: "anzhi." <> sdk_order_id, 
+                    fee: amount
+                  }) |> Repo.update
 
-              #     :ok = Order.save(order)
+                  PaymentHelper.notify_cp(order)
+                  conn |> text("success")   
 
-              #     case PaymentHelper.notify_cp(order) do 
-              #       :ok -> 
-              #         Logger.info "notify cp success, order id: #{order.id}"
-              #         conn |> text("success")
-
-              #       {:cp_failed, cp_result} ->
-              #         Logger.error "notify cp failed: #{inspect cp_result}"
-              #         OrderNotifier.add_order(order)
-              #         conn |> text("success")
-
-              #       {:error, error} -> 
-              #         Logger.error "notify cp error: #{inspect error}"
-              #         OrderNotifier.add_order(order)
-              #         conn |> text("success")
-              #     end
-
-              #   _ ->
-              #     Logger.error "anzhi order #{order_id} not found"
-              #     conn |> text("fail")
-              # end
+                _ ->
+                  Logger.error "order #{order_id} not found"
+                  conn |> text("fail")
+              end 
             else
               Logger.error "anzhi order #{order_id} code fail"
               conn |> text("fail")

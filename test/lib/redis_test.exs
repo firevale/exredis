@@ -87,7 +87,7 @@ defmodule Acs.RedisTest do
     assert RedisUser.exists?("18101329172")
     refute RedisUser.exists?("18101329000")
 
-    assert_raise Acs.RedisUser.OpException, fn() ->
+    assert_raise Ecto.ConstraintError, fn() ->
       RedisUser.save!(%{find_result | mobile: "18101329172"})
     end
 

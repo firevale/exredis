@@ -7,9 +7,9 @@ defmodule Acs.SdkPay.AppOrderController do
   plug :create_order
 
   defp create_order(%Plug.Conn{private: %{acs_user:  %RedisUser{} = user,
-                                          acs_app: %App{} = app },
+                                          acs_app: %RedisApp{} = app },
                                params: %{"cp_order_id" => cp_order_id} = params} = conn, _options) do 
-    case RedisAppUser.find(app.id, user.id) do 
+    case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
       nil ->
         Logger.error "can't find app user for app: #{app.id}, user_id: #{user.id}"
         conn |> send_resp(500, "server internal error") |> halt 
@@ -33,12 +33,12 @@ defmodule Acs.SdkPay.AppOrderController do
         order_info = case params["goods_id"] do # Q传 wp8版本无此参数
                       nil -> order_info
                       goods_id ->
-                        case app.goods |> Enum.find(&(&1.id == goods_id)) do 
+                        case Repo.get(AppGoods, goods_id) do 
                           nil -> order_info
                           %AppGoods{} = goods_info ->
                             %{order_info | goods_id: goods_id,
-                                            goods_name: goods_info.name,
-                                            price: goods_info.price
+                                           goods_name: goods_info.name,
+                                           price: goods_info.price
                             }
                         end
                     end                        
@@ -54,14 +54,12 @@ defmodule Acs.SdkPay.AppOrderController do
 
   #vivo订单
   def add_vivo_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, params) do 
-    case app.sdk_bindings |> Enum.find(&(&1.sdk == "vivo")) do
+    case app.sdk_bindings.vivo do
       nil ->
         Logger.error "can't get app vivo binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application vivo binding not set"})
 
-      %AppSdkBinding{bindings: vivo_binding} ->
-        %{app_id: vivo_app_id, cp_id: vivo_cp_id, cp_key: vivo_cp_key} = vivo_binding
-
+       %{app_id: vivo_app_id, cp_id: vivo_cp_id, cp_key: vivo_cp_key} ->
         create_time = Timex.format!(Timex.local, "%Y%m%d%H%M%S", :strftime)        
         notify_url = params["notifyUrl"] || ""
 
@@ -123,13 +121,12 @@ defmodule Acs.SdkPay.AppOrderController do
   #魅族带签名的订单
   def add_meizu_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, 
                       %{"product_id" => product_id} = params) do 
-    case app.sdk_bindings |> Enum.find(&(&1.sdk == "meizu")) do 
+    case app.sdk_bindings.meizu do
       nil ->
         Logger.error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application meizu binding not set"})        
 
-      %AppSdkBinding{bindings: meizu_binding} ->
-        %{app_id: meizu_app_id, app_key: _meizu_app_key, app_secret: meizu_app_secret} = meizu_binding
+      %{app_id: meizu_app_id, app_key: _meizu_app_key, app_secret: meizu_app_secret} ->
         create_time = Utils.unix_timestamp
         subject = "购买" <> app_order.goods_name
         

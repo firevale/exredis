@@ -13,7 +13,9 @@ input{
 input::-ms-clear {
     display: none;
 }
-
+a {
+    text-decoration: none;
+}
 input.inputDisabled
 {
     background: #aaa !important;

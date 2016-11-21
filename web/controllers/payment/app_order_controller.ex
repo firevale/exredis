@@ -6,9 +6,10 @@ defmodule Acs.SdkPay.AppOrderController do
   plug :fetch_user
   plug :create_order
 
-  defp create_order(%Plug.Conn{private: %{acs_user:  %RedisUser{} = user,
+  defp create_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                           acs_app: %RedisApp{} = app },
-                               params: %{"cp_order_id" => cp_order_id} = params} = conn, _options) do 
+                               params: %{"cp_order_id" => cp_order_id} = params
+                     } = conn, _options) do 
     case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
       nil ->
         Logger.error "can't find app user for app: #{app.id}, user_id: #{user.id}"

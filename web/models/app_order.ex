@@ -4,9 +4,10 @@ defmodule Acs.AppOrder do
   require NaiveDateTime
 
   defmodule Status do 
-    def created, do: 0
-    def paid, do: 1
-    def delivered, do: 2
+    def delivered, do: 0
+    def created, do: 1
+    def paid, do: 2
+    def cheat, do: 403 
   end
 
   @primary_key false

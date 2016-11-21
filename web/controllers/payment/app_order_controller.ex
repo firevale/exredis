@@ -7,7 +7,9 @@ defmodule Acs.SdkPay.AppOrderController do
   plug :create_order
 
   defp create_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
-                                          acs_app: %RedisApp{} = app },
+                                          acs_app: %RedisApp{} = app,
+                                          acs_platform: platform,
+                                          acs_device_id: device_id},
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do 
     case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
@@ -20,8 +22,9 @@ defmodule Acs.SdkPay.AppOrderController do
           id: Utils.generate_token(16),
           app_id: app.id, 
           user_id: user.id, 
+          platform: platform,
           app_user_id: appUser.id,
-          device_id: params["device_id"],
+          device_id: device_id,
           sdk: params["sdk"] || "firevale",
           cp_order_id: cp_order_id, 
           status: AppOrder.Status.created,
@@ -158,6 +161,8 @@ defmodule Acs.SdkPay.AppOrderController do
         conn |> send_resp(500, "server internal error") 
     end     
   end
+
+  
 
   # api interface
   def add_order(%Plug.Conn{private: %{acs_app_order: app_order}} = conn, _params) do 

@@ -85,12 +85,12 @@ defmodule Acs.Router do
     end 
 
     scope path: "/sdkpay", alias: SdkPay do
-      get  "/add_channel_order", OrderController, :add_order
-      get  "/add_meizu_order",   OrderController, :add_meizu_order
-      get  "/add_vivo_order",    OrderController, :add_vivo_order
+      get  "/add_channel_order", AppOrderController, :add_order
+      get  "/add_meizu_order",   AppOrderController, :add_meizu_order
+      get  "/add_vivo_order",    AppOrderController, :add_vivo_order
 
-      get  "/:sdk/:client_id",   OrderController, :purchase_callback
-      post "/:sdk/:client_id",   OrderController, :purchase_callback 
+      get  "/:sdk/:client_id",   PurchaseCallbackController, :dispatch_callback
+      post "/:sdk/:client_id",   PurchaseCallbackController, :dispatch_callback 
     end
 
     scope path: "/alipay" do

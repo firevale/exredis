@@ -14,7 +14,7 @@ defmodule Acs.SdkPay.SogouCallbackController do
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
                 paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                transaction_id: "sogou." <> order_id, 
+                transaction_id: "sogou." <> trans_no, 
                 fee: round(String.to_float(amount) * 100)
               }) |> Repo.update
 

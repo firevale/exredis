@@ -57,6 +57,7 @@ defmodule Acs.Web do
       alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
+      alias  Acs.AppGoodsProductId
 
       alias  Acs.PaymentHelper
     end

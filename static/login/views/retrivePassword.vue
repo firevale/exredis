@@ -4,16 +4,16 @@
       <validation name="validationRetrive">
         <div class="row-login">
           <p>{{ $t('account.login_page.titleRetrive') }}</p>
-          <icon name="times" scale="2" fill-color="#666"></icon>
+          <icon name="times" scale="2" fill-color="#666" style="position: absolute; right: -0.5rem;"></icon>
         </div>
-        <p v-if="hasSentCode && receiverType == 'phone'">
+        <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 1rem;">
           {{ $t('account.retrive_page.sendPhoneCodeTipPre') }}
-          <span class="errors">{{ receiverName }}</span>
+          <span class="errors" style="margin: 0;">{{ receiverName }}</span>
           {{ $t('account.retrive_page.sendPhoneCodeTipEnd') }}
         </p>
-        <p v-if="hasSentCode && receiverType == 'email'">
+        <p v-if="hasSentCode && receiverType == 'email'" style="margin: 0 1rem;">
           {{ $t('account.retrive_page.sendEmailCodeTipPre') }}
-          <span class="errors">{{ receiverName }}</span>
+          <span class="errors" style="margin: 0;">{{ receiverName }}</span>
           {{ $t('account.retrive_page.sendEmailCodeTipEnd') }}
         </p>
         <div class="row-login">

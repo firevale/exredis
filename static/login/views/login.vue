@@ -4,7 +4,7 @@
       <validation name="validationLogin">
         <div class="row-login">
           <p>{{ $t('account.login_page.title') }}</p>
-          <icon name="times" scale="2" fill-color="#666"></icon>
+          <icon name="times" scale="2" fill-color="#666" style="position: absolute; right: -0.5rem;"></icon>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{

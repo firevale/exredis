@@ -51,6 +51,7 @@ defmodule Acs.Web do
       alias  Acs.RedisAppOrder
       alias  Acs.RedisUser
       alias  Acs.RedisAppUser
+      alias  Acs.RedisAccessToken
 
       alias  Acs.App
       alias  Acs.AppSdkBinding

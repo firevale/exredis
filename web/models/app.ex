@@ -6,6 +6,7 @@ defmodule Acs.App do
     field :id, :string, primary_key: true
     field :secret, :string
     field :name, :string
+    field :token_ttl, :integer, default: 604800 
     field :currency, :string, default: "CNY"
     field :payment_callback, :string
 

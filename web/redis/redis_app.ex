@@ -1,8 +1,6 @@
 defmodule Acs.RedisApp do
   require Redis
-  # require Utils
-  # require Logger
-
+  
   alias   Acs.Repo
   import  Ecto.Query
 
@@ -13,6 +11,7 @@ defmodule Acs.RedisApp do
   defstruct id: 0,
             secret: nil,
             name: nil,
+            token_ttl: 604800,
             currency: "CNY",
             payment_callback: "",
             sdk_bindings: %{}
@@ -58,6 +57,7 @@ defmodule Acs.RedisApp do
           secret: app.secret,
           name: app.name,
           currency: app.currency,
+          token_ttl: app.token_ttl,
           payment_callback: app.payment_callback,
           sdk_bindings: sdk_bindings
         }

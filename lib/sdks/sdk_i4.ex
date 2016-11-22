@@ -6,13 +6,9 @@ defmodule SDKI4 do
 
   @baseUrl "https://pay.i4.cn/member_third.action"
 
-  def validate_session(sessionId) do 
+  def validate_session(session_id) do 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
-                                           "token" => sessionId
-                                          })
-
-     
+      response = Httpc.post_msg(@baseUrl, %{"token" => session_id})
 
       if Httpc.success?(response) do 
        
@@ -37,9 +33,6 @@ defmodule SDKI4 do
 
 
   def validate_payment(rsa_key, params) do 
-    # base_string = ~w(account amount app_id billno order_id role status zone)
-    #               |> Enum.map_join("&", &("#{&1}=#{params[&1]}"))
-
     plain_text = Utils.rsa_pubseg_decrypt2(rsa_key, params["sign"] |> String.replace("\n", ""))
 
     case URI.decode_query(plain_text) do 

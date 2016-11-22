@@ -22,7 +22,6 @@ defmodule Acs.UserController do
     conn |> put_layout(false) 
          |> render("login.html", params: params, redirect_url: decoded_redirect_url, login_manifests: login_manifests)
   end
-
   
   
 

@@ -26,6 +26,28 @@ defmodule Acs.Router do
 
     get "/", PageController, :index
   end
+  
+  scope "/admin", Acs do
+    pipe_through :browser # Use the default browser stack
+
+    get  "/index", AdminController, :index # show login page
+    get  "/login", AdminController, :index # show login page
+    get  "/logout", AdminController, :logout
+    get  "/reset_password", AdminController, :reset_password # show reset password page
+    get  "/reset_password.html", AdminController, :reset_password # show reset password page
+    get  "/reset_password_success", AdminController, :reset_password_success
+
+    # ajax handlers
+    post "/logout", AdminController, :logout
+    post "/create_session", AdminController, :create_session
+    post "/session_password", AdminController, :session_password
+    post "/check_email_exists", AdminController, :check_email_exists
+    post "/check_email_not_exists", AdminController, :check_email_not_exists
+    post "/register", AdminController, :register # show reset password page
+    post "/send_forgot_password_mail", AdminController, :send_forgot_password_mail
+    get  "/show_reset_password", AdminController, :show_reset_password
+    post "/reset_password", AdminController, :reset_password
+  end
 
   scope "/user", Acs do
     pipe_through :browser # Use the default browser stack

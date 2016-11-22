@@ -12,11 +12,11 @@ defmodule SDKOppo do
   @oppo_key_file "priv/certs/oppo_public_key.pem"
 
   # use oauth 1.0 client "OAuther" to verify oppo session
-  def validate_session(appKey, appSecret, accessToken, tokenSecret) do 	 
-    creds = OAuther.credentials(consumer_key: appKey, 
-                                consumer_secret: appSecret, 
-                                token: accessToken, 
-                                token_secret: tokenSecret)
+  def validate_session(app_key, app_secret, access_token, token_secret) do 	 
+    creds = OAuther.credentials(consumer_key: app_key, 
+                                consumer_secret: app_secret, 
+                                token: access_token, 
+                                token_secret: token_secret)
 
     params = OAuther.sign("post", @baseUrl, [], creds)
 
@@ -48,33 +48,33 @@ defmodule SDKOppo do
   end
 
   # oppo sdk 2.0
-  def validate_session2(appKey, appSecret, accessToken, oppoUserId) do 	 
-    base_string =  URI.encode_query([oauthConsumerKey: appKey, 
-                    oauthToken: accessToken, 
+  def validate_session2(app_key, app_secret, access_token, user_id) do 	 
+    base_string =  URI.encode_query([oauthConsumerKey: app_key, 
+                    oauthToken: access_token, 
                     oauthSignatureMethod: "HMAC-SHA1",
                     oauthTimestamp: Utils.unix_timestamp |> to_string,
                     oauthNonce: Utils.nonce |> to_string,
                     oauthVersion: "1.0"
                     ]) <> "&"
 
-    sign = :crypto.hmac(:sha, appSecret <> "&", base_string) |> Base.encode64 |> URI.encode_www_form
+    sign = :crypto.hmac(:sha, app_secret <> "&", base_string) |> Base.encode64 |> URI.encode_www_form
 
     headers = [param: base_string, oauthSignature: sign]
 
-    url = @baseUrl2 <> "?" <> URI.encode_query([fileId: oppoUserId, token: accessToken])
+    url = @baseUrl2 <> "?" <> URI.encode_query([fileId: user_id, token: access_token])
 
     response = Httpc.get(url, headers: headers)
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body) do 
         {:ok, %{"resultCode" => "200", 
-                "ssoid" => ^oppoUserId,
-                "userName" => userName,
+                "ssoid" => ^user_id,
+                "userName" => user_name,
                 "email" => email}} -> 
           %{
-            id: oppoUserId, 
-            picture_url: "", 
-            nickname: userName, 
+            id: user_id, 
+            picture_url: nil, 
+            nickname: user_name, 
             email: email
           }
         _ ->

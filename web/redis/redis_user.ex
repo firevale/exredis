@@ -101,7 +101,7 @@ defmodule Acs.RedisUser do
   end
 
   def bind_sdk_user(%{sdk: sdk, 
-                      fvac_app_id: app_id, 
+                      app_id: app_id, 
                       sdk_user_id: sdk_user_id, 
                       email: email,
                       mobile: mobile,

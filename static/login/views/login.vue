@@ -10,9 +10,9 @@
           <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
+                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="this.supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            <input type="text" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
@@ -27,7 +27,7 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
+            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
               name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
           </validity>
           <div class="headerIcon">
@@ -71,72 +71,73 @@
   import 'vue-awesome/icons/info-circle'
   import 'vue-awesome/icons/user-o'
   import 'vue-awesome/icons/lock'
+
   export default {
-    created(){
-     let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
-		 if(res == "true"){
-			 this.supportPhone = true; 
-		 }else{
-			 this.supportPhone = false; 
-		 }
-		},
+    created() {},
 
     validators: {
-      validateUserName: function(val){
-        if(this.supportPhone){
+      validateUserName: function(val) {
+        if (this.isMobileRegisterSupported) {
           return this.validateEmail || this.validatePhoneNumber
-        }else{
+        } else {
           return this.validateEmail
         }
       }
     },
 
-    data: function(){
+    data: function() {
       return {
-        supportPhone: false,
+        isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         userName: '',
-        passWord: '',
-        otherWays:[
-          {img: '', name: '快速游戏'},
-          {img: '', name: '微博'},
-          {img: '', name: 'QQ'},
-          {img: '', name: '微信'},
-        ]
+        password: '',
+        otherWays: [{
+          img: '',
+          name: '快速游戏'
+        }, {
+          img: '',
+          name: '微博'
+        }, {
+          img: '',
+          name: 'QQ'
+        }, {
+          img: '',
+          name: '微信'
+        }, ]
       }
     },
 
     route: {
-      
+
     },
 
     mounted: function() {
-      
+
     },
 
     computed: {
       usernameInvalid: function() {
-        return this.$validation.validationLogin 
-               && this.$validation.validationLogin.username
-               && this.$validation.validationLogin.username.invalid
+        return this.$validation.validationLogin &&
+          this.$validation.validationLogin.username &&
+          this.$validation.validationLogin.username.invalid
       },
 
       usernameTip: function() {
-        let res=''
-        if(this.$refs.username.result.invalid){
+        let res = ''
+        if (this.$refs.username.result.invalid) {
           res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
       },
 
       passwordInvalid: function() {
-        return this.$validation.validationLogin 
-               && this.$validation.validationLogin.password
-               && this.$validation.validationLogin.password.invalid
+        return this.$validation.validationLogin &&
+          this.$validation.validationLogin.password &&
+          this.$validation.validationLogin.password.invalid
       },
 
       passwordTip: function() {
-        let res=''
-        if(this.$refs.password.result.invalid){
+        let res = ''
+        if (this.$refs.password.result.invalid) {
           res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
         }
         return res
@@ -148,42 +149,42 @@
       },
 
       validatePhoneNumber: function() {
-        return /^1[34578]\d{9}$/.test(this.userName); 
+        return /^1[34578]\d{9}$/.test(this.userName);
       },
 
     },
 
-    methods: { 
-      handleValidate: function (e) {
-        e.target.$validity.validate(function () {
-          
+    methods: {
+      handleValidate: function(e) {
+        e.target.$validity.validate(function() {
+
         })
       },
 
-      clearUserName: function(){
+      clearUserName: function() {
         this.userName = ''
         this.$refs.username.$el.focus()
       },
 
-			clearPassword: function(){
-        this.passWord = ''
+      clearPassword: function() {
+        this.password = ''
         this.$refs.password.$el.focus()
       },
-      
-      onLogin: function () {
-        if(this.$validation.validationLogin.valid && this.userName.length && this.passWord.length){
+
+      onLogin: function() {
+        if (this.$validation.validationLogin.valid && this.userName.length && this.password.length) {
           this.$http({
-              method: 'POST',
-              url: '',
-              params: {}
-            }).then(response => {
-						let result = response.json()
-						if (result.success) {
-							
-						} else {
-							return Promise.reject('account.error.invalidPassword')
-						}
-					})
+            method: 'POST',
+            url: '',
+            params: {}
+          }).then(response => {
+            let result = response.json()
+            if (result.success) {
+
+            } else {
+              return Promise.reject('account.error.invalidPassword')
+            }
+          })
         }
       },
     },

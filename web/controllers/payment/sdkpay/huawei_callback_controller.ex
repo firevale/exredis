@@ -1,4 +1,4 @@
-defmodule Acs.SdkPay.HuaWeiCallbackController do
+defmodule Acs.SdkPay.HuaweiCallbackController do
   use     Acs.Web, :controller
   require SDKHuawei
 

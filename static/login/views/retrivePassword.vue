@@ -20,9 +20,9 @@
           <validity v-show="!hasSentCode" ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
+                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <validity v-show="hasSentCode" ref="confirmCode" field="confirmCode" :validators="{
@@ -65,36 +65,30 @@
   import 'vue-awesome/icons/times'
   import 'vue-awesome/icons/pencil-square-o'
   export default {
-    created(){
-      let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
-      if(res == "true"){
-			  this.supportPhone = true; 
-      }else{
-        this.supportPhone = false; 
-      }
+    created() {
     },
 
     validators: {
-      validateUserName: function(val){
-        if(this.supportPhone){
+      validateUserName: function(val) {
+        if (this.isMobileRegisterSupported) {
           return this.validateEmail || this.validatePhoneNumber
-        }else{
+        } else {
           return this.validateEmail
         }
       },
 
-      validateSendCode: function(val){
-        return this.validatePhoneNumber?this.confirmWorldInput == this.phoneCodeSent:
-          this.validateEmail?this.confirmWorldInput == this.emailCodeSent: false
+      validateSendCode: function(val) {
+        return this.validatePhoneNumber ? this.confirmWorldInput == this.phoneCodeSent :
+          this.validateEmail ? this.confirmWorldInput == this.emailCodeSent : false
       },
 
     },
 
-    data: function(){
+    data: function() {
       return {
         hasSentCode: false,
         timerNum: 60,
-        supportPhone: false,
+        isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         userName: '',
         phoneCodeSent: 'iuy876',
         emailCodeSent: 'o2u8y5',
@@ -105,33 +99,33 @@
     },
 
     route: {
-      
+
     },
 
     computed: {
       usernameInvalid: function() {
-        return this.$validation.validationRetrive 
-               && this.$validation.validationRetrive.username
-               && this.$validation.validationRetrive.username.invalid
+        return this.$validation.validationRetrive &&
+          this.$validation.validationRetrive.username &&
+          this.$validation.validationRetrive.username.invalid
       },
 
       confirmCodeInvalid: function() {
-        return this.$validation.validationRetrive 
-               && this.$validation.validationRetrive.confirmCode
-               && this.$validation.validationRetrive.confirmCode.invalid
+        return this.$validation.validationRetrive &&
+          this.$validation.validationRetrive.confirmCode &&
+          this.$validation.validationRetrive.confirmCode.invalid
       },
 
       usernameTip: function() {
-        let res=''
-        if(this.$refs.username.result.invalid){
+        let res = ''
+        if (this.$refs.username.result.invalid) {
           res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
       },
 
       confirmCodeTip: function() {
-        let res=''
-        if(this.$refs.confirmCode.result.invalid){
+        let res = ''
+        if (this.$refs.confirmCode.result.invalid) {
           res = this.$refs.confirmCode.result.errors && this.$refs.confirmCode.result.errors[0].message
         }
         return res
@@ -143,86 +137,86 @@
       },
 
       validatePhoneNumber: function() {
-        return /^1[34578]\d{9}$/.test(this.userName); 
+        return /^1[34578]\d{9}$/.test(this.userName);
       },
 
     },
 
-    methods: { 
-      handleValidate: function (e) {
-        e.target.$validity.validate(function () {
-          
+    methods: {
+      handleValidate: function(e) {
+        e.target.$validity.validate(function() {
+
         })
       },
-      timerCount: function(){
-        if(this.hasSentCode && this.timerNum > 0){
+      timerCount: function() {
+        if (this.hasSentCode && this.timerNum > 0) {
           this.timerNum--
-          setTimeout(this.timerCount,1000)
-        }else{
+            setTimeout(this.timerCount, 1000)
+        } else {
           this.hasSentCode = false
           this.timerNum = 60
         }
       },
-      clearUserNameOrCode: function(){
-        if(this.hasSentCode){
-           this.confirmWorldInput = ''
-           this.$refs.confirmCode.$el.focus()
-        }else{
+      clearUserNameOrCode: function() {
+        if (this.hasSentCode) {
+          this.confirmWorldInput = ''
+          this.$refs.confirmCode.$el.focus()
+        } else {
           this.userName = ''
           this.$refs.username.$el.focus()
-        } 
+        }
       },
 
-      onReport: function(e){
-        if(this.$validation.validationRetrive.username.valid && this.userName.length && !this.hasSentCode){
+      onReport: function(e) {
+        if (this.$validation.validationRetrive.username.valid && this.userName.length && !this.hasSentCode) {
           this.hasSentCode = true
           this.receiverName = this.userName
-          this.validatePhoneNumber?this.receiverType = 'phone': this.receiverType = 'email'
-          setTimeout(this.timerCount,1000)
+          this.validatePhoneNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
+          setTimeout(this.timerCount, 1000)
         }
         return false
 
-        if(this.$validation.validationRetrive.valid && this.userName.length){
+        if (this.$validation.validationRetrive.valid && this.userName.length) {
           let urlApi = ''
-          if(this.supportPhone && this.validatePhoneNumber){
-            urlApi='sendCodeToPhone'
-          }else if(this.validateEmail){
-            urlApi='sendCodeToEmail'
+          if (this.isMobileRegisterSupported && this.validatePhoneNumber) {
+            urlApi = 'sendCodeToPhone'
+          } else if (this.validateEmail) {
+            urlApi = 'sendCodeToEmail'
           }
           this.$http({
-              method: 'POST',
-              url: urlApi,
-              params: {
-                userName: this.userName
-              }
-            }).then(response => {
-						let result = response.json()
-						if (result.success) {
-							this.hasSentCode = true
-              setTimeout(this.timerCount,1000)
+            method: 'POST',
+            url: urlApi,
+            params: {
+              userName: this.userName
+            }
+          }).then(response => {
+            let result = response.json()
+            if (result.success) {
+              this.hasSentCode = true
+              setTimeout(this.timerCount, 1000)
               this.receiverName = this.userName
-              this.validatePhoneNumber?this.receiverType = 'phone': this.receiverType = 'email'
-						} else {
-							return Promise.reject('error')
-						}
-					})
+              this.validatePhoneNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
+            } else {
+              return Promise.reject('error')
+            }
+          })
         }
       },
 
-      onNext: function(e){
-        if(this.$validation.validationRetrive.valid && this.userName.length && this.confirmWorldInput){
+      onNext: function(e) {
+        if (this.$validation.validationRetrive.valid && this.userName.length && this.confirmWorldInput) {
           this.$http({
-              method: 'POST',
-              url: '',
-              params: {}
-            }).then(response => {
-						let result = response.json()
-						if (result.success) {
-							
-						} else {
-							return Promise.reject('error')
-						}
-					})
+            method: 'POST',
+            url: '',
+            params: {}
+          }).then(response => {
+            let result = response.json()
+            if (result.success) {
+
+            } else {
+              return Promise.reject('error')
+            }
+          })
         }
       },
     },

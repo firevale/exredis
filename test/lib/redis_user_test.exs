@@ -75,7 +75,7 @@ defmodule Acs.RedisUserTest do
       mobile = 18101329170 + n
       RedisUser.bind_sdk_user(%{
         sdk: "qq",
-        fvac_app_id: "test-app",
+        app_id: "test-app",
         sdk_user_id: "#{262356+n}",
         email: nil,
         mobile: "#{mobile}",

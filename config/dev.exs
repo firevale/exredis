@@ -32,6 +32,8 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
+config :acs, sm_provider: :meisheng
+
 # Configure your database
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,

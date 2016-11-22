@@ -10,9 +10,9 @@
           <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
+                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
@@ -27,7 +27,7 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="passWord" autocomplete="off"
+            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
               name="password" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
@@ -37,7 +37,7 @@
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
-        <div class="row-login" v-if="validateEmail || validatePhoneNumber && supportPhone">
+        <div class="row-login" v-if="validateEmail || validatePhoneNumber && isMobileRegisterSupported">
           <validity ref="confirmPassword" field="confirmPassword" :validators="{
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
@@ -47,8 +47,8 @@
             <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
               autocomplete="off" name="confirmPassword" @focusout="handleValidate" />
           </validity>
-          <input v-if="validateEmail &&! validatePhoneNumber || !supportPhone" type="button" :value="confirmWorld" readonly="readonly" style="flex: 0.5;"></input>
-          <input v-if="!validateEmail && validatePhoneNumber && supportPhone" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
+          <input v-if="validateEmail &&! validatePhoneNumber || !isMobileRegisterSupported" type="button" :value="confirmWorld" readonly="readonly" style="flex: 0.5;"></input>
+          <input v-if="!validateEmail && validatePhoneNumber && isMobileRegisterSupported" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
             :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
           <div class="headerIcon">
             <icon name="check-circle-o" fill-color="#aaa"></icon>
@@ -84,15 +84,15 @@
 	  created(){
      let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
      if(res == "true"){
-			 this.supportPhone = true; 
+			 this.isMobileRegisterSupported = true; 
 		 }else{
-			 this.supportPhone = false; 
+			 this.isMobileRegisterSupported = false; 
 		 }
     },
 
     validators: {
       validateUserName: function(val){
-        if(this.supportPhone){
+        if(this.isMobileRegisterSupported){
           return this.validateEmail || this.validatePhoneNumber
         }else{
           return this.validateEmail
@@ -109,9 +109,9 @@
       return {
         hasSentCode: false,
         timerNum: 60,
-        supportPhone: false,
+        isMobileRegisterSupported: false,
         userName: '',
-        passWord: '',
+        password: '',
         phoneCodeSent: 'frffw3',
         confirmWorld: 'y2394j',
         confirmPassword: '',
@@ -191,7 +191,7 @@
       },
 
 			clearPassword: function(){
-        this.passWord = ''
+        this.password = ''
         this.$refs.password.$el.focus()
       },
 
@@ -221,7 +221,7 @@
 
         if(this.$validation.validationRegister.username.valid && this.userName.length && !this.hasSentCode){
           let urlApi = ''
-          if(this.supportPhone && this.validatePhoneNumber){
+          if(this.isMobileRegisterSupported && this.validatePhoneNumber){
             urlApi='sendCodeToPhone'
           }else if(this.validateEmail){
             urlApi='sendCodeToEmail'
@@ -247,13 +247,13 @@
       },
 
       onRegister: function () {
-        if(this.$validation.validationRegister.valid && this.userName.length && this.passWord.length && this.confirmPassword){
+        if(this.$validation.validationRegister.valid && this.userName.length && this.password.length && this.confirmPassword){
           this.$http({
               method: 'POST',
               url: '',
               params: {
                 userName: '',
-                passWord: '',
+                password: '',
                 confirmWord: '',
               }
             }).then(response => {

@@ -20,9 +20,9 @@
           <validity v-show="!hasSentCode" ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.supportPhone? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
+                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
                 }">
-            <input type="text" :placeholder="supportPhone? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <validity v-show="hasSentCode" ref="confirmCode" field="confirmCode" :validators="{
@@ -68,15 +68,15 @@
     created(){
       let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
       if(res == "true"){
-			  this.supportPhone = true; 
+			  this.isMobileRegisterSupported = true; 
       }else{
-        this.supportPhone = false; 
+        this.isMobileRegisterSupported = false; 
       }
     },
 
     validators: {
       validateUserName: function(val){
-        if(this.supportPhone){
+        if(this.isMobileRegisterSupported){
           return this.validateEmail || this.validatePhoneNumber
         }else{
           return this.validateEmail
@@ -94,7 +94,7 @@
       return {
         hasSentCode: false,
         timerNum: 60,
-        supportPhone: false,
+        isMobileRegisterSupported: false,
         userName: '',
         phoneCodeSent: 'iuy876',
         emailCodeSent: 'o2u8y5',
@@ -184,7 +184,7 @@
 
         if(this.$validation.validationRetrive.valid && this.userName.length){
           let urlApi = ''
-          if(this.supportPhone && this.validatePhoneNumber){
+          if(this.isMobileRegisterSupported && this.validatePhoneNumber){
             urlApi='sendCodeToPhone'
           }else if(this.validateEmail){
             urlApi='sendCodeToEmail'

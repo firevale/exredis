@@ -1,30 +1,6 @@
 defmodule Acs.UserController do
   use Acs.Web, :controller
-  @static_page_root            Application.get_env(:acs, :static_page_root, "/") 
   
-  plug :detect_platform
-  plug :detect_user_key
-  plug :no_cache
-
-  def index(conn, params) do
-    # get redirect url from params
-    decoded_redirect_url = case params["redirect_url"] do 
-                              nil -> "/"
-                              "" -> "/"
-                              v -> v |> Base.url_decode64!
-                            end
-    login_manifests =  %{
-      "phoneSupport" => true,
-      "login_commons.js" => Path.join(@static_page_root, "/js/login_commons.js"),
-      "login.js" => Path.join(@static_page_root, "/js/login.js"),
-      "login.css" => Path.join(@static_page_root, "/css/login.css")            
-    }                         
-    conn |> put_layout(false) 
-         |> render("login.html", params: params, redirect_url: decoded_redirect_url, login_manifests: login_manifests)
-  end
-  
-  
-
   # def logout(conn, params) do 
   #   conn |> text "logout"
   # end

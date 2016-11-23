@@ -13,7 +13,18 @@ defmodule Acs.RedisApp do
             name: nil,
             token_ttl: 604800,
             currency: "CNY",
-            payment_callback: "",
+            payment_callback: nil,
+            cs_phone_number: nil,
+            forum_name: nil,
+            forum_url: nil,
+            baidu_tieba_name: nil,
+            baidu_tieba_url: nil,
+            weibo_url: nil,
+            weibo_name: nil,
+            website_name: nil,
+            website_url: nil,
+            public_weixin_name: nil,
+            public_weixin_url: nil,
             sdk_bindings: %{}
 
   use     Utils.Jsonable 

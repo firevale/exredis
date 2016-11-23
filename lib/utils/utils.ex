@@ -209,7 +209,6 @@ defmodule Utils do
 		end
 	end
 
-
   def nonce do 
     << x :: size(32) >> =  :crypto.strong_rand_bytes(4)
     x    

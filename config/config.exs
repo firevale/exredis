@@ -10,6 +10,7 @@ config :acs,
   ecto_repos: [Acs.Repo]
   
 config :acs, static_page_root: "/"
+
 # Configures the endpoint
 config :acs, Acs.Endpoint,
   url: [host: "localhost"],
@@ -32,39 +33,17 @@ config :acs, :sdks, ~w(alipay appstore ggplay anzhi baidu cc ccplay coolpad down
                        iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc vivo wdj wechat  
                        xiaomi xy youku yyh)
 
-# Config UCloud UFile Management
-config :acs, :ufile,
-  public_key: "ucloudxiaobin@firevale.com1368084534286667901",
-	private_key: "ccabbef071d26ee247aa1c642eef7b7692accce9",
-  bucket: "fvvr",
-  cdn_scheme: "https",
-  cdn_domain: "fvvrres.firevale.com"
-
 config :acs, :pbkdf2,
   mac_func: :sha,
   salt: "gGshJCGHNVVltq9n+Bji6w==",
   iterations: 4096,
   derived_length: 20
 
-config :acs, Acs.MandrillMailer,
-  adapter: Bamboo.MandrillAdapter,
-  api_key: "lT0K0Wk-ZELrCy2CC5BPDg"
+config :acs, Acs.LocalMailer,
+  adapter: Bamboo.LocalAdapter
 
-config :acs, Acs.SmtpMailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "smtp.exmail.qq.com",
-  port: 465,
-  username: "admin@firevale.com",
-  password: "P76M4tDn4kuo",
-  tls: :always, # can be `:always` or `:never`
-  ssl: true, # can be `true`
-  retries: 1
-
-config :acs, :sendcloud, 
-  user: "fvac_cn",
-  key: "iXkBkVUk3OEfF5MY",
-  from: "noreply@sdmail.firevale.com",
-  fromname: "Firevale Account Center"
+config :acs, :email_service,
+  provider: Acs.LocalMailer
 
 config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 

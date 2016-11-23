@@ -10,10 +10,14 @@ msgid ""
 msgstr ""
 "Language: en\n"
 
-#: lib/email/emails.ex:7
+#: lib/email/sendcloud_mailler.ex:24
 msgid "Firevale Account Center"
 msgstr ""
 
 #: web/templates/page/index.html.eex:2
 msgid "Welcome to %{name}"
+msgstr ""
+
+#: lib/email/emails.ex:14
+msgid "Firevale account password reset token"
 msgstr ""

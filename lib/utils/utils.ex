@@ -219,6 +219,14 @@ defmodule Utils do
     :crypto.strong_rand_bytes(length) |> to_hex
   end
 
+  def nickname_from_email(nil) do 
+    nil
+  end
+  def nickname_from_email(email) do 
+    [[_, name, _]] = Regex.scan(~r/(\w+)@(.*)/, email)
+    name
+  end
+
   def to_hex(data) when is_binary(data) do 
     bin_to_hex(data, <<>>)
   end

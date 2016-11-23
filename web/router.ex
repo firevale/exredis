@@ -1,6 +1,9 @@
 defmodule Acs.Router do
   use Acs.Web, :router
-  use Plugsnag
+
+  if not Mix.env in [:dev, :test] do 
+    use Plugsnag
+  end
   
   import  Acs.Plugs
 

@@ -1,6 +1,5 @@
 <html>
   <head>
-    <link rel="stylesheet" href="<%= static_url(Acs.Endpoint, "/css/email.css") %>">
   </head>
   <body>
     <%= render @view_module, @view_template, assigns %>

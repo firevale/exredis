@@ -17,7 +17,7 @@ export default {
         otherWays: '其他方式',
       },
       
-      retrive_page: {
+      retrieve_password_page: {
         nextStep: '下一步',
         sendPhoneCodeTipPre: '我们已向您的手机号',
         sendPhoneCodeTipEnd: '发送了验证短信',

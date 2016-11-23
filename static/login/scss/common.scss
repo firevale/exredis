@@ -34,7 +34,13 @@ input.invalid {
   border-color: $red;
 }
 
+
+input:focus, 
+input.invalid:focus {
+  border-color: $primary;
+}
+
 .errors {
-  color: $red;
+  color: $danger;
 }
 

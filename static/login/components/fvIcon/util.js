@@ -17,9 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
     if (vm.$root === vm) {
       return 'root instance'
     }
-    const name = vm._isVue
-      ? vm.$options.name || vm.$options._componentTag
-      : vm.name
+    const name = vm._isVue ?
+      vm.$options.name || vm.$options._componentTag :
+      vm.name
     return name ? `component <${name}>` : `anonymous component`
   }
 
@@ -31,4 +31,6 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export { warn }
+export {
+  warn
+}

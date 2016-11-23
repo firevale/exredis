@@ -7,14 +7,14 @@
           <icon name="times" scale="1" fill-color="#666" style="position: absolute; right: -0.6rem;"></icon>
         </div>
         <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 .2rem;">
-          {{ $t('account.retrive_page.sendPhoneCodeTipPre') }}
+          {{ $t('account.retrieve_password_page.sendPhoneCodeTipPre') }}
           <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
-          {{ $t('account.retrive_page.sendPhoneCodeTipEnd') }}
+          {{ $t('account.retrieve_password_page.sendPhoneCodeTipEnd') }}
         </p>
         <p v-if="hasSentCode && receiverType == 'email'" style="margin: 0 .2rem;">
-          {{ $t('account.retrive_page.sendEmailCodeTipPre') }}
+          {{ $t('account.retrieve_password_page.sendEmailCodeTipPre') }}
           <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
-          {{ $t('account.retrive_page.sendEmailCodeTipEnd') }}
+          {{ $t('account.retrieve_password_page.sendEmailCodeTipEnd') }}
         </p>
         <div class="row-login">
           <validity v-show="!hasSentCode" ref="username" field="username" :validators="{
@@ -51,7 +51,7 @@
         <div class="row-login">
         </div>
         <div class="row-login" v-show="hasSentCode">
-          <input type="button" :value="$t('account.retrive_page.nextStep')" @click.prevent="onNext" />
+          <input type="button" :value="$t('account.retrieve_password_page.nextStep')" @click.prevent="onNext" />
         </div>
         <div class="row-login">
           <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>

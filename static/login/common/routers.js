@@ -12,8 +12,8 @@ export default function (VueRouter) {
       name: 'register',
       component: require('../views/register.vue')
     }, {
-      path: '/retrive',
-      name: 'retrive',
+      path: '/retrievePassword',
+      name: 'retrievePassword',
       component: require('../views/retrivePassword.vue')
     }]
   });

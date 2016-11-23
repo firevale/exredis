@@ -46,7 +46,7 @@
         </div>
         <div class="row-login">
           <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
-          <router-link :to="{ name: 'retrive' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
+          <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
         </div>
         <div class="row-login">
           <hr>

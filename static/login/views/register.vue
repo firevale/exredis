@@ -53,7 +53,7 @@
           <div class="headerIcon">
             <icon name="check-circle-o" fill-color="#aaa"></icon>
           </div>
-          <div class="clearTimes" @click="clearConfirmWord" style="right: 34%;">
+          <div class="clearTimes" @click="clearConfirmWord" style="right: 36%;">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
@@ -82,12 +82,7 @@
   import 'vue-awesome/icons/check-circle-o'
   export default {
 	  created(){
-     let res = document.querySelector('meta[name="phone-register-support"]').getAttribute('content')
-     if(res == "true"){
-			 this.isMobileRegisterSupported = true; 
-		 }else{
-			 this.isMobileRegisterSupported = false; 
-		 }
+     
     },
 
     validators: {
@@ -109,7 +104,7 @@
       return {
         hasSentCode: false,
         timerNum: 60,
-        isMobileRegisterSupported: false,
+        isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         userName: '',
         password: '',
         phoneCodeSent: 'frffw3',

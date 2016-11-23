@@ -6,7 +6,7 @@ defmodule Acs.Emails do
   require Utils
   alias   Acs.RedisUser
 
-  def reset_password(locale, %RedisUser{} = to, token, locale) do 
+  def reset_password(locale, %RedisUser{} = to, token) do 
     nickname = to.nickname || Utils.nickname_from_email(to.email)
 
     base_email(locale)

@@ -47,11 +47,6 @@ config :acs, :email_service,
 
 config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 
-config :acs, :alipay,
-  certs_root: "priv/certs",
-  notify_url: "https://fvac.firevale.com/api/alipay/notify",
-  callback_url: "https://fvac.firevale.com/api/alipay/callback?platform=%{platform}",
-  merchant_url: "https://fvac.firevale.com/mobile/native_bridge/%{platform}"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

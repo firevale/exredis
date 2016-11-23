@@ -1,19 +1,36 @@
 defmodule Acs.SendCloudMailer do 
-
+  require Utils
   alias   Utils.Httpc
   alias   Utils.JSON
 
+  alias   Acs.RedisUser
   import  Acs.Gettext
   require Logger
 
 
-  @api_key       Application.get_env(:acs, :sendcloud, key: "")[:key]
-  @api_user      Application.get_env(:acs, :sendcloud, user: "")[:user]
-  @from          Application.get_env(:acs, :sendcloud, from: "noreply@sdmail.firevale.com")[:from]
+  @api_key       Application.get_env(:acs, Acs.SendCloudMailer, key: "")[:key] 
+  @api_user      Application.get_env(:acs, Acs.SendCloudMailer, user: "")[:user]
+  @from          Application.get_env(:acs, Acs.SendCloudMailer, from: "noreply@sdmail.firevale.com")[:from]
 
   @base_url      "http://sendcloud.sohu.com"
 
-  def send_template(to, template, vars, label) do 
+  def deliver_reset_password(locale, %RedisUser{} = user, token) do 
+    template =  case locale do 
+                  "en" -> "fvac_resetPasswordCode_enUs"
+                  "zh-Hans" -> "fvac_resetPasswordCode_zhCn" 
+                  "zh-Hant" -> "fvac_resetPasswordCode_zhCn" #TODO: add traditional chinese support  
+                  _ -> "fvac_resetPasswordCode_enUs"
+                end
+
+    vars = JSON.encode! %{to: [user.email], 
+                          sub: %{"%name%" => [user.nickname || Utils.nickname_from_email(user.email)],
+                                "%token%" => [token]}
+                        }
+
+    send_template(user.email, template, vars, 20644)
+  end
+
+  defp send_template(to, template, vars, label) do 
     url = Path.join(@base_url, "/webapi/mail.send_template.json")
 
     response = Httpc.post_msg(url,  %{

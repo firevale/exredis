@@ -21,6 +21,10 @@ defmodule Acs.Router do
     plug :detect_device_id
   end
 
+  if Mix.env == :dev do 
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
+  end
+
   scope "/", Acs do
     pipe_through :browser # Use the default browser stack
 

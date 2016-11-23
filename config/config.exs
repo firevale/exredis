@@ -46,27 +46,25 @@ config :acs, :pbkdf2,
   iterations: 4096,
   derived_length: 20
 
-config :acs, :mailer_templates, "priv/mail_templates"
+config :acs, Acs.MandrillMailer,
+  adapter: Bamboo.MandrillAdapter,
+  api_key: "lT0K0Wk-ZELrCy2CC5BPDg"
 
-config :acs, :mandrill, 
-  key: "lT0K0Wk-ZELrCy2CC5BPDg",
-  from: "noreply@fvac.firevale.com",
-  fromname: "Firevale Account Center"
+config :acs, Acs.SmtpMailer,
+  adapter: Bamboo.SMTPAdapter,
+  server: "smtp.exmail.qq.com",
+  port: 465,
+  username: "admin@firevale.com",
+  password: "P76M4tDn4kuo",
+  tls: :always, # can be `:always` or `:never`
+  ssl: true, # can be `true`
+  retries: 1
 
 config :acs, :sendcloud, 
   user: "fvac_cn",
   key: "iXkBkVUk3OEfF5MY",
   from: "noreply@sdmail.firevale.com",
   fromname: "Firevale Account Center"
-
-# Configure mailer smtp 
-config :mailer, :smtp_client,
-  server: "smtp.exmail.qq.com",
-  ssl: true,
-  port: 465,
-  username: "admin@firevale.com",
-  password: "P76M4tDn4kuo",
-  transport: :smtp
 
 config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 

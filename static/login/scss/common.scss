@@ -1,394 +1,401 @@
 html,
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 input {
-    -webkit-appearance: none;
-    border: 1px solid #eee;
+  -webkit-appearance: none;
+  border: 1px solid #eee;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
 }
 
 input::-ms-clear {
-    display: none;
+  display: none;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 input.inputDisabled {
-    background: #aaa !important;
+  background: #aaa !important;
 }
 
 input.invalid {
-    border-color: #ff3860;
+  border-color: #ff3860;
 }
 
 .errors {
-    color: #ff3860;
+  color: #ff3860;
 }
 
 @media screen and (max-width: 768px) {
-    html {
-        font-size: 18px;
-    }
-    .g-con {
-        width: 100vw;
-        height: 100vh;
-        margin: auto;
+  html {
+    font-size: 18px;
+  }
+  .g-con {
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .login-box {
+      background: #ffffff;
+      border-radius: .5rem;
+      width: 90%;
+      max-width: 99vh;
+      margin: 0 auto;
+      .row-login {
+        position: relative;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .login-box {
-            background: #ffffff;
-            border-radius: .5rem;
-            width: 90%;
-            max-width: 99vh;
-            margin: 0 auto;
-            .row-login {
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: .2rem 0;
-                p {
-                    flex: 1;
-                    font-size: .8rem;
-                    text-align: center;
-                }
-                input {
-                    padding: .2rem;
-                    padding-left: 1.4rem;
-                    font-size: .6rem;
-                    flex: 1;
-                }
-                input[type=button] {
-                    color: white;
-                    background: #1765E3;
-                    border: none;
-                    padding: .3rem;
-                    font-size: .6rem;
-                }
-                hr {
-                    width: 50%;
-                    height: 1px;
-                    background: #aaa;
-                    border: none;
-                }
-                span {
-                    white-space: nowrap;
-                    margin: auto .2rem;
-                    font-size: .6rem;
-                }
-                .tileWays {
-                    width: 25%;
-                    float: left;
-                    text-align: center;
-                    figure {
-                        width: 1.5rem;
-                        height: 1.5rem;
-                        border: 1px solid;
-                        margin: auto;
-                    }
-                    p {
-                        color: #aaa;
-                        font-size: .5rem;
-                    }
-                }
-                a {
-                    color: #AB5739;
-                    font-size: .5rem;
-                }
-                .headerIcon {
-                    left: .4rem;
-                    width: .5rem;
-                    height: 100%;
-                    position: absolute;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-                .clearTimes {
-                    right: .6rem;
-                    width: .4rem;
-                    position: absolute;
-                    height: 100%;
-                    display: none;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-            }
-            .errors {
-                font-size: .5rem;
-                margin: 0;
-                padding-left: .2rem;
-                svg {
-                    line-height: 100%;
-                    vertical-align: middle;
-                    path {
-                        display: block;
-                        margin: auto;
-                    }
-                }
-            }
-            p {
-                font-size: .5rem;
-            }
-            .row-login:hover .clearTimes {
-                display: block;
-            }
+        flex-direction: row;
+        justify-content: space-between;
+        margin: .2rem 0;
+        p {
+          flex: 1;
+          font-size: .8rem;
+          text-align: center;
         }
+        input {
+          padding: .2rem;
+          padding-left: 1.4rem;
+          font-size: .6rem;
+          flex: 1;
+        }
+        input[type=button] {
+          color: white;
+          background: #1765E3;
+          border: none;
+          padding: .3rem;
+          font-size: .6rem;
+        }
+        hr {
+          width: 50%;
+          height: 1px;
+          background: #aaa;
+          border: none;
+        }
+        span {
+          white-space: nowrap;
+          margin: auto .2rem;
+          font-size: .6rem;
+        }
+        .tileWays {
+          width: 25%;
+          float: left;
+          text-align: center;
+          figure {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 1px solid;
+            margin: auto;
+          }
+          p {
+            color: #aaa;
+            font-size: .5rem;
+          }
+        }
+        a {
+          color: #AB5739;
+          font-size: .5rem;
+        }
+        .headerIcon {
+          left: .4rem;
+          width: .5rem;
+          height: 100%;
+          position: absolute;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+        .clearTimes {
+          right: .6rem;
+          width: .4rem;
+          position: absolute;
+          height: 100%;
+          display: none;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+      }
+      .errors {
+        font-size: .5rem;
+        margin: 0;
+        padding-left: .2rem;
+        svg {
+          line-height: 100%;
+          vertical-align: middle;
+          path {
+            display: block;
+            margin: auto;
+          }
+        }
+      }
+      p {
+        font-size: .5rem;
+      }
+      .row-login:hover .clearTimes {
+        display: block;
+      }
     }
+  }
 }
 
 @media screen and (min-width: 769px) {
-    html {
-        font-size: 16px;
-    }
-    .g-con {
-        width: 100vw;
-        height: 100vh;
+  html {
+    font-size: 16px;
+  }
+  .g-con {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .login-box {
+      width: 50%;
+      max-width: 260px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: .6rem;
+      .row-login {
+        position: relative;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .login-box {
-            width: 50%;
-            max-width: 260px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: .6rem;
-            .row-login {
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: .3rem 0;
-                p {
-                    flex: 1;
-                    font-size: 1rem;
-                    text-align: center;
-                }
-                input {
-                    padding: .2rem;
-                    padding-left: 1.5rem;
-                    font-size: .8rem;
-                    flex: 1;
-                }
-                input[type=button] {
-                    color: white;
-                    background: #1765E3;
-                    border: none;
-                    padding: .4rem;
-                    font-size: .8rem;
-                }
-                hr {
-                    width: 50%;
-                    height: 1px;
-                    background: #aaa;
-                    border: none;
-                }
-                span {
-                    white-space: nowrap;
-                    margin: auto .3rem;
-                    font-size: .8rem;
-                }
-                .tileWays {
-                    width: 25%;
-                    float: left;
-                    text-align: center;
-                    figure {
-                        width: 2rem;
-                        height: 2rem;
-                        border: 1px solid;
-                        margin: auto;
-                    }
-                    p {
-                        color: #aaa;
-                        font-size: .5rem;
-                    }
-                }
-                a {
-                    color: #AB5739;
-                    font-size: .6rem;
-                }
-                .headerIcon {
-                    left: 8px;
-                    width: .5rem;
-                    height: 100%;
-                    position: absolute;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-                .clearTimes {
-                    right: 0.6rem;
-                    width: .4rem;
-                    height: 100%;
-                    position: absolute;
-                    display: none;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-            }
-            .errors {
-                font-size: .8rem;
-                margin: 0;
-                padding-left: .2rem;
-                svg {
-                    line-height: 100%;
-                    vertical-align: middle;
-                    path {
-                        display: block;
-                        margin: auto;
-                    }
-                }
-            }
-            p {
-                font-size: .5rem;
-            }
-            .row-login:hover .clearTimes {
-                display: block;
-            }
+        flex-direction: row;
+        justify-content: space-between;
+        margin: .3rem 0;
+        p {
+          flex: 1;
+          font-size: 1rem;
+          text-align: center;
         }
+        input {
+          padding: .2rem;
+          padding-left: 1.5rem;
+          font-size: .8rem;
+          flex: 1;
+        }
+        input[type=button] {
+          color: white;
+          background: #1765E3;
+          border: none;
+          padding: .4rem;
+          font-size: .8rem;
+        }
+        hr {
+          width: 50%;
+          height: 1px;
+          background: #aaa;
+          border: none;
+        }
+        span {
+          white-space: nowrap;
+          margin: auto .3rem;
+          font-size: .8rem;
+        }
+        .tileWays {
+          width: 25%;
+          float: left;
+          text-align: center;
+          figure {
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid;
+            margin: auto;
+          }
+          p {
+            color: #aaa;
+            font-size: .5rem;
+          }
+        }
+        a {
+          color: #AB5739;
+          font-size: .6rem;
+        }
+        .headerIcon {
+          left: 8px;
+          width: .5rem;
+          height: 100%;
+          position: absolute;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+        .clearTimes {
+          right: 0.6rem;
+          width: .4rem;
+          height: 100%;
+          position: absolute;
+          display: none;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+      }
+      .errors {
+        font-size: .8rem;
+        margin: 0;
+        padding-left: .2rem;
+        svg {
+          line-height: 100%;
+          vertical-align: middle;
+          path {
+            display: block;
+            margin: auto;
+          }
+        }
+      }
+      p {
+        font-size: .5rem;
+      }
+      .row-login:hover .clearTimes {
+        display: block;
+      }
     }
+  }
 }
 
 @media screen and (min-width: 980px) {
-    html {
-        font-size: 16px;
-    }
-    .g-con {
-        width: 100vw;
-        height: 100vh;
+  html {
+    font-size: 16px;
+  }
+  .g-con {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .login-box {
+      width: 40%;
+      max-width: 420px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 9px;
+      .row-login {
+        position: relative;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        .login-box {
-            width: 40%;
-            max-width: 420px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 9px;
-            .row-login {
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: .5rem 0;
-                p {
-                    flex: 1;
-                    font-size: 1rem;
-                    text-align: center;
-                }
-                input {
-                    padding: .2rem;
-                    padding-left: 1.6rem;
-                    font-size: .8rem;
-                    flex: 1;
-                }
-                input[type=button] {
-                    color: white;
-                    background: #1765E3;
-                    border: none;
-                    padding: .4rem;
-                    font-size: .8rem;
-                }
-                hr {
-                    width: 50%;
-                    height: 1px;
-                    background: #aaa;
-                    border: none;
-                }
-                span {
-                    white-space: nowrap;
-                    margin: auto .5rem;
-                    font-size: .8rem;
-                }
-                .tileWays {
-                    width: 25%;
-                    float: left;
-                    text-align: center;
-                    figure {
-                        width: 2rem;
-                        height: 2rem;
-                        border: 1px solid;
-                        margin: auto;
-                    }
-                    p {
-                        color: #aaa;
-                        font-size: .5rem;
-                    }
-                }
-                a {
-                    color: #AB5739;
-                    font-size: .8rem;
-                }
-                .headerIcon {
-                    left: .5rem;
-                    width: .5rem;
-                    height: 100%;
-                    position: absolute;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-                .clearTimes {
-                    right: 1rem;
-                    width: .3rem;
-                    height: 100%;
-                    position: absolute;
-                    display: none;
-                    svg {
-                        height: 100%;
-                        path {
-                            display: block;
-                            margin: auto;
-                        }
-                    }
-                }
-            }
-            .errors {
-                font-size: .8rem;
-                margin: 0;
-                padding-left: .2rem;
-                svg {
-                    line-height: 100%;
-                    vertical-align: middle;
-                    path {
-                        display: block;
-                        margin: auto;
-                    }
-                }
-            }
-            p {
-                font-size: .5rem;
-            }
-            .row-login:hover .clearTimes {
-                display: block;
-            }
+        flex-direction: row;
+        justify-content: space-between;
+        margin: .5rem 0;
+        p {
+          flex: 1;
+          font-size: 1rem;
+          text-align: center;
         }
+        input {
+          padding: .2rem;
+          padding-left: 1.6rem;
+          font-size: .8rem;
+          flex: 1;
+        }
+        input[type=button] {
+          color: white;
+          background: #1765E3;
+          border: none;
+          padding: .4rem;
+          font-size: .8rem;
+        }
+        hr {
+          width: 50%;
+          height: 1px;
+          background: #aaa;
+          border: none;
+        }
+        span {
+          white-space: nowrap;
+          margin: auto .5rem;
+          font-size: .8rem;
+        }
+        .tileWays {
+          width: 25%;
+          float: left;
+          text-align: center;
+          figure {
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid;
+            margin: auto;
+          }
+          p {
+            color: #aaa;
+            font-size: .5rem;
+          }
+        }
+        a {
+          color: #AB5739;
+          font-size: .8rem;
+        }
+        .headerIcon {
+          left: .5rem;
+          width: .5rem;
+          height: 100%;
+          position: absolute;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+        .clearTimes {
+          right: 1rem;
+          width: .3rem;
+          height: 100%;
+          position: absolute;
+          display: none;
+          svg {
+            height: 100%;
+            path {
+              display: block;
+              margin: auto;
+            }
+          }
+        }
+      }
+      .errors {
+        font-size: .8rem;
+        margin: 0;
+        padding-left: .2rem;
+        svg {
+          line-height: 100%;
+          vertical-align: middle;
+          path {
+            display: block;
+            margin: auto;
+          }
+        }
+      }
+      p {
+        font-size: .5rem;
+      }
+      .row-login:hover .clearTimes {
+        display: block;
+      }
     }
+  }
 }

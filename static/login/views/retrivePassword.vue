@@ -6,14 +6,14 @@
           <p>{{ $t('account.login_page.titleRetrive') }}</p>
           <icon name="times" scale="2" fill-color="#666" style="position: absolute; right: -0.5rem;"></icon>
         </div>
-        <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 1rem;">
+        <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 .2rem;">
           {{ $t('account.retrive_page.sendPhoneCodeTipPre') }}
-          <span class="errors" style="margin: 0;">{{ receiverName }}</span>
+          <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
           {{ $t('account.retrive_page.sendPhoneCodeTipEnd') }}
         </p>
-        <p v-if="hasSentCode && receiverType == 'email'" style="margin: 0 1rem;">
+        <p v-if="hasSentCode && receiverType == 'email'" style="margin: 0 .2rem;">
           {{ $t('account.retrive_page.sendEmailCodeTipPre') }}
-          <span class="errors" style="margin: 0;">{{ receiverName }}</span>
+          <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
           {{ $t('account.retrive_page.sendEmailCodeTipEnd') }}
         </p>
         <div class="row-login">
@@ -40,7 +40,7 @@
             <icon v-show="!hasSentCode" name="user-o" fill-color="#aaa"></icon>
             <icon v-show="hasSentCode" name="pencil-square-o" fill-color="#aaa"></icon>
           </div>
-          <div class="clearTimes" @click="clearUserNameOrCode" style="right: 34%;">
+          <div class="clearTimes" @click="clearUserNameOrCode" style="right: 36%;">
             <icon name="times" fill-color="#aaa"></icon>
           </div>
         </div>
@@ -66,6 +66,7 @@
   import 'vue-awesome/icons/pencil-square-o'
   export default {
     created() {
+      
     },
 
     validators: {

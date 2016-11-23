@@ -2,7 +2,6 @@ html,
 body {
     margin: 0;
     padding: 0;
-    background: black;
 }
 
 input{
@@ -25,48 +24,51 @@ input.invalid {
     border-color: #ff3860;
 }
 
-.errors {
+.errors{
     color: #ff3860;
-    padding-left: 5px;
-    margin: 0 1rem;
 }
 
+
 @media screen and (max-width: 768px) {
+    html {
+        font-size: 18px;
+    }
     .g-con {
-        background: black;
         width: 100vw;
         height: 100vh;
+        margin: auto;
         display: flex;
         flex-direction: column;
         justify-content: center;
         .login-box {
             background: #ffffff;
-            border-radius: 9px;
-            width: 90vw;
+            border-radius: .5rem;
+            width: 90%;
+            max-width: 99vh;
             margin: 0 auto;
             .row-login {
                 position: relative;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin: .25rem 1rem;
+                margin: .2rem 0;
                 p {
                     flex: 1;
-                    font-size: .4rem;
+                    font-size: .8rem;
                     text-align: center;
                 }
                 input {
-                    padding: 5px;
-                    padding-left: 25px; 
-                    font-size: .3rem;
+                    padding: .2rem;
+                    padding-left: 1.4rem; 
+                    font-size: .6rem;
                     flex: 1;
                 }
                 input[type=button] {
                     color: white;
                     background: #1765E3;
                     border: none;
-                    padding: 5px;
-                    font-size: .35rem;
+                    padding: .3rem;
+                    font-size: .6rem;
                 }
                 hr{
                     width: 50%;
@@ -76,29 +78,30 @@ input.invalid {
                 }
                 span{
                     white-space: nowrap;
-                    margin: auto 5px;
+                    margin: auto .2rem;
+                    font-size: .6rem;
                 }
                 .tileWays{
                     width: 25%;
                     float: left;
                     text-align: center;
                     figure{
-                        width: 45px;
-                        height: 45px;
+                        width: 1.5rem;
+                        height: 1.5rem;
                         border: 1px solid;
                         margin: auto;
                     }
                     p{
                         color: #aaa;
-                        font-size: .25rem;
+                        font-size: .5rem;
                     }
                 }
                 a {
                     color: #AB5739;
-                    font-size: .3rem;
+                    font-size: .5rem;
                 }
                 .headerIcon {
-                    left: 8px;
+                    left: .4rem;
                     width: .5rem;
                     height: 100%;
                     position: absolute;
@@ -111,7 +114,7 @@ input.invalid {
                     }
                 }
                 .clearTimes {
-                    right: 8px;
+                    right: .6rem;
                     width: .4rem;
                     position: absolute;
                     height: 100%;
@@ -124,6 +127,14 @@ input.invalid {
                         }
                     }
                 }
+            }
+            .errors{
+                font-size: .5rem;
+                margin: 0 ;
+                padding-left: .2rem;
+            }
+            p{
+                font-size: .5rem;
             }
             .row-login:hover .clearTimes {
                 display: block;
@@ -135,6 +146,9 @@ input.invalid {
 
 
 @media screen and (min-width: 769px) {
+    html {
+        font-size: 16px;
+    }
     .g-con {
         width: 100vw;
         height: 100vh;
@@ -143,32 +157,33 @@ input.invalid {
         justify-content: center;
         .login-box {
             width: 50%;
+            max-width: 260px;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 9px;
+            border-radius: .6rem;
             .row-login {
                 position: relative;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin: .4rem 1rem;
+                margin: .3rem 0;
                 p {
                     flex: 1;
-                    font-size: .4rem;
+                    font-size: 1rem;
                     text-align: center;
                 }
                 input {
-                    padding: 5px;
-                    padding-left: 25px; 
-                    font-size: .25rem;
+                    padding: .2rem;
+                    padding-left: 1.5rem; 
+                    font-size: .6rem;
                     flex: 1;
                 }
                 input[type=button] {
                     color: white;
                     background: #1765E3;
                     border: none;
-                    padding: 9px;
-                    font-size: .3rem;
+                    padding: .4rem;
+                    font-size: .8rem;
                 }
                 hr{
                     width: 50%;
@@ -178,26 +193,27 @@ input.invalid {
                 }
                 span{
                     white-space: nowrap;
-                    margin: auto .2rem;
+                    margin: auto .3rem;
+                    font-size: .8rem;
                 }
                 .tileWays{
                     width: 25%;
                     float: left;
                     text-align: center;
                     figure{
-                        width: 65px;
-                        height: 65px;
+                        width: 2rem;
+                        height: 2rem;
                         border: 1px solid;
                         margin: auto;
                     }
                     p{
                         color: #aaa;
-                        font-size: .25rem;
+                        font-size: .5rem;
                     }
                 }
                 a {
                     color: #AB5739;
-                    font-size: .25rem;
+                    font-size: .6rem;
                 }
                 .headerIcon {
                     left: 8px;
@@ -213,7 +229,7 @@ input.invalid {
                     }
                 }
                 .clearTimes {
-                    right: 0;
+                    right: 0.6rem;
                     width: .4rem;
                     height: 100%;
                     position: absolute;
@@ -227,6 +243,14 @@ input.invalid {
                     }
                 }
             }
+            .errors{
+                font-size: .8rem;
+                margin: 0 ;
+                padding-left: .2rem;
+            }
+            p{
+                font-size: .5rem;
+            }
             .row-login:hover .clearTimes {
                 display: block;
             }
@@ -235,6 +259,9 @@ input.invalid {
 }
 
 @media screen and (min-width: 980px) {
+    html { 
+        font-size: 16px;
+    }
     .g-con {
         width: 100vw;
         height: 100vh;
@@ -243,6 +270,7 @@ input.invalid {
         justify-content: center;
         .login-box {
             width: 40%;
+            max-width: 420px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 9px;
@@ -251,15 +279,15 @@ input.invalid {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                margin: .2rem 1rem;
+                margin: .5rem 0;
                 p {
                     flex: 1;
-                    font-size: .35rem;
+                    font-size: 1rem;
                     text-align: center;
                 }
                 input {
-                    padding: 9px;
-                    padding-left: 25px; 
+                    padding: .3rem;
+                    padding-left: 1.6rem; 
                     font-size: .25rem;
                     flex: 1;
                 }
@@ -267,8 +295,8 @@ input.invalid {
                     color: white;
                     background: #1765E3;
                     border: none;
-                    padding: 9px;
-                    font-size: .3rem;
+                    padding: .4rem;
+                    font-size: .8rem;
                 }
                 hr{
                     width: 50%;
@@ -279,28 +307,29 @@ input.invalid {
                 span{
                     white-space: nowrap;
                     margin: auto .2rem;
+                    font-size: .8rem;
                 }
                 .tileWays{
                     width: 25%;
                     float: left;
                     text-align: center;
                     figure{
-                        width: 65px;
-                        height: 65px;
+                        width: 2rem;
+                        height: 2rem;
                         border: 1px solid;
                         margin: auto;
                     }
                     p{
                         color: #aaa;
-                        font-size: .25rem;
+                        font-size: .5rem;
                     }
                 }
                 a {
                     color: #AB5739;
-                    font-size: .25rem;
+                    font-size: .8rem;
                 }
                 .headerIcon {
-                    left: 8px;
+                    left: .5rem;
                     width: .5rem;
                     height: 100%;
                     position: absolute;
@@ -313,7 +342,7 @@ input.invalid {
                     }
                 }
                 .clearTimes {
-                    right: 0;
+                    right: 1rem;
                     width: .3rem;
                     height: 100%;
                     position: absolute;
@@ -327,11 +356,18 @@ input.invalid {
                     }
                 }
             }
+            .errors{
+                font-size: .8rem;
+                margin: 0 ;
+                padding-left: .2rem;
+            }
+            p{
+                font-size: .5rem;
+            }
             .row-login:hover .clearTimes {
                 display: block;
             }
         }
     }
 }
-
 

@@ -4,7 +4,7 @@
       <validation name="validationRetrive">
         <div class="row-login">
           <p>{{ $t('account.login_page.titleRetrive') }}</p>
-          <icon name="times" scale="2" fill-color="#666" style="position: absolute; right: -0.5rem;"></icon>
+          <icon name="times" scale="1" fill-color="#666" style="position: absolute; right: -0.6rem;"></icon>
         </div>
         <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 .2rem;">
           {{ $t('account.retrive_page.sendPhoneCodeTipPre') }}
@@ -229,5 +229,5 @@
   }
 </script>
 <style lang="scss">
-  @import '../scss/common';
+  @import '../scss/login';
 </style>

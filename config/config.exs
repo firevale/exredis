@@ -6,8 +6,7 @@
 use Mix.Config
 
 # General application configuration
-config :acs,
-  ecto_repos: [Acs.Repo]
+config :acs, ecto_repos: [Acs.Repo]
   
 config :acs, static_page_root: "/"
 
@@ -23,9 +22,6 @@ config :acs, Acs.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-# Config bugsnag exception reporter
-config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
 
 config :acs, :platforms, ~w(android ios wp8 windows macos)
 
@@ -51,3 +47,7 @@ config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+if Mix.env != :dev do 
+  import_config "services.secret.exs"
+end 

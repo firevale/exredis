@@ -37,7 +37,7 @@
           <input type="button" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
             style="flex: 0.5;" @click.prevent="onReport" />
           <div class="headerIcon">
-            <icon v-show="!hasSentCode" name="user-o" fill-color="#aaa"></icon>
+            <icon v-show="!hasSentCode" name="user-o"></icon>
             <icon v-show="hasSentCode" name="pencil-square-o" fill-color="#aaa"></icon>
           </div>
           <div class="clearTimes" @click="clearUserNameOrCode" style="right: 36%;">
@@ -61,9 +61,9 @@
   </div>
 </template>
 <script>
-  import Icon from 'vue-awesome/components/Icon.vue'
-  import 'vue-awesome/icons/times'
-  import 'vue-awesome/icons/pencil-square-o'
+  import Icon from '../components/fvIcon/Icon.vue'
+  import '../components/fvIcon/icons/times'
+  import '../components/fvIcon/icons/pencil-square-o'
   export default {
     created() {
       

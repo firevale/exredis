@@ -12,9 +12,8 @@ export default {
         userOnlyEmailPlaceHolder: '请输入邮箱',
         userPasswordPlaceHolder: '请输入密码',
         userPasswordConfirmPlaceHolder: '请输入验证码',
-        forgetPassword: '忘记密码?',
-        notRegistered: '还没有账号?',
-        registration: '点此注册',
+        forgetPassword: '忘记密码',
+        registration: '快速注册',
         otherWays: '其他方式',
       },
       

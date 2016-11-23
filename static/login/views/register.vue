@@ -16,7 +16,7 @@
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
-            <icon name="user-o" fill-color="#aaa"></icon>
+            <icon name="user-o"></icon>
           </div>
           <div class="clearTimes" @click="clearUserName">
             <icon name="times" fill-color="#aaa"></icon>
@@ -31,7 +31,7 @@
               name="password" @focusout="handleValidate" />
           </validity>
           <div class="headerIcon">
-            <icon name="lock" fill-color="#aaa"></icon>
+            <icon name="lock"></icon>
           </div>
           <div class="clearTimes" @click="clearPassword">
             <icon name="times" fill-color="#aaa"></icon>
@@ -51,7 +51,7 @@
           <input v-if="!validateEmail && validatePhoneNumber && isMobileRegisterSupported" type="button" :class="{'inputDisabled': hasSentCode}" style="flex: 0.5;"
             :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
           <div class="headerIcon">
-            <icon name="check-circle-o" fill-color="#aaa"></icon>
+            <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
           </div>
           <div class="clearTimes" @click="clearConfirmWord" style="right: 36%;">
             <icon name="times" fill-color="#aaa"></icon>
@@ -74,12 +74,12 @@
   </div>
 </template>
 <script>
-  import Icon from 'vue-awesome/components/Icon.vue'
-  import 'vue-awesome/icons/times'
-  import 'vue-awesome/icons/info-circle'
-  import 'vue-awesome/icons/user-o'
-  import 'vue-awesome/icons/lock'
-  import 'vue-awesome/icons/check-circle-o'
+  import Icon from '../components/fvIcon/Icon.vue'
+  import '../components/fvIcon/icons/times'
+  import '../components/fvIcon/icons/info-circle'
+  import '../components/fvIcon/icons/user-o'
+  import '../components/fvIcon/icons/lock'
+  import '../components/fvIcon/icons/check-circle-o'
   export default {
 	  created(){
      

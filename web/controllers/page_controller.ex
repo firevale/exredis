@@ -1,6 +1,5 @@
 defmodule Acs.PageController do
   use     Acs.Web, :controller
-  require Logger
 
   def index(conn, _params) do
     render conn, "index.html"
@@ -8,7 +7,7 @@ defmodule Acs.PageController do
 
   @sm_provider      Application.get_env(:acs, :sm_provider)
 
-  def login(conn, params) do 
+  def login(%Plug.Conn{private: %{acs_channel: channel}} = conn, params) do 
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"
@@ -17,6 +16,7 @@ defmodule Acs.PageController do
 
     conn |> put_layout(false) 
          |> render("login.html", redirect_url: decoded_redirect_url, 
+                                 channel: channel,
                                  isMobileRegisterSupported: not is_nil(@sm_provider))
   end
 end

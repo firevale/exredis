@@ -1,5 +1,4 @@
 @import "./color";
-
 html,
 body {
   margin: 0;
@@ -9,6 +8,7 @@ body {
 input {
   -webkit-appearance: none;
   border: 1px solid $dark;
+  border-radius: 0;
 }
 
 input:focus,
@@ -34,11 +34,7 @@ input.invalid {
   border-color: $red;
 }
 
-
-input:focus, 
+input:focus,
 input.invalid:focus {
   border-color: $primary;
 }
-
-
-

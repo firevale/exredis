@@ -22,7 +22,7 @@ export default {
       }
     }
 
-    return null
+    return 'account-center'
   },
 
   getDeviceId: function() {

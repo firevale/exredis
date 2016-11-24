@@ -13,20 +13,11 @@ Vue.use(VueResource)
 Vue.use(VueValidator)
 Vue.use(VueRouter)
 
-Vue.config.lang = 'cn'
+Vue.config.lang = window.acsConfig.locale || 'zh-chs'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
-
-let appId = nativeApi.getAppId()
-if (appId) {
-  Vue.http.headers.common['acs-app-id'] = appId
-}
-
-let deviceId = nativeApi.getDeviceId()
-if (deviceId) {
-  Vue.http.headers.common['acs-device-id'] = deviceId
-}
-
+Vue.http.headers.common['acs-app-id'] = nativeApi.getAppId()
+Vue.http.headers.common['acs-device-id'] = nativeApi.getDeviceId()
 
 Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])

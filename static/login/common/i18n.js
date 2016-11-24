@@ -1,5 +1,5 @@
 export default {
-  cn: {
+  'zh-chs': {
     account: {
       login_page: {
         title: '用户登录',

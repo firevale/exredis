@@ -67,6 +67,10 @@
   import '../components/fvIcon/icons/lock'
 
   import Vue from 'vue'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
 
   export default {
     validators: {
@@ -74,19 +78,34 @@
         if (this.isMobileRegisterSupported) {
           return utils.validateEmail(val) || utils.validatePhoneNumber(val)
         } else {
-          return utils.validateEmail(val) 
+          return utils.validateEmail(val)
         }
       },
 
       accountExists: function(val) {
-        return Vue.http.post('/user/is_account_exists', {
-          account_id: val
-        }).then(res => {
-          return res.json()
-        }).then(json => {
-          return json['exists'] ? Promise.resolve() : Promise.reject('')
-        })
+        this.setLoginAccount(val)
+
+        if (!val) {
+          return Promise.reject('')
+        } else {
+          if (typeof this.accountExistences[val] === 'boolean') {
+            return this.accountExistences[val] ? Promise.resolve() : Promise.reject('')
+          } else {
+            return Vue.http.post('/user/is_account_exists', {
+              account_id: val
+            }).then(res => {
+              return res.json()
+            }).then(json => {
+              this.addAccountExistence({account: val, exists: json.exists})
+              return json.exists ? Promise.resolve() : Promise.reject('')
+            })
+          }
+        }
       },
+    },
+
+    beforeMount: function() {
+      this.username = this.loginAccount
     },
 
     data: function() {
@@ -111,6 +130,10 @@
     },
 
     computed: {
+      ...mapGetters([
+        'accountExistences', 'loginAccount'
+      ]),
+
       usernameInvalid: function() {
         return this.$validation.login &&
           this.$validation.login.username &&
@@ -141,12 +164,16 @@
     },
 
     methods: {
+      ...mapActions([
+        'addAccountExistence', 'setLoginAccount'
+      ]),
+
       handleValidate: function(e) {
-        e.target.$validity.validate(() => {
-        })
+        e.target.$validity.validate(() => {})
       },
-        
-      handleSubmit: function() {
+
+      handleSubmit: function(e) {
+        e.preventDefault()
         if (this.$validation.login.valid && this.username.length && this.password.length) {
           this.$http({
             method: 'post',
@@ -163,7 +190,7 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
-        } 
+        }
       },
     },
 

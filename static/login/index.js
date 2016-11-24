@@ -8,10 +8,13 @@ import VueI18n from 'vue-i18n'
 import locales from './common/i18n'
 
 Vue.use(VueI18n)
-Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(VueValidator)
+Vue.use(VueRouter)
+
 Vue.config.lang = 'cn'
+
+Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 
 Object.keys(locales).forEach(function(lang) {
   Vue.locale(lang, locales[lang])

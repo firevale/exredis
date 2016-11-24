@@ -28,9 +28,10 @@ export default {
       error: {
         requireUserName: '请输入用户名',
         userNameTooLong: '用户名超长',
-        userNameWrong: '请输入正确的邮箱/手机号码',
-        userNameEmailWrong: '请输入正确的邮箱',
-        userNameExist: '用户名已存在',
+        invalidAccountName: '请输入正确的邮箱或手机号码',
+        invalidEmailAddress: '请输入正确的电子邮件地址',
+        accountInUse: '账户名已被使用',
+        accountNotExist: '账户不存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
         confirmWordDifferent: '6位验证码输入有误',

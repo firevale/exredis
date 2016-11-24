@@ -1,18 +1,20 @@
 <template>
   <div>
     <div class="login-box">
-      <validation name="validationLogin">
+      <validation name="login" @submit="handleSubmit">
         <div class="row-login">
           <p class="title">{{ $t('account.login_page.title') }}</p>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
-                required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.userNameWrong'):$t('account.error.userNameEmailWrong') },
-                }">
-            <input type="text" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+            required: {rule: true, message: $t('account.error.requireUserName')}, 
+            maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
+            validateUsername: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+            accountExists: {rule: true, message: $t('account.error.accountNotExist')},
+          }">
+            <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" 
+              :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+              />
           </validity>
           <div class="headerIcon">
             <icon name="user-o"></icon>
@@ -20,11 +22,11 @@
         </div>
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
-                required: {rule: true, message: $t('account.error.requirePassword')}, 
-                maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
-                }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
-              name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
+              required: {rule: true, message: $t('account.error.requirePassword')}, 
+              maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
+          }">
+            <input type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate"
+              :placeholder="$t('account.login_page.userPasswordPlaceHolder')" />
           </validity>
           <div class="headerIcon">
             <icon name="lock" fill-color="#fff"></icon>
@@ -37,8 +39,9 @@
           <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
         <p v-if="!usernameInvalid && !passwordInvalid"></p>
 
+        
         <div class="row-login">
-          <input class="submit" type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+          <input type="submit" :value="$t('account.login_page.btnSubmit')"/>
         </div>
         <div class="row-login">
           <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
@@ -62,29 +65,40 @@
   </div>
 </template>
 <script>
+  import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
-  
-  export default {
-    created() {},
 
+  import Vue from 'vue'
+
+  export default {
     validators: {
-      validateUserName: function(val) {
+      validateUsername: function(val) {
         if (this.isMobileRegisterSupported) {
-          return this.validateEmail || this.validatePhoneNumber
+          return utils.validateEmail(val) || utils.validatePhoneNumber(val)
         } else {
-          return this.validateEmail
+          return utils.validateEmail(val) 
         }
-      }
+      },
+
+      accountExists: function(val) {
+        return Vue.http.post('/user/is_account_exists', {
+          user_key: val
+        }).then(res => {
+          return res.json()
+        }).then(json => {
+          return json['exists'] ? Promise.resolve() : Promise.reject('')
+        })
+      },
     },
 
     data: function() {
       return {
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
-        userName: '',
+        username: '',
         password: '',
         otherWays: [{
           img: '',
@@ -102,19 +116,11 @@
       }
     },
 
-    route: {
-
-    },
-
-    mounted: function() {
-
-    },
-
     computed: {
       usernameInvalid: function() {
-        return this.$validation.validationLogin &&
-          this.$validation.validationLogin.username &&
-          this.$validation.validationLogin.username.invalid
+        return this.$validation.login &&
+          this.$validation.login.username &&
+          this.$validation.login.username.invalid
       },
 
       usernameTip: function() {
@@ -126,9 +132,9 @@
       },
 
       passwordInvalid: function() {
-        return this.$validation.validationLogin &&
-          this.$validation.validationLogin.password &&
-          this.$validation.validationLogin.password.invalid
+        return this.$validation.login &&
+          this.$validation.login.password &&
+          this.$validation.login.password.invalid
       },
 
       passwordTip: function() {
@@ -139,29 +145,20 @@
         return res
       },
 
-      validateEmail: function() {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(this.userName);
-      },
-
-      validatePhoneNumber: function() {
-        return /^1[34578]\d{9}$/.test(this.userName);
-      },
 
     },
 
     methods: {
       handleValidate: function(e) {
-        e.target.$validity.validate(function() {
-
+        e.target.$validity.validate(() => {
         })
       },
-
-      onLogin: function() {
-        if (this.$validation.validationLogin.valid && this.userName.length && this.password.length) {
+        
+      handleSubmit: function() {
+        if (this.$validation.login.valid && this.userName.length && this.password.length) {
           this.$http({
-            method: 'POST',
-            url: '',
+            method: 'post',
+            url: '/user/create_token',
             params: {}
           }).then(response => {
             let result = response.json()
@@ -171,6 +168,8 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
+        } else {
+          this.resetValidation()
         }
       },
     },

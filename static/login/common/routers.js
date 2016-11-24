@@ -17,7 +17,7 @@ export default function(VueRouter) {
       }, {
         path: 'retrievePassword',
         name: 'retrievePassword',
-        component: require('../views/retrivePassword.vue')
+        component: require('../views/retrievePassword.vue')
       }, {
         path: '*',
         redirect: 'login'

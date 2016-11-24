@@ -71,6 +71,8 @@ defmodule Acs.Router do
     post "/logout", UserController, :logout
     post "/create_session", UserController, :create_session
     post "/session_password", UserController, :session_password
+
+    post "/is_account_exists", UserController, :is_account_exists
     post "/check_email_exists", UserController, :check_email_exists
     post "/check_email_not_exists", UserController, :check_email_not_exists
     post "/register", UserController, :register # show reset password page

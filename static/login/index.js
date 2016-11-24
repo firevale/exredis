@@ -1,4 +1,3 @@
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routerMap from './common/routers'
@@ -16,7 +15,7 @@ Vue.config.lang = 'cn'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 
-Object.keys(locales).forEach(function(lang) {
+Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])
 })
 

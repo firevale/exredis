@@ -1,67 +1,61 @@
 <template>
-  <div>
-    <div class="login-box">
-      <validation name="login" @submit="handleSubmit">
-        <div class="row-login">
-          <p class="title">{{ $t('account.login_page.title') }}</p>
-        </div>
-        <div class="row-login">
-          <validity ref="username" field="username" :validators="{
+  <div class="login-box">
+    <validation name="login" @submit="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ $t('account.login_page.title') }}</p>
+      </div>
+      <div class="row-login">
+        <validity ref="username" field="username" :validators="{
             required: {rule: true, message: $t('account.error.requireUserName')}, 
             maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
             validateUsername: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
             accountExists: {rule: true, message: $t('account.error.accountNotExist')},
           }">
-            <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" 
-              :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-              />
-          </validity>
-          <div class="headerIcon">
-            <icon name="user-o"></icon>
-          </div>
+          <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+          />
+        </validity>
+        <div class="headerIcon">
+          <icon name="user-o"></icon>
         </div>
-        <div class="row-login">
-          <validity ref="password" field="password" :validators="{
+      </div>
+      <div class="row-login">
+        <validity ref="password" field="password" :validators="{
               required: {rule: true, message: $t('account.error.requirePassword')}, 
               maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
           }">
-            <input type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate"
-              :placeholder="$t('account.login_page.userPasswordPlaceHolder')" />
-          </validity>
-          <div class="headerIcon">
-            <icon name="lock" fill-color="#fff"></icon>
-          </div>
+          <input type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.login_page.userPasswordPlaceHolder')"
+          />
+        </validity>
+        <div class="headerIcon">
+          <icon name="lock" fill-color="#fff"></icon>
         </div>
-        
-        <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
-        <p v-if="!usernameInvalid && passwordInvalid" class="errors">
-          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
-        <p v-if="!usernameInvalid && !passwordInvalid"></p>
-
-        
-        <div class="row-login">
-          <input type="submit" :value="$t('account.login_page.btnSubmit')"/>
+      </div>
+      <p v-if="usernameInvalid" class="errors">
+        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
+      <p v-if="!usernameInvalid && passwordInvalid" class="errors">
+        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
+      <p v-if="!usernameInvalid && !passwordInvalid"></p>
+      <div class="row-login">
+        <input type="submit" :value="$t('account.login_page.btnSubmit')" />
+      </div>
+      <div class="row-login">
+        <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
+        <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
+      </div>
+      <div class="row-login">
+        <hr>
+        <span>{{ $t('account.login_page.otherWays') }}</span>
+        <hr>
+      </div>
+      <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
+        <div class="tileWays" v-for="item in otherWays">
+          <figure>
+            <img :src="item.img"></img>
+          </figure>
+          <p>{{ item.name }}</p>
         </div>
-        <div class="row-login">
-          <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
-          <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
-        </div>
-        <div class="row-login">
-          <hr>
-          <span>{{ $t('account.login_page.otherWays') }}</span>
-          <hr>
-        </div>
-        <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
-          <div class="tileWays" v-for="item in otherWays">
-            <figure>
-              <img :src="item.img"></img>
-            </figure>
-            <p>{{ item.name }}</p>
-          </div>
-        </div>
-      </validation>
-    </div>
+      </div>
+    </validation>
   </div>
 </template>
 <script>
@@ -155,7 +149,7 @@
       },
         
       handleSubmit: function() {
-        if (this.$validation.login.valid && this.userName.length && this.password.length) {
+        if (this.$validation.login.valid && this.username.length && this.password.length) {
           this.$http({
             method: 'post',
             url: '/user/create_token',
@@ -181,5 +175,5 @@
   }
 </script>
 <style lang="scss">
-  @import '../scss/login';
+
 </style>

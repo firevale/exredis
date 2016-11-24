@@ -1,75 +1,66 @@
 <template>
-  <div>
-    <div class="login-box">
-      <validation name="validationRegister">
-
-        <div class="row-login">
-          <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
-        </div>
-
-        <div class="row-login">
-          <validity ref="username" field="username" :validators="{
+  <div class="login-box">
+    <validation name="validationRegister">
+      <div class="row-login">
+        <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
+      </div>
+      <div class="row-login">
+        <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 }">
-            <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
-          </validity>
-          <div class="headerIcon">
-            <icon name="user-o"></icon>
-          </div>
+          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+        </validity>
+        <div class="headerIcon">
+          <icon name="user-o"></icon>
         </div>
-
-        <div class="row-login">
-          <validity ref="password" field="password" :validators="{
+      </div>
+      <div class="row-login">
+        <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
-              name="password" @focusout="handleValidate" />
-          </validity>
-          <div class="headerIcon">
-            <icon name="lock"></icon>
-          </div>
+          <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+            name="password" @focusout="handleValidate" />
+        </validity>
+        <div class="headerIcon">
+          <icon name="lock"></icon>
         </div>
-
-        <div class="row-login">
-          <validity ref="confirmPassword" field="confirmPassword" :validators="{
+      </div>
+      <div class="row-login">
+        <validity ref="confirmPassword" field="confirmPassword" :validators="{
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
                 maxlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
                 validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')}
                 }">
-            <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
-              autocomplete="off" class="outsideText" name="confirmPassword" @focusout="handleValidate" />
-          </validity>
-          <input v-if="validateEmail &&! validatePhoneNumber || !isMobileRegisterSupported" type="button" :value="confirmWorld" readonly="readonly" class="insideInput"></input>
-          <input v-if="!validateEmail && validatePhoneNumber && isMobileRegisterSupported" type="button" :class="{'inputDisabled': hasSentCode}" class="insideInput"
-            :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
-          <div class="headerIcon">
-            <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
-          </div>
+          <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
+            autocomplete="off" class="outsideText" name="confirmPassword" @focusout="handleValidate" />
+        </validity>
+        <input v-if="validateEmail &&! validatePhoneNumber || !isMobileRegisterSupported" type="button" :value="confirmWorld" readonly="readonly"
+          class="insideInput"></input>
+        <input v-if="!validateEmail && validatePhoneNumber && isMobileRegisterSupported" type="button" :class="{'inputDisabled': hasSentCode}"
+          class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
+        <div class="headerIcon">
+          <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
         </div>
-
-        <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
-        <p v-if="!usernameInvalid && passwordInvalid" class="errors">
-          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
-        <p v-if="!usernameInvalid && !passwordInvalid && confirmPasswordInvalid" class="errors">
-          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ confirmTip }}</p>
-        <p v-if v-if="!usernameInvalid && !passwordInvalid && !confirmPasswordInvalid"></p>
-
-        <div class="row-login">
-          <input class="submit" type="button" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
-        </div>
-
-        <div class="row-login">
-          <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
-        </div>
-
-      </validation>
-    </div>
+      </div>
+      <p v-if="usernameInvalid" class="errors">
+        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
+      <p v-if="!usernameInvalid && passwordInvalid" class="errors">
+        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
+      <p v-if="!usernameInvalid && !passwordInvalid && confirmPasswordInvalid" class="errors">
+        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ confirmTip }}</p>
+      <p v-if="!usernameInvalid && !passwordInvalid && !confirmPasswordInvalid"></p>
+      <div class="row-login">
+        <input type="submit" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
+      </div>
+      <div class="row-login">
+        <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
+      </div>
+    </validation>
   </div>
 </template>
 <script>
@@ -254,5 +245,5 @@
   }
 </script>
 <style lang="scss">
-  @import '../scss/login';
+
 </style>

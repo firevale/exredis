@@ -86,7 +86,7 @@
 
       accountExists: function(val) {
         return Vue.http.post('/user/is_account_exists', {
-          user_key: val
+          account_id: val
         }).then(res => {
           return res.json()
         }).then(json => {
@@ -158,7 +158,7 @@
             method: 'post',
             url: '/user/create_token',
             params: {
-              user_key: this.username,
+              account_id: this.username,
               password: this.password
             }
           }).then(response => {

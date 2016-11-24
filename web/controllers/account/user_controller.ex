@@ -1,15 +1,40 @@
 defmodule Acs.UserController do
   use Acs.Web, :controller
   
-  def is_account_exists(conn, %{"user_key" => ""}) do 
+  def is_account_exists(conn, %{"account_id" => ""}) do 
     conn |> json(%{exists: false})
   end
-  def is_account_exists(conn, %{"user_key" => user_key}) do 
-    conn |> json(%{exists: RedisUser.exists?(user_key)})
+  def is_account_exists(conn, %{"account_id" => account_id}) do 
+    conn |> json(%{exists: RedisUser.exists?(account_id)})
   end
 
-  def create_token(conn, %{"user_key" => user_key, "password" => password}) do 
+  def create_token(conn, %{"account_id" => "", "password" => _password}) do 
+    conn |> json(%{success: false, message: "invalid account id"})
+  end
+  def create_token(conn, %{"account_id" => account_id, "password" => password}) do 
+    if RedisUser.exists?(account_id) do 
+      failed_attempts = get_session(conn, :failed_attempts) || 0
+      last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
+      now = Utils.unix_timestamp
 
+      if failed_attempts < 10 or (now - last_failed_timestamp) > 300 do 
+        case RedisUser.authenticate(account_id, password) do 
+          {:ok, user} ->
+            conn |> put_session(:user_id, user.id)
+                 |> delete_session(:failed_attempts)
+                 |> delete_session(:last_failed_timestamp)
+                 |> json(%{success: true, user_id: user.id})
+          _ ->
+            conn |> put_session(:failed_attempts, failed_attempts + 1)
+                 |> put_session(:last_failed_timestamp, now)
+                 |> json(%{success: false, message: "account.error.passwordNotMatch"})
+        end
+      else
+        conn |> json(%{success: false, message: "account.error.tooManyFails"})
+      end
+    else 
+      conn |> json(%{success: false, message: "account.error.accountNotExist"})
+    end  
   end
 
 

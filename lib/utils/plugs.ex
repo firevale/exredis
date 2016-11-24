@@ -115,8 +115,8 @@ defmodule Acs.Plugs do
     end
   end
 
-  def detect_user_key(%Plug.Conn{} = conn, _options) do 
-    case conn.params["user_key"] do 
+  def detect_account_id(%Plug.Conn{} = conn, _options) do 
+    case conn.params["account_id"] do 
       "" -> conn
       nil -> conn
       user_key ->

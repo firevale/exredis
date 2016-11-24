@@ -1,10 +1,9 @@
 <template>
-  <div class="g-con">
+  <div>
     <div class="login-box">
       <validation name="validationLogin">
         <div class="row-login">
-          <p>{{ $t('account.login_page.title') }}</p>
-          <icon class="" name="times" scale="1" fill-color="#eee" style="position: absolute; right: -0.6rem;"></icon>
+          <p class="title">{{ $t('account.login_page.title') }}</p>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
@@ -18,9 +17,6 @@
           <div class="headerIcon">
             <icon name="user-o"></icon>
           </div>
-          <div class="clearTimes" @click="clearUserName">
-            <icon name="times" fill-color="#aaa"></icon>
-          </div>
         </div>
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
@@ -33,16 +29,16 @@
           <div class="headerIcon">
             <icon name="lock" fill-color="#fff"></icon>
           </div>
-          <div class="clearTimes" @click="clearPassword">
-            <icon name="times" fill-color="#aaa"></icon>
-          </div>
         </div>
+        
         <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
-        <p v-else v-if="passwordInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
+          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
+        <p v-if="!usernameInvalid && passwordInvalid" class="errors">
+          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
+        <p v-if="!usernameInvalid && !passwordInvalid"></p>
+
         <div class="row-login">
-          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+          <input class="submit" type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
         </div>
         <div class="row-login">
           <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
@@ -123,7 +119,7 @@
 
       usernameTip: function() {
         let res = ''
-        if (this.$refs.username.result.invalid) {
+        if (this.$refs.username && this.$refs.username.result.invalid) {
           res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
@@ -137,7 +133,7 @@
 
       passwordTip: function() {
         let res = ''
-        if (this.$refs.password.result.invalid) {
+        if (this.$refs.password && this.$refs.password.result.invalid) {
           res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
         }
         return res
@@ -159,16 +155,6 @@
         e.target.$validity.validate(function() {
 
         })
-      },
-
-      clearUserName: function() {
-        this.userName = ''
-        this.$refs.username.$el.focus()
-      },
-
-      clearPassword: function() {
-        this.password = ''
-        this.$refs.password.$el.focus()
       },
 
       onLogin: function() {

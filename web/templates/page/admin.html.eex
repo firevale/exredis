@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8"/>
     <title>
-      Login
+      admin
     </title>
-    <meta name="Login" content="app-id=com.firevale.vrstorecn">
+    <meta name="admin" content="app-id=com.firevale.vrstorecn">
     <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta content="APP" name="description"/>
@@ -26,21 +26,11 @@
     <meta content="app" name="x5-page-mode"/>
     <meta content="no" name="msapplication-tap-highlight"/>
     <meta content="no-siteapp" http-equiv="Cache-Control"/>
-    <link href="<%= static_path(@conn, "/css/login.css") %>" rel="stylesheet"/>
+    <link href="<%= static_path(@conn, "/css/admin.css") %>" rel="stylesheet"/>
 </html>
-<body<%= if @browser == "webview" do %> class="in-app" <% end %>>
+<body>
   <div id="app">
-    <router-view></router-view>
   </div>
-  <script>
-    window.acsConfig = {
-      isMobileRegisterSupported: <%= @isMobileRegisterSupported %>,
-      csrfToken: '<%= get_csrf_token %>',
-      redirectUrl: '<%= @redirect_url %>',
-      inApp: <%= @browser == "webview" %>,
-      platform: '<%= @platform %>',
-    }
-  </script>
-  <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>
-  <script src="<%= static_path(@conn, "/js/login.js") %>"></script>
+  <script src="<%= static_path(@conn, "/js/admin_commons.js") %>"></script>
+  <script src="<%= static_path(@conn, "/js/admin.js") %>"></script>
 </body>

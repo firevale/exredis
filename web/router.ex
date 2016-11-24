@@ -12,14 +12,14 @@ defmodule Acs.Router do
     plug :fetch_session
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :detect_platform
+    plug :parse_user_agent
     plug :detect_user_id
     plug :detect_device_id
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :detect_platform
+    plug :parse_user_agent
     plug :detect_user_id
     plug :detect_device_id
   end
@@ -33,12 +33,12 @@ defmodule Acs.Router do
 
     get  "/", PageController, :index
     get  "/login.html", PageController, :login # show login page
+    get  "/admin.html", PageController, :admin
   end
   
   scope "/admin", Acs do
     pipe_through :browser # Use the default browser stack
 
-    get  "/index", AdminController, :index # show login page
     get  "/login", AdminController, :index # show login page
     get  "/logout", AdminController, :logout
     get  "/reset_password", AdminController, :reset_password # show reset password page

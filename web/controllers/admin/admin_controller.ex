@@ -2,10 +2,6 @@ defmodule Acs.AdminController do
   use Acs.Web, :controller
   @static_page_root            Application.get_env(:acs, :static_page_root, "/") 
   
-  plug :detect_platform
-  plug :detect_user_key
-  plug :no_cache
-
   def index(conn, params) do
     # get redirect url from params
     decoded_redirect_url = case params["redirect_url"] do 
@@ -20,7 +16,7 @@ defmodule Acs.AdminController do
       "admin.css" => Path.join(@static_page_root, "/css/admin.css")            
     }                         
     conn |> put_layout(false) 
-         |> render("admin.html", params: params, redirect_url: decoded_redirect_url, admin_manifests: admin_manifests)
+         |> render("admin.html", params: params, admin_manifests: admin_manifests)
   end
 
   

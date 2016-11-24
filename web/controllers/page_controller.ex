@@ -7,7 +7,9 @@ defmodule Acs.PageController do
 
   @sm_provider      Application.get_env(:acs, :sm_provider)
 
-  def login(%Plug.Conn{private: %{acs_channel: channel}} = conn, params) do 
+  def login(%Plug.Conn{private: %{acs_browser: browser, 
+                                  acs_platform: platform}} = conn,
+             params) do 
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"
@@ -16,7 +18,13 @@ defmodule Acs.PageController do
 
     conn |> put_layout(false) 
          |> render("login.html", redirect_url: decoded_redirect_url, 
-                                 channel: channel,
+                                 browser: browser,
+                                 platform: platform,
                                  isMobileRegisterSupported: not is_nil(@sm_provider))
   end
+
+  def admin(conn, params) do
+    conn |> put_layout(false) |> render("admin.html")
+  end
+
 end

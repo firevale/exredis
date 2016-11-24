@@ -2,10 +2,6 @@ defmodule Acs.AdminController do
   use Acs.Web, :controller
   @static_page_root            Application.get_env(:acs, :static_page_root, "/") 
   
-  plug :detect_platform
-  plug :detect_user_key
-  plug :no_cache
-
   def index(conn, params) do
     # get redirect url from params
     decoded_redirect_url = case params["redirect_url"] do 

@@ -28,7 +28,7 @@
     <meta content="no-siteapp" http-equiv="Cache-Control"/>
     <link href="<%= static_path(@conn, "/css/login.css") %>" rel="stylesheet"/>
 </html>
-<body<%= if @channel == "webview" do %> class="in-app" <% end %>>
+<body<%= if @browser == "webview" do %> class="in-app" <% end %>>
   <div id="app">
     <router-view></router-view>
   </div>
@@ -37,7 +37,8 @@
       isMobileRegisterSupported: <%= @isMobileRegisterSupported %>,
       csrfToken: '<%= get_csrf_token %>',
       redirectUrl: '<%= @redirect_url %>',
-      inApp: <%= @channel == "webview" %>,
+      inApp: <%= @browser == "webview" %>,
+      platform: '<%= @platform %>',
     }
   </script>
   <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>

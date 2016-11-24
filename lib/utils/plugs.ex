@@ -72,50 +72,46 @@ defmodule Acs.Plugs do
   defp compare_host?(request_host, allowed_host),
     do: request_host == allowed_host
 
-  def detect_platform(%Plug.Conn{} = conn, _options) do 
-    case conn.params["platform"] do 
-      nil ->
-        case get_req_header(conn, "user-agent") do 
-          nil -> conn
-          [] -> conn
-          [user_agent | _] when is_bitstring(user_agent) ->
-            if user_agent =~ ~r/windows phone 8/iu do 
-              conn |> put_private(:acs_platform, "wp8")
-            else
-              if user_agent =~ ~r/android/iu do 
-                conn |> put_private(:acs_platform, "android")
-              else 
-                if user_agent =~ ~r/iphone/iu do 
-                  conn |> put_private(:acs_platform, "ios")
-                else 
-                  conn
-                end
-              end
-            end
+  def parse_user_agent(%Plug.Conn{} = conn, _options) do 
+    case get_req_header(conn, "user-agent") do 
+      nil -> conn
+      [] -> conn
+      [user_agent | _] when is_bitstring(user_agent) ->
+        Logger.debug "user_agent: #{user_agent}"
 
-            cond do 
-              user_agent =~ ~r/fvacwebview/iu -> 
-                conn |> put_private(:acs_channel, "webview")
-              user_agent =~ ~r/micromessenger/iu -> 
-                conn |> put_private(:acs_channel, "weixin")
-              user_agent =~ ~r/QQ/iu -> 
-                conn |> put_private(:acs_channel, "qq")
-              user_agent =~ ~r/IEMobile\/11/iu -> 
-                conn |> put_private(:acs_channel, "ie11")
-              user_agent =~ ~r/IEMobile\/10/iu -> 
-                conn |> put_private(:acs_channel, "ie10")
-              user_agent =~ ~r/IEMobile/iu -> 
-                conn |> put_private(:acs_channel, "ie")
-              user_agent =~ ~r/Chrome/iu -> 
-                conn |> put_private(:acs_channel, "chrome")
-              user_agent =~ ~r/Safari/iu -> 
-                conn |> put_private(:acs_channel, "safari")
-              true -> conn
-            end
+        conn = cond do 
+          user_agent =~ ~r/windows phone 8/iu  ->
+            conn |> put_private(:acs_platform, "wp8")
+          user_agent =~ ~r/android/iu  ->
+            conn |> put_private(:acs_platform, "android")
+          user_agent =~ ~r/iphone/iu  ->
+            conn |> put_private(:acs_platform, "ios")
+          user_agent =~ ~r/mac os x/iu  ->
+            conn |> put_private(:acs_platform, "macos")
+          true ->
+            conn |> put_private(:acs_platform, "unknown")
         end
 
-      platform -> 
-        conn |> put_private(:acs_platform, platform)
+        cond do 
+          user_agent =~ ~r/fvacwebview/iu -> 
+            conn |> put_private(:acs_browser, "webview")
+          user_agent =~ ~r/micromessenger/iu -> 
+            conn |> put_private(:acs_browser, "weixin")
+          user_agent =~ ~r/QQ/iu -> 
+            conn |> put_private(:acs_browser, "qq")
+          user_agent =~ ~r/IEMobile\/11/iu -> 
+            conn |> put_private(:acs_browser, "ie11")
+          user_agent =~ ~r/IEMobile\/10/iu -> 
+            conn |> put_private(:acs_browser, "ie10")
+          user_agent =~ ~r/IEMobile/iu -> 
+            conn |> put_private(:acs_browser, "ie")
+          user_agent =~ ~r/Chrome/iu -> 
+            conn |> put_private(:acs_browser, "chrome")
+          user_agent =~ ~r/Safari/iu -> 
+            conn |> put_private(:acs_browser, "safari")
+          true -> 
+            conn |> put_private(:acs_browser, "unknown")
+        end
     end
   end
 

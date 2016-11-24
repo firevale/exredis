@@ -1,9 +1,15 @@
 defmodule Acs.UserController do
   use Acs.Web, :controller
   
-
+  def is_account_exists(conn, %{"user_key" => ""}) do 
+    conn |> json(%{exists: false})
+  end
   def is_account_exists(conn, %{"user_key" => user_key}) do 
     conn |> json(%{exists: RedisUser.exists?(user_key)})
+  end
+
+  def create_token(conn, %{"user_key" => user_key, "password" => password}) do 
+
   end
 
 

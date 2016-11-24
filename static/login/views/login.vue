@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="login-box">
-      <validation name="login" @submit="handleSubmit">
+      <validation name="login" @submit.prevent="handleSubmit">
         <div class="row-login">
           <p class="title">{{ $t('account.login_page.title') }}</p>
         </div>
@@ -9,7 +9,7 @@
           <validity ref="username" field="username" :validators="{
             required: {rule: true, message: $t('account.error.requireUserName')}, 
             maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-            validateUsername: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+            validAccountFormat: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
             accountExists: {rule: true, message: $t('account.error.accountNotExist')},
           }">
             <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" 
@@ -76,7 +76,7 @@
 
   export default {
     validators: {
-      validateUsername: function(val) {
+      validAccountFormat: function(val) {
         if (this.isMobileRegisterSupported) {
           return utils.validateEmail(val) || utils.validatePhoneNumber(val)
         } else {
@@ -153,11 +153,14 @@
       },
         
       handleSubmit: function() {
-        if (this.$validation.login.valid && this.userName.length && this.password.length) {
+        if (this.$validation.login.valid && this.username.length && this.password.length) {
           this.$http({
             method: 'post',
             url: '/user/create_token',
-            params: {}
+            params: {
+              user_key: this.username,
+              password: this.password
+            }
           }).then(response => {
             let result = response.json()
             if (result.success) {

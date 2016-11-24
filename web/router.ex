@@ -12,14 +12,14 @@ defmodule Acs.Router do
     plug :fetch_session
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :detect_platform
+    plug :parse_user_agent
     plug :detect_user_id
     plug :detect_device_id
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :detect_platform
+    plug :parse_user_agent
     plug :detect_user_id
     plug :detect_device_id
   end

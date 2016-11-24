@@ -33,12 +33,12 @@ defmodule Acs.Router do
 
     get  "/", PageController, :index
     get  "/login.html", PageController, :login # show login page
+    get  "/admin.html", PageController, :admin
   end
   
   scope "/admin", Acs do
     pipe_through :browser # Use the default browser stack
 
-    get  "/index", AdminController, :index # show login page
     get  "/login", AdminController, :index # show login page
     get  "/logout", AdminController, :logout
     get  "/reset_password", AdminController, :reset_password # show reset password page

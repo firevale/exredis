@@ -22,4 +22,9 @@ defmodule Acs.PageController do
                                  platform: platform,
                                  isMobileRegisterSupported: not is_nil(@sm_provider))
   end
+
+  def admin(conn, params) do
+    conn |> put_layout(false) |> render("admin.html")
+  end
+
 end

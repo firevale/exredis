@@ -1,49 +1,46 @@
 <template>
   <div class="g-con">
     <div class="login-box">
-      <validation name="validationLogin">
+      <validation name="login" @submit="handleSubmit">
         <div class="row-login">
           <p>{{ $t('account.login_page.title') }}</p>
           <icon class="" name="times" scale="1" fill-color="#eee" style="position: absolute; right: -0.6rem;"></icon>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
-                required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
-                accountExists: {rule: true, message: $t('account.error.accountNotExist')},
-                }">
-            <input type="text" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-              v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+            required: {rule: true, message: $t('account.error.requireUserName')}, 
+            maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
+            validateUsername: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+            accountExists: {rule: true, message: $t('account.error.accountNotExist')},
+          }">
+            <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" 
+              :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+              />
           </validity>
           <div class="headerIcon">
             <icon name="user-o"></icon>
           </div>
-          <div class="clearTimes" @click="clearUserName">
-            <icon name="times" fill-color="#aaa"></icon>
-          </div>
         </div>
         <div class="row-login">
           <validity ref="password" field="password" :validators="{
-                required: {rule: true, message: $t('account.error.requirePassword')}, 
-                maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
-                }">
-            <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
-              name="password" @focusout="handleValidate" @keyup.enter="goLogin" />
+              required: {rule: true, message: $t('account.error.requirePassword')}, 
+              maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
+          }">
+            <input type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate"
+              :placeholder="$t('account.login_page.userPasswordPlaceHolder')" />
           </validity>
           <div class="headerIcon">
             <icon name="lock" fill-color="#fff"></icon>
           </div>
-          <div class="clearTimes" @click="clearPassword">
-            <icon name="times" fill-color="#aaa"></icon>
-          </div>
         </div>
         <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}
+        </p>
         <p v-else v-if="passwordInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}</p>
+          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}
+        </p>
         <div class="row-login">
-          <input type="button" :value="$t('account.login_page.btnSubmit')" @click.prevent="onLogin" />
+          <input type="submit" :value="$t('account.login_page.btnSubmit')"/>
         </div>
         <div class="row-login">
           <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
@@ -67,6 +64,7 @@
   </div>
 </template>
 <script>
+  import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
@@ -77,11 +75,11 @@
 
   export default {
     validators: {
-      validateUserName: function(val) {
+      validateUsername: function(val) {
         if (this.isMobileRegisterSupported) {
-          return this.validateEmail || this.validatePhoneNumber
+          return utils.validateEmail(val) || utils.validatePhoneNumber(val)
         } else {
-          return this.validateEmail
+          return utils.validateEmail(val) 
         }
       },
 
@@ -99,7 +97,7 @@
     data: function() {
       return {
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
-        userName: '',
+        username: '',
         password: '',
         otherWays: [{
           img: '',
@@ -117,19 +115,11 @@
       }
     },
 
-    route: {
-
-    },
-
-    mounted: function() {
-
-    },
-
     computed: {
       usernameInvalid: function() {
-        return this.$validation.validationLogin &&
-          this.$validation.validationLogin.username &&
-          this.$validation.validationLogin.username.invalid
+        return this.$validation.login &&
+          this.$validation.login.username &&
+          this.$validation.login.username.invalid
       },
 
       usernameTip: function() {
@@ -141,9 +131,9 @@
       },
 
       passwordInvalid: function() {
-        return this.$validation.validationLogin &&
-          this.$validation.validationLogin.password &&
-          this.$validation.validationLogin.password.invalid
+        return this.$validation.login &&
+          this.$validation.login.password &&
+          this.$validation.login.password.invalid
       },
 
       passwordTip: function() {
@@ -154,39 +144,21 @@
         return res
       },
 
-      validateEmail: function() {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(this.userName);
-      },
-
-      validatePhoneNumber: function() {
-        return /^1[34578]\d{9}$/.test(this.userName);
-      },
 
     },
 
     methods: {
       handleValidate: function(e) {
-        e.target.$validity.validate(function() {
-
+        e.target.$validity.reset()
+        e.target.$validity.validate(() => {
         })
       },
 
-      clearUserName: function() {
-        this.userName = ''
-        this.$refs.username.$el.focus()
-      },
-
-      clearPassword: function() {
-        this.password = ''
-        this.$refs.password.$el.focus()
-      },
-
-      onLogin: function() {
-        if (this.$validation.validationLogin.valid && this.userName.length && this.password.length) {
+      handleSubmit: function() {
+        if (this.$validation.login.valid) {
           this.$http({
-            method: 'POST',
-            url: '',
+            method: 'post',
+            url: '/user/create_token',
             params: {}
           }).then(response => {
             let result = response.json()
@@ -196,6 +168,8 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
+        } else {
+          this.resetValidation()
         }
       },
     },

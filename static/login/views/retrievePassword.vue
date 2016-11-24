@@ -43,7 +43,8 @@
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
       <p v-else v-if="confirmCodeInvalid" class="errors">
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ confirmCodeTip }}</p>
-      <p v-if="!usernameInvalid && !confirmCodeInvalid" class="errors"></p>
+      <p v-if="!usernameInvalid && !confirmCodeInvalid" class="errors">&nbsp</p>
+
       <div class="row-login" v-show="hasSentCode">
         <input type="submit" :value="$t('account.retrieve_password_page.nextStep')" @click.prevent="onNext" />
       </div>

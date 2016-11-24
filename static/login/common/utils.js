@@ -7,4 +7,11 @@ export default {
   validatePhoneNumber: function(val) {
     return /^1[34578]\d{9}$/.test(val);
   },
+
+  guid: function() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
 }

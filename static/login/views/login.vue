@@ -149,7 +149,6 @@
 
     methods: {
       handleValidate: function(e) {
-        e.target.$validity.reset()
         e.target.$validity.validate(() => {
         })
       },

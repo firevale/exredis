@@ -37,6 +37,7 @@
       isMobileRegisterSupported: <%= @isMobileRegisterSupported %>,
       csrfToken: '<%= get_csrf_token %>',
       redirectUrl: '<%= @redirect_url %>',
+      inApp: <%= @channel == "webview" %>,
     }
   </script>
   <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>

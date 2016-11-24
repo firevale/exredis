@@ -11,6 +11,7 @@ Vue.use(VueI18n)
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(VueValidator)
+
 Vue.config.lang = 'cn'
 
 Object.keys(locales).forEach(function(lang) {

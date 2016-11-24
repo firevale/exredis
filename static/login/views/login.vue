@@ -1,10 +1,9 @@
 <template>
-  <div class="g-con">
+  <div>
     <div class="login-box">
       <validation name="login" @submit="handleSubmit">
         <div class="row-login">
-          <p>{{ $t('account.login_page.title') }}</p>
-          <icon class="" name="times" scale="1" fill-color="#eee" style="position: absolute; right: -0.6rem;"></icon>
+          <p class="title">{{ $t('account.login_page.title') }}</p>
         </div>
         <div class="row-login">
           <validity ref="username" field="username" :validators="{
@@ -33,12 +32,14 @@
             <icon name="lock" fill-color="#fff"></icon>
           </div>
         </div>
+        
         <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}
-        </p>
-        <p v-else v-if="passwordInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ passwordTip }}
-        </p>
+          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
+        <p v-if="!usernameInvalid && passwordInvalid" class="errors">
+          <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
+        <p v-if="!usernameInvalid && !passwordInvalid"></p>
+
+        
         <div class="row-login">
           <input type="submit" :value="$t('account.login_page.btnSubmit')"/>
         </div>
@@ -124,7 +125,7 @@
 
       usernameTip: function() {
         let res = ''
-        if (this.$refs.username.result.invalid) {
+        if (this.$refs.username && this.$refs.username.result.invalid) {
           res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
@@ -138,7 +139,7 @@
 
       passwordTip: function() {
         let res = ''
-        if (this.$refs.password.result.invalid) {
+        if (this.$refs.password && this.$refs.password.result.invalid) {
           res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
         }
         return res
@@ -150,9 +151,9 @@
         e.target.$validity.validate(() => {
         })
       },
-
+        
       handleSubmit: function() {
-        if (this.$validation.login.valid) {
+        if (this.$validation.login.valid && this.userName.length && this.password.length) {
           this.$http({
             method: 'post',
             url: '/user/create_token',

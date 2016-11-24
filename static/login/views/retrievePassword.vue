@@ -1,28 +1,30 @@
 <template>
-  <div class="g-con">
+  <div>
     <div class="login-box">
       <validation name="validationRetrive">
+
         <div class="row-login">
-          <p>{{ $t('account.login_page.titleRetrive') }}</p>
-          <icon name="times" scale="1" fill-color="#666" style="position: absolute; right: -0.6rem;"></icon>
+          <p class="title">{{ $t('account.login_page.titleRetrive') }}</p>
         </div>
-        <p v-if="hasSentCode && receiverType == 'phone'" style="margin: 0 .2rem;">
+
+        <p v-if="hasSentCode && receiverType == 'phone'" class="codeTip">
           {{ $t('account.retrieve_password_page.sendPhoneCodeTipPre') }}
           <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
           {{ $t('account.retrieve_password_page.sendPhoneCodeTipEnd') }}
         </p>
-        <p v-if="hasSentCode && receiverType == 'email'" style="margin: 0 .2rem;">
+        <p v-if="hasSentCode && receiverType == 'email'" class="codeTip">
           {{ $t('account.retrieve_password_page.sendEmailCodeTipPre') }}
           <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span>
           {{ $t('account.retrieve_password_page.sendEmailCodeTipEnd') }}
         </p>
+    
         <div class="row-login">
           <validity v-show="!hasSentCode" ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 }">
-            <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+            <input type="text" class="outsideText" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
               v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
           <validity v-show="hasSentCode" ref="confirmCode" field="confirmCode" :validators="{
@@ -34,35 +36,34 @@
             <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')"
               v-model.trim="confirmWorldInput" autocomplete="off" name="user" @focusout="handleValidate" />
           </validity>
-          <input type="button" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
-            style="flex: 0.5;" @click.prevent="onReport" />
+          <input type="button" class="insideInput" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
+             @click.prevent="onReport" />
           <div class="headerIcon">
             <icon v-show="!hasSentCode" name="user-o"></icon>
             <icon v-show="hasSentCode" name="pencil-square-o" fill-color="#aaa"></icon>
           </div>
-          <div class="clearTimes" @click="clearUserNameOrCode" style="right: 36%;">
-            <icon name="times" fill-color="#aaa"></icon>
-          </div>
         </div>
+
         <p v-if="usernameInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ usernameTip }}</p>
+          <icon name="info-circle" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
         <p v-else v-if="confirmCodeInvalid" class="errors">
-          <icon name="info-circle" fill-color="#ff3860"></icon>{{ confirmCodeTip }}</p>
-        <div class="row-login">
-        </div>
+          <icon name="info-circle" fill-color="#ff3860"></icon>&nbsp{{ confirmCodeTip }}</p>
+        <p v-if="!usernameInvalid && !confirmCodeInvalid" class="errors"></p>
+
         <div class="row-login" v-show="hasSentCode">
-          <input type="button" :value="$t('account.retrieve_password_page.nextStep')" @click.prevent="onNext" />
+          <input class="submit" type="button" :value="$t('account.retrieve_password_page.nextStep')" @click.prevent="onNext" />
         </div>
+
         <div class="row-login">
           <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
         </div>
+
       </validation>
     </div>
   </div>
 </template>
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/pencil-square-o'
   export default {
     created() {
@@ -156,15 +157,6 @@
         } else {
           this.hasSentCode = false
           this.timerNum = 60
-        }
-      },
-      clearUserNameOrCode: function() {
-        if (this.hasSentCode) {
-          this.confirmWorldInput = ''
-          this.$refs.confirmCode.$el.focus()
-        } else {
-          this.userName = ''
-          this.$refs.username.$el.focus()
         }
       },
 

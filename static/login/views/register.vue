@@ -53,7 +53,7 @@
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
       <p v-if="!usernameInvalid && !passwordInvalid && confirmPasswordInvalid" class="errors">
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ confirmTip }}</p>
-      <p v-if="!usernameInvalid && !passwordInvalid && !confirmPasswordInvalid"></p>
+      <p v-if="!usernameInvalid && !passwordInvalid && !confirmPasswordInvalid" class="errors">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
       </div>

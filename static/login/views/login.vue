@@ -34,7 +34,7 @@
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
       <p v-if="!usernameInvalid && passwordInvalid" class="errors">
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
-      <p v-if="!usernameInvalid && !passwordInvalid"></p>
+      <p v-if="!usernameInvalid && !passwordInvalid" class="errors">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.login_page.btnSubmit')" />
       </div>

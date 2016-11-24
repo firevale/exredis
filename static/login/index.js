@@ -6,6 +6,7 @@ import VueValidator from './components/fvVueValidator/vue-validator'
 import VueI18n from 'vue-i18n'
 import locales from './common/i18n'
 import nativeApi from './common/nativeApi'
+import store from './store'
 
 Vue.use(VueI18n)
 Vue.use(VueResource)
@@ -35,4 +36,5 @@ let router = routerMap(VueRouter)
 
 let App = new Vue({
   router,
+  store,
 }).$mount('#app')

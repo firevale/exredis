@@ -30,7 +30,7 @@ defmodule Acs.SdkPay.PurchaseCallbackController do
   alias Acs.SdkPay.YoukuCallbackController
   alias Acs.SdkPay.YYHCallbackController
 
-  plug :detect_app_id
+  plug :fetch_app_id
   plug :fetch_app
 
   def dispatch_callback(conn, %{"sdk" => "anzhi"} = params), do: AnzhiCallbackController.purchase_callback(conn, params) 

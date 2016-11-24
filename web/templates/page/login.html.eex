@@ -39,6 +39,7 @@
       redirectUrl: '<%= @redirect_url %>',
       inApp: <%= @browser == "webview" %>,
       platform: '<%= @platform %>',
+      locale: '<%= @locale %>',
     }
   </script>
   <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>

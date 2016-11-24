@@ -170,15 +170,15 @@ defmodule Acs.Plugs do
   defp fetch_device_id(%{}), do: nil 
 
   defp fetch_header_device_id(%Plug.Conn{} = conn) do 
-    case get_req_header(conn, "device-id") do 
+    case get_req_header(conn, "acs-device-id") do 
       nil -> nil
       [] -> nil
       [device_id | _] -> device_id
     end
   end
 
-  def detect_app_id(%Plug.Conn{} = conn, _options) do 
-    case fetch_app_id(conn.params) || fetch_header_app_id(conn) do 
+  def fetch_app_id(%Plug.Conn{} = conn, _options) do 
+    case _fetch_app_id(conn.params) || _fetch_header_app_id(conn) do 
       nil -> conn
       app_id ->
         Logger.metadata(app_id: app_id) 
@@ -186,18 +186,18 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp fetch_app_id(%{"client_id" => client_id}) when is_bitstring(client_id) and byte_size(client_id) > 5,  do: client_id
-  defp fetch_app_id(%{}), do: nil 
+  defp _fetch_app_id(%{"client_id" => client_id}) when is_bitstring(client_id) and byte_size(client_id) > 5,  do: client_id
+  defp _fetch_app_id(%{}), do: nil 
 
-  defp fetch_header_app_id(%Plug.Conn{} = conn) do 
-    case get_req_header(conn, "app-id") do 
+  defp _fetch_header_app_id(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "acs-app-id") do 
       nil -> nil
       [] -> nil
       [app_id | _] -> app_id
     end
   end
 
-  def fetch_app(%Plug.Conn{params: %{"app_id" => app_id}} = conn, _options) do 
+  def fetch_app(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _options) do 
     case RedisApp.find(app_id) do 
       nil -> conn
       %RedisApp{} = app ->
@@ -206,7 +206,7 @@ defmodule Acs.Plugs do
   end
   def fetch_app(%Plug.Conn{} = conn, _options), do: conn
 
-  def fetch_user(%Plug.Conn{params: %{"user_id" => user_id}} = conn, _options) do 
+  def fetch_user(%Plug.Conn{private: %{acs_user_id: user_id}} = conn, _options) do 
     case RedisUser.find(user_id |> String.to_integer) do 
       nil -> conn
       %RedisUser{} = user ->

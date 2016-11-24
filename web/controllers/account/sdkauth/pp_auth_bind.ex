@@ -34,7 +34,7 @@ defmodule Acs.PPAuthBind do
               success: true,
               access_token: access_token.id,
               expires_at: RedisAccessToken.expired_at(access_token),
-              user_id: "#{user.id}",
+              user_id: user.id,
               user_email: user.email,
               nick_name:  user.nickname,
               is_anonymous: false,

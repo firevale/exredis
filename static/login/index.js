@@ -13,7 +13,7 @@ Vue.use(VueResource)
 Vue.use(VueValidator)
 Vue.use(VueRouter)
 
-Vue.config.lang = window.acsConfig.locale || 'zh-chs'
+Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = nativeApi.getAppId()

@@ -3,7 +3,7 @@ defmodule Acs.AppleStoreController do
 
   require SDKApple
 
-  plug :detect_app_id
+  plug :fetch_app_id
   plug :fetch_app
   plug :fetch_user
 

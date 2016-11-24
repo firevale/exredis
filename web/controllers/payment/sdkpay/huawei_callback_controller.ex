@@ -2,7 +2,7 @@ defmodule Acs.SdkPay.HuaweiCallbackController do
   use     Acs.Web, :controller
   require SDKHuawei
 
-  plug :detect_app_id 
+  plug :fetch_app_id 
   plug :fetch_app
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 

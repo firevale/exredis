@@ -143,8 +143,6 @@
         }
         return res
       },
-
-
     },
 
     methods: {
@@ -167,9 +165,7 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
-        } else {
-          this.resetValidation()
-        }
+        } 
       },
     },
 

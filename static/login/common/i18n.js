@@ -31,7 +31,7 @@ export default {
         invalidAccountName: '请输入正确的邮箱或手机号码',
         invalidEmailAddress: '请输入正确的电子邮件地址',
         accountInUse: '账户名已被使用',
-        accountNotExists: '账户不存在',
+        accountNotExist: '账户不存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
         confirmWordDifferent: '6位验证码输入有误',

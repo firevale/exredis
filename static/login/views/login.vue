@@ -72,10 +72,10 @@
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
-  
-  export default {
-    created() {},
 
+  import Vue from 'vue'
+
+  export default {
     validators: {
       validateUserName: function(val) {
         if (this.isMobileRegisterSupported) {
@@ -86,8 +86,14 @@
       },
 
       accountExists: function(val) {
-        this.$http()  
-      }
+        return Vue.http.post('/user/is_account_exists', {
+          user_key: val
+        }).then(res => {
+          return res.json()
+        }).then(json => {
+          return json['exists'] ? Promise.resolve() : Promise.reject('')
+        })
+      },
     },
 
     data: function() {

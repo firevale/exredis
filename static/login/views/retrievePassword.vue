@@ -189,6 +189,15 @@
       },
 
       onNext: function(e) {
+
+        this.$router.push({
+          name: 'resetPassword',
+          params: {
+            username: this.userName,
+          }
+        })
+        return false
+        
         if (this.$validation.validationRetrive.valid && this.userName.length && this.confirmWorldInput) {
           this.$http({
             method: 'POST',

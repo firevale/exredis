@@ -9,7 +9,7 @@ defmodule Acs.CaptchaController do
 
   def update(conn, _params) do 
     size = 3 + :rand.uniform(2)
-    {_, token} = :rand.uniform(0xffffff) |> :binary.encode_unsigned |> Base.encode16 |> String.downcase |> String.split_at(6 - size)
+    {token, _} = :rand.uniform(0xffffff) |> :binary.encode_unsigned |> Base.encode16 |> String.downcase |> String.split_at(size)
     image_url = CaptchaGenerator.generate(token)
     conn |> put_session(:captcha_value, token)
          |> json(%{success: true, image_url: image_url})

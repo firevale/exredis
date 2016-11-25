@@ -17,11 +17,11 @@
 }
 
 .slide-enter-active {
-  animation: slideInRight .4s linear;
+  animation: slideInRight .5s ease-in
 }
 
 .slide-leave-active {
-  animation: slideOutLeft .4s linear;
+  animation: slideOutLeft .5s ease-out
 }
 
 .slide-enter,

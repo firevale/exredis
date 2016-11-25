@@ -19,6 +19,10 @@ export default function(VueRouter) {
         name: 'retrievePassword',
         component: require('../views/retrievePassword.vue')
       }, {
+        path: 'resetPassword',
+        name: 'resetPassword',
+        component: require('../views/resetPassword.vue')
+      }, {
         path: '*',
         redirect: 'login'
       }]

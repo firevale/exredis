@@ -29,7 +29,7 @@
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
                 validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')},
                 }">
-          <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
+          <input type="text" class="outsideText" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
             autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <input type="button" class="insideInput" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
@@ -189,6 +189,15 @@
       },
 
       onNext: function(e) {
+
+        this.$router.push({
+          name: 'resetPassword',
+          params: {
+            username: this.userName,
+          }
+        })
+        return false
+        
         if (this.$validation.validationRetrive.valid && this.userName.length && this.confirmWorldInput) {
           this.$http({
             method: 'POST',

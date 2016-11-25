@@ -26,6 +26,11 @@ a {
   text-decoration: none;
 }
 
+input[type = "button"]:active,input[type = "submit"]:active {
+  filter: opacity(.5);
+  filter: drop-shadow(2px 2px 2px $blue);
+}
+
 input.inputDisabled {
   background: $dark !important;
 }

@@ -40,12 +40,7 @@
           <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
             autocomplete="off" class="outsideText" name="confirmPassword" @focusout="handleValidate" />
         </validity>
-<<<<<<< HEAD
         <div v-if="shouldShowCaptcha" class="captchaBox">
-=======
-        <!--<div v-if="shouldShowCaptcha">-->
-        <div>
->>>>>>> f2388e5a606ac96f3ce0d015bffdd3ca04d9935e
           <img class="captcha" :src="captchaUrl"></img>
           <input type="button" class="changeCode" :value="$t('account.login_page.changeCode')" @click="">
           </input>

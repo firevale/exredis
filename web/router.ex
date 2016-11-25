@@ -34,6 +34,9 @@ defmodule Acs.Router do
     get  "/", PageController, :index
     get  "/login.html", PageController, :show_login_page 
     get  "/admin.html", PageController, :show_admin_page
+
+    post "/update_captcha", CaptchaController, :update 
+    post "/check_captcha", CaptchaController, :check
   end
   
   scope "/admin", Acs do
@@ -60,7 +63,8 @@ defmodule Acs.Router do
   scope "/user", Acs do
     pipe_through :browser # Use the default browser stack
 
-    get  "/login", PageController, :login # show login page
+    get  "/login", PageController, :show_login_page 
+    get  "/login.html", PageController, :show_login_page 
 
     post "/create_token", UserController, :create_token 
 

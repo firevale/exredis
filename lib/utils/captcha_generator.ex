@@ -1,12 +1,17 @@
 defmodule Acs.CaptchaGenerator do 
-  
+  require Logger
+
   def generate(value) do 
     image_file = Path.join(System.tmp_dir, "#{value}.png")
-    params = "#{style_param} -size 80x20 xc:none -gravity center -pointsize 16 -implode 0.2 \
+    params = "-size 80x20 xc:none #{style_param} -gravity center -pointsize 16 -implode 0.4 \
               -font Candice -annotate #{annotate_param} #{value} -wave -#{distortion_param} \
               #{image_file}" |> String.split 
+
+    Logger.debug "params: #{inspect params}"
+
     {_, 0} = System.cmd("convert", params)
     image_data = File.read!(image_file) |> Base.encode64
+    File.rm!(image_file)
     "data:image/png;base64,#{image_data}"
   end
 
@@ -30,19 +35,27 @@ defmodule Acs.CaptchaGenerator do
   defp distortion_param do 
     n = :rand.uniform(@distortion_num) - 1
     case Enum.at(@distortions, n) do 
-      :low -> "#{:rand.uniform(2) - 1}x#{70 + :rand.uniform(10)}"
-      :medium -> "#{:rand.uniform(2) + 1}x#{60 + :rand.uniform(10)}"
-      :high -> "#{:rand.uniform(2) + 3}x#{50 + :rand.uniform(10)}"
+      :low -> "#{:rand.uniform(2)}x#{80 + :rand.uniform(10)}"
+      :medium -> "#{:rand.uniform(2) + 1}x#{70 + :rand.uniform(10)}"
+      :high -> "#{:rand.uniform(2) + 2}x#{60 + :rand.uniform(10)}"
     end
   end
 
   defp annotate_param do 
     n = :rand.uniform(@distortion_num) - 1
-    case Enum.at(@distortions, n) do 
-      :low -> "#{:rand.uniform(10) - 1}x#{:rand.uniform(5)}"
-      :medium -> "#{:rand.uniform(15) - 1}x#{:rand.uniform(10)}"
-      :high -> "#{:rand.uniform(20) - 3}x#{:rand.uniform(15)}"
-    end
+    {xdegree, ydegree} = case Enum.at(@distortions, n) do 
+                            :low -> {6 + :rand.uniform(4), 6 + :rand.uniform(5)}
+                            :medium -> {8 + :rand.uniform(4), 8 + :rand.uniform(5)}
+                            :high -> {10 + :rand.uniform(4), 10 + :rand.uniform(5)}
+                          end
+
+    xdegree = if :rand.uniform(2) == 2 do 
+                360 - xdegree
+              else 
+                xdegree
+              end
+
+   "#{xdegree}x#{ydegree}"
   end
 
 end

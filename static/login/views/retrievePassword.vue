@@ -25,9 +25,9 @@
         </validity>
         <validity v-show="hasSentCode" ref="confirmCode" field="confirmCode" :validators="{
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
-                maxlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
-                minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
-                isValidVerifyCode: {rule: true, message: $t('account.error.confirmWordDifferent')},
+                maxlength: {rule: 6, message: $t('account.error.verifyCodeNotMatch')},
+                minlength: {rule: 6, message: $t('account.error.verifyCodeNotMatch')},
+                isValidVerifyCode: {rule: true, message: $t('account.error.verifyCodeNotMatch')},
                 }">
           <input type="text" class="outsideText" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
             autocomplete="off" name="user" @focusout="handleValidate" />

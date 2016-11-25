@@ -4,7 +4,9 @@ defmodule Acs.CaptchaController do
   alias Acs.CaptchaGenerator
 
   def check(conn, %{"captcha_value" => value}) do 
-    conn |> json(%{success: true, match: get_session(conn, :captcha_value) == String.downcase(value)})
+    captcha = get_session(conn, :captcha_value)
+    Logger.debug "ours: #{captcha}"
+    conn |> json(%{success: true, match: captcha == String.downcase(value)})
   end
 
   def update(conn, _params) do 

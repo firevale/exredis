@@ -37,7 +37,8 @@ export default {
         accountNotExist: '账户不存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
-        confirmWordDifferent: '验证码输入有误',
+        verifyCodeNotMatch: '验证码输入有误',
+        verifyCodeTooShort: '验证码至少有4个字符',
       },
       
     },

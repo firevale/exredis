@@ -17,6 +17,7 @@ export default {
         forgetPassword: '忘记密码',
         registration: '快速注册',
         otherWays: '其他方式',
+        changeCode: '换一张',
       },
       
       retrieve_password_page: {
@@ -36,7 +37,7 @@ export default {
         accountNotExist: '账户不存在',
         requirePassword: '请输入密码',
         passwordTooLong: '密码超长',
-        confirmWordDifferent: '6位验证码输入有误',
+        confirmWordDifferent: '验证码输入有误',
       },
       
     },

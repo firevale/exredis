@@ -40,15 +40,13 @@
           <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
             autocomplete="off" class="outsideText" name="confirmPassword" @focusout="handleValidate" />
         </validity>
-        <!--<div v-if="shouldShowCaptcha">-->
-        <div>
+        <div v-if="shouldShowCaptcha" class="captchaBox">
           <img class="captcha" :src="captchaUrl"></img>
-        <input type="button" :value="captcha" readonly="readonly"
-          class="insideInput">
+          <input type="button" class="changeCode" :value="$t('account.login_page.changeCode')" @click="">
           </input>
         </div>
-        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}"
-          class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode">
+        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
+          @click="sendCode">
         </input>
         <div class="headerIcon">
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
@@ -133,7 +131,7 @@
         username: '',
         password: '',
         phoneCodeSent: 'frffw3',
-        captcha: 'y2394j',
+        captcha: '换一张',
         confirmPassword: '',
       }
     },

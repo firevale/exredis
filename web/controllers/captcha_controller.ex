@@ -8,8 +8,8 @@ defmodule Acs.CaptchaController do
   end
 
   def update(conn, _params) do 
-    size = 1 + :rand.uniform(2)
-    token = Utils.generate_token(size)
+    size = 3 + :rand.uniform(3)
+    {token, _} = Utils.generate_token(3) |> String.downcase |> String.split_at(size)
     image_url = CaptchaGenerator.generate(token)
     conn |> put_session(:captcha_value, token)
          |> json(%{success: true, image_url: image_url})

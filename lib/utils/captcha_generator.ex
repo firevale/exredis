@@ -3,7 +3,7 @@ defmodule Acs.CaptchaGenerator do
   def generate(value) do 
     image_file = Path.join(System.tmp_dir, "#{value}.png")
     params = "#{style_param} -size 80x20 xc:none -gravity center -pointsize 16 -implode 0.2 \
-              -font Candice -annotate #{annotate_param} '#{value}' -wave -#{distortion_param} \
+              -font Candice -annotate #{annotate_param} #{value} -wave -#{distortion_param} \
               #{image_file}" |> String.split 
     {_, 0} = System.cmd("convert", params)
     image_data = File.read!(image_file) |> Base.encode64
@@ -30,9 +30,9 @@ defmodule Acs.CaptchaGenerator do
   defp distortion_param do 
     n = :rand.uniform(@distortion_num) - 1
     case Enum.at(@distortions, n) do 
-      :low -> "#{:rand.uniform(2) - 1}x#{79 + :rand.uniform(20)}"
-      :medium -> "#{:rand.uniform(2) + 1}x#{49 + :rand.uniform(20)}"
-      :high -> "#{:rand.uniform(2) + 3}x#{29 + :rand.uniform(20)}"
+      :low -> "#{:rand.uniform(2) - 1}x#{70 + :rand.uniform(10)}"
+      :medium -> "#{:rand.uniform(2) + 1}x#{60 + :rand.uniform(10)}"
+      :high -> "#{:rand.uniform(2) + 3}x#{50 + :rand.uniform(10)}"
     end
   end
 

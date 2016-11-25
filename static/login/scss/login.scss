@@ -90,7 +90,6 @@ html {
             }
             .changeCode {
               color: $primary;
-              flex: 1;
               padding: .4rem;
               font-size: .8rem;
               border: none;
@@ -160,7 +159,7 @@ html {
 @media screen and (max-width: 768px) {
   .g-doc {
     .g-con {
-      width: 90vw;
+      width: 85vw;
       max-width: 100vh;
       min-height: 300px;
       .g-mask {
@@ -177,13 +176,9 @@ html {
               max-height: 2rem;
               display: flex;
               flex-direction: row;
-              .captcha {
-                flex: 1
-              }
+              .captcha {}
               .changeCode {
-                flex: 1;
                 padding: 0;
-                margin-top: .6rem;
                 font-size: .6rem;
                 border: none;
                 background: $white;
@@ -216,6 +211,19 @@ html {
             a {
               font-size: .8rem;
             }
+            .captchaBox {
+              flex: 2;
+              max-height: 2rem;
+              display: flex;
+              flex-direction: row;
+              .captcha {}
+              .changeCode {
+                padding: 0;
+                font-size: .8rem;
+                border: none;
+                background: $white;
+              }
+            }
           }
           .errors {
             margin: .2rem;
@@ -243,6 +251,19 @@ html {
             }
             a {
               font-size: .8rem;
+            }
+            .captchaBox {
+              flex: 2;
+              max-height: 2rem;
+              display: flex;
+              flex-direction: row;
+              .captcha {}
+              .changeCode {
+                padding: 0;
+                font-size: .8rem;
+                border: none;
+                background: $white;
+              }
             }
           }
           .errors {

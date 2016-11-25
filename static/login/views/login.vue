@@ -174,7 +174,7 @@
 
       handleSubmit: function(e) {
         e.preventDefault()
-        if (this.$validation.login.valid && this.username.length && this.password.length) {
+        if (this.$validation.login.valid && this.username && this.password) {
           this.$http({
             method: 'post',
             url: '/user/create_token',

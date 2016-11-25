@@ -8,7 +8,7 @@
         <validity ref="username" field="username" :validators="{
             required: {rule: true, message: $t('account.error.requireUserName')}, 
             maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-            validAccountFormat: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+            isValidAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
             accountExists: {rule: true, message: $t('account.error.accountNotExist')},
           }">
           <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
@@ -74,11 +74,11 @@
 
   export default {
     validators: {
-      validAccountFormat: function(val) {
+      isValidAccountName: function(val) {
         if (this.isMobileRegisterSupported) {
-          return utils.validateEmail(val) || utils.validatePhoneNumber(val)
+          return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
         } else {
-          return utils.validateEmail(val)
+          return utils.isValidEmail(val)
         }
       },
 

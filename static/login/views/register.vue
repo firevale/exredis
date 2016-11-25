@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <validation name="validationRegister">
+    <validation name="register">
       <div class="row-login">
         <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
       </div>
@@ -8,10 +8,11 @@
         <validity ref="username" field="username" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+                isValidAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
+                accountNotExists: {rule: true, message: $t('account.error.accountInUse')}
                 }">
           <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
-            v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
+            v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="user-o"></icon>
@@ -34,15 +35,20 @@
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
                 maxlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
-                validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')}
+                isValidVerifyCode: {rule: true, message: $t('account.error.confirmWordDifferent')}
                 }">
           <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmPassword"
             autocomplete="off" class="outsideText" name="confirmPassword" @focusout="handleValidate" />
         </validity>
-        <input v-if="validateEmail &&! validatePhoneNumber || !isMobileRegisterSupported" type="button" :value="confirmWorld" readonly="readonly"
-          class="insideInput"></input>
-        <input v-if="!validateEmail && validatePhoneNumber && isMobileRegisterSupported" type="button" :class="{'inputDisabled': hasSentCode}"
-          class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode"></input>
+        <div v-if="shouldShowCaptcha">
+          <img class="captcha" :src="captchaUrl"></img>
+        <input type="button" :value="captcha" readonly="readonly"
+          class="insideInput">
+          </input>
+        </div>
+        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}"
+          class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')" @click="sendCode">
+        </input>
         <div class="headerIcon">
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
         </div>
@@ -64,176 +70,207 @@
   </div>
 </template>
 <script>
+  import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
   import '../components/fvIcon/icons/check-circle-o'
-  export default {
-	  created(){
-     
-    },
 
+  import Vue from 'vue'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
+
+  export default {
     validators: {
-      validateUserName: function(val){
-        if(this.isMobileRegisterSupported){
-          return this.validateEmail || this.validatePhoneNumber
-        }else{
-          return this.validateEmail
+      isValidAccountName: function(val) {
+        if (this.isMobileRegisterSupported) {
+          return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
+        } else {
+          return utils.isValidEmail(val)
         }
       },
-      
-      validateSendCode: function(val){
-        return this.validatePhoneNumber?this.confirmPassword == this.phoneCodeSent:
-          this.validateEmail?this.confirmPassword == this.confirmWorld: false
+
+      accountNotExists: function(val) {
+        this.setRegisterAccount(val)
+
+        if (!val) {
+          return Promise.reject('')
+        } else {
+          if (typeof this.accountExistences[val] === 'boolean') {
+            return this.accountExistences[val] ? Promise.reject('') : Promise.resolve()
+          } else {
+            return Vue.http.post('/user/is_account_exists', {
+              account_id: val
+            }).then(res => {
+              return res.json()
+            }).then(json => {
+              this.addAccountExistence({
+                account: val,
+                exists: json.exists
+              })
+              return json.exists ? Promise.reject('') : Promise.resolve()
+            })
+          }
+        }
+      },
+
+      isValidVerifyCode: function(val) {
+        return this.isValidMobileNumber ? this.confirmPassword == this.phoneCodeSent :
+          this.isValidEmail ? this.confirmPassword == this.captcha : false
       }
     },
 
-    data: function(){
+    data: function() {
       return {
         hasSentCode: false,
         timerNum: 60,
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
-        userName: '',
+        username: '',
         password: '',
         phoneCodeSent: 'frffw3',
-        confirmWorld: 'y2394j',
+        captcha: 'y2394j',
         confirmPassword: '',
       }
     },
 
-    route: {
-      
+    created: function() {
+      this.updateCaptcha()
     },
 
-		computed: {
-		  usernameInvalid: function() {
-        return this.$validation.validationRegister 
-               && this.$validation.validationRegister.username
-               && this.$validation.validationRegister.username.invalid
+    computed: {
+      ...mapGetters([
+        'accountExistences', 'registerAccount', 'captchaUrl'
+      ]),
+
+      usernameInvalid: function() {
+        return this.$validation.register &&
+          this.$validation.register.username &&
+          this.$validation.register.username.invalid
       },
 
-			passwordInvalid: function() {
-        return this.$validation.validationRegister 
-               && this.$validation.validationRegister.password
-               && this.$validation.validationRegister.password.invalid
+      passwordInvalid: function() {
+        return this.$validation.register &&
+          this.$validation.register.password &&
+          this.$validation.register.password.invalid
       },
 
-			confirmPasswordInvalid: function() {
-        return this.$validation.validationRegister 
-               && this.$validation.validationRegister.confirmPassword
-               && this.$validation.validationRegister.confirmPassword.invalid
+      confirmPasswordInvalid: function() {
+        return this.$validation.register &&
+          this.$validation.register.confirmPassword &&
+          this.$validation.register.confirmPassword.invalid
       },
 
-			usernameTip: function() {
+      usernameTip: function() {
         let res = ''
-        if(this.$refs.username.result.invalid){
+        if (this.$refs.username.result.invalid) {
           res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
         return res
       },
 
-			passwordTip: function() {
+      passwordTip: function() {
         let res = ''
-        if(this.$refs.password.result.invalid){
+        if (this.$refs.password.result.invalid) {
           res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
         }
         return res
       },
 
-			confirmTip: function() {
+      confirmTip: function() {
         let res = ''
-        if(this.$refs.confirmPassword.result.invalid){
+        if (this.$refs.confirmPassword.result.invalid) {
           res = this.$refs.confirmPassword.result.errors && this.$refs.confirmPassword.result.errors[0].message
         }
         return res
       },
 
-      validateEmail: function() {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(this.userName);
+      shouldShowCaptcha: function() {
+        return utils.isValidEmail(this.username)
       },
 
-      validatePhoneNumber: function() {
-        if(!/^1[34578]\d{9}$/.test(this.userName)){
-          this.hasSentCode=false;
-        } 
-        return /^1[34578]\d{9}$/.test(this.userName)
-      },
-		},
+      shouldShowSendVerifyCodeButton: function() {
+        return utils.isValidMobileNumber(this.username)
+      }
+    },
 
-    methods: { 
-      handleValidate: function (e) {
-        e.target.$validity.validate(function () {
-          
+    methods: {
+      ...mapActions([
+        'addAccountExistence', 'setRegisterAccount', 'setLoginAccount', 'updateCaptcha'
+      ]),
+
+      handleValidate: function(e) {
+        e.target.$validity.validate(function() {
+
         })
       },
 
-      timerCount: function(){
-        if(this.hasSentCode && this.timerNum > 0){
+      timerCount: function() {
+        if (this.hasSentCode && this.timerNum > 0) {
           this.timerNum--
-          setTimeout(this.timerCount,1000)
-        }else{
+            setTimeout(this.timerCount, 1000)
+        } else {
           this.hasSentCode = false
           this.timerNum = 60
         }
       },
 
-      sendCode: function(){
-        if(this.$validation.validationRegister.username.valid && this.userName.length && !this.hasSentCode){
+      sendCode: function() {
+        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
           this.hasSentCode = true
-          setTimeout(this.timerCount,1000)
+          setTimeout(this.timerCount, 1000)
         }
 
         return false
 
-
-        if(this.$validation.validationRegister.username.valid && this.userName.length && !this.hasSentCode){
+        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
           let urlApi = ''
-          if(this.isMobileRegisterSupported && this.validatePhoneNumber){
-            urlApi='sendCodeToPhone'
-          }else if(this.validateEmail){
-            urlApi='sendCodeToEmail'
+          if (this.isMobileRegisterSupported && this.isValidMobileNumber) {
+            urlApi = 'sendCodeToPhone'
+          } else if (this.isValidEmail) {
+            urlApi = 'sendCodeToEmail'
           }
           this.$http({
-              method: 'POST',
-              url: urlApi,
-              params: {
-                userName: this.userName
-              }
-            }).then(response => {
-						let result = response.json()
-						if (result.success) {
-							if(!this.hasSentCode){
+            method: 'POST',
+            url: urlApi,
+            params: {
+              username: this.username
+            }
+          }).then(response => {
+            let result = response.json()
+            if (result.success) {
+              if (!this.hasSentCode) {
                 this.hasSentCode = true
-                setTimeout(this.timerCount,1000)
+                setTimeout(this.timerCount, 1000)
               }
-						} else {
-							return Promise.reject('error')
-						}
-					})
+            } else {
+              return Promise.reject('error')
+            }
+          })
         }
       },
 
-      onRegister: function () {
-        if(this.$validation.validationRegister.valid && this.userName.length && this.password.length && this.confirmPassword){
+      onRegister: function() {
+        if (this.$validation.register.valid && this.username.length && this.password.length && this.confirmPassword) {
           this.$http({
-              method: 'POST',
-              url: '',
-              params: {
-                userName: '',
-                password: '',
-                confirmWord: '',
-              }
-            }).then(response => {
-						let result = response.json()
-						if (result.success) {
-							
-						} else {
-							return Promise.reject('account.error.invalidPassword')
-						}
-					})
+            method: 'POST',
+            url: '',
+            params: {
+              username: '',
+              password: '',
+              confirmWord: '',
+            }
+          }).then(response => {
+            let result = response.json()
+            if (result.success) {
+
+            } else {
+              return Promise.reject('account.error.invalidPassword')
+            }
+          })
         }
       },
     },

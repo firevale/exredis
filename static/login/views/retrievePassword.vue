@@ -27,7 +27,7 @@
                 required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
                 maxlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
                 minlength: {rule: 6, message: $t('account.error.confirmWordDifferent')},
-                validateSendCode: {rule: true, message: $t('account.error.confirmWordDifferent')},
+                isValidVerifyCode: {rule: true, message: $t('account.error.confirmWordDifferent')},
                 }">
           <input type="text" class="outsideText" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
             autocomplete="off" name="user" @focusout="handleValidate" />
@@ -65,15 +65,15 @@
     validators: {
       validateUserName: function(val) {
         if (this.isMobileRegisterSupported) {
-          return this.validateEmail || this.validatePhoneNumber
+          return this.isValidEmail || this.isValidMobileNumber
         } else {
-          return this.validateEmail
+          return this.isValidEmail
         }
       },
 
-      validateSendCode: function(val) {
-        return this.validatePhoneNumber ? this.confirmWorldInput == this.phoneCodeSent :
-          this.validateEmail ? this.confirmWorldInput == this.emailCodeSent : false
+      isValidVerifyCode: function(val) {
+        return this.isValidMobileNumber ? this.confirmWorldInput == this.phoneCodeSent :
+          this.isValidEmail ? this.confirmWorldInput == this.emailCodeSent : false
       },
 
     },
@@ -125,12 +125,12 @@
         return res
       },
 
-      validateEmail: function() {
+      isValidEmail: function() {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(this.userName);
       },
 
-      validatePhoneNumber: function() {
+      isValidMobileNumber: function() {
         return /^1[34578]\d{9}$/.test(this.userName);
       },
 
@@ -156,16 +156,16 @@
         if (this.$validation.validationRetrive.username.valid && this.userName.length && !this.hasSentCode) {
           this.hasSentCode = true
           this.receiverName = this.userName
-          this.validatePhoneNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
+          this.isValidMobileNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
           setTimeout(this.timerCount, 1000)
         }
         return false
 
         if (this.$validation.validationRetrive.valid && this.userName.length) {
           let urlApi = ''
-          if (this.isMobileRegisterSupported && this.validatePhoneNumber) {
+          if (this.isMobileRegisterSupported && this.isValidMobileNumber) {
             urlApi = 'sendCodeToPhone'
-          } else if (this.validateEmail) {
+          } else if (this.isValidEmail) {
             urlApi = 'sendCodeToEmail'
           }
           this.$http({
@@ -180,7 +180,7 @@
               this.hasSentCode = true
               setTimeout(this.timerCount, 1000)
               this.receiverName = this.userName
-              this.validatePhoneNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
+              this.isValidMobileNumber ? this.receiverType = 'phone' : this.receiverType = 'email'
             } else {
               return Promise.reject('error')
             }

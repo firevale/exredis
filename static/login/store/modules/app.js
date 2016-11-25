@@ -6,6 +6,7 @@ const state = {
   accountExistences: {},
   loginAccount: undefined,
   registerAccount: undefined,
+  captchaUrl: undefined,
 }
 
 const mutations = {
@@ -19,9 +20,14 @@ const mutations = {
 
   'SET_REGISTER_ACCOUNT' (state, account) {
     state.registerAccount = account
-  }
+  },
+
+  'SET_CAPTCHA_URL' (state, captchaUrl) {
+    state.captchaUrl = captchaUrl
+  },
 }
 
 export default {
-  state, mutations
+  state,
+  mutations
 }

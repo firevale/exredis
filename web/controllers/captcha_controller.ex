@@ -12,7 +12,7 @@ defmodule Acs.CaptchaController do
     token = Utils.generate_token(size)
     image_url = CaptchaGenerator.generate(token)
     conn |> put_session(:captcha_value, token)
-         |> json(%{success: true, url: image_url})
+         |> json(%{success: true, image_url: image_url})
   end
 
 end

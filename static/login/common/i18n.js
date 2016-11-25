@@ -17,7 +17,7 @@ export default {
         forgetPassword: '忘记密码',
         registration: '快速注册',
         otherWays: '其他方式',
-        changeCode: '换一张',
+        changeCode: '更换',
       },
       
       retrieve_password_page: {

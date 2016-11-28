@@ -29,6 +29,9 @@
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
+        <div class="tailIcon" @click="changeIcon">
+          <icon :name="tailIcon" fill-color="#fff"></icon>
+        </div>
       </div>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
@@ -77,7 +80,8 @@
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
   import '../components/fvIcon/icons/check-circle-o'
-
+  import '../components/fvIcon/icons/eye-slash'
+  import '../components/fvIcon/icons/eye'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -136,6 +140,7 @@
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         username: '',
         password: '',
+        tailIcon: 'eye',
         phoneCodeSent: 'frffw3',
         captcha: '换一张',
         verifyCode: '',
@@ -276,6 +281,16 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
+        }
+      },
+
+      changeIcon: function(){
+        if( this.tailIcon === 'eye') {
+          this.tailIcon = 'eye-slash'
+          this.$refs.password.$el.type = 'text'
+        }else{
+          this.tailIcon = 'eye'
+          this.$refs.password.$el.type = 'password'
         }
       },
     },

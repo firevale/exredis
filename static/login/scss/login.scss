@@ -56,6 +56,9 @@ html {
           input[name=confirmPassword] {
             border-top: none;
           }
+          input[name=verifyCode] {
+            border-top: none;
+          }
           input[type=submit] {
             color: $white;
             background: $blue;
@@ -130,6 +133,12 @@ html {
           }
           .headerIcon {
             left: .4rem;
+            width: .5rem;
+            height: 100%;
+            position: absolute;
+          }
+          .tailIcon{
+            right: .8rem;
             width: .5rem;
             height: 100%;
             position: absolute;

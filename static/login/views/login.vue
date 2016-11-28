@@ -23,11 +23,14 @@
               required: {rule: true, message: $t('account.error.requirePassword')}, 
               maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
           }">
-          <input type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.login_page.userPasswordPlaceHolder')"
+          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.login_page.userPasswordPlaceHolder')"
           />
         </validity>
         <div class="headerIcon">
           <icon name="lock" fill-color="#fff"></icon>
+        </div>
+        <div class="tailIcon" @click="changeIcon">
+          <icon :name="tailIcon" fill-color="#fff"></icon>
         </div>
       </div>
       <p v-if="usernameInvalid" class="errors">
@@ -65,7 +68,8 @@
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
-
+  import '../components/fvIcon/icons/eye-slash'
+  import '../components/fvIcon/icons/eye'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -113,6 +117,7 @@
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         username: '',
         password: '',
+        tailIcon: 'eye',
         otherWays: [{
           img: '',
           name: '快速游戏'
@@ -190,6 +195,16 @@
               return Promise.reject('account.error.invalidPassword')
             }
           })
+        }
+      },
+
+      changeIcon: function(){
+        if( this.tailIcon === 'eye') {
+          this.tailIcon = 'eye-slash'
+          this.$refs.password.$el.type = 'text'
+        }else{
+          this.tailIcon = 'eye'
+          this.$refs.password.$el.type = 'password'
         }
       },
     },

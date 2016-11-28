@@ -22,6 +22,9 @@
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
+        <div class="tailIcon" @click="changeIcon">
+          <icon :name="tailIcon" fill-color="#fff"></icon>
+        </div>
       </div>
       <p v-if="passwordInvalid" class="errors">
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
@@ -41,6 +44,8 @@
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
+  import '../components/fvIcon/icons/eye-slash'
+  import '../components/fvIcon/icons/eye'
   export default {
 	  created(){
       this.userName = this.$route.params.username
@@ -54,6 +59,7 @@
       return {
         userName: '',
         password: '',
+        tailIcon: 'eye',
       }
     },
 
@@ -99,6 +105,16 @@
 							return Promise.reject('account.error.invalidPassword')
 						}
 					})
+        }
+      },
+
+      changeIcon: function(){
+        if( this.tailIcon === 'eye') {
+          this.tailIcon = 'eye-slash'
+          this.$refs.password.$el.type = 'text'
+        }else{
+          this.tailIcon = 'eye'
+          this.$refs.password.$el.type = 'password'
         }
       },
     },

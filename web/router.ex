@@ -64,9 +64,9 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/login", PageController, :show_login_page 
-    get  "/login.html", PageController, :show_login_page 
 
     post "/create_token", UserController, :create_token 
+    post "/create_user", UserController, :create_user
 
     get  "/reset_password", UserController, :reset_password # show reset password page
     get  "/reset_password.html", UserController, :reset_password # show reset password page

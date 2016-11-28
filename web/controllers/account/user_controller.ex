@@ -26,41 +26,7 @@ defmodule Acs.UserController do
       if failed_attempts < 10 or (now - last_failed_timestamp) > 300 do 
         case RedisUser.authenticate(account_id, password) do 
           {:ok, user} ->
-            access_token = case conn.private[:acs_app] do 
-              nil -> 
-                RedisAccessToken.new(%{
-                  app_id: app_id,
-                  user_id: user.id,
-                  device_id: device_id,
-                  platform: platform,
-                  ttl: 604800,
-                  binding: %{}
-                })
-              %RedisApp{} = app ->
-                RedisAccessToken.new(%{
-                  app_id: app_id,
-                  user_id: user.id,
-                  device_id: device_id,
-                  platform: platform,
-                  ttl: app.token_ttl,
-                  binding: %{}
-                })
-            end
-
-            conn |> put_session(:access_token, access_token.id)
-                 |> delete_session(:failed_attempts)
-                 |> delete_session(:last_failed_timestamp)
-                 |> json(%{
-                      success: true,
-                      access_token: access_token.id,
-                      expires_at: RedisAccessToken.expired_at(access_token),
-                      user_id: user.id,
-                      user_email: user.email,
-                      nick_name:  user.nickname,
-                      is_anonymous: false,
-                      sdk: :firevale,
-                      binding: %{} 
-                    })
+            create_and_response_access_token(conn, user, app_id, device_id, platform)          
           _ ->
             conn |> put_session(:failed_attempts, failed_attempts + 1)
                  |> put_session(:last_failed_timestamp, now)
@@ -74,6 +40,61 @@ defmodule Acs.UserController do
     end  
   end
 
+  def create_user(conn, %{"verify_code" => ""}) do 
+      conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})
+  end
+  def create_user(%Plug.Conn{private: %{acs_app_id: app_id, 
+                                        acs_device_id: device_id,
+                                        acs_platform: platform}} = conn, 
+                   %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do 
+  
+    case get_session(conn, :captcha_value) do 
+      ^verify_code ->
+        user = RedisUser.create!(account_id, password)  
+        RedisUser.save!(user)
+        create_and_response_access_token(conn, user, app_id, device_id, platform)          
+      _ ->
+        conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+    end
+  end
+
+  defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform) do 
+    access_token = case conn.private[:acs_app] do 
+                    nil -> 
+                      RedisAccessToken.new(%{
+                        app_id: app_id,
+                        user_id: user.id,
+                        device_id: device_id,
+                        platform: platform,
+                        ttl: 604800,
+                        binding: %{}
+                      })
+                    %RedisApp{} = app ->
+                      RedisAccessToken.new(%{
+                        app_id: app_id,
+                        user_id: user.id,
+                        device_id: device_id,
+                        platform: platform,
+                        ttl: app.token_ttl,
+                        binding: %{}
+                      })
+                  end
+
+      conn |> put_session(:access_token, access_token.id)
+           |> delete_session(:failed_attempts)
+           |> delete_session(:last_failed_timestamp)
+           |> json(%{
+               success: true,
+               access_token: access_token.id,
+               expires_at: RedisAccessToken.expired_at(access_token),
+               user_id: user.id,
+               user_email: user.email,
+               nick_name:  user.nickname,
+               is_anonymous: false,
+               sdk: :firevale,
+               binding: %{} 
+             })
+  end
 
   # def logout(conn, params) do 
   #   conn |> text "logout"

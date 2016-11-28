@@ -114,6 +114,9 @@ defmodule Acs.RedisAccessToken do
     token.updated_at + token.ttl
   end
 
+  defp key(%__MODULE__{id: token_id}) do 
+    "#{@access_token_key}.#{token_id}"
+  end
   defp key(token_id) do
     "#{@access_token_key}.#{token_id}"
   end

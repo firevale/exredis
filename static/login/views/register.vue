@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <validation name="register">
+    <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
       </div>
@@ -64,7 +64,7 @@
       <p v-if="!isUsernameInvalid && !isPasswordInvalid && !isVerifyCodeInvalid" class="errors">&nbsp</p>
 
       <div class="row-login">
-        <input type="submit" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
+        <input type="submit" :value="$t('account.login_page.btnRegister')"/>
       </div>
       <div class="row-login">
         <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
@@ -263,22 +263,24 @@
         }
       },
 
-      onRegister: function() {
-        if (this.$validation.register.valid && this.username.length && this.password.length && this.verifyCode) {
+      handleSubmit: function() {
+        if (this.$validation.register.valid && this.username && this.password && this.verifyCode) {
           this.$http({
-            method: 'POST',
-            url: '',
+            method: 'post',
+            url: '/user/create_user',
             params: {
-              username: '',
-              password: '',
-              confirmWord: '',
+              account_id: this.username,
+              password: this.password,
+              verify_code: this.verifyCode
             }
           }).then(response => {
             let result = response.json()
             if (result.success) {
-
+              this.addAccountExistence(this.username, true)  
+              this.setLoginAccount(this.username)
+              console.log("user successfully created")
             } else {
-              return Promise.reject('account.error.invalidPassword')
+              return Promise.reject(result.message)
             }
           })
         }

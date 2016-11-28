@@ -48,6 +48,4 @@ config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
 
-if Mix.env != :dev do 
-  import_config "services.secret.exs"
-end 
+import_config "services.secret.exs"

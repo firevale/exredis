@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <validation name="login" @submit="handleSubmit">
+    <validation name="login" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.login_page.title') }}</p>
       </div>
@@ -177,8 +177,7 @@
         e.target.$validity.validate(() => {})
       },
 
-      handleSubmit: function(e) {
-        e.preventDefault()
+      handleSubmit: function() {
         if (this.$validation.login.valid && this.username && this.password) {
           this.$http({
             method: 'post',

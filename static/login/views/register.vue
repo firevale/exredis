@@ -29,7 +29,7 @@
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
-        <div class="tailIcon" @click="changeIcon">
+        <div class="tailIcon" @click="togglePasswordVisibility">
           <icon :name="tailIcon" fill-color="#fff"></icon>
         </div>
       </div>
@@ -48,8 +48,8 @@
           </input>
         </div>
         <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" 
-              class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
-          @click="sendCode">
+              class="insideInput" :value="hasSentCode? cooldownCounter :$t('account.login_page.btnSendverificationCode')"
+          @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="headerIcon">
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
@@ -123,8 +123,8 @@
       },
 
       validVerifyCode: function(val) {
-        return Vue.http.post('/check_captcha', {
-          captcha_value: val
+        return Vue.http.post('/check_register_code', {
+          verify_code: val
         }).then(res => {
           return res.json()
         }).then(result => {
@@ -136,13 +136,11 @@
     data: function() {
       return {
         hasSentCode: false,
-        timerNum: 60,
+        cooldownCounter: 60,
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         username: '',
         password: '',
         tailIcon: 'eye',
-        phoneCodeSent: 'frffw3',
-        captcha: '换一张',
         verifyCode: '',
       }
     },
@@ -219,43 +217,30 @@
       },
 
       timerCount: function() {
-        if (this.hasSentCode && this.timerNum > 0) {
-          this.timerNum--
+        if (this.hasSentCode && this.cooldownCounter > 0) {
+          this.cooldownCounter--
             setTimeout(this.timerCount, 1000)
         } else {
           this.hasSentCode = false
-          this.timerNum = 60
+          this.cooldownCounter = 60
         }
       },
 
-      sendCode: function() {
-        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
-          this.hasSentCode = true
-          setTimeout(this.timerCount, 1000)
-        }
-
-        return false
-
-        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
-          let urlApi = ''
-          if (this.isMobileRegisterSupported && this.isValidMobileNumber) {
-            urlApi = 'sendCodeToPhone'
-          } else if (this.isValidEmail) {
-            urlApi = 'sendCodeToEmail'
-          }
+      sendMobileVerifyCode: function() {
+        if (this.isMobileRegisterSupported && utils.isValidMobileNumber(this.username) && this.$validation.register.username.valid) {
           this.$http({
-            method: 'POST',
-            url: urlApi,
+            method: 'post',
+            url: "/send_mobile_register_verify_code",
             params: {
-              username: this.username
+              mobile: this.username
             }
           }).then(response => {
-            let result = response.json()
+            return response.json()
+          }).then(result => {
+            console.log(result)
             if (result.success) {
-              if (!this.hasSentCode) {
-                this.hasSentCode = true
-                setTimeout(this.timerCount, 1000)
-              }
+              this.hasSentCode = true
+              setTimeout(this.timerCount, 1000)
             } else {
               return Promise.reject('error')
             }
@@ -274,11 +259,11 @@
               verify_code: this.verifyCode
             }
           }).then(response => {
-            let result = response.json()
+            return response.json()
+          }).then(result => {
             if (result.success) {
-              this.addAccountExistence(this.username, true)  
+              this.addAccountExistence({account: this.username, exists: true})
               this.setLoginAccount(this.username)
-              console.log("user successfully created")
             } else {
               return Promise.reject(result.message)
             }
@@ -286,11 +271,11 @@
         }
       },
 
-      changeIcon: function(){
-        if( this.tailIcon === 'eye') {
+      togglePasswordVisibility: function() {
+        if (this.tailIcon === 'eye') {
           this.tailIcon = 'eye-slash'
           this.$refs.password.$el.type = 'text'
-        }else{
+        } else {
           this.tailIcon = 'eye'
           this.$refs.password.$el.type = 'password'
         }

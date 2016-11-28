@@ -48,7 +48,7 @@ defmodule Acs.UserController do
                                         acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do 
   
-    case get_session(conn, :captcha_value) do 
+    case get_session(conn, :verify_code) do 
       ^verify_code ->
         user = RedisUser.create!(account_id, password)  
         RedisUser.save!(user)
@@ -95,6 +95,8 @@ defmodule Acs.UserController do
                binding: %{} 
              })
   end
+
+ 
 
   # def logout(conn, params) do 
   #   conn |> text "logout"

@@ -35,8 +35,12 @@ defmodule Acs.Router do
     get  "/login.html", PageController, :show_login_page 
     get  "/admin.html", PageController, :show_admin_page
 
-    post "/update_captcha", CaptchaController, :update 
-    post "/check_captcha", CaptchaController, :check
+    post "/check_register_code", VerifyCodeController, :check_register_code
+    post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha 
+    post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code
+
+    post "/check_reset_password_verify_code", VerifyCodeController, :check_reset_password_verify_code
+    post "/send_mobile_reset_password_verify_code", VerifyCodeController, :send_mobile_reset_password_verify_code
   end
   
   scope "/admin", Acs do

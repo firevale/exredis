@@ -22,7 +22,7 @@ export const setRegisterAccount = ({
 export const updateCaptcha = ({
   commit
 }) => {
-  Vue.http.post('/update_captcha', {}).then(res => res.json()).then(json => {
+  Vue.http.post('/reset_register_captcha', {}).then(res => res.json()).then(json => {
     if (json.success) {
       commit('SET_CAPTCHA_URL', json.image_url)
     }

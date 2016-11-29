@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 const FileUploadDialog = Vue.extend(require('./FileUploadDialog.vue'));
 
 export default {
@@ -7,15 +8,13 @@ export default {
         el: document.createElement('div'),
       });
 
-    instance.title = title
-    instance.postAction = action
-    instance.headers = headers
-    instance.accept = accept
-    instance.extensions = extensions
+    instance.upload.title = title
+    instance.upload.postAction = action
+    instance.upload.request.headers = headers
+    instance.upload.accept = accept
+    instance.upload.extensions = extensions
     instance.callback = callback
 
-    Vue.nextTick(_ => 
-    instance.visible = true
-    )
+    Vue.nextTick(_ => instance.visible = true)
   },
 };

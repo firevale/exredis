@@ -189,7 +189,6 @@
       },
 
       onNext: function(e) {
-
         this.$router.push({
           name: 'resetPassword',
           params: {

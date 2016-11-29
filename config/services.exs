@@ -1,0 +1,47 @@
+use Mix.Config
+
+config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
+
+# Config UCloud UFile Management
+config :acs, :ufile,
+  public_key: "ucloudxiaobin@firevale.com1368084534286667901",
+	private_key: "ccabbef071d26ee247aa1c642eef7b7692accce9",
+  bucket: "fvvr",
+  cdn_scheme: "https",
+  cdn_domain: "fvvrres.firevale.com"
+
+config :acs, Acs.MandrillMailer,
+  adapter: Bamboo.MandrillAdapter,
+  api_key: "lT0K0Wk-ZELrCy2CC5BPDg",
+  from: "noreply@fvac.firevale.com",
+  reply: "noreply@fvac.firevale.com"
+
+config :acs, Acs.SmtpMailer,
+  adapter: Bamboo.SMTPAdapter,
+  server: "smtp.exmail.qq.com",
+  port: 465,
+  username: "admin@firevale.com",
+  password: "P76M4tDn4kuo",
+  tls: :never, # can be `:always` or `:never`
+  ssl: true, # can be `true`
+  retries: 3
+
+config :acs, Acs.SendCloudMailer, 
+  user: "fvac_cn",
+  key: "iXkBkVUk3OEfF5MY",
+  from: "noreply@sdmail.firevale.com",
+  reply: "noreply@sdmail.firevale.com"
+
+config :acs, :alipay,
+  certs_root: "priv/certs",
+  notify_url: "https://fvac.firevale.com/api/alipay/notify",
+  callback_url: "https://fvac.firevale.com/api/alipay/callback?platform=%{platform}",
+  merchant_url: "https://fvac.firevale.com/mobile/native_bridge/%{platform}"
+
+config :acs, Acs.MeishengSmsSender,
+  server_ip: "112.74.76.186",
+  server_port: 8030,
+  username: "JSM41501",
+  password: "4xnvdx0d",
+  secret: "kbmrtjhw6njk",
+  template_verify: "JSM41501-0001"

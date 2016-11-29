@@ -22,8 +22,8 @@
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
-        <div class="tailIcon" @click="changeIcon">
-          <icon :name="tailIcon" fill-color="#fff"></icon>
+        <div class="tailIcon" @click="togglePasswordVisibility">
+          <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>
       <p v-if="passwordInvalid" class="errors">
@@ -59,12 +59,11 @@
       return {
         userName: '',
         password: '',
-        tailIcon: 'eye',
+        passwordIcon: 'eye',
       }
     },
 
 		computed: {
-		  
 			passwordInvalid: function() {
         return this.$validation.validationReset 
                && this.$validation.validationReset.password
@@ -108,12 +107,12 @@
         }
       },
 
-      changeIcon: function(){
-        if( this.tailIcon === 'eye') {
-          this.tailIcon = 'eye-slash'
+      togglePasswordVisibility: function(){
+        if( this.passwordIcon === 'eye') {
+          this.passwordIcon = 'eye-slash'
           this.$refs.password.$el.type = 'text'
         }else{
-          this.tailIcon = 'eye'
+          this.passwordIcon = 'eye'
           this.$refs.password.$el.type = 'password'
         }
       },

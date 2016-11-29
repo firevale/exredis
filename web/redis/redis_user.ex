@@ -40,14 +40,14 @@ defmodule Acs.RedisUser do
   defmodule OpException do 
     defexception message: "redis user operation error"
   end
-  defmodule KeyInUse do 
-    defexception message: "user key not found"
+  defmodule AccountIdInUse do 
+    defexception message: "account id is alreay in use"
   end
-  defmodule KeyNotFound do 
-    defexception message: "user key not found"
+  defmodule AccountIdNotFound do 
+    defexception message: "account id not found"
   end
-  defmodule KeyInvalid do 
-    defexception message: "user key is not valid"
+  defmodule InvalidAccountId do 
+    defexception message: "account id is not valid"
   end
 
 
@@ -58,44 +58,44 @@ defmodule Acs.RedisUser do
   @device_index_key    "acs.indexes.user_device."
 
 
-  def create!(key, password) when is_bitstring(key) and is_bitstring(password) do
-    if not exists?(key) do
-      case parse_key(key) do 
+  def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
+    if not exists?(account_id) do
+      case parse_account_id(account_id) do 
         :email ->
-          [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, key)
-          %__MODULE__{email: String.downcase(key), 
+          [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
+          %__MODULE__{email: String.downcase(account_id), 
                       encrypted_password: Utils.hash_password(password), 
                       nickname: nickname}
 
         :mobile ->
-          %__MODULE__{mobile: key, 
+          %__MODULE__{mobile: account_id, 
                       encrypted_password: Utils.hash_password(password)}
 
         _ ->
-          raise KeyInvalid, message: "invalid user key #{key}"
+          raise InvalidAccountId, message: "invalid user account_id #{account_id}"
       end
     else
-      raise KeyInUse, message: "user key #{key} is already used by other user"
+      raise AccountIdInUse, message: "user account_id #{account_id} is already used by other user"
     end
   end
 
-  def create!(key, password, device_id) when is_bitstring(key) and is_bitstring(password) and is_bitstring(device_id) do 
+  def create!(account_id, password, device_id) when is_bitstring(account_id) and is_bitstring(password) and is_bitstring(device_id) do 
     # find anonymouse user
     case find(device_id) do 
       nil ->
-        create!(key, password)
+        create!(account_id, password)
 
       %{email: nil, mobile: nil, nickname: "anonymous"} = user ->
-        case parse_key(key) do 
+        case parse_account_id(account_id) do 
           :email ->
-            [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, key)
-            %{user | email: String.downcase(key), device_id: nil, nickname: nickname, encrypted_password: Utils.hash_password(password)}
+            [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
+            %{user | email: String.downcase(account_id), device_id: nil, nickname: nickname, encrypted_password: Utils.hash_password(password)}
 
           :mobile ->
-            %{user | mobile: key, device_id: nil, nickname: "fvu#{user.id}", encrypted_password: Utils.hash_password(password)}
+            %{user | mobile: account_id, device_id: nil, nickname: "fvu#{user.id}", encrypted_password: Utils.hash_password(password)}
 
           _ ->
-            raise ArgumentError, message: "invalid user key #{key}"
+            raise ArgumentError, message: "invalid user account_id #{account_id}"
         end
     end
   end
@@ -215,12 +215,12 @@ defmodule Acs.RedisUser do
       json -> from_json(json)
     end
   end
-  def find(key) when is_bitstring(key) do
-    case parse_key(key) do 
+  def find(account_id) when is_bitstring(account_id) do
+    case parse_account_id(account_id) do 
       :unknown -> nil
       type ->
-        case Scripts.find_user([type |> to_string], [key]) do 
-          "undefined" -> refresh(type, key)
+        case Scripts.find_user([type |> to_string], [account_id]) do 
+          "undefined" -> refresh(type, account_id)
           result -> result |> from_json
         end
     end
@@ -228,15 +228,15 @@ defmodule Acs.RedisUser do
   def find!(id) when is_integer(id) do
     case find(id) do
       nil ->
-        raise KeyNotFound, message: "user by id #{id} not found"
+        raise AccountIdNotFound, message: "user by id #{id} not found"
       user ->
         user
     end
   end
-  def find!(key) when is_bitstring(key) do
-    case find(key) do
+  def find!(account_id) when is_bitstring(account_id) do
+    case find(account_id) do
       nil ->
-        raise KeyNotFound, message: "user by key #{key} not found"
+        raise AccountIdNotFound, message: "user by account_id #{account_id} not found"
       user ->
         user
     end
@@ -255,10 +255,10 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(:email, key) do 
+  def refresh(:email, account_id) do 
     query = from user in User,
             left_join: bindings in assoc(user, :sdk_bindings), 
-            where: user.email == ^key,
+            where: user.email == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
@@ -268,10 +268,10 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(:mobile, key) do 
+  def refresh(:mobile, account_id) do 
     query = from user in User,
             left_join: bindings in assoc(user, :sdk_bindings), 
-            where: user.mobile == ^key,
+            where: user.mobile == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
@@ -281,10 +281,10 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(:device, key) do 
+  def refresh(:device, account_id) do 
     query = from user in User,
             left_join: bindings in assoc(user, :sdk_bindings), 
-            where: user.device_id == ^key,
+            where: user.device_id == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
@@ -294,8 +294,8 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(:sdk, key) do 
-    [sdk, app_id, sdk_user_id] = String.split(key, ".")
+  def refresh(:sdk, account_id) do 
+    [sdk, app_id, sdk_user_id] = String.split(account_id, ".")
     query = from user in User,
             left_join: binding in assoc(user, :sdk_bindings), 
             where: binding.sdk == ^sdk and binding.app_id == ^app_id and binding.sdk_user_id == ^sdk_user_id,
@@ -333,8 +333,8 @@ defmodule Acs.RedisUser do
     cache
   end
 
-  def authenticate(key, password) when is_bitstring(key) and is_bitstring(password) do
-    case find(key) do
+  def authenticate(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
+    case find(account_id) do
       :undefined -> {:error, :notfound}
       user ->
         if Utils.check_password(password, user.encrypted_password) do
@@ -345,27 +345,27 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def exists?(key) when is_bitstring(key) do
-    case parse_key(key) do 
-      :email -> Redis.exists(@email_index_key <> String.downcase(key)) > 0
-      :mobile -> Redis.exists(@mobile_index_key <> key) > 0
-      :id -> Redis.exists(@user_base_key <> key) > 0
-      :device -> Redis.exists(@device_index_key <> key) > 0
-      :sdk -> Redis.exists(@binding_index_key <> key) > 0
+  def exists?(account_id) when is_bitstring(account_id) do
+    case parse_account_id(account_id) do 
+      :email -> Redis.exists(@email_index_key <> String.downcase(account_id)) > 0
+      :mobile -> Redis.exists(@mobile_index_key <> account_id) > 0
+      :id -> Redis.exists(@user_base_key <> account_id) > 0
+      :device -> Redis.exists(@device_index_key <> account_id) > 0
+      :sdk -> Redis.exists(@binding_index_key <> account_id) > 0
       :unknown -> false
     end
   end
 
-  # key: email, mobile phone nunmber, id, device_id
-  def delete(key) when is_bitstring(key) do
-    case parse_key(key) do 
+  # account_id: email, mobile phone nunmber, id, device_id
+  def delete(account_id) when is_bitstring(account_id) do
+    case parse_account_id(account_id) do 
       :unknown ->
         :error 
       type ->
-        case Scripts.del_user([type |> to_string], [key]) do 
+        case Scripts.del_user([type |> to_string], [account_id]) do 
           "ok" ->
             if type in [:email, :mobile] do 
-              case Repo.get_by(User, [{type, key}]) do 
+              case Repo.get_by(User, [{type, account_id}]) do 
                 %User{} = user ->
                   Repo.delete(user)
                 _ ->
@@ -400,12 +400,12 @@ defmodule Acs.RedisUser do
         raise OpException, message: "can not delete user by id #{id}"
     end
   end
-  def delete!(key) when is_bitstring(key) do 
-    case delete(key) do 
+  def delete!(account_id) when is_bitstring(account_id) do 
+    case delete(account_id) do 
       :ok -> :ok
       {:ok, _} -> :ok
       _ ->
-        raise OpException, message: "can not delete user by key #{key}"
+        raise OpException, message: "can not delete user by account_id #{account_id}"
     end
   end
 
@@ -422,14 +422,14 @@ defmodule Acs.RedisUser do
     user.last_login_at |> Timex.from_unix |> Timex.format!("%Y-%m-%d %T", :strftime)
   end
 
-  def parse_key(key) when is_bitstring(key) do
+  def parse_account_id(account_id) when is_bitstring(account_id) do
     cond do 
-      Regex.match?(~r/^yyh\.([a-zA-Z0-9\-_]+)\.yyh@([^@]+)/, key) -> :sdk
-      Regex.match?(~r/([^@]+)@([^@]+)/, key) -> :email
-      Regex.match?(~r/^(idfa|idfv|android_id)\.(.*)/, key) -> :device
-      Regex.match?(~r/^1\d{10}$/, key) -> :mobile
-      Regex.match?(~r/^\d+$/, key) -> :id
-      Regex.match?(~r/([a-zA-Z0-9\-_]+)\.([a-zA-Z0-9]+)\.([^\.]+)/, key) -> :sdk
+      Regex.match?(~r/^yyh\.([a-zA-Z0-9\-_]+)\.yyh@([^@]+)/, account_id) -> :sdk
+      Regex.match?(~r/([^@]+)@([^@]+)/, account_id) -> :email
+      Regex.match?(~r/^(idfa|idfv|android_id)\.(.*)/, account_id) -> :device
+      Regex.match?(~r/^1\d{10}$/, account_id) -> :mobile
+      Regex.match?(~r/^\d+$/, account_id) -> :id
+      Regex.match?(~r/([a-zA-Z0-9\-_]+)\.([a-zA-Z0-9]+)\.([^\.]+)/, account_id) -> :sdk
       true -> :unknown
     end
   end

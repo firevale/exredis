@@ -1,8 +1,8 @@
 <template>
   <div class="login-box">
-    <validation name="register">
+    <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
       <div class="row-login">
         <validity ref="username" field="username" :validators="{
@@ -11,7 +11,7 @@
                 validAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 accountNotExists: {rule: true, message: $t('account.error.accountInUse')}
                 }">
-          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
             v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
@@ -23,51 +23,47 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-          <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
-        <div class="tailIcon" @click="changeIcon">
+        <div class="tailIcon" @click="togglePasswordVisibility">
           <icon :name="tailIcon" fill-color="#fff"></icon>
         </div>
       </div>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
-                required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
+                required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
                 validVerifyCode: {rule: true, message: $t('account.error.verifyCodeNotMatch')}
                 }">
-          <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
+          <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <div v-if="shouldShowCaptcha" class="captchaBox">
           <img class="captcha" :src="captchaUrl"></img>
-          <input type="button" class="changeCode" :value="$t('account.login_page.changeCode')" @click="updateCaptcha">
+          <input type="button" class="changeCode" :value="$t('account.loginPage.changeCode')" @click="updateCaptcha">
           </input>
         </div>
         <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" 
-              class="insideInput" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
-          @click="sendCode">
+              class="insideInput" :value="hasSentCode? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
+          @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="headerIcon">
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
         </div>
       </div>
-      <p v-if="isUsernameInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && isPasswordInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && !isPasswordInvalid && isVerifyCodeInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ verifyCodeErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && !isPasswordInvalid && !isVerifyCodeInvalid" class="errors">&nbsp</p>
+      <p class="errors">
+        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+      </p>
 
       <div class="row-login">
-        <input type="submit" :value="$t('account.login_page.btnRegister')" @click.prevent="onRegister" />
+        <input type="submit" :value="$t('account.loginPage.btnRegister')"/>
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
+        <router-link :to="{name: 'login'}">{{ $t('account.loginPage.btnSubmit') }}</router-link>
       </div>
     </validation>
   </div>
@@ -123,8 +119,8 @@
       },
 
       validVerifyCode: function(val) {
-        return Vue.http.post('/check_captcha', {
-          captcha_value: val
+        return Vue.http.post('/check_register_verify_code', {
+          verify_code: val
         }).then(res => {
           return res.json()
         }).then(result => {
@@ -136,14 +132,13 @@
     data: function() {
       return {
         hasSentCode: false,
-        timerNum: 60,
+        cooldownCounter: 60,
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         username: '',
         password: '',
         tailIcon: 'eye',
-        phoneCodeSent: 'frffw3',
-        captcha: '换一张',
         verifyCode: '',
+        serverError: '',
       }
     },
 
@@ -174,28 +169,16 @@
           this.$validation.register.verifyCode.invalid
       },
 
-      usernameErrorMessage: function() {
-        let res = ''
-        if (this.$refs.username.result.invalid) {
-          res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
+      errorMessage: function() {
+        if (this.isUsernameInvalid) {
+          return this.$refs.username.result.errors[0].message
+        } else if (this.isPasswordInvalid) {
+          return this.$refs.password.result.errors[0].message
+        } else if (this.isVerifyCodeInvalid) {
+          return this.$refs.verifyCode.result.errors[0].message
         }
-        return res
-      },
 
-      passwordErrorMessage: function() {
-        let res = ''
-        if (this.$refs.password.result.invalid) {
-          res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
-        }
-        return res
-      },
-
-      verifyCodeErrorMessage: function() {
-        let res = ''
-        if (this.$refs.verifyCode.result.invalid) {
-          res = this.$refs.verifyCode.result.errors && this.$refs.verifyCode.result.errors[0].message
-        }
-        return res
+        return this.serverError
       },
 
       shouldShowCaptcha: function() {
@@ -213,82 +196,77 @@
       ]),
 
       handleValidate: function(e) {
-        e.target.$validity.validate(function() {
-
-        })
+        this.serverError = ''
+        e.target.$validity.validate(_ => {})
       },
 
       timerCount: function() {
-        if (this.hasSentCode && this.timerNum > 0) {
-          this.timerNum--
+        if (this.hasSentCode && this.cooldownCounter > 0) {
+          this.cooldownCounter--
             setTimeout(this.timerCount, 1000)
         } else {
           this.hasSentCode = false
-          this.timerNum = 60
+          this.cooldownCounter = 60
         }
       },
 
-      sendCode: function() {
-        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
-          this.hasSentCode = true
-          setTimeout(this.timerCount, 1000)
-        }
-
-        return false
-
-        if (this.$validation.register.username.valid && this.username.length && !this.hasSentCode) {
-          let urlApi = ''
-          if (this.isMobileRegisterSupported && this.isValidMobileNumber) {
-            urlApi = 'sendCodeToPhone'
-          } else if (this.isValidEmail) {
-            urlApi = 'sendCodeToEmail'
-          }
+      sendMobileVerifyCode: function() {
+        if (this.isMobileRegisterSupported && 
+            utils.isValidMobileNumber(this.username) && 
+            this.$validation.register.username.valid) {
           this.$http({
-            method: 'POST',
-            url: urlApi,
+            method: 'post',
+            url: "/send_mobile_register_verify_code",
             params: {
-              username: this.username
+              mobile: this.username
             }
           }).then(response => {
-            let result = response.json()
+            return response.json()
+          }).then(result => {
             if (result.success) {
-              if (!this.hasSentCode) {
-                this.hasSentCode = true
-                setTimeout(this.timerCount, 1000)
-              }
+              this.hasSentCode = true
+              setTimeout(this.timerCount, 1000)
             } else {
-              return Promise.reject('error')
+              this.serverError = this.$t(result.message)
             }
           })
         }
       },
 
-      onRegister: function() {
-        if (this.$validation.register.valid && this.username.length && this.password.length && this.verifyCode) {
+      handleSubmit: function() {
+        if (this.$validation.register.valid && 
+            this.username && 
+            this.password && 
+            this.verifyCode) {
           this.$http({
-            method: 'POST',
-            url: '',
+            method: 'post',
+            url: '/user/create_user',
             params: {
-              username: '',
-              password: '',
-              confirmWord: '',
+              account_id: this.username,
+              password: this.password,
+              verify_code: this.verifyCode
             }
           }).then(response => {
-            let result = response.json()
+            return response.json()
+          }).then(result => {
             if (result.success) {
-
+              this.addAccountExistence({
+                account: this.username,
+                exists: true
+              })
+              this.setLoginAccount(this.username)
             } else {
-              return Promise.reject('account.error.invalidPassword')
+              this.serverError = this.$t(result.message)
             }
           })
         }
       },
 
-      changeIcon: function(){
-        if( this.tailIcon === 'eye') {
+      togglePasswordVisibility: function() {
+        if (this.tailIcon === 'eye') {
           this.tailIcon = 'eye-slash'
           this.$refs.password.$el.type = 'text'
-        }else{
+        } else {
           this.tailIcon = 'eye'
           this.$refs.password.$el.type = 'password'
         }

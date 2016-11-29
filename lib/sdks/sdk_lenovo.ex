@@ -10,7 +10,6 @@ defmodule SDKLenovo do
                                           "lpsust" => access_token,
                                           "realm"  => app_id,
                                           })
-
     
     if Httpc.success?(response) do 
       xmlresult = response.body 

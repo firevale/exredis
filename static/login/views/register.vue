@@ -5,14 +5,13 @@
         <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
       <div class="row-login">
-        <validity ref="username" field="username" :validators="{
+        <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
-                accountNotExists: {rule: true, message: $t('account.error.accountInUse')}
+                validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
-          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
-            v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" />
+          <input type="text" :placeholder="accountIdPlaceholder"
+            v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="user-o"></icon>
@@ -23,21 +22,21 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" 
+            v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="lock"></icon>
         </div>
         <div class="tailIcon" @click="togglePasswordVisibility">
-          <icon :name="tailIcon" fill-color="#fff"></icon>
+          <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
                 required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
-                validVerifyCode: {rule: true, message: $t('account.error.verifyCodeNotMatch')}
                 }">
           <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
@@ -86,124 +85,76 @@
 
   export default {
     validators: {
-      validAccountName: function(val) {
-        if (this.isMobileRegisterSupported) {
-          return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
-        } else {
-          return utils.isValidEmail(val)
-        }
-      },
-
-      accountNotExists: function(val) {
-        this.setRegisterAccount(val)
-
-        if (!val) {
-          return Promise.reject('')
-        } else {
-          if (typeof this.accountExistences[val] === 'boolean') {
-            return this.accountExistences[val] ? Promise.reject('') : Promise.resolve()
-          } else {
-            return Vue.http.post('/user/is_account_exists', {
-              account_id: val
-            }).then(res => {
-              return res.json()
-            }).then(result => {
-              this.addAccountExistence({
-                account: val,
-                exists: result.exists
-              })
-              return result.exists ? Promise.reject('') : Promise.resolve(true)
-            })
-          }
-        }
-      },
-
-      validVerifyCode: function(val) {
-        return Vue.http.post('/check_register_verify_code', {
-          verify_code: val
-        }).then(res => {
-          return res.json()
-        }).then(result => {
-          return (result.success && result.match) ? Promise.resolve(true) : Promise.reject('')
+      validAccountId: function(val) {
+        return this.validateAccountId(val).then(result => {
+          return result ? Promise.resolve() : Promise.reject()
         })
-      }
+      },
     },
 
     data: function() {
       return {
         hasSentCode: false,
         cooldownCounter: 60,
-        isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
-        username: '',
+        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
+        accountId: '',
         password: '',
-        tailIcon: 'eye',
+        passwordIcon: 'eye',
         verifyCode: '',
-        serverError: '',
+        errorMessage: '',
       }
     },
 
     created: function() {
+      this.accountId = this.registerAccount
       this.updateCaptcha()
     },
 
     computed: {
       ...mapGetters([
-        'accountExistences', 'registerAccount', 'captchaUrl'
+        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
       ]),
 
-      isUsernameInvalid: function() {
-        return this.$validation.register &&
-          this.$validation.register.username &&
-          this.$validation.register.username.invalid
-      },
-
-      isPasswordInvalid: function() {
-        return this.$validation.register &&
-          this.$validation.register.password &&
-          this.$validation.register.password.invalid
-      },
-
-      isVerifyCodeInvalid: function() {
-        return this.$validation.register &&
-          this.$validation.register.verifyCode &&
-          this.$validation.register.verifyCode.invalid
-      },
-
-      errorMessage: function() {
-        if (this.isUsernameInvalid) {
-          return this.$refs.username.result.errors[0].message
-        } else if (this.isPasswordInvalid) {
-          return this.$refs.password.result.errors[0].message
-        } else if (this.isVerifyCodeInvalid) {
-          return this.$refs.verifyCode.result.errors[0].message
-        }
-
-        return this.serverError
-      },
-
       shouldShowCaptcha: function() {
-        return utils.isValidEmail(this.username)
+        return utils.isValidEmail(this.accountId)
       },
 
       shouldShowSendVerifyCodeButton: function() {
-        return utils.isValidMobileNumber(this.username)
+        return utils.isValidMobileNumber(this.accountId)
       }
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setRegisterAccount', 'setLoginAccount', 'updateCaptcha'
+        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount', 'updateCaptcha',
+        'validateAccountId'
       ]),
 
       handleValidate: function(e) {
-        this.serverError = ''
-        e.target.$validity.validate(_ => {})
+        this.errorMessage = ''
+        e.target.$validity.validate(_ => {
+          if (this.$refs.accountId &&
+            this.$refs.accountId.invalid &&
+            this.$refs.accountId.result.errors.length > 0) {
+            this.errorMessage = this.$refs.accountId.result.errors[0].message
+          } else if (this.$refs.password &&
+            this.$refs.password.invalid &&
+            this.$refs.password.result.errors.length > 0) {
+            this.errorMessage = this.$refs.password.result.errors[0].message
+          } else if (this.$refs.verifyCode &&
+            this.$refs.verifyCode.invalid &&
+            this.$refs.verifyCode.result.errors.length > 0) {
+            this.errorMessage = this.$refs.verifyCode.result.errors[0].message
+          } else {
+            this.errorMessage = ''
+          }
+        })
       },
 
-      timerCount: function() {
+      cooldownTimer: function() {
         if (this.hasSentCode && this.cooldownCounter > 0) {
           this.cooldownCounter--
-            setTimeout(this.timerCount, 1000)
+            setTimeout(this.cooldownTimer, 1000)
         } else {
           this.hasSentCode = false
           this.cooldownCounter = 60
@@ -211,38 +162,38 @@
       },
 
       sendMobileVerifyCode: function() {
-        if (this.isMobileRegisterSupported && 
-            utils.isValidMobileNumber(this.username) && 
-            this.$validation.register.username.valid) {
+        if (this.isMobileAccountSupported &&
+          utils.isValidMobileNumber(this.accountId) &&
+          this.$validation.register.accountId.valid) {
           this.$http({
             method: 'post',
             url: "/send_mobile_register_verify_code",
             params: {
-              mobile: this.username
+              mobile: this.accountId
             }
           }).then(response => {
             return response.json()
           }).then(result => {
             if (result.success) {
               this.hasSentCode = true
-              setTimeout(this.timerCount, 1000)
+              setTimeout(this.cooldownTimer, 1000)
             } else {
-              this.serverError = this.$t(result.message)
+              this.errorMessage = this.$t(result.message)
             }
           })
         }
       },
 
       handleSubmit: function() {
-        if (this.$validation.register.valid && 
-            this.username && 
-            this.password && 
-            this.verifyCode) {
+        if (this.$validation.register.valid &&
+          this.accountId &&
+          this.password &&
+          this.verifyCode) {
           this.$http({
             method: 'post',
             url: '/user/create_user',
             params: {
-              account_id: this.username,
+              account_id: this.accountId,
               password: this.password,
               verify_code: this.verifyCode
             }
@@ -251,23 +202,24 @@
           }).then(result => {
             if (result.success) {
               this.addAccountExistence({
-                account: this.username,
+                account: this.accountId,
                 exists: true
               })
-              this.setLoginAccount(this.username)
+              this.setLoginAccount(this.accountId)
+              this.setRegisterAccount(undefined)
             } else {
-              this.serverError = this.$t(result.message)
+              this.errorMessage = this.$t(result.message)
             }
           })
         }
       },
 
       togglePasswordVisibility: function() {
-        if (this.tailIcon === 'eye') {
-          this.tailIcon = 'eye-slash'
+        if (this.passwordIcon === 'eye') {
+          this.passwordIcon = 'eye-slash'
           this.$refs.password.$el.type = 'text'
         } else {
-          this.tailIcon = 'eye'
+          this.passwordIcon = 'eye'
           this.$refs.password.$el.type = 'password'
         }
       },

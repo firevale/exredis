@@ -1,25 +1,24 @@
 <template>
-  <label :class="{'file-uploads': true, 'file-uploads-html5': mode == 'html5', 'file-uploads-html4': mode == 'html4'}">
+    <label :class="{'file-uploads': true, 'file-uploads-html5': $mode == 'html5', 'file-uploads-html4': $mode == 'html4'}">
         <span>{{title}}</span>
         <input-file></input-file>
     </label>
 </template>
+
 <style>
-  .file-uploads {
+.file-uploads {
     overflow: hidden;
     position: relative;
     text-align: center;
-  }
-  
-  .file-uploads span {
+}
+.file-uploads span{
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
-  }
-  
-  .file-uploads input {
+}
+.file-uploads input{
     z-index: 1;
     opacity: 0;
     font-size: 20em;
@@ -30,20 +29,19 @@
     position: absolute;
     width: 100%;
     height: 100%;
-  }
-  
-  .file-uploads.file-uploads-html5 input {
+}
+.file-uploads.file-uploads-html5 input{
     float: left;
     width: 1px !important;
     height: 1px !important;
-    top: -1px !important;
-    left: -1px !important;
-    right: auto !important;
-    bottom: auto !important;
-  }
+    top:-1px !important;
+    left:-1px !important;
+    right:auto !important;
+    bottom:auto !important;
+}
 </style>
+
 <script>
-  import Vue from 'vue';
 export default {
   props: {
     title: {
@@ -83,10 +81,6 @@ export default {
       type: Object,
       default: () => {},
     },
-
-    headers: {
-      type:Object,
-    },
   },
 
   components: {
@@ -108,26 +102,25 @@ export default {
       uploaded: true,
       dropActive: false,
       dropElement: false,
-      mode : 'html5',
       request: {
         data: {},
-        headers: this.headers,
+        headers: {},
       },
     }
   },
 
-  mounted() {
+  ready() {
     this._drop(this.drop);
   },
 
 
-  beforeCreate() {
+  init() {
     var input = document.createElement('input');
     input.type = 'file';
     if (window.FormData && input.files)  {
-      this.mode = 'html5';
+      this.$mode = 'html5';
     } else {
-      this.mode = 'html4';
+      this.$mode = 'html4';
     }
     this._index = 0;
     this._dropActive = 0;
@@ -208,7 +201,7 @@ export default {
     },
 
     _drop(value) {
-      if (this.dropElement && this.mode === 'html5') {
+      if (this.dropElement && this.$mode === 'html5') {
         try {
           window.document.removeEventListener('dragenter', this._onDragenter, false);
           window.document.removeEventListener('dragleave', this._onDragleave, false);
@@ -230,7 +223,7 @@ export default {
       } else {
         this.dropElement = this.drop;
       }
-      if (this.dropElement && this.mode === 'html5') {
+      if (this.dropElement && this.$mode === 'html5') {
         window.document.addEventListener('dragenter', this._onDragenter, false);
         window.document.addEventListener('dragleave', this._onDragleave, false);
         this.dropElement.addEventListener('dragover', this._onDragover, false);
@@ -303,8 +296,8 @@ export default {
     },
 
     _addFileUploads(el) {
-      var fileComponent =Vue.extend(this.$options.components.inputFile);
-      new fileComponent({
+      var Component = this.$options.components.inputFile;
+      new Component({
         parent: this,
         el: el,
       });
@@ -358,7 +351,7 @@ export default {
           }
         }
 
-        if (this.mode == 'html5') {
+        if (this.$mode == 'html5') {
           if (this.putAction || file.putAction) {
             this._fileUploadPut(file);
           } else if (this.postAction || file.postAction) {

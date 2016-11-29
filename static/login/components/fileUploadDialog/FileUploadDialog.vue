@@ -1,10 +1,11 @@
 <template>
-  <modal ref="modal" :visible="visible">
+	<modal v-ref:modal :visible="visible">
     <div class="tile box is-ancestor is-vertical" style="padding: 10px; margin: 0">
+
       <div class="tile is-parent border-horizontal" style="padding: 0 0 10px 0">
         <div class="tile is-child is-3">
-          <file-upload class="file-upload" ref="upload" name="file" :drop="true" :multiple="false" :title="title" :extensions="extensions"
-            :postAction="postAction" :accept="accept" :headers="headers"></file-upload>
+          <file-upload class="file-upload" v-ref:upload name="file"
+            :drop="true" :multiple="false"></file-upload>
         </div>
         <div v-if="file" class="tile is-child is-9 is-vertical">
           <div class="columns" style="margin-bottom: 0">
@@ -15,6 +16,7 @@
               <label class="label">{{ file.name }}</label>
             </div>
           </div>
+
           <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
             <div class="column is-3">
               <label class="label pull-right">{{$t('admin.upload.progress')}}:</label>
@@ -23,6 +25,7 @@
               <progress class="progress is-small is-primary" style="margin-top: 5px" :value="file.progress" max="100"> {{ file.progress }}%</progress>
             </div>
           </div>
+
           <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
             <div class="column is-3">
               <label class="label pull-right">{{$t('admin.upload.speed')}}:</label>
@@ -30,46 +33,28 @@
             <div class="column is-9">
               <label class="label">{{ file.speed | downLoadSpeedStr }}</label>
             </div>
-          </div>
+          </div>						
         </div>
       </div>
+
       <div class="container menu-panel" style="margin-top: 10px">
-        <a class="button is-primary is-small is-outlined" :class="{'is-disabled': file ? file.success || file.active : true, 'is-loading': upload ? upload.active : false}"
+        <a class="button is-primary is-small is-outlined" 
+          :class="{'is-disabled': file ? file.success || file.active : true, 'is-loading': upload ? upload.active : false}" 
           @click="upload.active = true">
           <span class="icon is-small"><i class="fa fa-upload" aria-hidden="true"> </i></span>
           <span>{{ $t('admin.upload.title') }}</span>
         </a>
       </div>
     </div>
-  </modal>
+	</modal>
 </template>
+
 <script>
-  import fileUpload from './FileUpload.vue'
   import {
     Modal
   } from 'vue-bulma-modal'
 
   export default {
-    props: {
-      title: {
-        type: String,
-        default: 'Upload file',
-      },
-      
-      extensions: {
-        default:  () => [],
-      },
-      postAction: {
-        type: String,
-      },
-      headers: {
-        type: String,
-      },
-      accept: {
-        type:String,
-      },
-      
-  },
     data: function() {
       return {
         file: undefined,
@@ -80,7 +65,7 @@
       }
     },
 
-    mounted: function() {
+    compiled: function() {
       this.upload = this.$refs.upload
       this.modal = this.$refs.modal
     },
@@ -110,11 +95,12 @@
     },
 
     components: {
-      fileUpload,
+      fileUpload: require('./FileUpload.vue'),
       Modal
     }
   }
 </script>
+
 <style lang="scss">
   .file-upload {
     display: block;

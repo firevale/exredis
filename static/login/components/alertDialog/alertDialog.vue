@@ -32,7 +32,7 @@
   import '../fvIcon/icons/warning'
   import {
     BaseModal
-  } from 'vue-bulma-modal'
+  } from '../fvModal'
 
   export default {
     mixins: [BaseModal],

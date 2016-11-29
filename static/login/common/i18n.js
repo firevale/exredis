@@ -19,7 +19,7 @@ export default {
         otherWays: '其他方式',
         changeCode: '更换',
       },
-      
+
       retrivePasswordPage: {
         nextStep: '下一步',
         sendPhoneCodeTipPre: '我们已向您的手机号',
@@ -43,8 +43,15 @@ export default {
         tooManyFails: '您已经多次输错密码，请稍后再试',
         sendSmsFailed: '验证短信发送失败, 请稍后再试'
       },
-      
+
+      upload: {
+        filename: '文件名',
+        title: '上传',
+        speed: '上传速度',
+        progress: '上传进度',
+      },
     },
+
 
   }
 }

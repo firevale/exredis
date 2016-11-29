@@ -7,6 +7,7 @@ import VueI18n from 'vue-i18n'
 import locales from './common/i18n'
 import nativeApi from './common/nativeApi'
 import store from './store'
+import filters from './common/filters'
 
 Vue.use(VueI18n)
 Vue.use(VueResource)
@@ -21,6 +22,10 @@ Vue.http.headers.common['acs-device-id'] = nativeApi.getDeviceId()
 
 Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])
+})
+
+Object.keys(filters).forEach(function(k) {
+  Vue.filter(k, filters[k])
 })
 
 let router = routerMap(VueRouter)

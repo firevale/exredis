@@ -2,7 +2,7 @@
   <div class="login-box">
     <validation name="login" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.login_page.title') }}</p>
+        <p class="title">{{ $t('account.loginPage.title') }}</p>
       </div>
       <div class="row-login">
         <validity ref="username" field="username" :validators="{
@@ -11,7 +11,7 @@
             isValidAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
             accountExists: {rule: true, message: $t('account.error.accountNotExist')},
           }">
-          <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="this.isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+          <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="this.isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
           />
         </validity>
         <div class="headerIcon">
@@ -23,7 +23,7 @@
               required: {rule: true, message: $t('account.error.requirePassword')}, 
               maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
           }">
-          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.login_page.userPasswordPlaceHolder')"
+          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
         <div class="headerIcon">
@@ -37,15 +37,15 @@
         <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.login_page.btnSubmit')" />
+        <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'register' }">{{ $t('account.login_page.registration') }}</router-link>
-        <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.login_page.forgetPassword') }}</router-link>
+        <router-link :to="{ name: 'register' }">{{ $t('account.loginPage.registration') }}</router-link>
+        <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
       <div class="row-login">
         <hr>
-        <span>{{ $t('account.login_page.otherWays') }}</span>
+        <span>{{ $t('account.loginPage.otherWays') }}</span>
         <hr>
       </div>
       <div class="row-login" style="flex-wrap: wrap; justify-content: center;">

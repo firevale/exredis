@@ -1,7 +1,7 @@
 export default {
   'zh-hans': {
     account: {
-      login_page: {
+      loginPage: {
         title: '用户登录',
         titleRegister: '注册',
         titleRetrive: '密码找回',
@@ -20,7 +20,7 @@ export default {
         changeCode: '更换',
       },
       
-      retrieve_password_page: {
+      retrivePasswordPage: {
         nextStep: '下一步',
         sendPhoneCodeTipPre: '我们已向您的手机号',
         sendPhoneCodeTipEnd: '发送了验证短信',

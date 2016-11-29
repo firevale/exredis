@@ -2,16 +2,16 @@
   <div class="login-box">
     <validation name="validationRetrive">
       <div class="row-login">
-        <p class="title">{{ $t('account.login_page.titleRetrive') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleRetrive') }}</p>
       </div>
       <p v-if="hasSentCode && receiverType == 'phone'" class="codeTip">
-        {{ $t('account.retrieve_password_page.sendPhoneCodeTipPre') }}
-        <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span> {{ $t('account.retrieve_password_page.sendPhoneCodeTipEnd')
+        {{ $t('account.retrivePasswordPage.sendPhoneCodeTipPre') }}
+        <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span> {{ $t('account.retrivePasswordPage.sendPhoneCodeTipEnd')
         }}
       </p>
       <p v-if="hasSentCode && receiverType == 'email'" class="codeTip">
-        {{ $t('account.retrieve_password_page.sendEmailCodeTipPre') }}
-        <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span> {{ $t('account.retrieve_password_page.sendEmailCodeTipEnd')
+        {{ $t('account.retrivePasswordPage.sendEmailCodeTipPre') }}
+        <span class="errors" style="margin: 0; padding: 0;">{{ receiverName }}</span> {{ $t('account.retrivePasswordPage.sendEmailCodeTipEnd')
         }}
       </p>
       <div class="row-login">
@@ -20,19 +20,19 @@
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validateUserName: {rule: true, message: this.isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 }">
-          <input type="text" class="outsideText" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+          <input type="text" class="outsideText" :placeholder="isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
             v-model.trim="userName" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <validity v-show="hasSentCode" ref="confirmCode" field="confirmCode" :validators="{
-                required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
+                required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
                 maxlength: {rule: 6, message: $t('account.error.verifyCodeNotMatch')},
                 minlength: {rule: 6, message: $t('account.error.verifyCodeNotMatch')},
                 isValidVerifyCode: {rule: true, message: $t('account.error.verifyCodeNotMatch')},
                 }">
-          <input type="text" class="outsideText" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
+          <input type="text" class="outsideText" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="confirmWorldInput"
             autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
-        <input type="button" class="insideInput" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.login_page.btnSendverificationCode')"
+        <input type="button" class="insideInput" :class="{'inputDisabled': hasSentCode}" :value="hasSentCode? timerNum :$t('account.loginPage.btnSendverificationCode')"
           @click.prevent="onReport" />
         <div class="headerIcon">
           <icon v-show="!hasSentCode" name="user-o"></icon>
@@ -46,10 +46,10 @@
       <p v-if="!usernameInvalid && !confirmCodeInvalid" class="errors">&nbsp</p>
 
       <div class="row-login" v-show="hasSentCode">
-        <input type="submit" :value="$t('account.retrieve_password_page.nextStep')" @click.prevent="onNext" />
+        <input type="submit" :value="$t('account.retrivePasswordPage.nextStep')" @click.prevent="onNext" />
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
+        <router-link :to="{ name: 'login' }">{{ $t('account.loginPage.btnSubmit') }}</router-link>
       </div>
     </validation>
   </div>

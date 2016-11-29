@@ -2,10 +2,10 @@
   <div class="login-box">
     <validation name="validationReset">
       <div class="row-login">
-        <p class="title">{{ $t('account.login_page.titleReset') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleReset') }}</p>
       </div>
       <div class="row-login">
-        <input type="text" readonly :placeholder="$t('account.login_page.userPlaceHolder')" v-model.trim="userName" autocomplete="off"
+        <input type="text" readonly :placeholder="$t('account.loginPage.userPlaceHolder')" v-model.trim="userName" autocomplete="off"
           name="user" />
         <div class="headerIcon">
           <icon name="user-o"></icon>
@@ -16,7 +16,7 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-          <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
@@ -30,10 +30,10 @@
         <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
       <p v-if="!passwordInvalid " class="errors">&nbsp</p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.login_page.btnReset')" @click.prevent="onResetPassword" />
+        <input type="submit" :value="$t('account.loginPage.btnReset')" @click.prevent="onResetPassword" />
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
+        <router-link :to="{ name: 'login' }">{{ $t('account.loginPage.btnSubmit') }}</router-link>
       </div>
     </validation>
   </div>

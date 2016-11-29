@@ -2,7 +2,7 @@
   <div class="login-box">
     <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.login_page.titleRegister') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
       <div class="row-login">
         <validity ref="username" field="username" :validators="{
@@ -11,7 +11,7 @@
                 validAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 accountNotExists: {rule: true, message: $t('account.error.accountInUse')}
                 }">
-          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.login_page.userPlaceHolder'): $t('account.login_page.userOnlyEmailPlaceHolder')"
+          <input type="text" :placeholder="isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
             v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
@@ -23,7 +23,7 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
                 }">
-          <input type="password" :placeholder="$t('account.login_page.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
@@ -35,20 +35,20 @@
       </div>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
-                required: {rule: true, message: $t('account.login_page.userPasswordConfirmPlaceHolder')}, 
+                required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
                 validVerifyCode: {rule: true, message: $t('account.error.verifyCodeNotMatch')}
                 }">
-          <input type="text" :placeholder="$t('account.login_page.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
+          <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <div v-if="shouldShowCaptcha" class="captchaBox">
           <img class="captcha" :src="captchaUrl"></img>
-          <input type="button" class="changeCode" :value="$t('account.login_page.changeCode')" @click="updateCaptcha">
+          <input type="button" class="changeCode" :value="$t('account.loginPage.changeCode')" @click="updateCaptcha">
           </input>
         </div>
         <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" 
-              class="insideInput" :value="hasSentCode? cooldownCounter :$t('account.login_page.btnSendverificationCode')"
+              class="insideInput" :value="hasSentCode? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="headerIcon">
@@ -60,10 +60,10 @@
       </p>
 
       <div class="row-login">
-        <input type="submit" :value="$t('account.login_page.btnRegister')"/>
+        <input type="submit" :value="$t('account.loginPage.btnRegister')"/>
       </div>
       <div class="row-login">
-        <router-link :to="{name: 'login'}">{{ $t('account.login_page.btnSubmit') }}</router-link>
+        <router-link :to="{name: 'login'}">{{ $t('account.loginPage.btnSubmit') }}</router-link>
       </div>
     </validation>
   </div>
@@ -211,7 +211,9 @@
       },
 
       sendMobileVerifyCode: function() {
-        if (this.isMobileRegisterSupported && utils.isValidMobileNumber(this.username) && this.$validation.register.username.valid) {
+        if (this.isMobileRegisterSupported && 
+            utils.isValidMobileNumber(this.username) && 
+            this.$validation.register.username.valid) {
           this.$http({
             method: 'post',
             url: "/send_mobile_register_verify_code",
@@ -232,7 +234,10 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.register.valid && this.username && this.password && this.verifyCode) {
+        if (this.$validation.register.valid && 
+            this.username && 
+            this.password && 
+            this.verifyCode) {
           this.$http({
             method: 'post',
             url: '/user/create_user',

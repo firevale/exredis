@@ -39,6 +39,8 @@ export default {
         passwordTooLong: '密码超长',
         verifyCodeNotMatch: '验证码输入有误',
         verifyCodeTooShort: '验证码至少有4个字符',
+        passwordNotMatch: '密码错误',
+        tooManyFails: '您已经多次输错密码，请过10分钟以后再试',
       },
       
     },

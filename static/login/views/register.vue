@@ -237,7 +237,6 @@
           }).then(response => {
             return response.json()
           }).then(result => {
-            console.log(result)
             if (result.success) {
               this.hasSentCode = true
               setTimeout(this.timerCount, 1000)

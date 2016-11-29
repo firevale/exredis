@@ -33,11 +33,9 @@
           <icon :name="tailIcon" fill-color="#fff"></icon>
         </div>
       </div>
-      <p v-if="usernameInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameTip }}</p>
-      <p v-if="!usernameInvalid && passwordInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordTip }}</p>
-      <p v-if="!usernameInvalid && !passwordInvalid" class="errors">&nbsp</p>
+      <p class="errors">
+        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+      </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.login_page.btnSubmit')" />
       </div>
@@ -118,6 +116,7 @@
         username: '',
         password: '',
         tailIcon: 'eye',
+        serverError: undefined,
         otherWays: [{
           img: '',
           name: '快速游戏'
@@ -145,27 +144,24 @@
           this.$validation.login.username.invalid
       },
 
-      usernameTip: function() {
-        let res = ''
-        if (this.$refs.username && this.$refs.username.result.invalid) {
-          res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
-        }
-        return res
-      },
-
       passwordInvalid: function() {
         return this.$validation.login &&
           this.$validation.login.password &&
           this.$validation.login.password.invalid
       },
 
-      passwordTip: function() {
-        let res = ''
-        if (this.$refs.password && this.$refs.password.result.invalid) {
-          res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
+      errorMessage: function() {
+        if (this.usernameInvalid) {
+          return this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
         }
-        return res
-      },
+        else if (this.passwordInvalid) {
+          return this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
+        }
+        else if (this.serverError) {
+          return this.serverError
+        }
+        return ''
+      }
     },
 
     methods: {
@@ -174,10 +170,12 @@
       ]),
 
       handleValidate: function(e) {
+        this.serverError = undefined
         e.target.$validity.validate(() => {})
       },
 
       handleSubmit: function() {
+        this.serverError = undefined
         if (this.$validation.login.valid && this.username && this.password) {
           this.$http({
             method: 'post',
@@ -187,11 +185,12 @@
               password: this.password
             }
           }).then(response => {
-            let result = response.json()
+            return response.json()
+          }).then(result => {
             if (result.success) {
-
+              // TODO: handle login success
             } else {
-              return Promise.reject('account.error.invalidPassword')
+              this.serverError = this.$t(result.message)
             }
           })
         }

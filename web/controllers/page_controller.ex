@@ -5,7 +5,8 @@ defmodule Acs.PageController do
     render conn, "index.html"
   end
 
-  @sm_provider      Application.get_env(:acs, :sm_provider)
+  @sm_provider                  Application.get_env(:acs, :sm_provider)
+  @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
   def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
                                             acs_platform: platform}} = conn,
@@ -26,7 +27,7 @@ defmodule Acs.PageController do
                                  browser: browser,
                                  platform: platform,
                                  locale: locale,
-                                 isMobileRegisterSupported: not is_nil(@sm_provider))
+                                 is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   def show_admin_page(conn, params) do

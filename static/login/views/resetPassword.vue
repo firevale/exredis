@@ -2,7 +2,7 @@
   <div class="login-box">
     <validation name="validationReset">
       <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.titleReset') }}</p>
+        <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
       </div>
       <div class="row-login">
         <input type="text" readonly :placeholder="$t('account.loginPage.userPlaceHolder')" v-model.trim="userName" autocomplete="off"

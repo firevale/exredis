@@ -5,13 +5,14 @@
         <p class="title">{{ $t('account.loginPage.title') }}</p>
       </div>
       <div class="row-login">
-        <validity ref="username" field="username" :validators="{
+        <validity ref="accountId" field="accountId" :validators="{
             required: {rule: true, message: $t('account.error.requireUserName')}, 
             maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-            isValidAccountName: {rule: true, message: isMobileRegisterSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
-            accountExists: {rule: true, message: $t('account.error.accountNotExist')},
+            validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
           }">
-          <input type="text" v-model.trim="username" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="this.isMobileRegisterSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
+          <input type="text" v-model.trim="accountId" autocomplete="off" name="user" 
+                 @focusout="handleValidate" 
+                 :placeholder="accountIdPlaceholder"
           />
         </validity>
         <div class="headerIcon">
@@ -23,7 +24,8 @@
               required: {rule: true, message: $t('account.error.requirePassword')}, 
               maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
           }">
-          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
+          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" 
+                 @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
         <div class="headerIcon">
@@ -76,50 +78,24 @@
 
   export default {
     validators: {
-      isValidAccountName: function(val) {
-        if (this.isMobileRegisterSupported) {
-          return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
-        } else {
-          return utils.isValidEmail(val)
-        }
-      },
-
-      accountExists: function(val) {
-        this.setLoginAccount(val)
-
-        if (!val) {
-          return Promise.reject('')
-        } else {
-          if (typeof this.accountExistences[val] === 'boolean') {
-            return this.accountExistences[val] ? Promise.resolve() : Promise.reject('')
-          } else {
-            return Vue.http.post('/user/is_account_exists', {
-              account_id: val
-            }).then(res => {
-              return res.json()
-            }).then(json => {
-              this.addAccountExistence({
-                account: val,
-                exists: json.exists
-              })
-              return json.exists ? Promise.resolve() : Promise.reject('')
-            })
-          }
-        }
+      validAccountId: function(val) {
+        return this.validateAccountId(val).then(result => {
+          return result ? Promise.resolve() : Promise.reject()
+        })
       },
     },
 
     beforeMount: function() {
-      this.username = this.loginAccount
+      this.accountId = this.loginAccount
     },
 
     data: function() {
       return {
-        isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
-        username: '',
+        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
+        accountId: '',
         password: '',
         passwordIcon: 'eye',
-        serverError: '',
+        errorMessage: '',
         otherWays: [{
           img: '',
           name: '快速游戏'
@@ -138,50 +114,38 @@
 
     computed: {
       ...mapGetters([
-        'accountExistences', 'loginAccount'
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
       ]),
-
-      usernameInvalid: function() {
-        return this.$validation.login &&
-          this.$validation.login.username &&
-          this.$validation.login.username.invalid
-      },
-
-      passwordInvalid: function() {
-        return this.$validation.login &&
-          this.$validation.login.password &&
-          this.$validation.login.password.invalid
-      },
-
-      errorMessage: function() {
-        if (this.usernameInvalid) {
-          return this.$refs.username.result.errors[0].message
-        } else if (this.passwordInvalid) {
-          return this.$refs.password.result.errors[0].message
-        }
-
-        return this.serverError
-      },
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount'
+        'addAccountExistence', 'setLoginAccount', 'validateAccountId'
       ]),
 
       handleValidate: function(e) {
-        this.serverError = ''
-        e.target.$validity.validate(_ => {})
+        e.target.$validity.validate(_ => {
+          if (this.$refs.accountId &&
+            this.$refs.accountId.invalid &&
+            this.$refs.accountId.result.errors.length > 0) {
+            this.errorMessage = this.$refs.accountId.result.errors[0].message
+          } else if (this.$refs.password &&
+            this.$refs.password.invalid &&
+            this.$refs.password.result.errors.length > 0) {
+            this.errorMessage = this.$refs.password.result.errors[0].message
+          } else {
+            this.errorMessage = ''
+          }
+        })
       },
 
       handleSubmit: function() {
-        this.serverError = ''
-        if (this.$validation.login.valid && this.username && this.password) {
+        if (this.$validation.login.valid && this.accountId && this.password) {
           this.$http({
             method: 'post',
             url: '/user/create_token',
             params: {
-              account_id: this.username,
+              account_id: this.accountId,
               password: this.password
             }
           }).then(response => {
@@ -190,7 +154,7 @@
             if (result.success) {
               // TODO: handle login success
             } else {
-              this.serverError = this.$t(result.message)
+              this.errorMessage = this.$t(result.message)
             }
           })
         }

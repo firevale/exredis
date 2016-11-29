@@ -1,5 +1,5 @@
 import Vue from 'vue'
-
+import utils from '../common/utils'
 
 export const addAccountExistence = ({
   commit
@@ -27,4 +27,15 @@ export const updateCaptcha = ({
       commit('SET_CAPTCHA_URL', json.image_url)
     }
   })
+}
+
+
+export const validateAccountId = ({
+  commit
+}, accountId) => {
+  if (window.acsConfig.isMobileAccountSupported) {
+    return utils.isValidEmail(accountId) || utils.isValidMobileNumber(accountId)
+  } else {
+    return utils.isValidEmail(accountId)
+  }
 }

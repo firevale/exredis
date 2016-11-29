@@ -9,7 +9,7 @@ export default {
   },
 
   isValidAccountName: function(val) {
-    if (window.acsConfig.isMobileRegisterSupported) {
+    if (window.acsConfig.isMobileAccountSupported) {
       return this.isValidEmail(val) || this.isValidMobileNumber(val)
     } else {
       return this.isValidEmail(val)

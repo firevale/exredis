@@ -19,11 +19,16 @@ defmodule Acs.UserController do
                                          acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password}) do 
     if RedisUser.exists?(account_id) do 
-      failed_attempts = get_session(conn, :failed_attempts) || 0
-      last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
       now = Utils.unix_timestamp
+      last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
 
-      if failed_attempts < 10 or (now - last_failed_timestamp) > 300 do 
+      failed_attempts = if now - last_failed_timestamp > 300 do 
+                          0 # cooldown time reached, clear failed_attempts counter
+                        else 
+                          get_session(conn, :failed_attempts) || 0
+                        end
+
+      if failed_attempts < 10 do 
         case RedisUser.authenticate(account_id, password) do 
           {:ok, user} ->
             create_and_response_access_token(conn, user, app_id, device_id, platform)          

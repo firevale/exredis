@@ -4,7 +4,7 @@ defmodule Acs.VerifyCodeController do
   alias Acs.CaptchaGenerator
   alias Acs.SmsService
 
-  def check_register_code(conn, %{"verify_code" => value}) do 
+  def check_register_verify_code(conn, %{"verify_code" => value}) do 
     captcha = get_session(conn, :verify_code)
     conn |> json(%{success: true, match: captcha == String.downcase(value)})
   end
@@ -33,10 +33,10 @@ defmodule Acs.VerifyCodeController do
                |> put_session(:last_mobile_sent_at, now)
                |> json(%{success: true})
         _ ->
-          conn |> json(%{success: false, message: "send sms failed"})
+          conn |> json(%{success: false, message: "account.error.sendSmsFailed"})
       end
     else
-      conn |> json(%{success: false, message: "send mobile code cooldown time limit"})
+      conn |> json(%{success: false, message: "account.error.sendSmsCooldown"})
     end
   end
 

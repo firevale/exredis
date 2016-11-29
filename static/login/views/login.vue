@@ -29,8 +29,8 @@
         <div class="headerIcon">
           <icon name="lock" fill-color="#fff"></icon>
         </div>
-        <div class="tailIcon" @click="changeIcon">
-          <icon :name="tailIcon" fill-color="#fff"></icon>
+        <div class="tailIcon" @click="togglePasswordVisibility">
+          <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>
       <p class="errors">
@@ -98,7 +98,10 @@
             }).then(res => {
               return res.json()
             }).then(json => {
-              this.addAccountExistence({account: val, exists: json.exists})
+              this.addAccountExistence({
+                account: val,
+                exists: json.exists
+              })
               return json.exists ? Promise.resolve() : Promise.reject('')
             })
           }
@@ -115,8 +118,8 @@
         isMobileRegisterSupported: window.acsConfig.isMobileRegisterSupported,
         username: '',
         password: '',
-        tailIcon: 'eye',
-        serverError: undefined,
+        passwordIcon: 'eye',
+        serverError: '',
         otherWays: [{
           img: '',
           name: '快速游戏'
@@ -152,16 +155,13 @@
 
       errorMessage: function() {
         if (this.usernameInvalid) {
-          return this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
+          return this.$refs.username.result.errors[0].message
+        } else if (this.passwordInvalid) {
+          return this.$refs.password.result.errors[0].message
         }
-        else if (this.passwordInvalid) {
-          return this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
-        }
-        else if (this.serverError) {
-          return this.serverError
-        }
-        return ''
-      }
+
+        return this.serverError
+      },
     },
 
     methods: {
@@ -170,12 +170,12 @@
       ]),
 
       handleValidate: function(e) {
-        this.serverError = undefined
-        e.target.$validity.validate(() => {})
+        this.serverError = ''
+        e.target.$validity.validate(_ => {})
       },
 
       handleSubmit: function() {
-        this.serverError = undefined
+        this.serverError = ''
         if (this.$validation.login.valid && this.username && this.password) {
           this.$http({
             method: 'post',
@@ -196,12 +196,12 @@
         }
       },
 
-      changeIcon: function(){
-        if( this.tailIcon === 'eye') {
-          this.tailIcon = 'eye-slash'
+      togglePasswordVisibility: function() {
+        if (this.passwordIcon == 'eye') {
+          this.passwordIcon = 'eye-slash'
           this.$refs.password.$el.type = 'text'
-        }else{
-          this.tailIcon = 'eye'
+        } else {
+          this.passwordIcon = 'eye'
           this.$refs.password.$el.type = 'password'
         }
       },
@@ -210,7 +210,6 @@
     components: {
       'icon': Icon,
     }
-
   }
 </script>
 <style lang="scss">

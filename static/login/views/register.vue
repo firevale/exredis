@@ -55,19 +55,15 @@
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
         </div>
       </div>
-      <p v-if="isUsernameInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ usernameErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && isPasswordInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ passwordErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && !isPasswordInvalid && isVerifyCodeInvalid" class="errors">
-        <icon name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ verifyCodeErrorMessage }}</p>
-      <p v-if="!isUsernameInvalid && !isPasswordInvalid && !isVerifyCodeInvalid" class="errors">&nbsp</p>
+      <p class="errors">
+        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+      </p>
 
       <div class="row-login">
         <input type="submit" :value="$t('account.login_page.btnRegister')"/>
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'login' }">{{ $t('account.login_page.btnSubmit') }}</router-link>
+        <router-link :to="{name: 'login'}">{{ $t('account.login_page.btnSubmit') }}</router-link>
       </div>
     </validation>
   </div>
@@ -123,7 +119,7 @@
       },
 
       validVerifyCode: function(val) {
-        return Vue.http.post('/check_register_code', {
+        return Vue.http.post('/check_register_verify_code', {
           verify_code: val
         }).then(res => {
           return res.json()
@@ -142,6 +138,7 @@
         password: '',
         tailIcon: 'eye',
         verifyCode: '',
+        serverError: '',
       }
     },
 
@@ -172,28 +169,16 @@
           this.$validation.register.verifyCode.invalid
       },
 
-      usernameErrorMessage: function() {
-        let res = ''
-        if (this.$refs.username.result.invalid) {
-          res = this.$refs.username.result.errors && this.$refs.username.result.errors[0].message
+      errorMessage: function() {
+        if (this.isUsernameInvalid) {
+          return this.$refs.username.result.errors[0].message
+        } else if (this.isPasswordInvalid) {
+          return this.$refs.password.result.errors[0].message
+        } else if (this.isVerifyCodeInvalid) {
+          return this.$refs.verifyCode.result.errors[0].message
         }
-        return res
-      },
 
-      passwordErrorMessage: function() {
-        let res = ''
-        if (this.$refs.password.result.invalid) {
-          res = this.$refs.password.result.errors && this.$refs.password.result.errors[0].message
-        }
-        return res
-      },
-
-      verifyCodeErrorMessage: function() {
-        let res = ''
-        if (this.$refs.verifyCode.result.invalid) {
-          res = this.$refs.verifyCode.result.errors && this.$refs.verifyCode.result.errors[0].message
-        }
-        return res
+        return this.serverError
       },
 
       shouldShowCaptcha: function() {
@@ -211,9 +196,8 @@
       ]),
 
       handleValidate: function(e) {
-        e.target.$validity.validate(function() {
-
-        })
+        this.serverError = ''
+        e.target.$validity.validate(_ => {})
       },
 
       timerCount: function() {
@@ -241,7 +225,7 @@
               this.hasSentCode = true
               setTimeout(this.timerCount, 1000)
             } else {
-              return Promise.reject('error')
+              this.serverError = this.$t(result.message)
             }
           })
         }
@@ -261,10 +245,13 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              this.addAccountExistence({account: this.username, exists: true})
+              this.addAccountExistence({
+                account: this.username,
+                exists: true
+              })
               this.setLoginAccount(this.username)
             } else {
-              return Promise.reject(result.message)
+              this.serverError = this.$t(result.message)
             }
           })
         }

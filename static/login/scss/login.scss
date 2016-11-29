@@ -2,11 +2,13 @@
 @import "./font";
 @import "./common";
 @import "./transition";
+@import "~bulma";
 html {
   font-size: $middle;
 }
 
 .g-doc {
+  background: $white;
   width: 100vw;
   height: 100vh;
   margin: auto;
@@ -14,19 +16,20 @@ html {
   flex-direction: column;
   justify-content: center;
   .g-con {
+    background: $white;
     position: relative;
     margin: 0 auto;
     min-height: 320px;
     .fa-icon.closeIcon {
       position: absolute;
-      right: -1.2rem;
+      right: .3rem;
       top: 1.5rem;
     }
     .g-mask {
+      margin: 0 auto;
       position: relative;
       overflow: hidden;
       .login-box {
-        background: $white;
         border-radius: .5rem;
         max-width: 100vh;
         margin: 0 auto;
@@ -168,10 +171,11 @@ html {
 @media screen and (max-width: 768px) {
   .g-doc {
     .g-con {
-      width: 85vw;
+      width: 100vw;
       max-width: 100vh;
       min-height: 300px;
       .g-mask {
+         max-width: 85vw;
         .login-box {
           .row-login {
             input {
@@ -209,8 +213,9 @@ html {
   .g-doc {
     .g-con {
       width: 50vw;
-      max-width: 280px;
+      max-width: 360px;
       .g-mask {
+        max-width: 280px;
         .login-box {
           .row-login {
             input {
@@ -249,8 +254,9 @@ html {
   .g-doc {
     .g-con {
       width: 40vw;
-      max-width: 340px;
+      max-width: 400px;
       .g-mask {
+        max-width: 340px;
         .login-box {
           .row-login {
             input {

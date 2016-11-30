@@ -2,9 +2,15 @@
 @import "./font";
 @import "./common";
 @import "./transition";
-@import "~bulma";
+
 html {
   font-size: $middle;
+}
+
+body:not(.in-app) {
+  .show-in-app {
+    display: none; 
+  }
 }
 
 .g-doc {
@@ -20,7 +26,7 @@ html {
     position: relative;
     margin: 0 auto;
     min-height: 320px;
-    .fa-icon.closeIcon {
+    .fa-icon.icon-close {
       position: absolute;
       right: .3rem;
       top: 1.5rem;
@@ -139,13 +145,13 @@ html {
             font-size: .5rem;
             padding-top: .5rem;
           }
-          .headerIcon {
+          .header-icon {
             left: .8rem;
             width: .5rem;
             height: 100%;
             position: absolute;
           }
-          .tailIcon {
+          .tail-icon {
             right: .8rem;
             width: .5rem;
             height: 100%;
@@ -164,7 +170,7 @@ html {
             vertical-align: middle;
           }
         }
-        .codeTip {
+        .code-tip {
           font-size: .8rem;
           margin: 1rem .2rem;
         }

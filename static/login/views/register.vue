@@ -12,7 +12,7 @@
           <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
             @focusout="handleValidate" />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="user-o"></icon>
         </div>
       </div>
@@ -24,10 +24,10 @@
           <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
             autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="lock"></icon>
         </div>
-        <div class="tailIcon" @click="togglePasswordVisibility">
+        <div class="tail-icon" @click="togglePasswordVisibility">
           <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>
@@ -49,7 +49,7 @@
               class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter : hasSentCode? $t('account.loginPage.btnSendverificationCode'): $t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendMobileVerifyCode">
         </input>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
         </div>
       </div>

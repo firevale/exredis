@@ -14,7 +14,7 @@
                  :placeholder="accountIdPlaceholder"
           />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="user-o"></icon>
         </div>
       </div>
@@ -26,10 +26,10 @@
                  @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="lock" fill-color="#fff"></icon>
         </div>
-        <div class="tailIcon" @click="togglePasswordVisibility">
+        <div class="tail-icon" @click="togglePasswordVisibility">
           <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>
@@ -43,17 +43,19 @@
         <router-link :to="{ name: 'register' }">{{ $t('account.loginPage.registration') }}</router-link>
         <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
-      <div class="row-login">
-        <hr>
-        <span>{{ $t('account.loginPage.otherWays') }}</span>
-        <hr>
-      </div>
-      <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
-        <div class="tileWays" v-for="item in otherWays">
-          <figure>
-            <img :src="item.img"></img>
-          </figure>
-          <p>{{ item.name }}</p>
+      <div class="show-in-app">
+        <div class="row-login">
+          <hr>
+          <span>{{ $t('account.loginPage.otherWays') }}</span>
+          <hr>
+        </div>
+        <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
+          <div class="tileWays" v-for="item in otherWays">
+            <figure>
+              <img :src="item.img"></img>
+            </figure>
+            <p>{{ item.name }}</p>
+          </div>
         </div>
       </div>
     </validation>

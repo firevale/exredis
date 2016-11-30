@@ -50,12 +50,12 @@ body:not(.in-app) {
             margin: 1rem 0;
             line-height: 2.5rem;
             vertical-align: middle;
-            font-size: 1rem;
+            font-size: 1.5rem;
             text-align: center;
           }
           input {
             padding: .5rem;
-            padding-left: 1.4rem;
+            padding-left: 2rem;
             font-size: .6rem;
             flex: 1;
           }
@@ -72,8 +72,8 @@ body:not(.in-app) {
             color: $white;
             background: $blue;
             border: none;
-            padding: .8rem;
-            font-size: .8rem;
+            padding: .6rem;
+            font-size: 1rem;
             margin: auto;
           }
           input.outsideText {
@@ -83,6 +83,7 @@ body:not(.in-app) {
             position: absolute;
             right: .2rem;
             color: $white;
+            font-weight: bold;
             margin: .1rem 0;
             font-size: .6rem;
             padding: .35rem .3rem;
@@ -104,12 +105,12 @@ body:not(.in-app) {
               flex: 1
             }
             .changeCode {
-              color: $white;
+              color: $primary;
               padding: .4rem;
               font-size: .8rem;
               border: none;
               border-radius: .2rem;
-              background: $link;
+              background: $white;
             }
           }
           hr {
@@ -145,7 +146,7 @@ body:not(.in-app) {
             padding-top: .5rem;
           }
           .header-icon {
-            left: .4rem;
+            left: .8rem;
             width: .5rem;
             height: 100%;
             position: absolute;

@@ -46,7 +46,7 @@
         </div>
 
         <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': cooldownCounter > 0}" 
-              class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
+              class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter : hasSentCode? $t('account.loginPage.btnSendverificationCode'): $t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="header-icon">
@@ -160,6 +160,10 @@
       },
 
       sendMobileVerifyCode: function() {
+        this.cooldownCounter = 60
+        hasSentCode = true
+              setTimeout(this.cooldownTimer, 1000)
+              return false;
         if (window.acsConfig.isMobileAccountSupported &&
           utils.isValidMobileNumber(this.accountId) &&
           this.$validation.register.accountId.valid) {
@@ -173,6 +177,7 @@
             return response.json()
           }).then(result => {
             if (result.success) {
+              hasSentCode = true
               this.cooldownCounter = 60
               setTimeout(this.cooldownTimer, 1000)
             } else {

@@ -18,11 +18,11 @@ export default {
         forgetPassword: '忘记密码',
         registration: '快速注册',
         otherWays: '其他方式',
-        changeCode: '获取验证码',
+        changeCode: '更换',
       },
 
       registerPage:{
-        cooldownText: "重新发送",
+        cooldownText: "重新发送({timer}s)",
         goLoginPage: '已有帐号>',
       },
 

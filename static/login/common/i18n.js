@@ -10,9 +10,10 @@ export default {
         btnRegister: '注册',
         btnReset: '重置',
         btnSendverificationCode: '发送验证码',
-        userPlaceHolder: '请输入手机号/邮箱',
+        btnSendCodeReqpeat: '重新发送',
+        userPlaceHolder: '请输入手机号/邮箱地址',
         userOnlyEmailPlaceHolder: '请输入邮箱',
-        userPasswordPlaceHolder: '请输入密码',
+        userPasswordPlaceHolder: '请输入密码，6-20位英文或数字',
         verifyCodePlaceholder: '请输入验证码',
         forgetPassword: '忘记密码',
         registration: '快速注册',
@@ -22,7 +23,8 @@ export default {
       },
 
       registerPage:{
-         goLoginPage: '已有帐号>',
+        cooldownText: "重新发送",
+        goLoginPage: '已有帐号>',
       },
 
       retrievePasswordPage: {
@@ -45,7 +47,7 @@ export default {
         accountInUse: '用户名或密码错误',
         accountNotExist: '用户名或密码错误',
         requirePassword: '请输入密码',
-        passwordTooLong: '密码超长',
+        passwordWrong: '密码长度6-20位',
         invalidVerifyCode: '验证码输入有误',
         verifyCodeTooShort: '验证码至少有4个字符',
         passwordNotMatch: '用户名或密码错误',

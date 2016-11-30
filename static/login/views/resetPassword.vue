@@ -14,9 +14,9 @@
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
-                maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
+                minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
-          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
+          <input type="password" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">

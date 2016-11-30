@@ -72,13 +72,14 @@ html {
           }
           input.outsideText {
             flex: 1;
-            width: 30%;
           }
           .insideInput {
+            position: absolute;
+            right: .2rem;
             color: $white;
-            background: $primary;
-            padding: 0;
-            margin: 0;
+            margin: .1rem 0;
+            font-size: .6rem;
+            padding: .35rem .3rem;
             display: inline-block;
             background: $link;
             border-radius: .2rem;
@@ -122,8 +123,8 @@ html {
             text-align: center;
             padding-top: .5rem;
             figure {
-              width: 2rem;
-              height: 2rem;
+              width: 2.5rem;
+              height: 2.5rem;
               border: 1px solid;
               margin: auto;
             }
@@ -143,7 +144,7 @@ html {
             height: 100%;
             position: absolute;
           }
-          .tailIcon{
+          .tailIcon {
             right: .8rem;
             width: .5rem;
             height: 100%;
@@ -178,7 +179,7 @@ html {
       max-width: 100vh;
       min-height: 300px;
       .g-mask {
-         max-width: 85vw;
+        max-width: 85vw;
         .login-box {
           .row-login {
             input {
@@ -186,6 +187,17 @@ html {
             }
             a {
               font-size: .6rem;
+            }
+            .insideInput {
+              position: absolute;
+              right: .2rem;
+              color: $white;
+              margin: .15rem 0;
+              font-size: .5rem;
+              padding: .3rem .3rem;
+              display: inline-block;
+              background: $link;
+              border-radius: .2rem;
             }
             .captchaBox {
               flex: 2;
@@ -226,6 +238,17 @@ html {
             a {
               font-size: .8rem;
             }
+            .insideInput {
+              position: absolute;
+              right: .2rem;
+              color: $white;
+              margin: .15rem 0;
+              font-size: .6rem;
+              padding: .35rem .3rem;
+              display: inline-block;
+              background: $link;
+              border-radius: .2rem;
+            }
             .captchaBox {
               flex: 2;
               max-height: 2rem;
@@ -261,10 +284,21 @@ html {
         .login-box {
           .row-login {
             input {
-              font-size: .8rem;
+              font-size: .9rem;
             }
             a {
               font-size: .8rem;
+            }
+            .insideInput {
+              position: absolute;
+              right: .2rem;
+              color: $white;
+              margin: .2rem 0;
+              font-size: .6rem;
+              padding: .35rem .3rem;
+              display: inline-block;
+              background: $link;
+              border-radius: .2rem;
             }
             .captchaBox {
               flex: 2;

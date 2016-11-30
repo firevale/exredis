@@ -19,17 +19,13 @@ export default function(VueRouter) {
         name: 'retrievePasswordStep1',
         component: require('../views/retrievePasswordStep1.vue')
       }, {
-        path: 'retrievePasswordStep2',
+        path: 'retrievePasswordStep2/:accountId',
         name: 'retrievePasswordStep2',
         component: require('../views/retrievePasswordStep2.vue')
       }, {
-        path: 'retrievePasswordStep3',
+        path: 'retrievePasswordStep3/:accountId/:verifyCode',
         name: 'retrievePasswordStep3',
         component: require('../views/retrievePasswordStep3.vue')
-      }, {
-        path: 'retrievePasswordStep4',
-        name: 'retrievePasswordStep4',
-        component: require('../views/retrievePasswordStep4.vue')
       }, {
         path: '*',
         redirect: 'login'

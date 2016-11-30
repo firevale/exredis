@@ -20,7 +20,7 @@
       </div>
 
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
       
       <div class="row-login">
@@ -60,7 +60,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
       ]),
     },
 
@@ -93,8 +93,7 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              this.setRetrievePasswordAccountId(this.accountId)
-              this.$router.push({name: 'retrievePasswordStep2'})
+              this.$router.replace({name: 'retrievePasswordStep2', params: {accountId: this.accountId}})
             } else {
               this.errorMessage = this.$t(result.message)
             }

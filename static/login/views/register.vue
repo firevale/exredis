@@ -35,10 +35,10 @@
       </div>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
-                required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
+                required: {rule: true, message: $t('account.loginPage.verifyCodePlaceholder')}, 
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
                 }">
-          <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
+          <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <div v-if="shouldShowCaptcha" class="captchaBox">

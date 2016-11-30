@@ -24,6 +24,15 @@ const accountIdPlaceholder = state => {
   }
 }
 
+const colors = state => {
+  return {
+    danger: "#ff3860",
+    success: '#23d160',
+    white: "#fff",
+    dark: "#aaa",
+  }
+}
+
 export {
   app,
   deviceId,
@@ -34,4 +43,5 @@ export {
   captchaUrl,
   invalidAccountIdErrorMessage,
   accountIdPlaceholder,
+  colors,
 }

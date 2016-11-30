@@ -12,12 +12,13 @@ export default {
         btnSendverificationCode: '发送验证码',
         userPlaceHolder: '请输入手机号/邮箱',
         userOnlyEmailPlaceHolder: '请输入邮箱',
-        userPasswordPlaceHolder: '密码',
-        userPasswordConfirmPlaceHolder: '验证码',
+        userPasswordPlaceHolder: '请输入密码',
+        verifyCodePlaceholder: '请输入验证码',
         forgetPassword: '忘记密码',
         registration: '快速注册',
         otherWays: '其他方式',
         changeCode: '获取验证码',
+        complete: '完成',
       },
 
       registerPage:{
@@ -31,6 +32,9 @@ export default {
         sendEmailCodeTipPre: '我们已向您的邮箱',
         sendEmailCodeTipEnd: '发送了验证信息',
         pleaseInputAccountName: '请输入您的账号',
+        verifyCodeSentToEmail: '我们已经向您的邮箱<strong>{email}</strong>发送了验证码',
+        verifyCodeSentToSms: '我们已经向您的手机<strong>{mobile}</strong>发送了验证码',
+        setNewPassword: '请设定新密码',
       },
 
       error: {

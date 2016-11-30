@@ -16,6 +16,14 @@ export default {
     }
   },
 
+  emailMask: function(val) {
+    return val.replace(/^([^<>()\[\]\\,;:\s@"]{2})[^@]*@/g, '$1***@')
+  },
+
+  mobileMask: function(val) {
+    return val.replace(/^(\d{3})\d{6}(\d{2})/g, '$1******$2')
+  },
+
   guid: function() {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);

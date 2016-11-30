@@ -14,20 +14,20 @@ defmodule Acs.SendCloudMailer do
 
   @base_url      "http://sendcloud.sohu.com"
 
-  def deliver_reset_password(locale, %RedisUser{} = user, token) do 
+  def deliver_reset_password(locale, email, token) do 
     template =  case locale do 
                   "en" -> "fvac_resetPasswordCode_enUs"
-                  "zh-Hans" -> "fvac_resetPasswordCode_zhCn" 
-                  "zh-Hant" -> "fvac_resetPasswordCode_zhCn" #TODO: add traditional chinese support  
+                  "zh-hans" -> "fvac_resetPasswordCode_zhCn" 
+                  "zh-hant" -> "fvac_resetPasswordCode_zhCn" #TODO: add traditional chinese support  
                   _ -> "fvac_resetPasswordCode_enUs"
                 end
 
-    vars = JSON.encode! %{to: [user.email], 
-                          sub: %{"%name%" => [user.nickname || Utils.nickname_from_email(user.email)],
+    vars = JSON.encode! %{to: [email], 
+                          sub: %{"%name%" => [Utils.nickname_from_email(email)],
                                 "%token%" => [token]}
                         }
 
-    send_template(user.email, template, vars, 20644)
+    send_template(email, template, vars, 20644)
   end
 
   defp send_template(to, template, vars, label) do 

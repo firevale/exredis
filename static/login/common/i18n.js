@@ -42,7 +42,11 @@ export default {
         verifyCodeTooShort: '验证码至少有4个字符',
         passwordNotMatch: '用户名或密码错误',
         tooManyFails: '您已经多次输错密码，请稍后再试',
-        sendSmsFailed: '验证短信发送失败, 请稍后再试'
+        sendSmsFailed: '验证短信发送失败, 请稍后再试',
+        sendSmsCooldown: '一分钟内不能发送多次验证码',
+        sendEmailFailed: '验证邮件发送失败，请稍后再试',
+        sendEmailCooldown: '一分钟内不能发送多次验证码',
+        accountNotFound: '账号不存在',
       },
       
     },

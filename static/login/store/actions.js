@@ -29,7 +29,6 @@ export const updateCaptcha = ({
   })
 }
 
-
 export const validateAccountId = ({
   commit
 }, accountId) => {
@@ -39,3 +38,17 @@ export const validateAccountId = ({
     return utils.isValidEmail(accountId)
   }
 }
+
+export const setRetrievePasswordAccountId = ({
+  commit
+}, accountId) => {
+  commit('SET_RETRIEVE_PASSWORD_ACCOUNT_ID', accountId)
+}
+
+export const setRetrievePasswordVerifyToken = ({
+  commit
+}, verifyToken) => {
+  commit('SET_RETRIEVE_PASSWORD_VERIFY_TOKEN', verifyToken)
+}
+
+

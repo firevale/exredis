@@ -88,6 +88,7 @@ defmodule Acs.UserController do
       conn |> put_session(:access_token, access_token.id)
            |> delete_session(:failed_attempts)
            |> delete_session(:last_failed_timestamp)
+           |> delete_session(:register_verify_code)
            |> json(%{
                success: true,
                access_token: access_token.id,

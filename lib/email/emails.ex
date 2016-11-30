@@ -6,11 +6,11 @@ defmodule Acs.Emails do
   require Utils
   alias   Acs.RedisUser
 
-  def reset_password(locale, %RedisUser{} = to, token) do 
-    nickname = to.nickname || Utils.nickname_from_email(to.email)
+  def reset_password(locale, email, token) do 
+    nickname = Utils.nickname_from_email(email)
 
     base_email(locale)
-      |> to(to.email)
+      |> to({nickname, email})
       |> subject(gettext("Firevale account password reset token"))
       |> assign(:token, token)
       |> assign(:name, nickname)

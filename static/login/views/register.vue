@@ -61,8 +61,8 @@
       <div class="row-login">
         <input type="submit" :value="$t('account.loginPage.btnRegister')"/>
       </div>
-      <div class="row-login">
-        <router-link :to="{name: 'login'}">{{ $t('account.loginPage.btnSubmit') }}</router-link>
+      <div class="row-login" style="justify-content: flex-end;">
+        <router-link :to="{name: 'login'}">{{ $t('account.registerPage.goLoginPage') }}</router-link>
       </div>
     </validation>
   </div>

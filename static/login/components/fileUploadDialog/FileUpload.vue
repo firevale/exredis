@@ -1,24 +1,25 @@
 <template>
-    <label :class="{'file-uploads': true, 'file-uploads-html5': $mode == 'html5', 'file-uploads-html4': $mode == 'html4'}">
+  <label :class="{'file-uploads': true, 'file-uploads-html5': $mode == 'html5', 'file-uploads-html4': $mode == 'html4'}">
         <span>{{title}}</span>
         <input-file></input-file>
     </label>
 </template>
-
 <style>
-.file-uploads {
+  .file-uploads {
     overflow: hidden;
     position: relative;
     text-align: center;
-}
-.file-uploads span{
+  }
+  
+  .file-uploads span {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
-}
-.file-uploads input{
+  }
+  
+  .file-uploads input {
     z-index: 1;
     opacity: 0;
     font-size: 20em;
@@ -29,19 +30,20 @@
     position: absolute;
     width: 100%;
     height: 100%;
-}
-.file-uploads.file-uploads-html5 input{
+  }
+  
+  .file-uploads.file-uploads-html5 input {
     float: left;
     width: 1px !important;
     height: 1px !important;
-    top:-1px !important;
-    left:-1px !important;
-    right:auto !important;
-    bottom:auto !important;
-}
+    top: -1px !important;
+    left: -1px !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
 </style>
-
 <script>
+import Vue from 'vue';
 export default {
   props: {
     title: {
@@ -81,6 +83,21 @@ export default {
       type: Object,
       default: () => {},
     },
+    headers: {
+      type: Object,
+      default: () => {},
+    },
+    valueFiles: {
+      type: Array,
+      default: () => [],
+    },
+    activeState:{
+      type: Boolean,
+      default: false,
+    },
+    parentAddFileUpload: {
+      type: Function,
+    }
   },
 
   components: {
@@ -109,12 +126,12 @@ export default {
     }
   },
 
-  ready() {
+  mounted() {
     this._drop(this.drop);
   },
 
 
-  init() {
+  beforeCreate() {
     var input = document.createElement('input');
     input.type = 'file';
     if (window.FormData && input.files)  {
@@ -137,6 +154,7 @@ export default {
     drop(value) {
       this._drop(value);
     },
+
     files(files) {
       var ids = [];
       for (var i = 0; i < files.length; i++) {
@@ -174,8 +192,9 @@ export default {
       this._index = 0;
     },
 
-    active(newValue, oldValue) {
+    activeState(newValue, oldValue) {
       if (newValue && !oldValue) {
+       this.active = true
         this._fileUploads();
       }
     },
@@ -185,6 +204,15 @@ export default {
         this.active = false;
       }
     },
+
+    valueFiles(valueFiles) {
+      this.files = valueFiles
+    },
+
+    headers(headers){
+      this.request.headers = headers
+    }
+
   },
 
   methods: {
@@ -278,7 +306,8 @@ export default {
       this._files[file.id] = hiddenData;
       file = this.files[this.files.push(file) - 1];
       this._files[file.id]._file = file;
-      this._uploadEvents('addFileUpload', file);
+      //this._uploadEvents('addFileUpload', file);
+      this.parentAddFileUpload && this.parentAddFileUpload(file)
     },
     _onDrop(e) {
       this._dropActive = 0;
@@ -296,7 +325,7 @@ export default {
     },
 
     _addFileUploads(el) {
-      var Component = this.$options.components.inputFile;
+      var Component = this.$options.components.inputFile._Ctor;
       new Component({
         parent: this,
         el: el,

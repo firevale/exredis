@@ -17,9 +17,13 @@ export default {
         forgetPassword: '忘记密码',
         registration: '快速注册',
         otherWays: '其他方式',
-        changeCode: '更换',
+        changeCode: '获取验证码',
       },
-      
+
+      registerPage:{
+         goLoginPage: '已有帐号>',
+      },
+
       retrievePasswordPage: {
         nextStep: '下一步',
         sendPhoneCodeTipPre: '我们已向您的手机号',
@@ -48,8 +52,15 @@ export default {
         sendEmailCooldown: '一分钟内不能发送多次验证码',
         accountNotFound: '账号不存在',
       },
-      
+
+      upload: {
+        filename: '文件名',
+        title: '上传',
+        speed: '上传速度',
+        progress: '上传进度',
+      },
     },
+
 
   }
 }

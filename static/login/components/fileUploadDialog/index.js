@@ -8,13 +8,15 @@ export default {
         el: document.createElement('div'),
       });
 
-    instance.upload.title = title
-    instance.upload.postAction = action
-    instance.upload.request.headers = headers
-    instance.upload.accept = accept
-    instance.upload.extensions = extensions
+    instance.title = title
+    instance.postAction = action
+    instance.headers = headers
+    instance.accept = accept
+    instance.extensions = extensions
     instance.callback = callback
 
-    Vue.nextTick(_ => instance.visible = true)
+    Vue.nextTick(function(){
+      instance.visible = true
+    })
   },
 };

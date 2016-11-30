@@ -66,7 +66,7 @@
 
     methods: {
       ...mapActions([
-        'validateAccountId', 'setRetrievePasswordAccountId'
+        'validateAccountId' 
       ]),
 
       handleValidate: function(e) {

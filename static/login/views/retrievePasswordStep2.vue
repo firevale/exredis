@@ -42,14 +42,6 @@
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
     data: function() {
       return {
         cooldownCounter: 60,
@@ -64,7 +56,7 @@
 
     computed: {
       ...mapGetters([
-        'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'colors'
       ]),
 
       accountId: function() {
@@ -85,10 +77,6 @@
     },
 
     methods: {
-      ...mapActions([
-        'validateAccountId', 'setRetrievePasswordAccountId'
-      ]),
-
       handleValidate: function(e) {
         e.target.$validity.validate(_ => {
           if (this.$refs.verifyCode &&

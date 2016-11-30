@@ -71,8 +71,8 @@ defmodule Acs.Router do
 
     post "/create_token", UserController, :create_token 
     post "/create_user", UserController, :create_user
+    post "/update_password", UserController, :update_password # update(reset) password
 
-    get  "/reset_password", UserController, :reset_password # show reset password page
     get  "/reset_password.html", UserController, :reset_password # show reset password page
     get  "/reset_password_success", UserController, :reset_password_success
 

@@ -5,28 +5,30 @@
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
       </div>
       <p class="codeTip">
-        {{ $t('account.retrievePasswordPage.pleaseInputAccountName') }}:
+        {{ $t('account.retrievePasswordPage.setNewPassword') }}:
       </p>
       <div class="row-login">
-        <validity ref="accountId" field="accountId" :validators="{
-                required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
+        <validity ref="password" field="password" :validators="{
+                required: {rule: true, message: $t('account.error.requirePassword')}, 
+                minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
-          <input type="text" class="outsideText" :placeholder="accountIdPlaceholder"
-            v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
+          <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" 
+                 v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
-          <icon name="user-o"></icon>
+          <icon name="lock"></icon>
+        </div>
+        <div class="tailIcon" @click="togglePasswordVisibility">
+          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
         </div>
       </div>
 
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
       
       <div class="row-login">
-        <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
+        <input type="submit" :value="$t('account.retrievePasswordPage.complete')" />
       </div>
     </validation>
   </div>
@@ -34,59 +36,84 @@
 
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/user-o'
+  import '../components/fvIcon/icons/lock'
   import {
     mapGetters,
     mapActions
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
-    beforeMount: function() {
-      this.accountId = this.loginAccount
-    },
 
     data: function() {
       return {
-        accountId: '',
-        serverError: '',
+        passwordIcon: '',
+        password: '',
         errorMessage: '',
       }
     },
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+        'colors'
       ]),
+
+      accountId: function() {
+        return this.$route.params.accountId
+      },
+
+      verifyCode: function() {
+        return this.$route.params.verifyCode
+      },
     },
 
     methods: {
       ...mapActions([
-        'validateAccountId', 'setRetrievePasswordAccountId'
+        'setLoginAccount'
       ]),
+
+      togglePasswordVisibility: function() {
+        if (this.passwordIcon === 'eye') {
+          this.passwordIcon = 'eye-slash'
+          this.$refs.password.$el.type = 'text'
+        } else {
+          this.passwordIcon = 'eye'
+          this.$refs.password.$el.type = 'password'
+        }
+      },
 
       handleValidate: function(e) {
         e.target.$validity.validate(_ => {
-          if (this.$refs.accountId &&
-            this.$refs.accountId.invalid &&
-            this.$refs.accountId.result.errors.length > 0) {
-            this.errorMessage = this.$refs.accountId.result.errors[0].message
-          }
-          else {
+          if (this.$refs.password &&
+            this.$refs.password.invalid &&
+            this.$refs.password.result.errors.length > 0) {
+            this.errorMessage = this.$refs.password.result.errors[0].message
+          } else {
             this.errorMessage = ''
           }
         })
       },
 
       handleSubmit: function(e) {
-
+        if (this.$validation.retrieve.valid && this.password) {
+          this.$http({
+            method: 'post',
+            url: '/user/update_password',
+            params: {
+              account_id: this.accountId,
+              verify_code: this.verifyCode,
+              password: this.password
+            }
+          }).then(response => {
+            return response.json()
+          }).then(result => {
+            if (result.success) {
+              this.setLoginAccount(this.accountId)
+              this.$router.back()
+            } else {
+              this.errorMessage = this.$t(result.message)
+            }
+          })
+        }
       },
     },
 

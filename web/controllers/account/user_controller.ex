@@ -63,6 +63,23 @@ defmodule Acs.UserController do
     end
   end
 
+  def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do 
+    case RedisUser.find(account_id) do 
+      nil ->
+        conn |> json(%{success: false, message: "account.error.accountNotFound"})
+      %RedisUser{} = user ->
+        case get_session(conn, :retrieve_password_verify_code) do 
+          ^verify_code ->
+            user = %{user | encrypted_password: Utils.hash_password(password)}
+            RedisUser.save!(user)
+            conn |> delete_session(:retrieve_password_verify_code) 
+                 |> json(%{success: true})
+          _ ->
+            conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+        end
+    end
+  end
+
   defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform) do 
     access_token = case conn.private[:acs_app] do 
                     nil -> 

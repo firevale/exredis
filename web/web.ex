@@ -41,6 +41,8 @@ defmodule Acs.Web do
 
       import  Acs.Plugs
 
+      require Redis
+
       require Utils
       require Logger
 

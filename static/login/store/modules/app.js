@@ -7,6 +7,10 @@ const state = {
   loginAccount: undefined,
   registerAccount: undefined,
   captchaUrl: undefined,
+  retrievePassword: {
+    accountId: '',
+    verifyToken: '',
+  }
 }
 
 const mutations = {
@@ -24,6 +28,14 @@ const mutations = {
 
   'SET_CAPTCHA_URL' (state, captchaUrl) {
     state.captchaUrl = captchaUrl
+  },
+
+  'SET_RETRIEVE_PASSWORD_ACCOUNT_ID' (state, accountId) {
+    state.retrievePassword.accountId = accountId
+  },
+
+  'SET_RETRIEVE_PASSWORD_VERIFY_TOKEN' (state, verifyToken) {
+    state.retrievePassword.verifyToken = verifyToken
   },
 }
 

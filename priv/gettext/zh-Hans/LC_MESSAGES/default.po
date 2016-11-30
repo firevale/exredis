@@ -10,14 +10,23 @@ msgid ""
 msgstr ""
 "Language: zh-Hans\n"
 
-#: lib/email/sendcloud_mailler.ex:24
+#: lib/email/local_mailer.ex:10 lib/email/mandrill_mailer.ex:16
+#: lib/email/sendcloud_mailler.ex:41 web/templates/layout/email.html.eex:11
 msgid "Firevale Account Center"
 msgstr "火谷账号"
-
-#: web/templates/page/index.html.eex:2
-msgid "Welcome to %{name}"
-msgstr ""
 
 #: lib/email/emails.ex:14
 msgid "Firevale account password reset token"
 msgstr "火谷账号验证码"
+
+#: web/templates/layout/email.html.eex:9
+msgid "Dear %{name},"
+msgstr "尊敬的%{name},"
+
+#: web/templates/email/reset_password.html.eex:2
+msgid "Please noted that the code will expire in 24 hours."
+msgstr "请注意此验证码将在24小时后失效."
+
+#: web/templates/email/reset_password.html.eex:1
+msgid "Your verify code is %{token} ."
+msgstr "您此次的验证码是 %{token}"

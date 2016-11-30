@@ -41,7 +41,7 @@
       </div>
       <div class="row-login">
         <router-link :to="{ name: 'register' }">{{ $t('account.loginPage.registration') }}</router-link>
-        <router-link :to="{ name: 'retrievePassword' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
+        <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
       <div class="row-login">
         <hr>
@@ -89,7 +89,6 @@
 
     data: function() {
       return {
-        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
         accountId: '',
         password: '',
         passwordIcon: 'eye',

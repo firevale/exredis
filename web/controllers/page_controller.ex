@@ -23,6 +23,7 @@ defmodule Acs.PageController do
             end
 
     conn |> put_layout(false) 
+         |> put_session(:locale, locale)
          |> render("login.html", redirect_url: decoded_redirect_url, 
                                  browser: browser,
                                  platform: platform,

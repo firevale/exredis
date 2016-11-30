@@ -3,43 +3,91 @@ defmodule Acs.VerifyCodeController do
 
   alias Acs.CaptchaGenerator
   alias Acs.SmsService
+  alias Acs.EmailService
+
+  plug :detect_account_id 
+  plug :check_account_exist 
 
   def check_register_verify_code(conn, %{"verify_code" => value}) do 
-    captcha = get_session(conn, :verify_code)
-    conn |> json(%{success: true, match: captcha == String.downcase(value)})
+    verify_code = get_session(conn, :register_verify_code)
+    conn |> json(%{success: true, match: verify_code == String.downcase(value)})
   end
 
   def reset_register_captcha(conn, _params) do 
-    size = 3 + :rand.uniform(2)
-    {token, _} = :rand.uniform(0xffffff) |> :binary.encode_unsigned |> Base.encode16 |> String.downcase |> String.split_at(size)
-    image_url = CaptchaGenerator.generate(token)
-    conn |> put_session(:verify_code, token)
+    code = gen_hex_code() 
+    image_url = CaptchaGenerator.generate(code)
+    conn |> put_session(:register_verify_code, code)
          |> json(%{success: true, image_url: image_url})
   end
 
   def send_mobile_register_verify_code(conn, %{"mobile" => mobile}) do 
-    last_sent = case get_session(conn, :last_mobile_sent_at) do 
-                  nil -> 0 
-                  v -> v
-                end
+    send_mobile_verify_code(conn, mobile, :register_verify_code)
+  end
 
-    now = Utils.unix_timestamp
+  def check_retrieve_password_verify_code(conn, %{"verify_code" => value}) do 
+    verify_code = get_session(conn, :retrieve_password_verify_code)
+    conn |> json(%{success: true, match: verify_code == String.downcase(value)})
+  end
 
-    if now - last_sent > 59 do 
-      token = :rand.uniform(99999) |> to_string |> String.pad_leading(5, "0")
-      case SmsService.send_verify_code(mobile, token) do 
-        :ok ->
-          conn |> put_session(:verify_code, token)
-               |> put_session(:last_mobile_sent_at, now)
-               |> json(%{success: true})
-        _ ->
-          conn |> json(%{success: false, message: "account.error.sendSmsFailed"})
-      end
-    else
-      conn |> json(%{success: false, message: "account.error.sendSmsCooldown"})
+  def send_retrieve_password_verify_code(%Plug.Conn{private: %{acs_mobile: mobile}} = conn, _) do 
+    send_mobile_verify_code(conn, mobile, :retrieve_password_verify_code)
+  end
+  def send_retrieve_password_verify_code(%Plug.Conn{private: %{acs_email: email}} = conn, _) do 
+    send_email_verify_code(conn, email, :retrieve_password_verify_code)
+  end
+
+  defp send_mobile_verify_code(conn, mobile, session_key) do 
+    case Redis.get("vc.mobile.sms.#{mobile}") do 
+      :undefined ->
+        code = gen_code()
+        case SmsService.send_verify_code(mobile, code) do 
+          :ok ->
+            Redis.setex("vc.mobile.sms.#{mobile}", 60, code)
+            conn |> put_session(session_key, code)
+                 |> json(%{success: true})
+          _ ->
+            conn |> json(%{success: false, message: "account.error.sendSmsFailed"})
+        end
+      _ ->
+        conn |> json(%{success: false, message: "account.error.sendSmsCooldown"})
     end
   end
 
+  defp send_email_verify_code(conn, email, session_key) do 
+    locale = get_session(conn, :locale)
+    case Redis.get("vc.email.#{email}") do 
+      :undefined ->
+        code = gen_code()
+        case EmailService.deliver_reset_password(locale, email, code) do 
+          :ok ->
+            Redis.setex("vc.email.#{email}", 60, code)
+            conn |> put_session(session_key, code)
+                 |> json(%{success: true})
+          _ ->
+            conn |> json(%{success: false, message: "account.error.sendEmailFailed"})
+        end
+      _ ->
+        conn |> json(%{success: false, message: "account.error.sendEmailCooldown"})
+    end
+  end
 
+  defp check_account_exist(%Plug.Conn{params: %{"account_id" => account_id}} = conn, _options) do 
+    if not RedisUser.exists?(account_id) do 
+      conn |> json(%{success: false, message: "account.error.accountNotFound"}) |> halt
+    else 
+      conn
+    end
+  end
+  defp check_account_exist(conn, _options), do: conn 
+
+  defp gen_hex_code do 
+    size = 3 + :rand.uniform(2)
+    {code, _} = :rand.uniform(0xffffff) |> :binary.encode_unsigned |> Base.encode16 |> String.downcase |> String.split_at(size)
+    code
+  end
+
+  defp gen_code do 
+    :rand.uniform(99999) |> to_string |> String.pad_leading(5, "0")
+  end
 
 end

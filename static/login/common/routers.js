@@ -15,13 +15,21 @@ export default function(VueRouter) {
         name: 'register',
         component: require('../views/register.vue')
       }, {
-        path: 'retrievePassword',
-        name: 'retrievePassword',
-        component: require('../views/retrievePassword.vue')
+        path: 'retrievePasswordStep1',
+        name: 'retrievePasswordStep1',
+        component: require('../views/retrievePasswordStep1.vue')
       }, {
-        path: 'resetPassword',
-        name: 'resetPassword',
-        component: require('../views/resetPassword.vue')
+        path: 'retrievePasswordStep2',
+        name: 'retrievePasswordStep2',
+        component: require('../views/retrievePasswordStep2.vue')
+      }, {
+        path: 'retrievePasswordStep3',
+        name: 'retrievePasswordStep3',
+        component: require('../views/retrievePasswordStep3.vue')
+      }, {
+        path: 'retrievePasswordStep4',
+        name: 'retrievePasswordStep4',
+        component: require('../views/retrievePasswordStep4.vue')
       }, {
         path: '*',
         redirect: 'login'

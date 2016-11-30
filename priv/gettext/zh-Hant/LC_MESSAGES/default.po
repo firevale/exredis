@@ -10,14 +10,23 @@ msgid ""
 msgstr ""
 "Language: zh-Hant\n"
 
-#: lib/email/sendcloud_mailler.ex:24
+#: lib/email/local_mailer.ex:10 lib/email/mandrill_mailer.ex:16
+#: lib/email/sendcloud_mailler.ex:41 web/templates/layout/email.html.eex:11
 msgid "Firevale Account Center"
-msgstr ""
-
-#: web/templates/page/index.html.eex:2
-msgid "Welcome to %{name}"
 msgstr ""
 
 #: lib/email/emails.ex:14
 msgid "Firevale account password reset token"
+msgstr ""
+
+#: web/templates/layout/email.html.eex:9
+msgid "Dear %{name},"
+msgstr ""
+
+#: web/templates/email/reset_password.html.eex:2
+msgid "Please noted that the code will expire in 24 hours."
+msgstr ""
+
+#: web/templates/email/reset_password.html.eex:1
+msgid "Your verify code is %{token} ."
 msgstr ""

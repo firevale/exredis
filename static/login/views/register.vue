@@ -44,7 +44,9 @@
           <input type="button" class="changeCode" :value="$t('account.loginPage.changeCode')" @click="updateCaptcha">
           </input>
         </div>
-        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" class="insideInput" :value="hasSentCode? $t('account.registerPage.cooldownText')+'('+cooldownCounter+'s)' : repeatSent? $t('account.loginPage.btnSendCodeReqpeat'): $t('account.loginPage.btnSendverificationCode')"
+
+        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': cooldownCounter > 0}" 
+              class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="headerIcon">
@@ -91,9 +93,8 @@
     data: function() {
       return {
         hasSentCode: false,
-        repeatSent: false,
-        cooldownCounter: 60,
         isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
+        cooldownCounter: 0,
         accountId: '',
         password: '',
         passwordIcon: 'eye',
@@ -152,18 +153,14 @@
       },
 
       cooldownTimer: function() {
-        if (this.hasSentCode && this.cooldownCounter > 0) {
-          this.cooldownCounter--
-          setTimeout(this.cooldownTimer, 1000)
-        } else {
-          this.hasSentCode = false
-          this.repeatSent = true
-          this.cooldownCounter = 60
+        if (this.cooldownCounter > 0) {
+          this.cooldownCounter--;
+          setTimeout(this.cooldownTimer, 1000);
         }
       },
 
       sendMobileVerifyCode: function() {
-        if (!this.hasSentCode && this.isMobileAccountSupported &&
+        if (window.acsConfig.isMobileAccountSupported &&
           utils.isValidMobileNumber(this.accountId) &&
           this.$validation.register.accountId.valid) {
           this.$http({
@@ -176,7 +173,7 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              this.hasSentCode = true
+              this.cooldownCounter = 60
               setTimeout(this.cooldownTimer, 1000)
             } else {
               this.errorMessage = this.$t(result.message)

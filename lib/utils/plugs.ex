@@ -119,12 +119,12 @@ defmodule Acs.Plugs do
     case conn.params["account_id"] do 
       "" -> conn
       nil -> conn
-      user_key ->
+      account_id ->
         cond do 
-          Regex.match?(~r/([^@]+)@([^@]+)/, user_key) -> 
-            conn |> put_private(:acs_email, user_key)
-          Regex.match?(~r/1\d{10}$/, user_key) ->
-            conn |> put_private(:acs_mobile, user_key)
+          Regex.match?(~r/([^@]+)@([^@]+)/, account_id) -> 
+            conn |> put_private(:acs_email, account_id)
+          Regex.match?(~r/1\d{10}$/, account_id) ->
+            conn |> put_private(:acs_mobile, account_id)
           true ->
             conn
         end  

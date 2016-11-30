@@ -53,7 +53,7 @@ defmodule Acs.UserController do
                                         acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do 
   
-    case get_session(conn, :verify_code) do 
+    case get_session(conn, :register_verify_code) do 
       ^verify_code ->
         user = RedisUser.create!(account_id, password)  
         RedisUser.save!(user)

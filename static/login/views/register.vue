@@ -7,11 +7,10 @@
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
-          <input type="text" :placeholder="accountIdPlaceholder"
-            v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
+          <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
+            @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="user-o"></icon>
@@ -20,11 +19,10 @@
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
-                maxlength: {rule: 50, message: $t('account.error.passwordTooLong')},
+                minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
-          <input type="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" 
-            v-model.trim="password" autocomplete="off"
-            name="password" @focusout="handleValidate" />
+          <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
+            autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">
           <icon name="lock"></icon>
@@ -38,16 +36,15 @@
                 required: {rule: true, message: $t('account.loginPage.userPasswordConfirmPlaceHolder')}, 
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
                 }">
-          <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode"
-            autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
+          <input type="text" :placeholder="$t('account.loginPage.userPasswordConfirmPlaceHolder')" v-model.trim="verifyCode" autocomplete="off"
+            maxlength="10" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <div v-if="shouldShowCaptcha" class="captchaBox">
           <img class="captcha" :src="captchaUrl"></img>
           <input type="button" class="changeCode" :value="$t('account.loginPage.changeCode')" @click="updateCaptcha">
           </input>
         </div>
-        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" 
-              class="insideInput" :value="hasSentCode? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
+        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': hasSentCode}" class="insideInput" :value="hasSentCode? $t('account.registerPage.cooldownText')+'('+cooldownCounter+'s)' : repeatSent? $t('account.loginPage.btnSendCodeReqpeat'): $t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="headerIcon">
@@ -57,9 +54,8 @@
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
       </p>
-
       <div class="row-login">
-        <input type="submit" :value="$t('account.loginPage.btnRegister')"/>
+        <input type="submit" :value="$t('account.loginPage.btnRegister')" />
       </div>
       <div class="row-login" style="justify-content: flex-end;">
         <router-link :to="{name: 'login'}">{{ $t('account.registerPage.goLoginPage') }}</router-link>
@@ -95,6 +91,7 @@
     data: function() {
       return {
         hasSentCode: false,
+        repeatSent: false,
         cooldownCounter: 60,
         isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
         accountId: '',
@@ -135,14 +132,17 @@
         e.target.$validity.validate(_ => {
           if (this.$refs.accountId &&
             this.$refs.accountId.invalid &&
+            this.$refs.accountId.result.errors &&
             this.$refs.accountId.result.errors.length > 0) {
             this.errorMessage = this.$refs.accountId.result.errors[0].message
           } else if (this.$refs.password &&
             this.$refs.password.invalid &&
+            this.$refs.password.result.errors &&
             this.$refs.password.result.errors.length > 0) {
             this.errorMessage = this.$refs.password.result.errors[0].message
           } else if (this.$refs.verifyCode &&
             this.$refs.verifyCode.invalid &&
+            this.$refs.verifyCode.result.errors &&
             this.$refs.verifyCode.result.errors.length > 0) {
             this.errorMessage = this.$refs.verifyCode.result.errors[0].message
           } else {
@@ -154,15 +154,16 @@
       cooldownTimer: function() {
         if (this.hasSentCode && this.cooldownCounter > 0) {
           this.cooldownCounter--
-            setTimeout(this.cooldownTimer, 1000)
+          setTimeout(this.cooldownTimer, 1000)
         } else {
           this.hasSentCode = false
+          this.repeatSent = true
           this.cooldownCounter = 60
         }
       },
 
       sendMobileVerifyCode: function() {
-        if (this.isMobileAccountSupported &&
+        if (!this.hasSentCode && this.isMobileAccountSupported &&
           utils.isValidMobileNumber(this.accountId) &&
           this.$validation.register.accountId.valid) {
           this.$http({
@@ -209,6 +210,10 @@
               this.setRegisterAccount(undefined)
             } else {
               this.errorMessage = this.$t(result.message)
+            }
+          }).catch(e => {
+            if(e.status == '404'){
+              
             }
           })
         }

@@ -7,10 +7,9 @@
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
             required: {rule: true, message: $t('account.error.requireUserName')}, 
-            maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
             validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
           }">
-          <input type="text" v-model.trim="accountId" autocomplete="off" name="user" 
+          <input type="text" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" 
                  @focusout="handleValidate" 
                  :placeholder="accountIdPlaceholder"
           />
@@ -22,9 +21,8 @@
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
               required: {rule: true, message: $t('account.error.requirePassword')}, 
-              maxlength: {rule: 20, message: $t('account.error.passwordTooLong')},
           }">
-          <input ref="password" type="password" v-model.trim="password" autocomplete="off" name="password" 
+          <input ref="password" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" 
                  @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
@@ -127,10 +125,12 @@
         e.target.$validity.validate(_ => {
           if (this.$refs.accountId &&
             this.$refs.accountId.invalid &&
+            this.$refs.accountId.result.errors &&
             this.$refs.accountId.result.errors.length > 0) {
             this.errorMessage = this.$refs.accountId.result.errors[0].message
           } else if (this.$refs.password &&
             this.$refs.password.invalid &&
+            this.$refs.password.result.errors &&
             this.$refs.password.result.errors.length > 0) {
             this.errorMessage = this.$refs.password.result.errors[0].message
           } else {

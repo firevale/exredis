@@ -10,10 +10,9 @@
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 isValidAccountName: {rule: true, message: this.isMobileAccountSupported? $t('account.error.invalidAccountName'):$t('account.error.invalidEmailAddress') },
                 }">
-          <input type="text" class="outsideText" :placeholder="isMobileAccountSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
+          <input type="text" maxlength="50" class="outsideText" :placeholder="isMobileAccountSupported? $t('account.loginPage.userPlaceHolder'): $t('account.loginPage.userOnlyEmailPlaceHolder')"
             v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <div class="headerIcon">

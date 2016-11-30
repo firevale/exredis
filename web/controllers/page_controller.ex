@@ -17,10 +17,21 @@ defmodule Acs.PageController do
                               v -> v |> Base.url_decode64!
                             end
 
-   locale = case params["locale"] || params["lang"] do 
-              nil -> "zh-hans"
-              _ -> "zh-hans"
-            end
+    locale = case params["locale"] || params["lang"] do 
+               nil -> "zh-hans"
+               _ -> "zh-hans"
+             end
+
+    browser = case Mix.env do 
+                :dev -> 
+                  case params["browser"] do 
+                    nil -> browser 
+                    x -> x
+                  end
+                _ -> browser
+              end
+
+    Logger.debug "browser: #{browser}"
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)

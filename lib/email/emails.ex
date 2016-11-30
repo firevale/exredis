@@ -4,7 +4,6 @@ defmodule Acs.Emails do
   import Acs.Gettext
 
   require Utils
-  alias   Acs.RedisUser
 
   def reset_password(locale, email, token) do 
     nickname = Utils.nickname_from_email(email)

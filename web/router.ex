@@ -43,52 +43,15 @@ defmodule Acs.Router do
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
   end
   
-  scope "/admin", Acs do
-    pipe_through :browser # Use the default browser stack
-
-    get  "/login", AdminController, :index # show login page
-    get  "/logout", AdminController, :logout
-    get  "/reset_password", AdminController, :reset_password # show reset password page
-    get  "/reset_password.html", AdminController, :reset_password # show reset password page
-    get  "/reset_password_success", AdminController, :reset_password_success
-
-    # ajax handlers
-    post "/logout", AdminController, :logout
-    post "/create_session", AdminController, :create_session
-    post "/session_password", AdminController, :session_password
-    post "/check_email_exists", AdminController, :check_email_exists
-    post "/check_email_not_exists", AdminController, :check_email_not_exists
-    post "/register", AdminController, :register # show reset password page
-    post "/send_forgot_password_mail", AdminController, :send_forgot_password_mail
-    get  "/show_reset_password", AdminController, :show_reset_password
-    post "/reset_password", AdminController, :reset_password
-  end
-
   scope "/user", Acs do
     pipe_through :browser # Use the default browser stack
 
-    get  "/login", PageController, :show_login_page 
+    get  "/login", PageController, :show_login_page # 兼容旧的账号系统(for wp8 users)
 
     post "/create_token", UserController, :create_token 
     post "/create_user", UserController, :create_user
     post "/update_password", UserController, :update_password # update(reset) password
-
-    get  "/reset_password.html", UserController, :reset_password # show reset password page
-    get  "/reset_password_success", UserController, :reset_password_success
-
-    get  "/logout", UserController, :logout
-    # ajax handlers
     post "/logout", UserController, :logout
-    post "/create_session", UserController, :create_session
-    post "/session_password", UserController, :session_password
-
-    post "/is_account_exists", UserController, :is_account_exists
-    post "/check_email_exists", UserController, :check_email_exists
-    post "/check_email_not_exists", UserController, :check_email_not_exists
-    post "/register", UserController, :register # show reset password page
-    post "/send_forgot_password_mail", UserController, :send_forgot_password_mail
-    get  "/show_reset_password", UserController, :show_reset_password
-    post "/reset_password", UserController, :reset_password
   end
 
   scope path: "/api", alias: Acs do
@@ -106,7 +69,8 @@ defmodule Acs.Router do
       get  "/create_token",     Api.AuthController, :create_token
     end
 
-    scope path: "/user" do 
+    scope path: "/user" do  
+      # 兼容旧版本fvsdk
       get "/check_user_exists",            Api.UserController, :check_user_exists     
       get "/bind_anonymous/:user_id",      Api.UserController, :bind_anonymous
       get "/send_forgot_password_token",   Api.UserController, :send_forgot_password_token
@@ -119,33 +83,13 @@ defmodule Acs.Router do
       get "/get_app_config", Api.AppController, :get_app_info
     end
 
-    scope path: "/pay" do 
-      get  "/add_applestore_order",     AppleStoreController, :add_order
-      post "/add_applestore_order",     AppleStoreController, :add_order
-      get  "/deliver_applestore_order", AppleStoreController, :deliver_order
-      get  "/deliver_ggplay_order",     GgplayController,     :verify_and_deliver
-    end 
-
-    scope path: "/sdkpay", alias: SdkPay do
-      get  "/add_channel_order", AppOrderController, :add_order
-      get  "/add_meizu_order",   AppOrderController, :add_meizu_order
-      get  "/add_vivo_order",    AppOrderController, :add_vivo_order
-
-      forward "/",               PurchaseCallbackRouter
-    end
-
-    scope path: "/alipay" do
-      post  "/redirect", AlipayController, :alipay_redirect, as: :redirect
-      get   "/redirect", AlipayController, :alipay_redirect, as: :redirect
-
-      get   "/notify",   AlipayController, :notify
-      post  "/notify",   AlipayController, :notify
-      get   "/callback", AlipayController, :callback
-    end    
-
     scope path: "/stat" do 
       get   "/report_activity", StatController, :report_activity
     end 
+
+    forward "/pay", Pay.Router
+    forward "/sdkpay", SdkPay.Router
+
 
   end # end scope ap
 

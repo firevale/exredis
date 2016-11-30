@@ -1,8 +1,6 @@
 defmodule Acs.GgplayController do
   use    Acs.Web, :controller
 
-  plug :fetch_app_id
-  plug :fetch_app
   plug :fetch_user
 
   def verify_and_deliver(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,

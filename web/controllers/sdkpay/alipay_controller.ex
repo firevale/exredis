@@ -2,6 +2,7 @@ defmodule Acs.AlipayController do
   use     Acs.Web, :controller
   require SDKAlipay
 
+  # conflict with imported redirect function
   def alipay_redirect(conn, %{"payment_order_id" => order_id} = _params) do 
     case Repo.get(AppOrder, order_id) do 
       order = %AppOrder{} ->

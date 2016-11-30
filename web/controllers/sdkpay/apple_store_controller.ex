@@ -3,8 +3,6 @@ defmodule Acs.AppleStoreController do
 
   require SDKApple
 
-  plug :fetch_app_id
-  plug :fetch_app
   plug :fetch_user
 
   def add_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,

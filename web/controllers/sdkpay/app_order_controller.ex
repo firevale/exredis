@@ -1,8 +1,6 @@
 defmodule Acs.SdkPay.AppOrderController do
   use    Acs.Web, :controller
 
-  plug :fetch_app_id
-  plug :fetch_app
   plug :fetch_user
   plug :create_order
 

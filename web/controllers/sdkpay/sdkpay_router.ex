@@ -1,4 +1,4 @@
-defmodule Acs.SdkPay.PurchaseCallbackRouter do
+defmodule Acs.SdkPay.Router do
   use Acs.Web, :router
 
   import  Acs.Plugs
@@ -10,6 +10,10 @@ defmodule Acs.SdkPay.PurchaseCallbackRouter do
 
   scope "/", Acs.SdkPay do
     pipe_through :sdkpay
+
+    get  "/add_channel_order", AppOrderController, :add_order
+    get  "/add_meizu_order",   AppOrderController, :add_meizu_order
+    get  "/add_vivo_order",    AppOrderController, :add_vivo_order
 
     get  "/anzhi/:client_id", AnzhiCallbackController, :purchase_callback
     post "/anzhi/:client_id", AnzhiCallbackController, :purchase_callback

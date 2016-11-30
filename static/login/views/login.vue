@@ -14,7 +14,7 @@
                  :placeholder="accountIdPlaceholder"
           />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="user-o"></icon>
         </div>
       </div>
@@ -26,10 +26,10 @@
                  @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="lock" fill-color="#fff"></icon>
         </div>
-        <div class="tailIcon" @click="togglePasswordVisibility">
+        <div class="tail-icon" @click="togglePasswordVisibility">
           <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>

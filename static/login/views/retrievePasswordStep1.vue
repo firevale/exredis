@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
       </div>
-      <p class="codeTip">
+      <p class="code-tip">
         {{ $t('account.retrievePasswordPage.pleaseInputAccountName') }}:
       </p>
       <div class="row-login">
@@ -16,7 +16,7 @@
           <input type="text" class="outsideText" :placeholder="accountIdPlaceholder"
             v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
-        <div class="headerIcon"><icon name="user-o"></icon></div>
+        <div class="header-icon"><icon name="user-o"></icon></div>
       </div>
 
       <p class="errors">

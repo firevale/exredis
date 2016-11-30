@@ -7,7 +7,7 @@
       <div class="row-login">
         <input type="text" readonly :placeholder="$t('account.loginPage.userPlaceHolder')" v-model.trim="userName" autocomplete="off"
           name="user" />
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="user-o"></icon>
         </div>
       </div>
@@ -19,10 +19,10 @@
           <input type="password" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password" autocomplete="off"
             name="password" @focusout="handleValidate" />
         </validity>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="lock"></icon>
         </div>
-        <div class="tailIcon" @click="togglePasswordVisibility">
+        <div class="tail-icon" @click="togglePasswordVisibility">
           <icon :name="passwordIcon" fill-color="#fff"></icon>
         </div>
       </div>

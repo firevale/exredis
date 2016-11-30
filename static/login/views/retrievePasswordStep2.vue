@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
       </div>
-      <p class="codeTip" v-html="verifyCodeSentHint"> </p>
+      <p class="code-tip" v-html="verifyCodeSentHint"> </p>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
                 required: {rule: true, message: $t('account.loginPage.verifyCodePlaceholder')}, 
@@ -17,7 +17,7 @@
               class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
           @click.prevent="sendVerifyCode">
         </input>
-        <div class="headerIcon">
+        <div class="header-icon">
           <icon name="check-circle-o" :stroke-color="colors.white" :fill-color="colors.dark"></icon>
         </div>
       </div>

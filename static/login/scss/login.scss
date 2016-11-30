@@ -144,13 +144,13 @@ body:not(.in-app) {
             font-size: .5rem;
             padding-top: .5rem;
           }
-          .headerIcon {
+          .header-icon {
             left: .4rem;
             width: .5rem;
             height: 100%;
             position: absolute;
           }
-          .tailIcon {
+          .tail-icon {
             right: .8rem;
             width: .5rem;
             height: 100%;
@@ -169,7 +169,7 @@ body:not(.in-app) {
             vertical-align: middle;
           }
         }
-        .codeTip {
+        .code-tip {
           font-size: .8rem;
           margin: 1rem .2rem;
         }

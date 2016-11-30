@@ -131,8 +131,7 @@ defmodule Acs.Router do
       get  "/add_meizu_order",   AppOrderController, :add_meizu_order
       get  "/add_vivo_order",    AppOrderController, :add_vivo_order
 
-      get  "/:sdk/:client_id",   PurchaseCallbackController, :dispatch_callback
-      post "/:sdk/:client_id",   PurchaseCallbackController, :dispatch_callback 
+      forward "/",               PurchaseCallbackRouter
     end
 
     scope path: "/alipay" do

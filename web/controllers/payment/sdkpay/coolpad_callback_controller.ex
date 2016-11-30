@@ -1,4 +1,4 @@
-defmodule Acs.SdkPay.CoolPadCallbackController do
+defmodule Acs.SdkPay.CoolpadCallbackController do
   use    Acs.Web, :controller
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 

@@ -1,4 +1,4 @@
-defmodule Acs.SdkPay.GFanCallbackController do
+defmodule Acs.SdkPay.GfanCallbackController do
   use     Acs.Web, :controller
   require SDKGFan
   import  SweetXml

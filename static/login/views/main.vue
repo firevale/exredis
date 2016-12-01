@@ -1,7 +1,9 @@
 <template>
   <div class="g-doc">
     <div class="g-con">
-      <icon name="times" scale="1.3" class="icon-close show-in-app" :fill-color="colors.dark"></icon>
+      <span class="icon-close show-in-app">
+        <icon name="times" scale="1.3" :fill-color="colors.dark"></icon>
+      </span>
       <div class="g-mask">
         <transition name="slide"> 
           <router-view> </router-view>

@@ -1,6 +1,8 @@
 <template>
   <div class="login-box">
-    <icon name="chevron-left" scale="1" class="icon-back" :fill-color="colors.dark"></icon>
+    <div class="icon-back" @click="backToLogin">
+      <icon name="chevron-left" :fill-color="colors.dark"></icon>
+    </div>
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -159,6 +161,10 @@
             }
           })
         }
+      },
+
+      backToLogin: function() {
+        this.$router.back()
       },
     },
 

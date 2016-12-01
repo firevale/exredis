@@ -44,7 +44,7 @@ export default {
         userNameTooLong: '用户名超长',
         invalidAccountName: '请输入正确的邮箱或手机号码',
         invalidEmailAddress: '请输入正确的电子邮件地址',
-        accountInUse: '用户名或密码错误',
+        accountInUse: '账号已被使用',
         accountNotExist: '用户名或密码错误',
         requirePassword: '请输入密码',
         passwordWrong: '密码长度6-20位',

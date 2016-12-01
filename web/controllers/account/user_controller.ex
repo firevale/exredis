@@ -52,14 +52,17 @@ defmodule Acs.UserController do
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do 
-  
-    case get_session(conn, :register_verify_code) do 
-      ^verify_code ->
-        user = RedisUser.create!(account_id, password)  
-        RedisUser.save!(user)
-        create_and_response_access_token(conn, user, app_id, device_id, platform)          
-      _ ->
-        conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+    if RedisUser.exists?(account_id) do 
+      conn |> json(%{success: false, message: "account.error.accountInUse"})
+    else
+      case get_session(conn, :register_verify_code) do 
+        ^verify_code ->
+          user = RedisUser.create!(account_id, password)  
+          RedisUser.save!(user)
+          create_and_response_access_token(conn, user, app_id, device_id, platform)          
+        _ ->
+          conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+      end
     end
   end
 

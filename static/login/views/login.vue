@@ -15,26 +15,26 @@
           />
         </validity>
         <div class="header-icon">
-          <icon name="user-o"></icon>
+          <icon name="user-o" :fill-color="colors.white"></icon>
         </div>
       </div>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
               required: {rule: true, message: $t('account.error.requirePassword')}, 
           }">
-          <input ref="password" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" 
+          <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" 
                  @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
           />
         </validity>
         <div class="header-icon">
-          <icon name="lock" fill-color="#fff"></icon>
+          <icon name="lock" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" fill-color="#fff"></icon>
+          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
@@ -113,7 +113,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
       ]),
     },
 

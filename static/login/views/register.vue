@@ -13,7 +13,7 @@
             @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="user-o"></icon>
+          <icon name="user-o" :fill-color="colors.white"></icon>
         </div>
       </div>
       <div class="row-login">
@@ -21,14 +21,14 @@
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
                 minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
-          <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
+          <input type="password" class="sibling" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
             autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="lock"></icon>
+          <icon name="lock" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" fill-color="#fff"></icon>
+          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
         </div>
       </div>
       <div class="row-login">
@@ -37,7 +37,7 @@
                 minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
                 }">
           <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off" 
-            maxlength="10" class="outsideText" name="verifyCode" @focusout="handleValidate" />
+            maxlength="10" class="outsideText sibling" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <div v-if="shouldShowCaptcha" class="captchaBox">
           <img class="captcha" :src="captchaUrl"></img>
@@ -46,15 +46,15 @@
         </div>
 
         <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': cooldownCounter > 0}" 
-              class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter : hasSentCode? $t('account.loginPage.btnSendverificationCode'): $t('account.loginPage.btnSendverificationCode')"
+              class="insideInput" :value="sendCodeTex"
           @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="header-icon">
-          <icon name="check-circle-o" stroke-color="#fff" fill-color="#aaa"></icon>
+          <icon name="check-circle-o" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" fill-color="#ff3860"></icon>&nbsp{{ errorMessage }}
+        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.loginPage.btnRegister')" />
@@ -110,7 +110,7 @@
 
     computed: {
       ...mapGetters([
-        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
       ]),
 
       shouldShowCaptcha: function() {
@@ -119,7 +119,19 @@
 
       shouldShowSendVerifyCodeButton: function() {
         return utils.isValidMobileNumber(this.accountId)
-      }
+      },
+
+      sendCodeTex: function() {
+        if(this.cooldownCounter > 0){
+          return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
+        }else{
+          if(this.hasSentCode){
+            return this.$t('account.registerPage.sendAgain')
+          }else{
+            return this.$t('account.loginPage.btnSendverificationCode')
+          }
+        }
+      },
     },
 
     methods: {
@@ -161,7 +173,7 @@
 
       sendMobileVerifyCode: function() {
         this.cooldownCounter = 60
-        hasSentCode = true
+        this.hasSentCode = true
               setTimeout(this.cooldownTimer, 1000)
               return false;
         if (window.acsConfig.isMobileAccountSupported &&

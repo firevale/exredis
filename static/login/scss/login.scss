@@ -28,13 +28,19 @@ body:not(.in-app) {
     min-height: 320px;
     .fa-icon.icon-close {
       position: absolute;
-      right: .3rem;
+      right: 0rem;
       top: 1.5rem;
+    }
+    .fa-icon.icon-back {
+      position: absolute;
+      left: 0;
+      top: 2rem;
     }
     .g-mask {
       margin: 0 auto;
       position: relative;
       overflow: hidden;
+      padding-left: 2rem;
       .login-box {
         border-radius: .5rem;
         max-width: 100vh;
@@ -59,13 +65,10 @@ body:not(.in-app) {
             font-size: .6rem;
             flex: 1;
           }
-          input[name=password] {
+          input[name=password].sibling {
             border-top: none;
           }
-          input[name=confirmPassword] {
-            border-top: none;
-          }
-          input[name=verifyCode] {
+          input[name=verifyCode].sibling {
             border-top: none;
           }
           input[type=submit] {
@@ -83,7 +86,6 @@ body:not(.in-app) {
             position: absolute;
             right: .2rem;
             color: $white;
-            font-weight: bold;
             margin: .1rem 0;
             font-size: .6rem;
             padding: .35rem .3rem;
@@ -147,13 +149,13 @@ body:not(.in-app) {
           }
           .header-icon {
             left: .8rem;
-            width: .5rem;
+            width: 1rem;
             height: 100%;
             position: absolute;
           }
           .tail-icon {
             right: .8rem;
-            width: .5rem;
+            width: 1rem;
             height: 100%;
             position: absolute;
           }
@@ -173,6 +175,10 @@ body:not(.in-app) {
         .code-tip {
           font-size: .8rem;
           margin: 1rem .2rem;
+          margin-bottom: 2rem;
+          strong{
+            color: $red;
+          }
         }
       }
     }

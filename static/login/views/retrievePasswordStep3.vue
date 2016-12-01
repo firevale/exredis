@@ -1,5 +1,6 @@
 <template>
   <div class="login-box">
+    <icon name="chevron-left" scale="1" class="icon-back" :fill-color="colors.dark"></icon>
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -16,7 +17,7 @@
                  v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="lock"></icon>
+          <icon name="lock" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
           <icon :name="passwordIcon" :fill-color="colors.white"></icon>
@@ -26,7 +27,7 @@
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
-      
+      <p>&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.complete')" />
       </div>
@@ -37,6 +38,7 @@
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/lock'
+  import '../components/fvIcon/icons/chevron-left'
   import {
     mapGetters,
     mapActions

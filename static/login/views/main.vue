@@ -1,9 +1,9 @@
 <template>
   <div class="g-doc">
     <div class="g-con">
-      <icon name="times" scale="1.3" class="icon-close show-in-app" fill-color="#aaa"></icon>
+      <icon name="times" scale="1.3" class="icon-close show-in-app" :fill-color="colors.dark"></icon>
       <div class="g-mask">
-        <transition name="slide">
+        <transition name="slide"> 
           <router-view> </router-view>
         </transition>
       </div>
@@ -13,7 +13,17 @@
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/times'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
   export default {
+    computed: {
+      ...mapGetters([
+        'colors'
+      ]),
+    },
+
     components: {
       'icon': Icon,
     }

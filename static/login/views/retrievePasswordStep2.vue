@@ -1,5 +1,6 @@
 <template>
   <div class="login-box">
+    <icon name="chevron-left" scale="1" class="icon-back" :fill-color="colors.dark"></icon>
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -14,17 +15,17 @@
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" 
-              class="insideInput" :value="cooldownCounter > 0 ? cooldownCounter :$t('account.loginPage.btnSendverificationCode')"
+              class="insideInput" :value="sendCodeTex"
           @click.prevent="sendVerifyCode">
         </input>
         <div class="header-icon">
-          <icon name="check-circle-o" :stroke-color="colors.white" :fill-color="colors.dark"></icon>
+          <icon name="check-circle-o" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
-      
+      <p>&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
       </div>
@@ -36,6 +37,7 @@
   import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/check-circle-o'
+  import '../components/fvIcon/icons/chevron-left'
   import {
     mapGetters,
     mapActions
@@ -44,6 +46,7 @@
   export default {
     data: function() {
       return {
+        hasSentCode: false,
         cooldownCounter: 60,
         verifyCode: '',
         errorMessage: '',
@@ -51,6 +54,7 @@
     },
 
     created: function() {
+      this.hasSentCode = true
       setTimeout(this.cooldownTimer, 1000)
     },
 
@@ -72,6 +76,18 @@
           return this.$t('account.retrievePasswordPage.verifyCodeSentToSms', {
             mobile: utils.mobileMask(this.accountId)
           })
+        }
+      },
+
+      sendCodeTex: function() {
+        if(this.cooldownCounter > 0){
+          return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
+        }else{
+          if(this.hasSentCode){
+            return this.$t('account.registerPage.sendAgain')
+          }else{
+            return this.$t('account.loginPage.btnSendverificationCode')
+          }
         }
       },
     },

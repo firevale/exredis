@@ -22,6 +22,7 @@ export default {
       },
 
       registerPage:{
+        sendAgain: "重新发送",
         cooldownText: "重新发送({timer}s)",
         goLoginPage: '已有帐号>',
       },

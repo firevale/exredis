@@ -1,5 +1,8 @@
 <template>
   <div class="login-box">
+    <span class="icon-back" @click="backToLogin">
+      <icon name="chevron-left" :fill-color="colors.dark"></icon>
+    </span>
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -16,13 +19,13 @@
           <input type="text" class="outsideText" :placeholder="accountIdPlaceholder"
             v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
-        <div class="header-icon"><icon name="user-o"></icon></div>
+        <div class="header-icon"><icon name="user-o" :fill-color="colors.white"></icon></div>
       </div>
 
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
-      
+      <p>&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
       </div>
@@ -33,6 +36,7 @@
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/user-o'
+  import '../components/fvIcon/icons/chevron-left'
   import {
     mapGetters,
     mapActions
@@ -99,6 +103,10 @@
             }
           })
         }
+      },
+
+      backToLogin: function() {
+        this.$router.back()
       },
     },
 

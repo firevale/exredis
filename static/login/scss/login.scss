@@ -2,14 +2,13 @@
 @import "./font";
 @import "./common";
 @import "./transition";
-
 html {
   font-size: $middle;
 }
 
 body:not(.in-app) {
   .show-in-app {
-    display: none; 
+    display: none;
   }
 }
 
@@ -26,15 +25,21 @@ body:not(.in-app) {
     position: relative;
     margin: 0 auto;
     min-height: 320px;
-    .fa-icon.icon-close {
+    .icon-close {
       position: absolute;
-      right: .3rem;
+      right: 0rem;
       top: 1.5rem;
+    }
+    .icon-back {
+      position: absolute;
+      left: 0;
+      top: 2rem;
     }
     .g-mask {
       margin: 0 auto;
       position: relative;
       overflow: hidden;
+      padding: 0 1.5rem;
       .login-box {
         border-radius: .5rem;
         max-width: 100vh;
@@ -59,13 +64,10 @@ body:not(.in-app) {
             font-size: .6rem;
             flex: 1;
           }
-          input[name=password] {
+          input[name=password].sibling {
             border-top: none;
           }
-          input[name=confirmPassword] {
-            border-top: none;
-          }
-          input[name=verifyCode] {
+          input[name=verifyCode].sibling {
             border-top: none;
           }
           input[type=submit] {
@@ -83,7 +85,6 @@ body:not(.in-app) {
             position: absolute;
             right: .2rem;
             color: $white;
-            font-weight: bold;
             margin: .1rem 0;
             font-size: .6rem;
             padding: .35rem .3rem;
@@ -122,7 +123,7 @@ body:not(.in-app) {
           span {
             white-space: nowrap;
             margin: auto 1rem;
-            font-size: .6rem;
+            font-size: .8rem;
           }
           .tileWays {
             width: 25%;
@@ -147,13 +148,13 @@ body:not(.in-app) {
           }
           .header-icon {
             left: .8rem;
-            width: .5rem;
+            width: 1rem;
             height: 100%;
             position: absolute;
           }
           .tail-icon {
             right: .8rem;
-            width: .5rem;
+            width: 1rem;
             height: 100%;
             position: absolute;
           }
@@ -171,8 +172,13 @@ body:not(.in-app) {
           }
         }
         .code-tip {
+          color: $dark;
           font-size: .8rem;
           margin: 1rem .2rem;
+          margin-bottom: 2rem;
+          strong {
+            color: $red;
+          }
         }
       }
     }
@@ -196,25 +202,13 @@ body:not(.in-app) {
               font-size: .6rem;
             }
             .insideInput {
-              position: absolute;
-              right: .2rem;
-              color: $white;
               margin: .15rem 0;
               font-size: .5rem;
               padding: .3rem .3rem;
-              display: inline-block;
-              background: $link;
-              border-radius: .2rem;
             }
             .captchaBox {
-              flex: 2;
-              max-height: 2rem;
-              display: flex;
-              flex-direction: row;
               .changeCode {
-                padding: 0;
                 font-size: .6rem;
-                border: none;
               }
             }
           }
@@ -246,31 +240,22 @@ body:not(.in-app) {
               font-size: .8rem;
             }
             .insideInput {
-              position: absolute;
-              right: .2rem;
-              color: $white;
               margin: .15rem 0;
               font-size: .6rem;
               padding: .35rem .3rem;
-              display: inline-block;
-              background: $link;
-              border-radius: .2rem;
             }
             .captchaBox {
-              flex: 2;
-              max-height: 2rem;
-              display: flex;
-              flex-direction: row;
               .changeCode {
-                padding: 0;
                 font-size: .8rem;
-                border: none;
               }
             }
           }
           .errors {
             margin: .2rem;
             font-size: .8rem;
+          }
+          .code-tip {
+            font-size: .9rem;
           }
         }
       }
@@ -297,31 +282,23 @@ body:not(.in-app) {
               font-size: .8rem;
             }
             .insideInput {
-              position: absolute;
               right: .2rem;
-              color: $white;
               margin: .2rem 0;
               font-size: .6rem;
               padding: .35rem .3rem;
-              display: inline-block;
-              background: $link;
-              border-radius: .2rem;
             }
             .captchaBox {
-              flex: 2;
-              max-height: 2rem;
-              display: flex;
-              flex-direction: row;
               .changeCode {
-                padding: 0;
                 font-size: .8rem;
-                border: none;
               }
             }
           }
           .errors {
             margin: .2rem;
             font-size: .8rem;
+          }
+          .code-tip {
+            font-size: .9rem;
           }
         }
       }

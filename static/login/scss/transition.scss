@@ -1,3 +1,11 @@
+@keyframes slideInLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
 @keyframes slideInRight {
   from {
     transform: translate3d(100%, 0, 0);
@@ -9,22 +17,70 @@
 
 @keyframes slideOutLeft {
   from {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
   to {
+    opacity: 0;
     transform: translate3d(-100%, 0, 0);
   }
 }
 
-.slide-enter-active {
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+.slide-left-enter-active {
   animation: slideInRight .5s ease
 }
 
-.slide-leave-active {
-  animation: slideOutLeft .5s ease-out
+.slide-left-leave-active {
+  animation: slideOutLeft .5s cubic-bezier(1, 0, 0, 1)
 }
 
-.slide-enter,
-.slide-leave-active {
+.slide-left-enter,
+.slide-left-leave-active {
   position: absolute;
 }
+
+
+
+.slide-right-enter-active {
+  animation: slideInLeft .5s ease
+}
+
+.slide-right-leave-active {
+  animation: slideOutRight .5s cubic-bezier(1, 0, 0, 1)
+}
+
+.slide-right-enter,
+.slide-right-leave-active {
+  position: absolute;
+}
+
+@keyframes message {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  50% {
+    top: 0;
+    opacity: .8;
+  }
+  80% {
+    top: 0;
+    opacity: .8;
+  }
+  100%{
+    top: 0;
+    opacity: 0;
+  }
+}
+

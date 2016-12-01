@@ -1,8 +1,5 @@
 <template>
-  <div class="login-box">
-    <span class="icon-back" @click="backToLogin">
-      <icon name="chevron-left" :fill-color="colors.dark"></icon>
-    </span>
+  <div class="login-box">  
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -25,7 +22,7 @@
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
-      <p>&nbsp</p>
+      <p style="margin: .3rem;">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
       </div>
@@ -36,7 +33,6 @@
 <script>
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/user-o'
-  import '../components/fvIcon/icons/chevron-left'
   import {
     mapGetters,
     mapActions
@@ -103,10 +99,6 @@
             }
           })
         }
-      },
-
-      backToLogin: function() {
-        this.$router.back()
       },
     },
 

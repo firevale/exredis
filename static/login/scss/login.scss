@@ -27,13 +27,17 @@ body:not(.in-app) {
     min-height: 320px;
     .icon-close {
       position: absolute;
+      z-index: 2;
       right: 0rem;
-      top: 1.5rem;
+      top: 1.6rem;
+      width: 1rem;
     }
     .icon-back {
       position: absolute;
-      left: 0;
-      top: 2rem;
+      z-index: 2;
+      left: .2rem;
+      top: 2.2rem;
+      width: 1rem
     }
     .g-mask {
       margin: 0 auto;

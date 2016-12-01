@@ -9,9 +9,7 @@
             required: {rule: true, message: $t('account.error.requireUserName')}, 
             validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
           }">
-          <input type="text" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" 
-                 @focusout="handleValidate" 
-                 :placeholder="accountIdPlaceholder"
+          <input type="text" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="accountIdPlaceholder"
           />
         </validity>
         <div class="header-icon">
@@ -22,9 +20,8 @@
         <validity ref="password" field="password" :validators="{
               required: {rule: true, message: $t('account.error.requirePassword')}, 
           }">
-          <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" 
-                 @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
-          />
+          <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
+            @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" />
         </validity>
         <div class="header-icon">
           <icon name="lock" :fill-color="colors.white"></icon>
@@ -119,7 +116,7 @@
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'validateAccountId'
+        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'setMessage'
       ]),
 
       handleValidate: function(e) {

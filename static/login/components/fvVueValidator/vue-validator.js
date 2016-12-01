@@ -773,9 +773,7 @@ function addClass (el, cls) {
 
 function removeClass (el, cls) {
   if (el.classList) {
-    if(el.classList&& el.classList.remove){
-      el.classList.remove(cls);
-    }
+    el.classList.remove(cls);
   } else {
     var cur = ' ' + getClass(el) + ' ';
     var tar = ' ' + cls + ' ';
@@ -1353,11 +1351,7 @@ var Event = function (Vue) {
 };
 
 function getModelDirective (child) {
-  if(((child.data && child.data.directives) || [])&&((child.data && child.data.directives) || []).find){
-    return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
-  }else{
-    return null;
-  }
+  return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
 }
 
 function getEventSources (child) {
@@ -1379,11 +1373,11 @@ function getEventSources (child) {
 /*  */
 var State = function (Vue) {
   function getValue (options) {
-    return this._elementable.getValue()
+    return this._elementable && this._elementable.getValue()
   }
 
   function checkModified () {
-    return this._elementable.checkModified()
+    return this._elementable && this._elementable.checkModified()
   }
 
   function willUpdateTouched (options) {

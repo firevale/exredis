@@ -13,7 +13,6 @@
         </transition>
       </div>
       <div ref="msg">
-        <div ref="child"></div>
       </div>
     </div>
   </div>

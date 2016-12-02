@@ -1,5 +1,5 @@
 <template>
-  <div class="tip-message">
+  <div v-if="visible" ref="msg" class="tip-message">
     <div class="body-message">
       {{message}}
     </div>
@@ -11,6 +11,10 @@
       message:{
         type: String,
         default: '',
+      },
+      visible:{
+        type: Boolean,
+        default: false,
       }
     }
   }

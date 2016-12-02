@@ -1,6 +1,6 @@
 <template>
   <div class="g-doc">
-    <div class="g-con">
+    <div ref="gCon" class="g-con">
       <span :v-show="canBack" class="icon-back" @click="backToLogin">
         <icon name="chevron-left" :fill-color="colors.dark"></icon>
       </span>
@@ -11,6 +11,9 @@
         <transition :name="transitionName">
           <router-view> </router-view>
         </transition>
+      </div>
+      <div ref="msg">
+        <div ref="child"></div>
       </div>
     </div>
   </div>
@@ -51,8 +54,8 @@
     },
 
     methods: {
-      backToLogin: function() {
-        this.$router.back()
+      backToLogin: function() {  
+       this.$router.back()
       },
 
       onClose: function(){

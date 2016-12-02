@@ -51,4 +51,10 @@ export const setRetrievePasswordVerifyToken = ({
   commit('SET_RETRIEVE_PASSWORD_VERIFY_TOKEN', verifyToken)
 }
 
+export const refreshHistory = ({
+  commit
+}, val) => {
+  commit('REFRESH_HISTORY', val)
+}
+
 

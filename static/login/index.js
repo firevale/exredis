@@ -30,6 +30,11 @@ Object.keys(filters).forEach(function(k) {
 
 let router = routerMap(VueRouter)
 
+
+router.afterEach(route => {
+  store.commit('REFRESH_HISTORY', window.history.length)
+})
+
 let App = new Vue({
   router,
   store,

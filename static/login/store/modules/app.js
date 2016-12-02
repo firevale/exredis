@@ -7,6 +7,7 @@ const state = {
   loginAccount: undefined,
   registerAccount: undefined,
   captchaUrl: undefined,
+  history: 0,
 }
 
 const mutations = {
@@ -25,6 +26,10 @@ const mutations = {
   'SET_CAPTCHA_URL' (state, captchaUrl) {
     state.captchaUrl = captchaUrl
   },
+
+  'REFRESH_HISTORY' (state, val) {
+    state.history = val
+  }
 }
 
 export default {

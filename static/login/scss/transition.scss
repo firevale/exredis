@@ -6,6 +6,7 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
 @keyframes slideInRight {
   from {
     transform: translate3d(100%, 0, 0);
@@ -50,8 +51,6 @@
   position: absolute;
 }
 
-
-
 .slide-right-enter-active {
   animation: slideInLeft .5s ease
 }
@@ -64,23 +63,3 @@
 .slide-right-leave-active {
   position: absolute;
 }
-
-@keyframes message {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  50% {
-    top: 0;
-    opacity: .8;
-  }
-  80% {
-    top: 0;
-    opacity: .8;
-  }
-  100%{
-    top: 0;
-    opacity: 0;
-  }
-}
-

@@ -172,6 +172,11 @@
       },
 
       sendMobileVerifyCode: function() {
+        msg.showMsg({msg:this.$t('account.registerPage.messageTip'), target: this.$parent.$refs.msg})
+              this.hasSentCode = true
+              this.cooldownCounter = 60
+              setTimeout(this.cooldownTimer, 1000)
+              return false;
         if (window.acsConfig.isMobileAccountSupported &&
           utils.isValidMobileNumber(this.accountId) &&
           this.$validation.register.accountId.valid) {

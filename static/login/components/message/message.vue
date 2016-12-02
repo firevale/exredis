@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" ref="msg" class="tip-message">
+  <div v-if="visible" class="tip-message">
     <div class="body-message">
       {{message}}
     </div>
@@ -39,6 +39,25 @@
       background: $black;
       border-radius: 1rem;
       transition: all 1s ease;
+    }
+  }
+  
+  @keyframes message {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    50% {
+      top: 0;
+      opacity: .8;
+    }
+    80% {
+      top: 0;
+      opacity: .8;
+    }
+    100% {
+      top: 0;
+      opacity: 0;
     }
   }
 </style>

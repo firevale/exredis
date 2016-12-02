@@ -2,10 +2,7 @@ import Vue from 'vue';
 const message = Vue.extend(require('./message.vue'));
 let instance
 export default {
-  showMsg: function ({
-    msg,
-    target
-  }) {
+  showMsg: function ({msg,target}) {
     if (!instance) {
       instance = new message({
         el: target,

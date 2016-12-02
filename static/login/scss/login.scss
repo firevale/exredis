@@ -35,8 +35,8 @@ body:not(.in-app) {
     .icon-back {
       position: absolute;
       z-index: 2;
-      left: .2rem;
-      top: 2.2rem;
+      left: .5rem;
+      top: 2rem;
       width: 1rem
     }
     .g-mask {
@@ -178,8 +178,8 @@ body:not(.in-app) {
         .code-tip {
           color: $dark;
           font-size: .8rem;
-          margin: 1rem .2rem;
-          margin-bottom: 2rem;
+          margin: 0 .2rem;
+          margin-bottom: 1.5rem;
           strong {
             color: $red;
           }

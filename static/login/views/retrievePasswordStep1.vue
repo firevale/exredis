@@ -22,7 +22,7 @@
       <p class="errors">
         <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
       </p>
-      <p style="margin: .3rem;">&nbsp</p>
+      <p style="margin: 0;">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
       </div>

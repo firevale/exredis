@@ -73,6 +73,7 @@
   import '../components/fvIcon/icons/check-circle-o'
   import '../components/fvIcon/icons/eye-slash'
   import '../components/fvIcon/icons/eye'
+  import msg from '../components/message'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -120,6 +121,7 @@
       },
 
       sendCodeTex: function() {
+        
         if(this.cooldownCounter > 0){
           return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
         }else{
@@ -183,7 +185,8 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              hasSentCode = true
+              msg.showMsg({msg:this.$t('account.registerPage.messageTip'), target: this.$parent.$refs.msg})
+              this.hasSentCode = true
               this.cooldownCounter = 60
               setTimeout(this.cooldownTimer, 1000)
             } else {

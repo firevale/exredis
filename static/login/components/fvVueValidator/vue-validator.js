@@ -756,7 +756,7 @@ function setClass (el, cls) {
   if (isIE9 && !/svg$/.test(el.namespaceURI)) {
     el.className = cls;
   } else {
-    el.setAttribute('class', cls);
+    el.setAttribute && el.setAttribute('class', cls);
   }
 }
 
@@ -820,7 +820,7 @@ var Helper = function (Vue) {
 
   function modelValueEqual (vnode) {
     var directives = (vnode.data && vnode.data.directives) || [];
-    var directive = directives.find(function (dir) {
+    var directive = directives.find && directives.find(function (dir) {
       return dir.name === 'model'
     });
     return (!directive || directive.oldValue === undefined)
@@ -1351,7 +1351,7 @@ var Event = function (Vue) {
 };
 
 function getModelDirective (child) {
-  return ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
+  return ((child.data && child.data.directives) || []).find && ((child.data && child.data.directives) || []).find(function (dir) { return dir.name === 'model' })
 }
 
 function getEventSources (child) {

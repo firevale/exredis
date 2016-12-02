@@ -148,15 +148,15 @@ defmodule Acs.Plugs do
   end
 
   defp fetch_header_user_id(%Plug.Conn{} = conn) do 
-    case get_req_header(conn, "user-id") do 
+    case get_req_header(conn, "acs-user-id") do 
       nil -> nil
       [] -> nil
       [user_id | _] -> user_id
     end
   end
 
-  def detect_device_id(%Plug.Conn{} = conn, _options) do 
-    case fetch_device_id(conn.params) || fetch_header_device_id(conn) do 
+  def fetch_device_id(%Plug.Conn{} = conn, _options) do 
+    case _fetch_device_id(conn.params) || _fetch_header_device_id(conn) do 
       nil -> conn
       device_id ->
         Logger.metadata(device_id: device_id) 
@@ -164,12 +164,12 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp fetch_device_id(%{"idfa" => idfa}) when is_bitstring(idfa) and byte_size(idfa) > 5,  do: "idfa.#{idfa}"
-  defp fetch_device_id(%{"idfv" => idfv}) when is_bitstring(idfv) and byte_size(idfv) > 5,  do: "idfv.#{idfv}"
-  defp fetch_device_id(%{"android_id" => android_id}) when is_bitstring(android_id) and byte_size(android_id) > 5,  do: "android_id.#{android_id}"
-  defp fetch_device_id(%{}), do: nil 
+  defp _fetch_device_id(%{"idfa" => idfa}) when is_bitstring(idfa) and byte_size(idfa) > 5,  do: "idfa.#{idfa}"
+  defp _fetch_device_id(%{"idfv" => idfv}) when is_bitstring(idfv) and byte_size(idfv) > 5,  do: "idfv.#{idfv}"
+  defp _fetch_device_id(%{"android_id" => android_id}) when is_bitstring(android_id) and byte_size(android_id) > 5,  do: "android_id.#{android_id}"
+  defp _fetch_device_id(%{}), do: nil 
 
-  defp fetch_header_device_id(%Plug.Conn{} = conn) do 
+  defp _fetch_header_device_id(%Plug.Conn{} = conn) do 
     case get_req_header(conn, "acs-device-id") do 
       nil -> nil
       [] -> nil
@@ -215,12 +215,20 @@ defmodule Acs.Plugs do
   end
   def fetch_user(%Plug.Conn{} = conn, _options), do: conn
 
-  def detect_access_token(%Plug.Conn{} = conn, _options) do 
-    case get_req_header(conn, "access-token") do 
+  def fetch_access_token(%Plug.Conn{} = conn, _options) do 
+    case get_req_header(conn, "acs-access-token") do 
       nil -> conn
       [] -> conn
       [access_token | _] -> 
         conn |> put_private(:acs_access_token, access_token)
+    end
+  end
+
+  def fetch_api_version(conn, _opt) do 
+    case get_req_header(conn, "acs-api-version") do 
+      nil -> conn
+      [] -> conn
+      [version | _] -> conn |> put_private(:acs_api_version, version)
     end
   end
 

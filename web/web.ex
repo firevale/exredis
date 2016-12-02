@@ -79,6 +79,8 @@ defmodule Acs.Web do
       import Acs.Router.Helpers
       import Acs.ErrorHelpers
       import Acs.Gettext
+
+      require Logger
     end
   end
 

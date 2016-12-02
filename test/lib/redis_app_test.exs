@@ -40,9 +40,9 @@ defmodule Acs.RedisAppTest do
       client.goods |> Enum.each(fn({id, info}) -> 
         case Repo.get(AppGoods, id) do 
           nil ->
-            AppGoods.changeset(%AppGoods{}, %{id: id, name: info.name, description: info.title, price: info.price}) |> Repo.insert!
+            AppGoods.changeset(%AppGoods{}, %{id: id, app_id: client.id, name: info.name, description: info.title, price: info.price}) |> Repo.insert!
           x ->
-            AppGoods.changeset(x, %{name: info.name, description: info.title, price: info.price}) |> Repo.update!
+            AppGoods.changeset(x, %{name: info.name, description: info.title, price: info.price, app_id: client.id}) |> Repo.update!
         end  
 
         if not is_nil(info.product_ids) do 
@@ -57,7 +57,6 @@ defmodule Acs.RedisAppTest do
           end)
         end
       end)
-
     end)
 
     app = RedisApp.find("53A993ABE3A1CB110E1DC59AE557F5C9")

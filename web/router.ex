@@ -14,14 +14,14 @@ defmodule Acs.Router do
     plug :put_secure_browser_headers
     plug :parse_user_agent
     plug :detect_user_id
-    plug :detect_device_id
+    plug :fetch_device_id
   end
 
   pipeline :api do
     plug :accepts, ["json"]
     plug :parse_user_agent
     plug :detect_user_id
-    plug :detect_device_id
+    plug :fetch_device_id
   end
 
   if Mix.env == :dev do 
@@ -79,9 +79,7 @@ defmodule Acs.Router do
       get "/email_regist",                 Api.UserController, :email_regist
     end
 
-    scope path: "/client" do 
-      get "/get_app_config", Api.AppController, :get_app_info
-    end
+    get "/client/get_app_config", FVSdkController, :get_app_info
 
     scope path: "/stat" do 
       get   "/report_activity", StatController, :report_activity

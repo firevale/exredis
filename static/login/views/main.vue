@@ -1,7 +1,7 @@
 <template>
   <div class="g-doc">
     <div ref="gCon" class="g-con">
-      <span v-show="app.history-1" class="icon-back" @click="backToLogin">
+      <span v-show="app.history-1" class="icon-back show-in-app" @click="backToLogin">
         <icon name="chevron-left" :fill-color="colors.dark"></icon>
       </span>
       <span class="icon-close show-in-app" @click="onClose">

@@ -18,8 +18,11 @@ body:not(.in-app) {
   height: 100vh;
   margin: auto;
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
+  -webkit-flex-direction: column;
   justify-content: center;
+  -webkit-justify-content: center;
   .g-con {
     background: $white;
     position: relative;
@@ -29,7 +32,7 @@ body:not(.in-app) {
       position: absolute;
       z-index: 2;
       right: 0rem;
-      top: 1.6rem;
+      top: 1rem;
       width: 1rem;
     }
     .icon-back {
@@ -51,11 +54,15 @@ body:not(.in-app) {
         .row-login {
           position: relative;
           display: flex;
+          display: -webkit-flex;
           flex-direction: row;
+          -webkit-flex-direction: row;
           justify-content: space-between;
+          -webkit-justify-content: space-between;
           margin: 0;
           p.title {
             flex: 1;
+            -webkit-flex: 1;
             margin: 1rem 0;
             line-height: 2.5rem;
             vertical-align: middle;
@@ -67,6 +74,7 @@ body:not(.in-app) {
             padding-left: 2rem;
             font-size: .6rem;
             flex: 1;
+            -webkit-flex: 1;
           }
           input[name=password].sibling {
             border-top: none;
@@ -84,6 +92,7 @@ body:not(.in-app) {
           }
           input.outsideText {
             flex: 1;
+            -webkit-flex: 1;
           }
           .insideInput {
             position: absolute;
@@ -106,8 +115,10 @@ body:not(.in-app) {
             padding: 2px;
             display: flex;
             flex-direction: row;
+            -webkit-flex-direction: row;
             .captcha {
-              flex: 1
+              flex: 1;
+              -webkit-flex: 1;
             }
             .changeCode {
               color: $primary;

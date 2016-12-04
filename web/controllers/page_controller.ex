@@ -11,6 +11,8 @@ defmodule Acs.PageController do
   def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
                                             acs_platform: platform}} = conn,
              params) do 
+
+    d "headers, #{inspect conn, pretty: true}"
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"
@@ -31,7 +33,7 @@ defmodule Acs.PageController do
                 _ -> browser
               end
 
-    Logger.debug "browser: #{browser}"
+    d "browser: #{browser}"
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)

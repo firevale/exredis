@@ -19,6 +19,7 @@ defmodule Acs.Web do
   def model do
     quote do
       use Ecto.Schema
+      use LogAlias
 
       import Ecto
       import Ecto.Changeset
@@ -31,6 +32,7 @@ defmodule Acs.Web do
   def controller do
     quote do
       use     Phoenix.Controller
+      use     LogAlias
 
       alias   Acs.Repo
       import  Ecto
@@ -44,7 +46,6 @@ defmodule Acs.Web do
       require Redis
 
       require Utils
-      require Logger
 
       alias   Utils.JSON
       alias   Utils.Httpc
@@ -69,6 +70,7 @@ defmodule Acs.Web do
   def view do
     quote do
       use Phoenix.View, root: "web/templates"
+      use LogAlias
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -93,6 +95,7 @@ defmodule Acs.Web do
   def channel do
     quote do
       use Phoenix.Channel
+      use LogAlias
 
       alias Acs.Repo
       import Ecto

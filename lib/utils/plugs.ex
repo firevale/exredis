@@ -1,6 +1,6 @@
 defmodule Acs.Plugs do 
   import Plug.Conn
-  require Logger
+  use    LogAlias
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
@@ -77,7 +77,7 @@ defmodule Acs.Plugs do
       nil -> conn
       [] -> conn
       [user_agent | _] when is_bitstring(user_agent) ->
-        Logger.debug "user_agent: #{user_agent}"
+        d "user_agent: #{user_agent}"
 
         conn = cond do 
           user_agent =~ ~r/windows phone 8/iu  ->

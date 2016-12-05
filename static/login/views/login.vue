@@ -40,7 +40,7 @@
         <router-link :to="{ name: 'register' }">{{ $t('account.loginPage.registration') }}</router-link>
         <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
-      <div class="show-in-app">
+      <div class="show-in-app" style="display: none">
         <div class="row-login">
           <hr>
           <span>{{ $t('account.loginPage.otherWays') }}</span>

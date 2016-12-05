@@ -1,11 +1,11 @@
 @mixin slideIn($from, $to) {
   from {
-    transform: translate3d($from, 0, 0);
-    -webkit-transform: translate3d($from, 0, 0);
+    -webkit-transform: translate3d($from, -100%, 0);
+    transform: translate3d($from, -100%, 0);
   }
   to {
-    transform: translate3d($to, 0, 0);
-    -webkit-transform: translate3d($to, 0, 0);
+    -webkit-transform: translate3d($to, -100%, 0);
+    transform: translate3d($to, -100%, 0);
   }
 }
 
@@ -28,13 +28,13 @@
 @mixin slideOut($from, $to) {
   from {
     opacity: 1;
-    transform: translate3d($from, 0, 0);
     -webkit-transform: translate3d($from, 0, 0);
+    transform: translate3d($from, 0, 0);
   }
   to {
     opacity: 0;
-    transform: translate3d($to, 0, 0);
     -webkit-transform: translate3d($to, 0, 0);
+    transform: translate3d($to, 0, 0);
   }
 }
 
@@ -43,7 +43,7 @@
 }
 
 @-webkit-keyframes slideOutLeft {
-  @include slideOut(0, -100%);
+  @include slideOut(0, -100%)
 }
 
 @keyframes slideOutRight {
@@ -54,37 +54,23 @@
   @include slideOut(0, 100%);
 }
 
-$animation-time: .3s;
+$animation-time: 0.2s;
 .slide-left-enter-active {
-  animation: slideInRight $animation-time ease;
   -webkit-animation: slideInRight $animation-time ease;
+  animation: slideInRight $animation-time ease;
 }
 
 .slide-left-leave-active {
-  animation: slideOutLeft $animation-time ease;
   -webkit-animation: slideOutLeft $animation-time ease;
-}
-
-.slide-left-enter,
-// .slide-left-enter-active,
-// .slide-left-leave,
-.slide-left-leave-active {
-  position: absolute;
+  animation: slideOutLeft $animation-time ease;
 }
 
 .slide-right-enter-active {
-  animation: slideInLeft $animation-time ease;
   -webkit-animation: slideInleft $animation-time ease;
+  animation: slideInLeft $animation-time ease;
 }
 
 .slide-right-leave-active {
-  animation: slideOutRight $animation-time ease;
   -webkit-animation: slideOutRight $animation-time ease;
-}
-
-.slide-right-enter,
-// .slide-right-enter-active,
-// .slide-right-leave
-.slide-right-leave-active {
-  position: absolute;
+  animation: slideOutRight $animation-time ease;
 }

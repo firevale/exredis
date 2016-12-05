@@ -37,7 +37,7 @@
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'register' }">{{ $t('account.loginPage.registration') }}</router-link>
+        <router-link :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
         <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
       <div class="show-in-app" style="display: none">

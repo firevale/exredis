@@ -107,14 +107,18 @@ body.in-app {
           }
           .insideInput {
             position: absolute;
-            right: .2rem;
+            height: 70%;
+            right: .4rem;
+            top: 15%;
+            padding: 0.2rem;
             color: $white;
-            margin: .1rem 0;
-            font-size: .6rem;
-            padding: .35rem .3rem;
+            font-size: .7rem;
+            line-height: .7rem;
+            text-align: center;
             display: inline-block;
             background: $link;
             border-radius: .2rem;
+            border: none;
           }
           .fa-icon {
             line-height: 100%;
@@ -168,6 +172,7 @@ body.in-app {
             }
           }
           a {
+            cursor: pointer;
             color: $link;
             font-size: .5rem;
             padding-top: .5rem;
@@ -271,11 +276,11 @@ body.in-app {
             a {
               font-size: .8rem;
             }
-            .insideInput {
-              margin: .15rem 0;
-              font-size: .6rem;
-              padding: .35rem .3rem;
-            }
+            // .insideInput {
+            //   margin: .15rem 0;
+            //   font-size: .6rem;
+            //   padding: .35rem .3rem;
+            // }
             .captchaBox {
               .changeCode {
                 font-size: .8rem;
@@ -310,12 +315,12 @@ body.in-app {
             a {
               font-size: .8rem;
             }
-            .insideInput {
-              right: .2rem;
-              margin: .2rem 0;
-              font-size: .6rem;
-              padding: .35rem .3rem;
-            }
+            // .insideInput {
+            //   right: .2rem;
+            //   margin: .2rem 0;
+            //   font-size: .6rem;
+            //   padding: .35rem .3rem;
+            // }
             .captchaBox {
               .changeCode {
                 font-size: .8rem;

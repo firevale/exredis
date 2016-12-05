@@ -34,85 +34,39 @@
 <script>
   import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
   import '../components/fvIcon/icons/lock'
-  import '../components/fvIcon/icons/check-circle-o'
   import '../components/fvIcon/icons/eye-slash'
   import '../components/fvIcon/icons/eye'
   import msg from '../components/message'
-  import Vue from 'vue'
   import {
     mapGetters,
     mapActions
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
     data: function() {
       return {
-        hasSentCode: false,
-        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
-        cooldownCounter: 0,
         accountId: '',
+        verifyCode: '',
         password: '',
         passwordIcon: 'eye',
-        verifyCode: '',
         errorMessage: '',
       }
     },
 
     created: function() {
-      this.accountId = this.registerAccount
-      this.updateCaptcha()
+      this.accountId = this.$route.params.accountId
+      this.verifyCode = this.$route.params.verifyCode
     },
 
     computed: {
-      ...mapGetters([
-        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
-      ]),
-
-      accountId: function() {
-        return this.$route.params.accountId
-      },
-
-      verifyCode: function() {
-        return this.$route.params.verifyCode
-      },
-      shouldShowCaptcha: function() {
-        return utils.isValidEmail(this.accountId)
-      },
-
-      shouldShowSendVerifyCodeButton: function() {
-        return utils.isValidMobileNumber(this.accountId)
-      },
-
-      sendCodeTex: function() {
-        
-        if(this.cooldownCounter > 0){
-          return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
-        }else{
-          if(this.hasSentCode){
-            return this.$t('account.registerPage.sendAgain')
-          }else{
-            return this.$t('account.loginPage.btnSendverificationCode')
-          }
-        }
-      },
+      ...mapGetters(['colors']),
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount', 'updateCaptcha',
-        'validateAccountId'
+        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount'
       ]),
 
       handleValidate: function(e) {
@@ -127,38 +81,6 @@
             this.errorMessage = ''
           }
         })
-      },
-
-      cooldownTimer: function() {
-        if (this.cooldownCounter > 0) {
-          this.cooldownCounter--;
-          setTimeout(this.cooldownTimer, 1000);
-        }
-      },
-
-      sendMobileVerifyCode: function() {
-        if (window.acsConfig.isMobileAccountSupported &&
-          utils.isValidMobileNumber(this.accountId) &&
-          this.$validation.register.accountId.valid) {
-          this.$http({
-            method: 'post',
-            url: "/send_mobile_register_verify_code",
-            params: {
-              mobile: this.accountId
-            }
-          }).then(response => {
-            return response.json()
-          }).then(result => {
-            if (result.success) {
-              msg.showMsg({msg:this.$t('account.registerPage.messageTip'), target: this.$parent.$refs.msg})
-              this.hasSentCode = true
-              this.cooldownCounter = 60
-              setTimeout(this.cooldownTimer, 1000)
-            } else {
-              this.errorMessage = this.$t(result.message)
-            }
-          })
-        }
       },
 
       handleSubmit: function() {
@@ -184,13 +106,13 @@
               })
               this.setLoginAccount(this.accountId)
               this.setRegisterAccount(undefined)
+
+              // TODO: register success
             } else {
               this.errorMessage = this.$t(result.message)
             }
           }).catch(e => {
-            if(e.status == '404'){
-              
-            }
+            this.errorMessage = this.$t('account.error.networkError')
           })
         }
       },

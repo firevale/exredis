@@ -1,103 +1,60 @@
-@keyframes slideInLeft {
+@mixin slideIn($from, $to) {
   from {
-    transform: translate3d(-100%, 0, 0);
-    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d($from, 0, 0);
+    -webkit-transform: translate3d($from, 0, 0);
   }
   to {
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d($to, 0, 0);
+    -webkit-transform: translate3d($to, 0, 0);
   }
+}
+
+@keyframes slideInLeft {
+  @include slideIn(-100%, 0);
 }
 
 @-webkit-keyframes slideInLeft {
-  from {
-    transform: translate3d(-100%, 0, 0);
-    -webkit-transform: translate3d(-100%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
+  @include slideIn(-100%, 0);
 }
 
-
 @keyframes slideInRight {
-  from {
-    transform: translate3d(100%, 0, 0);
-    -webkit-transform: translate3d(100%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
+  @include slideIn(100%, 0);
 }
 
 @-webkit-keyframes slideInRight {
-  from {
-    transform: translate3d(100%, 0, 0);
-    -webkit-transform: translate3d(100%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
+  @include slideIn(100%, 0);
 }
 
-
-@keyframes slideOutLeft {
+@mixin slideOut($from, $to) {
   from {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d($from, 0, 0);
+    -webkit-transform: translate3d($from, 0, 0);
   }
   to {
     opacity: 0;
-    transform: translate3d(-100%, 0, 0);
-    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d($to, 0, 0);
+    -webkit-transform: translate3d($to, 0, 0);
   }
+}
+
+@keyframes slideOutLeft {
+  @include slideOut(0, -100%);
 }
 
 @-webkit-keyframes slideOutLeft {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(-100%, 0, 0);
-    -webkit-transform: translate3d(-100%, 0, 0);
-  }
+  @include slideOut(0, -100%);
 }
 
 @keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(100%, 0, 0);
-    -webkit-transform: translate3d(100%, 0, 0);
-  }
+  @include slideOut(0, 100%);
 }
 
 @-webkit-keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(100%, 0, 0);
-    -webkit-transform: translate3d(100%, 0, 0);
-  }
+  @include slideOut(0, 100%);
 }
 
 $animation-time: .3s;
-
 .slide-left-enter-active {
   animation: slideInRight $animation-time ease;
   -webkit-animation: slideInRight $animation-time ease;

@@ -108,10 +108,10 @@ body.in-app {
             flex: 1;
             -webkit-flex: 1;
           }
-          input[name=password].sibling {
+          input[name=password].sibling:not(:focus) {
             border-top: none;
           }
-          input[name=verifyCode].sibling {
+          input[name=verifyCode].sibling:not(:focus) {
             border-top: none;
           }
           input[type=submit] {
@@ -296,11 +296,6 @@ body.in-app {
             a {
               font-size: .8rem;
             }
-            // .insideInput {
-            //   margin: .15rem 0;
-            //   font-size: .6rem;
-            //   padding: .35rem .3rem;
-            // }
           }
           .errors {
             margin: .2rem;
@@ -330,12 +325,6 @@ body.in-app {
             a {
               font-size: .9rem;
             }
-            // .insideInput {
-            //   right: .2rem;
-            //   margin: .2rem 0;
-            //   font-size: .6rem;
-            //   padding: .35rem .3rem;
-            // }
           }
           .errors {
             margin: .2rem;

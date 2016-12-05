@@ -30,9 +30,9 @@ config :acs, :custom_iap,
   ios: false,
   android: [:alipay, :ggplay]
 
-config :acs, :sdks, ~w(alipay appstore ggplay anzhi baidu cc ccplay coolpad downjoy facebook firevale gfan haima htc huawei i4 
-                       iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc vivo wdj wechat  
-                       xiaomi xy youku yyh)
+config :acs, :sdks, ~w(alipay appstore applestore ggplay anzhi baidu cc ccplay coolpad downjoy facebook firevale gfan haima 
+                       htc huawei i4 iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc 
+                       vivo wdj wechat xiaomi xy youku yyh)
 
 config :acs, :pbkdf2,
   mac_func: :sha,

@@ -49,17 +49,6 @@ defmodule Acs.FVSdkView do
      }
   end
 
-  defp transform_goods(goods, sdk) do 
-    goods |> Enum.map(fn({id, g}) ->
-      {g.id, %{id: g.id,
-               name: g.name,
-               description: g.description || "",
-               price: g.price,
-               icon: g.icon || "",
-               product_id: g.product_ids[sdk] || ""}}
-    end) |> Enum.into(%{})
-  end
-
   def render("app_info.ios.json", %{app: %RedisApp{} = app}) do 
     %{
       success: true,
@@ -75,6 +64,17 @@ defmodule Acs.FVSdkView do
       supported_custom_iap_channels: @android_custom_iap_channels,
       goods: transform_app_goods_old(app)     
     }
+  end
+
+  defp transform_goods(goods, sdk) do 
+    goods |> Enum.map(fn({id, g}) ->
+      {g.id, %{id: g.id,
+               name: g.name,
+               description: g.description || "",
+               price: g.price,
+               icon: g.icon || "",
+               product_id: g.product_ids[sdk |> String.to_atom] || ""}}
+    end) |> Enum.into(%{})
   end
 
   defp transform_app_goods_old(%RedisApp{} = app) do 

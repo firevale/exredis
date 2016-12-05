@@ -4,6 +4,8 @@
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
+      <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
+      <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
       <div class="row-login">
         <validity ref="verifyCode" field="verifyCode" :validators="{
                 required: {rule: true, message: $t('account.loginPage.verifyCodePlaceholder')}, 
@@ -12,13 +14,11 @@
           <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
             maxlength="10" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
-        <div v-if="shouldShowCaptcha" class="captchaBox">
-          <img class="captcha" :src="captchaUrl"></img>
-          <input type="button" class="changeCode" :value="$t('account.loginPage.changeCode')" @click="updateCaptcha">
-          </input>
+        <div v-if="!isMobileAccount" class="captchaBox">
+          <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
         </div>
-        <input v-if="shouldShowSendVerifyCodeButton" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="insideInput"
-          :value="sendCodeTex" @click.prevent="sendMobileVerifyCode">
+        <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="insideInput"
+          :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="header-icon">
           <icon name="check-circle-o" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
@@ -39,13 +39,8 @@
 <script>
   import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
-  import '../components/fvIcon/icons/lock'
   import '../components/fvIcon/icons/check-circle-o'
-  import '../components/fvIcon/icons/eye-slash'
-  import '../components/fvIcon/icons/eye'
   import msg from '../components/message'
   import Vue from 'vue'
   import {
@@ -54,66 +49,51 @@
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
     data: function() {
       return {
+        isMobileAccount: false,
         hasSentCode: false,
         isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
         cooldownCounter: 0,
         accountId: '',
-        password: '',
-        passwordIcon: 'eye',
         verifyCode: '',
         errorMessage: '',
       }
     },
 
     created: function() {
-      this.accountId = this.registerAccount
-      this.updateCaptcha()
+      this.accountId = this.$route.params.accountId
+      if (utils.isValidEmail(this.accountId)) {
+        this.updateCaptcha()
+        this.isMobileAccount = false
+      } else {
+        this.isMobileAccount = true
+        this.sendMobileVerifyCode()
+      }
     },
 
     computed: {
       ...mapGetters([
         'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
       ]),
-      accountId: function() {
-        return this.$route.params.accountId
-      },
-      shouldShowCaptcha: function() {
-        return utils.isValidEmail(this.accountId)
-      },
 
-      shouldShowSendVerifyCodeButton: function() {
-        return utils.isValidMobileNumber(this.accountId)
-      },
-
-      sendCodeTex: function() {
-        
-        if(this.cooldownCounter > 0){
-          return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
-        }else{
-          if(this.hasSentCode){
+      sendCodeTitle: function() {
+        if (this.cooldownCounter > 0) {
+          return this.$t('account.registerPage.cooldownText', {
+            timer: this.cooldownCounter
+          })
+        } else {
+          if (this.hasSentCode) {
             return this.$t('account.registerPage.sendAgain')
-          }else{
-            return this.$t('account.loginPage.btnSendverificationCode')
+          } else {
+            return this.$t('account.loginPage.sendVerifyCode')
           }
         }
       },
     },
 
     methods: {
-      ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount', 'updateCaptcha',
-        'validateAccountId'
-      ]),
+      ...mapActions(['updateCaptcha']),
 
       handleValidate: function(e) {
         this.errorMessage = ''
@@ -138,8 +118,7 @@
 
       sendMobileVerifyCode: function() {
         if (window.acsConfig.isMobileAccountSupported &&
-          utils.isValidMobileNumber(this.accountId) &&
-          this.$validation.register.accountId.valid) {
+          utils.isValidMobileNumber(this.accountId)) {
           this.$http({
             method: 'post',
             url: "/send_mobile_register_verify_code",
@@ -150,7 +129,10 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              msg.showMsg({msg:this.$t('account.registerPage.messageTip'), target: this.$parent.$refs.msg})
+              msg.showMsg({
+                msg: this.$t('account.registerPage.messageTip'),
+                target: this.$parent.$refs.msg
+              })
               this.hasSentCode = true
               this.cooldownCounter = 60
               setTimeout(this.cooldownTimer, 1000)
@@ -164,6 +146,29 @@
       handleSubmit: function() {
         if (this.$validation.register.valid && this.verifyCode) {
           this.$router.replace({name: 'registerStep3', params: {accountId: this.accountId, verifyCode: this.verifyCode}})
+          this.$http({
+            method: 'post',
+            url: '/check_register_verify_code',
+            params: {
+              verify_code: this.verifyCode,
+            }
+          }).then(response => {
+            return response.json()
+          }).then(result => {
+            if (result.exists) {
+              this.errorMessage = this.$t('account.error.accountInUse')
+            } else {
+              this.$router.replace({
+                name: 'registerStep3',
+                params: {
+                  accountId: this.accountId,
+                  verifyCode: this.verifyCode
+                }
+              })
+            }
+          }).catch(error => {
+            this.errorMessage = this.$t('account.error.networkError')
+          })
         }
       },
     },
@@ -173,6 +178,7 @@
     }
   }
 </script>
+
 <style lang="scss">
 
 </style>

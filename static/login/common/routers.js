@@ -19,12 +19,12 @@ export default function(VueRouter) {
         name: 'registerStep1',
         component: require('../views/registerStep1.vue')
       },{
-        path: 'registerStep2',
+        path: 'registerStep2/:accountId',
         name: 'registerStep2',
         component: require('../views/registerStep2.vue')
       },
       {
-        path: 'registerStep3',
+        path: 'registerStep3/:accountId/:verifyCode',
         name: 'registerStep3',
         component: require('../views/registerStep3.vue')
       }, {

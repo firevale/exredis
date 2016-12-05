@@ -4,14 +4,14 @@ export default {
       loginPage: {
         title: '用户登录',
         quickTitle: '快速登录',
-        titleRegister: '注册',
+        titleRegister: '账号注册',
         retrievePasswordTitle: '找回密码',
         titleReset: '密码重置',
         btnSubmit: '登录',
         btnRegister: '注册',
         btnReset: '重置',
-        btnSendverificationCode: '发送验证码',
-        btnSendCodeReqpeat: '重新发送',
+        sendVerifyCode: '获取验证码',
+        sendVerifyCodeAgain: '重新发送',
         userPlaceHolder: '请输入手机号/邮箱地址',
         userOnlyEmailPlaceHolder: '请输入邮箱',
         userPasswordPlaceHolder: '请输入密码，6-20位英文或数字',
@@ -28,6 +28,9 @@ export default {
         goLoginPage: '已有帐号>',
         messageTip: '发送验证码成功',
         nextStep: '下一步',
+        pleaseInputAccountName: '请输入手机号或电子邮件地址',
+        pleaseInputCaptchaVerifyCode: '请输入验证码，点击图片可更换',
+        pleaseInputMobileVerifyCode: '请输入您手机收到的验证码',
       },
 
       retrievePasswordPage: {
@@ -61,6 +64,7 @@ export default {
         sendEmailFailed: '验证邮件发送失败，请稍后再试',
         sendEmailCooldown: '一分钟内不能发送多次验证码',
         accountNotFound: '账号不存在',
+        networkError: '网络错误，请稍后再试',
       },
 
       upload: {

@@ -4,6 +4,7 @@
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
+      <p class="code-tip"> {{ $t('account.registerPage.pleaseInputAccountName') }}: </p>
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
@@ -23,7 +24,7 @@
         <input type="submit" :value="$t('account.registerPage.nextStep')" />
       </div>
       <div class="row-login" style="justify-content: flex-end;">
-        <router-link :to="{name: 'login'}">{{ $t('account.registerPage.goLoginPage') }}</router-link>
+        <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
   </div>
@@ -31,15 +32,9 @@
 <script>
   import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
-  import '../components/fvIcon/icons/lock'
-  import '../components/fvIcon/icons/check-circle-o'
-  import '../components/fvIcon/icons/eye-slash'
-  import '../components/fvIcon/icons/eye'
   import msg from '../components/message'
-  import Vue from 'vue'
   import {
     mapGetters,
     mapActions
@@ -56,53 +51,25 @@
 
     data: function() {
       return {
-        hasSentCode: false,
         isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
-        cooldownCounter: 0,
         accountId: '',
-        password: '',
-        passwordIcon: 'eye',
-        verifyCode: '',
         errorMessage: '',
       }
     },
 
     created: function() {
       this.accountId = this.registerAccount
-      this.updateCaptcha()
     },
 
     computed: {
       ...mapGetters([
-        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'registerAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
       ]),
-
-      shouldShowCaptcha: function() {
-        return utils.isValidEmail(this.accountId)
-      },
-
-      shouldShowSendVerifyCodeButton: function() {
-        return utils.isValidMobileNumber(this.accountId)
-      },
-
-      sendCodeTex: function() {
-        
-        if(this.cooldownCounter > 0){
-          return this.$t('account.registerPage.cooldownText',{timer: this.cooldownCounter})
-        }else{
-          if(this.hasSentCode){
-            return this.$t('account.registerPage.sendAgain')
-          }else{
-            return this.$t('account.loginPage.btnSendverificationCode')
-          }
-        }
-      },
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount', 'updateCaptcha',
-        'validateAccountId'
+        'setRegisterAccount', 'validateAccountId'
       ]),
 
       handleValidate: function(e) {
@@ -119,34 +86,31 @@
         })
       },
 
-      cooldownTimer: function() {
-        if (this.cooldownCounter > 0) {
-          this.cooldownCounter--;
-          setTimeout(this.cooldownTimer, 1000);
-        }
-      },
-
-      sendMobileVerifyCode: function() {
-        if (window.acsConfig.isMobileAccountSupported &&
-          utils.isValidMobileNumber(this.accountId) &&
-          this.$validation.register.accountId.valid) {
+      handleSubmit: function() {
+        if (this.$validation.register.valid && this.accountId) {
           this.$http({
             method: 'post',
-            url: "/send_mobile_register_verify_code",
+            url: '/user/is_account_exists',
             params: {
-              mobile: this.accountId
+              account_id: this.accountId,
             }
           }).then(response => {
             return response.json()
           }).then(result => {
-            if (result.success) {
-              msg.showMsg({msg:this.$t('account.registerPage.messageTip'), target: this.$parent.$refs.msg})
-              this.hasSentCode = true
-              this.cooldownCounter = 60
-              setTimeout(this.cooldownTimer, 1000)
+            if (result.exists) {
+              this.errorMessage = this.$t('account.error.accountInUse')
             } else {
-              this.errorMessage = this.$t(result.message)
+              // remember registerAccount 
+              this.setRegisterAccount(this.accountId)
+              this.$router.replace({
+                name: 'registerStep2',
+                params: {
+                  accountId: this.accountId
+                }
+              })
             }
+          }).catch(error => {
+            this.errorMessage = this.$t('account.error.networkError')
           })
         }
       },

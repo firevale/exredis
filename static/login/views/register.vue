@@ -128,7 +128,7 @@
           if(this.hasSentCode){
             return this.$t('account.registerPage.sendAgain')
           }else{
-            return this.$t('account.loginPage.btnSendverificationCode')
+            return this.$t('account.loginPage.sendVerifyCode')
           }
         }
       },

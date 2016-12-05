@@ -51,6 +51,7 @@ defmodule Acs.Router do
     post "/create_token", UserController, :create_token 
     post "/create_user", UserController, :create_user
     post "/update_password", UserController, :update_password # update(reset) password
+    post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
   end
 

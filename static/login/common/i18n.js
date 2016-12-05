@@ -25,7 +25,8 @@ export default {
         sendAgain: "重新发送",
         cooldownText: "重新发送({timer}s)",
         goLoginPage: '已有帐号>',
-        messageTip: '发送验证码成功'
+        messageTip: '发送验证码成功',
+        nextStep: '下一步',
       },
 
       retrievePasswordPage: {

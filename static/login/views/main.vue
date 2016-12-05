@@ -36,8 +36,6 @@
       ...mapGetters([
         'app','colors','getMessage'
       ]),
-
-      
     },
 
     components: {

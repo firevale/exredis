@@ -1,18 +1,22 @@
 @keyframes slideInLeft {
   from {
     transform: translate3d(-100%, 0, 0);
+    -webkit-transform: translate3d(-100%, 0, 0);
   }
   to {
     transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slideInRight {
   from {
     transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
   }
   to {
     transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
 }
 
@@ -20,10 +24,12 @@
   from {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
   to {
     opacity: 0;
     transform: translate3d(-100%, 0, 0);
+    -webkit-transform: translate3d(-100%, 0, 0);
   }
 }
 
@@ -31,35 +37,47 @@
   from {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
   to {
     opacity: 0;
     transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
   }
 }
 
+$animation-time: .3s;
+
 .slide-left-enter-active {
-  animation: slideInRight .5s ease
+  animation: slideInRight $animation-time ease;
+  -webkit-animation: slideInRight $animation-time ease;
 }
 
 .slide-left-leave-active {
-  animation: slideOutLeft .5s cubic-bezier(1, 0, 0, 1)
+  animation: slideOutLeft $animation-time ease;
+  -webkit-animation: slideOutLeft $animation-time ease;
 }
 
 .slide-left-enter,
+// .slide-left-enter-active,
+// .slide-left-leave,
 .slide-left-leave-active {
   position: absolute;
 }
 
 .slide-right-enter-active {
-  animation: slideInLeft .5s ease
+  animation: slideInLeft $animation-time ease;
+  -webkit-animation: slideInleft $animation-time ease;
 }
 
 .slide-right-leave-active {
-  animation: slideOutRight .5s cubic-bezier(1, 0, 0, 1)
+  animation: slideOutRight $animation-time ease;
+  -webkit-animation: slideOutRight $animation-time ease;
 }
 
 .slide-right-enter,
+// .slide-right-enter-active,
+// .slide-right-leave
 .slide-right-leave-active {
   position: absolute;
 }

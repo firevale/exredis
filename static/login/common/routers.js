@@ -10,6 +10,10 @@ export default function(VueRouter) {
         path: 'login',
         name: 'login',
         component: require('../views/login.vue'),
+      },{
+        path: 'quickLogin',
+        name: 'quickLogin',
+        component: require('../views/quickLogin.vue'),
       }, {
         path: 'registerStep1',
         name: 'registerStep1',

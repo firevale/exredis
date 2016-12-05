@@ -61,6 +61,24 @@ body.in-app {
       .login-box {
         border-radius: .5rem;
         margin: 0 auto;
+        .accountList{
+          position: absolute;
+          z-index: 3;
+          opacity: .95;
+          top: 2.5rem;
+          width: 100%;
+          border: 1px solid $dark;
+          background: $white;
+          .accountItem{
+            color: $black;
+            font-size: .6rem;
+            padding: .6rem;
+          }
+          .accountItem:hover{
+            background: $primary;
+            color: $white;
+          }
+        }
         .row-login {
           position: relative;
           display: flex;
@@ -81,7 +99,7 @@ body.in-app {
           }
           input {
             height: 100%;
-            padding: .5rem;
+            padding: .6rem;
             padding-left: 2rem;
             font-size: .6rem;
             flex: 1;
@@ -169,7 +187,7 @@ body.in-app {
           }
           a {
             color: $link;
-            font-size: .5rem;
+            font-size: .6rem;
             padding-top: .5rem;
           }
           .header-icon {
@@ -232,10 +250,10 @@ body.in-app {
               margin: 0.3rem 0;
             }
             input {
-              font-size: .9rem;
+              font-size: .6rem;
             }
             a {
-              font-size: .8rem;
+              font-size: .6rem;
             }
             .insideInput {
               padding: .3rem .3rem;
@@ -305,7 +323,7 @@ body.in-app {
         .login-box {
           .row-login {
             input {
-              font-size: 0.9rem;
+              font-size: 0.6rem;
             }
             a {
               font-size: .8rem;

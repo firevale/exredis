@@ -44,7 +44,7 @@
       strokeColor: {
         type: String,
         required: false,
-        default: "#888888",
+        default: "#000000",
       },
       fillColor: {
         type: String,

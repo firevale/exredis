@@ -157,16 +157,6 @@
           this.$router.replace({name: 'registerStep2', params: {accountId: this.accountId}})
         }
       },
-
-      togglePasswordVisibility: function() {
-        if (this.passwordIcon === 'eye') {
-          this.passwordIcon = 'eye-slash'
-          this.$refs.password.$el.type = 'text'
-        } else {
-          this.passwordIcon = 'eye'
-          this.$refs.password.$el.type = 'password'
-        }
-      },
     },
 
     components: {

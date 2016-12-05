@@ -166,16 +166,6 @@
           this.$router.replace({name: 'registerStep3', params: {accountId: this.accountId, verifyCode: this.verifyCode}})
         }
       },
-
-      togglePasswordVisibility: function() {
-        if (this.passwordIcon === 'eye') {
-          this.passwordIcon = 'eye-slash'
-          this.$refs.password.$el.type = 'text'
-        } else {
-          this.passwordIcon = 'eye'
-          this.$refs.password.$el.type = 'password'
-        }
-      },
     },
 
     components: {

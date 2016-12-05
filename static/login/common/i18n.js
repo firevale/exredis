@@ -3,6 +3,7 @@ export default {
     account: {
       loginPage: {
         title: '用户登录',
+        quickTitle: '快速登录',
         titleRegister: '注册',
         retrievePasswordTitle: '找回密码',
         titleReset: '密码重置',

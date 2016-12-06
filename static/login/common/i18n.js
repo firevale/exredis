@@ -18,7 +18,7 @@ export default {
         verifyCodePlaceholder: '请输入验证码',
         forgetPassword: '忘记密码',
         registration: '快速注册',
-        otherWays: '其他方式',
+        otherWays: '选择登录方式',
         changeCode: '更换',
       },
 

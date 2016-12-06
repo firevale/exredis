@@ -16,7 +16,7 @@
           <input type="text" class="outsideText" :placeholder="accountIdPlaceholder"
             v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
-        <div class="header-icon"><icon name="user-o" :fill-color="colors.white"></icon></div>
+        <div class="header-icon"><icon name="user-o" scale="1.2" :fill-color="colors.white"></icon></div>
       </div>
 
       <p class="errors">

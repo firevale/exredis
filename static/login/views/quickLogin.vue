@@ -1,36 +1,43 @@
 <template>
-    <div class="login-box">
-        <validation name="login" @submit.prevent="handleSubmit">
-            <div class="row-login">
-                <p class="title">{{ $t('account.loginPage.quickTitle') }}</p>
+  <div class="login-box">
+    <validation name="login" @submit.prevent="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ $t('account.loginPage.quickTitle') }}</p>
+      </div>
+      <div class="row-login">
+        <input type="text" onchange="return false" v-model.trim="accountId" name="accountId" readonly @focus="this.showAccounts = true"
+        />
+        <div class="header-icon">
+          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
+        </div>
+        <div class="tail-icon" @click="toggleAccounts">
+          <icon name="caret-down" :fill-color="colors.black"></icon>
+        </div>
+        <div v-if="showAccounts" ref="accountList" class="accountList">
+          <div class="accountItem row-login" v-for="item in accounts" >
+            <div @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</div>
+            <div class="tail-icon" @click="deleteAccountId" style="top:.3rem;height:1rem;">
+              <icon name="times"></icon>
             </div>
-            <div class="row-login">
-                <input type="text" onchange="return false" v-model.trim="accountId"  name="accountId" readonly @focus="this.showAccounts = true"/>
-                <div class="header-icon">
-                    <icon name="user-o" :fill-color="colors.white"></icon>
-                </div>
-                <div v-if = "showAccounts" class="accountList">
-                    <div class="accountItem" v-for="item in accounts" @click="chooseAccountId(item)">{{item}}</div> 
-                </div>
-            </div>
-            <p class="errors">
-                <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
-            </p>
-            <div class="row-login" style="margin-top: 1rem;">
-                <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
-            </div>
-        </validation>
-    </div>
+          </div>
+        </div>
+      </div>
+      <p class="errors">
+        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+      </p>
+      <div class="row-login" style="margin-top: 1rem;">
+        <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
+      </div>
+    </validation>
+  </div>
 </template>
 <script>
   import utils from '../common/utils'
   import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/times'
+  import '../components/fvIcon/icons/caret-down'
   import '../components/fvIcon/icons/info-circle'
   import '../components/fvIcon/icons/user-o'
-  import '../components/fvIcon/icons/lock'
-  import '../components/fvIcon/icons/eye-slash'
-  import '../components/fvIcon/icons/eye'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -52,11 +59,11 @@
 
     data: function() {
       return {
-        accountId: '',
+        accountId: 'zhangshiqing@firevale.com',
         accounts: ['zhangshiqing@firevale.com', 'zsq@firevale.com'],
         passwordIcon: 'eye',
         errorMessage: '',
-        showAccounts: true,
+        showAccounts: false,
       }
     },
 
@@ -85,7 +92,7 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.login.valid && this.accountId) {
+        if (this.accountId) {
           this.$http({
             method: 'post',
             url: '/user/create_token',
@@ -103,10 +110,17 @@
           })
         }
       },
+      toggleAccounts: function(){
+        this.showAccounts = !this.showAccounts
+      },
 
       chooseAccountId: function(item){
-          this.accountId = item
-          this.showAccounts = false
+        this.accountId = item
+        this.showAccounts = false
+      },
+
+      deleteAccountId: function(){
+        
       }
     },
 

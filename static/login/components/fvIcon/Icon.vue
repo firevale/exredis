@@ -49,7 +49,7 @@
       fillColor: {
         type: String,
         required: false,
-        default: "#ffffff",
+        default: "#bbbbba",
       },
 
       name: {

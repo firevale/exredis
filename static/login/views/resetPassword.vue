@@ -8,7 +8,7 @@
         <input type="text" readonly :placeholder="$t('account.loginPage.userPlaceHolder')" v-model.trim="userName" autocomplete="off"
           name="user" />
         <div class="header-icon">
-          <icon name="user-o" :fill-color="colors.white"></icon>
+          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
         </div>
       </div>
       <div class="row-login">
@@ -20,10 +20,10 @@
             name="password" @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="lock" :fill-color="colors.white"></icon>
+          <icon name="lock" scale="1.3" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
+          <icon :name="passwordIcon" scale="1.3" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p v-if="passwordInvalid" class="errors">

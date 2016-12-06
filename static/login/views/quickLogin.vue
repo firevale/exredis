@@ -8,7 +8,7 @@
         <input type="text" onchange="return false" v-model.trim="accountId" name="accountId" readonly @focus="this.showAccounts = true"
         />
         <div class="header-icon">
-          <icon name="user-o" :fill-color="colors.white"></icon>
+          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="toggleAccounts">
           <icon name="caret-down" :fill-color="colors.black"></icon>

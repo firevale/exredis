@@ -14,7 +14,7 @@
             @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="user-o" :fill-color="colors.white"></icon>
+          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">

@@ -13,7 +13,7 @@
           />
         </validity>
         <div class="header-icon">
-          <icon name="user-o" :fill-color="colors.white"></icon>
+          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
         </div>
       </div>
       <div class="row-login">
@@ -24,10 +24,10 @@
             @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" />
         </validity>
         <div class="header-icon">
-          <icon name="lock" :fill-color="colors.white"></icon>
+          <icon name="lock" scale="1.3" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
+          <icon :name="passwordIcon" scale="1.2" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">

@@ -13,10 +13,10 @@
             v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <div class="header-icon">
-          <icon name="lock" :fill-color="colors.white"></icon>
+          <icon name="lock" scale="1.3" :fill-color="colors.white"></icon>
         </div>
         <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" :fill-color="colors.white"></icon>
+          <icon :name="passwordIcon" scale="1.2" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">

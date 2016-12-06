@@ -21,7 +21,7 @@
           :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
         </input>
         <div class="header-icon">
-          <icon name="check-circle-o" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
+          <icon name="check-circle-o" scale="1.3" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
         </div>
       </div>
       <p class="errors">

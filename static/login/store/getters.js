@@ -30,6 +30,7 @@ const colors = state => {
     success: '#23d160',
     white: "#fff",
     dark: "#aaa",
+    black: "#000",
   }
 }
 

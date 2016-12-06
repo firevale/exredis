@@ -69,12 +69,13 @@ body.in-app {
           z-index: 3;
           opacity: .95;
           top: 2.5rem;
-          width: 100%;
+          left: .1rem;
+          width: 98%;
           border: 1px solid $dark;
           background: $white;
           .accountItem{
             color: $black;
-            font-size: .6rem;
+            font-size: .7rem;
             padding: .6rem;
           }
           .accountItem:hover{

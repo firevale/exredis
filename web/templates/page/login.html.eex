@@ -8,9 +8,9 @@
     <meta name="Login" content="app-id=com.firevale.vrstorecn">
     <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>
     <%= if @browser == "webview" do %>
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <% else %>
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <% end %>
     <meta content="APP" name="description"/>
     <meta content="APP" name="keywords"/>

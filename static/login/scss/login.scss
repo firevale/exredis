@@ -14,11 +14,12 @@ body:not(.in-app) {
 
 body.in-app {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 .g-doc {
@@ -84,16 +85,16 @@ body.in-app {
         }
         .row-login {
           position: relative;
-          display: flex;
           display: -webkit-flex;
-          flex-direction: row;
+          display: flex;
           -webkit-flex-direction: row;
-          justify-content: space-between;
+          flex-direction: row;
           -webkit-justify-content: space-between;
+          justify-content: space-between;
           margin: 0;
           p.title {
-            flex: 1;
             -webkit-flex: 1;
+            flex: 1;
             margin: 0.6rem 0;
             line-height: 2.5rem;
             vertical-align: middle;
@@ -105,8 +106,8 @@ body.in-app {
             padding: .6rem;
             padding-left: 2rem;
             font-size: .6rem;
-            flex: 1;
             -webkit-flex: 1;
+            flex: 1;
           }
           input[name=password].sibling:not(:focus) {
             border-top: none;
@@ -123,8 +124,8 @@ body.in-app {
             margin: auto;
           }
           input.outsideText {
-            flex: 1;
             -webkit-flex: 1;
+            flex: 1;
           }
           .insideInput {
             position: absolute;
@@ -227,7 +228,7 @@ body.in-app {
           color: $dark;
           font-size: .8rem;
           margin: 0 .2rem;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           strong {
             color: $red;
           }
@@ -254,6 +255,7 @@ body.in-app {
         .login-box {
           .row-login {
             p.title {
+              font-size: 1rem;
               margin: 0.3rem 0;
             }
             input {
@@ -286,7 +288,6 @@ body.in-app {
   }
   .g-doc {
     .g-con {
-      padding: 0;
       .g-mask {
         .login-box {
           .row-login {

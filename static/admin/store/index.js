@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import pkg from 'package'
+//import pkg from 'package'
 import * as actions from './actions'
 import * as getters from './getters'
 
@@ -18,7 +18,7 @@ const store = new Vuex.Store({
     menu
   },
   state: {
-    pkg
+    //pkg
   },
   mutations: {
   }

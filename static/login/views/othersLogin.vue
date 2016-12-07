@@ -1,32 +1,16 @@
 <template>
   <div class="login-box">
-      <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.quickTitle') }}</p>
+    <div class="row-login">
+      <p class="title">{{ $t('account.loginPage.otherWays') }}</p>
+    </div>
+    <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
+      <div class="tileWays" v-for="item in otherWays" @click="onLoginByType(item)">
+        <figure>
+          <img :src="item.img"></img>
+        </figure>
+        <p>{{ item.name }}</p>
       </div>
-      <div class="row-login">
-        <input type="text" onchange="return false" v-model.trim="accountId" name="accountId" readonly @focus="this.showAccounts = true"
-        />
-        <div class="header-icon">
-          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
-        </div>
-        <div class="tail-icon" @click="toggleAccounts">
-          <icon name="caret-down" :fill-color="colors.black"></icon>
-        </div>
-        <div v-if="showAccounts" ref="accountList" class="accountList">
-          <div class="accountItem row-login" v-for="item in accounts" >
-            <div @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</div>
-            <div class="tail-icon" @click="deleteAccountId" style="top:.3rem;height:1rem;">
-              <icon name="times"></icon>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
-      </p>
-      <div class="row-login" style="margin-top: 1rem;">
-        <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
-      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -62,6 +46,12 @@
         passwordIcon: 'eye',
         errorMessage: '',
         showAccounts: false,
+        otherWays: [
+          {img: '', name: '快速游戏'},
+          {img: '', name: 'QQ'},
+          {img: '', name: '微博'},
+          {img: '', name: '微信'},
+        ]
       }
     },
 
@@ -101,6 +91,7 @@
           })
         }
       },
+      
       toggleAccounts: function(){
         this.showAccounts = !this.showAccounts
       },
@@ -112,7 +103,11 @@
 
       deleteAccountId: function(){
         
-      }
+      },
+
+      onLoginByType: function(){
+
+      },
     },
 
     components: {

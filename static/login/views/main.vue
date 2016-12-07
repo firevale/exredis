@@ -1,7 +1,7 @@
 <template>
   <div class="g-doc">
     <div ref="gCon" class="g-con">
-      <span v-show="canGoBack" class="icon-back show-in-app" @click="$router.back()">
+      <span v-show="canGoBack" class="icon-back show-in-app" @click.prevent="$router.back()">
         <icon name="chevron-left" :fill-color="colors.dark"></icon>
       </span>
       <span class="icon-close show-in-app" @click="onClose">
@@ -29,19 +29,24 @@
   export default {
     data: function() {
       return {
-        transitionName: 'slide-right',
         canGoBack: false,
       }
     },
 
+    created: function() {},
+
     computed: {
       ...mapGetters([
-        'colors', 'getMessage'
+        'colors', 'getMessage', 'transitionName'
       ]),
     },
 
     methods: {
-      ...mapActions(['setCanGoBack']),
+      ...mapActions(['setTransitionName']),
+
+      onClose: function() {
+
+      },
     },
 
     components: {
@@ -50,17 +55,12 @@
 
     watch: {
       '$route' (to, from) {
-        console.log(history)
+        this.$nextTick(_ => {
+          this.setTransitionName('slide-left')
+        })
         this.canGoBack = (history.state != null)
-        this.transitionName = (to.name == 'login' ? 'slide-right' : 'slide-left')
       }
     },
-
-    methods: {
-      onClose: function() {
-
-      }
-    }
   }
 </script>
 <style lang="scss">

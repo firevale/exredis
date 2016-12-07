@@ -29,6 +29,12 @@ function startVue() {
     Vue.filter(k, filters[k])
   })
 
+  // insert popstate event listener before router, 
+  // by doing so, we can change transition name while user press "Back" button
+  window.addEventListener('popstate', _ => {
+    store.commit('SET_TRANSITION_NAME', 'slide-right')  
+  })
+
   let router = routerMap(VueRouter)
 
   router.afterEach(route => {

@@ -52,3 +52,9 @@ export const setRetrievePasswordVerifyToken = ({
 }, verifyToken) => {
   commit('SET_RETRIEVE_PASSWORD_VERIFY_TOKEN', verifyToken)
 }
+
+export const setTransitionName = ({
+  commit
+}, transitionName) => {
+  commit('SET_TRANSITION_NAME', transitionName)
+}

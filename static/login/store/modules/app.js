@@ -7,6 +7,7 @@ const state = {
   loginAccount: undefined,
   registerAccount: undefined,
   captchaUrl: undefined,
+  transitionName: 'slide-left',
 }
 
 const mutations = {
@@ -24,6 +25,10 @@ const mutations = {
 
   'SET_CAPTCHA_URL' (state, captchaUrl) {
     state.captchaUrl = captchaUrl
+  },
+
+  'SET_TRANSITION_NAME' (state, transitionName) {
+    state.transitionName = transitionName
   },
 }
 

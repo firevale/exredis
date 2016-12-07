@@ -15,6 +15,7 @@ docker_run() {
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
+								 --expose 4000 \
 								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
 								 -e "ACS_MYSQL_USER=root" \
 								 -e "ACS_MYSQL_PASSWORD=firevale" \
@@ -41,6 +42,7 @@ run() {
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
+								 --expose 4000 \
 								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
 								 -e "ACS_MYSQL_USER=root" \
 								 -e "ACS_MYSQL_PASSWORD=firevale" \

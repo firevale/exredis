@@ -1,12 +1,13 @@
 FROM docker-registry.firevale.com/ass_dev:latest 
 
-EXPOSE 4005
+EXPOSE 80
 
 VOLUME ["/code"]
 
 WORKDIR /code
 
-RUN  mkdir -p /code && \
+RUN  mkdir -p /run/nginx && \
+     mkdir -p /code && \
      { \
         echo '#/bin/sh'; \
         echo 'cd /code && mix deps.get'; \

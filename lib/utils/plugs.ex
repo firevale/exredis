@@ -84,7 +84,11 @@ defmodule Acs.Plugs do
             conn |> put_private(:acs_platform, "wp8")
           user_agent =~ ~r/android/iu  ->
             conn |> put_private(:acs_platform, "android")
+          user_agent =~ ~r/ios/iu  ->
+            conn |> put_private(:acs_platform, "ios")
           user_agent =~ ~r/iphone/iu  ->
+            conn |> put_private(:acs_platform, "ios")
+          user_agent =~ ~r/ipad/iu  ->
             conn |> put_private(:acs_platform, "ios")
           user_agent =~ ~r/mac os x/iu  ->
             conn |> put_private(:acs_platform, "macos")

@@ -1,7 +1,7 @@
 <template>
   <div class="g-doc">
     <div ref="gCon" class="g-con">
-      <span v-show="app.history-1" class="icon-back show-in-app" @click="backToLogin">
+      <span v-show="canGoBack" class="icon-back show-in-app" @click="$router.back()">
         <icon name="chevron-left" :fill-color="colors.dark"></icon>
       </span>
       <span class="icon-close show-in-app" @click="onClose">
@@ -26,15 +26,15 @@
     mapActions
   } from 'vuex'
   export default {
-    data:function(){
+    data: function() {
       return {
         transitionName: 'slide-right',
       }
     },
-    
+
     computed: {
       ...mapGetters([
-        'app','colors','getMessage'
+        'canGoBack', 'colors', 'getMessage'
       ]),
     },
 
@@ -44,16 +44,12 @@
 
     watch: {
       '$route' (to, from) {
-        this.transitionName = to.name == 'login'? 'slide-right' : 'slide-left'
+        this.transitionName = to.name == 'login' ? 'slide-right' : 'slide-left'
       }
     },
 
     methods: {
-      backToLogin: function() {  
-       this.$router.back()
-      },
-
-      onClose: function(){
+      onClose: function() {
 
       }
     }

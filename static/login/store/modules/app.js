@@ -7,7 +7,7 @@ const state = {
   loginAccount: undefined,
   registerAccount: undefined,
   captchaUrl: undefined,
-  history: 0,
+  canGoBack: false,
 }
 
 const mutations = {
@@ -27,8 +27,8 @@ const mutations = {
     state.captchaUrl = captchaUrl
   },
 
-  'REFRESH_HISTORY' (state, val) {
-    state.history = val
+  'SET_CAN_GO_BACK' (state, val) {
+    state.canGoBack = val
   }
 }
 

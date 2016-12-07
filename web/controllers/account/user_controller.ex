@@ -18,6 +18,7 @@ defmodule Acs.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password}) do 
+    d "acs_app_id: #{app_id}"
     if RedisUser.exists?(account_id) do 
       now = Utils.unix_timestamp
       last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0

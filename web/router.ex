@@ -32,8 +32,8 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/", PageController, :index
-    get  "/login.html", PageController, :show_login_page 
-    get  "/admin.html", PageController, :show_admin_page
+    get  "/login/*path", PageController, :show_login_page
+    get  "/admin/*path", PageController, :show_admin_page
 
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha 

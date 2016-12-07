@@ -12,7 +12,6 @@ defmodule Acs.PageController do
                                             acs_platform: platform}} = conn,
              params) do 
 
-    d "headers, #{inspect conn, pretty: true}"
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"

@@ -44,6 +44,7 @@
       inApp: <%= @browser == "webview" %>,
       platform: '<%= @platform %>',
       locale: '<%= @locale %>',
+      init: undefined,
     }
   </script>
   <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>

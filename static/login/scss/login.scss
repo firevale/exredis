@@ -1,342 +1,347 @@
-@import "./color";
-@import "./font";
-@import "./common";
-@import "./transition";
-html {
-  font-size: $middle;
-}
-
-body:not(.in-app) {
-  .show-in-app {
-    display: none;
-  }
-}
-
-body.in-app {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-}
-
-.g-doc {
-  background: $white;
-  position: absolute;
-  display: table;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  .g-con {
-    background: $white;
-    position: relative;
-    margin: 0 auto;
-    display: table-cell;
-    vertical-align: middle;
-    padding-bottom: 100px;
-    height: 220px;
-    width: 100%; 
-    overflow: hidden;
-    .icon-close {
-      position: absolute;
-      z-index: 2;
-      right: .2rem;
-      top: .2rem;
-      width: 1rem;
-    }
-    .icon-back {
-      position: absolute;
-      z-index: 2;
-      left: .2rem;
-      top: .5rem;
-      width: 1rem
-    }
-    .g-mask {
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
-      padding: 0 1rem;
-      max-width: 300px;
-      height: 220px;
-      .login-box {
-        border-radius: .5rem;
-        margin: 0 auto;
-        width: 100%;
-        height: 100%;
-        .accountList{
-          position: absolute;
-          z-index: 3;
-          opacity: .95;
-          top: 2.5rem;
-          left: .1rem;
-          width: 98%;
-          border: 1px solid $dark;
-          background: $white;
-          .accountItem{
-            color: $black;
-            font-size: .7rem;
-            padding: .6rem;
-          }
-          .accountItem:hover{
-            background: $primary;
-            color: $white;
-          }
-        }
-        .row-login {
-          position: relative;
-          display: -webkit-flex;
-          display: flex;
-          -webkit-flex-direction: row;
-          flex-direction: row;
-          -webkit-justify-content: space-between;
-          justify-content: space-between;
-          margin: 0;
-          p.title {
-            -webkit-flex: 1;
-            flex: 1;
-            margin: 0.6rem 0;
-            line-height: 2.5rem;
-            vertical-align: middle;
-            font-size: 1.5rem;
-            text-align: center
-          }
-          input {
-            height: 100%;
-            padding: .6rem;
-            padding-left: 2.5rem;
-            font-size: .6rem;
-            -webkit-flex: 1;
-            flex: 1;
-          }
-          input[name=password].sibling:not(:focus) {
-            border-top: none;
-          }
-          input[name=verifyCode].sibling:not(:focus) {
-            border-top: none;
-          }
-          input[type=submit] {
-            color: $white;
-            background: $blue;
-            border: none;
-            padding: .6rem;
-            font-size: 1rem;
-            margin: auto;
-          }
-          input.outsideText {
-            -webkit-flex: 1;
-            flex: 1;
-          }
-          .insideInput {
-            position: absolute;
-            height: 70%;
-            right: .4rem;
-            top: 15%;
-            padding: 0.2rem;
-            color: $white;
-            font-size: .7rem;
-            line-height: .7rem;
-            text-align: center;
-            display: inline-block;
-            background: $link;
-            border-radius: .2rem;
-            border: none;
-          }
-          .fa-icon {
-            line-height: 100%;
-            height: 100%;
-            vertical-align: middle;
-          }
-          .captchaBox {
-            max-height: 2rem;
-            padding: 2px;
-            display: flex;
-            flex-direction: row;
-            -webkit-flex-direction: row;
-            .captcha {
-              flex: 1;
-              -webkit-flex: 1;
-            }
-            .changeCode {
-              color: $primary;
-              padding: .4rem;
-              font-size: .8rem;
-              border: none;
-              border-radius: .2rem;
-              background: $white;
-            }
-          }
-          hr {
-            width: 50%;
-            height: 1px;
-            background: $dark;
-            border: none;
-          }
-          span {
-            white-space: nowrap;
-            margin: auto 1rem;
-            font-size: .8rem;
-          }
-          .tileWays {
-            width: 25%;
-            float: left;
-            text-align: center;
-            padding-top: .5rem;
-            figure {
-              width: 2.5rem;
-              height: 2.5rem;
-              border: 1px solid;
-              margin: auto;
-            }
-            p {
-              color: $dark;
-              font-size: .5rem;
-            }
-          }
-          a {
-            cursor: pointer;
-            color: $link;
-            font-size: .6rem;
-            padding-top: .5rem;
-          }
-          .header-icon {
-            left: .8rem;
-            width: 1rem;
-            height: 100%;
-            position: absolute;
-          }
-          .tail-icon {
-            right: .8rem;
-            width: 1rem;
-            height: 100%;
-            position: absolute;
-          }
-        }
-        .errors {
-          font-size: .6rem;
-          margin: .3rem;
-          vertical-align: middle;
-          color: $danger;
-          .fa-icon {
-            line-height: 100%;
-            height: 100%;
-            max-height: 1.5rem;
-            vertical-align: middle;
-          }
-        }
-        .code-tip {
-          color: $dark;
-          font-size: .8rem;
-          margin: 0 .2rem;
-          margin-bottom: 1rem;
-          strong {
-            color: $red;
-          }
-        }
-      }
-    }
-  }
-}
-
-body.in-app {
-  .g-doc {
-    display: block;
-    .g-con {
-      display: block;
-      padding-bottom: 0px;
-    }
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .g-doc {
-    .g-con {
-      .g-mask {
-        .login-box {
-          .row-login {
-            p.title {
-              font-size: 1rem;
-              margin: 0.3rem 0;
-            }
-            input {
-              font-size: .8rem;
-            }
-            a {
-              font-size: .8rem;
-            }
-            .insideInput {
-              padding: .3rem .3rem;
-            }
-            .captchaBo {
-              .changeCode {
-                font-size: .6rem;
-              }
-            }
-          }
-          .errors {
-            font-size: .8rem;
-          }
-        }
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 769px) {
+  @import "./color";
+  @import "./font";
+  @import "./common";
+  @import "./transition";
   html {
     font-size: $middle;
   }
+  
+  body:not(.in-app) {
+    .show-in-app {
+      display: none;
+    }
+  }
+  
+  body.in-app {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
   .g-doc {
+    background: $white;
+    position: absolute;
+    display: table;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     .g-con {
+      background: $white;
+      position: relative;
+      margin: 0 auto;
+      display: table-cell;
+      vertical-align: middle;
+      padding-bottom: 100px;
+      height: 220px;
+      width: 100%;
+      overflow: hidden;
+      .icon-close {
+        position: absolute;
+        z-index: 2;
+        right: .2rem;
+        top: .2rem;
+        width: 1rem;
+      }
+      .icon-back {
+        position: absolute;
+        z-index: 2;
+        left: .2rem;
+        top: .5rem;
+        width: 1rem
+      }
       .g-mask {
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        padding: 0 1rem;
+        max-width: 300px;
+        height: 220px;
         .login-box {
+          border-radius: .5rem;
+          margin: 0 auto;
+          width: 100%;
+          height: 100%;
+          .accountList {
+            position: absolute;
+            z-index: 3;
+            opacity: .95;
+            top: 2.5rem;
+            left: .1rem;
+            width: 98%;
+            border: 1px solid $dark;
+            background: $white;
+            .accountItem {
+              color: $black;
+              font-size: .7rem;
+              padding: .6rem;
+            }
+            .accountItem:hover {
+              background: $primary;
+              color: $white;
+            }
+          }
           .row-login {
+            position: relative;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: row;
+            flex-direction: row;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            margin: 0;
+            p.title {
+              -webkit-flex: 1;
+              flex: 1;
+              margin: 0.6rem 0;
+              line-height: 2.5rem;
+              vertical-align: middle;
+              font-size: 1.5rem;
+              text-align: center
+            }
             input {
+              height: 100%;
+              padding: .6rem;
+              padding-left: 2.5rem;
+              font-size: .6rem;
+              -webkit-flex: 1;
+              flex: 1;
+            }
+            input[name=password].sibling:not(:focus) {
+              border-top: none;
+            }
+            input[name=verifyCode].sibling:not(:focus) {
+              border-top: none;
+            }
+            input[type=submit] {
+              color: $white;
+              background: $blue;
+              border: none;
+              padding: .6rem;
+              font-size: 1rem;
+              margin: auto;
+            }
+            input.outsideText {
+              -webkit-flex: 1;
+              flex: 1;
+            }
+            .insideInput {
+              position: absolute;
+              height: 70%;
+              right: .4rem;
+              top: 15%;
+              padding: 0.2rem;
+              color: $white;
+              font-size: .7rem;
+              line-height: .7rem;
+              text-align: center;
+              display: inline-block;
+              background: $link;
+              border-radius: .2rem;
+              border: none;
+            }
+            .fa-icon {
+              line-height: 100%;
+              height: 100%;
+              vertical-align: middle;
+            }
+            .captchaBox {
+              max-height: 2rem;
+              padding: 2px;
+              display: flex;
+              flex-direction: row;
+              -webkit-flex-direction: row;
+              .captcha {
+                flex: 1;
+                -webkit-flex: 1;
+              }
+              .changeCode {
+                color: $primary;
+                padding: .4rem;
+                font-size: .8rem;
+                border: none;
+                border-radius: .2rem;
+                background: $white;
+              }
+            }
+            hr {
+              width: 50%;
+              height: 1px;
+              background: $dark;
+              border: none;
+            }
+            span {
+              white-space: nowrap;
+              margin: auto 1rem;
               font-size: .8rem;
             }
+            .tileWays {
+              width: 25%;
+              float: left;
+              text-align: center;
+              padding-top: .5rem;
+              figure {
+                width: 2.5rem;
+                height: 2.5rem;
+                border: 1px solid;
+                margin: auto;
+              }
+              p {
+                color: $dark;
+                font-size: .5rem;
+              }
+            }
             a {
-              font-size: .8rem;
+              cursor: pointer;
+              color: $link;
+              font-size: .6rem;
+              padding-top: .5rem;
+            }
+            .header-icon {
+              left: .8rem;
+              width: 1rem;
+              height: 100%;
+              position: absolute;
+            }
+            .tail-icon {
+              right: .8rem;
+              width: 1rem;
+              height: 100%;
+              position: absolute;
             }
           }
           .errors {
-            margin: .2rem;
-            font-size: .8rem;
+            font-size: .6rem;
+            margin: .3rem;
+            vertical-align: middle;
+            color: $danger;
+            .fa-icon {
+              line-height: 100%;
+              height: 100%;
+              max-height: 1.5rem;
+              vertical-align: middle;
+            }
           }
           .code-tip {
-            font-size: .9rem;
+            color: $dark;
+            font-size: .8rem;
+            margin: 0 .2rem;
+            margin-bottom: 1rem;
+            strong {
+              color: $red;
+            }
           }
         }
       }
     }
   }
-}
-
-@media screen and (min-width: 980px) {
-  html {
-    font-size: $large;
-  }
-  .g-doc {
-    .g-con {
-      .g-mask {
-        .login-box {
-          .row-login {
-            input {
-              font-size: 0.9rem;
+  
+  body.in-app {
+    .g-doc {
+      display: block;
+      .g-con {
+        display: block;
+        padding-bottom: 0px;
+        .g-mask {
+          .login-box {
+            .row-login {
+              p.title {
+                font-size: 1rem;
+                margin: 0.3rem 0;
+              }
             }
-            a {
+          }
+        }
+      }
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .g-doc {
+      .g-con {
+        .g-mask {
+          .login-box {
+            .row-login {
+              input {
+                font-size: .8rem;
+              }
+              a {
+                font-size: .8rem;
+              }
+              .insideInput {
+                padding: .3rem .3rem;
+              }
+              .captchaBo {
+                .changeCode {
+                  font-size: .6rem;
+                }
+              }
+            }
+            .errors {
+              font-size: .8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @media screen and (min-width: 769px) {
+    html {
+      font-size: $middle;
+    }
+    .g-doc {
+      .g-con {
+        .g-mask {
+          .login-box {
+            .row-login {
+              input {
+                font-size: .8rem;
+              }
+              a {
+                font-size: .8rem;
+              }
+            }
+            .errors {
+              margin: .2rem;
+              font-size: .8rem;
+            }
+            .code-tip {
               font-size: .9rem;
             }
           }
-          .errors {
-            margin: .2rem;
-            font-size: .8rem;
-          }
-          .code-tip {
-            font-size: .9rem;
+        }
+      }
+    }
+  }
+  
+  @media screen and (min-width: 980px) {
+    html {
+      font-size: $large;
+    }
+    .g-doc {
+      .g-con {
+        .g-mask {
+          .login-box {
+            .row-login {
+              input {
+                font-size: 0.9rem;
+              }
+              a {
+                font-size: .9rem;
+              }
+            }
+            .errors {
+              margin: .2rem;
+              font-size: .8rem;
+            }
+            .code-tip {
+              font-size: .9rem;
+            }
           }
         }
       }
     }
   }
-}

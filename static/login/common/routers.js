@@ -2,12 +2,13 @@
 
 export default function(VueRouter) {
   return new VueRouter({
+    mode: 'history',
     routes: [{
-      path: '/main',
-      name: 'main',
+      path: '/login',
+      name: 'login_main',
       component: require('../views/main.vue'),
       children: [{
-        path: 'login',
+        path: '',
         name: 'login',
         component: require('../views/login.vue'),
       },{
@@ -46,7 +47,7 @@ export default function(VueRouter) {
     },
     {
       path: '*',
-      redirect: '/main/login'
+      redirect: '/login/'
     }]
   });
 }

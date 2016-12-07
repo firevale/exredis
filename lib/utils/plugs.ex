@@ -236,4 +236,24 @@ defmodule Acs.Plugs do
     end
   end
 
+  def fetch_locale(%Plug.Conn{} = conn, _options) do 
+    case _fetch_locale(conn.params) || _fetch_header_locale(conn) do 
+      nil -> conn
+      locale ->
+        conn |> put_private(:acs_locale, locale)
+    end
+  end
+
+  defp _fetch_locale(%{"locale" => locale}), do: String.downcase(locale)  
+  defp _fetch_locale(%{"lang" => lang}), do: String.downcase(lang)
+  defp _fetch_locale(_), do: nil
+
+  defp _fetch_header_locale(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "acs-locale") do 
+      nil -> nil
+      [] -> nil
+      [locale | _] -> String.downcase(locale)
+    end
+  end
+
 end

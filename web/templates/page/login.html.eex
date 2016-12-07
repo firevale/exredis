@@ -44,6 +44,8 @@
       inApp: <%= @browser == "webview" %>,
       platform: '<%= @platform %>',
       locale: '<%= @locale %>',
+      appId: '<%= @conn.private[:acs_app_id] %>', 
+      deviceId: '<%= @conn.private[:acs_device_id] %>', 
       init: undefined,
     }
   </script>

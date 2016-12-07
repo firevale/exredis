@@ -1,8 +1,8 @@
-import nativeApi from '../../common/nativeApi'
+import utils from '../../common/utils'
 
 const state = {
-  appId: nativeApi.getAppId(),
-  deviceId: nativeApi.getDeviceId(),
+  appId: utils.getAppId(), 
+  deviceId: utils.getDeviceId(),
   accountExistences: {},
   loginAccount: undefined,
   registerAccount: undefined,

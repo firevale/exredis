@@ -1,6 +1,9 @@
 defmodule Acs.PageController do
   use     Acs.Web, :controller
 
+  plug :fetch_app_id
+  plug :fetch_locale
+
   def index(conn, _params) do
     render conn, "index.html"
   end
@@ -11,14 +14,14 @@ defmodule Acs.PageController do
   def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
                                             acs_platform: platform}} = conn,
              params) do 
-
+    d "private: #{inspect conn.private, pretty: true}"
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"
                               v -> v |> Base.url_decode64!
                             end
 
-    locale = case params["locale"] || params["lang"] do 
+    locale = case conn.private[:acs_locale] do 
                nil -> "zh-hans"
                _ -> "zh-hans"
              end
@@ -31,8 +34,6 @@ defmodule Acs.PageController do
                   end
                 _ -> browser
               end
-
-    d "browser: #{browser}"
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)

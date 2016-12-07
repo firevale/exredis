@@ -31,4 +31,24 @@ export default {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   },
 
+  getAppId: function() {
+    return window.acsConfig.appId ? window.acsConfig.appId : 'account-center'
+  },
+
+  getDeviceId: function() {
+    let deviceId = window.acsConfig.deviceId
+
+    if (!deviceId) {
+      deviceId = localStorage.getItem('__acs_device_id__')
+
+      if (!deviceId) {
+        deviceId = `${window.acsConfig.platform}.${utils.guid()}`
+        localStorage.setItem('__acs_device_id__', deviceId)
+      }
+    }
+
+    return deviceId
+  },
+
+
 }

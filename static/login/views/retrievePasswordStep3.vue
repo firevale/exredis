@@ -49,27 +49,22 @@
         passwordIcon: '',
         password: '',
         errorMessage: '',
+        accountId: '',
+        verifyCode: '',
       }
     },
 
+    created: function() {
+      this.accountId = atob(this.$route.query.accountId)
+      this.verifyCode = atob(this.$route.query.verifyCode)
+    },
+
     computed: {
-      ...mapGetters([
-        'colors'
-      ]),
-
-      accountId: function() {
-        return this.$route.params.accountId
-      },
-
-      verifyCode: function() {
-        return this.$route.params.verifyCode
-      },
+      ...mapGetters(['colors']),
     },
 
     methods: {
-      ...mapActions([
-        'setLoginAccount'
-      ]),
+      ...mapActions(['setLoginAccount']),
 
       togglePasswordVisibility: function() {
         if (this.passwordIcon === 'eye') {

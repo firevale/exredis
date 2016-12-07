@@ -24,12 +24,12 @@ export default function(VueRouter) {
         name: 'registerStep1',
         component: require('../views/registerStep1.vue')
       },{
-        path: 'registerStep2/:accountId',
+        path: 'registerStep2',
         name: 'registerStep2',
         component: require('../views/registerStep2.vue')
       },
       {
-        path: 'registerStep3/:accountId/:verifyCode',
+        path: 'registerStep3',
         name: 'registerStep3',
         component: require('../views/registerStep3.vue')
       }, {
@@ -37,11 +37,11 @@ export default function(VueRouter) {
         name: 'retrievePasswordStep1',
         component: require('../views/retrievePasswordStep1.vue')
       }, {
-        path: 'retrievePasswordStep2/:accountId',
+        path: 'retrievePasswordStep2',
         name: 'retrievePasswordStep2',
         component: require('../views/retrievePasswordStep2.vue')
       }, {
-        path: 'retrievePasswordStep3/:accountId/:verifyCode',
+        path: 'retrievePasswordStep3',
         name: 'retrievePasswordStep3',
         component: require('../views/retrievePasswordStep3.vue')
       }, {

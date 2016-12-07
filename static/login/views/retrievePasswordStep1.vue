@@ -66,7 +66,7 @@
 
     methods: {
       ...mapActions([
-        'validateAccountId' 
+        'validateAccountId'
       ]),
 
       handleValidate: function(e) {
@@ -93,7 +93,12 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              this.$router.replace({name: 'retrievePasswordStep2', params: {accountId: this.accountId}})
+              this.$router.replace({
+                name: 'retrievePasswordStep2',
+                query: {
+                  accountId: btoa(this.accountId)
+                }
+              })
             } else {
               this.errorMessage = this.$t(result.message)
             }

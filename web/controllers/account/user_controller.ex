@@ -58,9 +58,18 @@ defmodule Acs.UserController do
     else
       case get_session(conn, :register_verify_code) do 
         ^verify_code ->
-          user = RedisUser.create!(account_id, password)  
-          RedisUser.save!(user)
-          create_and_response_access_token(conn, user, app_id, device_id, platform)          
+          is_valid_account = case get_session(conn, :register_account_id) do 
+                              nil -> true
+                              ^account_id -> true
+                              _ -> false
+                             end
+          if is_valid_account do 
+            user = RedisUser.create!(account_id, password)  
+            RedisUser.save!(user)
+            create_and_response_access_token(conn, user, app_id, device_id, platform)          
+          else 
+            conn |> json(%{success: false, message: "account.error.accountIdChanged"})
+          end
         _ ->
           conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
       end
@@ -72,15 +81,21 @@ defmodule Acs.UserController do
       nil ->
         conn |> json(%{success: false, message: "account.error.accountNotFound"})
       %RedisUser{} = user ->
-        case get_session(conn, :retrieve_password_verify_code) do 
-          ^verify_code ->
-            user = %{user | encrypted_password: Utils.hash_password(password)}
-            RedisUser.save!(user)
-            conn |> delete_session(:retrieve_password_verify_code) 
-                 |> json(%{success: true})
+        case get_session(conn, :retrieve_password_account_id) do 
+          ^account_id ->
+            case get_session(conn, :retrieve_password_verify_code) do 
+              ^verify_code ->
+                user = %{user | encrypted_password: Utils.hash_password(password)}
+                RedisUser.save!(user)
+                conn |> delete_session(:retrieve_password_verify_code) 
+                     |> delete_session(:retrieve_password_account_id) 
+                     |> json(%{success: true})
+              _ ->
+                conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+            end
           _ ->
-            conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
-        end
+            conn |> json(%{success: false, message: "account.error.accountIdChanged"})
+       end
     end
   end
 
@@ -110,6 +125,7 @@ defmodule Acs.UserController do
            |> delete_session(:failed_attempts)
            |> delete_session(:last_failed_timestamp)
            |> delete_session(:register_verify_code)
+           |> delete_session(:register_account_id)
            |> json(%{
                success: true,
                access_token: access_token.id,

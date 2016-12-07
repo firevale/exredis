@@ -116,9 +116,13 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.register.valid &&
-          this.accountId) {
-          this.$router.replace({name: 'registerStep2', params: {accountId: this.accountId}})
+        if (this.$validation.register.valid && this.accountId) {
+          this.$router.replace({
+            name: 'registerStep2',
+            query: {
+              accountId: btoa(this.accountId)
+            }
+          })
         }
       },
     },

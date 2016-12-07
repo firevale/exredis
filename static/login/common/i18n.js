@@ -65,6 +65,7 @@ export default {
         sendEmailCooldown: '一分钟内不能发送多次验证码',
         accountNotFound: '账号不存在',
         networkError: '网络错误，请稍后再试',
+        accountIdChanged: '账号被修改'
       },
 
       upload: {

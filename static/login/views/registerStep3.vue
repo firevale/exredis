@@ -56,8 +56,9 @@
     },
 
     created: function() {
-      this.accountId = this.$route.params.accountId
-      this.verifyCode = this.$route.params.verifyCode
+      this.accountId = atob(this.$route.query.accountId)
+      this.verifyCode = atob(this.$route.query.verifyCode)
+      console.log(this)
     },
 
     computed: {

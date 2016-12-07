@@ -48,10 +48,12 @@
         cooldownCounter: 60,
         verifyCode: '',
         errorMessage: '',
+        accountId: '',
       }
     },
 
     created: function() {
+      this.accountId = atob(this.$route.query.accountId)
       this.hasSentCode = true
       setTimeout(this.cooldownTimer, 1000)
     },
@@ -60,10 +62,6 @@
       ...mapGetters([
         'colors'
       ]),
-
-      accountId: function() {
-        return this.$route.params.accountId
-      },
 
       verifyCodeSentHint: function() {
         if (utils.isValidEmail(this.accountId)) {
@@ -147,9 +145,9 @@
             if (result.success && result.match) {
               this.$router.replace({
                 name: 'retrievePasswordStep3',
-                params: {
-                  accountId: this.accountId,
-                  verifyCode: this.verifyCode,
+                query: {
+                  accountId: btoa(this.accountId),
+                  verifyCode: btoa(this.verifyCode),
                 }
               })
             } else {

@@ -21,7 +21,7 @@ defmodule Acs.VerifyCodeController do
   end
 
   def send_mobile_register_verify_code(conn, %{"mobile" => mobile}) do 
-    send_mobile_verify_code(conn, mobile, :register_verify_code)
+    send_mobile_verify_code(conn, mobile, "register")
   end
 
   def check_retrieve_password_verify_code(conn, %{"verify_code" => value}) do 
@@ -30,20 +30,21 @@ defmodule Acs.VerifyCodeController do
   end
 
   def send_retrieve_password_verify_code(%Plug.Conn{private: %{acs_mobile: mobile}} = conn, _) do 
-    send_mobile_verify_code(conn, mobile, :retrieve_password_verify_code)
+    send_mobile_verify_code(conn, mobile, "retrieve_password")
   end
   def send_retrieve_password_verify_code(%Plug.Conn{private: %{acs_email: email}} = conn, _) do 
-    send_email_verify_code(conn, email, :retrieve_password_verify_code)
+    send_email_verify_code(conn, email)
   end
 
-  defp send_mobile_verify_code(conn, mobile, session_key) do 
+  defp send_mobile_verify_code(conn, mobile, type) do 
     case Redis.get("vc.mobile.sms.#{mobile}") do 
       :undefined ->
         code = gen_code()
         case SmsService.send_verify_code(mobile, code) do 
           :ok ->
             Redis.setex("vc.mobile.sms.#{mobile}", 60, code)
-            conn |> put_session(session_key, code)
+            conn |> put_session(String.to_atom("#{type}_account_id"), mobile)
+                 |> put_session(String.to_atom("#{type}_verify_code"), code)
                  |> json(%{success: true})
           _ ->
             conn |> json(%{success: false, message: "account.error.sendSmsFailed"})
@@ -53,7 +54,7 @@ defmodule Acs.VerifyCodeController do
     end
   end
 
-  defp send_email_verify_code(conn, email, session_key) do 
+  defp send_email_verify_code(conn, email) do 
     locale = get_session(conn, :locale)
     case Redis.get("vc.email.#{email}") do 
       :undefined ->
@@ -61,7 +62,8 @@ defmodule Acs.VerifyCodeController do
         case EmailService.deliver_reset_password(locale, email, code) do 
           :ok ->
             Redis.setex("vc.email.#{email}", 60, code)
-            conn |> put_session(session_key, code)
+            conn |> put_session(:retrieve_password_account_id, email)
+                 |> put_session(:retrieve_password_verify_code, code)
                  |> json(%{success: true})
           _ ->
             conn |> json(%{success: false, message: "account.error.sendEmailFailed"})

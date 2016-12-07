@@ -62,7 +62,7 @@
     },
 
     created: function() {
-      this.accountId = this.$route.params.accountId
+      this.accountId = atob(this.$route.query.accountId)
       if (utils.isValidEmail(this.accountId)) {
         this.updateCaptcha()
         this.isMobileAccount = false
@@ -160,9 +160,9 @@
             } else {
               this.$router.replace({
                 name: 'registerStep3',
-                params: {
-                  accountId: this.accountId,
-                  verifyCode: this.verifyCode
+                query: {
+                  accountId: btoa(this.accountId),
+                  verifyCode: btoa(this.verifyCode),
                 }
               })
             }

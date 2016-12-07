@@ -32,8 +32,7 @@ function startVue() {
   let router = routerMap(VueRouter)
 
   router.afterEach(route => {
-    console.log("canGoBack: " + nativeApi.canGoBack())
-    store.commit('SET_CAN_GO_BACK', nativeApi.canGoBack())
+    // store.commit('SET_CAN_GO_BACK', typeof history.length > 1)
   })
 
   let App = new Vue({

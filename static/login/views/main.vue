@@ -25,17 +25,23 @@
     mapGetters,
     mapActions
   } from 'vuex'
+
   export default {
     data: function() {
       return {
         transitionName: 'slide-right',
+        canGoBack: false,
       }
     },
 
     computed: {
       ...mapGetters([
-        'canGoBack', 'colors', 'getMessage'
+        'colors', 'getMessage'
       ]),
+    },
+
+    methods: {
+      ...mapActions(['setCanGoBack']),
     },
 
     components: {
@@ -44,7 +50,9 @@
 
     watch: {
       '$route' (to, from) {
-        this.transitionName = to.name == 'login' ? 'slide-right' : 'slide-left'
+        console.log(history)
+        this.canGoBack = (history.state != null)
+        this.transitionName = (to.name == 'login' ? 'slide-right' : 'slide-left')
       }
     },
 

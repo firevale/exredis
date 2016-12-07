@@ -7,7 +7,6 @@ const accountExistences = state => state.app.accountExistences
 const loginAccount = state => state.app.loginAccount
 const registerAccount = state => state.app.registerAccount
 const captchaUrl = state => state.app.captchaUrl
-const canGoBack = state => state.app.canGoBack
 
 const invalidAccountIdErrorMessage = state => {
   if (window.acsConfig.isMobileAccountSupported) {
@@ -39,7 +38,6 @@ export {
   app,
   deviceId,
   appId,
-  canGoBack,
   accountExistences,
   loginAccount,
   registerAccount,

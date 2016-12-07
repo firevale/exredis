@@ -11,7 +11,7 @@ export default function(VueRouter) {
         path: '',
         name: 'login',
         component: require('../views/login.vue'),
-      },{
+      }, {
         path: 'quickLogin',
         name: 'quickLogin',
         component: require('../views/quickLogin.vue'),
@@ -23,12 +23,11 @@ export default function(VueRouter) {
         path: 'registerStep1',
         name: 'registerStep1',
         component: require('../views/registerStep1.vue')
-      },{
+      }, {
         path: 'registerStep2',
         name: 'registerStep2',
         component: require('../views/registerStep2.vue')
-      },
-      {
+      }, {
         path: 'registerStep3',
         name: 'registerStep3',
         component: require('../views/registerStep3.vue')
@@ -44,12 +43,8 @@ export default function(VueRouter) {
         path: 'retrievePasswordStep3',
         name: 'retrievePasswordStep3',
         component: require('../views/retrievePasswordStep3.vue')
-      }, {
-        path: '*',
-        redirect: 'login'
-      }]
-    },
-    {
+      }, ]
+    }, {
       path: '*',
       redirect: '/login/'
     }]

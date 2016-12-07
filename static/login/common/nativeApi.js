@@ -55,32 +55,5 @@ export default {
 
     return deviceId
   },
-
-  canGoBack: function() {
-    // if in sdk's webview'
-    if (window.acsConfig.inApp) {
-      switch (window.acsConfig.platform) {
-        case 'ios':
-          if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.canGoBack === 'function') {
-            return IOSNativeAPI.canGoBack()
-          }
-          else {
-            console.error("IOSNativeAPI object is not injected!!!!")
-          }
-          break;
-
-        case 'android':
-          if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.getDeviceId === 'function') {
-            return AndroidNativeAPI.canGoBack()
-          }
-          break;
-
-        default:
-          break;
-      }
-    }
-
-    return false
-  },
-  
+ 
 }

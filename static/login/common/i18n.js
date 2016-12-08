@@ -2,7 +2,7 @@ export default {
   'zh-hans': {
     account: {
       loginPage: {
-        title: '用户登录',
+        title: '火谷账号登录',
         quickTitle: '快速登录',
         titleRegister: '账号注册',
         retrievePasswordTitle: '找回密码',
@@ -68,12 +68,13 @@ export default {
         accountIdChanged: '账号被修改'
       },
 
-      upload: {
-        filename: '文件名',
-        title: '上传',
-        speed: '上传速度',
-        progress: '上传进度',
-      },
+      types: {
+        anonymous: '快速游戏',
+        firevale: '火谷账号',
+        qq: 'qq',
+        wechat: '微信',
+        weibo: '微博',
+      }
     },
 
 

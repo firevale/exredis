@@ -42,7 +42,7 @@ export default {
       deviceId = localStorage.getItem('__acs_device_id__')
 
       if (!deviceId) {
-        deviceId = `${window.acsConfig.platform}.${utils.guid()}`
+        deviceId = `${window.acsConfig.platform}.${this.guid()}`
         localStorage.setItem('__acs_device_id__', deviceId)
       }
     }

@@ -58,39 +58,28 @@
 
 $animation-time: 0.3s;
 
-// use animation-name/duration/timing-function for safari
-.slide-left-enter-active {
-  -webkit-animation-name: slideInRight;
+@mixin animation($name) {
+  -webkit-animation-name: $name;
   -webkit-animation-duration: $animation-time;
   -webkit-animation-timing-function: ease;
-  animation-name: slideInRight;
+  animation-name: $name;
   animation-duration: $animation-time;
   animation-timing-function: ease;
+}
+
+// use animation-name/duration/timing-function for safari
+.slide-left-enter-active {
+  @include animation(slideInRight);
 }
 
 .slide-left-leave-active {
-  -webkit-animation-name: slideOutLeft;
-  -webkit-animation-duration: $animation-time;
-  -webkit-animation-timing-function: ease;
-  animation-name: slideOutLeft;
-  animation-duration: $animation-time;
-  animation-timing-function: ease;
+  @include animation(slideOutLeft);
 }
 
 .slide-right-enter-active {
-  -webkit-animation-name: slideInLeft;
-  -webkit-animation-duration: $animation-time;
-  -webkit-animation-timing-function: ease;
-  animation-name: slideInLeft;
-  animation-duration: $animation-time;
-  animation-timing-function: ease;
+  @include animation(slideInLeft);
 }
 
 .slide-right-leave-active {
-  -webkit-animation-name: slideOutRight;
-  -webkit-animation-duration: $animation-time;
-  -webkit-animation-timing-function: ease;
-  animation-name: slideOutRight;
-  animation-duration: $animation-time;
-  animation-timing-function: ease;
+  @include animation(slideOutRight);
 }

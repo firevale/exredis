@@ -27,11 +27,11 @@ const accountIdPlaceholder = state => {
 
 const colors = state => {
   return {
-    danger: "#ff3860",
+    danger: "#fb0101",
     success: '#23d160',
     white: "#fff",
-    dark: "#aaa",
-    black: "#000",
+    dark: "#cbcbcb",
+    black: "#242424",
   }
 }
 

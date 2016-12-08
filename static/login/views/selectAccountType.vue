@@ -3,12 +3,11 @@
     <div class="row-login">
       <p class="title">{{ $t('account.loginPage.otherWays') }}</p>
     </div>
-    <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
-      <div class="tileWays" v-for="item in otherWays" @click="onLoginByType(item)">
-        <figure>
-          <img :src="item.img"></img>
-        </figure>
-        <p>{{ item.name }}</p>
+    <div class="horizontal-stack-box">
+      <div class="tile" v-for="accountType in accountTypes">
+        <a class="sdk-icon" :class="accountType" @click="onLoginByType(accountType)">
+        </a>
+        <p>{{ $t(`account.types.${accountType}`) }}</p>
       </div>
     </div>
   </div>
@@ -45,13 +44,7 @@
         accounts: ['zhangshiqing@firevale.com', 'zsq@firevale.com'],
         passwordIcon: 'eye',
         errorMessage: '',
-        showAccounts: false,
-        otherWays: [
-          {img: '', name: '快速游戏'},
-          {img: '', name: 'QQ'},
-          {img: '', name: '微博'},
-          {img: '', name: '微信'},
-        ]
+        accountTypes: ['anonymous', 'firevale']
       }
     },
 
@@ -68,45 +61,20 @@
 
       handleValidate: function(e) {
         e.target.$validity.validate(_ => {
-          
+
         })
       },
 
-      handleSubmit: function() {
-        if (this.accountId) {
-          this.$http({
-            method: 'post',
-            url: '/user/create_token',
-            params: {
-              account_id: this.accountId
-            }
-          }).then(response => {
-            return response.json()
-          }).then(result => {
-            if (result.success) {
-              // TODO: handle login success
-            } else {
-              this.errorMessage = this.$t(result.message)
-            }
-          })
+      onLoginByType: function(accountType) {
+        switch(accountType) {
+          case 'firevale':
+            this.$router.push({
+              name: 'login'
+            })
+            break;
+          case 'anonymous':
+            break;
         }
-      },
-      
-      toggleAccounts: function(){
-        this.showAccounts = !this.showAccounts
-      },
-
-      chooseAccountId: function(item){
-        this.accountId = item
-        this.showAccounts = false
-      },
-
-      deleteAccountId: function(){
-        
-      },
-
-      onLoginByType: function(){
-
       },
     },
 
@@ -115,6 +83,3 @@
     }
   }
 </script>
-<style lang="scss">
-
-</style>

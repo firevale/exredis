@@ -40,7 +40,9 @@
     },
 
     methods: {
-      ...mapActions(['setTransitionName']),
+      ...mapActions([
+        'setTransitionName'
+      ]),
 
       onClose: function() {
 

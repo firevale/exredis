@@ -22,7 +22,8 @@
         </div>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login" style="margin-top: 1rem;">
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
@@ -78,7 +79,7 @@
 
       handleValidate: function(e) {
         e.target.$validity.validate(_ => {
-          
+
         })
       },
 
@@ -101,17 +102,17 @@
           })
         }
       },
-      toggleAccounts: function(){
+      toggleAccounts: function() {
         this.showAccounts = !this.showAccounts
       },
 
-      chooseAccountId: function(item){
+      chooseAccountId: function(item) {
         this.accountId = item
         this.showAccounts = false
       },
 
-      deleteAccountId: function(){
-        
+      deleteAccountId: function() {
+
       }
     },
 

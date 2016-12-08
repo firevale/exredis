@@ -14,12 +14,6 @@
 </template>
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
-  import '../components/fvIcon/icons/caret-down'
-  import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
-  import Vue from 'vue'
   import {
     mapGetters,
     mapActions
@@ -77,9 +71,5 @@
         }
       },
     },
-
-    components: {
-      'icon': Icon,
-    }
   }
 </script>

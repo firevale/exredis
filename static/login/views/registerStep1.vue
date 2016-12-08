@@ -13,17 +13,16 @@
           <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
             @focusout="handleValidate" />
         </validity>
-        <div class="header-icon">
-          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-user"></span>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.registerPage.nextStep')" />
       </div>
-      <div class="row-login" style="justify-content: flex-end;">
+      <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
@@ -31,9 +30,6 @@
 </template>
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
   import msg from '../components/message'
   import {
     mapGetters,
@@ -126,12 +122,5 @@
         }
       },
     },
-
-    components: {
-      'icon': Icon,
-    }
   }
 </script>
-<style lang="scss">
-
-</style>

@@ -1,9 +1,9 @@
 <template>
   <div class="g-doc">
     <div ref="gCon" class="g-con">
-      <span v-show="canGoBack" class="nav-icon pull-left icon-back show-in-app" @click.prevent="$router.back()">
+      <span v-show="canGoBack" class="icon nav-icon icon-back show-in-app" @click.prevent="$router.back()">
       </span>
-      <span class="nav-icon pull-right icon-close show-in-app" @click="onClose">
+      <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose">
       </span>
       <div class="g-mask">
         <transition :name="transitionName">
@@ -16,9 +16,6 @@
   </div>
 </template>
 <script>
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
-  import '../components/fvIcon/icons/chevron-left'
   import {
     mapGetters,
     mapActions
@@ -47,10 +44,6 @@
       onClose: function() {
 
       },
-    },
-
-    components: {
-      'icon': Icon,
     },
 
     watch: {

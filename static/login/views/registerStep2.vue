@@ -20,17 +20,16 @@
         <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="insideInput"
           :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
         </input>
-        <div class="header-icon">
-          <icon name="check-circle-o" scale="1.3" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-check"></span>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.registerPage.nextStep')" />
       </div>
-      <div class="row-login" style="justify-content: flex-end;">
+      <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <router-link :to="{name: 'login'}">{{ $t('account.registerPage.goLoginPage') }}</router-link>
       </div>
     </validation>
@@ -38,9 +37,6 @@
 </template>
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/check-circle-o'
   import msg from '../components/message'
   import Vue from 'vue'
   import {
@@ -172,10 +168,6 @@
         }
       },
     },
-
-    components: {
-      'icon': Icon,
-    }
   }
 </script>
 

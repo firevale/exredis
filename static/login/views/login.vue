@@ -12,9 +12,7 @@
           <input type="text" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="accountIdPlaceholder"
           />
         </validity>
-        <div class="header-icon">
-          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-user"></span>
       </div>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
@@ -23,15 +21,12 @@
           <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
             @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" />
         </validity>
-        <div class="header-icon">
-          <icon name="lock" scale="1.3" :fill-color="colors.white"></icon>
-        </div>
-        <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" scale="1.2" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-lock"></span>
+        <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
@@ -40,33 +35,11 @@
         <router-link :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
         <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
-      <div class="show-in-app" style="display: none">
-        <div class="row-login">
-          <hr>
-          <span>{{ $t('account.loginPage.otherWays') }}</span>
-          <hr>
-        </div>
-        <div class="row-login" style="flex-wrap: wrap; justify-content: center;">
-          <div class="tileWays" v-for="item in otherWays">
-            <figure>
-              <img :src="item.img"></img>
-            </figure>
-            <p>{{ item.name }}</p>
-          </div>
-        </div>
-      </div>
     </validation>
   </div>
 </template>
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
-  import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
-  import '../components/fvIcon/icons/lock'
-  import '../components/fvIcon/icons/eye-slash'
-  import '../components/fvIcon/icons/eye'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -90,21 +63,8 @@
       return {
         accountId: '',
         password: '',
-        passwordIcon: 'eye',
+        passwordIcon: 'eye-slash',
         errorMessage: '',
-        otherWays: [{
-          img: '',
-          name: '快速游戏'
-        }, {
-          img: '',
-          name: '微博'
-        }, {
-          img: '',
-          name: 'QQ'
-        }, {
-          img: '',
-          name: '微信'
-        }, ]
       }
     },
 
@@ -161,16 +121,12 @@
       togglePasswordVisibility: function() {
         if (this.passwordIcon == 'eye') {
           this.passwordIcon = 'eye-slash'
-          this.$refs.password.$el.type = 'text'
+          this.$refs.password.$el.type = 'password'
         } else {
           this.passwordIcon = 'eye'
-          this.$refs.password.$el.type = 'password'
+          this.$refs.password.$el.type = 'text'
         }
       },
     },
-
-    components: {
-      'icon': Icon,
-    }
   }
 </script>

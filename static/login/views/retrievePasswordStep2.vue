@@ -17,14 +17,12 @@
               class="insideInput" :value="sendCodeTex"
           @click.prevent="sendVerifyCode">
         </input>
-        <div class="header-icon">
-          <icon name="check-circle-o" scale="1.3" :stroke-color="colors.dark" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-check"></span>
       </div>
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
-      <p style="margin: 0;">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
       </div>
@@ -34,8 +32,6 @@
 
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/check-circle-o'
   import {
     mapGetters,
     mapActions
@@ -157,10 +153,5 @@
         }
       },
     },
-
-    components: {
-      'icon': Icon,
-    }
-
   }
 </script>

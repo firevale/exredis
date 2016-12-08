@@ -15,18 +15,13 @@
           <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" 
                  v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
-        <div class="header-icon">
-          <icon name="lock" scale="1.3" :fill-color="colors.white"></icon>
-        </div>
-        <div class="tail-icon" @click="togglePasswordVisibility">
-          <icon :name="passwordIcon" scale="1.3" :fill-color="colors.white"></icon>
-        </div>
+        <span class="icon addon-icon icon-lock"></span>
+        <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
-
       <p class="errors">
-        <icon v-if="errorMessage" name="info-circle" scale=".8" :fill-color="colors.danger"></icon>&nbsp{{ errorMessage }}
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
-      <p style="margin: 0;">&nbsp</p>
       <div class="row-login">
         <input type="submit" :value="$t('account.retrievePasswordPage.complete')" />
       </div>
@@ -35,7 +30,6 @@
 </template>
 
 <script>
-  import '../components/fvIcon/icons/lock'
   import {
     mapGetters,
     mapActions
@@ -50,7 +44,7 @@
         errorMessage: '',
         accountId: '',
         verifyCode: '',
-        passwordIcon: 'eye',
+        passwordIcon: 'eye-slash',
       }
     },
 
@@ -71,10 +65,10 @@
       togglePasswordVisibility: function() {
         if (this.passwordIcon === 'eye') {
           this.passwordIcon = 'eye-slash'
-          this.$refs.password.$el.type = 'text'
+          this.$refs.password.$el.type = 'password'
         } else {
           this.passwordIcon = 'eye'
-          this.$refs.password.$el.type = 'password'
+          this.$refs.password.$el.type = 'text'
         }
       },
 
@@ -113,10 +107,5 @@
         }
       },
     },
-
-    components: {
-      'icon': require('../components/fvIcon/Icon.vue'),
-    }
-
   }
 </script>

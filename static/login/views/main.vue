@@ -55,9 +55,6 @@
 
     watch: {
       '$route' (to, from) {
-        this.$nextTick(_ => {
-          this.setTransitionName('slide-left')
-        })
         this.canGoBack = (history.state != null)
       }
     },

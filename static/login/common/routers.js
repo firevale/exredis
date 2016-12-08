@@ -16,9 +16,9 @@ export default function(VueRouter) {
         name: 'quickLogin',
         component: require('../views/quickLogin.vue'),
       }, {
-        path: 'othersLogin',
-        name: 'othersLogin',
-        component: require('../views/othersLogin.vue'),
+        path: 'selectAccountType',
+        name: 'selectAccountType',
+        component: require('../views/selectAccountType.vue'),
       }, {
         path: 'registerStep1',
         name: 'registerStep1',

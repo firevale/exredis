@@ -51,7 +51,6 @@
         required: false,
         default: "#bbbbba",
       },
-
       name: {
         type: String,
         required: true,

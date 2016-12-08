@@ -58,6 +58,7 @@
 
 $animation-time: 0.3s;
 
+// use animation-name/duration/timing-function for safari
 .slide-left-enter-active {
   -webkit-animation-name: slideInRight;
   -webkit-animation-duration: $animation-time;

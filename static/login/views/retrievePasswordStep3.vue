@@ -35,7 +35,6 @@
 </template>
 
 <script>
-  import Icon from '../components/fvIcon/Icon.vue'
   import '../components/fvIcon/icons/lock'
   import {
     mapGetters,
@@ -51,12 +50,15 @@
         errorMessage: '',
         accountId: '',
         verifyCode: '',
+        passwordIcon: 'eye',
       }
     },
 
     created: function() {
-      this.accountId = atob(this.$route.query.accountId)
-      this.verifyCode = atob(this.$route.query.verifyCode)
+      if (this.$route.query.accountId)
+        this.accountId = atob(this.$route.query.accountId)
+      if (this.$route.query.verifyCode)
+        this.verifyCode = atob(this.$route.query.verifyCode)
     },
 
     computed: {
@@ -113,7 +115,7 @@
     },
 
     components: {
-      'icon': Icon,
+      'icon': require('../components/fvIcon/Icon.vue'),
     }
 
   }

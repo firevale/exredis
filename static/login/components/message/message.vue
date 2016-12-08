@@ -20,7 +20,7 @@
   }
 </script>
 <style lang="scss">
-  @import '../../scss/login';
+  @import '../../scss/color';
   .tip-message {
     position: absolute;
     z-index: 3;

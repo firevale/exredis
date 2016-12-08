@@ -1,11 +1,9 @@
 <template>
   <div class="g-doc">
     <div ref="gCon" class="g-con">
-      <span v-show="canGoBack" class="icon-back show-in-app" @click.prevent="$router.back()">
-        <icon name="chevron-left" :fill-color="colors.dark"></icon>
+      <span v-show="canGoBack" class="nav-icon pull-left icon-back show-in-app" @click.prevent="$router.back()">
       </span>
-      <span class="icon-close show-in-app" @click="onClose">
-        <icon name="times" scale="1.3" :fill-color="colors.dark"></icon>
+      <span class="nav-icon pull-right icon-close show-in-app" @click="onClose">
       </span>
       <div class="g-mask">
         <transition :name="transitionName">

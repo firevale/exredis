@@ -46,7 +46,6 @@
       locale: '<%= @locale %>',
       appId: '<%= @conn.private[:acs_app_id] %>', 
       deviceId: '<%= @conn.private[:acs_device_id] %>', 
-      init: undefined,
     }
   </script>
   <script src="<%= static_path(@conn, "/js/login_commons.js") %>"></script>

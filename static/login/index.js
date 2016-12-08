@@ -17,7 +17,6 @@ Vue.use(VueRouter)
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
-
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = utils.getAppId()
 Vue.http.headers.common['acs-device-id'] = utils.getDeviceId()
@@ -30,18 +29,19 @@ Object.keys(filters).forEach(function(k) {
   Vue.filter(k, filters[k])
 })
 
-const transitionFromRightIn = 'slide-right'
-const transitionFromLeftIn = 'slide-left'
+const transitionSlideLeftToRight = 'slide-right'
+const transitionSlideRightToLeft = 'slide-left'
+
 // insert popstate event listener before router, 
 // by doing so, we can change transition name while user press "Back" button
 window.addEventListener('popstate', _ => {
-  store.commit('SET_TRANSITION_NAME', transitionFromRightIn)  
+  store.commit('SET_TRANSITION_NAME', transitionSlideLeftToRight)  
 })
 
 let router = routerMap(VueRouter)
 
 router.afterEach(route => {
-  Vue.nextTick(_ => store.commit('SET_TRANSITION_NAME', transitionFromLeftIn))
+  Vue.nextTick(_ => store.commit('SET_TRANSITION_NAME', transitionSlideRightToLeft))
 })
 
 let App = new Vue({

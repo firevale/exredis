@@ -28,7 +28,6 @@ const mutations = {
   },
 
   'SET_TRANSITION_NAME' (state, transitionName) {
-    console.log('SET_TRANSITION_NAME', transitionName)
     state.transitionName = transitionName
   },
 }

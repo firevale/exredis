@@ -14,7 +14,7 @@ defmodule Acs.PageController do
   def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
                                             acs_platform: platform}} = conn,
              params) do 
-    d "private: #{inspect conn.private, pretty: true}"
+               
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
                               "" -> "/"

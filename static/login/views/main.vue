@@ -20,6 +20,7 @@
     mapGetters,
     mapActions
   } from 'vuex'
+  import nativeApi from '../common/nativeApi'
 
   export default {
     data: function() {
@@ -32,7 +33,7 @@
 
     computed: {
       ...mapGetters([
-        'colors', 'getMessage', 'transitionName'
+        'getMessage', 'transitionName'
       ]),
     },
 
@@ -42,7 +43,7 @@
       ]),
 
       onClose: function() {
-
+        nativeApi.closeLoginDialog()
       },
     },
 

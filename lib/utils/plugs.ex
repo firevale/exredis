@@ -244,16 +244,21 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp _fetch_locale(%{"locale" => locale}), do: String.downcase(locale)  
-  defp _fetch_locale(%{"lang" => lang}), do: String.downcase(lang)
+  defp _fetch_locale(%{"locale" => locale}), do: _translate_locale(locale)
+  defp _fetch_locale(%{"lang" => lang}), do: _translate_locale(lang)
   defp _fetch_locale(_), do: nil
 
   defp _fetch_header_locale(%Plug.Conn{} = conn) do 
     case get_req_header(conn, "acs-locale") do 
       nil -> nil
       [] -> nil
-      [locale | _] -> String.downcase(locale)
+      [locale | _] -> _translate_locale(locale)
     end
   end
+
+  defp _translate_locale("zh-Hans" <> _), do: "zh-hans"
+  defp _translate_locale("zh-Hant" <> _), do: "zh-hant"
+  defp _translate_locale("en" <> _), do: "en"
+  defp _translate_locale(_), do: "zh-hans"
 
 end

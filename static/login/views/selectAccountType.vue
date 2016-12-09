@@ -20,47 +20,19 @@
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
-    beforeMount: function() {
-      //this.accountId = this.loginAccount
-    },
-
     data: function() {
       return {
-        accountId: 'zhangshiqing@firevale.com',
-        accounts: ['zhangshiqing@firevale.com', 'zsq@firevale.com'],
-        passwordIcon: 'eye',
-        errorMessage: '',
         accountTypes: ['anonymous', 'firevale']
       }
     },
 
-    computed: {
-      ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
-      ]),
-    },
-
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'setMessage'
+        'setMessage'
       ]),
 
-      handleValidate: function(e) {
-        e.target.$validity.validate(_ => {
-
-        })
-      },
-
       onLoginByType: function(accountType) {
-        switch(accountType) {
+        switch (accountType) {
           case 'firevale':
             this.$router.push({
               name: 'login'

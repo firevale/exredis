@@ -6,18 +6,14 @@
       <div class="row-login">
         <input type="text" onchange="return false" v-model.trim="accountId" name="accountId" readonly @focus="this.showAccounts = true"
         />
-        <div class="header-icon">
-          <icon name="user-o" scale="1.2" :fill-color="colors.white"></icon>
-        </div>
-        <div class="tail-icon" @click="toggleAccounts">
-          <icon name="caret-down" :fill-color="colors.black"></icon>
-        </div>
+
+        <span class="icon addon-icon icon-user"></span>
+        <span class="icon addon-icon pull-right icon-down" :class="{'flip-vertical': showAccounts}" @click="toggleAccounts"></span>
+
         <div v-if="showAccounts" ref="accountList" class="accountList">
           <div class="accountItem row-login" v-for="item in accounts" >
-            <div @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</div>
-            <div class="tail-icon" @click="deleteAccountId" style="top:.3rem;height:1rem;">
-              <icon name="times"></icon>
-            </div>
+            <span @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</span>
+            <span class="icon addon-icon pull-right icon-times icon-small" @click="toggleAccounts"></span> 
           </div>
         </div>
       </div>
@@ -32,11 +28,6 @@
 </template>
 <script>
   import utils from '../common/utils'
-  import Icon from '../components/fvIcon/Icon.vue'
-  import '../components/fvIcon/icons/times'
-  import '../components/fvIcon/icons/caret-down'
-  import '../components/fvIcon/icons/info-circle'
-  import '../components/fvIcon/icons/user-o'
   import Vue from 'vue'
   import {
     mapGetters,
@@ -60,7 +51,6 @@
       return {
         accountId: 'zhangshiqing@firevale.com',
         accounts: ['zhangshiqing@firevale.com', 'zsq@firevale.com'],
-        passwordIcon: 'eye',
         errorMessage: '',
         showAccounts: false,
       }
@@ -115,12 +105,5 @@
 
       }
     },
-
-    components: {
-      'icon': Icon,
-    }
   }
 </script>
-<style lang="scss">
-
-</style>

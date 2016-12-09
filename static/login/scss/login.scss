@@ -231,16 +231,18 @@ span.nav-icon {
 }
 
 span.addon-icon {
+  top: 0;
   margin: 0;
   width: 1rem;
   height: 100%;
   vertical-align: center;
+  display: inline-block;
   position: absolute;
   &:not(.pull-right) {
-    left: .7rem;
+    left: .65rem;
   }
   &.pull-right {
-    right: .7rem;
+    right: .65rem;
   }
   &.icon-user {
     background-image: url(../assets/user@1x.png)
@@ -256,6 +258,20 @@ span.addon-icon {
   }
   &.icon-check {
     background-image: url(../assets/check@1x.png)
+  }
+  &.icon-down {
+    background-image: url(../assets/down@1x.png)
+  }
+  &.icon-times {
+    background-image: url(../assets/times@1x.png)
+  }
+  &.flip-vertical {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+  &.icon-small {
+    width: 0.6rem;
   }
 }
 
@@ -281,6 +297,8 @@ div.horizontal-stack-box {
   text-align: center;
   @include display-flex(row, space-around, center);
   .tile {
+    max-width: 25%;
+    overflow: hidden;
     .sdk-icon {
       cursor: pointer;
       display: block;
@@ -364,6 +382,12 @@ only screen and (min-resolution: 1.25dppx) {
     &.icon-check {
       background-image: url(../assets/check@2x.png)
     }
+    &.icon-down {
+      background-image: url(../assets/down@2x.png)
+    }
+    &.icon-times {
+      background-image: url(../assets/times@2x.png)
+    }
   }
 }
 
@@ -415,6 +439,12 @@ only screen and (min-resolution: 2.25dppx) {
     }
     &.icon-check {
       background-image: url(../assets/check@3x.png)
+    }
+    &.icon-down {
+      background-image: url(../assets/down@3x.png)
+    }
+    &.icon-times {
+      background-image: url(../assets/times@3x.png)
     }
   }
 }

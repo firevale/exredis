@@ -2,8 +2,8 @@ export default {
   'zh-hans': {
     account: {
       loginPage: {
-        title: '火谷账号登录',
-        quickTitle: '快速登录',
+        title: '火谷账号登陆',
+        quickTitle: '选择账号登陆',
         titleRegister: '账号注册',
         retrievePasswordTitle: '找回密码',
         titleReset: '密码重置',
@@ -44,6 +44,10 @@ export default {
         verifyCodeSentToSms: '我们已经向您的手机<strong>{mobile}</strong>发送了验证码',
         setNewPassword: '请设定新密码',
         complete: '完成',
+      },
+
+      quickLoginPage: {
+        gotoSelectAccount: '其他账号登陆>',
       },
 
       error: {

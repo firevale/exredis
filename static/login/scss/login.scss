@@ -71,13 +71,21 @@ body.in-app {
   }
 }
 
+hr {
+  width: 100%;
+  height: 1px;
+  margin: .7rem 0;
+  background: $line;
+  border: none;
+}
+
 .login-box {
   position: relative;
   border-radius: .5rem;
   margin: 0 auto;
   width: 100%;
   height: 100%;
-  .accountList {
+  .account-list {
     position: absolute;
     z-index: 3;
     opacity: .95;
@@ -86,12 +94,12 @@ body.in-app {
     width: 98%;
     border: 1px solid $line;
     background: $white;
-    .accountItem {
+    .account-item {
       color: $black;
       font-size: .7rem;
       padding: .6rem;
     }
-    .accountItem:hover {
+    .account-item:hover {
       background: $primary;
       color: $white;
     }
@@ -111,7 +119,7 @@ body.in-app {
       margin: 0.6rem 0;
       line-height: 2.5rem;
       vertical-align: middle;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       text-align: center;
       color: $text-title;
     }

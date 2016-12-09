@@ -10,8 +10,8 @@
         <span class="icon addon-icon icon-user"></span>
         <span class="icon addon-icon pull-right icon-down" :class="{'flip-vertical': showAccounts}" @click="toggleAccounts"></span>
 
-        <div v-if="showAccounts" ref="accountList" class="accountList">
-          <div class="accountItem row-login" v-for="item in accounts" >
+        <div v-if="showAccounts" ref="accountList" class="account-list">
+          <div class="account-item row-login" v-for="item in accounts" >
             <span @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</span>
             <span class="icon addon-icon pull-right icon-times icon-small" @click="toggleAccounts"></span> 
           </div>
@@ -21,28 +21,23 @@
         <span v-if="errorMessage" class="icon error-sign"></span>
         <span>{{ errorMessage }}</span>
       </p>
-      <div class="row-login" style="margin-top: 1rem;">
+      <div class="row-login" style="margin-top: .8rem; margin-bottom: 1.2rem;">
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
+      </div>
+      <hr />
+      <div class="row-login" style="-webkit-justify-content: center; justify-content: center;">
+        <router-link :to="{name: 'selectAccountType'}">{{ $t('account.quickLoginPage.gotoSelectAccount') }}</router-link>
       </div>
   </div>
 </template>
 <script>
   import utils from '../common/utils'
-  import Vue from 'vue'
   import {
     mapGetters,
     mapActions
   } from 'vuex'
 
   export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
-      },
-    },
-
     beforeMount: function() {
       //this.accountId = this.loginAccount
     },

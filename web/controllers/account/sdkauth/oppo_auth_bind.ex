@@ -23,7 +23,7 @@ defmodule Acs.OppoAuthBind do
                                        mobile: nil,
                                        picture_url: oppo_picture_url}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.new(%{
+            access_token = RedisAccessToken.create(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -71,7 +71,7 @@ defmodule Acs.OppoAuthBind do
                                        mobile: nil,
                                        picture_url: oppo_picture_url}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.new(%{
+            access_token = RedisAccessToken.create(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,

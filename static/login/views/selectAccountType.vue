@@ -14,6 +14,7 @@
 </template>
 <script>
   import utils from '../common/utils'
+  import nativeApi from '../common/nativeApi'
   import {
     mapGetters,
     mapActions
@@ -39,9 +40,23 @@
             })
             break;
           case 'anonymous':
+            this.anonymousLogin()
             break;
         }
       },
+
+      anonymousLogin: function() {
+        this.$http({
+          method: 'post',
+          url: '/user/create_anonymous_token',
+        }).then(response => {
+          return response.json()
+        }).then(result => {
+          nativeApi.closeLoginDialog(result)
+        }).catch(e => {
+          
+        })
+      }
     },
   }
 </script>

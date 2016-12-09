@@ -16,7 +16,7 @@ defmodule Acs.RedisAccessToken do
   @device_index_key          "acs.keys.access_token_index.device"
   @token_ttl                 604800
 
-  def new(%{
+  def create(%{
       app_id: app_id,
       user_id: user_id,
       device_id: device_id,

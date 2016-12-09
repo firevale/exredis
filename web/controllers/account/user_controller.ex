@@ -18,7 +18,7 @@ defmodule Acs.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password}) do 
-    d "acs_app_id: #{app_id}"
+    d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}"
     if RedisUser.exists?(account_id) do 
       now = Utils.unix_timestamp
       last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
@@ -99,10 +99,37 @@ defmodule Acs.UserController do
     end
   end
 
+  def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id, acs_device_id: device_id, acs_platform: platform}} = conn, _) do 
+    d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}"
+    user = RedisUser.fetch_anonymous_user(device_id)
+    access_token = RedisAccessToken.create(%{
+                      app_id: app_id,
+                      user_id: user.id,
+                      device_id: device_id,
+                      platform: platform,
+                      ttl: 604800,
+                      binding: %{}
+                    })
+
+      conn |> put_session(:access_token, access_token.id)
+           |> json(%{
+               success: true,
+               access_token: access_token.id,
+               expires_at: RedisAccessToken.expired_at(access_token),
+               user_id: to_string(user.id),
+               user_email: "",
+               user_mobile: "",
+               nick_name:  "",
+               is_anonymous: true,
+               sdk: :firevale,
+               binding: %{} 
+             }) 
+  end
+
   defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform) do 
     access_token = case conn.private[:acs_app] do 
                     nil -> 
-                      RedisAccessToken.new(%{
+                      RedisAccessToken.create(%{
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
@@ -111,7 +138,7 @@ defmodule Acs.UserController do
                         binding: %{}
                       })
                     %RedisApp{} = app ->
-                      RedisAccessToken.new(%{
+                      RedisAccessToken.create(%{
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
@@ -130,9 +157,10 @@ defmodule Acs.UserController do
                success: true,
                access_token: access_token.id,
                expires_at: RedisAccessToken.expired_at(access_token),
-               user_id: user.id,
-               user_email: user.email,
-               nick_name:  user.nickname,
+               user_id: to_string(user.id),
+               user_email: user.email || "",
+               user_mobile: user.mobile || "",
+               nick_name:  user.nickname || "",
                is_anonymous: false,
                sdk: :firevale,
                binding: %{} 

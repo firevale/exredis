@@ -49,6 +49,7 @@ defmodule Acs.Router do
     get  "/login", PageController, :show_login_page # 兼容旧的账号系统(for wp8 users)
 
     post "/create_token", UserController, :create_token 
+    post "/create_anonymous_token", UserController, :create_anonymous_token 
     post "/create_user", UserController, :create_user
     post "/update_password", UserController, :update_password # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists

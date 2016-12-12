@@ -58,3 +58,9 @@ export const setTransitionName = ({
 }, transitionName) => {
   commit('SET_TRANSITION_NAME', transitionName)
 }
+
+export const addLoginnedAccount = ({
+  commit
+}, account) => {
+  commit('ADD_LOGINNED_ACCOUNT', account)
+}

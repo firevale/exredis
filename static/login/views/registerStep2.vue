@@ -70,7 +70,7 @@
 
     computed: {
       ...mapGetters([
-        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
       ]),
 
       sendCodeTitle: function() {

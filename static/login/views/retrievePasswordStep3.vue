@@ -55,10 +55,6 @@
         this.verifyCode = atob(this.$route.query.verifyCode)
     },
 
-    computed: {
-      ...mapGetters(['colors']),
-    },
-
     methods: {
       ...mapActions(['setLoginAccount']),
 

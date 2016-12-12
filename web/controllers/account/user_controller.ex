@@ -99,34 +99,50 @@ defmodule Acs.UserController do
     end
   end
 
-  def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id, acs_device_id: device_id, acs_platform: platform}} = conn, _) do 
+  def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id, 
+                                                   acs_device_id: device_id, 
+                                                   acs_platform: platform}} = conn, _) do 
     d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}"
     user = RedisUser.fetch_anonymous_user(device_id)
-    access_token = RedisAccessToken.create(%{
-                      app_id: app_id,
-                      user_id: user.id,
-                      device_id: device_id,
-                      platform: platform,
-                      ttl: 604800,
-                      binding: %{}
-                    })
-
-      conn |> put_session(:access_token, access_token.id)
-           |> json(%{
-               success: true,
-               access_token: access_token.id,
-               expires_at: RedisAccessToken.expired_at(access_token),
-               user_id: to_string(user.id),
-               user_email: "",
-               user_mobile: "",
-               nick_name:  "",
-               is_anonymous: true,
-               sdk: :firevale,
-               binding: %{} 
-             }) 
+    create_and_response_access_token(conn, user, app_id, device_id, platform, true)
   end
 
-  defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform) do 
+  def update_token(%Plug.Conn{private: %{acs_app_id: app_id, 
+                                         acs_device_id: device_id, 
+                                         acs_platform: platform}} = conn, 
+                   %{"access_token" => access_token_id}) do 
+    d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}, access_token_id: #{access_token_id}"
+
+    case RedisAccessToken.find(access_token_id) do 
+      nil ->
+        Logger.error "access token not found for #{access_token_id}"
+        conn |> json(%{success: false, 
+                       message: "access token not found"})
+
+      %RedisAccessToken{app_id: ^app_id, device_id: ^device_id, user_id: user_id} = token ->
+        d "update_token, old token found, #{inspect token, pretty: true}"
+        case RedisUser.find(user_id) do 
+          nil ->
+            conn |> json(%{success: false, 
+                           message: "token user not exists!"})
+          %RedisUser{} = user ->
+            RedisAccessToken.delete(token)
+            is_anonymous = case user.nickname do 
+                             "anonymous" -> true
+                             _ -> false
+                           end
+                          
+            create_and_response_access_token(conn, user, app_id, device_id, platform, is_anonymous)
+        end
+      
+      what ->
+        Logger.error "invalid access token found for #{access_token_id}, #{inspect what, pretty: true}"
+        conn |> json(%{success: false, 
+                       message: "invalid access token id"})
+    end
+  end
+
+  defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform, is_anonymous \\ false) do 
     access_token = case conn.private[:acs_app] do 
                     nil -> 
                       RedisAccessToken.create(%{
@@ -160,8 +176,13 @@ defmodule Acs.UserController do
                user_id: to_string(user.id),
                user_email: user.email || "",
                user_mobile: user.mobile || "",
-               nick_name:  user.nickname || "",
-               is_anonymous: false,
+               nick_name: 
+               if is_anonymous do  
+                 gettext("anonymous") <> "-" <> (user.id |> :binary.encode_unsigned |> Base.encode32(padding: false, case: :lower))
+               else 
+                user.nickname || ""
+               end,
+               is_anonymous: is_anonymous,
                sdk: :firevale,
                binding: %{} 
              })

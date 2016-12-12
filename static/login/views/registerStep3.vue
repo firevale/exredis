@@ -53,10 +53,6 @@
       console.log(this)
     },
 
-    computed: {
-      ...mapGetters(['colors']),
-    },
-
     methods: {
       ...mapActions([
         'addAccountExistence', 'setLoginAccount', 'setRegisterAccount'

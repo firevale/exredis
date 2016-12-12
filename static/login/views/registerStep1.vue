@@ -59,7 +59,7 @@
 
     computed: {
       ...mapGetters([
-        'registerAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'registerAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
       ]),
     },
 

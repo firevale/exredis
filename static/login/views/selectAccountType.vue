@@ -29,7 +29,7 @@
 
     methods: {
       ...mapActions([
-        'setMessage'
+        'addLoginnedAccount'
       ]),
 
       onLoginByType: function(accountType) {
@@ -52,6 +52,9 @@
         }).then(response => {
           return response.json()
         }).then(result => {
+          if (result.success) {
+            this.addLoginnedAccount(result)
+          }
           nativeApi.closeLoginDialog(result)
         }).catch(e => {
           

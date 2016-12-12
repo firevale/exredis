@@ -48,4 +48,36 @@ defmodule Acs.PageController do
     conn |> put_layout(false) |> render("admin.html")
   end
 
+  def show_forum_page(%Plug.Conn{private: %{acs_browser: browser, 
+                                            acs_platform: platform}} = conn,
+             params) do
+    decoded_redirect_url = case params["redirect_url"] do 
+                              nil -> "/"
+                              "" -> "/"
+                              v -> v |> Base.url_decode64!
+                            end
+
+    locale = case conn.private[:acs_locale] do 
+               nil -> "zh-hans"
+               _ -> "zh-hans"
+             end
+
+    browser = case Mix.env do 
+                :dev -> 
+                  case params["browser"] do 
+                    nil -> browser 
+                    x -> x
+                  end
+                _ -> browser
+              end
+
+    conn |> put_layout(false) 
+         |> put_session(:locale, locale)
+         |> render("forum.html", redirect_url: decoded_redirect_url, 
+                                 browser: browser,
+                                 platform: platform,
+                                 locale: locale,
+                                 is_mobile_account_supported: @is_mobile_account_supported)
+  end
+
 end

@@ -1,0 +1,21 @@
+@import "./common";
+
+#app{
+    padding: 5px;
+}
+
+
+a.button.is-active{
+    background: $link;
+    color: $white;
+
+}
+
+a.button{
+    background: $dark;
+    color: $white;
+    margin-right: 1rem;
+    margin-bottom: .5rem;
+}
+
+

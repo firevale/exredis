@@ -35,7 +35,7 @@ defmodule Acs.Router do
     get  "/", PageController, :index
     get  "/login/*path", PageController, :show_login_page
     get  "/admin/*path", PageController, :show_admin_page
-
+    get  "/forum/*path", PageController, :show_forum_page
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha 
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code

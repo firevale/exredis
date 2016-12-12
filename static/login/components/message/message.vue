@@ -5,6 +5,7 @@
     </div>
   </div>
 </template>
+
 <script>
   export default {
     props:{
@@ -19,6 +20,7 @@
     }
   }
 </script>
+
 <style lang="scss">
   @import '../../scss/color';
   .tip-message {
@@ -30,6 +32,7 @@
     opacity: 0;
     width: 100%;
     animation: message 2s ease;
+
     .body-message {
       width: 50%;
       padding: 1rem;

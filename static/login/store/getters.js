@@ -8,6 +8,7 @@ const loginAccount = state => state.app.loginAccount
 const registerAccount = state => state.app.registerAccount
 const captchaUrl = state => state.app.captchaUrl
 const transitionName = state => state.app.transitionName
+const historyAccounts = state => state.app.historyAccounts
 
 const invalidAccountIdErrorMessage = state => {
   if (window.acsConfig.isMobileAccountSupported) {
@@ -46,5 +47,6 @@ export {
   invalidAccountIdErrorMessage,
   accountIdPlaceholder,
   colors,
-  transitionName
+  transitionName,
+  historyAccounts,
 }

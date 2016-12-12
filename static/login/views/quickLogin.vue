@@ -1,19 +1,20 @@
 <template>
   <div class="login-box">
+    <validation name="quickLogin" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.quickTitle') }}</p>
       </div>
       <div class="row-login">
-        <input type="text" onchange="return false" v-model.trim="accountId" name="accountId" readonly @focus="this.showAccounts = true"
+        <input type="text" v-model.trim="currentAccount.label" name="accountLabel" readonly @focus="this.accountListVisible = true"
         />
 
         <span class="icon addon-icon icon-user"></span>
-        <span class="icon addon-icon pull-right icon-down" :class="{'flip-vertical': showAccounts}" @click="toggleAccounts"></span>
+        <span class="icon addon-icon pull-right icon-down" :class="{'flip-vertical': accountListVisible}" @click="toggaleAccountsListVisibility"></span>
 
-        <div v-if="showAccounts" ref="accountList" class="account-list">
-          <div class="account-item row-login" v-for="item in accounts" >
-            <span @click="chooseAccountId(item)" style="width: 100%;padding: 0;">{{item}}</span>
-            <span class="icon addon-icon pull-right icon-times icon-small" @click="toggleAccounts"></span> 
+        <div v-if="accountListVisible" ref="accountList" class="account-list">
+          <div class="account-item row-login" v-for="account in historyAccounts" >
+            <span @click.prevent="chooseAccount(account)" style="width: 100%; padding: 0;">{{account.label}}</span>
+            <span class="icon addon-icon pull-right icon-times icon-small" @click.prevent="toggaleAccountsListVisibility"></span> 
           </div>
         </div>
       </div>
@@ -21,17 +22,19 @@
         <span v-if="errorMessage" class="icon error-sign"></span>
         <span>{{ errorMessage }}</span>
       </p>
-      <div class="row-login" style="margin-top: .8rem; margin-bottom: 1.2rem;">
+      <div class="row-login" style="margin-top: .8rem; margin-bottom: 1.0rem;">
         <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
       </div>
       <hr />
       <div class="row-login" style="-webkit-justify-content: center; justify-content: center;">
         <router-link :to="{name: 'selectAccountType'}">{{ $t('account.quickLoginPage.gotoSelectAccount') }}</router-link>
       </div>
+    </validation>
   </div>
 </template>
 <script>
   import utils from '../common/utils'
+  import nativeApi from '../common/nativeApi'
   import {
     mapGetters,
     mapActions
@@ -39,64 +42,60 @@
 
   export default {
     beforeMount: function() {
-      //this.accountId = this.loginAccount
+      this.currentAccount = this.historyAccounts[0]
     },
 
     data: function() {
       return {
-        accountId: 'zhangshiqing@firevale.com',
-        accounts: ['zhangshiqing@firevale.com', 'zsq@firevale.com'],
+        currentAccount: '' ,
         errorMessage: '',
-        showAccounts: false,
+        accountListVisible: false,
       }
     },
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'historyAccounts' 
       ]),
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'setMessage'
+        'setLoginAccount', 'addLoginnedAccount' 
       ]),
 
-      handleValidate: function(e) {
-        e.target.$validity.validate(_ => {
-
-        })
-      },
-
       handleSubmit: function() {
-        if (this.accountId) {
+        if (this.currentAccount) {
           this.$http({
             method: 'post',
-            url: '/user/create_token',
+            url: '/user/update_token',
             params: {
-              account_id: this.accountId
+              access_token: this.currentAccount.access_token
             }
           }).then(response => {
             return response.json()
           }).then(result => {
             if (result.success) {
-              // TODO: handle login success
+              this.addLoginnedAccount(result)
+              this.currentAccount = result
+              nativeApi.closeLoginDialog(result) 
             } else {
               this.errorMessage = this.$t(result.message)
             }
           })
         }
       },
-      toggleAccounts: function() {
-        this.showAccounts = !this.showAccounts
+
+      toggaleAccountsListVisibility: function() {
+        this.accountListVisible = !this.accountListVisible
       },
 
-      chooseAccountId: function(item) {
-        this.accountId = item
-        this.showAccounts = false
+      chooseAccount: function(account) {
+        this.accountListVisible = false
+        this.currentAccount = account
       },
 
-      deleteAccountId: function() {
+      deleteaccountLabel: function() {
 
       }
     },

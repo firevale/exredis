@@ -210,7 +210,7 @@ defmodule Acs.RedisUser do
 
   def find(nil), do: nil
   def find(id) when is_integer(id) do
-    case Redis.get(@user_base_key <> id) do 
+    case Redis.get(@user_base_key <> to_string(id)) do 
       :undefined -> refresh(id)
       json -> from_json(json)
     end

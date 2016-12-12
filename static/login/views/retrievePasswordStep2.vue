@@ -55,10 +55,6 @@
     },
 
     computed: {
-      ...mapGetters([
-        'colors'
-      ]),
-
       verifyCodeSentHint: function() {
         if (utils.isValidEmail(this.accountId)) {
           return this.$t('account.retrievePasswordPage.verifyCodeSentToEmail', {

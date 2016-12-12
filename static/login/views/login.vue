@@ -40,7 +40,7 @@
 </template>
 <script>
   import utils from '../common/utils'
-  import Vue from 'vue'
+  import nativeApi from '../common/nativeApi'
   import {
     mapGetters,
     mapActions
@@ -70,13 +70,13 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'colors'
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
       ]),
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'setMessage'
+        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'addLoginnedAccount'
       ]),
 
       handleValidate: function(e) {
@@ -110,7 +110,11 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              // TODO: handle login success
+              this.addLoginnedAccount(result)
+              this.setLoginAccount(this.accountId)
+              if (window.acsConfig.inApp) {
+                nativeApi.closeLoginDialog(result)
+              }
             } else {
               this.errorMessage = this.$t(result.message)
             }

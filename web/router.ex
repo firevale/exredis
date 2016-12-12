@@ -19,6 +19,7 @@ defmodule Acs.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
     plug :parse_user_agent
     plug :detect_user_id
     plug :fetch_device_id
@@ -51,6 +52,7 @@ defmodule Acs.Router do
     post "/create_token", UserController, :create_token 
     post "/create_anonymous_token", UserController, :create_anonymous_token 
     post "/create_user", UserController, :create_user
+    post "/update_token", UserController, :update_token
     post "/update_password", UserController, :update_password # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
@@ -63,11 +65,11 @@ defmodule Acs.Router do
       post "/gen_token",        Api.AuthController, :gen_token     
       get  "/bind_token",       Api.AuthController, :bind_token
       get  "/guest_token",      Api.AuthController, :guest_token
-      get  "/anonymous_token",  Api.AuthController, :anonymous_token
+      get  "/anonymous_token",  UserController,     :create_anonymous_token 
+      post "/update_token",     UserController,     :update_token
       post "/verify_token",     Api.AuthController, :verify_token
       get  "/verify_token",     Api.AuthController, :verify_token
       get  "/update_token",     Api.AuthController, :update_token
-      post "/update_token",     Api.AuthController, :update_token
       get  "/create_token",     Api.AuthController, :create_token
     end
 

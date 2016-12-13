@@ -46,9 +46,19 @@
       this.currentAccount = this.historyAccounts[0]
     },
 
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (vm.historyAccounts.length <= 0) {
+          vm.$router.replace({
+            name: 'selectAccountType'
+          })
+        }
+      })
+    },
+
     data: function() {
       return {
-        currentAccount: '',
+        currentAccount: undefined,
         errorMessage: '',
         accountListVisible: false,
         processing: false,
@@ -91,14 +101,18 @@
             } else {
               if (!this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
                 this.setLoginAccountId(this.currentAccount.user_email || this.currentAccount.user_mobile)
-                this.$router.replace({ name: 'login' })
-              }
-              else if (this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
-                this.$router.replace({ name: 'selectAccountType' })
-              }
-              else {
+                this.$router.replace({
+                  name: 'login'
+                })
+              } else if (this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
+                this.$router.replace({
+                  name: 'selectAccountType'
+                })
+              } else {
                 // TODO: goto some other page when 
-                this.$router.replace({ name: 'login' })
+                this.$router.replace({
+                  name: 'login'
+                })
               }
             }
           }).catch(e => {

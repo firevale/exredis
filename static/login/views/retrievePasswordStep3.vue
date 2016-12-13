@@ -23,7 +23,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.retrievePasswordPage.complete')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.retrievePasswordPage.complete')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
     </validation>
   </div>
@@ -45,6 +46,7 @@
         accountId: '',
         verifyCode: '',
         passwordIcon: 'eye-slash',
+        processing: false,
       }
     },
 
@@ -82,6 +84,7 @@
 
       handleSubmit: function(e) {
         if (this.$validation.retrieve.valid && this.password) {
+          this.processing = true
           this.$http({
             method: 'post',
             url: '/user/update_password',
@@ -91,6 +94,7 @@
               password: this.password
             }
           }).then(response => {
+            this.processing = false
             return response.json()
           }).then(result => {
             if (result.success) {
@@ -99,6 +103,9 @@
             } else {
               this.errorMessage = this.$t(result.message)
             }
+          }).catch(error => {
+            this.processing = false
+            this.errorMessage = this.$t('account.error.networkError')
           })
         }
       },

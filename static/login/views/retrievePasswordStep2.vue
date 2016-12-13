@@ -24,7 +24,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.retrievePasswordPage.nextStep')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
     </validation>
   </div>
@@ -45,6 +46,7 @@
         verifyCode: '',
         errorMessage: '',
         accountId: '',
+        processing: false,
       }
     },
 
@@ -125,6 +127,7 @@
 
       handleSubmit: function(e) {
         if (this.$validation.retrieve.valid && this.verifyCode) {
+          this.processing = true
           this.$http({
             method: 'post',
             url: '/check_retrieve_password_verify_code',
@@ -132,6 +135,7 @@
               verify_code: this.verifyCode
             }
           }).then(response => {
+            this.processing = false
             return response.json()
           }).then(result => {
             if (result.success && result.match) {
@@ -145,6 +149,9 @@
             } else {
               this.errorMessage = this.$t('account.error.invalidVerifyCode')
             }
+          }).catch(error => {
+            this.processing = false
+            this.errorMessage = this.$t('account.error.networkError')
           })
         }
       },

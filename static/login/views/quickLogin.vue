@@ -80,13 +80,26 @@
             return response.json()
           }).then(result => {
             if (result.success) {
+              if (!result.is_anonymous && result.sdk == 'firevale') {
+                this.setLoginAccountId(result.user_email || result.user_mobile)
+              }
               this.addLoginnedAccount(result)
               this.currentAccount = result
               if (window.acsConfig.inApp) {
                 nativeApi.closeLoginDialog(result)
               }
             } else {
-              this.errorMessage = this.$t(result.message)
+              if (!this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
+                this.setLoginAccountId(this.currentAccount.user_email || this.currentAccount.user_mobile)
+                this.$router.replace({ name: 'login' })
+              }
+              else if (this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
+                this.$router.replace({ name: 'selectAccountType' })
+              }
+              else {
+                // TODO: goto some other page when 
+                this.$router.replace({ name: 'login' })
+              }
             }
           }).catch(e => {
             this.processing = false

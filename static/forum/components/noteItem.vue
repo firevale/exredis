@@ -1,14 +1,21 @@
 <template>
-  <div>
-    <div class="columns">
-      <div class="column is-11">
-        <a v-for="item in headerTag" class="button" style="color: {{item.color}}; backgroundColor: {{item.bgColor}}">{{item.name}}</a>
-        <span>{{title}}</span>
-        <i v-if="hasPicture" class="fa fa-picture-o note-picture"></i>
-        <a v-for="item in tailTag" class="button" style="color: {{item.color}}; backgroundColor: {{item.bgColor}}">{{item.name}}</a>
+  <div class="note-item">
+    <div class="columns" >
+      <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}">
+        <a v-for="item in itemData.headerTag" class="headerTag" >{{item.name}}</a>
+        <span class="note-title">{{itemData.title}}</span>
+        <i v-if="itemData.hasPicture" class="fa fa-picture-o note-picture"></i>
+        <a v-for="item in itemData.tailTag" class="tailTag" :class="{'excellent': item.isTag}">{{item.name}}</a>
       </div>
+      <div class="column is-2 txt-right note-info">{{itemData.time}}</div>
     </div>
-    <div class="column is-1">{{time}}</div>
+    <div class="columns">
+      <div class="column is-10">
+        <span class="author-name">{{itemData.author}}</span>
+      </div>
+      <div class="column is-2 txt-right note-info">{{itemData.noteCount}}</div>
+    </div>
+    
   </div>
 </template>
 <script>
@@ -27,28 +34,55 @@
         default: null,
       }
     },
-
-    data: function(){
-        return {
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              {name: '推荐', bgColor: '#0f0', color: '#fff'},
-              ],
-            title: '【游戏攻略】新手练级指南',
-            hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff'},
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
-            ],
-            author: '火谷测试',
-            time: '2分钟前',
-            noteCount: '2/11',
-        }
-    },
   }
 </script>
 <style lang="scss">
+  @import "../scss/color";
+
   .note-picture{
+    font-size: 1.4rem;
+    vertical-align: middle;
     color: green;
+  }
+
+  .note-title{
+    vertical-align: middle;
+    font-size: 1.4rem;
+    cocor: $black;
+  }
+
+  .headerTag{
+    font-weight: bold;
+    border-radius: .3rem;
+    vertical-align: middle;
+    padding: .3rem;
+    color: $white;
+    margin-right: .5rem;
+    font-size: .6rem;
+    background-color: $red !important;
+  }
+
+  .tailTag{
+    border-radius: .3rem;
+    vertical-align: middle;
+    padding: .3rem;
+    color: $white;
+    margin-right: .5rem;
+    font-size: .6rem;
+    background-color: $red !important;
+  }
+
+  .author-name{
+    color: $link;
+    font-size: 1rem;
+  }
+
+  .note-info{
+    color: $dark;
+    font-size: 1rem;
+  }
+  
+  .excellent{
+    background-color: $olive !important;
   }
 </style>

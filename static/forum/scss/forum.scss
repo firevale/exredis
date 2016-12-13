@@ -1,21 +1,50 @@
 @import "./common";
-
-#app{
-    padding: 5px;
+#app {
+    height: 100vh;
+    box-sizing:border-box;
+    background-color: $white;
+    padding-top: 1rem;
 }
 
-
-a.button.is-active{
+a.button.is-active {
     background: $link;
     color: $white;
-
 }
 
-a.button{
+a.button {
     background: $dark;
     color: $white;
     margin-right: 1rem;
     margin-bottom: .5rem;
+    font-weight: bold;
+    min-width: 6rem;
+    border-radius: .5rem;
 }
 
+.horizontal-line {
+    height: .3rem;
+    margin: 1rem 0rem;
+}
 
+.clear-left {
+    padding-left: 0;
+}
+.clear-right {
+    padding-right: 0;
+}
+.txt-right {
+    text-align: right;
+    margin-right: 0 !important;
+}
+
+.content-item{
+    margin: auto 1rem !important;
+}
+
+.note-item{
+    padding: .5rem;
+    border-bottom: 1px solid $dark;
+}
+.note-item:last-child{
+    border-bottom:none;
+}

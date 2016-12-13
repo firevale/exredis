@@ -17,7 +17,7 @@
         <div v-if="!isMobileAccount" class="captchaBox">
           <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
         </div>
-        <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="insideInput"
+        <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input"
           :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
         </input>
         <span class="icon addon-icon icon-check"></span>

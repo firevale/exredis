@@ -14,7 +14,7 @@
             autocomplete="off" class="outsideText" name="verifyCode" @focusout="handleValidate" />
         </validity>
         <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" 
-              class="insideInput" :value="sendCodeTex"
+              class="inside-input" :value="sendCodeTex"
           @click.prevent="sendVerifyCode">
         </input>
         <span class="icon addon-icon icon-check"></span>

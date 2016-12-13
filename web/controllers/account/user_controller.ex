@@ -65,7 +65,7 @@ defmodule Acs.UserController do
                              end
           if is_valid_account do 
             user = RedisUser.create!(account_id, password)  
-            RedisUser.save!(user)
+            user = RedisUser.save!(user)
             create_and_response_access_token(conn, user, app_id, device_id, platform)          
           else 
             conn |> json(%{success: false, message: "account.error.accountIdChanged"})
@@ -143,6 +143,7 @@ defmodule Acs.UserController do
   end
 
   defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform, is_anonymous \\ false) do 
+    d "create_and_response_access_token, user: #{inspect user, pretty: true}"
     access_token = case conn.private[:acs_app] do 
                     nil -> 
                       RedisAccessToken.create(%{

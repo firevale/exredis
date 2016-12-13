@@ -97,7 +97,7 @@ hr {
     .account-item {
       color: $black;
       font-size: .7rem;
-      padding: .6rem;
+      padding: .5rem;
     }
     .account-item:hover {
       background: $primary;
@@ -149,7 +149,7 @@ hr {
       -webkit-flex: 1;
       flex: 1;
     }
-    .insideInput {
+    .inside-input {
       position: absolute;
       height: 70%;
       right: .4rem;
@@ -178,14 +178,6 @@ hr {
       .captcha {
         flex: 1;
         -webkit-flex: 1;
-      }
-      .changeCode {
-        color: $primary;
-        padding: .4rem;
-        font-size: .8rem;
-        border: none;
-        border-radius: .2rem;
-        background: $white;
       }
     }
     hr {
@@ -504,13 +496,8 @@ only screen and (min-resolution: 2.25dppx) {
       a {
         font-size: .8rem;
       }
-      .insideInput {
+      .inside-input {
         padding: .3rem .3rem;
-      }
-      .captchaBo {
-        .changeCode {
-          font-size: .6rem;
-        }
       }
     }
   }

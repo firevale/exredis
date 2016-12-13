@@ -1,6 +1,6 @@
 <template>
   <div class="note-item">
-    <div class="columns" >
+    <div class="columns">
       <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}">
         <a v-for="item in itemData.headerTag" class="headerTag" >{{item.name}}</a>
         <span class="note-title">{{itemData.title}}</span>
@@ -49,6 +49,10 @@
     vertical-align: middle;
     font-size: 1.4rem;
     cocor: $black;
+  }
+
+  .note-title:hover{
+    cursor: pointer;
   }
 
   .headerTag{

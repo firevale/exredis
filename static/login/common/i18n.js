@@ -78,6 +78,12 @@ export default {
         qq: 'qq',
         wechat: '微信',
         weibo: '微博',
+      },
+
+      alert: {
+        hint: '提示',
+        anonymousHintMessage: '为保障您的游戏数据安全，请尽快绑定一个帐号，以免因刷机等原因导致游戏数据丢失！',
+        cancel: '取消',
       }
     },
 

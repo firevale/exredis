@@ -47,21 +47,29 @@
       },
 
       anonymousLogin: function() {
-        this.processing = true
-        this.$http({
-          method: 'post',
-          url: '/user/create_anonymous_token',
-        }).then(response => {
-          this.processing = false
-          return response.json()
-        }).then(result => {
-          if (result.success) {
-            this.addLoginnedAccount(result)
-          }
-          nativeApi.closeLoginDialog(result)
-        }).catch(e => {
-          this.processing = false 
-        })
+        nativeApi.showAlertDialog(this.$t('account.alert.hint'),
+          this.$t('account.alert.anonymousHintMessage'),
+          this.$t('account.alert.cancel'),
+          this.$t('account.types.anonymous'),
+          result => {
+            if (result == 'ok') {
+              this.processing = true
+              this.$http({
+                method: 'post',
+                url: '/user/create_anonymous_token',
+              }).then(response => {
+                this.processing = false
+                return response.json()
+              }).then(result => {
+                if (result.success) {
+                  this.addLoginnedAccount(result)
+                }
+                nativeApi.closeLoginDialog(result)
+              }).catch(e => {
+                this.processing = false
+              })
+            }
+          })
       }
     },
   }

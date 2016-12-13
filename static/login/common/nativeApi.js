@@ -6,9 +6,19 @@ export default {
       AndroidNativeAPI.closeLoginDialog(result)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeLoginDialog === 'function') {
       IOSNativeAPI.closeLoginDialog(result)
-    }
-    else {
+    } else {
       console.error('dont know how to close login dialog')
     }
   },
+
+  showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
+      AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle, callback)
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback === 'function') {
+      IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback(title, message, cancelBtnTitle, okBtnTitle, callback)
+    } else {
+      console.error('dont know how to show alert dialog')
+    }
+  },
+
 }

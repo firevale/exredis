@@ -5,50 +5,89 @@
         <i class="fa fa-angle-left title is-2" style="color: #A6A6A6;" aria-hidden="true"></i>
       </span>
       <span class="column is-6" style="margin-bottom: 0; text-align: center;">
-        <span class="title is-3">游戏论坛</span>
+        <span class="title is-3">{{ $t('forum.main.title') }}</span>
       </span>
       <span class="column is-3 txt-right clear-right">
         <i class="fa fa-search title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
         <i class="fa fa-user title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
-        <a class="button txt-right" style="color: black;">发帖</a>
+        <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
       </span>
-      
     </div>
     <hr class="horizontal-line"></hr>
     <div class="tile is-chid content-item">
       <div class="tile control">
-        <a class="button is-active">全部</a>
-        <a class="button">综合讨论</a>
-        <a class="button">攻略心得</a>
-        <a class="button">转帖分享</a>
-        <a class="button">玩家原创</a>
-        <a class="button">问题求助</a>
+        <a class="button" :class="{'is-active': loadType=='all'}" @click="loadType='all'">{{ $t('forum.main.all') }}</a>
+        <a class="button" :class="{'is-active': loadType=='discussion'}" @click="loadType='discussion'">{{ $t('forum.main.discussion') }}</a>
+        <a class="button" :class="{'is-active': loadType=='experience'}" @click="loadType='experience'">{{ $t('forum.main.experience') }}</a>
+        <a class="button" :class="{'is-active': loadType=='ras'}" @click="loadType='ras'">{{ $t('forum.main.ras') }}</a>
+        <a class="button" :class="{'is-active': loadType=='original'}" @click="loadType='original'">{{ $t('forum.main.original') }}</a>
+        <a class="button" :class="{'is-active': loadType=='appeal'}" @click="loadType='appeal'">{{ $t('forum.main.appeal') }}</a>
       </div>
-      <div class="control">
-        <span>发帖时间排序</span>
+      <div class="control pointer" @click="orderChoose">
+        <span>{{ $t('forum.main.order', {type: orderTypeStr}) }}</span>
         <i class="fa fa-caret-down title is-2" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0;">
       <note-item v-for="item in notList" :item-data="item"></note-item>
     </div>
+    <div class="column is-full" v-show="pageCount > 1">
+      <pagination ref="pag" :page-count="pageCount" :current-page="currentPage"></pagination>
+    </div>
   </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import noteItem from '../components/noteItem.vue'
-
+import menuModal from '../components/menuModal'
+import pagination from '../components/pagination.vue'
 export default {
   components: {
-    noteItem,    
+    noteItem,  
+    pagination,  
+  },
+  mounted: function(){
+    this.$refs.pag.$on('switch-page', this.refreshPage)
   },
 
   computed: {
     ...mapGetters(['colors']),
   },
 
+  watch:{
+    'loadType'(newVal, oldVal){
+      switch(newVal){
+        case 'all':
+          this.loadUrl='/forum/all/'
+        break;
+        case 'discussion':
+          this.loadUrl='/forum/discussion/'
+        break;
+        case 'experience':
+          this.loadUrl='/forum/experience/'
+        break;
+        case 'original':
+          this.loadUrl='/forum/original/'
+        break;
+        case 'ras':
+          this.loadUrl='/forum/ras/'
+        break;
+        case 'appeal':
+          this.loadUrl='/forum/appeal/'
+        break;
+      }
+      this.refreshPage()
+    }
+  },
+
   data(){
     return {
+      loadType: 'all',
+      loadUrl: '/forum/all/',
+      orderType: 'create',
+      orderTypeStr: '发帖时间排序',
+      pageCount: 10,
+      currentPage: 1,
       notList:[
         {
             headerTag:[
@@ -119,9 +158,44 @@ export default {
         },
       ]
     }
-  }
+  },
+
+  methods: {
+    orderChoose(){
+      menuModal.showModal(null, this.onOrderTypeChoose, this.orderTypeStr)
+    },
+
+    onOrderTypeChoose(type){
+      this.orderType = type.code;
+      this.orderTypeStr = type.name;
+      this.refreshPage()
+    },
+
+    refreshPage(page = 1){
+      this.$http({
+        method: 'post',
+        url: this.loadUrl+page+'?order='+this.orderType,
+        params: {
+          
+        }
+      }).then(response => {
+        //this.notList = response.json()
+      }).then(result => {
+        if (result.success) {
+          this.currentPage = page;
+        } else {
+          
+        }
+      })
+    },
+
+  },
 }
 </script>
 <style lang="scss">
   @import "../scss/forum";
+  .pointer {
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
 </style>

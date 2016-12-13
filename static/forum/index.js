@@ -25,7 +25,7 @@ Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])
 })
 
-Object.keys(filters).forEach(function(k) {
+Object.keys(filters).forEach(function (k) {
   Vue.filter(k, filters[k])
 })
 
@@ -48,4 +48,3 @@ let App = new Vue({
   router,
   store,
 }).$mount('#app')
-

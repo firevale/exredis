@@ -43,6 +43,10 @@
 
   export default {
     beforeMount: function() {
+      let activeSession = nativeApi.getActiveSession()
+      if (activeSession) {
+        this.addLoginnedAccount(activeSession)
+      }
       this.currentAccount = this.historyAccounts[0]
     },
 

@@ -56,7 +56,7 @@
     },
 
     methods: {
-      ...mapActions(['setLoginAccount']),
+      ...mapActions(['setLoginAccountId']),
 
       togglePasswordVisibility: function() {
         if (this.passwordIcon === 'eye') {
@@ -94,7 +94,7 @@
             return response.json()
           }).then(result => {
             if (result.success) {
-              this.setLoginAccount(this.accountId)
+              this.setLoginAccountId(this.accountId)
               this.$router.back()
             } else {
               this.errorMessage = this.$t(result.message)

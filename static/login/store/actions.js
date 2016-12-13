@@ -7,13 +7,13 @@ export const addAccountExistence = ({
   commit('ADD_ACCOUNT_EXISTENCE', payload)
 }
 
-export const setLoginAccount = ({
+export const setLoginAccountId = ({
   commit
 }, account) => {
   commit('SET_LOGIN_ACCOUNT', account)
 }
 
-export const setRegisterAccount = ({
+export const setRegisterAccountId = ({
   commit
 }, account) => {
   commit('SET_REGISTER_ACCOUNT', account)

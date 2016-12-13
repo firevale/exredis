@@ -238,6 +238,38 @@ span.nav-icon {
   }
 }
 
+@keyframes linear-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes linear-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+span.progress-icon {
+  position: absolute;
+  width: 1.2rem;
+  height: 100%;
+  right: 0.8rem;
+  z-index: 2;
+  background-image: url(../assets/circle-o-notch@1x.png);
+  animation: linear-rotate 1.2s infinite linear;
+}
+
 span.addon-icon {
   top: 0;
   margin: 0;
@@ -397,6 +429,9 @@ only screen and (min-resolution: 1.25dppx) {
       background-image: url(../assets/times@2x.png)
     }
   }
+  span.progress-icon {
+    background-image: url(../assets/circle-o-notch@2x.png);
+  }
 }
 
 // @3x
@@ -454,6 +489,9 @@ only screen and (min-resolution: 2.25dppx) {
     &.icon-times {
       background-image: url(../assets/times@3x.png)
     }
+  }
+  span.progress-icon {
+    background-image: url(../assets/circle-o-notch@3x.png);
   }
 }
 

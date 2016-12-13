@@ -61,7 +61,7 @@
 
     methods: {
       ...mapActions([
-        'setLoginAccount', 'addLoginnedAccount' 
+        'setLoginAccountId', 'addLoginnedAccount' 
       ]),
 
       handleSubmit: function() {

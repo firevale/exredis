@@ -27,7 +27,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.registerPage.nextStep')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
@@ -54,6 +55,7 @@
         accountId: '',
         verifyCode: '',
         errorMessage: '',
+        processing: false,
       }
     },
 
@@ -141,7 +143,7 @@
 
       handleSubmit: function() {
         if (this.$validation.register.valid && this.verifyCode) {
-          this.$router.replace({name: 'registerStep3', params: {accountId: this.accountId, verifyCode: this.verifyCode}})
+          this.processing = true
           this.$http({
             method: 'post',
             url: '/check_register_verify_code',
@@ -149,6 +151,7 @@
               verify_code: this.verifyCode,
             }
           }).then(response => {
+            this.processing = false
             return response.json()
           }).then(result => {
             if (result.exists) {
@@ -163,6 +166,7 @@
               })
             }
           }).catch(error => {
+            this.processing = false
             this.errorMessage = this.$t('account.error.networkError')
           })
         }

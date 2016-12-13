@@ -20,7 +20,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.registerPage.nextStep')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
@@ -50,6 +51,7 @@
         isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
         accountId: '',
         errorMessage: '',
+        processing: false,
       }
     },
 
@@ -65,7 +67,7 @@
 
     methods: {
       ...mapActions([
-        'setRegisterAccount', 'validateAccountId'
+        'setRegisterAccountId', 'validateAccountId'
       ]),
 
       handleValidate: function(e) {
@@ -97,27 +99,16 @@
               this.errorMessage = this.$t('account.error.accountInUse')
             } else {
               // remember registerAccount 
-              this.setRegisterAccount(this.accountId)
+              this.setRegisterAccountId(this.accountId)
               this.$router.replace({
                 name: 'registerStep2',
-                params: {
-                  accountId: this.accountId
+                query: {
+                  accountId: btoa(this.accountId)
                 }
               })
             }
           }).catch(error => {
             this.errorMessage = this.$t('account.error.networkError')
-          })
-        }
-      },
-
-      handleSubmit: function() {
-        if (this.$validation.register.valid && this.accountId) {
-          this.$router.replace({
-            name: 'registerStep2',
-            query: {
-              accountId: btoa(this.accountId)
-            }
           })
         }
       },

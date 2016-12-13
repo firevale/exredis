@@ -47,14 +47,14 @@ const mutations = {
 
   'ADD_LOGINNED_ACCOUNT' (state, account) {
     account.label = account.is_anonymous ? account.nick_name : (account.user_mobile ? account.user_mobile : account.user_email)
-    let accounts = state.historyAccounts.filter(v => {v.user_id != account.id})
+    let accounts = state.historyAccounts.slice().filter(v => v.user_id != account.user_id)
 
     if (accounts.unshift(account) > 4) {
       accounts.pop()
     }
 
     localStorage.setItem('_acs_history_accounts_', JSON.stringify(accounts))
-    state.historyAccounts = accounts
+    state.historyAccounts = accounts.slice()
   },
 }
 

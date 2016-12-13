@@ -38,6 +38,12 @@ input[type="submit"]:active {
   filter: brightness(0.6);
 }
 
+input[type="button"].is-disabled,
+input[type="submit"].is-disabled {
+  filter: opacity(70%);
+}
+
+
 input.inputDisabled {
   background: $dark !important;
 }

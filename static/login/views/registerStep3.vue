@@ -20,7 +20,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.loginPage.btnRegister')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.btnRegister')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
@@ -44,18 +45,18 @@
         password: '',
         passwordIcon: 'eye-slash',
         errorMessage: '',
+        processing: false,
       }
     },
 
     created: function() {
       this.accountId = atob(this.$route.query.accountId)
       this.verifyCode = atob(this.$route.query.verifyCode)
-      console.log(this)
     },
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'setRegisterAccount'
+        'addAccountExistence', 'setLoginAccountId', 'setRegisterAccountId', 'addLoginnedAccount'
       ]),
 
       handleValidate: function(e) {
@@ -73,10 +74,8 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.register.valid &&
-          this.accountId &&
-          this.password &&
-          this.verifyCode) {
+        if (this.$validation.register.valid && this.accountId && this.password && this.verifyCode) {
+          this.processing = true
           this.$http({
             method: 'post',
             url: '/user/create_user',
@@ -86,6 +85,7 @@
               verify_code: this.verifyCode
             }
           }).then(response => {
+            this.processing = false
             return response.json()
           }).then(result => {
             if (result.success) {
@@ -93,14 +93,17 @@
                 account: this.accountId,
                 exists: true
               })
-              this.setLoginAccount(this.accountId)
-              this.setRegisterAccount(undefined)
-
-              // TODO: register success
+              this.setLoginAccountId(this.accountId)
+              this.setRegisterAccountId('')
+              this.addLoginnedAccount(result)
+              if (window.acsConfig.inApp) {
+                nativeApi.closeLoginDialog(result)
+              }
             } else {
               this.errorMessage = this.$t(result.message)
             }
           }).catch(e => {
+            this.processing = false
             this.errorMessage = this.$t('account.error.networkError')
           })
         }

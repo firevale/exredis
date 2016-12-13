@@ -8,7 +8,6 @@ export default {
         retrievePasswordTitle: '找回密码',
         titleReset: '密码重置',
         btnSubmit: '登录',
-        btnRegister: '注册',
         btnReset: '重置',
         sendVerifyCode: '获取验证码',
         sendVerifyCodeAgain: '重新发送',
@@ -23,6 +22,7 @@ export default {
       },
 
       registerPage:{
+        btnRegister: '注册',
         sendAgain: "重新发送",
         cooldownText: "重新发送({timer}s)",
         goLoginPage: '已有帐号>',

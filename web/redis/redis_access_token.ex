@@ -26,37 +26,24 @@ defmodule Acs.RedisAccessToken do
     }) when is_bitstring(device_id) do 
 
     ts = Utils.unix_timestamp
-    case find_by_device(app_id, platform, device_id) do 
-      nil ->
-        token = %__MODULE__{id: Utils.generate_token, 
-                            app_id: app_id,
-                            user_id: user_id,
-                            device_id: device_id,
-                            ttl: ttl,
-                            binding: binding,
-                            created_at: ts,
-                            updated_at: ts}   
-        save(token)
-        token
-     
-      %__MODULE__{} = token ->
-        delete(token)
-        token = %{token | id: Utils.generate_token, 
-                          binding: binding,
-                          created_at: ts,
-                          updated_at: ts}
-        save(token)
-        token
-    end
+    token = %__MODULE__{id: Utils.generate_token, 
+                        app_id: app_id,
+                        user_id: user_id,
+                        device_id: device_id,
+                        ttl: ttl,
+                        binding: binding,
+                        created_at: ts,
+                        updated_at: ts}   
+    save(token)
+    token
   end
 
   def save(%__MODULE__{} = token) do
     Redis.setex(key(token), token.ttl, to_json(token))
-
-    case token.device_id do 
-      nil -> :do_nothing
-      _ -> Redis.setex(device_key(token), token.ttl, token.id)
-    end
+    # case token.device_id do 
+    #   nil -> :do_nothing
+    #   _ -> Redis.setex(device_key(token), token.ttl, token.id)
+    # end
   end
 
   def find(token_id) when is_bitstring(token_id) do
@@ -68,16 +55,16 @@ defmodule Acs.RedisAccessToken do
     end
   end
 
-  def find_by_device(app_id, platform, device_id) do 
-    case Redis.get(device_key(app_id, device_id)) do 
-      :undefined -> 
-        case Redis.hget("fvac.keys.access_token_index.device", "#{app_id}.#{platform}.#{device_id}") do 
-          :undefined -> nil
-          fvac_token_id -> find_fvac_token(fvac_token_id)
-        end  
-      tid -> find(tid)
-    end
-  end
+  # def find_by_device(app_id, platform, device_id) do 
+  #   case Redis.get(device_key(app_id, device_id)) do 
+  #     :undefined -> 
+  #       case Redis.hget("fvac.keys.access_token_index.device", "#{app_id}.#{platform}.#{device_id}") do 
+  #         :undefined -> nil
+  #         fvac_token_id -> find_fvac_token(fvac_token_id)
+  #       end  
+  #     tid -> find(tid)
+  #   end
+  # end
 
   defp find_fvac_token(token_id) when is_bitstring(token_id) do 
     case Redis.get(fvac_token_key(token_id)) do 

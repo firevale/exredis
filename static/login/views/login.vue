@@ -29,7 +29,8 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :value="$t('account.loginPage.btnSubmit')" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing"/>
+        <span v-show="processing" class="icon progress-icon"></span>
       </div>
       <div class="row-login">
         <router-link :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
@@ -65,6 +66,7 @@
         password: '',
         passwordIcon: 'eye-slash',
         errorMessage: '',
+        processing: false,
       }
     },
 
@@ -76,7 +78,7 @@
 
     methods: {
       ...mapActions([
-        'addAccountExistence', 'setLoginAccount', 'validateAccountId', 'addLoginnedAccount'
+        'addAccountExistence', 'setLoginAccountId', 'validateAccountId', 'addLoginnedAccount'
       ]),
 
       handleValidate: function(e) {
@@ -99,6 +101,7 @@
 
       handleSubmit: function() {
         if (this.$validation.login.valid && this.accountId && this.password) {
+          this.processing = true
           this.$http({
             method: 'post',
             url: '/user/create_token',
@@ -107,17 +110,23 @@
               password: this.password
             }
           }).then(response => {
+            this.processing = false
             return response.json()
           }).then(result => {
             if (result.success) {
               this.addLoginnedAccount(result)
-              this.setLoginAccount(this.accountId)
+              this.setLoginAccountId(this.accountId)
               if (window.acsConfig.inApp) {
                 nativeApi.closeLoginDialog(result)
               }
+
+              console.log("processing login success....")
             } else {
               this.errorMessage = this.$t(result.message)
             }
+          }).catch(_ => {
+            this.processing = false
+            this.errorMessage = this.$t('account.error.networkError')  
           })
         }
       },

@@ -97,7 +97,7 @@ hr {
     .account-item {
       color: $black;
       font-size: .7rem;
-      padding: .6rem;
+      padding: .5rem;
     }
     .account-item:hover {
       background: $primary;
@@ -149,7 +149,7 @@ hr {
       -webkit-flex: 1;
       flex: 1;
     }
-    .insideInput {
+    .inside-input {
       position: absolute;
       height: 70%;
       right: .4rem;
@@ -178,14 +178,6 @@ hr {
       .captcha {
         flex: 1;
         -webkit-flex: 1;
-      }
-      .changeCode {
-        color: $primary;
-        padding: .4rem;
-        font-size: .8rem;
-        border: none;
-        border-radius: .2rem;
-        background: $white;
       }
     }
     hr {
@@ -236,6 +228,38 @@ span.nav-icon {
   &.pull-right {
     right: .8rem;
   }
+}
+
+@keyframes linear-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes linear-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+span.progress-icon {
+  position: absolute;
+  width: 1.2rem;
+  height: 100%;
+  right: 0.8rem;
+  z-index: 2;
+  background-image: url(../assets/circle-o-notch@1x.png);
+  animation: linear-rotate 1.2s infinite linear;
 }
 
 span.addon-icon {
@@ -397,6 +421,9 @@ only screen and (min-resolution: 1.25dppx) {
       background-image: url(../assets/times@2x.png)
     }
   }
+  span.progress-icon {
+    background-image: url(../assets/circle-o-notch@2x.png);
+  }
 }
 
 // @3x
@@ -455,6 +482,9 @@ only screen and (min-resolution: 2.25dppx) {
       background-image: url(../assets/times@3x.png)
     }
   }
+  span.progress-icon {
+    background-image: url(../assets/circle-o-notch@3x.png);
+  }
 }
 
 @media only screen and (max-width: 768px) {
@@ -466,13 +496,8 @@ only screen and (min-resolution: 2.25dppx) {
       a {
         font-size: .8rem;
       }
-      .insideInput {
+      .inside-input {
         padding: .3rem .3rem;
-      }
-      .captchaBo {
-        .changeCode {
-          font-size: .6rem;
-        }
       }
     }
   }

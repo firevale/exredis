@@ -4,6 +4,7 @@ defmodule Acs.Plugs do
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
+  require Gettext
 
   def no_cache(%Plug.Conn{} = conn, _options) do 
     conn |> delete_resp_header("cache-control")
@@ -240,6 +241,7 @@ defmodule Acs.Plugs do
     case _fetch_locale(conn.params) || _fetch_header_locale(conn) do 
       nil -> conn
       locale ->
+        Gettext.put_locale(Acs.Gettext, locale)
         conn |> put_private(:acs_locale, locale)
     end
   end

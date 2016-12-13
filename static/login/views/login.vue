@@ -30,7 +30,7 @@
       </p>
       <div class="row-login">
         <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon"></span>
+        <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login">
         <router-link :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>

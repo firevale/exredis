@@ -22,6 +22,13 @@ body.in-app {
   transform: translate3d(0, 0, 0);
 }
 
+body.in-app *:not(input) {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 $form-height: 220px;
 .g-doc {
   background: $white;
@@ -252,6 +259,17 @@ span.nav-icon {
   }
 }
 
+.rotating {
+  -webkit-animation-name: linear-rotate;
+  -webkit-animation-duration: 1.2s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-name: linear-rotate;
+  animation-duration: 1.2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
 span.progress-icon {
   position: absolute;
   width: 1.2rem;
@@ -259,7 +277,6 @@ span.progress-icon {
   right: 0.8rem;
   z-index: 2;
   background-image: url(../assets/circle-o-notch@1x.png);
-  animation: linear-rotate 1.2s infinite linear;
 }
 
 span.addon-icon {

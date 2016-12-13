@@ -24,7 +24,7 @@
       </p>
       <div class="row-login" style="margin-top: .8rem; margin-bottom: 1.0rem;">
         <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon"></span>
+        <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <hr class="show-in-app" />
       <div class="row-login show-in-app" style="-webkit-justify-content: center; justify-content: center;">

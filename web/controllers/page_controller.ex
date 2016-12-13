@@ -2,7 +2,6 @@ defmodule Acs.PageController do
   use     Acs.Web, :controller
 
   plug :fetch_app_id
-  plug :fetch_locale
 
   def index(conn, _params) do
     render conn, "index.html"

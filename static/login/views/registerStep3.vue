@@ -21,7 +21,7 @@
       </p>
       <div class="row-login">
         <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.btnRegister')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon"></span>
+        <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
         <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>

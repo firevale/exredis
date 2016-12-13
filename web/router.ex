@@ -15,6 +15,7 @@ defmodule Acs.Router do
     plug :parse_user_agent
     plug :detect_user_id
     plug :fetch_device_id
+    plug :fetch_locale
   end
 
   pipeline :api do
@@ -23,6 +24,7 @@ defmodule Acs.Router do
     plug :parse_user_agent
     plug :detect_user_id
     plug :fetch_device_id
+    plug :fetch_locale
   end
 
   if Mix.env == :dev do 

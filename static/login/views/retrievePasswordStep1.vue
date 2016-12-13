@@ -24,7 +24,7 @@
       </p>
       <div class="row-login">
         <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon"></span
+        <span v-show="processing" class="icon progress-icon rotating"></span
       </div>
     </validation>
   </div>

@@ -101,6 +101,12 @@ defmodule Acs.Web do
       import Ecto
       import Ecto.Query
       import Acs.Gettext
+
+      alias  Acs.RedisApp
+      alias  Acs.RedisAppOrder
+      alias  Acs.RedisUser
+      alias  Acs.RedisAppUser
+      alias  Acs.RedisAccessToken
     end
   end
 

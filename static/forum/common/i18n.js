@@ -12,6 +12,12 @@ export default {
         appeal: '问题求助',
         order: '{type}',
       },
+      search:{
+        placeholder: '搜索帖子',
+        searchBtn: '搜索',
+        searchHis: '搜索历史记录',
+        noSearchResult: '暂无搜索历史',
+      },
       pagination: {
         previous: '上一页',
         next: '下一页',

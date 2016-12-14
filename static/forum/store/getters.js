@@ -1,14 +1,22 @@
-const notePageCount = state => state.noteSearch.pageCount
+const notePageCount = state => state.main.pageCount
 
-const noteCurrentPage = state => state.noteSearch.currentPage
+const noteCurrentPage = state => state.main.currentPage
 
-const noteLoadType = state => state.noteSearch.loadType
+const noteLoadType = state => state.main.loadType
 
-const noteLoadUrl = state => state.noteSearch.loadUrl
+const noteLoadUrl = state => state.main.loadUrl
 
-const noteOrderType = state => state.noteSearch.orderType
+const noteOrderType = state => state.main.orderType
 
-const noteOrderTypeStr = state => state.noteSearch.orderTypeStr
+const noteOrderTypeStr = state => state.main.orderTypeStr
+
+const searchKey = state => state.search.searchKey
+
+const searchKeyHis = state => state.search.hisKeys
+
+const searchPageCount = state => state.search.pageCount
+
+const searchCurrentPage = state => state.search.currentPage
 
 export {
   notePageCount,
@@ -16,5 +24,9 @@ export {
   noteLoadType,
   noteLoadUrl,
   noteOrderType,
-  noteOrderTypeStr
+  noteOrderTypeStr,
+  searchKey,
+  searchKeyHis,
+  searchPageCount,
+  searchCurrentPage,
 }

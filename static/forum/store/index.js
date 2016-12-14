@@ -5,7 +5,8 @@ import * as actions from './actions'
 import * as getters from './getters'
 
 import app from './modules/app'
-import noteSearch from './modules/noteSearch'
+import main from './modules/main'
+import search from './modules/search'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
   getters,
   modules: {
     app,
-    noteSearch,
+    main,
+    search,
   },
   mutations: {
   }

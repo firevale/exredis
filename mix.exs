@@ -39,7 +39,7 @@ defmodule Acs.Mixfile do
      {:mariaex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:ecto, "2.1.0-rc.4", override: true},
+     {:ecto, "2.1.0-rc.5", override: true},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:httpotion, "~> 3.0"},

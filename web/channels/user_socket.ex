@@ -1,6 +1,8 @@
 defmodule Acs.UserSocket do
   use Phoenix.Socket
 
+  import LogAlias
+
   ## Channels
   # channel "room:*", Acs.RoomChannel
 
@@ -19,7 +21,8 @@ defmodule Acs.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
+  def connect(params, socket) do
+    d "websocket connection params: #{inspect params, pretty: true}"
     {:ok, socket}
   end
 

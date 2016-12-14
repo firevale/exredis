@@ -25,3 +25,27 @@ export const setNoteCurrentPage = ({
   commit('NOTE_SET_CURRENTPAGE', type)
 }
 
+export const setSearchKey = ({
+  commit
+}, key) => {
+  commit('SEARCH_KEY_CHANGE', key)
+}
+
+export const setSearchHis = ({
+  commit
+}, key) => {
+  commit('HISTORY_KEY_ADD', key)
+}
+
+export const setSearchPageCount = ({
+  commit
+}, count) => {
+  commit('SEARCH_SET_PAGECOUNT', count)
+}
+
+export const setSearchCurrentPage = ({
+  commit
+}, page) => {
+  commit('SEARCH_SET_CURRENTPAGE', page)
+}
+

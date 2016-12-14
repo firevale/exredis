@@ -1,6 +1,6 @@
 const state = {
   loadType: 'all',
-  loadUrl: '/forum/all/',
+  loadUrl: '/forum/all',
   orderType: 'create',
   orderTypeStr: '发帖时间排序',
   pageCount: 10,
@@ -12,22 +12,22 @@ const mutations = {
     state.loadType = type
     switch (type) {
       case 'all':
-        state.loadUrl = '/forum/all/'
+        state.loadUrl = '/forum/all'
         break;
       case 'discussion':
-        state.loadUrl = '/forum/discussion/'
+        state.loadUrl = '/forum/discussion'
         break;
       case 'experience':
-        state.loadUrl = '/forum/experience/'
+        state.loadUrl = '/forum/experience'
         break;
       case 'original':
-        state.loadUrl = '/forum/original/'
+        state.loadUrl = '/forum/original'
         break;
       case 'ras':
-        state.loadUrl = '/forum/ras/'
+        state.loadUrl = '/forum/ras'
         break;
       case 'appeal':
-        state.loadUrl = '/forum/appeal/'
+        state.loadUrl = '/forum/appeal'
         break;
     }
   },
@@ -41,8 +41,8 @@ const mutations = {
     state.pageCount = count
   },
 
-  'NOTE_SET_CURRENTPAGE' (state, count) {
-    state.currentPage = count
+  'NOTE_SET_CURRENTPAGE' (state, page) {
+    state.currentPage = page
   }
 
 }

@@ -1,38 +1,31 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
     <div class="control is-child columns content-item">
-      <span class="column is-3 ">
-        <i class="fa fa-angle-left title is-2" style="color: #A6A6A6;" aria-hidden="true"></i>
-      </span>
-      <span class="column is-6" style="margin-bottom: 0; text-align: center;">
-        <span class="title is-3">{{ $t('forum.main.title') }}</span>
-      </span>
-      <span class="column is-3 txt-right clear-right">
-        <i class="fa fa-search title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
-        <i class="fa fa-user title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
-        <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
-      </span>
-    </div>
-    <hr class="horizontal-line"></hr>
-    <div class="tile is-chid content-item">
-      <div class="tile control">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
+      <div class="column">
+        <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true"></i>
       </div>
-      <div class="control pointer" @click="orderChoose">
-        <span>{{ noteOrderTypeStr }}</span>
-        <i class="fa fa-caret-down title is-2" aria-hidden="true" style="vertical-align: middle;"></i>
+      <div class="column is-7" style="position: relative;">
+        <i class="fa fa-search search-icon" aria-hidden="true"></i>
+        <input class="search-box" placeholder="搜索帖子"></input>
+        <i class="fa fa-times times-icon" aria-hidden="true"></i>
+      </div>
+      <div class="column is-4">
+        <input type="button" class="search-btn" style="width: 100%;" :value="$t('forum.search.searchBtn')"></input>
+      </div>
+      <div class="column"></div>
+    </div>
+    <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
+    <div class="is-chid content-item search-tip">
+      {{ $t('forum.search.searchHis') }}
+      <div v-if="searchKeyHis.length" class="his-box">
+        <div v-for="item in searchKeyHis" class="his-key">{{item}}</div>
       </div>
     </div>
-    <div class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0;">
-      <note-item v-for="item in notList" :item-data="item"></note-item>
+    <div v-if="0" class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0; ">
+      <note-item v-for="item in noteList" :item-data="item"></note-item>
     </div>
-    <div class="column is-full" v-show="notePageCount > 1">
-      <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+    <div class="column is-full" v-show="searchPageCount > 1" style="">
+      <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
     </div>
   </div>
 </template>
@@ -58,12 +51,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['noteLoadType','noteLoadUrl','noteOrderType','noteOrderTypeStr','notePageCount','noteCurrentPage']),
+    ...mapGetters(['searchKey','searchKeyHis','searchPageCount','searchCurrentPage']),
   },
 
   data(){
     return {
-      notList:[
+      noteList:[
         {
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
@@ -173,5 +166,70 @@ export default {
   .pointer {
     font-size: 1.2rem;
     cursor: pointer;
+  }
+  
+  .search-box {
+    width: 100%;
+    font-size: 1.6rem;
+    padding: .6rem;
+    padding-left: 3rem;
+    padding-right: 4rem;
+    border: none;
+    border-bottom: .1rem solid $red;
+  }
+  
+  .search-btn {
+    width: 100%;
+    color: $white;
+    font-size: 1.6rem;
+    padding: .6rem;
+    background: $primary;
+  }
+  
+  .control .column {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    bottom: .8rem;
+    font-size: 2rem;
+  }
+  
+  .times-icon {
+    position: absolute;
+    right: 1rem;
+    bottom: .8rem;
+    font-size: 2.5rem;
+  }
+  
+  .content-item {
+    margin: 1rem auto;
+    justify-content: space-around;
+  }
+  
+  .search-tip {
+    text-align: left;
+    font-size: 2rem;
+    color: $dark;
+    margin-bottom: 2rem;
+  }
+
+  .his-key{
+    width: 50%;
+    padding: .5rem;
+    float: left;
+    border: 1px solid $dark;
+    box-sizing: border-box;
+    text-align: center;
+    color: $black;
+    font-size: 1.5rem;
+  }
+  .his-box:after{
+    content: '';
+    display: block;
+    clear: both;
   }
 </style>

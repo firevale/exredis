@@ -7,11 +7,10 @@ export default function (VueRouter) {
       path: '/forum',
       name: 'forum',
       component: require('../views/main.vue'),
-      children: [{
-        path: '',
-        name: '',
-        component: require('../views/main.vue'),
-      }]
+    }, {
+      path: '/forum/search',
+      name: 'forum',
+      component: require('../views/search.vue'),
     }, {
       path: '*',
       redirect: '/'

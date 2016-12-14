@@ -52,7 +52,7 @@ defmodule Acs.UserController do
   def create_user(%Plug.Conn{private: %{acs_app_id: app_id, 
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn, 
-                   %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do 
+                   %{"account_id" => account_id, "password" => password, "verify_code" => verify_code} = params) do 
     if RedisUser.exists?(account_id) do 
       conn |> json(%{success: false, message: "account.error.accountInUse"})
     else
@@ -64,9 +64,21 @@ defmodule Acs.UserController do
                               _ -> false
                              end
           if is_valid_account do 
-            user = RedisUser.create!(account_id, password)  
-            user = RedisUser.save!(user)
-            create_and_response_access_token(conn, user, app_id, device_id, platform)          
+            case params["bind_user_id"] do 
+              nil ->
+                user = RedisUser.create!(account_id, password)  
+                user = RedisUser.save!(user)
+                create_and_response_access_token(conn, user, app_id, device_id, platform)          
+              bind_user_id ->
+                d "bind anonymous user #{bind_user_id}"
+                case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do 
+                  nil ->
+                    conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
+                  %RedisUser{} = user ->
+                    d "bind result: #{inspect user, pretty: true}"
+                    create_and_response_access_token(conn, user, app_id, device_id, platform)
+                end
+            end
           else 
             conn |> json(%{success: false, message: "account.error.accountIdChanged"})
           end

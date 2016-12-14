@@ -148,6 +148,29 @@ defmodule Acs.RedisUser do
     end
   end
 
+  def bind_anonymous_user(account_id, password, device_id, bind_user_id) do 
+    case find(String.to_integer(bind_user_id)) do 
+      %{nickname: "anonymous", device_id: ^device_id} = user ->
+        new_user = case parse_account_id(account_id) do 
+                     :email ->
+                      [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
+                       %{user | email: account_id, 
+                                encrypted_password: Utils.hash_password(password), 
+                                nickname: nickname,
+                                device_id: nil}
+                     :mobile ->
+                       %{user | mobile: account_id, 
+                                encrypted_password: Utils.hash_password(password), 
+                                nickname: "fvu#{user.id}",
+                                device_id: nil}
+                     _ ->
+                       raise InvalidAccountId, message: "invalid account id, can't bind"
+                   end
+       save!(new_user)
+      _ -> nil
+    end
+  end
+
   def save(%__MODULE__{} = user) do
     user = %{user | id: if user.id <= 100_000 do
                           gen_user_id()

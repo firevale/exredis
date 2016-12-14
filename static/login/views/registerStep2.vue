@@ -2,7 +2,7 @@
   <div class="login-box">
     <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
+        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
       <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
       <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
@@ -31,7 +31,7 @@
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
   </div>
@@ -56,10 +56,12 @@
         verifyCode: '',
         errorMessage: '',
         processing: false,
+        bindUserId: ''
       }
     },
 
     created: function() {
+      this.bindUserId = this.$route.query.bindUserId
       this.accountId = atob(this.$route.query.accountId)
       if (utils.isValidEmail(this.accountId)) {
         this.updateCaptcha()
@@ -162,6 +164,7 @@
                 query: {
                   accountId: btoa(this.accountId),
                   verifyCode: btoa(this.verifyCode),
+                  bindUserId: this.$route.query.bindUserId,
                 }
               })
             }

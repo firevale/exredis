@@ -2,7 +2,7 @@
   <div class="login-box">
     <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
+        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
       <p class="code-tip"> {{ $t('account.registerPage.pleaseInputAccountName') }}: </p>
       <div class="row-login">
@@ -24,7 +24,7 @@
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
   </div>
@@ -52,10 +52,12 @@
         accountId: '',
         errorMessage: '',
         processing: false,
+        bindUserId: '',
       }
     },
 
     created: function() {
+      this.bindUserId = this.$route.query.bindUserId
       this.accountId = this.registerAccount
     },
 
@@ -105,7 +107,8 @@
               this.$router.replace({
                 name: 'registerStep2',
                 query: {
-                  accountId: btoa(this.accountId)
+                  accountId: btoa(this.accountId),
+                  bindUserId: this.$route.query.bindUserId
                 }
               })
             }

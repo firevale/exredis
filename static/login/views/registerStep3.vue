@@ -2,8 +2,9 @@
   <div class="login-box">
     <validation name="register" @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
+        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
+      <p class="code-tip"> {{ $t('account.registerPage.pleaseInputPassword') }}: </p>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
                 required: {rule: true, message: $t('account.error.requirePassword')}, 
@@ -20,17 +21,18 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.btnRegister')" :disabled="processing"/>
+        <input type="submit" :class="{'is-disabled': processing}" :value="bindUserId ? $t('account.registerPage.btnBind') : $t('account.registerPage.btnRegister')" :disabled="processing"/>
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
   </div>
 </template>
 <script>
   import utils from '../common/utils'
+  import nativeApi from '../common/nativeApi'
   import msg from '../components/message'
   import {
     mapGetters,
@@ -46,12 +48,15 @@
         passwordIcon: 'eye-slash',
         errorMessage: '',
         processing: false,
+        shouldBindAnonymous: false,
+        bindUserId: '',
       }
     },
 
     created: function() {
       this.accountId = atob(this.$route.query.accountId)
       this.verifyCode = atob(this.$route.query.verifyCode)
+      this.bindUserId = this.$route.query.bindUserId
     },
 
     methods: {
@@ -82,12 +87,15 @@
             params: {
               account_id: this.accountId,
               password: this.password,
-              verify_code: this.verifyCode
+              verify_code: this.verifyCode,
+              bind_user_id: this.bindUserId,
             }
           }).then(response => {
             this.processing = false
             return response.json()
           }).then(result => {
+            console.log(result)
+
             if (result.success) {
               this.addAccountExistence({
                 account: this.accountId,
@@ -103,6 +111,7 @@
               this.errorMessage = this.$t(result.message)
             }
           }).catch(e => {
+            console.log(e)
             this.processing = false
             this.errorMessage = this.$t('account.error.networkError')
           })

@@ -5,6 +5,7 @@ export default {
         title: '火谷账号登陆',
         quickTitle: '选择账号登陆',
         titleRegister: '账号注册',
+        titleBind: '账号绑定',
         retrievePasswordTitle: '找回密码',
         titleReset: '密码重置',
         btnSubmit: '登录',
@@ -23,6 +24,7 @@ export default {
 
       registerPage:{
         btnRegister: '注册',
+        btnBind: '绑定账号',
         sendAgain: "重新发送",
         cooldownText: "重新发送({timer}s)",
         goLoginPage: '已有帐号>',
@@ -31,6 +33,7 @@ export default {
         pleaseInputAccountName: '请输入手机号或电子邮件地址',
         pleaseInputCaptchaVerifyCode: '请输入验证码，点击图片可更换',
         pleaseInputMobileVerifyCode: '请输入您手机收到的验证码',
+        pleaseInputPassword: '设置账号密码',
       },
 
       retrievePasswordPage: {

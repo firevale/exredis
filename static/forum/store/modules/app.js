@@ -1,17 +1,13 @@
 import utils from '../../common/utils'
 
 const state = {
-  //appId: utils.getAppId(), 
-  //deviceId: utils.getDeviceId(),
-  
+  transitionName: 'slide-left',
 }
 
 const mutations = {
-  // 'ADD_ACCOUNT_EXISTENCE' (state, payload) {
-  //   state.accountExistences[payload.account] = payload.exists
-  // },
-
-  
+  'SET_TRANSITION_NAME' (state, transitionName) {
+    state.transitionName = transitionName
+  },
 }
 
 export default {

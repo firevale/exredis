@@ -1,15 +1,20 @@
-import Vue from 'vue'
+const notePageCount = state => state.noteSearch.pageCount
 
-const colors = state => {
-  return {
-    danger: "#fb0101",
-    success: '#23d160',
-    white: "#fff",
-    dark: "#cbcbcb",
-    black: "#242424",
-  }
-}
+const noteCurrentPage = state => state.noteSearch.currentPage
+
+const noteLoadType = state => state.noteSearch.loadType
+
+const noteLoadUrl = state => state.noteSearch.loadUrl
+
+const noteOrderType = state => state.noteSearch.orderType
+
+const noteOrderTypeStr = state => state.noteSearch.orderTypeStr
 
 export {
-  colors,
+  notePageCount,
+  noteCurrentPage,
+  noteLoadType,
+  noteLoadUrl,
+  noteOrderType,
+  noteOrderTypeStr
 }

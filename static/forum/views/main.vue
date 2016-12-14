@@ -16,23 +16,23 @@
     <hr class="horizontal-line"></hr>
     <div class="tile is-chid content-item">
       <div class="tile control">
-        <a class="button" :class="{'is-active': loadType=='all'}" @click="loadType='all'">{{ $t('forum.main.all') }}</a>
-        <a class="button" :class="{'is-active': loadType=='discussion'}" @click="loadType='discussion'">{{ $t('forum.main.discussion') }}</a>
-        <a class="button" :class="{'is-active': loadType=='experience'}" @click="loadType='experience'">{{ $t('forum.main.experience') }}</a>
-        <a class="button" :class="{'is-active': loadType=='ras'}" @click="loadType='ras'">{{ $t('forum.main.ras') }}</a>
-        <a class="button" :class="{'is-active': loadType=='original'}" @click="loadType='original'">{{ $t('forum.main.original') }}</a>
-        <a class="button" :class="{'is-active': loadType=='appeal'}" @click="loadType='appeal'">{{ $t('forum.main.appeal') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
       </div>
       <div class="control pointer" @click="orderChoose">
-        <span>{{ $t('forum.main.order', {type: orderTypeStr}) }}</span>
+        <span>{{ noteOrderTypeStr }}</span>
         <i class="fa fa-caret-down title is-2" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0;">
       <note-item v-for="item in notList" :item-data="item"></note-item>
     </div>
-    <div class="column is-full" v-show="pageCount > 1">
-      <pagination ref="pag" :page-count="pageCount" :current-page="currentPage"></pagination>
+    <div class="column is-full" v-show="notePageCount > 1">
+      <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
     </div>
   </div>
 </template>
@@ -46,53 +46,28 @@ export default {
     noteItem,  
     pagination,  
   },
+
   mounted: function(){
     this.$refs.pag.$on('switch-page', this.refreshPage)
   },
 
-  computed: {
-    ...mapGetters(['colors']),
-  },
-
-  watch:{
-    'loadType'(newVal, oldVal){
-      switch(newVal){
-        case 'all':
-          this.loadUrl='/forum/all/'
-        break;
-        case 'discussion':
-          this.loadUrl='/forum/discussion/'
-        break;
-        case 'experience':
-          this.loadUrl='/forum/experience/'
-        break;
-        case 'original':
-          this.loadUrl='/forum/original/'
-        break;
-        case 'ras':
-          this.loadUrl='/forum/ras/'
-        break;
-        case 'appeal':
-          this.loadUrl='/forum/appeal/'
-        break;
-      }
+  watch: {
+    'noteLoadType' (newVal, oldVal){
       this.refreshPage()
     }
   },
 
+  computed: {
+    ...mapGetters(['noteLoadType','noteLoadUrl','noteOrderType','noteOrderTypeStr','notePageCount','noteCurrentPage']),
+  },
+
   data(){
     return {
-      loadType: 'all',
-      loadUrl: '/forum/all/',
-      orderType: 'create',
-      orderTypeStr: '发帖时间排序',
-      pageCount: 10,
-      currentPage: 1,
       notList:[
         {
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
-              {name: '推荐', bgColor: '#0f0', color: '#fff'},
+              {name: '推荐', bgColor: '#0f0', color: '#00f'},
               ],
             title: '【游戏攻略】新手练级指南',
             hasPicture: true,
@@ -161,20 +136,21 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setNoteLoadType','setNoteOrderType','setNotePageCount','setNoteCurrentPage']),
+
     orderChoose(){
-      menuModal.showModal(null, this.onOrderTypeChoose, this.orderTypeStr)
+      menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
     },
 
     onOrderTypeChoose(type){
-      this.orderType = type.code;
-      this.orderTypeStr = type.name;
+      this.setNoteOrderType(type)
       this.refreshPage()
     },
 
     refreshPage(page = 1){
       this.$http({
         method: 'post',
-        url: this.loadUrl+page+'?order='+this.orderType,
+        url: this.noteLoadUrl+page+'?order='+this.noteOrderType,
         params: {
           
         }
@@ -182,7 +158,7 @@ export default {
         //this.notList = response.json()
       }).then(result => {
         if (result.success) {
-          this.currentPage = page;
+          this.setNoteCurrentPage(page);
         } else {
           
         }

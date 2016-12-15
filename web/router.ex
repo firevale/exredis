@@ -35,6 +35,7 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/", PageController, :index
+    get  "/mobile/native_bridge/:platform", PageController, :show_native_bridge
     get  "/login/*path", PageController, :show_login_page
     get  "/admin/*path", PageController, :show_admin_page
     get  "/forum/*path", PageController, :show_forum_page

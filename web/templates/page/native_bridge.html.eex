@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mobile Callback</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <script type="text/javascript">
+      (function() {
+        if ("-ms-user-select" in document.documentElement.style && navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var msViewportStyle = document.createElement("style");
+          msViewportStyle.appendChild(
+            document.createTextNode("@-ms-viewport{width:auto!important}")
+          );
+          document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+        }
+      })();
+    </script>
+  </head>
+  <body style="background-color: #000000;">
+
+    <script type="text/javascript">
+      document.pageOptions = {
+        platform: '<%= @platform %>',
+        finished: false
+      }
+
+      document.nativeResult = {
+        <%= case @conn.params["success"] do %>
+        <% nil -> %> success: false,
+        <% _ -> %> success: <%= @conn.params["success"] %>,
+        <% end %>
+
+        <%= for {k, v} <- Enum.reject(@conn.params, fn({k, _}) -> k == "success" end) do %>
+          <%= k %>: '<%= v %>',
+        <% end %>
+
+        bindings: {}
+      }
+    </script>
+    <script type="text/javascript">
+      (function() {
+        jsonStr = encodeURIComponent(JSON.stringify(document.nativeResult));
+        if (document.pageOptions.platform === 'ios') {
+          if (document.body != null) {
+            ifrm = document.createElement("IFRAME");
+            ifrm.setAttribute("src", "js-frame:" + jsonStr);
+            ifrm.setAttribute("style", "display:none");
+            document.body.appendChild(ifrm);
+          }
+        } else if (document.pageOptions.platform === 'android') {
+          JsHandler.jsFnCall(jsonStr);
+        } else if (document.pageOptions.platform === 'wp8') {
+          try {
+            window.external.notify(jsonStr);
+          } catch (_error) {
+            error = _error;
+            alert("error: " + error.message);
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
+

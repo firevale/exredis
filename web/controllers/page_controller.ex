@@ -79,4 +79,9 @@ defmodule Acs.PageController do
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 
+  # NOTE: 兼容旧版本SDK
+  def show_native_bridge(conn, params) do 
+    conn |> render("native_bridge.html", platform: params["platform"])
+  end
+
 end

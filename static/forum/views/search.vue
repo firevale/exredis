@@ -1,18 +1,19 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="control is-child columns content-item">
-      <div class="column">
+    <div class="is-child content-item" style="display: flex; flex-direction: row;justify-content: space-around;">
+      <div style="flex: 1;">
         <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div class="column is-7" style="position: relative;">
+      <div style="flex: 9;position: relative;">
         <i class="fa fa-search search-icon" aria-hidden="true"></i>
         <input v-model.trim="key" maxlength="30" class="search-box" :placeholder="$t('forum.search.placeholder')"></input>
         <i v-show="key" class="fa fa-times times-icon" aria-hidden="true" @click="clearKey"></i>
       </div>
-      <div class="column is-4">
+      <div style="flex:.5;"></div>
+      <div style="flex: 7">
         <input type="button" class="search-btn" style="width: 100%;" :value="$t('forum.search.searchBtn')" @click="searchByKey(key)"></input>
       </div>
-      <div class="column"></div>
+      <div style="flex:.5;"></div>
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
     <div class="is-chid content-item ">

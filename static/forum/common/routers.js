@@ -12,6 +12,10 @@ export default function (VueRouter) {
       name: 'search',
       component: require('../views/search.vue'),
     }, {
+      path: '/forum/detail',
+      name: 'detail',
+      component: require('../views/noteDetail.vue'),
+    }, {
       path: '*',
       redirect: '/'
     }]

@@ -1,15 +1,15 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="control is-child columns content-item">
-      <span class="column is-3 ">
+    <div class="is-child content-item" style="display: flex; flex-direction: row;">
+      <span style="flex: 1">
         <i class="fa fa-angle-left title is-2" style="color: #A6A6A6;" aria-hidden="true"></i>
       </span>
-      <span class="column is-6" style="margin-bottom: 0; text-align: center;">
+      <span style="flex: 5;margin-bottom: 0; text-align: right;">
         <span class="title is-3">{{ $t('forum.main.title') }}</span>
       </span>
-      <span class="column is-3 txt-right clear-right">
-        <i class="fa fa-search title is-4" style="margin-right: 2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
-        <i class="fa fa-user title is-4" style="margin-right: 2rem;" aria-hidden="true"></i>
+      <span style="flex: 5;text-align: right;">
+        <i class="fa fa-search title is-4" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
+        <i class="fa fa-user title is-4" style="margin-right: 1rem;" aria-hidden="true"></i>
         <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
       </span>
     </div>

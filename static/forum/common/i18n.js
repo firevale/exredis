@@ -21,6 +21,13 @@ export default {
         followSearchResult: '搜索结果如下:',
         clearHisRecord: '清空历史搜索记录',
       },
+      detail:{
+        title: '帖子详情',
+        replyBtn: '回复',
+        author: '楼主',
+        floor2: '沙发',
+        floor3: '板凳',
+      },
       pagination: {
         previous: '上一页',
         next: '下一页',

@@ -13,7 +13,7 @@
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
-          <input type="text" class="outsideText" :placeholder="accountIdPlaceholder"
+          <input type="email" class="outsideText" :placeholder="accountIdPlaceholder"
             v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
         </validity>
         <span class="icon addon-icon icon-user"></span>

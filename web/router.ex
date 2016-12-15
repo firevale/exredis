@@ -64,36 +64,13 @@ defmodule Acs.Router do
   scope path: "/api", alias: Acs do
     pipe_through :api
 
-    scope path: "/auth" do 
-      post "/gen_token",        Api.AuthController, :gen_token     
-      get  "/bind_token",       Api.AuthController, :bind_token
-      get  "/guest_token",      Api.AuthController, :guest_token
-      get  "/anonymous_token",  UserController,     :create_anonymous_token 
-      post "/update_token",     UserController,     :update_token
-      post "/verify_token",     Api.AuthController, :verify_token
-      get  "/verify_token",     Api.AuthController, :verify_token
-      get  "/update_token",     Api.AuthController, :update_token
-      get  "/create_token",     Api.AuthController, :create_token
-    end
-
-    scope path: "/user" do  
-      # 兼容旧版本fvsdk
-      get "/check_user_exists",            Api.UserController, :check_user_exists     
-      get "/bind_anonymous/:user_id",      Api.UserController, :bind_anonymous
-      get "/send_forgot_password_token",   Api.UserController, :send_forgot_password_token
-      get "/check_forgot_password_token",  Api.UserController, :check_forgot_password_token
-      get "/reset_password",               Api.UserController, :reset_password
-      get "/email_regist",                 Api.UserController, :email_regist
-    end
-
     get "/client/get_app_config", FVSdkController, :get_app_info
+    get "/stat/report_activity", StatController, :report_activity
 
-    scope path: "/stat" do 
-      get   "/report_activity", StatController, :report_activity
-    end 
-
-    forward "/pay", Pay.Router
-    forward "/sdkpay", SdkPay.Router
+    forward "/auth", AuthApiRouter 
+    forward "/user", UserApiRouter
+    forward "/pay", PayRouter
+    forward "/sdkpay", SdkPayRouter
 
 
   end # end scope ap

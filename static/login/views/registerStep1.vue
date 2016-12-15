@@ -10,7 +10,7 @@
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
-          <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
+          <input type="email" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
             @focusout="handleValidate" />
         </validity>
         <span class="icon addon-icon icon-user"></span>

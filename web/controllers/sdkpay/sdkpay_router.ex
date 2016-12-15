@@ -1,4 +1,4 @@
-defmodule Acs.SdkPay.Router do
+defmodule Acs.SdkPayRouter do
   use Acs.Web, :router
 
   import  Acs.Plugs

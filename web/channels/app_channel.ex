@@ -22,6 +22,7 @@ defmodule Acs.AppChannel do
                    |> assign(:platform, platform) 
       }
     else
+      Logger.error "received unauthorized payload: #{inspect payload, pretty: true}"
       {:error, %{reason: "unauthorized"}}
     end
   end

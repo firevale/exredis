@@ -3,7 +3,7 @@
     <div class="columns">
       <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}">
         <a v-for="item in itemData.headerTag" class="headerTag" >{{item.name}}</a>
-        <span class="note-title">{{itemData.title}}</span>
+        <span class="note-title" v-html="filterKey"></span>
         <i v-if="itemData.hasPicture" class="fa fa-picture-o note-picture"></i>
         <a v-for="item in itemData.tailTag" class="tailTag" :class="{'excellent': item.isTag}">{{item.name}}</a>
       </div>
@@ -19,6 +19,7 @@
   </div>
 </template>
 <script>
+  import { mapGetters, mapActions } from 'vuex'
   export default {
     props:{
       tagBgColor:{
@@ -32,6 +33,13 @@
       itemData:{
         type: Object,
         default: null,
+      },
+    },
+    computed: {
+      ...mapGetters(['searchKey']),
+
+      filterKey(){
+        return this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">'+this.searchKey+'</span>')
       }
     },
   }
@@ -40,14 +48,14 @@
   @import "../scss/color";
 
   .note-picture{
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     vertical-align: middle;
     color: green;
   }
 
   .note-title{
     vertical-align: middle;
-    font-size: 1.4rem;
+    font-size: 1rem;
     cocor: $black;
   }
 
@@ -59,34 +67,43 @@
     font-weight: bold;
     border-radius: .3rem;
     vertical-align: middle;
-    padding: .3rem;
+    padding: .2rem;
     color: $white;
     margin-right: .5rem;
-    font-size: .6rem;
+    font-size: .5rem;
     background-color: $red !important;
   }
 
   .tailTag{
     border-radius: .3rem;
     vertical-align: middle;
-    padding: .3rem;
+    padding: .2rem;
     color: $white;
     margin-right: .5rem;
-    font-size: .6rem;
+    font-size: .5rem;
     background-color: $red !important;
   }
 
   .author-name{
     color: $link;
-    font-size: 1rem;
+    font-size: .7rem;
   }
 
   .note-info{
     color: $dark;
-    font-size: 1rem;
+    font-size: .7rem;
   }
   
   .excellent{
     background-color: $olive !important;
+  }
+
+  .red{
+    color: #f00;
+  }
+
+  .note-item .column{
+    padding-top:0;
+    padding-bottom: .2rem;
   }
 </style>

@@ -8,8 +8,8 @@
         <span class="title is-3">{{ $t('forum.main.title') }}</span>
       </span>
       <span class="column is-3 txt-right clear-right">
-        <i class="fa fa-search title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
-        <i class="fa fa-user title is-3" style="margin-right: 2rem;" aria-hidden="true"></i>
+        <i class="fa fa-search title is-4" style="margin-right: 2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
+        <i class="fa fa-user title is-4" style="margin-right: 2rem;" aria-hidden="true"></i>
         <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
       </span>
     </div>
@@ -23,13 +23,13 @@
         <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
         <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
       </div>
-      <div class="control pointer" @click="orderChoose">
+      <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
         <i class="fa fa-caret-down title is-2" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0;">
-      <note-item v-for="item in notList" :item-data="item"></note-item>
+      <note-item v-for="item in noteList" :item-data="item"></note-item>
     </div>
     <div class="column is-full" v-show="notePageCount > 1">
       <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
@@ -63,7 +63,7 @@ export default {
 
   data(){
     return {
-      notList:[
+      noteList:[
         {
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
@@ -155,7 +155,9 @@ export default {
           
         }
       }).then(response => {
-        //this.notList = response.json()
+        //this.noteList = response.json()
+        //this.setNotePageCount(this.noteList.length)
+        //this.setNoteCurrentPage(page)
       }).then(result => {
         if (result.success) {
           this.setNoteCurrentPage(page);
@@ -170,8 +172,8 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .pointer {
-    font-size: 1.2rem;
+  .pointer { 
+    font-size: .9rem;
     cursor: pointer;
   }
 </style>

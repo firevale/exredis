@@ -39,7 +39,7 @@ window.addEventListener('popstate', _ => {
 })
 
 let router = routerMap(VueRouter)
-
+router.transitionName = "slide-left"
 router.afterEach(route => {
   //Vue.nextTick(_ => store.commit('SET_TRANSITION_NAME', transitionSlideRightToLeft))
 })

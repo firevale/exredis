@@ -16,7 +16,10 @@ export default {
         placeholder: '搜索帖子',
         searchBtn: '搜索',
         searchHis: '搜索历史记录',
-        noSearchResult: '暂无搜索历史',
+        noSearchRecord: '暂无搜索历史',
+        noSearchResult: '暂无搜索结果',
+        followSearchResult: '搜索结果如下:',
+        clearHisRecord: '清空历史搜索记录',
       },
       pagination: {
         previous: '上一页',

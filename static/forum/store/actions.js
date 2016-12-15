@@ -31,6 +31,12 @@ export const setSearchKey = ({
   commit('SEARCH_KEY_CHANGE', key)
 }
 
+export const clearSearchHis = ({
+  commit
+}, key) => {
+  commit('SEARCH_HIS_CLEAR', key)
+}
+
 export const setSearchHis = ({
   commit
 }, key) => {

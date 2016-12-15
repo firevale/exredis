@@ -9,7 +9,7 @@ export default function (VueRouter) {
       component: require('../views/main.vue'),
     }, {
       path: '/forum/search',
-      name: 'forum',
+      name: 'search',
       component: require('../views/search.vue'),
     }, {
       path: '*',

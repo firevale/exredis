@@ -65,6 +65,7 @@ export default {
     return {
       noteList:[
         {
+            noteId: '',
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
               {name: '推荐', bgColor: '#0f0', color: '#00f'},
@@ -80,6 +81,7 @@ export default {
             noteCount: '2/11',
         },
         {
+            noteId: '',
             headerTag:[
               
             ],
@@ -93,6 +95,7 @@ export default {
             noteCount: '0/0',
         },
         {
+            noteId: '',
             headerTag:[
               
             ],
@@ -106,6 +109,7 @@ export default {
             noteCount: '2/11',
         },
         {
+            noteId: '',
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
               ],
@@ -119,6 +123,7 @@ export default {
             noteCount: '22/133',
         },
         {
+            noteId: '',
             headerTag:[
               
               ],
@@ -172,7 +177,7 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .pointer { 
+  .pointer {
     font-size: .9rem;
     cursor: pointer;
   }

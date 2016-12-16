@@ -1,19 +1,19 @@
 <template>
-  <div class="note-item">
+  <div class="note-detail">
     <div class="columns">
-      <div class="column is-2">
+      <div class="column">
         <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
           <img src="http://placehold.it/64x64"></img>
         </figure>
-        <div class="title is-6 txt-center">LV1. 烟雨游友</div>
+        <div class="title is-6 txt-center" style="margin-top: 1rem;">LV1. 烟雨游友</div>
         <div class="title is-5 txt-center">楼主</div>
       </div>
-      <div class="column is-10 ">
-        <div class="columns">
-          <div class="column is-10 title is-5" style="margin-top: 1rem;">
-            【游戏攻略】指南攻略新手练级指南
+      <div class="column is-10">
+        <div class="columns" style="margin: 0;">
+          <div class="column is-10 title is-5 detail-title">
+            [游戏攻略]指南攻略新手练级指南
           </div>
-          <div class="column is-2 txt-right" style="margin-top: 1rem; text-align: right;padding-right: 0;"> 
+          <div class="column is-2" style="margin-top: 1rem; text-align: right;padding-right: 0;"> 
             <span class="follow-btn">只看楼主</span>
           </div>
         </div>
@@ -31,7 +31,7 @@
           1.鸡肋技能<br>
           2.但随等级提高伤害增加。
         </div>
-        <div class="column pointer" style="margin-top: 1rem;">
+        <div class="column pointer">
           <i class="fa fa-heart" style="vertical-align: middle;"></i>
           <span>收藏该帖</span>
         </div>
@@ -58,6 +58,25 @@
   .follow-btn{
     padding: .2rem;
     cursor: pointer;
+    color: $white;
     background-color: $link;
+  }
+
+  .detail-title{
+    margin: 0;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+
+  .detail-info{
+    padding-top: 0;
+  }
+
+  .detail-imgs{
+    
+  }
+  .is-256x256{
+    width: 256px;
+    height: 256px;
   }
 </style>

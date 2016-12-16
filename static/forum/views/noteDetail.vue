@@ -8,7 +8,7 @@
         <span class="title is-3">{{ $t('forum.detail.title') }}</span>
       </div>
       <div style="flex: 1;">
-        <input type="button" class="search-btn" style="width: 100%;" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
+        <input type="button" class="search-btn"  :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
       </div>
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>

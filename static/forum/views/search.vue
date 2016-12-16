@@ -168,8 +168,8 @@ export default {
   .search-btn {
     width: 100%;
     color: $white;
-    font-size: 1.3rem;
-    padding: .6rem;
+    font-size: 1.2rem;
+    padding: .5rem;
     background: $primary;
   }
   
@@ -182,14 +182,14 @@ export default {
     position: absolute;
     left: 1rem;
     bottom: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
   }
   
   .times-icon {
     position: absolute;
     right: 1rem;
     bottom: .8rem;
-    font-size: 2rem;
+    font-size: 1.5rem !important;
   }
   
   .content-item {

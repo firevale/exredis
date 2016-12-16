@@ -50,10 +50,15 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .content-item {
-    margin: auto 2rem !important;
+    margin: auto 1rem !important;
 }
 
 .note-item {
+    padding: .8rem;
+    border-bottom: 1px solid $dark;
+}
+
+.note-detail {
     padding: .8rem;
     border-bottom: 1px solid $dark;
 }

@@ -48,12 +48,4 @@ router.afterEach(route => {
 let App = new Vue({
   router,
   store,
-  data:{
-    vueScrollPosition: 0,
-  },
-  methods:{
-    vueOnScroll(e){
-      this.vueScrollPosition = e.target.scrollTop
-    }
-  }
 }).$mount('#app')

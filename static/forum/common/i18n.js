@@ -34,6 +34,14 @@ export default {
       },
       newNote:{
         title: '发帖子',
+        btnTxt: '发帖',
+        titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
+        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
+      },
+      replyNote:{
+        title: '回复',
+        btnTxt: '回复',
+        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
       },
       pagination: {
         previous: '上一页',

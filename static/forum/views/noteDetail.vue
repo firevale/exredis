@@ -1,6 +1,6 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item" style="display: flex; flex-direction: row;">
+    <div class="is-child fixed-top" style="display: flex; flex-direction: row;">
       <div style="flex: 1;text-align: left;">
         <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
@@ -12,15 +12,14 @@
       </div>
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
-    <div class="is-chid content-item">
+    <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll">
       <note-item-detail v-for="item in detailList" :item-data="item"></note-item-detail>
+      <div v-if="detailList&&detailList.length" class="column is-full" v-show="searchPageCount > 1">
+        <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
+      </div>
     </div>
-    <div v-if="detailList&&detailList.length" class="column is-full" v-show="searchPageCount > 1">
-      <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
-    </div>
-    <div v-show="appOnScroll>100" class="backTop" @click="onBackTop">
-      <i class="fa fa-caret-up" aria-hidden="true"></i>
-      {{ $t('forum.detail.goBack') }}
+    <div v-show="canBackTop" class="backTop" @click="onBackTop">
+      <i class="fa fa-caret-up" aria-hidden="true"></i> {{ $t('forum.detail.goBack') }}
     </div>
   </div>
 </template>
@@ -35,12 +34,16 @@ export default {
     pagination,
   },
   computed:{
-    appOnScroll(){
-      return this.$root.vueScrollPosition
+    noteId(){
+      return this.$router.currentRoute.params.id
+    },
+    canBackTop(){
+      return this.scrollPosition>0
     }
   },
   data() {
     return {
+      scrollPosition: 0,
       searchPageCount: 10,
       searchCurrentPage: 1,
       detailList:[
@@ -69,7 +72,7 @@ export default {
     loadNoteDetail(page){
       this.$http({
         method: 'post',
-        url: '/detail?page='+page,
+        url: '/detail?id='+this.noteId+'page='+page,
         params: {
           
         }
@@ -85,12 +88,16 @@ export default {
     },
 
     replyNote(){
-
+      this.$router.push({name:'replyNote',params: {id: this.noteId, title: this.detailList[0].title} })
     },
 
     onBackTop(){
-      this.$root.$el.scrollTop=0;
-    }
+      this.$refs.scrollBox.scrollTop=0;
+    },
+
+    onScroll(e){
+      this.scrollPosition = e.target.scrollTop
+    },
   }
 }
 </script>
@@ -102,5 +109,25 @@ export default {
     font-size: 1rem;
     padding: .4rem;
     background: $primary;
+  }
+  
+  .fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    height: 4rem;
+    width: 100%;
+    z-index: 3;
+    background: $white;
+    border-bottom: 1px solid $dark;
+  }
+  
+  .scroll-box {
+    overflow: auto;
+    position: absolute;
+    top: 4rem;
+    bottom: 0;
+    width: 100%;
   }
 </style>

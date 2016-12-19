@@ -13,7 +13,7 @@
           <div class="column is-10 title is-5 detail-title">
             {{itemData.title}}
           </div>
-          <div class="column is-2" style="text-align: right;padding-right: 0;">
+          <div class="column is-2" style="text-align: right;">
             <span v-if="itemData.rank == $t('forum.detail.author')" class="follow-btn">{{$t('forum.detail.follow')}}</span>
           </div>
         </div>

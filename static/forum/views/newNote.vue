@@ -11,7 +11,7 @@
       </div>
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
-    <div class="is-chid content-item">
+    <div class="column is-full">
       <select>
         <option value="volvo">综合讨论</option>
         <option value="saab">攻略心得</option>
@@ -21,10 +21,13 @@
       </select>
     </div>
     <div class="column is-full">
-     
+        <input class="note-new" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
     </div>
     <div class="column is-full">
-      
+        <textarea class="note-content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
+    </div>
+    <div class="column is-full" style="text-align: center;">
+        <a class="button new-note">{{ $t('forum.newNote.btnTxt') }}</a>
     </div>
   </div>
 </template>
@@ -51,11 +54,19 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .reply-btn {
-    width: 100%;
-    color: $white;
-    font-size: 1rem;
-    padding: .4rem;
-    background: $primary;
+  .note-new{
+      width: 100%;
+  }
+
+  .note-content{
+      width: 100%;
+      height: 15rem;
+      resize: vertical;
+  }
+  .new-note{
+      color: $white !important;
+      background: $primary !important;
+      width: 15rem;
+      
   }
 </style>

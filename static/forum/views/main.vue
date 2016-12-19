@@ -10,7 +10,7 @@
       <span style="flex: 5;text-align: right;">
         <i class="fa fa-search title is-4" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
         <i class="fa fa-user title is-4" style="margin-right: 1rem;" aria-hidden="true"></i>
-        <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
+        <a class="button txt-right" style="color: black;" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
       </span>
     </div>
     <hr class="horizontal-line"></hr>

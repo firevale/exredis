@@ -25,8 +25,15 @@ export default {
         title: '帖子详情',
         replyBtn: '回复',
         author: '楼主',
-        floor2: '沙发',
-        floor3: '板凳',
+        follow: '只看楼主',
+        collection: '收藏该帖',
+        delete: '删除',
+        goBack: '回到顶部',
+        deleteTip: '确认删除此楼',
+        cancelCollection: '取消收藏',
+      },
+      newNote:{
+        title: '发帖子',
       },
       pagination: {
         previous: '上一页',

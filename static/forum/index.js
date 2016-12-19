@@ -15,6 +15,7 @@ Vue.use(VueResource)
 Vue.use(VueValidator)
 Vue.use(VueRouter)
 
+
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
@@ -47,4 +48,12 @@ router.afterEach(route => {
 let App = new Vue({
   router,
   store,
+  data:{
+    vueScrollPosition: 0,
+  },
+  methods:{
+    vueOnScroll(e){
+      this.vueScrollPosition = e.target.scrollTop
+    }
+  }
 }).$mount('#app')

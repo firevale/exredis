@@ -9,6 +9,7 @@ $fa-font-path: '~font-awesome/fonts/';
     box-sizing: border-box;
     background-color: $white;
     padding-top: 1rem;
+    overflow: auto;
 }
 
 .control a.button.is-active {
@@ -65,4 +66,22 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .note-item:last-child {
     border-bottom: none;
+}
+
+.backTop{
+    cursor: pointer;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #ffffff;
+    display: flex;
+    font-size: .6rem;
+    border-radius: .3rem;
+    flex-direction: column;
+    color: $dark;
+    opacity: .9;
+    i{
+        color: $primary;
+        font-size: 3rem;
+    }
 }

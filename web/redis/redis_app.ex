@@ -8,6 +8,7 @@ defmodule Acs.RedisApp do
   alias   Acs.AppSdkBinding
   alias   Acs.AppGoods
   alias   Acs.AppGoodsProductId
+  alias   Acs.AppSdkPaymentCallback
   
   require Logger
 
@@ -31,6 +32,7 @@ defmodule Acs.RedisApp do
             public_weixin_name: nil,
             public_weixin_url: nil,
             sdk_bindings: %{},
+            sdk_payment_callbacks: %{},
             goods: %{}
 
   use     Utils.Jsonable 
@@ -81,6 +83,10 @@ defmodule Acs.RedisApp do
                        product_ids: product_ids}}
         end) |> Enum.into(%{})
 
+        payment_callbacks = app.sdk_payment_callbacks |> Enum.map(fn(%AppSdkPaymentCallback{platform: platform, sdk: sdk, payment_callback: callback}) ->
+          {"#{platform}-#{sdk}", callback}
+        end) |> Enum.into(%{})
+
         Logger.debug "mysql app: #{inspect app, pretty: true}"
 
         cache = %__MODULE__{
@@ -103,6 +109,7 @@ defmodule Acs.RedisApp do
           public_weixin_name: app.public_weixin_name,
           public_weixin_url: app.public_weixin_url, 
           sdk_bindings: sdk_bindings,
+          sdk_payment_callbacks: payment_callbacks,
           goods: goods
         }
 

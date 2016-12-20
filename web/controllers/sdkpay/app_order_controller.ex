@@ -160,11 +160,10 @@ defmodule Acs.SdkPay.AppOrderController do
     end     
   end
 
-  
-
   # api interface
   def add_order(%Plug.Conn{private: %{acs_app_order: app_order}} = conn, _params) do 
     conn |> json(%{success: true, order_id: app_order.id})
   end
+
 
 end

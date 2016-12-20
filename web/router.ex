@@ -13,7 +13,7 @@ defmodule Acs.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :parse_user_agent
-    plug :detect_user_id
+    plug :fetch_user_id
     plug :fetch_device_id
     plug :fetch_locale
   end
@@ -22,7 +22,7 @@ defmodule Acs.Router do
     plug :accepts, ["json"]
     plug :fetch_session
     plug :parse_user_agent
-    plug :detect_user_id
+    plug :fetch_user_id
     plug :fetch_device_id
     plug :fetch_locale
   end

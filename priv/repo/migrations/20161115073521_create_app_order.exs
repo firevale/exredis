@@ -24,6 +24,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :transaction_currency, :string
       add :transaction_id, :string
       add :transaction_status, :string, size: 20
+      add :cp_result, :text
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
@@ -41,7 +42,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
     create index(:app_orders, [:device_id])
     create index(:app_orders, [:status])
     create index(:app_orders, [:transaction_currency])
-    create index(:app_orders, [:transaction_id])
+    create index(:app_orders, [:transaction_id], unique: true)
     create index(:app_orders, [:try_deliver_at, :try_deliver_counter])
   end
 end

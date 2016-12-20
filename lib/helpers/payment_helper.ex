@@ -10,10 +10,14 @@ defmodule Acs.PaymentHelper do
   alias   Acs.AppOrder
   alias   Acs.AppSdkPaymentCallback
 
+  alias   Acs.RedisApp
+
+
+
   @location Application.get_env(:acs, :location, "cn")
 
   def notify_cp(order = %AppOrder{}) do 
-    case Repo.get(App, order.app_id) do 
+    case RedisApp.find(order.app_id) do 
       :nil -> 
         Logger.error "app id [#{order.app_id}] in order #{order.id} not exists"
         {:error, :app_not_found}
@@ -25,7 +29,7 @@ defmodule Acs.PaymentHelper do
                     end 
 
         order_map = %{
-          app_id: order.client_id,
+          app_id: order.app_id,
           order_id: order.id,
           cp_order_id: order.cp_order_id,
           zone_id: order.zone_id,
@@ -48,9 +52,10 @@ defmodule Acs.PaymentHelper do
         sign = Utils.md5_sign("#{sign_str}#{app.secret}")
         params = Map.merge(order_map, %{sign: sign})
 
-        callback_url = case Repo.get_by(AppSdkPaymentCallback, sdk: order.sdk, platform: order.platform) do 
+        callback_url = case app.sdk_payment_callbacks["#{order.platform}-#{order.sdk}"] do 
                          nil -> app.payment_callback
-                         %AppSdkPaymentCallback{payment_callback: payment_callback} -> payment_callback
+                         ("http" <> _) = v -> v
+                         _ -> app.payment_callback
                        end
 
         try do 
@@ -98,23 +103,16 @@ defmodule Acs.PaymentHelper do
   end
 
   defp save_order_success(order = %AppOrder{}) do 
-    # order = %{order | status: :delivered, 
-    #                   cp_result: "ok",
-    #                   delivered_at: Utils.unix_timestamp}
-                      
-    # order = %{order | try_deliver_times: order.try_deliver_times + 1}
-
-    # OrderLogger.log(order)
-    # Logger.info "deleting order #{inspect order, pretty: true} ...."
-    # Order.delete(order) # delete order from redis
+    AppOrder.changeset(order, %{status: AppOrder.Status.delivered, 
+                                cp_result: "ok",
+                                deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+    # save to elasticsearch
   end
 
   defp save_order_failed(order = %AppOrder{}, result) do 
-    # order = %{order | last_try_deliver_at: Utils.unix_timestamp}
-    # order = %{order | try_deliver_times: order.try_deliver_times + 1}
-    # order = %{order | cp_result: result}
-
-    # :ok = Order.save(order)
-    # OrderLogger.log(order)
+    AppOrder.changeset(order, %{cp_result: result,
+                                try_deliver_counter: order.try_deliver_counter + 1,
+                                try_deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+    # save to elasticsearch
   end
 end

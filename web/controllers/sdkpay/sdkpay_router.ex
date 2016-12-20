@@ -8,6 +8,8 @@ defmodule Acs.SdkPayRouter do
     plug :fetch_app
   end
 
+  post "/default_callback", Acs.FVSdkController, :default_callback
+
   scope "/", Acs.SdkPay do
     pipe_through :sdkpay
 
@@ -106,6 +108,7 @@ defmodule Acs.SdkPayRouter do
 
     get  "/yyh/:client_id", YYHCallbackController, :purchase_callback
     post "/yyh/:client_id", YYHCallbackController, :purchase_callback
+    
   end
 
 end

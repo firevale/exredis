@@ -33,6 +33,7 @@ defmodule Acs.AppOrder do
     field :transaction_currency, :string
     field :transaction_id, :string
     field :transaction_status, :string
+    field :cp_result, :string
 
     belongs_to :app,  Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
@@ -53,7 +54,7 @@ defmodule Acs.AppOrder do
     |> cast(params, [:id, :platform, :device_id, :sdk, :cp_order_id, :zone_id, :market, :status, :paid_at, 
                      :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name, 
                      :debug_mode, :paid_channel, :fee, :transaction_currency, :transaction_id, :transaction_status,
-                     :app_id, :user_id, :app_user_id, :goods_id])
+                     :app_id, :user_id, :app_user_id, :goods_id, :cp_result])
     |> validate_required([:id, :platform, :cp_order_id, :app_id, :user_id])
     |> validate_inclusion(:sdk, @sdks)
     |> validate_inclusion(:platform, @platforms)

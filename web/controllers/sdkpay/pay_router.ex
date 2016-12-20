@@ -23,6 +23,7 @@ defmodule Acs.PayRouter do
 
     get  "/add_applestore_order",     AppleStoreController, :add_order
     post "/add_applestore_order",     AppleStoreController, :add_order
+    post "/applestore_purchase",      AppleStoreController, :verify_and_deliver
     get  "/deliver_applestore_order", AppleStoreController, :deliver_order
     get  "/deliver_ggplay_order",     GgplayController,     :verify_and_deliver
   end

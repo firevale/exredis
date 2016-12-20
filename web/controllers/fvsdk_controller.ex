@@ -26,4 +26,14 @@ defmodule Acs.FVSdkController do
                    %{"platform" => "android"}) do 
     conn |> render("app_info.android.json", %{app: app})
   end
+
+  def default_callback(conn, params) do 
+    case :rand.uniform(10) do 
+      1 ->
+        conn |> text("ok")
+      _ ->
+        conn |> text("failed")
+    end
+  end
+
 end

@@ -35,8 +35,12 @@ export default {
       newNote:{
         title: '发帖子',
         btnTxt: '发帖',
+        preView: '预览',
+        editView: '编辑',
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
+        requireTitle: '请输入标题',
+        requireContent: '请输入内容',
       },
       replyNote:{
         title: '回复',

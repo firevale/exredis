@@ -3,7 +3,6 @@
 @import "~bulma";
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
-
 #app {
     height: 100vh;
     box-sizing: border-box;
@@ -68,7 +67,7 @@ $fa-font-path: '~font-awesome/fonts/';
     border-bottom: none;
 }
 
-.backTop{
+.backTop {
     cursor: pointer;
     position: fixed;
     bottom: 3rem;
@@ -80,8 +79,12 @@ $fa-font-path: '~font-awesome/fonts/';
     flex-direction: column;
     color: $dark;
     opacity: .9;
-    i{
+    i {
         color: $primary;
         font-size: 3rem;
     }
+}
+
+.red {
+    color: $red;
 }

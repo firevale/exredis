@@ -100,7 +100,5 @@
     cursor: pointer;
   }
   
-  .red {
-    color: $red;
-  }
+  
 </style>

@@ -9,7 +9,9 @@ import utils from './common/utils'
 import nativeApi from './common/nativeApi'
 import store from './store'
 import filters from './common/filters'
-
+// vue-transfer-dom
+import VueTransferDom from 'vue-transfer-dom'
+Vue.use(VueTransferDom)
 Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueValidator)

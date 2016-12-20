@@ -27,6 +27,8 @@ import { mapGetters, mapActions } from 'vuex'
 import noteItemDetail from '../components/noteItemDetail.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
+import markdown from 'markdown'
+
 export default {
   components: {
    
@@ -51,11 +53,7 @@ export default {
     width: 100%;
   }
   
-  .note-content {
-    width: 100%;
-    height: 15rem;
-    resize: vertical;
-  }
+  
   
   .new-note {
     color: $white !important;

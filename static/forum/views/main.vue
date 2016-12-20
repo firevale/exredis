@@ -68,7 +68,6 @@ export default {
             noteId: '',
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
-              {name: '推荐', bgColor: '#0f0', color: '#00f'},
               ],
             title: '【游戏攻略】新手练级指南',
             hasPicture: true,

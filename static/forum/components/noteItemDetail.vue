@@ -1,6 +1,6 @@
 <template>
   <div class="note-detail">
-    <div class="columns">
+    <div class="columns"> 
       <div class="column">
         <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
           <img src="http://placehold.it/64x64"></img>

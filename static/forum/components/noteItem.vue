@@ -58,7 +58,7 @@
   @import "../scss/color";
   .note-picture {
     font-size: 1.3rem;
-    vertical-align: middle;
+    vertical-align: middle !important;
     color: green;
   }
   
@@ -75,8 +75,8 @@
   .headerTag {
     font-weight: bold;
     border-radius: .3rem;
-    vertical-align: middle;
-    padding: .2rem;
+    vertical-align: middle !important;
+    padding: .1rem;
     color: $white;
     margin-right: .5rem;
     font-size: .5rem;
@@ -85,8 +85,8 @@
   
   .tailTag {
     border-radius: .3rem;
-    vertical-align: middle;
-    padding: .2rem;
+    vertical-align: middle !important;
+    padding: .1rem;
     color: $white;
     margin-right: .5rem;
     font-size: .5rem;

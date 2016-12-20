@@ -25,6 +25,7 @@
     "animejs": "^1.1.1",
     "bulma": "^0.2.3",
     "font-awesome": "4.7.0",
+    "markdown": "^0.5.0",
     "mdi": "1.7.22",
     "plotly": "1.0.6",
     "plotly.js": "1.20.0",

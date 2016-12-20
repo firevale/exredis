@@ -13,11 +13,11 @@
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
     <div class="column is-full">
       <select>
-        <option value="volvo">综合讨论</option>
-        <option value="saab">攻略心得</option>
-        <option value="mercedes">转帖分享</option>
-        <option value="audi">玩家原创</option>
-        <option value="audi">问题求助</option>
+        <option value="discussion">{{ $t('forum.main.discussion') }}</option>
+        <option value="experience">{{ $t('forum.main.experience') }}</option>
+        <option value="ras">{{ $t('forum.main.ras') }}</option>
+        <option value="original">{{ $t('forum.main.original') }}</option>
+        <option value="appeal">{{ $t('forum.main.appeal') }}</option>
       </select>
     </div>
     <div class="column is-full">
@@ -36,6 +36,8 @@ import { mapGetters, mapActions } from 'vuex'
 import noteItemDetail from '../components/noteItemDetail.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
+import markdown from 'markdown'
+
 export default {
   components: {
    
@@ -67,6 +69,6 @@ export default {
       color: $white !important;
       background: $primary !important;
       width: 15rem;
-      
+
   }
 </style>

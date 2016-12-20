@@ -3,12 +3,12 @@
 @import "~bulma";
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
-
 #app {
     height: 100vh;
     box-sizing: border-box;
     background-color: $white;
     padding-top: 1rem;
+    overflow: auto;
 }
 
 .control a.button.is-active {
@@ -28,7 +28,7 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .horizontal-line {
-    height: .2rem;
+    height: .1rem;
     margin: 1rem 0rem;
 }
 
@@ -45,15 +45,46 @@ $fa-font-path: '~font-awesome/fonts/';
     margin-right: 0 !important;
 }
 
+.txt-center {
+    text-align: center;
+}
+
 .content-item {
-    margin: auto 2rem !important;
+    margin: auto 1rem !important;
 }
 
 .note-item {
     padding: .8rem;
-    border-bottom: 1px solid $dark;
+    border-bottom: 1px solid $text-grey;
+}
+
+.note-detail {
+    padding: .8rem;
+    border-bottom: 1px solid $text-grey;
 }
 
 .note-item:last-child {
     border-bottom: none;
+}
+
+.backTop {
+    cursor: pointer;
+    position: fixed;
+    bottom: 3rem;
+    right: 1.5rem;
+    background: #ffffff;
+    display: flex;
+    font-size: .6rem;
+    border-radius: .3rem;
+    flex-direction: column;
+    color: $dark;
+    opacity: .9;
+    i {
+        color: $primary;
+        font-size: 3rem;
+    }
+}
+
+.red {
+    color: $red;
 }

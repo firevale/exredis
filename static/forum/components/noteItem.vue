@@ -1,8 +1,8 @@
 <template>
   <div class="note-item">
     <div class="columns">
-      <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}">
-        <a v-for="item in itemData.headerTag" class="headerTag" >{{item.name}}</a>
+      <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}" @click="showDetail">
+        <a v-for="item in itemData.headerTag" class="headerTag">{{item.name}}</a>
         <span class="note-title" v-html="filterKey"></span>
         <i v-if="itemData.hasPicture" class="fa fa-picture-o note-picture"></i>
         <a v-for="item in itemData.tailTag" class="tailTag" :class="{'excellent': item.isTag}">{{item.name}}</a>
@@ -15,7 +15,6 @@
       </div>
       <div class="column is-2 txt-right note-info">{{itemData.noteCount}}</div>
     </div>
-    
   </div>
 </template>
 <script>
@@ -42,68 +41,78 @@
         return this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">'+this.searchKey+'</span>')
       }
     },
+
+    methods: {
+      showDetail(){
+        this.$router.push(
+          {
+            name: 'detail',
+            params: {id: this.itemData.noteId},
+          }
+        )
+      }
+    },
   }
 </script>
 <style lang="scss">
   @import "../scss/color";
-
-  .note-picture{
+  .note-picture {
     font-size: 1.3rem;
-    vertical-align: middle;
+    vertical-align: middle !important;
     color: green;
   }
-
-  .note-title{
+  
+  .note-title {
     vertical-align: middle;
     font-size: 1rem;
     cocor: $black;
   }
-
-  .note-title:hover{
+  
+  .note-title:hover {
     cursor: pointer;
   }
-
-  .headerTag{
+  
+  .headerTag {
     font-weight: bold;
     border-radius: .3rem;
-    vertical-align: middle;
-    padding: .2rem;
+    vertical-align: middle !important;
+    padding: .1rem;
     color: $white;
     margin-right: .5rem;
     font-size: .5rem;
     background-color: $red !important;
   }
-
-  .tailTag{
+  
+  .tailTag {
     border-radius: .3rem;
-    vertical-align: middle;
-    padding: .2rem;
+    vertical-align: middle !important;
+    padding: .1rem;
     color: $white;
     margin-right: .5rem;
     font-size: .5rem;
     background-color: $red !important;
   }
-
-  .author-name{
+  
+  .author-name {
     color: $link;
     font-size: .7rem;
   }
-
-  .note-info{
+  
+  .note-info {
     color: $dark;
     font-size: .7rem;
   }
   
-  .excellent{
+  .excellent {
     background-color: $olive !important;
   }
-
-  .red{
+  
+  .red {
     color: #f00;
   }
-
-  .note-item .column{
-    padding-top:0;
+  
+  .note-item .column {
+    padding-top: 0;
     padding-bottom: .2rem;
   }
 </style>

@@ -1,16 +1,16 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="control is-child columns content-item">
-      <span class="column is-3 ">
+    <div class="is-child content-item" style="display: flex; flex-direction: row;">
+      <span style="flex: 1">
         <i class="fa fa-angle-left title is-2" style="color: #A6A6A6;" aria-hidden="true"></i>
       </span>
-      <span class="column is-6" style="margin-bottom: 0; text-align: center;">
+      <span style="flex: 5;margin-bottom: 0; text-align: right;">
         <span class="title is-3">{{ $t('forum.main.title') }}</span>
       </span>
-      <span class="column is-3 txt-right clear-right">
-        <i class="fa fa-search title is-4" style="margin-right: 2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
-        <i class="fa fa-user title is-4" style="margin-right: 2rem;" aria-hidden="true"></i>
-        <a class="button txt-right" style="color: black;">{{ $t('forum.main.newNote') }}</a>
+      <span style="flex: 5;text-align: right;">
+        <i class="fa fa-search title is-4" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
+        <i class="fa fa-user title is-4" style="margin-right: 1rem;" aria-hidden="true"></i>
+        <a class="button txt-right" style="color: black;" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
       </span>
     </div>
     <hr class="horizontal-line"></hr>
@@ -65,9 +65,9 @@ export default {
     return {
       noteList:[
         {
+            noteId: '',
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
-              {name: '推荐', bgColor: '#0f0', color: '#00f'},
               ],
             title: '【游戏攻略】新手练级指南',
             hasPicture: true,
@@ -80,6 +80,7 @@ export default {
             noteCount: '2/11',
         },
         {
+            noteId: '',
             headerTag:[
               
             ],
@@ -93,6 +94,7 @@ export default {
             noteCount: '0/0',
         },
         {
+            noteId: '',
             headerTag:[
               
             ],
@@ -106,6 +108,7 @@ export default {
             noteCount: '2/11',
         },
         {
+            noteId: '',
             headerTag:[
               {name: '置顶', bgColor: '#f00', color: '#fff'},
               ],
@@ -119,6 +122,7 @@ export default {
             noteCount: '22/133',
         },
         {
+            noteId: '',
             headerTag:[
               
               ],
@@ -172,7 +176,7 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .pointer { 
+  .pointer {
     font-size: .9rem;
     cursor: pointer;
   }

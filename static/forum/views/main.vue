@@ -1,17 +1,17 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="display: flex; flex-direction: row;">
-      <span style="flex: 1">
-        <i class="fa fa-angle-left title is-2" style="color: #A6A6A6;" aria-hidden="true"></i>
-      </span>
-      <span style="flex: 5;margin-bottom: 0; text-align: right;">
-        <span class="title is-3">{{ $t('forum.main.title') }}</span>
-      </span>
-      <span style="flex: 5;text-align: right;">
-        <i class="fa fa-search title is-4" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></i>
-        <i class="fa fa-user title is-4" style="margin-right: 1rem;" aria-hidden="true"></i>
-        <a class="button txt-right" style="color: black;" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
-      </span>
+      <div style="flex: 1">
+        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true"></i>
+      </div>
+      <div class="main-title">
+        {{ $t('forum.main.title') }}
+      </div>
+      <div class="main-menu">
+        <span class="fa fa-search" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
+        <span class="fa fa-user" style="margin-right: 1rem;" aria-hidden="true"></span>
+        <a class="button txt-right create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
+      </div>
     </div>
     <hr class="horizontal-line"></hr>
     <div class="tile is-chid content-item">
@@ -25,10 +25,10 @@
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
-        <i class="fa fa-caret-down title is-2" aria-hidden="true" style="vertical-align: middle;"></i>
+        <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
-    <div class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0;">
+    <div class="box is-chid is-parent content-item" style="padding: 0;">
       <note-item v-for="item in noteList" :item-data="item"></note-item>
     </div>
     <div class="column is-full" v-show="notePageCount > 1">
@@ -179,5 +179,33 @@ export default {
   .pointer {
     font-size: .9rem;
     cursor: pointer;
+  }
+  
+  .main-title {
+    flex: 5;
+    display: flex;
+    text-align: right;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  
+  .main-menu {
+    flex: 5;
+    text-align: right;
+    font-size: 1rem;
+    span{
+      margin-top: .6rem;
+      font-size: 1.5rem;
+    }
+    .button{
+      margin-top: .2rem;
+      padding: .5rem 2rem;
+    }
+  }
+  
+  .create-note {
+    background-color: $primary !important;
+    color: $white !important;
   }
 </style>

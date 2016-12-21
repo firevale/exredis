@@ -18,13 +18,14 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .control a.button {
     background: $dark;
+    padding: 0;
     color: $white;
     margin-right: 1rem;
     margin-bottom: .5rem;
     font-weight: bold;
     min-width: 6rem;
     border-radius: .5rem;
-    font-size: .8rem;
+    font-size: 1rem;
 }
 
 .horizontal-line {
@@ -54,7 +55,7 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .note-item {
-    padding: .8rem;
+    padding: .8rem .2rem;
     border-bottom: 1px solid $text-grey;
 }
 
@@ -87,4 +88,8 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .red {
     color: $red;
+}
+
+.dark {
+    color: $dark;
 }

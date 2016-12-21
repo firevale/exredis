@@ -121,7 +121,7 @@ defmodule Acs.Plugs do
   end
 
   def detect_account_id(%Plug.Conn{} = conn, _options) do 
-    case conn.params["account_id"] do 
+    case conn.params["account_id"] || conn.params["key"] do 
       "" -> conn
       nil -> conn
       account_id ->
@@ -137,7 +137,7 @@ defmodule Acs.Plugs do
   end
 
   def fetch_user_id(%Plug.Conn{} = conn, _options) do 
-    case fetch_session_user_id(conn) || fetch_header_user_id(conn) do 
+    case fetch_session_user_id(conn) || fetch_header_user_id(conn) || fetch_params_user_id(conn) do 
       nil -> conn
       user_id -> 
         Logger.metadata(user_id: user_id) 
@@ -157,6 +157,13 @@ defmodule Acs.Plugs do
       nil -> nil
       [] -> nil
       [user_id | _] -> user_id
+    end
+  end
+
+  defp fetch_params_user_id(%Plug.Conn{} = conn) do 
+    case conn.params["user_id"] do 
+      nil -> nil
+      x -> x
     end
   end
 

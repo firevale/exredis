@@ -77,7 +77,8 @@ defmodule Acs.AppleStoreController do
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
-  def add_order(conn, _params) do 
+  def add_order(conn, params) do 
+    d "acs_user: #{inspect conn.private[:acs_user], pretty: true}, params: #{inspect params, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 

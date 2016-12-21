@@ -24,6 +24,9 @@ defmodule Acs.VerifyCodeController do
     send_mobile_verify_code(conn, mobile, "register")
   end
 
+  def check_retrieve_password_verify_code(conn, %{"token" => value}) do 
+    check_retrieve_password_verify_code(conn, %{"verify_code" => value})
+  end
   def check_retrieve_password_verify_code(conn, %{"verify_code" => value}) do 
     verify_code = get_session(conn, :retrieve_password_verify_code)
     conn |> json(%{success: true, match: verify_code == String.downcase(value)})
@@ -54,8 +57,7 @@ defmodule Acs.VerifyCodeController do
     end
   end
 
-  defp send_email_verify_code(conn, email) do 
-    locale = get_session(conn, :locale)
+  defp send_email_verify_code(%Plug.Conn{private: %{acs_locale: locale}} = conn, email) do 
     case Redis.get("vc.email.#{email}") do 
       :undefined ->
         code = gen_code()

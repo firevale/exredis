@@ -5,14 +5,25 @@ defmodule Acs.UserController do
   plug :fetch_app
   
   def is_account_exists(conn, %{"account_id" => ""}) do 
-    conn |> json(%{exists: false})
+    conn |> json(%{success: true, exists: false})
   end
   def is_account_exists(conn, %{"account_id" => account_id}) do 
-    conn |> json(%{exists: RedisUser.exists?(account_id)})
+    conn |> json(%{success: true, exists: RedisUser.exists?(account_id)})
+  end
+  def is_account_exists(conn, %{"key" => account_id}) do 
+    conn |> json(%{success: true, exists: RedisUser.exists?(account_id)})
   end
 
   def create_token(conn, %{"account_id" => "", "password" => _password}) do 
     conn |> json(%{success: false, message: "invalid account id"})
+  end
+  # 兼容旧fvsdk
+  def create_token(conn, %{"user_key" => "", "password" => _password}) do 
+    conn |> json(%{success: false, message: "invalid account id"})
+  end
+  # 兼容旧fvsdk
+  def create_token(conn, %{"user_key" => account_id, "password" => password} = params) do 
+    create_token(conn, %{"account_id" => account_id, "password" => password})
   end
   def create_token(%Plug.Conn{private: %{acs_app_id: app_id, 
                                          acs_device_id: device_id,
@@ -44,6 +55,25 @@ defmodule Acs.UserController do
     else 
       conn |> json(%{success: false, message: "account.error.accountNotExist"})
     end  
+  end
+
+  # 兼容旧的fvsdk
+  def bind_anonymous(%Plug.Conn{private: %{acs_app_id: app_id, 
+                                           acs_device_id: device_id,
+                                           acs_platform: platform}} = conn, 
+                   %{"email" => account_id, "password" => password, "bind_user_id" => bind_user_id} = params) do 
+    if RedisUser.exists?(account_id) do 
+      conn |> json(%{success: false, message: "account.error.accountInUse"})
+    else
+      d "bind anonymous user #{bind_user_id}"
+      case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do 
+        nil ->
+          conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
+        %RedisUser{} = user ->
+          d "bind result: #{inspect user, pretty: true}"
+          create_and_response_access_token(conn, user, app_id, device_id, platform)
+      end
+    end
   end
 
   def create_user(conn, %{"verify_code" => ""}) do 
@@ -88,6 +118,9 @@ defmodule Acs.UserController do
     end
   end
 
+  def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do 
+    update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})
+  end
   def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do 
     case RedisUser.find(account_id) do 
       nil ->
@@ -197,7 +230,8 @@ defmodule Acs.UserController do
                end,
                is_anonymous: is_anonymous,
                sdk: :firevale,
-               binding: %{} 
+               binding: %{},
+               bindings: %{}, # 兼容旧的SDK 
              })
   end
 

@@ -70,6 +70,12 @@ defmodule Acs.UserApiRouter do
   scope "/", Acs do
     pipe_through :auth
 
+    # 兼容旧fvsdk
+    get  "/check_user_exists", UserController, :is_account_exists
+    get  "/bind_anonymous/:bind_user_id", UserController, :bind_anonymous
+    get  "/send_forgot_password_token", VerifyCodeController, :send_retrieve_password_verify_code
+    get  "/check_forgot_password_token", VerifyCodeController, :check_retrieve_password_verify_code
+    get  "/reset_password", UserController, :update_password
   end
 
 end

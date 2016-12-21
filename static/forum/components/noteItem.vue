@@ -76,9 +76,8 @@
     font-weight: bold;
     border-radius: .3rem;
     vertical-align: middle !important;
-    padding: .1rem;
+    padding: 0;
     color: $white;
-    margin-right: .5rem;
     font-size: .5rem;
     background-color: $red !important;
   }
@@ -86,7 +85,7 @@
   .tailTag {
     border-radius: .3rem;
     vertical-align: middle !important;
-    padding: .1rem;
+    padding: 0;
     color: $white;
     margin-right: .5rem;
     font-size: .5rem;

@@ -5,6 +5,7 @@ defmodule Acs.AppleStoreController do
 
   plug :fetch_user
 
+  # 兼容旧版本fvsdk
   def add_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                       acs_app: %RedisApp{} = app,
                                       acs_platform: "ios",
@@ -16,92 +17,64 @@ defmodule Acs.AppleStoreController do
                   "cp_order_id" => cp_order_id,
                   "currency_code" => currency,
                   "version" => "2"} = params) do 
-    case Repo.get_by(AppGoodsProductId, app_goods_id: goods_id, sdk: "applestore") do 
-      nil -> 
-        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        conn |> json(%{success: false, message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
-      
-      %AppGoodsProductId{product_id: product_id} -> 
-        case Repo.get_by(AppGoods, id: goods_id) do 
-          nil -> 
-            Logger.error "goods: #{goods_id} is not configured!"
-            conn |> json(%{success: false, message: "goods #{goods_id} is not configured for app #{app.name}"})
+    case app.goods[goods_id |> String.to_atom] do 
+      %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
+        case SDKApple.verify_receipt(receipt) do 
+          {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
+            case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
+              %AppOrder{cp_order_id: ^cp_order_id} = order ->
+                  conn |> json(%{success: true})
 
-          %AppGoods{price: price} ->
-            cp_order_id = case cp_order_id do 
-                            "(null)" -> "null." <> Utils.generate_token(32)
-                            _ -> cp_order_id
-                          end
+              %AppOrder{} = order ->
+                Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
+                conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
-            order_info = %{
-              id: Utils.generate_token(16),
-              app_id: app.id, 
-              user_id: user.id, 
-              platform: "ios",
-              device_id: device_id,
-              sdk: "firevale",
-              cp_order_id: cp_order_id, 
-              status: AppOrder.Status.created,
-              price: price,
-              fee: String.to_integer(amount),
-              paid_channel: "applestore",
-              currency: currency,
-              goods_id: goods_id,
-              goods_name: params["goods_name"],
-              transaction_id: "applestore." <> transaction_id
-            }
+              nil ->
+                order_info = %{
+                  id: Utils.generate_token(16),
+                  app_id: app.id, 
+                  user_id: user.id, 
+                  platform: "ios",
+                  device_id: device_id,
+                  sdk: "firevale",
+                  cp_order_id: cp_order_id, 
+                  status: AppOrder.Status.paid(),
+                  price: String.to_integer(amount),
+                  fee: case receipt_type do 
+                          "ProductionSandbox" -> 0
+                          _ -> String.to_integer(amount)
+                        end,
+                  paid_channel: "applestore",
+                  market: "applestore",
+                  currency: app.currency,
+                  goods_id: goods_id,
+                  goods_name: goods_name,
+                  transaction_id: "applestore." <> transaction_id,
+                  transaction_currency: currency,
+                  transaction_status: "FINISHED",
+                  debug_mode: receipt_type == "ProductionSandbox",
+                }
 
-            order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-                          nil -> order_info 
-                          %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
-                        end
+                order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
+                              nil -> order_info 
+                              %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
+                            end
 
-            order_info = case SDKApple.verify_receipt(receipt) do 
-                          {:valid_receipt, :production, %{"receipt" => %{
-                            "product_id" => ^product_id,
-                            "transaction_id" => ^transaction_id
-                          }}} ->
-                            %{order_info | status: AppOrder.Status.paid,
-                                          paid_at: :calendar.local_time |> NaiveDateTime.from_erl!}   
+                AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
 
-                          {:valid_receipt, :sandbox, %{"receipt" => %{
-                            "product_id" => ^product_id,
-                            "transaction_id" => ^transaction_id
-                          }}} ->
-                            %{order_info | status: AppOrder.Status.paid, 
-                                          debug_mode: true, 
-                                          paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                                          fee: 0} 
+                conn |> json(%{success: true})
+            end
 
-                          {:valid_receipt, :production, %{"receipt" => %{
-                            "in_app" => [%{
-                              "product_id" => ^product_id,
-                              "transaction_id" => ^transaction_id} | _],
-                          }}} ->
-                            %{order_info | status: AppOrder.Status.paid,
-                                          paid_at: :calendar.local_time |> NaiveDateTime.from_erl!}   
-
-                          {:valid_receipt, :sandbox, %{"receipt" => %{
-                            "in_app" => [%{
-                              "product_id" => ^product_id,
-                              "transaction_id" => ^transaction_id} | _],
-                          }}} ->
-                            %{order_info | status: AppOrder.Status.paid, 
-                                          debug_mode: true, 
-                                          paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                                          fee: 0}
-                          {:valid_receipt, :production, decrypted_receipt} ->
-                            Logger.error "receive cheat receipt: #{inspect decrypted_receipt, pretty: true}"
-                            %{order_info | status: AppOrder.Status.cheat, fee: 0}
-
-                          _ -> 
-                            %{order_info | status: AppOrder.Status.created, fee: 0}
-                        end
-
-            AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert! 
-
-            conn |> json(%{success: true})
+          {:ok, x} -> 
+            Logger.error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
+            conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
+          
+          {:error, reason} ->
+            conn |> json(%{success: false, reason: reason})
         end
+      _ -> 
+        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
   def add_order(conn, _params) do 
@@ -119,8 +92,10 @@ defmodule Acs.AppleStoreController do
         cond do 
           order.status == AppOrder.Status.paid() -> 
             PaymentHelper.notify_cp(order)
+
           order.status == AppOrder.Status.cheat() -> 
             Logger.error "won't deliver cheat order #{inspect order, pretty: true}"
+
           true ->
             Logger.error "invalid order #{inspect order, pretty: true}"
         end
@@ -135,10 +110,6 @@ defmodule Acs.AppleStoreController do
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 
-  # def verify_and_deliver(conn, _params) do 
-  #   conn |> json(%{success: false, reason: :network})
-  # end
-
   def verify_and_deliver(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                                acs_app: %RedisApp{} = app,
                                                acs_platform: "ios",
@@ -149,21 +120,18 @@ defmodule Acs.AppleStoreController do
                   "price_in_cent" => amount,
                   "cp_order_id" => cp_order_id,
                   "currency_code" => currency} = params) do 
-    case Repo.get_by(AppGoodsProductId, app_goods_id: goods_id, sdk: "applestore") do 
-      nil -> 
-        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        conn |> json(%{success: false, message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
-      
-      %AppGoodsProductId{product_id: product_id} -> 
+    case app.goods[goods_id |> String.to_atom] do 
+      %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
             case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
               %AppOrder{cp_order_id: ^cp_order_id} = order ->
-                d "order already exists, deliver it"
                 if order.status > 0 do 
+                  d "order already exists, deliver it"
                   PaymentHelper.notify_cp(order)
                   conn |> json(%{success: true})
                 else 
+                  Logger.error "order already delivered"
                   conn |> json(%{success: false, reason: "delivered"})
                 end
 
@@ -172,53 +140,41 @@ defmodule Acs.AppleStoreController do
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
-                case Repo.get_by(AppGoods, id: goods_id) do 
-                  nil -> 
-                    Logger.error "goods: #{goods_id} is not configured!"
-                    conn |> json(%{success: false, message: "goods #{goods_id} is not configured for app #{app.name}"})
+                order_info = %{
+                  id: Utils.generate_token(16),
+                  app_id: app.id, 
+                  user_id: user.id, 
+                  platform: "ios",
+                  device_id: device_id,
+                  sdk: "firevale",
+                  cp_order_id: cp_order_id, 
+                  status: AppOrder.Status.paid(),
+                  price: String.to_integer(amount),
+                  fee: case receipt_type do 
+                          "ProductionSandbox" -> 0
+                          _ -> String.to_integer(amount)
+                        end,
+                  paid_channel: "applestore",
+                  market: "applestore",
+                  currency: app.currency,
+                  goods_id: goods_id,
+                  goods_name: goods_name,
+                  transaction_id: "applestore." <> transaction_id,
+                  transaction_currency: currency,
+                  transaction_status: "FINISHED",
+                  debug_mode: receipt_type == "ProductionSandbox",
+                }
 
-                  %AppGoods{price: price} = goods ->
-                    cp_order_id = case cp_order_id do 
-                                    "(null)" -> "null." <> Utils.generate_token(32)
-                                    _ -> cp_order_id
-                                  end
+                order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
+                              nil -> order_info 
+                              %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
+                            end
 
-                    order_info = %{
-                      id: Utils.generate_token(16),
-                      app_id: app.id, 
-                      user_id: user.id, 
-                      platform: "ios",
-                      device_id: device_id,
-                      sdk: "firevale",
-                      cp_order_id: cp_order_id, 
-                      status: AppOrder.Status.created(),
-                      price: String.to_integer(amount),
-                      fee: case receipt_type do 
-                             "ProductionSandbox" -> 0
-                             _ -> String.to_integer(amount)
-                           end,
-                      paid_channel: "applestore",
-                      market: "applestore",
-                      currency: currency,
-                      goods_id: goods_id,
-                      goods_name: goods.name,
-                      transaction_id: "applestore." <> transaction_id,
-                      transaction_currency: currency,
-                      transaction_status: "FINISHED",
-                      debug_mode: receipt_type == "ProductionSandbox",
-                    }
+                {:ok, order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert 
 
-                    order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-                                  nil -> order_info 
-                                  %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
-                                end
+                PaymentHelper.notify_cp(order)
 
-                    {:ok, order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert 
-
-                    PaymentHelper.notify_cp(order)
-
-                    conn |> json(%{success: true})
-                end                
+                conn |> json(%{success: true})
             end
 
           {:ok, x} -> 
@@ -228,6 +184,11 @@ defmodule Acs.AppleStoreController do
           {:error, reason} ->
             conn |> json(%{success: false, reason: reason})
         end
+
+      _ -> 
+        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        # set reason to network force client don't finish transaction 
+        conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
 

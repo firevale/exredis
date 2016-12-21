@@ -137,7 +137,6 @@ defmodule Acs.Plugs do
   end
 
   def fetch_user_id(%Plug.Conn{} = conn, _options) do 
-    d "headers: #{inspect conn.req_headers, pretty: true}"
     case fetch_session_user_id(conn) || fetch_header_user_id(conn) do 
       nil -> conn
       user_id -> 

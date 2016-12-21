@@ -12,8 +12,6 @@ defmodule Acs.PaymentHelper do
 
   alias   Acs.RedisApp
 
-
-
   @location Application.get_env(:acs, :location, "cn")
 
   def notify_cp(order = %AppOrder{}) do 

@@ -5,7 +5,7 @@ defmodule Acs.DownjoyAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{downjoy: %{"app_id" => downjoy_app_id, "app_key" => downjoy_app_key}}} = app,
+                acs_app: %RedisApp{sdk_bindings: %{downjoy: %{app_id: downjoy_app_id, app_key: downjoy_app_key}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"dj_access_token" => downjoy_access_token,
@@ -19,7 +19,7 @@ defmodule Acs.DownjoyAuthBind do
                                      nickname: downjoy_user_id,
                                      device_id: device_id,
                                      mobile: nil,
-                                     picture_url: nil}) do 
+                                     avatar_url: nil}) do 
         {:ok, user} -> 
           access_token = RedisAccessToken.create(%{
             app_id: app.id,
@@ -49,6 +49,9 @@ defmodule Acs.DownjoyAuthBind do
       conn |> json(%{success: false, message: "validate session failed"})
     end
   end 
-  def bind(conn, _params), do: conn |> json(%{success: false, message: "invalid request"})
+  def bind(conn, _params) do 
+    d "#{inspect conn.private.acs_platform}"
+    conn |> json(%{success: false, message: "invalid request"})
+  end
 
 end

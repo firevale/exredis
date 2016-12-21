@@ -57,6 +57,10 @@ defmodule Acs.UserController do
     end  
   end
 
+  def bind_token(conn, %{"sdk" => sdk} = params) do 
+    conn |> redirect(to: "/api/auth/bind/#{sdk}?#{URI.encode_query(params)}")
+  end
+
   # 兼容旧的fvsdk
   def bind_anonymous(%Plug.Conn{private: %{acs_app_id: app_id, 
                                            acs_device_id: device_id,

@@ -202,7 +202,7 @@ defmodule Acs.RedisUser do
 
       user.bindings |> Enum.each(fn({k, v}) -> 
         Redis.set(@binding_index_key <> "#{k}.#{v}", user.id)
-        [sdk, app_id] = String.split(k, ".", parts: 2, trim: true)
+        [sdk, app_id] = String.split(to_string(k), ".", parts: 2, trim: true)
         case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do 
           nil ->
             UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.insert!

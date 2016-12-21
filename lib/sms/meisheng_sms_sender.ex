@@ -84,8 +84,8 @@ defmodule Acs.MeishengSmsSender do
     if Httpc.success?(response) do 
       case response.body |> xpath(~x"/sms/mt/status/text()"i) do 
         0 ->
-          amount = response.body |> xpath(~x"/sms/mt/account/text()"i)
-          {:ok, amount * 10}
+          {amount, _} = response.body |> xpath(~x"/sms/mt/account/text()"s) |> Float.parse
+          {:ok, round(amount * 10)}
         100 ->
           Logger.error "get amount failed"
           :error

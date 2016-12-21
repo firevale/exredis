@@ -13,7 +13,7 @@ defmodule Acs.OppoAuthBind do
               "oppo_token_secret" => oppo_token_secret} = _params) do
 
     case SDKOppo.validate_session(oppo_app_key, oppo_app_secret, oppo_access_token, oppo_token_secret) do
-      %{id: oppo_user_id, email: email, nickname: oppo_nickname, picture_url: oppo_picture_url} ->
+      %{id: oppo_user_id, email: email, nickname: oppo_nickname, avatar_url: oppo_picture_url} ->
         case RedisUser.bind_sdk_user(%{sdk: :oppo, 
                                        app_id: app.id, 
                                        sdk_user_id: oppo_user_id, 
@@ -21,7 +21,7 @@ defmodule Acs.OppoAuthBind do
                                        nickname: oppo_nickname,
                                        device_id: device_id,
                                        mobile: nil,
-                                       picture_url: oppo_picture_url}) do 
+                                       avatar_url: oppo_picture_url}) do 
           {:ok, user} -> 
             access_token = RedisAccessToken.create(%{
               app_id: app.id,
@@ -61,7 +61,7 @@ defmodule Acs.OppoAuthBind do
               "oppo_user_id" => oppo_user_id} = _params) do
 
     case SDKOppo.validate_session2(oppo_app_key, oppo_app_secret, oppo_access_token, oppo_user_id) do
-      %{id: _, email: email, nickname: oppo_nickname, picture_url: oppo_picture_url} ->
+      %{id: _, email: email, nickname: oppo_nickname, avatar_url: oppo_picture_url} ->
         case RedisUser.bind_sdk_user(%{sdk: :oppo, 
                                        app_id: app.id, 
                                        sdk_user_id: oppo_user_id, 
@@ -69,7 +69,7 @@ defmodule Acs.OppoAuthBind do
                                        nickname: oppo_nickname,
                                        device_id: device_id,
                                        mobile: nil,
-                                       picture_url: oppo_picture_url}) do 
+                                       avatar_url: oppo_picture_url}) do 
           {:ok, user} -> 
             access_token = RedisAccessToken.create(%{
               app_id: app.id,

@@ -36,4 +36,8 @@ defmodule Acs.FVSdkController do
     end
   end
 
+  def report_activity(conn, params) do 
+    conn |> json(%{success: true}) 
+  end
+
 end

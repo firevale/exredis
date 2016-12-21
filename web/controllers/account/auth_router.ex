@@ -13,43 +13,44 @@ defmodule Acs.AuthApiRouter do
   scope "/", Acs do
     pipe_through :auth
 
-    post "/anzhi", AnzhiAuthBind, :bind
-    post "/baidu", BaiduAuthBind, :bind
-    post "/cc", CCPlayAuthBind, :bind
-    post "/coolpad", CoolpadAuthBind, :bind
-    post "/downjoy", DownjoyAuthBind, :bind
-    post "/facebook", FacebookAuthBind, :bind
-    post "/firevale", FacebookAuthBind, :bind # bind facebook
-    post "/gfan", GFanAuthBind, :bind
-    post "/haima", HaimaAuthBind, :bind
-    post "/htc", HtcAuthBind, :bind
-    post "/huawei", HtcAuthBind, :bind
-    post "/i4", I4AuthBind, :bind
-    post "/iiapple", IIAppleAuthBind, :bind
-    post "/itools", ItoolsAuthBind, :bind
-    post "/iyouxi", IYouxiAuthBind, :bind
-    post "/ky", KYAuthBind, :bind
-    post "/lenovo", LenovoAuthBind, :bind
-    post "/meizu", MeizuAuthBind, :bind
-    post "/mumayi", MumayiAuthBind, :bind
-    post "/ndcom", NdcomAuthBind, :bind
-    post "/oppo", OppoAuthBind, :bind
-    post "/pp", PPAuthBind, :bind
-    post "/qh360", Qh360AuthBind, :bind
-    post "/qxz", QxzAuthBind, :bind
-    post "/sogou", SogouAuthBind, :bind
-    post "/tbt", TBTAuthBind, :bind
-    post "/uc", UCAuthBind, :bind
-    post "/vivo", VivoAuthBind, :bind
-    post "/wdj", WandoujiaAuthBind, :bind
-    post "/xiaomi", XiaomiAuthBind, :bind
-    post "/xy", XYAuthBind, :bind
-    post "/youku", YoukuAuthBind, :bind
-    post "/yyh", YYHAuthBind, :bind
+    get "/bind/anzhi", AnzhiAuthBind, :bind
+    get "/bind/baidu", BaiduAuthBind, :bind
+    get "/bind/cc", CCPlayAuthBind, :bind
+    get "/bind/coolpad", CoolpadAuthBind, :bind
+    get "/bind/downjoy", DownjoyAuthBind, :bind
+    get "/bind/facebook", FacebookAuthBind, :bind
+    get "/bind/firevale", FacebookAuthBind, :bind # bind facebook
+    get "/bind/gfan", GFanAuthBind, :bind
+    get "/bind/haima", HaimaAuthBind, :bind
+    get "/bind/htc", HtcAuthBind, :bind
+    get "/bind/huawei", HtcAuthBind, :bind
+    get "/bind/i4", I4AuthBind, :bind
+    get "/bind/iiapple", IIAppleAuthBind, :bind
+    get "/bind/itools", ItoolsAuthBind, :bind
+    get "/bind/iyouxi", IYouxiAuthBind, :bind
+    get "/bind/ky", KYAuthBind, :bind
+    get "/bind/lenovo", LenovoAuthBind, :bind
+    get "/bind/meizu", MeizuAuthBind, :bind
+    get "/bind/mumayi", MumayiAuthBind, :bind
+    get "/bind/ndcom", NdcomAuthBind, :bind
+    get "/bind/oppo", OppoAuthBind, :bind
+    get "/bind/pp", PPAuthBind, :bind
+    get "/bind/qh360", Qh360AuthBind, :bind
+    get "/bind/qxz", QxzAuthBind, :bind
+    get "/bind/sogou", SogouAuthBind, :bind
+    get "/bind/tbt", TBTAuthBind, :bind
+    get "/bind/uc", UCAuthBind, :bind
+    get "/bind/vivo", VivoAuthBind, :bind
+    get "/bind/wdj", WandoujiaAuthBind, :bind
+    get "/bind/xiaomi", XiaomiAuthBind, :bind
+    get "/bind/xy", XYAuthBind, :bind
+    get "/bind/youku", YoukuAuthBind, :bind
+    get "/bind/yyh", YYHAuthBind, :bind
 
     post "/gen_token", UserController, :create_token
     get  "/create_token", UserController, :create_token
     get  "/update_token", UserController, :update_token
+    get  "/bind_token", UserController, :bind_token
     post "/update_token", UserController, :update_token
     get  "/anonymous_token", UserController, :create_anonymous_token
   end

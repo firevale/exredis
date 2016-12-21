@@ -75,8 +75,15 @@ defmodule Acs.Plugs do
 
   def parse_user_agent(%Plug.Conn{} = conn, _options) do 
     case get_req_header(conn, "user-agent") do 
-      nil -> conn
-      [] -> conn
+      [] -> 
+        case conn.params["platform"] do 
+          "android" -> 
+            conn |> put_private(:acs_platform, "android")
+          "ios" ->
+            conn |> put_private(:acs_platform, "android")
+          _ ->
+            conn
+        end
       [user_agent | _] when is_bitstring(user_agent) ->
         d "user_agent: #{user_agent}"
 

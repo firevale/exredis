@@ -17,7 +17,7 @@ defmodule Acs.Qh360AuthBind do
                                        nickname: qh360_nick_name,
                                        device_id: device_id,
                                        mobile: nil,
-                                       picture_url: qh360_picture_url}) do 
+                                       avatar_url: qh360_picture_url}) do 
           {:ok, user} -> 
             access_token = RedisAccessToken.create(%{
               app_id: app.id,

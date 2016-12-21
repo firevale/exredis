@@ -65,7 +65,7 @@ defmodule Acs.Router do
     pipe_through :api
 
     get "/client/get_app_config", FVSdkController, :get_app_info
-    get "/stat/report_activity", StatController, :report_activity
+    get "/stat/report_activity", FVSdkController, :report_activity
 
     forward "/auth", AuthApiRouter 
     forward "/user", UserApiRouter

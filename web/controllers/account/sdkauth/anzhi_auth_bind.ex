@@ -19,7 +19,7 @@ defmodule Acs.AnzhiAuthBind do
                                      nickname: params["anzhi_nickname"],
                                      device_id: device_id,
                                      mobile: nil,
-                                     picture_url: nil}) do 
+                                     avatar_url: nil}) do 
         {:ok, user} -> 
           access_token = RedisAccessToken.create(%{
             app_id: app.id,

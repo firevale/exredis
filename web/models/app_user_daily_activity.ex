@@ -3,8 +3,10 @@ defmodule Acs.AppUserDailyActivity do
 
   schema "app_user_daily_activities" do
     field :date, :date
+
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
+
     belongs_to :app_user, Acs.AppUser
 
     timestamps()

@@ -3,6 +3,7 @@ defmodule Acs.AppDeviceDailyActivity do
 
   schema "app_device_daily_activities" do
     field :date, :date
+
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
     belongs_to :app_device, Acs.AppDevice

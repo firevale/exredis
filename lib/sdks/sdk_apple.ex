@@ -39,7 +39,7 @@ defmodule SDKApple do
           {:error, :invalid_receipt}
       end
     else 
-      Logger.error "verify apple store sandbox receipt failed, http status = #{response.status_code}"
+      Logger.error "verify apple store sandbox receipt failed, http response: #{inspect response, pretty: true}"
       {:error, :network}
     end
   end

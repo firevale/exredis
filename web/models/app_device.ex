@@ -2,7 +2,6 @@ defmodule Acs.AppDevice do
   use Acs.Web, :model
 
   schema "app_devices" do
-    field :sdk, :string
 
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
@@ -10,6 +9,7 @@ defmodule Acs.AppDevice do
 
     belongs_to :app, Acs.App, type: :string
     belongs_to :device, Acs.Device, type: :string
+    field :zone_id, :string
 
     timestamps()
   end
@@ -20,9 +20,8 @@ defmodule Acs.AppDevice do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:sdk, :active_seconds, :pay_amount, :last_pay_at, :app_id, :device_id])
-    |> validate_required([:sdk])
-    |> validate_inclusion(:sdk, @sdks)
+    struct |> cast(params, [:zone_id, :active_seconds, :pay_amount, :last_pay_at, :app_id, :device_id])
+           |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
+           |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
   end
 end

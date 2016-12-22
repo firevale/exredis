@@ -42,11 +42,12 @@ defmodule Acs.AppleStoreController do
                   cp_order_id: cp_order_id, 
                   status: AppOrder.Status.paid(),
                   price: String.to_integer(amount),
-                  fee: case receipt_type do 
+                  fee:  case receipt_type do 
                           "ProductionSandbox" -> 0
                           _ -> String.to_integer(amount)
                         end,
                   paid_channel: "applestore",
+                  paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
                   market: "applestore",
                   currency: app.currency,
                   goods_id: goods_id,

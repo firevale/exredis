@@ -9,7 +9,6 @@ defmodule Acs.AppleStoreController do
   # 兼容旧版本fvsdk
   def add_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                       acs_app: %RedisApp{} = app,
-                                      acs_zone_id: zone_id,
                                       acs_platform: "ios",
                                       acs_device_id: device_id}} = conn, 
                 %{"receipt" => receipt,
@@ -32,7 +31,11 @@ defmodule Acs.AppleStoreController do
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
-                app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+                app_user = case params["zone_id"] do 
+                             nil -> nil
+                             zone_id ->
+                               Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+                            end
 
                 order_info = %{
                   id: Utils.generate_token(16),

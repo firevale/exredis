@@ -8,8 +8,8 @@
         {{ $t('forum.main.title') }}
       </div>
       <div class="main-menu">
-        <span class="fa fa-search" style="margin-right: 1rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
-        <span class="fa fa-user" style="margin-right: 1rem;" aria-hidden="true"></span>
+        <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
+        <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true"></span>
         <a class="button txt-right create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
       </div>
     </div>

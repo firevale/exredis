@@ -6,8 +6,8 @@
         <article class="media">
           <div class="media-content">
             <div v-for="item in list" class="columns item pointer" @click="ok(item)">
-              <span class="column is-10"> {{ item.name }} </span>
-              <span v-show="selectedItem == item.name" class="fa fa-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
+              <span class="column item-name"> {{ item.name }} </span>
+              <span v-show="selectedItem == item.name" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
             </div>
           </div>
         </article>
@@ -66,7 +66,16 @@
   }
   
   .item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     border-bottom: 1px solid $dark;
+    .item-name{
+      flex:1;
+    }
+    .item-check{
+
+    }
   }
   
   .item:last-child {

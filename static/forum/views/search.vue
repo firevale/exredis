@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="display: flex; flex-direction: row;justify-content: space-around;">
       <div style="flex: 1;">
-        <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
       <div style="flex: 9;position: relative;">
         <i class="fa fa-search search-icon" aria-hidden="true"></i>
@@ -17,13 +17,13 @@
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
     <div class="is-chid content-item ">
-      <p class="control search-tip">{{ searchTip }}</p>
+      <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
       <div v-if="!noteList&&searchKeyHis.length" class="his-box">
         <div v-for="item in searchKeyHis" class="his-key" @click="searchByKey(item)">{{item}}</div>
       </div>
       <p v-show="!noteList&&searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
     </div>
-    <div v-if="noteList&&noteList.length" class="box is-chid is-parent content-item" style="padding-left: 0;padding-right: 0; ">
+    <div v-if="noteList&&noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
       <note-item v-for="item in noteList" :item-data="item" :mark-key="key"></note-item>
     </div>
     <div v-if="noteList&&noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
@@ -61,7 +61,7 @@ export default {
 
     searchTip(){
       if(this.noteList&&this.noteList.length){
-        return this.$t('forum.search.followSearchResult')
+        return ''
       }else if(this.noteList&&!this.noteList.length){
         return this.$t('forum.search.noSearchResult')
       }else if(!(this.noteList&&this.noteList.length)&&this.searchKeyHis.length){
@@ -157,12 +157,11 @@ export default {
   
   .search-box {
     width: 100%;
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: .6rem;
     padding-left: 3rem;
     padding-right: 4rem;
-    border: none;
-    border-bottom: .1rem solid $red;
+    border: .1rem solid $dark;
   }
   
   .search-btn {
@@ -181,15 +180,17 @@ export default {
   .search-icon {
     position: absolute;
     left: 1rem;
-    bottom: 1rem;
-    font-size: 1.5rem !important;
+    bottom: .6rem;
+    font-size: 1.8rem !important;
+    color: $dark;
   }
   
   .times-icon {
     position: absolute;
     right: 1rem;
-    bottom: .8rem;
-    font-size: 1.5rem !important;
+    bottom: .6rem;
+    font-size: 1.8rem !important;
+    color: $dark;
   }
   
   .content-item {
@@ -213,7 +214,7 @@ export default {
     box-sizing: border-box;
     text-align: center;
     color: $black;
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
   
   .his-key:hover {
@@ -235,7 +236,7 @@ export default {
   .clear-his{
     text-align: center;
     color: $primary;
-    font-size: 1.3rem;
+    font-size: 1rem;
     margin-top: 2rem;
   }
 </style>

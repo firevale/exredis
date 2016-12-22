@@ -14,7 +14,7 @@ export default {
       },
       search:{
         placeholder: '搜索帖子',
-        searchBtn: '搜索',
+        searchBtn: '搜索帖子',
         searchHis: '搜索历史记录',
         noSearchRecord: '暂无搜索历史',
         noSearchResult: '暂无搜索结果',
@@ -50,6 +50,12 @@ export default {
       pagination: {
         previous: '上一页',
         next: '下一页',
+      },
+      upload:{
+        filename: '文件名',
+        progress: '进度',
+        speed:  '速率',
+        title: '上传',
       }
     },
   }

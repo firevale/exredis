@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="display: flex; flex-direction: row;">
       <div style="flex: 1;text-align: left;">
-        <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
       <div style="flex: 9;text-align: center;">
         <span class="title is-3">{{ $t('forum.replyNote.title') }}</span>

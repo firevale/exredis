@@ -2,23 +2,20 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="display: flex; flex-direction: row;">
       <div style="flex: 1;text-align: left;">
-        <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div style="flex: 9;text-align: center;">
-        <span class="title is-3">{{ $t('forum.newNote.title') }}</span>
+      <div class="search-title">
+        <span class="title is-5">{{ $t('forum.newNote.title') }}</span>
       </div>
       <div style="flex: 1;">
       </div>
     </div>
     <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
     <div class="column is-full" style="flex-direction: row; display: flex;">
-      <select v-model="noteType">
-        <option :value="$t('forum.main.discussion')">{{ $t('forum.main.discussion') }}</option>
-        <option :value="$t('forum.main.experience')">{{ $t('forum.main.experience') }}</option>
-        <option :value="$t('forum.main.ras')">{{ $t('forum.main.ras') }}</option>
-        <option :value="$t('forum.main.original')">{{ $t('forum.main.original') }}</option>
-        <option :value="$t('forum.main.appeal')">{{ $t('forum.main.appeal') }}</option>
-      </select>
+      <div class="pointer" @click="orderChoose">
+        <span>{{ noteOrderTypeStr }}</span>
+        <i class="fa fa-caret-down title is-4" aria-hidden="true" style="vertical-align: middle;"></i>
+      </div>
       <div v-show="!messageTip" class="column is-full red pointer" style="padding: 0 1rem;float:right; flex:1;text-align: right;">
         <span @click="onPreView">{{ pageView? $t('forum.newNote.editView'): $t('forum.newNote.preView') }}</span>
       </div>
@@ -29,10 +26,17 @@
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <textarea class="note-content" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
-        <i class="fa fa-file-image-o upload-img" aria-hidden="true" @click="uploadImg"></i>
+        <div class="upload-img">
+          <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
+          <div class="img-item" v-for="item in imgs">
+            <span>{{item.id}}</span>
+            <img class="shot-img" :src="item.url"></img>
+            <i class="fa fa-times red" style="vertical-align: middle;" aria-hidden="true" @click="deleteUploadImg(item.id)"></i>
+          </div>
+        </div>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
+        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true" @click="uploadImg"></i>
         <span>{{messageTip}}</span>
       </div>
     </div>
@@ -47,6 +51,8 @@ import { mapGetters, mapActions } from 'vuex'
 import noteItemDetail from '../components/noteItemDetail.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
+import upload from '../components/fileUpload'
+
 var marked = require('marked');
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -79,38 +85,89 @@ export default {
     },
 
     markdownToHtml(){
-      let imgstr = this.imgs.map(
-        function(){
-
+      let imgstr = '';
+      this.imgs.map(
+        function(e){ 
+          imgstr+='![no img]('+e.url+') '
         }
       )
-      return marked('# 【'+this.noteType+'】'+this.title+' \n ![no img](http://img0.imgtn.bdimg.com/it/u=3156638004,2702203078&fm=23&gp=0.jpg) \n# '+this.content)
+      return marked('# 【'+this.noteOrderTypeStr+'】'+this.title+' \n '+imgstr+' \n# '+this.content)
     }
   },
 
   data() {
     return{
-      noteType: this.$t('forum.main.discussion'),
       title: '',
       content: '',
       imgs: [],
       pageView: false,
+      noteOrderTypeStr: this.$t('forum.main.discussion'),
     }
   },
 
   methods: {
     uploadImg(){
-
+      upload.showModal({
+          action: 'http://zhangshiqing.firevale.com:3000/uploadImage',
+          headers: this.requestHeaders,
+          accept: 'image/*',
+          extensions: 'png,jpg,gif',
+          title: '上传图片',
+          callback: response => {
+            if (typeof response == 'object') {
+              if (response.code == 0) {
+                this.imgs.push(response.data)
+              } else {
+                //error
+              }
+            } else {
+              //error
+            }
+          },
+        })
     },
- 
+
+    deleteUploadImg(imgId){
+      //this.$http();
+      for(var i=0;i<this.imgs.length;i++){
+        if(this.imgs[i].id==imgId){
+          this.imgs.splice(i,1);
+          break;
+        }
+      }
+    },
+
     onPreView(){
       this.pageView = !this.pageView
-    }
+    },
+
+    orderChoose(){
+      menuModal.showModal([
+          {name: '综合讨论', code: 'discussion'},
+          {name: '攻略心得', code: 'experience'},
+          {name: '转帖分享', code: 'ras'},
+          {name: '玩家原创', code: 'original'},
+          {name: '问题求助', code: 'appeal'}], this.onOrderTypeChoose, this.noteOrderTypeStr)
+    },
+
+    onOrderTypeChoose(type){
+      this.noteOrderTypeStr= type.name
+    },
+
   }
 }
 </script>
 <style lang="scss">
   @import "../scss/forum";
+  .search-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex: 9;
+    text-align: center;
+  }
+  
   .note-new {
     padding: .3rem .5rem;
     width: 100%;
@@ -130,14 +187,52 @@ export default {
   }
   
   .upload-img {
-    cursor: pointer;
-    font-size: 1.5rem !important;
     position: absolute;
     bottom: 1rem;
     left: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    i {
+      cursor: pointer;
+      vertical-align: middle;
+      font-size: 1.5rem !important;
+    }
+    .img-item {
+      position: relative;
+      span {
+        margin-left: 1rem;
+      }
+      .shot-img {
+        visibility: hidden;
+        position: absolute;
+        left: 0;
+        top: -5rem;
+        z-index: 3;
+      }
+    }
+
+    .img-item:hover{
+      .shot-img{
+        visibility: visible;
+      }
+    } 
   }
-  .pre-view{
+  
+  .pre-view {
     border: 1px solid $dark;
     margin: auto 1rem;
+    h1:first-child {
+      margin-left: -.5rem;
+      margin-bottom: 1rem;
+    }
+    img {
+      float: left;
+    }
+    p:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
   }
 </style>

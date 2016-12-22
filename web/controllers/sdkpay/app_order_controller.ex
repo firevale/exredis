@@ -2,16 +2,18 @@ defmodule Acs.SdkPay.AppOrderController do
   use    Acs.Web, :controller
 
   plug :fetch_user
+  plug :fetch_zone_id
   plug :create_order
 
   defp create_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                           acs_app: %RedisApp{} = app,
                                           acs_platform: platform,
+                                          acs_zone_id: zone_id,
                                           acs_device_id: device_id},
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do 
 
-    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id) 
+    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id) 
 
     order_info = %{
       id: Utils.generate_token(16),

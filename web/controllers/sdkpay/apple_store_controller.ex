@@ -3,11 +3,13 @@ defmodule Acs.AppleStoreController do
 
   require SDKApple
 
+  plug :fetch_zone_id
   plug :fetch_user
 
   # 兼容旧版本fvsdk
   def add_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                       acs_app: %RedisApp{} = app,
+                                      acs_zone_id: zone_id,
                                       acs_platform: "ios",
                                       acs_device_id: device_id}} = conn, 
                 %{"receipt" => receipt,
@@ -30,11 +32,13 @@ defmodule Acs.AppleStoreController do
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
+                app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+
                 order_info = %{
                   id: Utils.generate_token(16),
                   app_id: app.id, 
                   user_id: user.id, 
-                  app_user_id: params["app_user_id"],
+                  app_user_id: app_user && app_user.id,
                   zone_id: params["zone_id"],
                   platform: "ios",
                   device_id: device_id,
@@ -116,6 +120,7 @@ defmodule Acs.AppleStoreController do
 
   def verify_and_deliver(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
                                                acs_app: %RedisApp{} = app,
+                                               acs_zone_id: zone_id, 
                                                acs_platform: "ios",
                                                acs_device_id: device_id}} = conn, 
                 %{"receipt" => receipt,
@@ -144,10 +149,13 @@ defmodule Acs.AppleStoreController do
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
+                app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+
                 order_info = %{
                   id: Utils.generate_token(16),
                   app_id: app.id, 
                   user_id: user.id, 
+                  app_user_id: app_user && app_user.id,
                   platform: "ios",
                   device_id: device_id,
                   sdk: "firevale",

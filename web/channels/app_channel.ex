@@ -125,6 +125,7 @@ defmodule Acs.AppChannel do
                                                   zone_id: zone_id,
                                                   sdk: sdk,
                                                   active_seconds: 0,
+                                                  create_date: today,
                                                   app_id: app_id,
                                                   user_id: user_id}) |> Repo.insert!
                 %AppUser{} = app_user ->
@@ -145,7 +146,10 @@ defmodule Acs.AppChannel do
 
     app_device = case Repo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do 
                    nil ->
-                     AppDevice.changeset(%AppDevice{}, %{app_id: app_id, device_id: device_id, zone_id: zone_id}) |> Repo.insert!
+                     AppDevice.changeset(%AppDevice{}, %{app_id: app_id, 
+                                                         device_id: device_id, 
+                                                         zone_id: zone_id, 
+                                                         create_date: today}) |> Repo.insert!
 
                    %AppDevice{} = app_device ->
                      app_device

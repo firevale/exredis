@@ -58,7 +58,7 @@ defmodule Acs.FVSdkController do
                     AppUser.changeset(%AppUser{}, %{app_user_id: app_user_id, 
                                                     app_user_name: app_user_name,
                                                     zone_id: zone_id,
-                                                    sdk: sdk,
+                                                    create_date: today,
                                                     active_seconds: active_seconds,
                                                     app_id: app.id,
                                                     user_id: user_id}) |> Repo.insert!
@@ -82,7 +82,11 @@ defmodule Acs.FVSdkController do
 
     app_device = case Repo.get_by(AppDevice, app_id: app.id, device_id: device_id, zone_id: zone_id) do 
                    nil ->
-                     AppDevice.changeset(%AppDevice{}, %{sdk: sdk, app_id: app.id, device_id: device_id}) |> Repo.insert!
+                     AppDevice.changeset(%AppDevice{}, %{app_id: app.id, 
+                                                         create_date: today,
+                                                         active_seconds: active_seconds,
+                                                         device_id: device_id,
+                                                         zone_id: zone_id}) |> Repo.insert!
                    %AppDevice{} = app_device ->
                      AppDevice.changeset(app_device, %{active_seconds: app_device.active_seconds + active_seconds}) |> Repo.update!
                  end    

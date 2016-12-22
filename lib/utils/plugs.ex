@@ -216,6 +216,25 @@ defmodule Acs.Plugs do
     end
   end
 
+  def fetch_zone_id(%Plug.Conn{} = conn, _options) do 
+    case _fetch_zone_id(conn.params) || _fetch_header_zone_id(conn) do 
+      nil -> conn
+      zone_id ->
+        conn |> put_private(:acs_zone_id, zone_id)
+    end
+  end
+
+  defp _fetch_zone_id(%{"zone_id" => zone_id}), do: zone_id
+  defp _fetch_zone_id(%{}), do: nil 
+
+  defp _fetch_header_zone_id(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "acs-zone-id") do 
+      nil -> nil
+      [] -> nil
+      [zone_id | _] -> zone_id
+    end
+  end
+
   def fetch_app(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _options) do 
     case RedisApp.find(app_id) do 
       nil -> conn

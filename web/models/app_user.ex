@@ -2,13 +2,18 @@ defmodule Acs.AppUser do
   use Acs.Web, :model
 
   schema "app_users" do
+
     field :app_user_id, :string
+    field :app_user_name, :string
     field :app_zone_id, :string
 
-    field :active_minutes, :integer, default: 0
+    field :app_user_level, :integer, default: 1
+
+    field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
     field :last_pay_at, :naive_datetime
 
+    field :sdk, :string
     belongs_to :app, Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
 
@@ -20,8 +25,8 @@ defmodule Acs.AppUser do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:app_user_id, :app_zone_id, :active_minutes, :pay_amount, :last_pay_at, :app_id, :user_id])
+    |> cast(params, [:app_user_id, :app_user_name, :app_zone_id, :app_user_level, :active_seconds, :pay_amount, :last_pay_at, :app_id, :user_id, :sdk])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
-    |> validate_number(:active_minutes, greater_than_or_equal_to: 0, message: "active_minutes should be greater than or equal to 0")
+    |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
   end
 end

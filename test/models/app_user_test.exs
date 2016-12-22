@@ -3,11 +3,11 @@ defmodule Acs.AppUserTest do
 
   alias Acs.AppUser
 
-  @valid_attrs %{active_minutes: 10, 
+  @valid_attrs %{active_seconds: 10, 
                  pay_amount: 0, 
                  last_pay_at: ~N[2000-02-29 00:00:00]}
 
-  @invalid_attrs %{active_minutes: -1}
+  @invalid_attrs %{active_seconds: -1}
 
   test "changeset with valid attributes" do
     changeset = AppUser.changeset(%AppUser{}, @valid_attrs)

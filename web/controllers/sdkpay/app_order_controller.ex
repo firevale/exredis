@@ -10,45 +10,53 @@ defmodule Acs.SdkPay.AppOrderController do
                                           acs_device_id: device_id},
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do 
-    case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-      nil ->
-        Logger.error "can't find app user for app: #{app.id}, user_id: #{user.id}"
-        conn |> send_resp(500, "server internal error") |> halt 
 
-      %AppUser{} = appUser ->
-        order_info = %{
-          id: Utils.generate_token(16),
-          app_id: app.id, 
-          user_id: user.id, 
-          platform: platform,
-          app_user_id: appUser.id,
-          device_id: device_id,
-          sdk: params["sdk"] || "firevale",
-          cp_order_id: cp_order_id, 
-          status: AppOrder.Status.created,
-          price: params["price_in_cent"],
-          paid_channel: params["channel"],
-          currency: app.currency,
-          goods_name: params["product_name"] || params["product_id"] || params["goods_id"],
-        }
+    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id) 
 
-        order_info = case params["goods_id"] do # Q传 wp8版本无此参数
+    order_info = %{
+      id: Utils.generate_token(16),
+      app_id: app.id, 
+      user_id: user.id, 
+      platform: platform,
+      app_user_id: app_user && app_user.id,
+      zone_id: params["zone_id"],
+      device_id: device_id,
+      sdk: params["sdk"] || "firevale",
+      sdk_user_id: params["sdk_user_id"],
+      cp_order_id: cp_order_id, 
+      status: AppOrder.Status.created,
+      price: params["price_in_cent"],
+      debug_mode: params["debug_mode"] == "true",
+      paid_channel: params["channel"],
+      fee: case params["debug_mode"] do 
+             "true" -> 0
+             _ -> params["price_in_cent"] || 0
+           end,  
+      currency: app.currency,
+      market: params["market"] || "unknown",
+      transaction_id: "empty." <> Utils.generate_token(32),
+      transaction_currency: params["currency_code"] || params["currency"] || "CNY", 
+      transaction_status: "UNKNOWN",
+      goods_id: params["goods_id"] || params["product_id"],
+      goods_name: params["product_name"] || params["product_id"] || params["goods_id"],
+    }
+
+    order_info = case params["goods_id"] do # Q传 wp8版本无此参数
+                  nil -> order_info
+                  goods_id ->
+                    case app.goods[goods_id |> String.to_atom] do 
                       nil -> order_info
-                      goods_id ->
-                        case Repo.get(AppGoods, goods_id) do 
-                          nil -> order_info
-                          %AppGoods{} = goods_info ->
-                            %{order_info | goods_id: goods_id,
-                                           goods_name: goods_info.name,
-                                           price: goods_info.price
-                            }
-                        end
-                    end                        
-        
-        {:ok, app_order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert
+                      %{price: goods_price, name: goods_name} ->
+                        %{order_info | goods_id: goods_id,
+                                       goods_name: goods_name,
+                                       price: goods_price,
+                        }
+                    end
+                end                        
+    
+    {:ok, app_order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert
 
-        conn |> put_private(:acs_app_order, app_order)
-    end    
+    conn |> put_private(:acs_app_order, app_order)
   end
   defp create_order(%Plug.Conn{} = conn, _options) do 
     conn |> send_resp(400, "bad request") |> halt 

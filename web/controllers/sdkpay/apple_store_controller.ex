@@ -34,6 +34,8 @@ defmodule Acs.AppleStoreController do
                   id: Utils.generate_token(16),
                   app_id: app.id, 
                   user_id: user.id, 
+                  app_user_id: params["app_user_id"],
+                  zone_id: params["zone_id"],
                   platform: "ios",
                   device_id: device_id,
                   sdk: "firevale",
@@ -156,6 +158,7 @@ defmodule Acs.AppleStoreController do
                           _ -> String.to_integer(amount)
                         end,
                   paid_channel: "applestore",
+                  paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
                   market: "applestore",
                   currency: app.currency,
                   goods_id: goods_id,

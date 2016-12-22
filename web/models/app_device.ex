@@ -4,7 +4,7 @@ defmodule Acs.AppDevice do
   schema "app_devices" do
     field :sdk, :string
 
-    field :active_minutes, :integer, default: 0
+    field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
     field :last_pay_at, :naive_datetime
 
@@ -21,7 +21,7 @@ defmodule Acs.AppDevice do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:sdk, :active_minutes, :pay_amount, :last_pay_at, :app_id, :device_id])
+    |> cast(params, [:sdk, :active_seconds, :pay_amount, :last_pay_at, :app_id, :device_id])
     |> validate_required([:sdk])
     |> validate_inclusion(:sdk, @sdks)
   end

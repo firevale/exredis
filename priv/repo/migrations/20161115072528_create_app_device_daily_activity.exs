@@ -4,7 +4,7 @@ defmodule Acs.Repo.Migrations.CreateAppDeviceDailyActivity do
   def change do
     create table(:app_device_daily_activities) do
       add :date, :date
-      add :active_minutes, :integer
+      add :active_seconds, :integer
       add :pay_amount, :integer
       add :app_device_id, references(:app_devices, on_delete: :nothing)
 

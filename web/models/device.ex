@@ -6,6 +6,7 @@ defmodule Acs.Device do
     field :id, :string, primary_key: true
     field :model, :string
     field :platform, :string
+    field :os, :string
 
     timestamps()
   end
@@ -15,7 +16,7 @@ defmodule Acs.Device do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :model, :platform])
+    |> cast(params, [:id, :model, :platform, :os])
     |> validate_required([:model, :platform])
   end
 end

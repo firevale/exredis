@@ -6,8 +6,13 @@ defmodule Acs.Repo.Migrations.CreateDevice do
       add :id, :string, primary_key: true
       add :model, :string
       add :platform, :string
+      add :os, :string
 
       timestamps()
     end
+
+    create index(:devices, [:model])
+    create index(:devices, [:platform])
+    create index(:devices, [:os])
   end
 end

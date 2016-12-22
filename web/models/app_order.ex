@@ -16,6 +16,7 @@ defmodule Acs.AppOrder do
     field :platform, :string
     field :device_id, :string 
     field :sdk, :string
+    field :sdk_user_id, :string
     field :cp_order_id, :string
     field :zone_id, :string
     field :market, :string
@@ -37,7 +38,7 @@ defmodule Acs.AppOrder do
 
     belongs_to :app,  Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
-    belongs_to :app_user, Acs.AppUser, type: :string
+    belongs_to :app_user, Acs.AppUser
     belongs_to :goods, Acs.Goods, type: :string
 
     timestamps()
@@ -51,7 +52,7 @@ defmodule Acs.AppOrder do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :platform, :device_id, :sdk, :cp_order_id, :zone_id, :market, :status, :paid_at, 
+    |> cast(params, [:id, :platform, :device_id, :sdk, :sdk_user_id, :cp_order_id, :zone_id, :market, :status, :paid_at, 
                      :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name, 
                      :debug_mode, :paid_channel, :fee, :transaction_currency, :transaction_id, :transaction_status,
                      :app_id, :user_id, :app_user_id, :goods_id, :cp_result])

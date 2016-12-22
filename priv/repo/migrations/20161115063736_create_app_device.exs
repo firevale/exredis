@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreateAppDevice do
     create table(:app_devices) do
       add :sdk, :string
 
-      add :active_minutes, :integer, default: 0
+      add :active_seconds, :integer, default: 0
       add :pay_amount, :integer, default: 0
       add :last_pay_at, :naive_datetime
 

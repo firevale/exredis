@@ -7,6 +7,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :platform, :string, size: 10
       add :device_id, :string
       add :sdk, :string, size: 20
+      add :sdk_user_id, :string
       add :cp_order_id, :string
       add :zone_id, :string
       add :market, :string

@@ -57,11 +57,16 @@ defmodule Acs.Web do
       alias  Acs.RedisAccessToken
 
       alias  Acs.App
+      alias  Acs.User
+      alias  Acs.Device
       alias  Acs.AppSdkBinding
       alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
+      alias  Acs.AppUserDailyActivity
+      alias  Acs.AppDevice
+      alias  Acs.AppDeviceDailyActivity
 
       alias  Acs.PaymentHelper
     end

@@ -28,7 +28,7 @@ config :acs, :platforms, ~w(android ios wp8 windows macos)
 # 是否使用火谷自己的充值渠道
 config :acs, :custom_iap,
   ios: false,
-  android: [:alipay, :ggplay]
+  android: [:alipay]
 
 config :acs, :sdks, ~w(alipay appstore applestore ggplay anzhi baidu cc ccplay coolpad downjoy facebook firevale gfan haima 
                        htc huawei i4 iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc 

@@ -26,6 +26,10 @@ defmodule Acs.FVSdkController do
                    %{"platform" => "android"}) do 
     conn |> render("app_info.android.json", %{app: app})
   end
+  def get_app_info(conn, _params) do 
+    conn |> json(%{success: false, message: "bad request params"})
+  end 
+  
 
   def default_callback(conn, params) do 
     case :rand.uniform(10) do 
@@ -44,14 +48,14 @@ defmodule Acs.FVSdkController do
                        "device_model" => device_model,
                        "app_user_id" => app_user_id,
                        "app_user_name" => app_user_name,
-                       "counter" => counter,
                        "osver" => os,
                        "channel" => sdk,
-                       "zone_id" => zone_id}) do 
+                       "zone_id" => zone_id} = params) do 
     {date, _} = :calendar.local_time
     today = date |> Date.from_erl!
 
-    active_seconds = String.to_integer(counter) * 300
+    # oops, counter params only exists in android fvsdk
+    active_seconds = String.to_integer(params["counter"] || "1") * 300
 
     app_user = case Repo.get_by(AppUser, app_id: app.id, user_id: user_id, zone_id: zone_id) do 
                   nil ->
@@ -59,7 +63,6 @@ defmodule Acs.FVSdkController do
                                                     app_user_name: app_user_name,
                                                     zone_id: zone_id,
                                                     create_date: today,
-                                                    active_seconds: active_seconds,
                                                     app_id: app.id,
                                                     user_id: user_id}) |> Repo.insert!
                   %AppUser{} = app_user ->
@@ -69,7 +72,7 @@ defmodule Acs.FVSdkController do
    
     case Repo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do 
       nil ->
-        AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{date: today, app_user_id: app_user.id, active_seconds: active_seconds}) |> Repo.insert!
+        AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{date: today, app_user_id: app_user.id}) |> Repo.insert!
       %AppUserDailyActivity{} = auda ->
         AppUserDailyActivity.changeset(auda, %{active_seconds: auda.active_seconds + active_seconds}) |> Repo.update!
     end
@@ -84,7 +87,6 @@ defmodule Acs.FVSdkController do
                    nil ->
                      AppDevice.changeset(%AppDevice{}, %{app_id: app.id, 
                                                          create_date: today,
-                                                         active_seconds: active_seconds,
                                                          device_id: device_id,
                                                          zone_id: zone_id}) |> Repo.insert!
                    %AppDevice{} = app_device ->
@@ -93,11 +95,19 @@ defmodule Acs.FVSdkController do
 
     case Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do 
       nil ->
-        AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_user.id, active_seconds: active_seconds}) |> Repo.insert!
+        AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_user.id}) |> Repo.insert!
       %AppDeviceDailyActivity{} = adda ->
         AppDeviceDailyActivity.changeset(adda, %{active_seconds: adda.active_seconds + active_seconds}) |> Repo.update!
     end
                                         
+    conn |> json(%{success: true}) 
+  end
+
+  def report_activity(conn, params) do 
+    d "device_id: #{conn.private.acs_device_id}"
+    d "acs_platform: #{conn.private.acs_platform}"
+    d "params: #{inspect params, pretty: true}"
+    
     conn |> json(%{success: true}) 
   end
 

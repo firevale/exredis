@@ -568,3 +568,42 @@ only screen and (min-resolution: 2.25dppx) {
     font-size: .8rem;
   }
 }
+
+
+
+.is-64x64{
+  width: 64px;
+  height: 64px;
+  border: 1px solid $dark;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.user-name{
+  color: $text-grey;
+  text-align: center;
+  font-size: .7rem;
+  margin: 0 0 .6rem 0;
+}
+
+.nick-name{
+  margin: .6rem auto;
+  padding: .4rem .2rem !important;
+}
+
+.error-sign{
+  width: .9rem;
+  height: .9rem;
+  background-image: url(../assets/error-sign@1x.png);
+}
+.nick-txt{
+  line-height: 2rem;
+  margin-top: .6rem;
+}
+.confirm-button{
+  width: 2rem;
+  padding: .5rem .8rem;
+  margin: .6rem;
+  background: $link;
+  color: $white;
+}

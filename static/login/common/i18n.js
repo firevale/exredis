@@ -53,6 +53,11 @@ export default {
         gotoSelectAccount: '其他账号登陆>',
       },
 
+      personalCenter: {
+        title: '个人中心',
+        changeAccount: '切换账号',
+      },
+
       error: {
         requireUserName: '请输入用户名',
         userNameTooLong: '用户名超长',

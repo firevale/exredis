@@ -43,7 +43,11 @@ export default function(VueRouter) {
         path: 'retrievePasswordStep3',
         name: 'retrievePasswordStep3',
         component: require('../views/retrievePasswordStep3.vue')
-      }, ]
+      }, {
+        path: 'personalCenter',
+        name: 'personalCenter',
+        component: require('../views/personalCenter.vue')
+      }]
     }, {
       path: '*',
       redirect: '/login/'

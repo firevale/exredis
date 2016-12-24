@@ -79,6 +79,31 @@ defmodule Acs.PageController do
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 
+  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser, 
+                                              acs_platform: platform}} = conn,
+             params) do
+
+    locale = case conn.private[:acs_locale] do 
+               nil -> "zh-hans"
+               _ -> "zh-hans"
+             end
+
+    browser = case Mix.env do 
+                :dev -> 
+                  case params["browser"] do 
+                    nil -> browser 
+                    x -> x
+                  end
+                _ -> browser
+              end
+
+    conn |> put_layout(false) 
+         |> put_session(:locale, locale)
+         |> render("payment.html", browser: browser,
+                                   platform: platform,
+                                   locale: locale)
+  end
+
   # NOTE: 兼容旧版本SDK
   def show_native_bridge(conn, params) do 
     conn |> put_layout(false)

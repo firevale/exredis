@@ -39,6 +39,7 @@ defmodule Acs.Router do
     get  "/login/*path", PageController, :show_login_page
     get  "/admin/*path", PageController, :show_admin_page
     get  "/forum/*path", PageController, :show_forum_page
+    get  "/payment/*path", PageController, :show_payment_page
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha 
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code
@@ -66,6 +67,15 @@ defmodule Acs.Router do
 
     get "/client/get_app_config", FVSdkController, :get_app_info
     get "/stat/report_activity", FVSdkController, :report_activity
+
+    scope path: "/alipay" do
+      post  "/redirect", AlipayController, :alipay_redirect, as: :redirect
+      get   "/redirect", AlipayController, :alipay_redirect, as: :redirect
+
+      get   "/notify",   AlipayController, :notify
+      post  "/notify",   AlipayController, :notify
+      get   "/callback", AlipayController, :callback
+    end  
 
     forward "/auth", AuthApiRouter 
     forward "/user", UserApiRouter

@@ -53,6 +53,18 @@ var plugins = [
   }, Infinity),
 
   new CommonsChunkPlugin({
+    name: "payment_commons",
+    filename: isProduction() ? 'js/payment_commons-[hash].js' : 'js/payment_commons.js',
+    chunks: ['payment'],
+    minChunks: function (module, count) {
+      return (
+        (module.resource &&
+          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
+      )
+    }
+  }, Infinity),
+
+  new CommonsChunkPlugin({
     name: "forum_commons",
     filename: isProduction() ? 'js/forum_commons-[hash].js' : 'js/forum_commons.js',
     chunks: ['forum'],
@@ -72,6 +84,7 @@ module.exports = {
     login: ['./login'],
     forum: ['./forum'],
     admin: ['./admin'],
+    payment: ['./payment'],
   },
 
   output: {
@@ -81,9 +94,7 @@ module.exports = {
   },
 
   resolve: {
-    root: path.resolve('./'),
-    extensions: ['', '.js', '.vue'],
-    fallback: [path.join(__dirname, './node_modules')],
+    extensions: ['.js', '.vue', '.css', '.json'],
   },
 
   cache: !isProduction(),

@@ -30,7 +30,6 @@ defmodule Acs.FVSdkController do
     conn |> json(%{success: false, message: "bad request params"})
   end 
   
-
   def default_callback(conn, params) do 
     case :rand.uniform(10) do 
       1 ->

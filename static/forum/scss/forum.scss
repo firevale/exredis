@@ -3,93 +3,122 @@
 @import "~bulma";
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
+
 #app {
-    height: 100vh;
-    box-sizing: border-box;
-    background-color: $white;
-    padding-top: 1rem;
-    overflow: auto;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: $white;
+  padding-top: 1rem;
+  overflow: auto;
 }
 
 .control a.button.is-active {
-    background: $link;
-    color: $white;
+  background: $link;
+  color: $white;
 }
 
 .control a.button {
-    background: $dark;
-    padding: 0;
-    color: $white;
-    margin-right: 1rem;
-    margin-bottom: .5rem;
-    font-weight: bold;
-    min-width: 6rem;
-    border-radius: .5rem;
-    font-size: 1rem;
+  background: $dark;
+  padding: 0;
+  color: $white;
+  margin-right: 1rem;
+  margin-bottom: .5rem;
+  font-weight: bold;
+  min-width: 6rem;
+  border-radius: .5rem;
+  font-size: 1rem;
 }
 
 .horizontal-line {
-    height: .1rem;
-    margin: 1rem 0rem;
+  height: .1rem;
+  margin: 1rem 0rem;
 }
 
 .clear-left {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 .clear-right {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 .txt-right {
-    text-align: right;
-    margin-right: 0 !important;
+  text-align: right;
+  margin-right: 0 !important;
 }
 
 .txt-center {
-    text-align: center;
+  text-align: center;
 }
 
 .content-item {
-    margin: auto 1rem !important;
+  margin: auto 1rem !important;
 }
 
 .note-item {
-    padding: .8rem .2rem;
-    border-bottom: 1px solid $text-grey;
+  padding: .8rem .2rem;
+  border-bottom: 1px solid $text-grey;
 }
 
 .note-detail {
-    padding: .8rem;
-    border-bottom: 1px solid $text-grey;
+  padding: .8rem;
+  border-bottom: 1px solid $text-grey;
 }
 
 .note-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .backTop {
-    cursor: pointer;
-    position: fixed;
-    bottom: 3rem;
-    right: 1.5rem;
-    background: #ffffff;
-    display: flex;
-    font-size: .6rem;
-    border-radius: .3rem;
-    flex-direction: column;
-    color: $dark;
-    opacity: .9;
-    i {
-        color: $primary;
-        font-size: 3rem;
-    }
+  cursor: pointer;
+  position: fixed;
+  bottom: 3rem;
+  right: 1.5rem;
+  background: #ffffff;
+  display: flex;
+  font-size: .6rem;
+  border-radius: .3rem;
+  flex-direction: column;
+  color: $dark;
+  opacity: .9;
+  i {
+    color: $primary;
+    font-size: 3rem;
+  }
 }
 
 .red {
-    color: $red;
+  color: $red;
 }
 
 .dark {
-    color: $dark;
+  color: $dark;
+}
+
+.reply-btn {
+  width: 100%;
+  color: $white;
+  font-size: 1rem;
+  padding: .4rem;
+  background: $primary;
+}
+
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  height: 4rem;
+  width: 100%;
+  z-index: 3;
+  background: $white;
+  border-bottom: 1px solid $dark;
+}
+
+.scroll-box {
+  overflow: auto;
+  position: absolute;
+  top: 4rem;
+  bottom: 0;
+  width: 100%;
 }

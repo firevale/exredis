@@ -101,33 +101,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-  .reply-btn {
-    width: 100%;
-    color: $white;
-    font-size: 1rem;
-    padding: .4rem;
-    background: $primary;
-  }
-  
-  .fixed-top {
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 1rem;
-    height: 4rem;
-    width: 100%;
-    z-index: 3;
-    background: $white;
-    border-bottom: 1px solid $dark;
-  }
-  
-  .scroll-box {
-    overflow: auto;
-    position: absolute;
-    top: 4rem;
-    bottom: 0;
-    width: 100%;
-  }
-</style>

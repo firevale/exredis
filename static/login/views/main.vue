@@ -33,7 +33,7 @@
 
     computed: {
       ...mapGetters([
-        'getMessage', 'transitionName'
+        'transitionName'
       ]),
     },
 

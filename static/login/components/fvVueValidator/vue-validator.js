@@ -1938,6 +1938,7 @@ function installMixin (Vue) {
 function installComponent (Vue) {
   var components = Component(Vue);
   Object.keys(components).forEach(function (id) {
+    console.log('install component', id, components[id])
     Vue.component(id, components[id]);
   });
 }

@@ -5,7 +5,6 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [{
       path: '/login',
-      name: 'login_main',
       component: require('../views/main.vue'),
       children: [{
         path: '',

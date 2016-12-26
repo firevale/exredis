@@ -97,6 +97,9 @@ module.exports = {
     extensions: ['', '.js', '.vue', '.css', '.json'],
     moduleDirectories: ['node_modules'],
     fallback: [path.join(__dirname, './node_modules')],
+    alias: {
+     vue: 'vue/dist/vue.common.js'
+    }
   },
 
   cache: !isProduction(),

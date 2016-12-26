@@ -43,7 +43,7 @@
       ]),
 
       onClose: function() {
-        nativeApi.closeLoginDialog({success: false})
+        nativeApi.closeLoginDialog({success: false, message: "user cancel"})
       },
     },
 
@@ -55,5 +55,5 @@
   }
 </script>
 <style lang="scss">
-  @import '../scss/login';
+  @import '../scss/payment'
 </style>

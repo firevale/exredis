@@ -5,16 +5,15 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [{
       path: '/payment',
-      name: 'payment_main',
       component: require('../views/main.vue'),
       children: [{
-        path: '',
-        name: 'selectPaymentChannel',
+        path: 'pay_proxy',
+        name: 'pay_proxy',
         component: require('../views/selectPaymentChannel.vue'),
       },]
     }, {
       path: '*',
-      redirect: '/payment/selectPaymentChannel'
+      redirect: '/payment/pay_proxy'
     }]
   });
 }

@@ -1,0 +1,11 @@
+@import '~login/scss/login';
+
+div.horizontal-stack-box {
+  .tile {
+    .sdk-icon {
+      &.alipay {
+        background-image: url(../assets/alipay@1x.png);
+      }
+    }
+  }
+}

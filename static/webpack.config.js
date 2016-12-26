@@ -97,6 +97,9 @@ module.exports = {
     extensions: ['', '.js', '.vue', '.css', '.json'],
     moduleDirectories: ['node_modules'],
     fallback: [path.join(__dirname, './node_modules')],
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    }
   },
 
   cache: !isProduction(),
@@ -116,7 +119,8 @@ module.exports = {
       query: {
         presets: ['es2015', 'stage-2'],
         compact: false
-      }
+      },
+      exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)]
     }, {
       test: /\.(jpg|png|gif)$/,
       loader: "url-loader?limit=16384&name=/images/[name].[hash:7].[ext]"

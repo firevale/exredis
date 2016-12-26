@@ -119,7 +119,8 @@ module.exports = {
       query: {
         presets: ['es2015', 'stage-2'],
         compact: false
-      }
+      },
+      exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)]
     }, {
       test: /\.(jpg|png|gif)$/,
       loader: "url-loader?limit=16384&name=/images/[name].[hash:7].[ext]"

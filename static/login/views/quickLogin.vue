@@ -28,7 +28,7 @@
       </div>
       <hr class="show-in-app" />
       <div class="row-login show-in-app" style="-webkit-justify-content: center; justify-content: center;">
-        <router-link :to="{name: 'selectAccountType'}">{{ $t('account.quickLoginPage.gotoSelectAccount') }}</router-link>
+        <router-link class="pull-right" :to="{name: 'selectAccountType'}">{{ $t('account.quickLoginPage.gotoSelectAccount') }}</router-link>
       </div>
     </validation>
   </div>

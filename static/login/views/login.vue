@@ -33,8 +33,8 @@
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login">
-        <router-link :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
-        <router-link :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
+        <router-link class="pull-left" :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
+        <router-link class="pull-right" :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
       </div>
     </validation>
   </div>
@@ -116,6 +116,7 @@
             if (result.success) {
               this.addLoginnedAccount(result)
               this.setLoginAccountId(this.accountId)
+
               if (window.acsConfig.inApp) {
                 nativeApi.closeLoginDialog(result)
               }

@@ -22,6 +22,10 @@ body.in-app {
   transform: translate3d(0, 0, 0);
 }
 
+body.wp8 {
+  background: #000;
+}
+
 body.in-app *:not(input) {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -60,7 +64,8 @@ $form-height: 220px;
   height: $form-height;
 }
 
-body.in-app {
+body.in-app, 
+body.wp8 {
   .g-doc {
     display: block;
   }
@@ -75,6 +80,12 @@ body.in-app {
         margin: 0.3rem 0;
       }
     }
+  }
+}
+
+body.wp8 {
+  .g-con {
+    padding-top: 2rem;
   }
 }
 
@@ -113,14 +124,18 @@ hr {
   }
   .row-login {
     position: relative;
+    display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
+    -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;
+    -ms-flex-pack: justify;
     -webkit-justify-content: space-between;
     justify-content: space-between;
     margin: 0;
     p.title {
+      -ms-flex: 1;
       -webkit-flex: 1;
       flex: 1;
       margin: 0.6rem 0;
@@ -135,6 +150,7 @@ hr {
       padding: .6rem;
       padding-left: 2rem;
       font-size: .6rem;
+      -ms-flex: 1;
       -webkit-flex: 1;
       flex: 1;
     }
@@ -153,6 +169,7 @@ hr {
       margin: auto;
     }
     input.outsideText {
+      -ms-flex: 1;
       -webkit-flex: 1;
       flex: 1;
     }
@@ -180,11 +197,13 @@ hr {
       max-height: 2rem;
       padding: 2px;
       display: flex;
-      flex-direction: row;
+      -ms-flex-direction: row;
       -webkit-flex-direction: row;
+      flex-direction: row;
       .captcha {
-        flex: 1;
         -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
       }
     }
     hr {
@@ -198,6 +217,16 @@ hr {
       color: $link;
       font-size: .6rem;
       padding-top: .5rem;
+
+      &.pull-left {
+        position: absolute;
+        left: 0rem;
+      }
+
+      &.pull-right {
+        position: absolute;
+        right: 0rem;
+      }
     }
   }
   .code-tip {

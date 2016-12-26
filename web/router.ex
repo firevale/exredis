@@ -46,6 +46,9 @@ defmodule Acs.Router do
 
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
+
+    # 兼容wp8 
+    get "/auth/authorization_token", PageController, :show_login_page
   end
   
   scope "/user", Acs do

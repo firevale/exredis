@@ -32,7 +32,7 @@
     <meta content="no-siteapp" http-equiv="Cache-Control"/>
     <link href="<%= static_path(@conn, "/css/login.css") %>" rel="stylesheet"/>
 </html>
-<body<%= if @browser == "webview" do %> class="in-app" <% end %>>
+<body class="<%= @body_class %>">
   <div id="app">
     <router-view></router-view>
   </div>
@@ -41,7 +41,7 @@
       isMobileAccountSupported: <%= @is_mobile_account_supported %>,
       csrfToken: '<%= get_csrf_token %>',
       redirectUrl: '<%= @redirect_url %>',
-      inApp: <%= @browser == "webview" %>,
+      inApp: <%= @browser == "webview" || @platform == "wp8" %>,
       platform: '<%= @platform %>',
       locale: '<%= @locale %>',
       appId: '<%= @conn.private[:acs_app_id] %>', 

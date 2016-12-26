@@ -13,6 +13,8 @@ defmodule Acs.PageController do
   def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
                                             acs_platform: platform}} = conn,
              params) do 
+    
+    d "show login page for app: #{conn.private[:acs_app_id]}"
                
     decoded_redirect_url = case params["redirect_url"] do 
                               nil -> "/"
@@ -34,11 +36,27 @@ defmodule Acs.PageController do
                 _ -> browser
               end
 
+    body_class = case platform do 
+                  "wp8" -> "wp8 in-app"
+                  "ios" -> 
+                    case browser do 
+                      "webview" -> "ios in-app"
+                      _ -> "ios"
+                    end
+                  "android" -> 
+                    case browser do 
+                      "webview" -> "android in-app"
+                      _ -> "android"
+                    end
+                  _ -> ""
+                end
+
     conn |> put_layout(false) 
          |> put_session(:locale, locale)
          |> render("login.html", redirect_url: decoded_redirect_url, 
                                  browser: browser,
                                  platform: platform,
+                                 body_class: body_class,
                                  locale: locale,
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end

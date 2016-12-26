@@ -6,6 +6,9 @@ export default {
       AndroidNativeAPI.closeLoginDialog(result)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeLoginDialog === 'function') {
       IOSNativeAPI.closeLoginDialog(result)
+    } else if (window.acsConfig.platform == 'wp8') {
+      let jsonStr = JSON.stringify(result)
+      window.external.notify(jsonStr)
     } else {
       console.error('dont know how to close login dialog')
     }

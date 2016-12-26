@@ -24,7 +24,7 @@
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </validation>
   </div>

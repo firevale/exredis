@@ -16,6 +16,7 @@
         <span class="nick-txt">{{ $t('account.personalCenter.nickName') }}</span>
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
+                validNickName: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
           <input type="text" maxlength="12" minlength="6" class="nick-name" v-model.trim="nickName" autocomplete="off" name="user"
             @focusout="handleValidate" />
@@ -42,6 +43,14 @@
   } from 'vuex'
 
   export default {
+    validators: {
+      validNickName: function(val) {
+        return this.validateNickName(val).then(result => {
+          return result ? Promise.resolve() : Promise.reject()
+        })
+      },
+    },
+
     data: function() {
       return {
         nickName: '火谷测试',
@@ -52,12 +61,23 @@
     },
 
     computed: {
+      ...mapGetters([
+        
+      ]),
+
+      invalidNickNameErrorMessage(){
+        return 'nickName error'
+      },
       userName(){
         return this.$t('account.personalCenter.userNameStr',{ nickName: 'test@firevale.com' })
       },
     },
 
     methods: {
+      validateNickName(){
+        return false
+      },
+
       handleValidate: function(e) {
         e.target.$validity.validate(_ => {
           
@@ -71,7 +91,6 @@
             method: 'post',
             url: '/login/saveNickName',
             params: {
-              account_id: this.accountId,
               nickName: this.nickName
             }
           }).then(response => {

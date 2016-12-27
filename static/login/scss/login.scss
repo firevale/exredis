@@ -601,9 +601,9 @@ only screen and (min-resolution: 2.25dppx) {
 
 
 
-.is-64x64{
-  width: 64px;
-  height: 64px;
+.is-84x84{
+  width: 84px;
+  height: 84px;
   border: 1px solid $dark;
   border-radius: 50%;
   overflow: hidden;
@@ -612,13 +612,14 @@ only screen and (min-resolution: 2.25dppx) {
 .user-name{
   color: $text-grey;
   text-align: center;
-  font-size: .7rem;
-  margin: 0 0 .6rem 0;
+  font-size: .8rem;
+  margin: 0 0 .5rem 0;
 }
 
 .nick-name{
-  margin: .6rem auto;
-  padding: .4rem .2rem !important;
+  margin-top: .5rem;
+  padding: .2rem .2rem !important;
+  font-size: .8rem !important;
 }
 
 .error-sign{
@@ -627,13 +628,37 @@ only screen and (min-resolution: 2.25dppx) {
   background-image: url(~login/assets/error-sign@1x.png);
 }
 .nick-txt{
+  color: $text-grey;
   line-height: 2rem;
-  margin-top: .6rem;
+  margin-top: .35rem;
+  margin-right: .2rem;
+  font-size: .8rem;
 }
 .confirm-button{
-  width: 2rem;
-  padding: .5rem .8rem;
-  margin: .6rem;
+  font-size: .6rem !important;
+  flex: 0 !important;
+  padding: .3rem .8rem !important;
+  margin-top: .5rem !important;
+  margin-left: .2rem !important;
+  text-align: center;
   background: $link;
   color: $white;
+  cursor: pointer;
+}
+.submit-button{
+  font-size: .9rem !important;
+  padding: .5rem !important;
+}
+
+.edit-sign{
+  width: .9rem;
+  height: .9rem;
+  display: inline-block;
+  margin-left: 1rem;
+  background-image: url(~login/assets/edit@1x.png);
+  cursor: pointer;
+}
+.native-button{
+  font-size: .9rem !important;
+  margin-top: .6rem !important;
 }

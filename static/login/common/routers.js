@@ -46,6 +46,10 @@ export default function(VueRouter) {
         path: 'personalCenter',
         name: 'personalCenter',
         component: require('../views/personalCenter.vue')
+      }, {
+        path: 'personalPortrait',
+        name: 'personalPortrait',
+        component: require('../views/personalPortrait.vue')
       }]
     }, {
       path: '*',

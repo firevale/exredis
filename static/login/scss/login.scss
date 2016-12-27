@@ -612,8 +612,8 @@ only screen and (min-resolution: 2.25dppx) {
 .user-name{
   color: $text-grey;
   text-align: center;
-  font-size: .7rem;
-  margin: 0 0 .2rem 0;
+  font-size: .8rem;
+  margin: 0 0 .5rem 0;
 }
 
 .nick-name{
@@ -646,7 +646,7 @@ only screen and (min-resolution: 2.25dppx) {
   cursor: pointer;
 }
 .submit-button{
-  font-size: .8rem !important;
+  font-size: .9rem !important;
   padding: .5rem !important;
 }
 

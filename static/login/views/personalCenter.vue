@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.personalCenter.title') }}</p>
       </div>
-      <div class="row-login" style="justify-content: center;margin-top: .1rem;">
+      <div class="row-login" style="justify-content: center;margin-top: .2rem;">
         <img class="is-84x84" :src="picUrl" @click="changePortrait"></img>
       </div>
       <div v-show="!editNick" style="text-align: center;">
@@ -16,7 +16,7 @@
         <span class="nick-txt">{{ $t('account.personalCenter.nickName') }}</span>
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
-                validNickName: {rule: true, message: invalidAccountIdErrorMessage},
+                validNickName: {rule: true, message: invalidNickNameErrorMessage},
                 }">
           <input type="text" maxlength="12" minlength="6" class="nick-name" v-model.trim="nickName" autocomplete="off" name="user"
             @focusout="handleValidate" />
@@ -54,7 +54,7 @@
     data: function() {
       return {
         nickName: '火谷测试',
-        picUrl: '',
+        picUrl: 'https://assets.servedby-buysellads.com/p/manage/asset/id/28536',
         processing: false,
         editNick: false,
       }

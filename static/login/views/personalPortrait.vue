@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.personalPortrait.title') }}</p>
       </div>
-      <div class="row-login" style="justify-content: center;margin-top: .1rem;">
+      <div class="row-login" style="justify-content: center;margin-top: .2rem;">
         <img class="is-84x84" :src="picUrl"></img>
       </div>
       <div class="row-login">
@@ -29,7 +29,7 @@
   export default {
     data: function() {
       return {
-        picUrl: '',
+        picUrl: 'https://assets.servedby-buysellads.com/p/manage/asset/id/28536',
         processing: false,
         editNick: false,
       }

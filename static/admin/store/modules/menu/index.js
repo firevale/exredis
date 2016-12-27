@@ -1,9 +1,9 @@
 import * as types from '../../mutation-types'
-import { lazyLoading } from './lazyLoading'
-import charts from './charts'
-import uifeatures from './uifeatures'
-import components from './components'
-import tables from './tables'
+//import { lazyLoading } from './lazyLoading'
+//import charts from './charts'
+//import uifeatures from './uifeatures'
+//import components from './components'
+//import tables from './tables'
 
 // show: meta.label -> name
 // name: component name
@@ -17,12 +17,12 @@ const state = {
       meta: {
         icon: 'fa-tachometer'
       },
-      component: lazyLoading('dashboard', true)
+      component: require('../../../views/dashboard/index.vue')//lazyLoading('dashboard', true)
     },
-    charts,
-    uifeatures,
-    components,
-    tables
+    // charts,
+    // uifeatures,
+    // components,
+    // tables
   ]
 }
 

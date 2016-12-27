@@ -64,7 +64,7 @@
                 if (result.success) {
                   this.addLoginnedAccount(result)
                 }
-                nativeApi.closeLoginDialog(result)
+                nativeApi.closeWebviewWithResult(result)
               }).catch(e => {
                 this.processing = false
               })

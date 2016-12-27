@@ -43,7 +43,7 @@
       ]),
 
       onClose: function() {
-        nativeApi.closeLoginDialog({success: false, message: "user cancel"})
+        nativeApi.closeWebviewWithResult({success: false, message: "user cancel"})
       },
     },
 

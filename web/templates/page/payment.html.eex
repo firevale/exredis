@@ -42,7 +42,11 @@
       inApp: <%= @browser == "webview" %>,
       platform: '<%= @platform %>',
       locale: '<%= @locale %>',
-      appId: '<%= @conn.private[:acs_app_id] %>', 
+      appId: '<%= @conn.private[:acs_app_id] || @app_id %>', 
+      order_id: '<%= @order_id %>',
+      goods_name: '<%= @goods_name %>',
+      price: <%= @price %>,
+      currency: '<%= @currency %>',
       deviceId: '<%= @conn.private[:acs_device_id] %>', 
     }
   </script>

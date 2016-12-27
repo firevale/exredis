@@ -16,7 +16,7 @@ var CompressionPlugin = require("compression-webpack-plugin");
 
 var isProduction = function() {
   return process.env.NODE_ENV === 'production'
-};
+}
 
 var outputPath = function() {
   return path.resolve(__dirname, '../priv/static/')

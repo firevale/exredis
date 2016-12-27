@@ -30,17 +30,29 @@ defmodule SDKAlipay do
   }
 
   def direct(out_trade_no, subject, total_fee, platform) do 
-    seller_email = @config[:seller_email]
-    req_id = Utils.generate_token
-
     merchant_url = String.replace(@merchant_url, "%{platform}", to_string(platform))
     callback_url = String.replace(@callback_url, "%{platform}", to_string(platform))
+    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
+  end
+  def direct(out_trade_no, subject, total_fee, platform, merchant_url) do 
+    callback_url = String.replace(@callback_url, "%{platform}", to_string(platform))
+    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
+  end
+  def direct(out_trade_no, subject, total_fee, platform, merchant_url, callback_url) do 
+    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
+  end
+  def direct(out_trade_no, subject, total_fee, platform, merchant_url, callback_url, notify_url) do 
+    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url)
+  end
+
+  defp do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url) do 
+    req_id = Utils.generate_token
 
     req_data = """
       <direct_trade_create_req>
-        <notify_url>#{@notify_url}</notify_url>
+        <notify_url>#{notify_url}</notify_url>
         <call_back_url>#{callback_url}</call_back_url>
-        <seller_account_name>#{seller_email}</seller_account_name>
+        <seller_account_name>#{@config.seller_email}</seller_account_name>
         <out_trade_no>#{out_trade_no}</out_trade_no>
         <subject>#{subject}</subject>
         <total_fee>#{Float.to_string(total_fee, [decimals: 2])}</total_fee>

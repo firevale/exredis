@@ -118,7 +118,7 @@
               this.setLoginAccountId(this.accountId)
 
               if (window.acsConfig.inApp) {
-                nativeApi.closeLoginDialog(result)
+                nativeApi.closeWebviewWithResult(result)
               }
 
               console.log("processing login success....")

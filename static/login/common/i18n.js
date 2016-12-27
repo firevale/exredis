@@ -22,7 +22,7 @@ export default {
         changeCode: '更换',
       },
 
-      registerPage:{
+      registerPage: {
         btnRegister: '注册',
         btnBind: '绑定账号',
         sendAgain: "重新发送",
@@ -56,6 +56,15 @@ export default {
       personalCenter: {
         title: '个人中心',
         changeAccount: '切换账号',
+        nickName: '昵称 : ',
+        confirm: '确认',
+        userNameStr: '用户名 : {nickName}',
+      },
+
+      personalPortrait: {
+        title: '修改头像',
+        choosePicture: '从相册选一张',
+        pictureShot: '拍一张照片',
       },
 
       error: {

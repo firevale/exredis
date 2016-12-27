@@ -66,7 +66,8 @@ defmodule Acs.PageController do
   end
 
   def show_admin_page(conn, params) do
-    conn |> put_layout(false) |> render("admin.html")
+    conn |> put_layout(false) 
+         |> render("admin.html")
   end
 
   def show_forum_page(%Plug.Conn{private: %{acs_browser: browser, 

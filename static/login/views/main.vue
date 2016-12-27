@@ -43,7 +43,7 @@
       ]),
 
       onClose: function() {
-        nativeApi.closeLoginDialog({success: false})
+        nativeApi.closeWebviewWithResult({success: false})
       },
     },
 

@@ -1,13 +1,16 @@
 import utils from './utils'
 
 export default {
-  closeLoginDialog: function(result) {
-    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeLoginDialog === 'function') {
-      AndroidNativeAPI.closeLoginDialog(result)
-    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeLoginDialog === 'function') {
-      IOSNativeAPI.closeLoginDialog(result)
+  closeWebviewWithResult: function(result) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeWebviewWithResult === 'function') {
+      AndroidNativeAPI.closeWebviewWithResult(result)
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeWebviewWithResult === 'function') {
+      IOSNativeAPI.closeWebviewWithResult(result)
+    } else if (window.acsConfig.platform == 'wp8') {
+      let jsonStr = JSON.stringify(result)
+      window.external.notify(jsonStr)
     } else {
-      console.error('dont know how to close login dialog')
+      console.error('dont know how to close webview dialog')
     }
   },
 

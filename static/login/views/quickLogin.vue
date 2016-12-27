@@ -100,7 +100,7 @@
               this.addLoginnedAccount(result)
               this.currentAccount = result
               if (window.acsConfig.inApp) {
-                nativeApi.closeLoginDialog(result)
+                nativeApi.closeWebviewWithResult(result)
               }
             } else {
               if (!this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {

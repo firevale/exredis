@@ -105,7 +105,7 @@
               this.setRegisterAccountId('')
               this.addLoginnedAccount(result)
               if (window.acsConfig.inApp) {
-                nativeApi.closeLoginDialog(result)
+                nativeApi.closeWebviewWithResult(result)
               }
             } else {
               this.errorMessage = this.$t(result.message)

@@ -44,6 +44,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
     create index(:app_orders, [:status])
     create index(:app_orders, [:transaction_currency])
     create index(:app_orders, [:transaction_id], unique: true)
+    create index(:app_orders, [:app_id, :cp_order_id], unique: true)
     create index(:app_orders, [:try_deliver_at, :try_deliver_counter])
   end
 end

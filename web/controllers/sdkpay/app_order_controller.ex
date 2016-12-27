@@ -21,7 +21,7 @@ defmodule Acs.SdkPay.AppOrderController do
       user_id: user.id, 
       platform: platform,
       app_user_id: app_user && app_user.id,
-      zone_id: params["zone_id"],
+      zone_id: zone_id,
       device_id: device_id,
       sdk: params["sdk"] || "firevale",
       sdk_user_id: params["sdk_user_id"],
@@ -43,7 +43,7 @@ defmodule Acs.SdkPay.AppOrderController do
       goods_name: params["product_name"] || params["product_id"] || params["goods_id"],
     }
 
-    order_info = case params["goods_id"] do # Q传 wp8版本无此参数
+    order_info = case params["goods_id"] do 
                   nil -> order_info
                   goods_id ->
                     case app.goods[goods_id |> String.to_atom] do 
@@ -87,7 +87,7 @@ defmodule Acs.SdkPay.AppOrderController do
                         "extInfo" => app_order.id 
                         }
 
-        sign_string = post_params |> Enum.sort  |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
+        sign_string = post_params |> Enum.sort |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
         vivo_cp_key_md5 = Utils.md5_sign(vivo_cp_key)
         sign = Utils.md5_sign(sign_string <> "&" <> vivo_cp_key_md5)
         post_params = Map.put(post_params, "signMethod", "MD5")

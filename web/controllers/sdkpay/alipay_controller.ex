@@ -3,6 +3,27 @@ defmodule Acs.AlipayController do
   require SDKAlipay
 
   # conflict with imported redirect function
+  # TODO: refactor this function
+  def alipay_redirect(conn, %{"payment_order_id" => order_id, 
+                              "merchant_url" => merchant_url,
+                              "callback_url" => callback_url} = _params) do 
+    case Repo.get(AppOrder, order_id) do 
+      order = %AppOrder{} ->
+        case SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform, merchant_url, callback_url) do 
+          {:ok, result} ->
+            case SDKAlipay.get_request_token(result) do 
+              {:ok, token} ->
+                conn |> json(%{ success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
+              _ ->
+                conn |> json(%{success: false, message: "can't get alipay request token"})
+            end
+          _ -> 
+            conn |> json(%{success: false, message: "alipay direct failed"})
+        end
+      _ -> 
+        conn |> json(%{success: false, message: "order not found"})
+    end
+  end
   def alipay_redirect(conn, %{"payment_order_id" => order_id} = _params) do 
     case Repo.get(AppOrder, order_id) do 
       order = %AppOrder{} ->
@@ -58,9 +79,9 @@ defmodule Acs.AlipayController do
   end
 
   def callback(conn, params) do 
-    query = URI.encode_query(%{success: (params[:result] == "success"), 
-                               trade_no: params[:trade_no], 
-                               order_id: params[:out_trade_no]} )
+    query = URI.encode_query(%{success: (params["result"] == "success"), 
+                               trade_no: params["trade_no"], 
+                               order_id: params["out_trade_no"]} )
     redirect_url = "/mobile/native_bridge/#{params["platform"]}?#{query}"  
     conn |> redirect(to: redirect_url)
   end

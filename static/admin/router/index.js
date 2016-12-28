@@ -13,14 +13,6 @@ export default new Router({
       path: '/',
       component: require('../views/Home.vue')
     },
-    {
-      name: 'Dashboard',
-      path: '/dashboard',
-      meta: {
-        icon: 'fa-tachometer'
-      },
-      component: require('../views/dashboard/index.vue')
-    },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
       path: '*',

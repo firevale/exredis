@@ -10,7 +10,7 @@ defmodule Acs.Repo.Migrations.CreateApp do
       add :currency, :string, size: 5 # goods currency
       add :payment_callback, :string 
 
-      add :chaoxin_group_id, :string
+      add :chaoxin_group_id, :string   # 超信群组id， 用于发送超信通知
       
       add :cs_phone_number, :string
       add :forum_name, :string

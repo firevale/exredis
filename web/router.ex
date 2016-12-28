@@ -49,6 +49,7 @@ defmodule Acs.Router do
 
     # 兼容wp8 
     get "/auth/authorization_token", PageController, :show_login_page
+
   end
   
   scope "/user", Acs do
@@ -67,6 +68,9 @@ defmodule Acs.Router do
 
   scope path: "/api", alias: Acs do
     pipe_through :api
+
+    # 接受 “火谷小帮手” 超信机器人 消息
+    post "/chaoxin/receive_bot_msg", ChaoxinController, :receive_bot_msg
 
     get "/client/get_app_config", FVSdkController, :get_app_info
     get "/stat/report_activity", FVSdkController, :report_activity

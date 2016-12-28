@@ -11,6 +11,7 @@ defmodule Acs.App do
     field :payment_callback, :string
 
     field :chaoxin_group_id, :string # 超信运营群号
+    
     field :cs_phone_number, :string
     field :forum_name, :string
     field :forum_url, :string
@@ -35,7 +36,9 @@ defmodule Acs.App do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :secret, :name, :currency, :payment_callback])
+    |> cast(params, [:id, :secret, :name, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
+                     :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
+                     :public_wexin_name, :public_weixin_url])
     |> validate_required([:secret, :name, :currency])
   end
 end

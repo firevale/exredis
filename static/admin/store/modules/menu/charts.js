@@ -7,35 +7,27 @@ export default {
     icon: 'fa-bar-chart-o',
     expanded: false
   },
-  component: lazyLoading('charts', true),
-
+  component: require('../../../views/charts'),//lazyLoading('charts', true),
   children: [
-    /*
-    {
-      name: 'CanvasGauges',
-      path: 'canvas-gauges',
-      component: lazyLoading('charts/CanvasGauges')
-    },
-    */
     {
       name: 'Chartist',
       path: 'chartist',
-      component: lazyLoading('charts/Chartist')
+      component: require('../../../views/charts/Chartist.vue')//lazyLoading('charts/Chartist')
     },
     {
       name: 'Chartjs',
       path: 'chartjs',
-      component: lazyLoading('charts/Chartjs')
+      component: require('../../../views/charts/Chartjs.vue')//lazyLoading('charts/Chartjs')
     },
     {
       name: 'Peity',
       path: 'peity',
-      component: lazyLoading('charts/Peity')
+      component: require('../../../views/charts/Peity.vue')//lazyLoading('charts/Peity')
     },
     {
       name: 'Plotly',
       path: 'plotly',
-      component: lazyLoading('charts/Plotly')
+      component: require('../../../views/charts/Plotly.vue')//lazyLoading('charts/Plotly')
     }
   ]
 }

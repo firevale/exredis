@@ -3,7 +3,7 @@
     <div class="container">
       <div class="content has-text-centered">
         <p class="social">
-          <a :href="https://github.com/">
+          <a>
             <span class="icon">
               <i class="fa fa-github"></i>
             </span>

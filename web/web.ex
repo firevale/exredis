@@ -69,6 +69,7 @@ defmodule Acs.Web do
       alias  Acs.AppDeviceDailyActivity
 
       alias  Acs.PaymentHelper
+      alias  Acs.ChaoxinNotifier
     end
   end
 

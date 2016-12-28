@@ -28,6 +28,7 @@ defmodule Acs.AppleStoreController do
 
               %AppOrder{} = order ->
                 Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
+                ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}")
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
@@ -84,6 +85,7 @@ defmodule Acs.AppleStoreController do
         end
       _ -> 
         Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id")
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
@@ -149,6 +151,7 @@ defmodule Acs.AppleStoreController do
 
               %AppOrder{} = order ->
                 Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
+                ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}")
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
               nil ->
@@ -195,6 +198,7 @@ defmodule Acs.AppleStoreController do
 
           {:ok, x} -> 
             Logger.error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
+            ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect x}, 购买商品: #{goods_name}")
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
           {:error, reason} ->
@@ -203,6 +207,7 @@ defmodule Acs.AppleStoreController do
 
       _ -> 
         Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id")
         # set reason to network force client don't finish transaction 
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end

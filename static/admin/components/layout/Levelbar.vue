@@ -9,17 +9,15 @@
     </div>
 
     <div class="level-right is-hidden-mobile">
-      <breadcrumb :list="list"><breadcrumb>
+      <router-link v-for="item in list" :to="item.path">/{{ item.name }}</router-link>
     </div>
   </nav>
 </template>
 
 <script>
-import Breadcrumb from 'vue-bulma-breadcrumb'
-
 export default {
   components: {
-    Breadcrumb
+
   },
 
   data () {

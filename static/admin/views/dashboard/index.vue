@@ -32,7 +32,7 @@
         <article class="tile is-child box">
           <h4 class="title">Five</h4>
           <div class="content">
-            <chart :type="'doughnut'" :data="chartData"></chart>
+           
           </div>
         </article>
       </div>
@@ -40,7 +40,7 @@
         <article class="tile is-child box">
           <h4 class="title">Six</h4>
           <div class="content">
-            <chart :type="'pie'" :data="chartData"></chart>
+            
           </div>
         </article>
       </div>
@@ -106,11 +106,10 @@
 </template>
 
 <script>
-import Chart from 'vue-bulma-chartjs'
 
 export default {
   components: {
-    Chart
+    
   },
 
   data () {

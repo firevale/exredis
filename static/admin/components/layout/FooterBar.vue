@@ -3,7 +3,7 @@
     <div class="container">
       <div class="content has-text-centered">
         <p class="social">
-          <a :href="'https://github.com/' + repository">
+          <a :href="https://github.com/">
             <span class="icon">
               <i class="fa fa-github"></i>
             </span>
@@ -24,7 +24,9 @@
 <script>
 export default {
   data () {
-    return this.$store.state.pkg
+    return {
+
+    }
   }
 }
 </script>

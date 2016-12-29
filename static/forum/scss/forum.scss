@@ -4,362 +4,367 @@
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
 #app {
-  height: 100vh;
-  box-sizing: border-box;
-  background-color: $white;
-  padding-top: 1rem;
-  overflow: auto;
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: $white;
+    padding-top: 1rem;
+    overflow: auto;
 }
 
 .control a.button.is-active {
-  background: $link;
-  color: $white;
+    background: $link;
+    color: $white;
 }
 
 .control a.button {
-  background: $dark;
-  padding: 0;
-  color: $white;
-  margin-right: 1rem;
-  margin-bottom: .5rem;
-  font-weight: bold;
-  min-width: 6rem;
-  border-radius: .5rem;
-  font-size: 1rem;
+    background: $dark;
+    padding: 0;
+    color: $white;
+    margin-right: 1rem;
+    margin-bottom: .5rem;
+    font-weight: bold;
+    min-width: 6rem;
+    border-radius: .5rem;
+    font-size: 1rem;
 }
 
 .horizontal-line {
-  height: .1rem;
-  margin: 1rem 0rem;
+    height: .1rem;
+    margin: 1rem 0rem;
 }
 
 .clear-left {
-  padding-left: 0;
+    padding-left: 0;
 }
 
 .clear-right {
-  padding-right: 0;
+    padding-right: 0;
 }
 
 .txt-right {
-  text-align: right;
-  margin-right: 0 !important;
+    text-align: right;
+    margin-right: 0 !important;
 }
 
 .txt-center {
-  text-align: center;
+    text-align: center;
 }
 
 .content-item {
-  margin: auto 1rem !important;
+    margin: auto 2rem !important;
+    justify-content: space-around;
 }
 
 .note-item {
-  padding: .8rem .2rem;
-  border-bottom: 1px solid $text-grey;
+    padding: .8rem .2rem;
+    border-bottom: 1px solid $text-grey;
 }
 
 .note-detail {
-  padding: .8rem;
-  border-bottom: 1px solid $text-grey;
+    padding: .8rem;
+    border-bottom: 1px solid $text-grey;
 }
 
 .note-item:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .backTop {
-  cursor: pointer;
-  position: fixed;
-  bottom: 3rem;
-  right: 1.5rem;
-  background: #ffffff;
-  display: flex;
-  font-size: .6rem;
-  border-radius: .3rem;
-  flex-direction: column;
-  color: $dark;
-  opacity: .9;
-  i {
-    color: $primary;
-    font-size: 3rem;
-  }
+    cursor: pointer;
+    position: fixed;
+    bottom: 3rem;
+    right: 1.5rem;
+    background: #ffffff;
+    display: flex;
+    font-size: .6rem;
+    border-radius: .3rem;
+    flex-direction: column;
+    color: $dark;
+    opacity: .9;
+    i {
+        color: $primary;
+        font-size: 3rem;
+    }
 }
 
 .red {
-  color: $red;
+    color: $red;
 }
 
 .dark {
-  color: $dark;
+    color: $dark;
 }
 
 .reply-btn {
-  width: 100%;
-  color: $white;
-  font-size: 1rem;
-  padding: .4rem;
-  background: $primary;
+    width: 100%;
+    color: $white;
+    font-size: 1rem;
+    padding: .4rem;
+    background: $primary;
 }
 
 .fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 1rem;
-  height: 4rem;
-  width: 100%;
-  z-index: 3;
-  background: $white;
-  border-bottom: 1px solid $dark;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    height: 4rem;
+    width: 100%;
+    z-index: 3;
+    background: $white;
+    border-bottom: 1px solid $dark;
 }
 
 .scroll-box {
-  overflow: auto;
-  position: absolute;
-  top: 4rem;
-  bottom: 0;
-  width: 100%;
+    overflow: auto;
+    position: absolute;
+    top: 4rem;
+    bottom: 0;
+    width: 100%;
 }
 
 .search-title {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 1.4rem;
-  flex: 9;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex: 9;
+    text-align: center;
 }
 
 .note-new {
-  padding: .3rem .5rem;
-  width: 100%;
+    padding: .3rem .5rem;
+    width: 100%;
 }
 
 .note-content {
-  padding-left: .5rem;
-  width: 100%;
-  height: 50vh;
-  resize: vertical;
+    padding-left: .5rem;
+    width: 100%;
+    height: 50vh;
+    resize: vertical;
 }
 
 .new-note {
-  color: $white !important;
-  background: $primary !important;
-  width: 15rem;
+    color: $white !important;
+    background: $primary !important;
+    width: 15rem;
 }
 
 .upload-img {
-  position: absolute;
-  bottom: 1rem;
-  left: 1.5rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  i {
-    cursor: pointer;
-    vertical-align: middle;
-    font-size: 1.5rem !important;
-  }
-  .img-item {
-    position: relative;
-    span {
-      margin-left: 1rem;
+    position: absolute;
+    bottom: 1rem;
+    left: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    i {
+        cursor: pointer;
+        vertical-align: middle;
+        font-size: 1.5rem !important;
     }
-    .shot-img {
-      visibility: hidden;
-      position: absolute;
-      left: 0;
-      top: -5rem;
-      z-index: 3;
+    .img-item {
+        position: relative;
+        span {
+            margin-left: 1rem;
+        }
+        .shot-img {
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: -5rem;
+            z-index: 3;
+        }
     }
-  }
-  .img-item:hover {
-    .shot-img {
-      visibility: visible;
+    .img-item:hover {
+        .shot-img {
+            visibility: visible;
+        }
     }
-  }
 }
 
 .pre-view {
-  border: 1px solid $dark;
-  margin: auto 1rem;
-  h1:first-child {
-    margin-left: -.5rem;
-    margin-bottom: 1rem;
-  }
-  img {
-    float: left;
-  }
-  p:after {
-    content: '';
-    display: block;
-    clear: both;
-  }
+    border: 1px solid $dark;
+    margin: auto 1rem;
+    h1:first-child {
+        margin-left: -.5rem;
+        margin-bottom: 1rem;
+    }
+    img {
+        float: left;
+    }
+    p:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
 }
 
 .search-title {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 1.4rem;
-  flex: 9;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex: 9;
+    text-align: center;
 }
 
 .note-new {
-  padding: .3rem .5rem;
-  width: 100%;
+    padding: .3rem .5rem;
+    width: 100%;
 }
 
 .note-content {
-  padding-left: .5rem;
-  width: 100%;
-  height: 50vh;
-  resize: vertical;
+    padding-left: .5rem;
+    width: 100%;
+    height: 50vh;
+    resize: vertical;
 }
 
 .new-note {
-  color: $white !important;
-  background: $primary !important;
-  width: 15rem;
+    color: $white !important;
+    background: $primary !important;
+    width: 15rem;
 }
 
 .upload-img {
-  position: absolute;
-  bottom: 1rem;
-  left: 1.5rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  i {
-    cursor: pointer;
-    vertical-align: middle;
-    font-size: 1.5rem !important;
-  }
-  .img-item {
-    position: relative;
-    span {
-      margin-left: 1rem;
+    position: absolute;
+    bottom: 1rem;
+    left: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    i {
+        cursor: pointer;
+        vertical-align: middle;
+        font-size: 1.5rem !important;
     }
-    .shot-img {
-      visibility: hidden;
-      position: absolute;
-      left: 0;
-      top: -5rem;
-      z-index: 3;
+    .img-item {
+        position: relative;
+        span {
+            margin-left: 1rem;
+        }
+        .shot-img {
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: -5rem;
+            z-index: 3;
+        }
     }
-  }
-  .img-item:hover {
-    .shot-img {
-      visibility: visible;
+    .img-item:hover {
+        .shot-img {
+            visibility: visible;
+        }
     }
-  }
 }
 
 .pre-view {
-  border: 1px solid $dark;
-  margin: auto 1rem;
-  h1:first-child {
-    margin-left: 0;
-    margin-bottom: 1rem;
-  }
-  img {
-    float: left;
-  }
-  p:after {
-    content: '';
-    display: block;
-    clear: both;
-  }
+    border: 1px solid $dark;
+    margin: auto 1rem;
+    h1:first-child {
+        margin-left: 0;
+        margin-bottom: 1rem;
+    }
+    img {
+        float: left;
+    }
+    p:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
 }
 
 .pointer {
-  font-size: 1rem;
-  cursor: pointer;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
 .search-box {
-  width: 100%;
-  font-size: 1rem;
-  padding: .6rem;
-  padding-left: 3rem;
-  padding-right: 4rem;
-  border: .1rem solid $dark;
+    width: 100%;
+    font-size: 1rem;
+    padding: .6rem;
+    padding-left: 3rem;
+    padding-right: 4rem;
+    border: .1rem solid $dark;
 }
 
 .search-btn {
-  width: 100%;
-  color: $white;
-  font-size: 1.2rem;
-  padding: .5rem;
-  background: $primary;
+    width: 100%;
+    color: $white;
+    font-size: 1.2rem;
+    padding: .5rem;
+    background: $primary;
 }
 
 .control .column {
-  padding-top: 0;
-  padding-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .search-icon {
-  position: absolute;
-  left: 1rem;
-  bottom: .6rem;
-  font-size: 1.8rem !important;
-  color: $dark;
+    position: absolute;
+    left: 1rem;
+    bottom: .6rem;
+    font-size: 1.8rem !important;
+    color: $dark;
 }
 
 .times-icon {
-  position: absolute;
-  right: 1rem;
-  bottom: .6rem;
-  font-size: 1.8rem !important;
-  color: $dark;
-}
-
-.content-item {
-  margin: 1rem auto;
-  justify-content: space-around;
+    position: absolute;
+    right: 1rem;
+    bottom: .6rem;
+    font-size: 1.8rem !important;
+    color: $dark;
 }
 
 .search-tip {
-  text-align: left;
-  font-size: 1.3rem;
-  color: $dark;
-  margin-bottom: 2rem;
+    text-align: left;
+    font-size: 1.3rem;
+    color: $dark;
+    margin-bottom: 2rem;
 }
 
 .his-key {
-  width: 50%;
-  padding: .5rem;
-  float: left;
-  border-bottom: 1px solid $dark;
-  border-right: 1px solid $dark;
-  box-sizing: border-box;
-  text-align: center;
-  color: $black;
-  font-size: 1rem;
+    width: 50%;
+    padding: .5rem;
+    float: left;
+    border-bottom: 1px solid $dark;
+    border-right: 1px solid $dark;
+    box-sizing: border-box;
+    text-align: center;
+    color: $black;
+    font-size: 1rem;
 }
 
 .his-key:hover {
-  color: $primary;
-  cursor: pointer;
+    color: $primary;
+    cursor: pointer;
 }
 
 .his-box {
-  border-top: 1px solid $dark;
-  border-left: 1px solid $dark;
+    border-top: 1px solid $dark;
+    border-left: 1px solid $dark;
 }
 
 .his-box:after {
-  content: '';
-  display: block;
-  clear: both;
+    content: '';
+    display: block;
+    clear: both;
 }
 
 .clear-his {
-  text-align: center;
-  color: $primary;
-  font-size: 1rem;
-  margin-top: 2rem;
+    text-align: center;
+    color: $primary;
+    font-size: 1rem;
+    margin-top: 2rem;
+}
+
+.arrow-back {
+    position: absolute;
+    left: 1rem;
+}
+
+.main-title {
+    font-size: 1.4rem;
 }

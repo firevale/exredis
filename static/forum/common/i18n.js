@@ -47,6 +47,14 @@ export default {
         btnTxt: '回复',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
       },
+      customService:{
+        title: '客服',
+        commonIssues: '常见问题',
+        contactService: '联系客服',
+        serviceRecord: '服务记录',
+        searchBtn: '搜索问题',
+        searchPlaceHolder: '请输入问题关键词',
+      },
       pagination: {
         previous: '上一页',
         next: '下一页',

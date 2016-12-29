@@ -1,7 +1,9 @@
 import Vue from 'admin/common/vue-i18n'
 
 import * as types from '../../mutation-types'
-import apps from './apps'
+import x from './apps.js'
+
+console.log(x)
 
 const state = {
   items: [
@@ -11,7 +13,27 @@ const state = {
       meta: {
         icon: 'fa-tachometer'
       },
-      component: require('../../../views/dashboard/index.vue')
+    },
+    {
+      name: Vue.t('admin.menu.appManage'),
+      path: '/admin/apps',
+      meta: {
+        icon: 'fa-bars',
+      },
+    },
+    {
+      name: Vue.t('admin.menu.userManage'),
+      path: '/admin/users',
+      meta: {
+        icon: 'fa-user-circle'
+      },
+    },
+    {
+      name: Vue.t('admin.menu.settings'),
+      path: '/admin/settings',
+      meta: {
+        icon: 'fa-cog'
+      },
     },
   ]
 }
@@ -25,7 +47,13 @@ const mutations = {
     } else if (menuItem.item && 'expanded' in menuItem.item.meta) {
       menuItem.item.meta.expanded = menuItem.expanded
     }
-  }
+  },
+
+  [types.UPDATE_APPS] (state, apps) {
+    apps.forEach(app => {
+      state.items.push(x.generateAppMenuItem(app))  
+    })
+  },
 }
 
 export default {

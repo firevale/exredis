@@ -34,7 +34,6 @@ export default {
     show: Boolean
   },
   computed: mapGetters({
-    pkginfo: 'pkg',
     sidebar: 'sidebar'
   }),
   methods: mapActions([

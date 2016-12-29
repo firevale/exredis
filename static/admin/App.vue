@@ -4,7 +4,6 @@
     <navbar :show="true"></navbar>
     <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
     <app-main></app-main>
-    <footer-bar></footer-bar>
   </div>
 </template>
 <script>
@@ -21,7 +20,7 @@ export default {
     'nprogressContainer': NprogressContainer
   },
 
-  beforeMount () {
+  beforeMount: function() {
     const { body } = document
     const WIDTH = 768
     const RATIO = 3
@@ -40,13 +39,18 @@ export default {
     window.addEventListener('resize', handler)
   },
 
+  mounted: function() {
+    this.fetchPlatformApps()
+  }, 
+
   computed: mapGetters({
     sidebar: 'sidebar'
   }),
 
   methods: mapActions([
     'toggleDevice',
-    'toggleSidebar'
+    'toggleSidebar',
+    'fetchPlatformApps'
   ])
 }
 </script>

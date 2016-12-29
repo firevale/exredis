@@ -13,41 +13,42 @@ export default new Router({
   routes: [{
     path: '/admin',
     children: [{
-        name: 'Home',
-        path: 'dashboard',
-        component: require('../views/dashboard')
-      },
-      {
-        name: 'AppList',
-        path: 'apps',
-        component: require('../views/apps')
-      },
-      {
-        name: 'AppInfo',
-        path: 'apps/:appId',
-        component: require('../views/apps/info')
-      },
-      {
-        name: 'AppEdit',
-        path: 'apps/edit/:appId',
-        component: require('../views/apps/edit')
-      },
-      {
-        name: 'AppGoods',
-        path: 'apps/goods/:appId',
-        component: require('../views/apps/goods')
-      },
-      {
-        name: 'AppOrders',
-        path: 'apps/orders/:appId',
-        component: require('../views/apps/orders')
-      },
-      {
-        name: 'AppStats',
-        path: 'apps/stats/:appId',
-        component: require('../views/apps/stats')
-      },
-    ],
+      name: 'Home',
+      path: 'dashboard',
+      component: require('../views/dashboard')
+    }, {
+      name: 'AppList',
+      path: 'apps',
+      component: require('../views/apps')
+    }, {
+      name: 'AppInfo',
+      path: 'apps/:appId',
+      component: require('../views/apps/info')
+    }, {
+      name: 'AppEdit',
+      path: 'apps/edit/:appId',
+      component: require('../views/apps/edit')
+    }, {
+      name: 'AppGoods',
+      path: 'apps/goods/:appId',
+      component: require('../views/apps/goods')
+    }, {
+      name: 'AppOrders',
+      path: 'apps/orders/:appId',
+      component: require('../views/apps/orders')
+    }, {
+      name: 'AppStats',
+      path: 'apps/stats/:appId',
+      component: require('../views/apps/stats')
+    }, {
+      name: 'Users',
+      path: 'users',
+      component: require('../views/Users')
+    }, {
+      name: 'Settings',
+      path: 'settings',
+      component: require('../views/Settings')
+    }],
   }, {
     path: '*',
     redirect: '/admin/'

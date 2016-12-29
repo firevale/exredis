@@ -89,8 +89,11 @@ defmodule Acs.Router do
     forward "/pay", PayRouter
     forward "/sdkpay", SdkPayRouter
 
-
   end # end scope ap
+
+  scope path: "/admin_actions", alias: Acs do 
+    forward "/", AdminRouter
+  end
 
   # Other scopes may use custom stacks.
   # scope "/api", Acs do

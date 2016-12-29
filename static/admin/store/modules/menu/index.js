@@ -1,18 +1,18 @@
+import Vue from 'admin/common/vue-i18n'
+
 import * as types from '../../mutation-types'
-import { lazyLoading } from './lazyLoading'
-import charts from './charts'
+import apps from './apps'
 
 const state = {
   items: [
     {
-      name: 'Dashboard',
-      path: '/dashboard',
+      name: Vue.t('admin.menu.dashboard'),
+      path: '/admin/dashboard',
       meta: {
         icon: 'fa-tachometer'
       },
-      component: require('../../../views/dashboard/index.vue')//lazyLoading('dashboard', true)
+      component: require('../../../views/dashboard/index.vue')
     },
-    charts,
   ]
 }
 

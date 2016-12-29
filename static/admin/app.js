@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'admin/common/vue-i18n'
 import Resource from 'vue-resource'
 import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
@@ -10,6 +10,8 @@ import { TOGGLE_SIDEBAR } from './store/mutation-types'
 
 Vue.use(Resource)
 Vue.use(NProgress)
+
+Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 
 sync(store, router)
 

@@ -100,6 +100,8 @@ module.exports = {
     alias: {
      vue: 'vue/dist/vue.common.js',
      login: path.join(__dirname, './login'),
+     admin: path.join(__dirname, './admin'),
+     forum: path.join(__dirname, './forum'),
     }
   },
 

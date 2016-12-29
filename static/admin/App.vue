@@ -60,6 +60,8 @@ export default {
     animation-duration: .377s;
   }
   
+  $primary: #4e9ed8;
+
   @import '~bulma';
   @import '~wysiwyg.css/wysiwyg.sass';
   $fa-font-path: '~font-awesome/fonts/';

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>
-      admin
+      <%= gettext "Firevale Platform Admin Page" %>
     </title>
     <meta name="admin" content="app-id=com.firevale.vrstorecn">
     <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>

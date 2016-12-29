@@ -6,7 +6,7 @@ export default {
       name: app.name,
       path: `/admin/apps/${app.id}`,
       meta: {
-        icon: 'fa-asterisk',
+        icon: 'fa-globe',
         expanded: false
       },
       children: [{

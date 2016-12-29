@@ -12,12 +12,15 @@ export default new Router({
   }),
   routes: [{
     path: '/admin',
+    name: 'Home',
+    component: require('../views/dashboard'),
+
     children: [{
-      name: 'Home',
+      name: 'Dashboard',
       path: 'dashboard',
       component: require('../views/dashboard')
     }, {
-      name: 'AppList',
+      name: 'AppManage',
       path: 'apps',
       component: require('../views/apps')
     }, {
@@ -51,6 +54,6 @@ export default new Router({
     }],
   }, {
     path: '*',
-    redirect: '/admin/'
+    redirect: '/admin/dashboard'
   }]
 })

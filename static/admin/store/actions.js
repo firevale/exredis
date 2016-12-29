@@ -33,7 +33,6 @@ export const fetchPlatformApps = ({
     .then(res => res.json())
     .then(json => {
       if (json.success) {
-        console.log("update apps....")
         commit(types.UPDATE_APPS, json.apps)
       }
     })

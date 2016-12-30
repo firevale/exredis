@@ -13,7 +13,7 @@ export default new Router({
   routes: [{
     path: '/admin',
     name: 'Home',
-    component: require('../views/dashboard'),
+    component: require('../views/apps/index.vue'),
 
     children: [{
       name: 'Dashboard',
@@ -22,7 +22,7 @@ export default new Router({
     }, {
       name: 'AppManage',
       path: 'apps',
-      component: require('../views/apps')
+      component: require('../views/apps/list')
     }, {
       name: 'AppInfo',
       path: 'apps/:appId',

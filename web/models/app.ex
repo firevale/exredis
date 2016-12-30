@@ -8,6 +8,7 @@ defmodule Acs.App do
     field :id, :string, primary_key: true
     field :secret, :string
     field :name, :string
+    field :icon, :string
     field :token_ttl, :integer, default: 604800 
     field :currency, :string, default: "CNY"
     field :payment_callback, :string
@@ -38,9 +39,9 @@ defmodule Acs.App do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :secret, :name, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
+    |> cast(params, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
                      :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
-                     :public_wexin_name, :public_weixin_url])
+                     :public_weixin_name, :public_weixin_url])
     |> validate_required([:secret, :name, :currency])
   end
 end

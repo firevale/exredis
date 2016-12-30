@@ -1,31 +1,42 @@
 <template>
   <div>
+
   </div>
 </template>
 
 <script>
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
 
-export default {
+  export default {
 
-  created () {
-   
-  },
+    created() {
 
-  mounted () {
-    
-    
-  },
+    },
 
-  data () {
-    return {
-      
+    mounted() {
+
+
+    },
+
+    data() {
+      return {
+
+      }
+    },
+
+    computed: {
+      ...mapGetters([
+        'apps'
+      ]),
+    },
+
+    methods: {
+
     }
-  },
-
-  methods: {
-    
   }
-}
 </script>
 
 <style scoped>

@@ -13,9 +13,6 @@ export default {
         settings: '系统设置',
       },
 
-      admin: '管理后台',
-      firevalePlatform: '火谷平台',
-
       routes: {
         Home: '首页',
         Dashboard: '概况',
@@ -27,7 +24,12 @@ export default {
         AppGoods: '应用商品管理',
         AppOrders: '应用订单管理',
         AppStats: '应用统计数据',
-      }
+      },
+
+      admin: '管理后台',
+      firevalePlatform: '火谷平台',
+      showDetail: '查看详情',
+      edit: '编辑',
     },
   }
 }

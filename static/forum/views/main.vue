@@ -1,7 +1,7 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item" style="display: flex; flex-direction: row;">
-      <div style="flex: 1">
+    <div class="is-child content-item" style="text-align: center;position: relative;">
+      <div class="arrow-back">
         <i class="fa fa-angle-left title is-3 dark" aria-hidden="true"></i>
       </div>
       <div class="main-title">
@@ -181,18 +181,10 @@ export default {
     cursor: pointer;
   }
   
-  .main-title {
-    flex: 5;
-    display: flex;
-    text-align: right;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 1.4rem;
-  }
-  
   .main-menu {
-    flex: 5;
-    text-align: right;
+    position: absolute;
+    right: 0;
+    top: 0;
     font-size: 1rem;
     span{
       margin-top: .6rem;
@@ -200,7 +192,7 @@ export default {
     }
     .button{
       margin-top: .2rem;
-      padding: .5rem 2rem;
+      padding: .5rem 1.5rem;
     }
   }
   

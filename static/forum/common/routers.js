@@ -24,6 +24,10 @@ export default function (VueRouter) {
       name: 'replyNote',
       component: require('../views/replyNote.vue'),
     }, {
+      path: '/forum/customService',
+      name: 'customService',
+      component: require('../views/customService.vue'),
+    },{
       path: '*',
       redirect: '/'
     }]

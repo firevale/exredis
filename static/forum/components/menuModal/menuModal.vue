@@ -1,6 +1,6 @@
 <template>
   <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
-    <div class="modal-background" @click="close"></div>
+    <div class="modal-background" @click="cancel"></div>
     <div class="modal-card">
       <section class="modal-card-body" style="border-radius: 1rem;">
         <article class="media">
@@ -16,13 +16,22 @@
   </div>
 </template>
 <script>
-  import {
-    BaseModal
-  } from 'vue-bulma-modal'
-
   export default {
-    mixins: [BaseModal],
-
+    props: {
+      visible: Boolean,
+      transition: {
+        type: String,
+        default: 'fade'
+      }
+    },
+    mounted () {
+      document.body.appendChild(this.$el)
+    },
+    watch: {
+      visible (val) {
+        this.show = val
+      }
+    },
     data: function() {
       return {
         list: [
@@ -41,7 +50,7 @@
 
     methods: {
       ok(res) {
-        this.close()
+        this.visible=false
         this.selectedItem = res.name
         if (typeof this.onOk == 'function') {
           this.onOk(res)
@@ -49,7 +58,7 @@
       },
 
       cancel() {
-        this.close()
+        this.visible=false
         if (typeof this.onCancel == 'function') {
           this.onCancel()
         }
@@ -70,12 +79,10 @@
     flex-direction: row;
     flex-wrap: wrap;
     border-bottom: 1px solid $dark;
-    .item-name{
-      flex:1;
+    .item-name {
+      flex: 1;
     }
-    .item-check{
-
-    }
+    .item-check {}
   }
   
   .item:last-child {

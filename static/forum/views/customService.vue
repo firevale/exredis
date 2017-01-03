@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="text-align: center;position: relative;padding-bottom: 1rem;">
       <div class="arrow-back">
-        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true"></i>
+        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
       <div class="main-title">
         {{ $t('forum.customService.title') }}
@@ -20,14 +20,20 @@
       </div>
     </div>
     <common-issue v-show="type=='issue'"></common-issue>
+    <contact-service v-show="type=='contact'"></contact-service>
+    <service-record v-show="type=='record'"></service-record>
   </div>
 </template>
 <script>
-import commonIssue from './commonIssues'
+import commonIssue from '../components/commonIssues'
+import contactService from '../components/contactService'
+import serviceRecord from '../components/serviceRecord'
 
 export default{
   components: {
     commonIssue,
+    contactService,
+    serviceRecord
   },
 
   data () {

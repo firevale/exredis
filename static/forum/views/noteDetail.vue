@@ -7,9 +7,7 @@
       <div class="search-title">
         {{ $t('forum.detail.title') }}
       </div>
-      
-        <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
-      
+      <input type="button" style="margin: 1rem .5rem;" class="reply-btn main-menu" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
     </div>
     <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll">
       <note-item-detail v-for="item in detailList" :item-data="item"></note-item-detail>

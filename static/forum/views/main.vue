@@ -176,21 +176,16 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .pointer {
-    font-size: .9rem;
-    cursor: pointer;
-  }
-  
   .main-menu {
     position: absolute;
     right: 0;
     top: 0;
     font-size: 1rem;
-    span{
+    span {
       margin-top: .6rem;
       font-size: 1.5rem;
     }
-    .button{
+    .button {
       margin-top: .2rem;
       padding: .5rem 1.3rem;
     }

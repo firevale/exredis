@@ -10,7 +10,7 @@
       <div style="flex: 1;">
       </div>
     </div>
-    <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
+    <hr class="horizontal-line"></hr>
     <div class="column is-full" style="flex-direction: row; display: flex;">
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -25,7 +25,7 @@
         <input class="note-new" v-model="title" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <textarea class="note-content" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
+        <textarea class="note-content" maxlength="500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
         <div class="upload-img">
           <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
           <div class="img-item" v-for="item in imgs">

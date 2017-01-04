@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item" style="display: flex; flex-direction: row;justify-content: space-around;">
       <div style="flex: 1;">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
       <div style="flex: 9;position: relative;">
         <i class="fa fa-search search-icon" aria-hidden="true"></i>
@@ -10,7 +10,7 @@
         <i v-show="key" class="fa fa-times times-icon" aria-hidden="true" @click="clearKey"></i>
       </div>
       <div style="flex:.5;"></div>
-      <div style="flex: 7">
+      <div style="flex: 5">
         <input type="button" class="search-btn" style="width: 100%;" :value="$t('forum.search.searchBtn')" @click="searchByKey(key)"></input>
       </div>
       <div style="flex:.5;"></div>
@@ -148,3 +148,84 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+  @import "../scss/forum";
+  .search-box {
+    width: 100%;
+    font-size: 1rem;
+    padding: .5rem;
+    padding-left: 3rem;
+    padding-right: 4rem;
+    border: .1rem solid $dark;
+  }
+  
+  .search-btn {
+    width: 100%;
+    color: $white;
+    font-size: 1.1rem;
+    padding: .5rem;
+    background: $primary;
+  }
+  
+  .his-key {
+    width: 50%;
+    padding: .5rem;
+    float: left;
+    border-top: 1px solid $dark;
+    border-bottom: 1px solid $dark;
+    border-right: 1px solid $dark;
+    box-sizing: border-box;
+    text-align: center;
+    color: $black;
+    font-size: 1rem;
+  }
+  
+  .his-key:nth-child(n+3) {
+    border-top: none;
+  }
+  
+  .his-key:hover {
+    color: $primary;
+    cursor: pointer;
+  }
+  
+  .his-box {
+    border-left: 1px solid $dark;
+  }
+  
+  .his-box:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  
+  .clear-his {
+    text-align: center;
+    color: $primary;
+    font-size: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: .6rem;
+    top: .3rem;
+    font-size: 1.7rem !important;
+    color: $dark;
+  }
+  
+  .times-icon {
+    position: absolute;
+    right: 1rem;
+    top: .3rem;
+    font-size: 1.7rem !important;
+    color: $dark;
+  }
+  
+  .search-tip {
+    text-align: left;
+    font-size: 1.3rem;
+    color: $dark;
+    margin-bottom: 2rem;
+  }
+</style>

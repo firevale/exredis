@@ -21,7 +21,7 @@
         {{ replyTitle }}
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <textarea class="note-content" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
+        <textarea class="note-content" maxlength="500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
         <div class="upload-img">
           <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
           <div class="img-item" v-for="item in imgs">

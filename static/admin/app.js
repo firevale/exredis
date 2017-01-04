@@ -2,12 +2,14 @@ import Vue from 'admin/common/vue-i18n'
 import Resource from 'vue-resource'
 import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
+import VueValidator from 'vue-validator'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
 
+Vue.use(VueValidator)
 Vue.use(Resource)
 Vue.use(NProgress)
 

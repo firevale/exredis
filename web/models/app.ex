@@ -1,7 +1,7 @@
 defmodule Acs.App do
   use Acs.Web, :model
 
-  @derive {Poison.Encoder, except: [:sdk_bindings, :goods, :sdk_payment_callbacks, :__meta__]}
+  @derive {Poison.Encoder, except: [:goods, :sdk_payment_callbacks, :__meta__]}
 
   @primary_key false
   schema "apps" do

@@ -1,6 +1,7 @@
 defmodule Acs.AppSdkBinding do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
   schema "app_sdk_bindings" do
     field :sdk, :string
     field :binding, :map

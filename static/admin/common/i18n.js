@@ -59,6 +59,33 @@ export default {
       firevalePlatform: '火谷平台',
       showDetail: '查看详情',
       edit: '编辑',
+      editConfig: '修改配置',
+      submit: '提交修改',
+      cancel: '取消',
+
+      sdks: {
+        anzhi: '安智',
+        baidu: '百度',
+        cc: '虫虫',
+        coolpad: '酷派',
+        downjoy: '当乐',
+        gfan: '机锋',
+        huawei: '华为',
+        iyouxi: '爱游戏',
+        lenovo: '联想',
+        mumayi: '木蚂蚁',
+        oppo: 'OPPO',
+        qh360: '360',
+        qxz: '七匣子',
+        htc: 'HTC聚乐',
+        sogou: '搜狗',
+        uc: 'UC', 
+        vivo: 'VIVO',
+        yyh: '应用汇',
+        youku: '优酷',
+        xiaomi: '小米',
+        wdj: '豌豆荚',
+      }
     },
   }
 }

@@ -54,6 +54,10 @@ export default {
         serviceRecord: '服务记录',
         searchBtn: '搜索问题',
         searchPlaceHolder: '请输入问题关键词',
+        issueTitle: '问题：{title}',
+        reply: '回复 :',
+        contactPlaceHolder: '请输入您的问题或建议',
+        submitBtn: '提交',
       },
       pagination: {
         previous: '上一页',

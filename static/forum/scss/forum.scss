@@ -329,12 +329,16 @@ $fa-font-path: '~font-awesome/fonts/';
     width: 50%;
     padding: .5rem;
     float: left;
+    border-top: 1px solid $dark;
     border-bottom: 1px solid $dark;
     border-right: 1px solid $dark;
     box-sizing: border-box;
     text-align: center;
     color: $black;
     font-size: 1rem;
+}
+.his-key:nth-child(n+3){
+    border-top: none;
 }
 
 .his-key:hover {
@@ -343,7 +347,6 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .his-box {
-    border-top: 1px solid $dark;
     border-left: 1px solid $dark;
 }
 

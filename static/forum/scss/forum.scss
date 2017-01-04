@@ -23,7 +23,7 @@ $fa-font-path: '~font-awesome/fonts/';
     margin-right: 1rem;
     margin-bottom: .5rem;
     font-weight: bold;
-    min-width: 6rem;
+    min-width: 5rem;
     border-radius: .5rem;
     font-size: 1rem;
 }
@@ -31,14 +31,6 @@ $fa-font-path: '~font-awesome/fonts/';
 .horizontal-line {
     height: .1rem;
     margin: 1rem 0rem;
-}
-
-.clear-left {
-    padding-left: 0;
-}
-
-.clear-right {
-    padding-right: 0;
 }
 
 .txt-right {
@@ -51,17 +43,12 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .content-item {
-    margin: auto 2rem !important;
+    margin: auto 1rem !important;
     justify-content: space-around;
 }
 
 .note-item {
     padding: .8rem .2rem;
-    border-bottom: 1px solid $text-grey;
-}
-
-.note-detail {
-    padding: .8rem;
     border-bottom: 1px solid $text-grey;
 }
 
@@ -96,10 +83,11 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .reply-btn {
-    width: 100%;
     color: $white;
     font-size: 1rem;
-    padding: .4rem;
+    height: 2rem;
+    margin-top: .5rem;
+    padding: .2rem 2rem;
     background: $primary;
 }
 
@@ -107,7 +95,7 @@ $fa-font-path: '~font-awesome/fonts/';
     position: fixed;
     top: 0;
     left: 0;
-    padding: 1rem;
+    padding: .5rem;
     height: 4rem;
     width: 100%;
     z-index: 3;
@@ -118,7 +106,7 @@ $fa-font-path: '~font-awesome/fonts/';
 .scroll-box {
     overflow: auto;
     position: absolute;
-    top: 4rem;
+    top: 4.5rem;
     bottom: 0;
     width: 100%;
 }
@@ -337,7 +325,8 @@ $fa-font-path: '~font-awesome/fonts/';
     color: $black;
     font-size: 1rem;
 }
-.his-key:nth-child(n+3){
+
+.his-key:nth-child(n+3) {
     border-top: none;
 }
 
@@ -361,13 +350,4 @@ $fa-font-path: '~font-awesome/fonts/';
     color: $primary;
     font-size: 1rem;
     margin-top: 2rem;
-}
-
-.arrow-back {
-    position: absolute;
-    left: 1rem;
-}
-
-.main-title {
-    font-size: 1.4rem;
 }

@@ -191,6 +191,23 @@ export default {
     }
   }
   
+  @media only screen and (max-width: 768px) {
+    .main-menu {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: .6rem;
+      span {
+        margin-top: .6rem;
+        font-size: 1.5rem;
+      }
+      .button {
+        margin-top: .2rem;
+        padding: .1rem .5rem;
+      }
+    }
+  }
+  
   .create-note {
     background-color: $primary !important;
     color: $white !important;

@@ -78,7 +78,7 @@
     vertical-align: middle !important;
     padding: 0;
     color: $white;
-    font-size: .5rem;
+    font-size: .7rem;
     background-color: $red !important;
   }
   
@@ -88,7 +88,7 @@
     padding: 0;
     color: $white;
     margin-right: .5rem;
-    font-size: .5rem;
+    font-size: .7rem;
     background-color: $red !important;
   }
   

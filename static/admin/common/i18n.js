@@ -26,6 +26,35 @@ export default {
         AppStats: '应用统计数据',
       },
 
+      app: {
+        basicInfo: '基本信息',
+        sdkInfo: 'SDK配置',
+      },
+
+      label: {
+        appId: '应用ID(APP ID)',
+        appKey: '应用秘钥(APP KEY)',
+        appName: '应用名称',
+        currency: '商品定价货币',
+        chaoxinGroupId: '超信运营群号',
+        paymentCallbackUrl: '充值回调地址',
+        publicWeixinName: '微信公众号名称',
+        publicWeixinUrl: '微信公众号链接',
+        weiboName: '微博名称',
+        weiboUrl: '微博链接',
+        baiduTiebaName: '百度贴吧名称',
+        baiduTiebaUrl: '百度贴吧链接',
+        forumName: '论坛名称',
+        forumUrl: '论坛链接',
+        csPhoneNumber: '客服电话',
+      },
+
+      currency: {
+        CNY: '人民币',
+        HKD: '港币',
+        USD: '美元',
+      },
+
       admin: '管理后台',
       firevalePlatform: '火谷平台',
       showDetail: '查看详情',

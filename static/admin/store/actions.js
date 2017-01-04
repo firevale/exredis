@@ -28,7 +28,7 @@ export const switchEffect = ({
 
 export const fetchPlatformApps = ({
   commit
-}, effectItem) => {
+}) => {
   Vue.http.get('/admin_actions/fetch_apps', {})
     .then(res => res.json())
     .then(json => {

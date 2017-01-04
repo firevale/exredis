@@ -5,15 +5,10 @@
 
 <script>
 export default {
-
   data () {
     return {
-      homepage: '',
-      name: '',
-      description: '',
     }
   }
-
 }
 </script>
 

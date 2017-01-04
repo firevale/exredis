@@ -1,7 +1,7 @@
 import * as types from '../mutation-types'
 
 const state = {
-  list: null,
+  list: [],
 }
 
 const mutations = {
@@ -11,7 +11,8 @@ const mutations = {
       let app = apps[index]
       state[app.id] = app
     }
-  }
+  },
+
 }
 
 export default {

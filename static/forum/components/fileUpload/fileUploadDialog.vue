@@ -38,7 +38,7 @@
           @click="upload.active = true">
           <span class="icon is-small"><i class="fa fa-upload" aria-hidden="true"> </i></span>
           <span>{{ $t('forum.upload.title') }}</span>
-        </a>
+          </a>
       </div>
     </div>
   </modal>
@@ -123,7 +123,8 @@
     opacity: .4;
     background: #000;
   }
-  .menu-panel{
+  
+  .menu-panel {
     display: flex;
     flex-direction: row;
     justify-content: center;

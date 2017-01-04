@@ -43,7 +43,7 @@
 </template>
 <script>
   import Vue from 'vue'
-  import pagination from '../components/pagination.vue'
+  import pagination from './pagination.vue'
 
   export default{
     components:{
@@ -121,6 +121,7 @@
     font-size: 1.2rem;
     padding: .6rem;
     padding-left: 3rem;
+    margin: .1rem auto;
   }
   
   .search-button {
@@ -128,7 +129,7 @@
     background-color: $primary;
     color: $white;
     font-size: 1.2rem;
-    margin-left: 2rem;
+    margin: .1rem auto;
   }
   
   .search-result {

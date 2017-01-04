@@ -1,7 +1,7 @@
 <template>
   <div class="note-item">
     <div class="columns">
-      <div class="column is-10" :class="{'clear-left': !itemData.headerTag.length}" @click="showDetail">
+      <div class="column is-10" @click="showDetail">
         <a v-for="item in itemData.headerTag" class="headerTag">{{item.name}}</a>
         <span class="note-title" v-html="filterKey"></span>
         <i v-if="itemData.hasPicture" class="fa fa-picture-o note-picture"></i>
@@ -55,7 +55,7 @@
   }
 </script>
 <style lang="scss">
-  @import "../scss/color";
+  @import "../scss/forum";
   .note-picture {
     font-size: 1.3rem;
     vertical-align: middle !important;
@@ -78,7 +78,7 @@
     vertical-align: middle !important;
     padding: 0;
     color: $white;
-    font-size: .5rem;
+    font-size: .7rem;
     background-color: $red !important;
   }
   
@@ -88,7 +88,7 @@
     padding: 0;
     color: $white;
     margin-right: .5rem;
-    font-size: .5rem;
+    font-size: .7rem;
     background-color: $red !important;
   }
   
@@ -104,10 +104,6 @@
   
   .excellent {
     background-color: $olive !important;
-  }
-  
-  .red {
-    color: #f00;
   }
   
   .note-item .column {

@@ -1,6 +1,6 @@
 <template>
   <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
-    <div class="modal-background" @click="close"></div>
+    <div class="modal-background" @click="cancel"></div>
     <div class="modal-card" style="border-radius: 5px; width: 30%;min-width: 220px;">
       <section class="modal-card-body">
         <article class="media">
@@ -18,15 +18,25 @@
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    BaseModal
-  } from 'vue-bulma-modal'
+  
 
   export default {
-    mixins: [BaseModal],
-
+    props: {
+      visible: Boolean,
+      transition: {
+        type: String,
+        default: 'fade'
+      }
+    },
+    mounted () {
+      document.body.appendChild(this.$el)
+    },
+    watch: {
+      visible (val) {
+        this.show = val
+      }
+    },
     data: function() {
       return {
         title: "this is a card modal",
@@ -43,7 +53,7 @@
 
     methods: {
       ok() {
-        this.close()
+        this.visible=false
 
         if (typeof this.onOk == 'function') {
           this.onOk()
@@ -51,7 +61,7 @@
       },
 
       cancel() {
-        this.close()
+        this.visible=false
 
         if (typeof this.onCancel == 'function') {
           this.onCancel()
@@ -60,24 +70,22 @@
     }
   }
 </script>
-
 <style lang="scss">
   @import "../../scss/color";
-
   .warning-sign {
     color: $olive;
   }
   
-  .modal-footer{
-    background: #fff; 
+  .modal-footer {
+    background: #fff;
     text-align: center;
     padding-top: 2rem;
     padding-bottom: 2rem;
-    a{
-        width: 45%;
-        background-color: $dark;
-        border-radius: 5px;
-        font-size: 1.2rem;
+    a {
+      width: 45%;
+      background-color: $dark;
+      border-radius: 5px;
+      font-size: 1.2rem;
     }
   }
 </style>

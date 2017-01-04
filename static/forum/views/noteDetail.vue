@@ -1,17 +1,14 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child fixed-top" style="display: flex; flex-direction: row;">
-      <div style="flex: 1;text-align: left;">
-        <i class="fa fa-angle-left title is-2" style="color: #ccc;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+      <div style="text-align: left;">
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div style="flex: 9;text-align: center;">
-        <span class="title is-3">{{ $t('forum.detail.title') }}</span>
+      <div class="search-title">
+        {{ $t('forum.detail.title') }}
       </div>
-      <div style="flex: 1;">
-        <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
-      </div>
+      <input type="button" style="margin: 1rem .5rem;" class="reply-btn main-menu" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
     </div>
-    <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
     <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll">
       <note-item-detail v-for="item in detailList" :item-data="item"></note-item-detail>
       <div v-if="detailList&&detailList.length" class="column is-full" v-show="searchPageCount > 1">

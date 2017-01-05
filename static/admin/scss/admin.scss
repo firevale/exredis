@@ -157,6 +157,11 @@
     margin: 0 auto 5px auto;
     display: block;
     @include border-radius(5px);
+
+    &:hover {
+      filter: brightness(70%);
+    }
+
     &.anzhi {
       background-image: url(~admin/assets/anzhi.png);
     }
@@ -219,5 +224,61 @@
     }
     &.yyh {
       background-image: url(~admin/assets/yyh.png);
+    }
+    &.ggplay {
+      background-image: url(~admin/assets/ggplay.png);
+    }
+    &.facebook {
+      background-image: url(~admin/assets/facebook.png);
+    }
+    &.haima {
+      background-image: url(~admin/assets/haima.png);
+    }
+    &.i4 {
+      background-image: url(~admin/assets/i4.png);
+    }
+    &.iiapple {
+      background-image: url(~admin/assets/iiapple.png);
+    }
+    &.itools {
+      background-image: url(~admin/assets/itools.png);
+    }
+    &.ky {
+      background-image: url(~admin/assets/ky.png);
+    }
+    &.meizu {
+      background-image: url(~admin/assets/meizu.png);
+    }
+    &.ndcom {
+      background-image: url(~admin/assets/ndcom.png);
+    }
+    &.pp {
+      background-image: url(~admin/assets/pp.png);
+    }
+    &.tbt {
+      background-image: url(~admin/assets/tbt.png);
+    }
+    &.xy {
+      background-image: url(~admin/assets/xy.png);
+    }
+  }
+
+  div.add-sdk {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 5px auto;
+    display: flex;
+    @include border-radius(5px);
+    align-items: center;
+    justify-content: center;
+
+    &:active,
+    &:hover {
+      background: $primary;
+      color: #fff;
+    }
+
+    &:active {
+      background: darken($primary, 10%);
     }
   }

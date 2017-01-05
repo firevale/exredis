@@ -10,6 +10,7 @@ const menuitems = state => state.menu.items
 export {
   app,
   apps,
+  sdks,
   appList,
   device,
   sidebar,

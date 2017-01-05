@@ -300,7 +300,7 @@ export default {
     },
 
     _addFileUploads(el) {
-      var Component = this.$options.components.inputFile._Ctor;
+      var Component = this.$options.components.inputFile._Ctor[0];
       new Component({
         parent: this,
         el: el,

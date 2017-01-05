@@ -91,7 +91,7 @@
             this.callback(response)
           }
         } 
-        this.modal.close()
+        this.modal.deactive()
       },
     },
 

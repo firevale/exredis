@@ -31,7 +31,7 @@ config :acs, :custom_iap,
   wp8: [:alipay],
   android: [:alipay]
 
-config :acs, :sdks, ~w(alipay appstore applestore ggplay anzhi baidu cc ccplay coolpad downjoy facebook firevale gfan haima 
+config :acs, :sdks, ~w(alipay appstore applestore ggplay anzhi baidu cc coolpad downjoy facebook firevale gfan haima 
                        htc huawei i4 iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc 
                        vivo wdj wechat xiaomi xy youku yyh)
 

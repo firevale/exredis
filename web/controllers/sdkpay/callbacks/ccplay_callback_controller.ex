@@ -6,7 +6,7 @@ defmodule Acs.SdkPay.CCPlayCallbackController do
                         %{"partnerTransactionNo" => order_id,
                           "transactionNo" => trade_no,
                           "orderPrice" => price} = params) do
-    case app.bindings.cc || app.bindings.ccplay do 
+    case app.bindings.cc do 
       %{"pay_key" => pay_key} ->
         case Repo.get(AppOrder, order_id) do
           nil -> 
@@ -25,18 +25,18 @@ defmodule Acs.SdkPay.CCPlayCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success")  
             else 
-              Logger.error "verify ccplay payment signature failed, params: #{inspect params, pretty: true}"
+              Logger.error "verify cc payment signature failed, params: #{inspect params, pretty: true}"
               conn |> text("failure")  
             end
         end
       _ -> 
-        Logger.error "receive invalid ccplay payment notifications, params: #{inspect params, pretty: true}"
+        Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure")
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid ccplay payment notifications, params: #{inspect params, pretty: true}"
+    Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
     conn |> text("failure")
   end
 end

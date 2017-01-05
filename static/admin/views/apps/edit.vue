@@ -117,7 +117,7 @@
       <tab-pane icon="fa fa-apple" :label="$t('admin.app.sdkInfo')">
         <div class="box columns is-multiline">
           <div class="column is-1 has-text-centered" v-for="sdk in app.sdk_bindings">
-            <div class="sdk-icon" :class="sdk.sdk">
+            <div class="sdk-icon" :class="sdk.sdk" @click.prevent="editSdkInfo(sdk)">
             </div>
             <h6 class="subtitle is-6">{{$t(`admin.sdks.${sdk.sdk}`)}} </h6>
           </div>
@@ -137,6 +137,20 @@
     Tabs,
     TabPane
   } from 'vue-bulma-tabs'
+
+  import Vue from 'admin/common/vue-i18n'
+
+  import editSdkInfoDialog from 'admin/components/sdkInfoDialogs/editSdkInfoDialog'
+  const editSdkInfoDialogComponent = Vue.extend(editSdkInfoDialog)
+
+  const openAppIdKeySecretEditor = (propsData = {
+    visible: true
+  }) => {
+    return new editSdkInfoDialogComponent({
+      el: document.createElement('div'),
+      propsData
+    })
+  }
 
   export default {
     created() {},
@@ -185,6 +199,13 @@
             console.error(x)
           })
       },
+
+      editSdkInfo: function(sdkInfo) {
+        openAppIdKeySecretEditor({
+          ...sdkInfo,
+          visible: true,
+        })
+      }
     },
 
     components: {

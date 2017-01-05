@@ -85,6 +85,26 @@ export default {
         youku: '优酷',
         xiaomi: '小米',
         wdj: '豌豆荚',
+
+        assigned: '分配的',
+
+        keys: {
+          app_id: 'App Id',
+          app_key: 'App Key',
+          app_secret: 'App Secret',
+          pay_key: 'Pay Key',
+          pay_pub_key: '支付公钥',
+          pay_priv_key: '支付私钥',
+          pay_id: '支付id[PAY ID]',
+          pub_key: '公钥',
+          priv_key: '私钥',
+          game_code: '游戏ID[Game Code]',
+          rsa_key: 'RSA 秘钥',
+          client_id: '客户端ID[Client ID]',
+          client_secret: '客户端秘钥[Client Secret]',
+          cp_id: 'CP ID',
+          cp_key: 'CP KEY',
+        }
       }
     },
   }

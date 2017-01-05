@@ -2,6 +2,7 @@ import * as types from '../mutation-types'
 
 const state = {
   list: [],
+  sdks: [],
 }
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
     }
   },
 
+  [types.UPDATE_SDKS](state, sdks) {
+    state.sdks = sdks 
+  }
 }
 
 export default {

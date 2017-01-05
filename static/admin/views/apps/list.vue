@@ -7,7 +7,7 @@
         </figure>
         <div class="tile is-vertical is-child" style="padding-left: 5px;">
           <h3 class=""> {{app.name}} </h3>
-          <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'AppInfo', params: {appId: app.id}}">
+          <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'AppEdit', params: {appId: app.id}}">
             <span class="icon is-small"><i class="fa fa-search"></i></span>
             <span> {{ $t('admin.showDetail') }} </span>
           </router-link>

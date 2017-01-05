@@ -37,3 +37,15 @@ export const fetchPlatformApps = ({
       }
     })
 }
+
+export const fetchSupportedSdks = ({
+  commit
+}) => {
+  Vue.http.get('/admin_actions/fetch_supported_sdks', {})
+    .then(res => res.json())
+    .then(json => {
+      if (json.success) {
+        commit(types.UPDATE_SDKS, json.sdks)
+      }
+    })
+}

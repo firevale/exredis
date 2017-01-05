@@ -42,6 +42,7 @@ export default {
 
   mounted: function() {
     this.fetchPlatformApps()
+    this.fetchSupportedSdks()
   }, 
 
   computed: mapGetters({
@@ -51,7 +52,8 @@ export default {
   methods: mapActions([
     'toggleDevice',
     'toggleSidebar',
-    'fetchPlatformApps'
+    'fetchPlatformApps',
+    'fetchSupportedSdks'
   ])
 }
 </script>

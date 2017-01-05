@@ -63,13 +63,17 @@ export default {
       submit: '提交修改',
       cancel: '取消',
 
+      titles: {
+        selectSdk: '请选择要添加的SDK:'
+      },
+
       sdks: {
         anzhi: '安智',
         baidu: '百度',
         cc: '虫虫',
         coolpad: '酷派',
         downjoy: '当乐',
-        gfan: '机锋',
+        gfan: '机锋市场',
         huawei: '华为',
         iyouxi: '爱游戏',
         lenovo: '联想',
@@ -85,6 +89,40 @@ export default {
         youku: '优酷',
         xiaomi: '小米',
         wdj: '豌豆荚',
+        ggplay: 'Google Play',
+        facebook: 'Facebook',
+        haima: '海马助手',
+        i4: '爱思助手',
+        iiapple: 'I苹果',
+        itools: 'Itools助手',
+        ky: '快用助手',
+        meizu: '魅族',
+        ndcom: '91助手',
+        pp: 'PP助手',
+        qq: '腾讯QQ',
+        tbt: '同步推',
+        xy: 'XY助手',
+
+        assigned: '分配的',
+        add: '添加',
+
+        keys: {
+          app_id: 'App Id',
+          app_key: 'App Key',
+          app_secret: 'App Secret',
+          pay_key: 'Pay Key',
+          pay_pub_key: '支付公钥',
+          pay_priv_key: '支付私钥',
+          pay_id: '支付id[PAY ID]',
+          pub_key: '公钥',
+          priv_key: '私钥',
+          game_code: '游戏ID[Game Code]',
+          rsa_key: 'RSA 秘钥',
+          client_id: '客户端ID[Client ID]',
+          client_secret: '客户端秘钥[Client Secret]',
+          cp_id: 'CP ID',
+          cp_key: 'CP KEY',
+        }
       }
     },
   }

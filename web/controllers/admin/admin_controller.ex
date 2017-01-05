@@ -13,6 +13,11 @@ defmodule Acs.AdminController do
     conn |> json(%{success: true, apps: apps})
   end
 
+  @sdks      Application.get_env(:acs, :sdks)
+  def fetch_supported_sdks(conn, params) do 
+    conn |> json(%{success: true, sdks: @sdks})
+  end
+
   def update_app_info(conn, %{"app" => %{"id" => app_id} = app_info}) do 
     case Repo.get(App, app_id) do 
       nil -> 

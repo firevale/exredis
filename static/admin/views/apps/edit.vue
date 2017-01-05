@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tabs class="box" type="boxed" layout="top" alignment="left" size="normal">
+    <tabs class="box" type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
       <tab-pane icon="fa fa-clone" :label="$t('admin.app.basicInfo')">
         <validation name="basicInfo" @submit.prevent="handleSubmitBasicInfo">
           <div class="columns is-multiline">
@@ -117,9 +117,15 @@
       <tab-pane icon="fa fa-apple" :label="$t('admin.app.sdkInfo')">
         <div class="box columns is-multiline">
           <div class="column is-1 has-text-centered" v-for="sdk in app.sdk_bindings">
-            <div class="sdk-icon" :class="sdk.sdk">
+            <div class="sdk-icon" :class="sdk.sdk" @click.prevent="editSdkInfo(sdk)">
             </div>
             <h6 class="subtitle is-6">{{$t(`admin.sdks.${sdk.sdk}`)}} </h6>
+          </div>
+          <div class="column is-1 has-text-centered">
+            <div class="add-sdk" @click.prevent="selectSdkToAdd">
+              <span class="icon is-small"><i class="fa fa-plus"></i></span>
+            </div>
+            <h6 class="subtitle is-6">{{$t('admin.sdks.add')}} </h6>
           </div>
         </div>
       </tab-pane>
@@ -137,6 +143,32 @@
     Tabs,
     TabPane
   } from 'vue-bulma-tabs'
+
+  import Vue from 'admin/common/vue-i18n'
+
+  import editSdkInfo from 'admin/components/dialogs/editSdkInfo'
+  const editSdkInfoComponent = Vue.extend(editSdkInfo)
+
+  const openSdkInfoEditor = (propsData = {
+    visible: true
+  }) => {
+    return new editSdkInfoComponent({
+      el: document.createElement('div'),
+      propsData
+    })
+  }
+
+  import selectAddSdks from 'admin/components/dialogs/selectAddSdks'
+  const selectAddSdksComponent = Vue.extend(selectAddSdks)
+
+  const openSelectAddSdks = (propsData = {
+    visible: true
+  }) => {
+    return new selectAddSdksComponent({
+      el: document.createElement('div'),
+      propsData
+    })
+  }
 
   export default {
     created() {},
@@ -162,7 +194,7 @@
 
     computed: {
       ...mapGetters([
-        'apps'
+        'apps', 'sdks'
       ]),
     },
 
@@ -185,6 +217,41 @@
             console.error(x)
           })
       },
+
+      editSdkInfo: function(sdkInfo) {
+        openSdkInfoEditor({
+          ...sdkInfo,
+          visible: true,
+        })
+      },
+
+      selectSdkToAdd: function() {
+        let sdks = []
+        let added = []
+
+        this.app.sdk_bindings.forEach(x => {
+          added.push(x.sdk)
+        })
+
+        added.push('alipay') // alipay and wechat are payment sdks
+        added.push('wechat')
+        added.push('applestore')
+        added.push('appstore')
+        added.push('firevale')
+        added.push('qq')
+
+        this.sdks.forEach(sdk => {
+          if (added.indexOf(sdk) < 0) {
+            sdks.push(sdk)
+          }
+        })
+
+        openSelectAddSdks({
+          visible: true,
+          appName: this.app.name,
+          sdks,
+        })
+      }
     },
 
     components: {

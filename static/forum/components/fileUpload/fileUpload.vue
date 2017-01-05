@@ -1,24 +1,25 @@
 <template>
-    <div :class="{'file-uploads': true, 'file-uploads-html5': mode == 'html5', 'file-uploads-html4': mode == 'html4'}">
-        <span>{{title}}</span>
-        <input-file></input-file>
-    </div>
+  <div :class="{'file-uploads': true, 'file-uploads-html5': mode == 'html5', 'file-uploads-html4': mode == 'html4'}">
+    <span>{{title}}</span>
+    <input-file></input-file>
+  </div>
 </template>
-
 <style>
-.file-uploads {
+  .file-uploads {
     overflow: hidden;
     position: relative;
     text-align: center;
-}
-.file-uploads span{
+  }
+  
+  .file-uploads span {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
-}
-.file-uploads input{
+  }
+  
+  .file-uploads input {
     z-index: 1;
     opacity: 0;
     font-size: 20em;
@@ -29,8 +30,9 @@
     position: absolute;
     width: 100%;
     height: 100%;
-}
-.file-uploads.file-uploads-html5 input{
+  }
+  
+  .file-uploads.file-uploads-html5 input {
     /*float: left;
     width: 1px !important;
     height: 1px !important;
@@ -38,9 +40,8 @@
     left:-1px !important;
     right:auto !important;
     bottom:auto !important;*/
-}
+  }
 </style>
-
 <script>
 import Vue from 'vue'
 
@@ -185,7 +186,7 @@ export default {
 
     uploaded(uploaded) {
       if (uploaded) {
-        this.active = false;
+        //this.active = false;
       }
     },
   },
@@ -374,9 +375,9 @@ export default {
             continue;
           }
         }
-        return;
+        //return;
       }
-      this.active = false;
+      //this.active = false;
       this.uploaded = true;
     },
 
@@ -407,8 +408,7 @@ export default {
         _self._uploadEvents('fileUploadProgress', file);
       };
 
-
-      var callback = function(e) {
+      xhr.onload = xhr.onerror = xhr.onabort = xhr.ontimeout = function(e) {
         switch (e.type) {
           case 'timeout':
             file.errno = 'timeout';
@@ -442,7 +442,6 @@ export default {
               file.success = true;
             }
           }
-          file.active = false;
           if (xhr.responseText) {
             var contentType = xhr.getResponseHeader('Content-Type');
             if (contentType && contentType.indexOf('/json') != -1) {
@@ -453,30 +452,26 @@ export default {
           }
           if (!fileUploads) {
             fileUploads = true;
+            _self.files.forEach((item)=>{
+              if(!item.active){
+                fileUploads = false
+              }
+            })
             if (!file.removed) {
               _self._uploadEvents('afterFileUpload', file);
+              file.active = false;
+              setTimeout(function() {
+                _self._fileUploads();
+              }, 50);
             }
-            setTimeout(function() {
-              _self._fileUploads();
-            }, 50);
           }
       };
-
-      xhr.onload = callback;
-      xhr.onerror = callback;
-      xhr.onabort = callback;
-      xhr.ontimeout = callback;
 
 
       if (this.timeout) {
         xhr.timeout = this.timeout;
       }
 
-
-      xhr.onload = callback;
-      xhr.onerror = callback;
-      xhr.onabort = callback;
-      xhr.ontimeout = callback;
 
       if (this.timeout) {
         xhr.timeout = this.timeout;
@@ -616,9 +611,9 @@ export default {
         return null;
       }
 
-
-
-      var callback = function(e) {
+      setTimeout(function() {
+        document.body.appendChild(iframe).appendChild(form).submit();
+        iframe.onload = iframe.onerror = iframe.onabort = function(e) {
         switch (e.type) {
           case 'abort':
             file.errno = 'abort';
@@ -672,13 +667,6 @@ export default {
             }, 50);
           }
       };
-
-
-      setTimeout(function() {
-        document.body.appendChild(iframe).appendChild(form).submit();
-        iframe.onload = callback;
-        iframe.onerror = callback;
-        iframe.onabort = callback;
 
         file.active = true;
 

@@ -1,6 +1,6 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item" style="display: flex; flex-direction: row;text-align: center;position: relative;">
+    <div class="is-child content-item rowLine">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true"></i>
       </div>
@@ -9,7 +9,7 @@
       </div>
       <div class="main-menu">
         <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
-        <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true"></span>
+        <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
         <a class="button create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
       </div>
     </div>

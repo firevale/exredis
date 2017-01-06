@@ -19,7 +19,7 @@ export default function (VueRouter) {
       path: '/forum/newNote',
       name: 'newNote',
       component: require('../views/newNote.vue'),
-    },  {
+    }, {
       path: '/forum/replyNote',
       name: 'replyNote',
       component: require('../views/replyNote.vue'),
@@ -27,7 +27,11 @@ export default function (VueRouter) {
       path: '/forum/customService',
       name: 'customService',
       component: require('../views/customService.vue'),
-    },{
+    }, {
+      path: '/forum/personalPage',
+      name: 'personalPage',
+      component: require('../views/personalPage.vue'),
+    }, {
       path: '*',
       redirect: '/'
     }]

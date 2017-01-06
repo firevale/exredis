@@ -1,6 +1,6 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item" style="display: flex; flex-direction: row;text-align: center;position: relative;padding-bottom: 1rem;">
+    <div class="is-child content-item rowLine">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
@@ -46,8 +46,8 @@ export default{
 <style lang="scss">
   @import "../scss/forum";
   .horizontal-seprate {
-    height: .4rem;
-    margin: 1rem 1rem;
+    height: .3rem;
+    margin: .5rem 1rem;
     background-color: $text-grey;
     .move-box-left {
       height: 100%;
@@ -87,5 +87,8 @@ export default{
     justify-content: space-around;
     font-size: 1.3rem;
     margin: 1rem 1rem;
+    .service-menu{
+      font-size: 1rem;
+    }
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child fixed-top" style="display: flex; flex-direction: row;">
+    <div class="is-child fixed-top rowLine">
       <div style="text-align: left;">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>

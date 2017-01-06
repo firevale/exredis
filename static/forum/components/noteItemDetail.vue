@@ -1,5 +1,5 @@
 <template>
-  <div class="columns" style="margin:0;">
+  <div class="columns" style="margin:0;border-bottom: 1px solid;">
     <div class="column">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
         <img src="http://placehold.it/64x64"></img>

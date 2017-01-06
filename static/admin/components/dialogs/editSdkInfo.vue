@@ -8,7 +8,7 @@
         <template v-for="key in Object.keys(binding).reverse()">
           <label class="label"> {{ $t(`admin.sdks.${sdk}`) + $t('admin.sdks.assigned') + $t(`admin.sdks.keys.${key}`)}}: </label>
           <p class="control">
-            <input class="input" type="text" v-model="binding[key]">
+            <input class="input" type="text" v-model.trim="binding[key]">
           </p>
         </template>
 <div class="container has-text-centered" style="margin-top: 15px">
@@ -23,6 +23,10 @@
   import {
     Modal
   } from 'vue-bulma-modal'
+
+  import {
+    openNotification
+  } from 'admin/common/notification'
 
   export default {
     props: {
@@ -50,7 +54,17 @@
           .then(result => {
             this.processing = false
             if (result.success) {
-              this.app.sdk_bindings.push(result.binding)
+              openNotification({
+                title: this.$t('admin.title.updateSuccess'),
+                message: this.$t('admin.message.sdkInfoUpdated'),
+                type: 'success',
+                duration: 450000000,
+                container: '.notifications',
+              })
+              let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
+              if (filtered.length <= 0) {
+                this.app.sdk_bindings.push(result.binding)
+              }
               this.visible = false
             } else {
               return Promise.reject(this.$t(result.message))

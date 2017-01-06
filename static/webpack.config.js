@@ -14,6 +14,8 @@ var WebpackMd5Hash = require('webpack-md5-hash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var CompressionPlugin = require("compression-webpack-plugin");
 
+const projectRoot = path.resolve(__dirname, './')
+
 var isProduction = function() {
   return process.env.NODE_ENV === 'production'
 }
@@ -23,6 +25,19 @@ var outputPath = function() {
 }
 
 var plugins = [
+  new webpack.LoaderOptionsPlugin({
+    vue: {
+      loaders: utils.cssLoaders({
+        sourceMap: isProduction(),
+        extract: isProduction()
+      }),
+      postcss: [
+        require('autoprefixer')({
+          browsers: ['last 3 versions']
+        })
+      ]
+    }
+  }),
 
   new webpack.DefinePlugin(consts.defines({
     isProduction: isProduction()
@@ -38,7 +53,7 @@ var plugins = [
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
       )
     }
-  }, Infinity),
+  }),
 
   new CommonsChunkPlugin({
     name: "login_commons",
@@ -50,7 +65,7 @@ var plugins = [
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
       )
     }
-  }, Infinity),
+  }),
 
   new CommonsChunkPlugin({
     name: "payment_commons",
@@ -62,7 +77,7 @@ var plugins = [
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
       )
     }
-  }, Infinity),
+  }),
 
   new CommonsChunkPlugin({
     name: "forum_commons",
@@ -74,7 +89,7 @@ var plugins = [
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
       )
     }
-  }, Infinity),
+  }),
 
   new ExtractTextPlugin(isProduction() ? 'css/[name]-[hash].css' : 'css/[name].css'),
 ]
@@ -89,41 +104,31 @@ module.exports = {
 
   output: {
     path: outputPath(),
-    filename: isProduction() ? 'js/[name]-[hash].js' : 'js/[name].js',
-    hash: isProduction()
+    filename: isProduction() ? 'js/[name]-[chunkhash].js' : 'js/[name].js',
   },
 
   resolve: {
-    extensions: ['', '.js', '.vue', '.css', '.json'],
-    moduleDirectories: ['node_modules'],
-    fallback: [path.join(__dirname, './node_modules')],
+    extensions: ['.js', '.vue', '.css', '.json'],
     alias: {
-     vue: 'vue/dist/vue.common.js',
-     login: path.join(__dirname, './login'),
-     admin: path.join(__dirname, './admin'),
-     forum: path.join(__dirname, './forum'),
+      vue: 'vue/dist/vue.common.js',
+      login: path.join(__dirname, './login'),
+      admin: path.join(__dirname, './admin'),
+      forum: path.join(__dirname, './forum'),
     }
   },
 
   cache: !isProduction(),
 
-  resolveLoader: {
-    fallback: [path.join(__dirname, './node_modules')],
-  },
-
   module: {
     loaders: [{
       test: /\.vue$/,
-      loader: 'vue'
+      loader: 'vue-loader'
     }, {
       test: /\.js$/,
       // exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        presets: ['es2015', 'stage-2'],
-        compact: false
-      },
-      exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)]
+      loader: 'babel-loader',
+      include: projectRoot,
+      exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
     }, {
       test: /\.(jpg|png|gif)$/,
       loader: "url-loader?limit=16384&name=/images/[name].[hash:7].[ext]"
@@ -138,17 +143,9 @@ module.exports = {
 
   plugins: plugins,
 
-  vue: {
-    loaders: utils.cssLoaders({
-      extract: true
-    })
-  },
-
-  babel: {
-    presets: ['es2015', 'stage-2']
-  },
-
-  postcss: [autoprefixer]
+  performance: {
+    hints: false,
+  }
 };
 
 if (isProduction()) {

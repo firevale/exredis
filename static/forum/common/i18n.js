@@ -68,6 +68,15 @@ export default {
         progress: '进度',
         speed:  '速率',
         title: '上传',
+      },
+      personal:{
+        title: '个人主页',
+        nickName: '昵称 : ',
+        noteCount: '发帖数 : ',
+        registerTime: '注册时间 : ',
+        myNote: '我的帖子',
+        myReply: '我的回复',
+        myFavor: '我的收藏',
       }
     },
   }

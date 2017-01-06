@@ -11,6 +11,22 @@ $fa-font-path: '~font-awesome/fonts/';
     overflow: auto;
 }
 
+.rowLine{
+    display: flex; 
+    flex-direction: row;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.columnLine{
+    display: flex; 
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+    justify-content: space-around;
+}
+
 .control a.button.is-active {
     background: $link;
     color: $white;
@@ -80,6 +96,10 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .dark {
     color: $dark;
+}
+
+.olive {
+    color: $olive;
 }
 
 .reply-btn {

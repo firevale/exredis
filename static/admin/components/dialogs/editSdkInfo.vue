@@ -55,10 +55,10 @@
             this.processing = false
             if (result.success) {
               openNotification({
-                title: this.$t('admin.title.updateSuccess'),
-                message: this.$t('admin.message.sdkInfoUpdated'),
+                title: this.$t('admin.titles.updateSuccess'),
+                message: this.$t('admin.messages.sdkInfoUpdated', {sdk: this.$t(`admin.sdks.${this.sdk}`)}),
                 type: 'success',
-                duration: 450000000,
+                duration: 4500,
                 container: '.notifications',
               })
               let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
@@ -72,7 +72,14 @@
           })
           .catch(e => {
             this.processing = false
-            console.error(e)
+            this.visible = false
+            openNotification({
+              title: this.$t('admin.titles.updateFailed'),
+              message: e,
+              type: 'danger',
+              duration: 4500,
+              container: '.notifications',
+            })
           })
       }
     },

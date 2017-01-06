@@ -66,6 +66,13 @@ export default {
       titles: {
         selectSdk: '请选择要添加的SDK:',
         editSdkInfo: '编辑{sdk}接入参数',
+        updateSuccess: '保存成功',
+        updateFailed: '保存失败',
+      },
+
+      messages: {
+        sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
+        unknownError: '未知错误，请联系管理员',
       },
 
       sdks: {

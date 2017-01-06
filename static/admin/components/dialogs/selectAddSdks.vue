@@ -1,5 +1,5 @@
 <template>
-  <modal :visible="visible" @close="close">
+  <modal :visible="visible">
     <div class="box has-text-centered">
       <h5 class="title is-5">{{ `${appName} - ` + $t('admin.titles.selectSdk')}}</h5>
       <div class="columns is-multiline">
@@ -23,15 +23,16 @@
       visible: Boolean,
       appName: String,
       sdks: Array,
+      callback: Function,
     },
 
     methods: {
-      close() {
-        this.$emit('close')
-      },
-      
       selectSdk(sdk) {
-        console.log(sdk, 'selected')
+        this.visible = false
+
+        if (this.callback) {
+          this.callback(sdk)
+        }
       }
     },
 

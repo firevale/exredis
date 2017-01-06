@@ -64,7 +64,8 @@ export default {
       cancel: '取消',
 
       titles: {
-        selectSdk: '请选择要添加的SDK:'
+        selectSdk: '请选择要添加的SDK:',
+        editSdkInfo: '编辑{sdk}接入参数',
       },
 
       sdks: {
@@ -108,6 +109,7 @@ export default {
 
         keys: {
           app_id: 'App Id',
+          app_uid: '应用ID（APP UID)',
           app_key: 'App Key',
           app_secret: 'App Secret',
           pay_key: 'Pay Key',

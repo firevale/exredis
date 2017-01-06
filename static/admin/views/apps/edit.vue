@@ -221,6 +221,7 @@
       editSdkInfo: function(sdkInfo) {
         openSdkInfoEditor({
           ...sdkInfo,
+          app: this.app,
           visible: true,
         })
       },
@@ -249,6 +250,24 @@
         openSelectAddSdks({
           visible: true,
           appName: this.app.name,
+          callback: sdk => {
+            this.$http.post('/admin_actions/generate_dummy_sdk_info', {
+                sdk
+              })
+              .then(response => response.json())
+              .then(result => {
+                if (result.success) {
+                  openSdkInfoEditor({
+                    sdk,
+                    binding: result.binding,
+                    app: this.app,
+                    visible: true
+                  })
+                } else {
+                  return Promise.reject(this.$t(result.message))
+                }
+              })
+          },
           sdks,
         })
       }

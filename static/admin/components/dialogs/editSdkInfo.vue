@@ -1,19 +1,22 @@
 <template>
-  <modal :visible="visible" @close="close">
+  <modal :visible="visible">
     <div class="box">
+      <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
+        <h5 class="title is-5">{{ `${app.name} - ` + $t('admin.titles.editSdkInfo', {sdk: $t(`admin.sdks.${sdk}`)})}}</h5>
+      </div>
       <validation name="sdkInfo" @submit.prevent="handleSubmitSdkInfo">
-        <template v-for="key in Object.keys(binding)">
+        <template v-for="key in Object.keys(binding).reverse()">
           <label class="label"> {{ $t(`admin.sdks.${sdk}`) + $t('admin.sdks.assigned') + $t(`admin.sdks.keys.${key}`)}}: </label>
           <p class="control">
             <input class="input" type="text" v-model="binding[key]">
           </p>
         </template>
-        <p class="control">
-          <input type="submit" class="button is-primary" :value="$t('admin.submit')"></input>
-        </p>
-      </validation>
-    </div>
-  </modal>
+<div class="container has-text-centered" style="margin-top: 15px">
+  <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmitSdkInfo">{{ $t('admin.submit') }}</a>
+</div>
+</validation>
+</div>
+</modal>
 </template>
 
 <script>
@@ -25,13 +28,38 @@
     props: {
       visible: Boolean,
       sdk: String,
-      appId: String,
+      app: Object,
       binding: Object,
     },
 
+    data() {
+      return {
+        processing: false
+      }
+    },
+
     methods: {
-      close() {
-        this.$emit('close')
+      handleSubmitSdkInfo() {
+        this.processing = true
+        this.$http.post('/admin_actions/update_app_sdk_info', {
+            app_id: this.app.id,
+            sdk: this.sdk,
+            binding: this.binding,
+          })
+          .then(response => response.json())
+          .then(result => {
+            this.processing = false
+            if (result.success) {
+              this.app.sdk_bindings.push(result.binding)
+              this.visible = false
+            } else {
+              return Promise.reject(this.$t(result.message))
+            }
+          })
+          .catch(e => {
+            this.processing = false
+            console.error(e)
+          })
       }
     },
 

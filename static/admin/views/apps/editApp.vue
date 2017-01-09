@@ -4,7 +4,7 @@
       <tab-pane icon="fa fa-clone" :label="$t('admin.app.basicInfo')">
         <basic-info-editor v-if="app" :app="app"></basic-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-apple" :label="$t('admin.app.sdkInfo')">
+      <tab-pane icon="fa fa-support" :label="$t('admin.app.sdkInfo')">
         <sdk-info-editor v-if="app" :app="app"></sdk-info-editor>
       </tab-pane>
     </tabs>

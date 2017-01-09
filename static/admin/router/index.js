@@ -13,7 +13,7 @@ export default new Router({
   routes: [{
     path: '/admin',
     name: 'Home',
-    component: require('../views/apps/index.vue'),
+    component: require('../views/Home'),
 
     children: [{
       name: 'Dashboard',
@@ -22,27 +22,11 @@ export default new Router({
     }, {
       name: 'AppManage',
       path: 'apps',
-      component: require('../views/apps/list')
-    }, {
-      name: 'AppInfo',
-      path: 'apps/:appId',
-      component: require('../views/apps/info')
+      component: require('../views/apps')
     }, {
       name: 'AppEdit',
       path: 'apps/edit/:appId',
-      component: require('../views/apps/edit')
-    }, {
-      name: 'AppGoods',
-      path: 'apps/goods/:appId',
-      component: require('../views/apps/goods')
-    }, {
-      name: 'AppOrders',
-      path: 'apps/orders/:appId',
-      component: require('../views/apps/orders')
-    }, {
-      name: 'AppStats',
-      path: 'apps/stats/:appId',
-      component: require('../views/apps/stats')
+      component: require('../views/apps/editApp')
     }, {
       name: 'Orders',
       path: 'orders',

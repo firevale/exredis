@@ -18,11 +18,7 @@ defmodule Acs.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Acs, []},
-     included_applications: [:exredis, :logger_file_backend],
-     applications: [:inets, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :logger_file_backend, 
-                    :gettext, :phoenix_ecto, :mariaex, :redis_poolex, :ssl, :idna, :ibrowse, :httpotion,
-                    :mogrify, :pbkdf2, :comeonin, :des_ecb3, :sweet_xml, :plugsnag, :oauth2, :oauther,
-                    :exsyslog, :timex, :bamboo, :bamboo_smtp]]
+     extra_applications: [:inets, :crypto, :ssl, :logger]]
   end
 
   # Specifies which paths to compile per environment.

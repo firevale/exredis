@@ -38,7 +38,7 @@
   </div>
   <script>
     window.acsConfig = {
-      csrfToken: '<%= get_csrf_token %>',
+      csrfToken: '<%= get_csrf_token() %>',
       inApp: <%= @browser == "webview" %>,
       platform: '<%= @platform %>',
       locale: '<%= @locale %>',

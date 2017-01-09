@@ -39,7 +39,7 @@
   <script>
     window.acsConfig = {
       isMobileAccountSupported: <%= @is_mobile_account_supported %>,
-      csrfToken: '<%= get_csrf_token %>',
+      csrfToken: '<%= get_csrf_token() %>',
       redirectUrl: '<%= @redirect_url %>',
       inApp: <%= @browser == "webview" || @platform == "wp8" %>,
       platform: '<%= @platform %>',

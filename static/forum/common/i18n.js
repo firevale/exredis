@@ -77,6 +77,11 @@ export default {
         myNote: '我的帖子',
         myReply: '我的回复',
         myFavor: '我的收藏',
+        cancelFavor: '取消收藏',
+        newReply: '新回复',
+        deleteBtn: '删除',
+        reply: '回复:',
+        originalNote: '原帖:',
       }
     },
   }

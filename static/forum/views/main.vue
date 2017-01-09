@@ -154,9 +154,10 @@ export default {
     refreshPage(page = 1){
       this.$http({
         method: 'post',
-        url: this.noteLoadUrl+'?page='+page+'&order='+this.noteOrderType,
+        url: this.noteLoadUrl,
         params: {
-          
+          page: page,
+          order: this.noteOrderType,
         }
       }).then(response => {
         //this.noteList = response.json()

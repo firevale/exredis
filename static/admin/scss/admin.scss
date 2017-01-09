@@ -146,7 +146,7 @@
     }
   }
   
-  div.sdk-icon {
+  div.sdk-icon, span.sdk-icon {
     width: 48px;
     height: 48px;
     cursor: pointer;
@@ -163,8 +163,8 @@
     }
 
     &.need-configured {
-      -webkit-filter: opacity(15%); /* Safari */
-      filter: opacity(15%);
+      -webkit-filter: opacity(50%) grayscale(100%); /* Safari */
+      filter: opacity(50%) grayscale(100%);
     }
 
     &.anzhi {

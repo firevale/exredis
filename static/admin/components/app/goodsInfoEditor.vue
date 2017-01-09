@@ -37,7 +37,7 @@
                 <td> {{ goods.description }} </td>
                 <td> {{ (goods.price / 100).toFixed(2) }} </td>
                 <td v-for="sdk in sdks" class="is-icon">
-                  <div class="sdk-icon" :class="classOfGoodsSdk(goods, sdk)" style="width: 32px; height: 32px"></div>
+                  <span class="sdk-icon" :class="classOfGoodsSdk(goods, sdk)" style="width: 32px; height: 32px"></span>
                 </td>
               </tr>
             </tbody>
@@ -59,6 +59,8 @@
   } from 'admin/common/notification'
 
   const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
+
+  import Tooltip from 'vue-bulma-tooltip'
 
   export default {
     props: {
@@ -102,6 +104,10 @@
       }
 
     },
+
+    components: {
+      Tooltip
+    }
 
   }
 </script>

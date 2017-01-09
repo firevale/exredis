@@ -16,7 +16,6 @@ $fa-font-path: '~font-awesome/fonts/';
     flex-direction: row;
     text-align: center;
     position: relative;
-    padding-bottom: 1rem;
 }
 
 .columnLine{
@@ -24,7 +23,7 @@ $fa-font-path: '~font-awesome/fonts/';
     flex-direction: column;
     text-align: center;
     position: relative;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .control a.button.is-active {
@@ -61,15 +60,6 @@ $fa-font-path: '~font-awesome/fonts/';
 .content-item {
     margin: auto 1rem !important;
     justify-content: space-around;
-}
-
-.note-item {
-    padding: .8rem .2rem;
-    border-bottom: 1px solid $text-grey;
-}
-
-.note-item:last-child {
-    border-bottom: none;
 }
 
 .backTop {

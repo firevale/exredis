@@ -18,18 +18,21 @@
   </div>
 </template>
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
   export default {
-    props:{
-      tagBgColor:{
+    props: {
+      tagBgColor: {
         type: String,
         default: '#f00',
       },
-      tagColor:{
+      tagColor: {
         type: String,
         default: '#fff',
       },
-      itemData:{
+      itemData: {
         type: Object,
         default: null,
       },
@@ -37,19 +40,20 @@
     computed: {
       ...mapGetters(['searchKey']),
 
-      filterKey(){
-        return this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">'+this.searchKey+'</span>')
+      filterKey() {
+        return this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">' + this.searchKey +
+          '</span>')
       }
     },
 
     methods: {
-      showDetail(){
-        this.$router.push(
-          {
-            name: 'detail',
-            params: {id: this.itemData.noteId},
-          }
-        )
+      showDetail() {
+        this.$router.push({
+          name: 'detail',
+          params: {
+            id: this.itemData.noteId
+          },
+        })
       }
     },
   }
@@ -104,6 +108,15 @@
   
   .excellent {
     background-color: $olive !important;
+  }
+  
+  .note-item {
+    padding: .8rem .2rem;
+    border-bottom: 1px solid $text-grey;
+  }
+  
+  .note-item:last-child {
+    border-bottom: none;
   }
   
   .note-item .column {

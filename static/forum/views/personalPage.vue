@@ -10,7 +10,7 @@
     </div>
     <div class="horizontal-seprate"></div>
     <div class="rowLine content-item">
-      <div class="columnLine">
+      <div class="columnLine" style="margin-left: 1rem;">
         <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
           <img :src="personal.portrait"></img>
         </figure>
@@ -44,13 +44,32 @@
         <div class="arrow-down"></div>
       </div>
     </div>
+    <div class="content-item" v-show="type == 'myNote'">
+      <my-note v-for="item in personal.myNotes" :item-data="item"></my-note>
+    </div>
+    <div class="content-item" v-show="type == 'myReply'">
+      <my-reply v-for="item in personal.myReplys" :item-data="item"></my-reply>
+    </div>
+    <div class="content-item" v-show="type == 'myFavor'">
+      <my-favorate v-for="item in personal.myFavors" :item-data="item"></my-favorate>
+    </div>
+    <div class="column is-full" v-show="notePageCount > 1">
+      <pagination ref="pag" @switch-page="loadListByPage" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+    </div>
   </div>
 </template>
 <script>
+  import myNote from "../components/myNote"
+  import myFavorate from "../components/myFavorate"
+  import myReply from "../components/myReply"
+  import pagination from "../components/pagination"
   export default {
     data() {
       return {
-        type: 'myNote',
+        noteLoadUrl: 'http://firevale.com',
+        notePageCount: 6,
+        noteCurrentPage: 1,
+        type: 'myReply',
         personal: {
           id: 100,
           portrait: 'https://assets.servedby-buysellads.com/p/manage/asset/id/28536',
@@ -58,55 +77,67 @@
           name: '火谷测试',
           sentNoteCount: 121,
           registerTime: '2015-8-18 16:09',
-          myNote: [{
+          myNotes: [{
             noteId: '',
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              ],
-            title: '【游戏攻略】新手练级指南',
-            hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
-            ],
+            title: '[游戏攻略]新手练级指南',
+            newReply: true,
             author: '火谷测试',
             time: '2分钟前',
             noteCount: '2/11',
-        },],
-          myReply: [{
+          }, {
             noteId: '',
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              ],
-            title: '【游戏攻略】新手练级指南',
-            hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
-            ],
+            title: '[游戏攻略]新手练级指南',
+            newReply: false,
             author: '火谷测试',
             time: '2分钟前',
             noteCount: '2/11',
-        },],
-          myFavor: [{
+          }, ],
+          myReplys: [{
             noteId: '',
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              ],
-            title: '【游戏攻略】新手练级指南',
-            hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
-            ],
+            title: '[游戏攻略]新手练级指南',
+            content: '好文章，收藏了。',
             author: '火谷测试',
-            time: '2分钟前',
+            time: '2016-12-08 18:09:19',
             noteCount: '2/11',
-        },],
+          }, ],
+          myFavors: [{
+            noteId: '',
+            title: '[游戏攻略]新手练级指南收藏',
+            author: '火谷测试',
+            time: '2016-10-30 16:02:23',
+            noteCount: '20/101',
+          }, ],
         },
       }
     },
+    methods: {
+      loadListByPage(page) {
+        this.$http({
+          method: 'post',
+          url: this.noteLoadUrl,
+          params: {
+            page: page,
+            type: this.type,
+          }
+        }).then(response => {
+          //this.noteList = response.json()
+          //this.setNotePageCount(this.noteList.length)
+          //this.setNoteCurrentPage(page)
+        }).then(result => {
+          if (result.success) {
+            this.setNoteCurrentPage(page);
+          } else {
 
+          }
+        })
+      }
+    },
+    components: {
+      myNote,
+      myFavorate,
+      pagination,
+      myReply,
+    }
   }
 </script>
 <style lang="scss">
@@ -119,7 +150,7 @@
     justify-content: space-around;
     font-size: 1.3rem;
     margin: .5rem 1rem;
-    .service-menu{
+    .service-menu {
       font-size: 1rem;
     }
   }

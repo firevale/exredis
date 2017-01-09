@@ -1,6 +1,7 @@
 defmodule Acs.AppGoods do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
   @primary_key false
   schema "app_goods" do
     field :id, :string, primary_key: true

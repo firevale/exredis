@@ -7,6 +7,9 @@
       <tab-pane icon="fa fa-support" :label="$t('admin.app.sdkInfo')">
         <sdk-info-editor v-if="app" :app="app"></sdk-info-editor>
       </tab-pane>
+      <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.app.goodsInfo')">
+        <goods-info-editor v-if="app" :app="app"></goods-info-editor>
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -24,6 +27,7 @@
 
   import basicInfoEditor from 'admin/components/app/basicInfoEditor'
   import sdkInfoEditor from 'admin/components/app/sdkInfoEditor'
+  import goodsInfoEditor from 'admin/components/app/goodsInfoEditor'
 
   export default {
     created() {},
@@ -63,6 +67,7 @@
       TabPane,
       basicInfoEditor,
       sdkInfoEditor,
+      goodsInfoEditor,
     }
   }
 </script>

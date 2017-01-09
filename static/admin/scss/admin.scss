@@ -5,7 +5,6 @@
   
   $primary: #4e9ed8;
   @import '~bulma';
-  @import '~wysiwyg.css/wysiwyg.sass';
   $fa-font-path: '~font-awesome/fonts/';
   @import '~font-awesome/scss/font-awesome';
   @mixin border-radius($val) {
@@ -159,11 +158,20 @@
     @include border-radius(5px);
 
     &:hover {
+      -webkit-filter: brightness(70%);
       filter: brightness(70%);
+    }
+
+    &.need-configured {
+      -webkit-filter: opacity(15%); /* Safari */
+      filter: opacity(15%);
     }
 
     &.anzhi {
       background-image: url(~admin/assets/anzhi.png);
+    }
+    &.applestore {
+      background-image: url(~admin/assets/apple.png);
     }
     &.baidu {
       background-image: url(~admin/assets/baidu.png);
@@ -280,5 +288,15 @@
 
     &:active {
       background: darken($primary, 10%);
+    }
+  }
+
+  .goods-table {
+    thead, tfoot, tbody {
+      tr {
+        th, td {
+          vertical-align: middle;
+        }
+      }
     }
   }

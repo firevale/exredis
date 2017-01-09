@@ -4,9 +4,11 @@ defmodule Acs.AdminController do
   def fetch_apps(conn, params) do 
     query = from app in App,
             left_join: sdk in assoc(app, :sdk_bindings),
-            order_by: [desc: app.inserted_at],
+            left_join: goods in assoc(app, :goods),
+            left_join: product_ids in assoc(goods, :product_ids),
+            order_by: [desc: app.inserted_at, asc: sdk.inserted_at, asc: goods.inserted_at],
             select: app,
-            preload: [sdk_bindings: sdk]
+            preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
 
     apps = Repo.all(query)
 

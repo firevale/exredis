@@ -33,6 +33,16 @@ export default {
       app: {
         basicInfo: '基本信息',
         sdkInfo: 'SDK配置',
+        goodsInfo: '商品配置',
+
+        goods: {
+          id: '商品ID',
+          name: '商品名称',
+          description: '商品简介',
+          price: '商品价格',
+          productIds: '产品ID',
+          add: '添加新商品',
+        }
       },
 
       label: {
@@ -57,6 +67,7 @@ export default {
         CNY: '人民币',
         HKD: '港币',
         USD: '美元',
+        undefined: '货币未设置',
       },
 
       admin: '管理后台',

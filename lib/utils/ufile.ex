@@ -2,7 +2,6 @@ defmodule UFile do
   use     HTTPotion.Base
 
   require Utils
-  require HTTPotion
   require Logger
 
   @ufile_cfg   Application.get_env(:acs, :ufile, [public_key: "", 

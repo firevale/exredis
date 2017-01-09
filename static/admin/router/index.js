@@ -28,6 +28,10 @@ export default new Router({
       path: 'apps/edit/:appId',
       component: require('../views/apps/editApp')
     }, {
+      name: 'Users',
+      path: 'users',
+      component: require('../views/Users')
+    }, {
       name: 'Orders',
       path: 'orders',
       component: require('../views/Orders')

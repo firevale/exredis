@@ -27,6 +27,20 @@ const state = {
       },
     },
     {
+      name: Vue.t('admin.menu.orderManage'),
+      path: '/admin/orders',
+      meta: {
+        icon: 'fa-user-circle'
+      },
+    },
+    {
+      name: Vue.t('admin.menu.forumManage'),
+      path: '/admin/forums',
+      meta: {
+        icon: 'fa-user-circle'
+      },
+    },
+    {
       name: Vue.t('admin.menu.settings'),
       path: '/admin/settings',
       meta: {
@@ -45,12 +59,6 @@ const mutations = {
     } else if (menuItem.item && 'expanded' in menuItem.item.meta) {
       menuItem.item.meta.expanded = menuItem.expanded
     }
-  },
-
-  [types.UPDATE_APPS] (state, apps) {
-    apps.forEach(app => {
-      state.items.push(x.generateAppMenuItem(app))  
-    })
   },
 }
 

@@ -5,6 +5,8 @@ export default {
         dashboard: '概况',
         appManage: '应用管理',
         userManage: '账号管理',
+        orderManage: '订单管理',
+        forumManage: '论坛管理',
         adminUsers: '管理员账户管理',
         appGoods: '商品管理',
         appEdit: '修改配置',
@@ -18,6 +20,8 @@ export default {
         Dashboard: '概况',
         AppManage: '应用管理',
         Users: '账号管理',
+        Orders: '订单管理',
+        Forums: '论坛管理',
         Settings: '系统设置',
         AppInfo: '应用基本信息',
         AppEdit: '修改应用配置',
@@ -73,6 +77,7 @@ export default {
       messages: {
         sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
         unknownError: '未知错误，请联系管理员',
+        appInfoUpdated: '{appName}配置已成功更新'
       },
 
       sdks: {

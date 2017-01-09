@@ -44,9 +44,13 @@ export default new Router({
       path: 'apps/stats/:appId',
       component: require('../views/apps/stats')
     }, {
-      name: 'Users',
-      path: 'users',
-      component: require('../views/Users')
+      name: 'Orders',
+      path: 'orders',
+      component: require('../views/Orders')
+    }, {
+      name: 'Forums',
+      path: 'forums',
+      component: require('../views/Forums')
     }, {
       name: 'Settings',
       path: 'settings',

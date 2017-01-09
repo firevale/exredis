@@ -101,13 +101,9 @@
           <input class="input" type="text" v-model.trim="app.forum_url">
         </p>
       </div>
-
-      <div class="column is-4"></div>
-      <div class="column is-4">
-        <input type="submit" class="button is-primary" :value="$t('admin.submit')"></input>
-      </div>
-      <div class="column is-4"></div>
-
+    </div>
+    <div class="container has-text-centered" style="margin-top: 15px">
+      <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
     </div>
   </validation>
 </template>
@@ -120,6 +116,10 @@
 
   import Vue from 'admin/common/vue-i18n'
 
+  import {
+    openNotification
+  } from 'admin/common/notification'
+
   export default {
     props: {
       app: Object,
@@ -127,6 +127,7 @@
 
     data() {
       return {
+        processing: false,
         currencies: ['CNY', 'HKD', 'USD']
       }
     },
@@ -139,17 +140,36 @@
 
     methods: {
       handleSubmit: function() {
+        this.processing = true
         this.$http.post('/admin_actions/update_app_info', {
             app: this.app
           })
           .then(response => response.json())
           .then(result => {
-            if (result.success) {} else {
+            this.processing = false
+            if (result.success) {
+              openNotification({
+                title: this.$t('admin.titles.updateSuccess'),
+                message: this.$t('admin.messages.appInfoUpdated', {
+                  appName: this.app.name
+                }),
+                type: 'success',
+                duration: 4500,
+                container: '.notifications',
+              })
+            } else {
               return Promise.reject(this.$t(result.message))
             }
           })
-          .catch(x => {
-            console.error(x)
+          .catch(e => {
+            this.processing = false
+            openNotification({
+              title: this.$t('admin.titles.updateFailed'),
+              message: e,
+              type: 'danger',
+              duration: 4500,
+              container: '.notifications',
+            })
           })
       },
     },

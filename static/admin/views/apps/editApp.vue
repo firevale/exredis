@@ -30,8 +30,6 @@
   import goodsInfoEditor from 'admin/components/app/goodsInfoEditor'
 
   export default {
-    created() {},
-
     mounted() {
       let app = this.apps[this.$route.params.appId]
 

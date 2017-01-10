@@ -1,13 +1,13 @@
 <template>
   <validation name="basicInfo" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
-      <div class="column is-4">
+      <div class="column is-4" v-if="app.id">
         <label class="label"> {{ $t('admin.label.appId')}}: </label>
         <p class="control">
           <input class="input is-disabled" type="text" v-model.trim="app.id">
         </p>
       </div>
-      <div class="column is-8">
+      <div class="column is-8" v-if="app.id">
         <label class="label"> {{ $t('admin.label.appKey')}}: </label>
         <p class="control">
           <input class="input is-disabled" type="text" v-model.trim="app.secret">
@@ -139,6 +139,10 @@
     },
 
     methods: {
+      ...mapActions([
+        'addApp'
+      ]),
+
       handleSubmit: function() {
         this.processing = true
         this.$http.post('/admin_actions/update_app_info', {
@@ -157,8 +161,20 @@
                 duration: 4500,
                 container: '.notifications',
               })
+
+              if (result.app) {
+                this.addApp(result.app)
+                this.$nextTick(_ => {
+                  this.$router.replace({
+                    name: 'EditApp',
+                    params: {
+                      appId: app.id
+                    }
+                  })
+                })
+              }
             } else {
-              return Promise.reject(this.$t(result.message))
+              return Promise.reject(result.message)
             }
           })
           .catch(e => {
@@ -167,8 +183,7 @@
               title: this.$t('admin.titles.updateFailed'),
               message: e,
               type: 'danger',
-              duration: 4500,
-              container: '.notifications',
+              duration: 6000,
             })
           })
       },

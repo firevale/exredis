@@ -11,16 +11,16 @@ msgstr ""
 "Language: zh-Hans\n"
 
 msgid "can't be blank"
-msgstr ""
+msgstr "不能为空"
 
 msgid "has already been taken"
-msgstr ""
+msgstr "已经存在"
 
 msgid "is invalid"
-msgstr ""
+msgstr "非法的字段"
 
 msgid "has invalid format"
-msgstr ""
+msgstr "字段格式错误"
 
 msgid "has an invalid entry"
 msgstr ""

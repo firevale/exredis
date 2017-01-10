@@ -24,7 +24,8 @@ export default {
         Forums: '论坛管理',
         Settings: '系统设置',
         AppInfo: '应用基本信息',
-        AppEdit: '修改应用配置',
+        NewApp: '添加新应用',
+        EditApp: '修改应用配置',
         AppGoods: '应用商品管理',
         AppOrders: '应用订单管理',
         AppStats: '应用统计数据',
@@ -34,6 +35,7 @@ export default {
         basicInfo: '基本信息',
         sdkInfo: 'SDK配置',
         goodsInfo: '商品配置',
+        add: '添加新应用',
 
         goods: {
           id: '商品ID',
@@ -110,6 +112,7 @@ export default {
         imageFormatPNG: '图片格式必须为PNG文件',
         badRequestParams: '请求参数错误',
         goodsNotFound: '未找到商品',
+        appNameExists: '应用名称【{app_name}】已被其他应用使用',
       },
 
       sdks: {

@@ -49,3 +49,9 @@ export const fetchSupportedSdks = ({
       }
     })
 }
+
+export const addApp = ({
+  commit
+}, app) => {
+  commit(types.ADD_APP, app)
+}

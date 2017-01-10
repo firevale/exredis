@@ -27,5 +27,7 @@ defmodule Acs.Repo.Migrations.CreateApp do
 
       timestamps()
     end
+
+    create index(:apps, [:name], unique: true)
   end
 end

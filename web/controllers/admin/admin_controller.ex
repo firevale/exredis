@@ -4,6 +4,8 @@ defmodule Acs.AdminController do
   require Mogrify
   require UFile
 
+  alias Ecto.Changeset
+
   def fetch_apps(conn, params) do 
     query = from app in App,
             left_join: sdk in assoc(app, :sdk_bindings),
@@ -27,9 +29,26 @@ defmodule Acs.AdminController do
     case Repo.get(App, app_id) do 
       nil -> 
         conn |> json(%{success: false, message: "admin.serverError.appNotFound"})
+
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
+        RedisApp.refresh(app_id)
         conn |> json(%{success: true, message: "admin.serverSuccess.appUpdated"})
+    end
+  end
+  def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do 
+    app_info = Map.put(app_info, "id", Utils.generate_token(16)) |> Map.put("secret", Utils.generate_token())
+    case App.changeset(%App{}, app_info) |> Repo.insert do 
+      {:ok, app} -> 
+        RedisApp.refresh(app.id)
+        conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
+
+      {:error, %{errors: errors}} ->
+        error_message = Enum.map(errors, fn {key, {msg, opts}} ->
+          "'#{key}' " <> translate_error({msg, opts})
+        end) |> Enum.join("\n")
+
+        conn |> json(%{success: false, message: error_message})
     end
   end
 
@@ -53,17 +72,20 @@ defmodule Acs.AdminController do
                 %{path: nil} ->
                   {:ok, url} = UFile.put_file(upload_file.path, file_key)
                   AppGoods.changeset(goods, %{icon: url}) |> Repo.update! 
+                  RedisApp.refresh(app_id)
                   conn |> json(%{success: true, icon_url: url})
 
                 %{path: ""} ->
                   {:ok, url} = UFile.put_file(upload_file.path, file_key)
                   AppGoods.changeset(goods, %{icon: url}) |> Repo.update! 
+                  RedisApp.refresh(app_id)
                   conn |> json(%{success: true, icon_url: url})
 
                 %{path: file_path} ->
                   {:ok, url} = UFile.put_file(upload_file.path, file_key)
                   {"/", old_file_key} = String.split_at(file_path, 1)
                   AppGoods.changeset(goods, %{icon: url}) |> Repo.update! 
+                  RedisApp.refresh(app_id)
                   :ok = UFile.delete_file(old_file_key)
                   conn |> json(%{success: true, icon_url: url})
               end

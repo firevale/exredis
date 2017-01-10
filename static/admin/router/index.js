@@ -24,7 +24,11 @@ export default new Router({
       path: 'apps',
       component: require('../views/apps')
     }, {
-      name: 'AppEdit',
+      name: 'NewApp',
+      path: 'apps/new',
+      component: require('../views/apps/newApp')
+    }, {
+      name: 'EditApp',
       path: 'apps/edit/:appId',
       component: require('../views/apps/editApp')
     }, {

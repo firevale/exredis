@@ -16,7 +16,13 @@ const mutations = {
 
   [types.UPDATE_SDKS](state, sdks) {
     state.sdks = sdks 
+  },
+
+  [types.ADD_APP](state, app) {
+    state.list.push(app)
+    state[app.id] = app
   }
+
 }
 
 export default {

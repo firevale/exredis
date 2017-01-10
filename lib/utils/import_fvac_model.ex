@@ -28,6 +28,11 @@ defmodule ImportFvacModel do
       end
 
       client.bindings |> Enum.each(fn({sdk, binding}) -> 
+        sdk = case sdk do 
+                "ccplay" -> "cc"
+                x -> x
+              end
+
         case Repo.get_by(AppSdkBinding, sdk: "#{sdk}", app_id: client.id) do 
           nil ->
             AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: client.id, sdk: "#{sdk}", binding: binding}) |> Repo.insert!
@@ -46,7 +51,11 @@ defmodule ImportFvacModel do
 
         if not is_nil(info.product_ids) do 
           info.product_ids |> Enum.each(fn({sdk, product_id}) -> 
-            sdk = "#{sdk}"
+            sdk = case "#{sdk}" do 
+                    "ccplay" -> "cc"
+                    x -> x
+                  end
+                  
             case Repo.get_by(AppGoodsProductId, app_goods_id: id, sdk: sdk) do 
               nil ->
                 AppGoodsProductId.changeset(%AppGoodsProductId{}, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.insert!

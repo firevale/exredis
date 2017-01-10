@@ -272,7 +272,9 @@ defmodule Acs.Plugs do
 
   def fetch_locale(%Plug.Conn{} = conn, _options) do 
     case _fetch_locale(conn.params) || _fetch_header_locale(conn) do 
-      nil -> conn
+      nil -> 
+        Gettext.put_locale(Acs.Gettext, "zh-hans")
+        conn |> put_private(:acs_locale, "zh-hans")
       locale ->
         Gettext.put_locale(Acs.Gettext, locale)
         conn |> put_private(:acs_locale, locale)

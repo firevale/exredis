@@ -40,6 +40,7 @@ defmodule Acs.Web do
 
       import  Acs.Router.Helpers
       import  Acs.Gettext
+      import  Acs.ErrorHelpers
 
       import  Acs.Plugs
 

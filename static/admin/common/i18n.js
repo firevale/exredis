@@ -45,6 +45,15 @@ export default {
         }
       },
 
+      upload: {
+        title: '上传',
+        dropToUpload: '拖拽文件以上传',
+        progress: '上传进度',
+        filename: '文件名',
+        speed: '上传速度',
+        uploadImage: '上传图片',
+      },
+
       label: {
         appId: '应用ID(APP ID)',
         appKey: '应用秘钥(APP KEY)',
@@ -79,16 +88,28 @@ export default {
       cancel: '取消',
 
       titles: {
+        upload: '拖拽文件以上传',
         selectSdk: '请选择要添加的SDK:',
         editSdkInfo: '编辑{sdk}接入参数',
         updateSuccess: '保存成功',
+        uploadSuccess: '文件上传成功',
+        uploadFailed: '文件上传失败',
         updateFailed: '保存失败',
+        uploadGoodsIcon: '修改商品『{goodsName}』的图标',
       },
 
       messages: {
         sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
         unknownError: '未知错误，请联系管理员',
-        appInfoUpdated: '{appName}配置已成功更新'
+        appInfoUpdated: '{appName}配置已成功更新',
+        uploadSuccess: '{fileName}已成功上传至CDN',
+      },
+
+      serverError: {
+        imageSize128x128: '图片的尺寸必须为128x128',
+        imageFormatPNG: '图片格式必须为PNG文件',
+        badRequestParams: '请求参数错误',
+        goodsNotFound: '未找到商品',
       },
 
       sdks: {

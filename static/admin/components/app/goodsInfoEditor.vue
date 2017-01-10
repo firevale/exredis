@@ -28,7 +28,7 @@
             <tbody>
               <tr v-for="goods in app.goods">
                 <td class="is-icon">
-                  <figure class="image is-32x32">
+                  <figure class="image is-32x32" @click="updateGoodsIcon(goods)">
                     <img :src="goods.icon ? goods.icon: 'https://placehold.it/32x32?text=128x128'"></img>
                   </figure>
                 </td>
@@ -57,6 +57,10 @@
   import {
     openNotification
   } from 'admin/common/notification'
+
+  import {
+    showFileUploadDialog
+  } from '../dialog/fileUploadDialog'
 
   const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
 
@@ -88,7 +92,7 @@
 
     methods: {
       classOfGoodsSdk: function(goods, sdk) {
-        let result = sdk 
+        let result = sdk
         let productIds = {}
 
         goods.product_ids.forEach(x => {
@@ -97,12 +101,24 @@
 
         if (productIds[sdk]) {
           return sdk
-        }
-        else {
+        } else {
           return `${sdk} need-configured`
         }
-      }
+      },
 
+      updateGoodsIcon: function(goods) {
+        showFileUploadDialog({
+          postAction: '/admin_actions/update_goods_icon',
+          accept: 'image/png',
+          data: {
+            app_id: this.app.id,
+            goods_id: goods.id,
+          },
+          extensions: ['png'],
+          title: this.$t('admin.titles.uploadGoodsIcon', {goodsName: goods.name}),
+          callback: response => goods.icon = response.icon_url,
+        })
+      },
     },
 
     components: {

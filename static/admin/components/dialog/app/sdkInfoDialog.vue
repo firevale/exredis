@@ -73,6 +73,7 @@
           .catch(e => {
             this.processing = false
             this.visible = false
+
             openNotification({
               title: this.$t('admin.titles.updateFailed'),
               message: e,

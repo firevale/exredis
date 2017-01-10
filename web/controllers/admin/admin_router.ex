@@ -15,5 +15,6 @@ defmodule Acs.AdminRouter do
 
     post "/generate_dummy_sdk_info", AppSdkInfoController, :generate_dummy_sdk_info
     post "/update_app_sdk_info", AppSdkInfoController, :update_app_sdk_info
+    post "/update_goods_icon", AdminController, :update_goods_icon
   end
 end

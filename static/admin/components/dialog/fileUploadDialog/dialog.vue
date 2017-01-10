@@ -126,8 +126,6 @@
 
             this.$nextTick(_ => {
               if (typeof this.callback == 'function') {
-                console.log(file.response)
-
                 if (file.xhr.status == 200 && file.response.success) {
                   this.callback(file.response)
                   openNotification({
@@ -141,6 +139,14 @@
                   openNotification({
                     title: this.$t('admin.titles.uploadFailed'),
                     message: this.$t(file.response.message, file.response.message_object),
+                    type: 'danger',
+                    duration: 6000,
+                  })
+                }
+                else {
+                  openNotification({
+                    title: this.$t('admin.titles.uploadFailed'),
+                    message: file.error, // not tested yet
                     type: 'danger',
                     duration: 6000,
                   })

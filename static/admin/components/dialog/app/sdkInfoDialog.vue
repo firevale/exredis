@@ -11,12 +11,12 @@
             <input class="input" type="text" v-model.trim="binding[key]">
           </p>
         </template>
-<div class="container has-text-centered" style="margin-top: 15px">
-  <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmitSdkInfo">{{ $t('admin.submit') }}</a>
-</div>
-</validation>
-</div>
-</modal>
+        <div class="container has-text-centered" style="margin-top: 15px">
+          <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmitSdkInfo">{{ $t('admin.submit') }}</a>
+        </div>
+      </validation>
+    </div>
+  </modal>
 </template>
 
 <script>

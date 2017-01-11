@@ -32,6 +32,10 @@ export default function (VueRouter) {
       name: 'personalPage',
       component: require('../views/personalPage.vue'),
     }, {
+      path: '/forum/campaign',
+      name: 'campaign',
+      component: require('../views/campaign.vue'),
+    }, {
       path: '*',
       redirect: '/'
     }]

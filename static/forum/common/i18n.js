@@ -82,7 +82,13 @@ export default {
         deleteBtn: '删除',
         reply: '回复:',
         originalNote: '原帖:',
-      }
+      },
+      campaign:{
+        title: '活动',
+        gameCampaign: '游戏活动',
+        gameNotice: '游戏公告',
+        gameNews: '游戏新闻',
+      },
     },
   }
 }

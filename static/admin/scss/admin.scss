@@ -145,6 +145,15 @@
       }
     }
   }
+
+  .app-icon, .goods-icon {
+    cursor: pointer;
+
+    &:hover {
+      -webkit-filter: brightness(70%);
+      filter: brightness(70%);
+    }    
+  }
   
   div.sdk-icon,
   span.sdk-icon {

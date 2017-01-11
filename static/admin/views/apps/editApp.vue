@@ -31,7 +31,7 @@
 
   export default {
     mounted() {
-      let app = this.apps[this.$route.params.appId]
+      let app = this.appHash[this.$route.params.appId]
 
       if (typeof app == 'undefined') {
         this.$router.replace({
@@ -50,7 +50,7 @@
 
     computed: {
       ...mapGetters([
-        'apps', 'sdks'
+        'appHash', 'sdks'
       ]),
     },
 

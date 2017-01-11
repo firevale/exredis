@@ -14,7 +14,7 @@ msgid "can't be blank"
 msgstr "不能为空"
 
 msgid "has already been taken"
-msgstr "已经存在"
+msgstr "已经被使用"
 
 msgid "is invalid"
 msgstr "非法的字段"

@@ -1,5 +1,6 @@
 use Mix.Config
 
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -8,6 +9,8 @@ use Mix.Config
 # with brunch.io to recompile .js and .css sources.
 config :acs, Acs.Endpoint,
   http: [port: 4000],
+  url: [host: System.get_env("ACS_HOST") || "localhost", port: 80, scheme: "http"],
+  static_url: [host: System.get_env("ACS_HOST") || "localhost", port: 80, scheme: "http"],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

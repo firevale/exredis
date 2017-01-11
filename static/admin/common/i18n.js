@@ -98,6 +98,7 @@ export default {
         uploadFailed: '文件上传失败',
         updateFailed: '保存失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
+        uploadAppIcon: '修改应用『{appName}』的图标',
       },
 
       messages: {

@@ -1,5 +1,5 @@
 defmodule Acs.SmsService do 
-  alias   Acs.RedisUser
+  
   require Logger
   alias   Acs.MeishengSmsSender
 

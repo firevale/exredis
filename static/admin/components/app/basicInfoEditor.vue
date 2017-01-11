@@ -134,7 +134,7 @@
 
     computed: {
       ...mapGetters([
-        'apps', 'sdks'
+        'sdks'
       ]),
     },
 
@@ -166,10 +166,7 @@
                 this.addApp(result.app)
                 this.$nextTick(_ => {
                   this.$router.replace({
-                    name: 'EditApp',
-                    params: {
-                      appId: app.id
-                    }
+                    path: `/admin/apps/edit/${result.app.id}`
                   })
                 })
               }

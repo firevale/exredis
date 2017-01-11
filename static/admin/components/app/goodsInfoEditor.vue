@@ -4,7 +4,7 @@
       <article class="tile is-child">
         <div class="table-responsive" v-if="app">
           <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead>
+            <thead v-show="app.goods && app.goods.length > 0">
               <tr>
                 <th></th>
                 <th>{{ $t('admin.app.goods.id')}}</th>
@@ -25,10 +25,10 @@
                 </th>
               </tr>
             </tfoot>
-            <tbody>
+            <tbody v-show="app.goods && app.goods.length > 0">
               <tr v-for="goods in app.goods">
                 <td class="is-icon">
-                  <figure class="image is-32x32" @click="updateGoodsIcon(goods)">
+                  <figure class="image is-32x32 goods-icon" @click="updateGoodsIcon(goods)">
                     <img :src="goods.icon ? goods.icon: 'https://placehold.it/32x32?text=128x128'"></img>
                   </figure>
                 </td>

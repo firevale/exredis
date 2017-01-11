@@ -25,12 +25,12 @@ defmodule Acs.AdminController do
   def update_app_info(conn, %{"app" => %{"id" => app_id} = app_info}) do 
     case Repo.get(App, app_id) do 
       nil -> 
-        conn |> json(%{success: false, message: "admin.serverError.appNotFound"})
+        conn |> json(%{success: false, i18n_message: "admin.serverError.appNotFound"})
 
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, message: "admin.serverSuccess.appUpdated"})
+        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
     end
   end
   def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do 
@@ -41,18 +41,58 @@ defmodule Acs.AdminController do
         conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
 
       {:error, %{errors: errors}} ->
-        error_message = Enum.map(errors, fn {key, {msg, opts}} ->
-          "'#{key}' " <> translate_error({msg, opts})
-        end) |> Enum.join("\n")
+        conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
 
-        conn |> json(%{success: false, message: error_message})
+  def update_app_goods_info(conn, %{"goods" => %{"id" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsId"})
+  end
+  def update_app_goods_info(conn, %{"goods" => %{"name" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsName"})
+  end
+  def update_app_goods_info(conn, %{"goods" => %{"description" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsDescription"})
+  end
+  def update_app_goods_info(conn, %{"goods" => %{"app_id" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsAppId"})
+  end
+  def update_app_goods_info(conn, %{"goods" => %{
+      "id" => goods_id,
+      "name" => _,
+      "description" => _,
+      "price" => goods_price,
+      "app_id" => _,
+    } = goods}) do 
+    if goods["price"] < 0 do 
+      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidGoodsPrice"})
+    else 
+      case Repo.get(AppGoods, goods_id) do 
+        nil ->
+          case AppGoods.changeset(%AppGoods{}, goods) |> Repo.insert do 
+            {:ok, new_goods} ->
+              conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
+            
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
+        
+        %AppGoods{} = old_goods ->
+          case AppGoods.changeset(old_goods, goods) |> Repo.update do 
+            {:ok, new_goods} ->
+              conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
+            
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
+      end
     end
   end
 
   def update_app_icon(conn, %{"app_id" => app_id, "file" => %{} = upload_file} = params) do 
     case Repo.get(App, app_id) do 
       nil ->
-        conn |> json(%{success: false, message: "admin.serverError.appNotFound", message_object: %{app_id: app_id}})
+        conn |> json(%{success: false, i18n_message: "admin.serverError.appNotFound", i18n_message_object: %{app_id: app_id}})
 
       %App{} = app ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do 
@@ -70,20 +110,22 @@ defmodule Acs.AdminController do
               RedisApp.refresh(app_id)
               conn |> json(%{success: true, icon_url: icon_url})
             else
-              conn |> json(%{success: false, message: "admin.serverError.imageFormatPNG"})
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, message: "admin.serverError.imageSize128x128"}) 
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"}) 
         end
       _ -> 
-        conn |> json(%{success: false, message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
     end
   end
 
   def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{} = upload_file} = params) do 
     case Repo.get(AppGoods, goods_id) do 
       nil ->
-        conn |> json(%{success: false, message: "admin.serverError.goodsNotFound", message_object: %{goods_id: goods_id}})
+        conn |> json(%{success: false, 
+                       i18n_message: "admin.serverError.goodsNotFound", 
+                       i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do 
@@ -101,13 +143,13 @@ defmodule Acs.AdminController do
               RedisApp.refresh(app_id)
               conn |> json(%{success: true, icon_url: icon_url})
             else
-              conn |> json(%{success: false, message: "admin.serverError.imageFormatPNG"})
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, message: "admin.serverError.imageSize128x128"}) 
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"}) 
         end
       _ -> 
-        conn |> json(%{success: false, message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
     end
   end
 

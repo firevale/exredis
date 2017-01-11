@@ -37,4 +37,10 @@ defmodule Acs.ErrorHelpers do
       Gettext.dgettext(Acs.Gettext, "errors", msg, opts)
     end
   end
+
+  def translate_errors(errors) do 
+    Enum.map(errors, fn {key, {msg, opts}} ->
+      "'#{key}' " <> translate_error({msg, opts})
+    end) |> Enum.join("\n")
+  end
 end

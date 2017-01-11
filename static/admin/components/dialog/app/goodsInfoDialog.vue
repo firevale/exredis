@@ -2,15 +2,29 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ `${app.name} - ` + $t('admin.titles.editSdkInfo', {sdk: $t(`admin.sdks.${sdk}`)})}}</h5>
+        <h5 class="title is-5">{{ $t('admin.titles.editGoodsInfo', {appName: appName}) }}</h5>
       </div>
-      <validation name="sdkInfo" @submit.prevent="handleSubmit">
-        <template v-for="key in Object.keys(binding).reverse()">
-          <label class="label"> {{ $t(`admin.sdks.${sdk}`) + $t('admin.sdks.assigned') + $t(`admin.sdks.keys.${key}`)}}: </label>
-          <p class="control">
-            <input class="input" type="text" v-model.trim="binding[key]">
-          </p>
-        </template>
+      <validation name="goods" @submit.prevent="handleSubmit">
+        <label class="label"> {{ $t('admin.app.goods.id') }}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="goods.id">
+        </p>
+
+        <label class="label"> {{ $t('admin.app.goods.name') }}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="goods.name">
+        </p>
+
+        <label class="label"> {{ $t('admin.app.goods.description') }}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="goods.description">
+        </p>
+
+        <label class="label"> {{ $t('admin.app.goods.price') + '[' + $t('admin.currency.' + currency) + ']' }}: </label>
+        <p class="control">
+          <input class="input" type="number" v-model.trim="goods.price">
+        </p>
+
         <div class="container has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>
@@ -35,9 +49,11 @@
   export default {
     props: {
       visible: Boolean,
-      sdk: String,
-      app: Object,
-      binding: Object,
+      appId: String,
+      appName: String,
+      goods: Object,
+      currency: String,
+      callback: Function,
     },
 
     data() {
@@ -49,10 +65,9 @@
     methods: {
       handleSubmit() {
         this.processing = true
-        this.$http.post('/admin_actions/update_app_sdk_info', {
-            app_id: this.app.id,
-            sdk: this.sdk,
-            binding: this.binding,
+        this.$http.post('/admin_actions/update_app_goods_info', {
+            app_id: this.appId,
+            goods: this.goods,
           })
           .then(response => response.json())
           .then(result => {
@@ -60,14 +75,14 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.sdkInfoUpdated', {sdk: this.$t(`admin.sdks.${this.sdk}`)}),
+                message: this.$t('admin.messages.goodsInfoUpdated', {goodsName: result.goods.name}),
                 type: 'success',
                 duration: 4500,
                 container: '.notifications',
               })
-              let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
-              if (filtered.length <= 0) {
-                this.app.sdk_bindings.push(result.binding)
+
+              if (this.callback) {
+                this.callback(result.goods)
               }
               this.visible = false
             } else {

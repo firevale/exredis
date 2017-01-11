@@ -7,6 +7,7 @@
             <thead v-show="app.goods && app.goods.length > 0">
               <tr>
                 <th></th>
+                <th></th>
                 <th>{{ $t('admin.app.goods.id')}}</th>
                 <th>{{ $t('admin.app.goods.name')}}</th>
                 <th>{{ $t('admin.app.goods.description')}}</th>
@@ -18,15 +19,20 @@
             </thead>
             <tfoot>
               <tr>
-                <th :colspan="5+sdks.length" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
-                  <a class="button is-primary" style="min-width: 100px" href="javascript:void(0)">
-                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ ' ' + $t('admin.app.goods.add') }}
+                <th :colspan="6+sdks.length" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
+                  <a class="button is-primary" style="min-width: 100px" @click="addNewGoods">
+                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.app.goods.add') }}
                   </a>
                 </th>
               </tr>
             </tfoot>
             <tbody v-show="app.goods && app.goods.length > 0">
-              <tr v-for="goods in app.goods">
+              <tr v-for="(goods, index) in app.goods">
+                <td class="is-icon">
+                  <a @click.prevent="editGoodsInfo(goods, index)">
+                    <i class="fa fa-edit"></i> 
+                  </a>
+                </td>
                 <td class="is-icon">
                   <figure class="image is-32x32 goods-icon" @click="updateGoodsIcon(goods)">
                     <img :src="goods.icon ? goods.icon: 'https://placehold.it/32x32?text=128x128'"></img>
@@ -63,6 +69,20 @@
   } from '../dialog/fileUploadDialog'
 
   const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
+
+  import Vue from 'admin/common/vue-i18n'
+
+  import goodsInfoDialog from 'admin/components/dialog/app/goodsInfoDialog'
+  const goodsInfoDialogComponent = Vue.extend(goodsInfoDialog)
+
+  const openGoodsInfoDialog = (propsData = {
+    visible: true
+  }) => {
+    return new goodsInfoDialogComponent({
+      el: document.createElement('div'),
+      propsData
+    })
+  }
 
   import Tooltip from 'vue-bulma-tooltip'
 
@@ -117,6 +137,38 @@
           extensions: ['png'],
           title: this.$t('admin.titles.uploadGoodsIcon', {goodsName: goods.name}),
           callback: response => goods.icon = response.icon_url,
+        })
+      },
+
+      editGoodsInfo: function(goods, index) {
+        openGoodsInfoDialog({
+          goods: goods,          
+          appId: this.app.id,
+          appName: this.app.name,
+          currency: this.app.currency,
+          visible: true,
+          callback: new_goods => {
+            this.app.goods[index] = new_goods 
+          },
+        })
+      },
+
+      addNewGoods: function() {
+        openGoodsInfoDialog({
+          goods: {
+            id: '',
+            name: '',
+            description: '',
+            price: 0,
+            app_id: this.app.id,
+          },
+          appId: this.app.id,
+          appName: this.app.name,
+          currency: this.app.currency,
+          visible: true,
+          callback: goods => {
+            this.app.goods.push(goods)
+          },
         })
       },
     },

@@ -93,6 +93,7 @@ export default {
         upload: '拖拽文件以上传',
         selectSdk: '请选择要添加的SDK:',
         editSdkInfo: '编辑{sdk}接入参数',
+        editGoodsInfo: '编辑应用『{appName}』商品信息',
         updateSuccess: '保存成功',
         uploadSuccess: '文件上传成功',
         uploadFailed: '文件上传失败',
@@ -105,7 +106,8 @@ export default {
         sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
         unknownError: '未知错误，请联系管理员',
         appInfoUpdated: '{appName}配置已成功更新',
-        uploadSuccess: '{fileName}已成功上传至CDN',
+        uploadSuccess: '{fileName}已成功上传',
+        goodsInfoUpdated: '商品{goodsName}信息已成功更新',
       },
 
       serverError: {
@@ -114,6 +116,10 @@ export default {
         badRequestParams: '请求参数错误',
         goodsNotFound: '未找到商品',
         appNameExists: '应用名称【{app_name}】已被其他应用使用',
+        emptyGoodsId: '商品ID不能为空',
+        emptyGoodsName: '商品名称不能为空',
+        emptyGoodsDescription: '商品简介不能为空',
+        invalidGoodsPrice: '商品价格不能为负数',
       },
 
       sdks: {

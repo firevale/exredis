@@ -2,7 +2,7 @@ import * as types from '../mutation-types'
 
 const state = {
   list: [],
-  hash: [],
+  hash: {},
   sdks: [],
 }
 
@@ -21,10 +21,7 @@ const mutations = {
 
   [types.ADD_APP](state, app) {
     state.list.push(app)
-
-    let hash = state.hash
-    hash[app.id] = app
-    state.hash = hash
+    state.hash[app.id] = app
   }
 
 }

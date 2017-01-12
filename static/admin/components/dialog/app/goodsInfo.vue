@@ -22,7 +22,7 @@
 
         <label class="label"> {{ $t('admin.app.goods.price') + '[' + $t('admin.currency.' + currency) + ']' }}: </label>
         <p class="control">
-          <input class="input" type="number" v-model.trim="goods.price">
+          <input class="input" type="number" v-model.trim="price">
         </p>
 
         <div class="container has-text-centered" style="margin-top: 15px">
@@ -58,7 +58,18 @@
 
     data() {
       return {
-        processing: false
+        processing: false,
+        price: 0,
+      }
+    },
+
+    mounted: function() {
+      this.price = this.goods.price / 100
+    },
+
+    watch: {
+      price: function(val) {
+        this.goods.price = val * 100
       }
     },
 

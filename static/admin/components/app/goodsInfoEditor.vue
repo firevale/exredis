@@ -7,7 +7,6 @@
             <thead v-show="app.goods && app.goods.length > 0">
               <tr>
                 <th></th>
-                <th></th>
                 <th>{{ $t('admin.app.goods.id')}}</th>
                 <th>{{ $t('admin.app.goods.name')}}</th>
                 <th>{{ $t('admin.app.goods.description')}}</th>
@@ -15,6 +14,7 @@
                 <th :colspan="sdks.length">
                   {{ $t('admin.app.goods.productIds') }}
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tfoot>
@@ -29,11 +29,6 @@
             <tbody v-show="app.goods && app.goods.length > 0">
               <tr v-for="(goods, index) in app.goods">
                 <td class="is-icon">
-                  <a @click.prevent="editGoodsInfo(goods, index)">
-                    <i class="fa fa-edit"></i> 
-                  </a>
-                </td>
-                <td class="is-icon">
                   <figure class="image is-32x32 goods-icon" @click="updateGoodsIcon(goods)">
                     <img :src="goods.icon ? goods.icon: 'https://placehold.it/32x32?text=128x128'"></img>
                   </figure>
@@ -44,6 +39,14 @@
                 <td> {{ (goods.price / 100).toFixed(2) }} </td>
                 <td v-for="sdk in sdks" class="is-icon">
                   <span class="sdk-icon" :class="classOfGoodsSdk(goods, sdk)" style="width: 32px; height: 32px"></span>
+                </td>
+                <td class="is-icon">
+                  <a @click.prevent="editGoodsInfo(goods, index)">
+                    <i class="fa fa-pencil"></i> 
+                  </a>
+                  <a @click.prevent="deleteGoods(goods, index)">
+                    <i class="fa fa-trash"></i> 
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -66,13 +69,13 @@
 
   import {
     showFileUploadDialog
-  } from '../dialog/fileUploadDialog'
+  } from '../dialog/fileUpload'
 
   const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
 
   import Vue from 'admin/common/vue-i18n'
 
-  import goodsInfoDialog from 'admin/components/dialog/app/goodsInfoDialog'
+  import goodsInfoDialog from 'admin/components/dialog/app/goodsInfo'
   const goodsInfoDialogComponent = Vue.extend(goodsInfoDialog)
 
   const openGoodsInfoDialog = (propsData = {
@@ -153,6 +156,10 @@
         })
       },
 
+      deleteGoods: function(goods, index) {
+
+      },
+
       addNewGoods: function() {
         openGoodsInfoDialog({
           goods: {
@@ -171,6 +178,8 @@
           },
         })
       },
+
+
     },
 
     components: {

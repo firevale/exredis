@@ -22,7 +22,7 @@
 
   import Vue from 'admin/common/vue-i18n'
 
-  import sdkInfoDialog from 'admin/components/dialog/app/sdkInfoDialog'
+  import sdkInfoDialog from 'admin/components/dialog/app/sdkInfo'
   const sdkInfoDialogComponent = Vue.extend(sdkInfoDialog)
 
   const openSdkInfoDialog = (propsData = {
@@ -34,7 +34,7 @@
     })
   }
 
-  import sdkListDialog from 'admin/components/dialog/app/sdkListDialog'
+  import sdkListDialog from 'admin/components/dialog/app/sdkList'
   const sdkListDialogComponent = Vue.extend(sdkListDialog)
 
   const openSdkListDialog = (propsData = {

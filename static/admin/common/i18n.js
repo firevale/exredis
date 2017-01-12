@@ -43,6 +43,7 @@ export default {
           description: '商品简介',
           price: '商品价格',
           productIds: '产品ID',
+          productId: '产品ID',
           add: '添加新商品',
         }
       },
@@ -100,6 +101,7 @@ export default {
         updateFailed: '保存失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
         uploadAppIcon: '修改应用『{appName}』的图标',
+        editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
         ok: '确认',
         cancel: '取消',
         warning: '警告',
@@ -111,7 +113,8 @@ export default {
         appInfoUpdated: '{appName}配置已成功更新',
         uploadSuccess: '{fileName}已成功上传',
         goodsInfoUpdated: '商品{goodsName}信息已成功更新',
-        confirmDeleteGoods: '您确定要删除商品『{goodsName}』么?'
+        confirmDeleteGoods: '您确定要删除商品『{goodsName}』么?',
+        goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
       },
 
       serverError: {
@@ -127,6 +130,8 @@ export default {
       },
 
       sdks: {
+        applestore: 'iTunes Connect',
+        ggplay: '谷歌商店',
         anzhi: '安智',
         baidu: '百度',
         cc: '虫虫',

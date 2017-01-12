@@ -1,7 +1,6 @@
 defmodule Acs.AppGoodsProductId do
   use Acs.Web, :model
 
-
   @derive {Poison.Encoder, except: [:app_goods, :__meta__]}
   schema "app_goods_product_ids" do
     field :sdk, :string

@@ -33,7 +33,6 @@
   } from 'admin/components/dialog/fileUpload'
 
   export default {
-
     computed: {
       ...mapGetters([
         'appList'

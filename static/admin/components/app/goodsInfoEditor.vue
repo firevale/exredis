@@ -71,7 +71,13 @@
     showFileUploadDialog
   } from '../dialog/fileUpload'
 
-  const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
+  import {
+    showMessageBox
+  } from '../dialog/messageBox'
+
+  import {
+    processAjaxError
+  } from 'admin/common/utils'
 
   import Vue from 'admin/common/vue-i18n'
 
@@ -88,6 +94,8 @@
   }
 
   import Tooltip from 'vue-bulma-tooltip'
+
+  const productSdks = ['coolpad', 'yyh', 'lenovo', 'ccplay']
 
   export default {
     props: {
@@ -138,26 +146,50 @@
             goods_id: goods.id,
           },
           extensions: ['png'],
-          title: this.$t('admin.titles.uploadGoodsIcon', {goodsName: goods.name}),
+          title: this.$t('admin.titles.uploadGoodsIcon', {
+            goodsName: goods.name
+          }),
           callback: response => goods.icon = response.icon_url,
         })
       },
 
       editGoodsInfo: function(goods, index) {
         openGoodsInfoDialog({
-          goods: goods,          
+          goods: goods,
           appId: this.app.id,
           appName: this.app.name,
           currency: this.app.currency,
           visible: true,
           callback: new_goods => {
-            this.app.goods[index] = new_goods 
+            this.app.goods[index] = new_goods
           },
         })
       },
 
       deleteGoods: function(goods, index) {
-
+        showMessageBox({
+          visible: true,
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.messages.confirmDeleteGoods', {
+            goodsName: goods.name
+          }),
+          type: 'danger',
+          onOK: _ => {
+            this.$http.post('/admin_actions/delete_app_goods', {
+                goods_id: goods.id,
+                app_id: goods.app_id,
+              })
+              .then(res => res.json())
+              .then(json => {
+                if (json.success) {
+                  this.app.goods.splice(index, 1)
+                } else {
+                  return Promise.reject(result)
+                }
+              })
+              .catch(e => processAjaxError(e))
+          },
+        })
       },
 
       addNewGoods: function() {

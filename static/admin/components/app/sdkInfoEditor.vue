@@ -46,6 +46,10 @@
     })
   }
 
+  import {
+    processAjaxError
+  } from 'admin/common/utils'
+
   export default {
     props: {
       app: Object,
@@ -104,9 +108,9 @@
                     visible: true
                   })
                 } else {
-                  return Promise.reject(this.$t(result.message))
+                  return Promise.reject(result)
                 }
-              })
+              }).catch(e => processAjaxError(e))
           },
           sdks,
         })

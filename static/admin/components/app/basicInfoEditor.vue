@@ -120,6 +120,10 @@
     openNotification
   } from 'admin/common/notification'
 
+  import {
+    processAjaxError
+  } from 'admin/common/utils'
+
   export default {
     props: {
       app: Object,
@@ -176,12 +180,7 @@
           })
           .catch(e => {
             this.processing = false
-            openNotification({
-              title: this.$t('admin.titles.updateFailed'),
-              message: e,
-              type: 'danger',
-              duration: 6000,
-            })
+            processAjaxError(e)
           })
       },
     },

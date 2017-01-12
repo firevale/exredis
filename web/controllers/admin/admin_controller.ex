@@ -153,4 +153,27 @@ defmodule Acs.AdminController do
     end
   end
 
+  def delete_app_goods(conn, %{"goods_id" => ""}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  def delete_app_goods(conn, %{"goods_id" => goods_id, "app_id" => app_id}) do 
+    case Repo.get(AppGoods, goods_id) do 
+      nil ->
+        conn |> json(%{success: false, 
+                       i18n_message: "admin.serverError.goodsNotFound", 
+                       i18n_message_object: %{goods_id: goods_id}})
+
+      %AppGoods{app_id: ^app_id} = goods ->
+        case Repo.delete(goods) do 
+          {:ok, _} ->
+            conn |> json(%{success: true})
+          
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end        
+      _ -> 
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+
 end

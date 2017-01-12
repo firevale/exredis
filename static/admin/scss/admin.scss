@@ -331,3 +331,12 @@
     opacity: .4;
     background: #000;
   }
+
+  span {
+    &.is-warning {
+      color: $warning;
+    }
+    &.is-danger {
+      color: $danger;
+    }
+  }

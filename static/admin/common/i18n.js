@@ -100,6 +100,9 @@ export default {
         updateFailed: '保存失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
         uploadAppIcon: '修改应用『{appName}』的图标',
+        ok: '确认',
+        cancel: '取消',
+        warning: '警告',
       },
 
       messages: {
@@ -108,6 +111,7 @@ export default {
         appInfoUpdated: '{appName}配置已成功更新',
         uploadSuccess: '{fileName}已成功上传',
         goodsInfoUpdated: '商品{goodsName}信息已成功更新',
+        confirmDeleteGoods: '您确定要删除商品『{goodsName}』么?'
       },
 
       serverError: {

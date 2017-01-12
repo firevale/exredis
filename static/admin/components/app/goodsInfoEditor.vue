@@ -38,7 +38,10 @@
                 <td> {{ goods.description }} </td>
                 <td> {{ (goods.price / 100).toFixed(2) }} </td>
                 <td v-for="sdk in sdks" class="is-icon">
-                  <span class="sdk-icon" :class="classOfGoodsSdk(goods, sdk)" style="width: 32px; height: 32px"></span>
+                  <span class="sdk-icon" 
+                        :class="classOfGoodsSdk(goods, sdk)" 
+                        style="width: 32px; height: 32px"
+                        @click.prevent="editGoodsProductId(goods, sdk)"></span>
                 </td>
                 <td class="is-icon">
                   <a @click.prevent="editGoodsInfo(goods, index)">
@@ -88,6 +91,18 @@
     visible: true
   }) => {
     return new goodsInfoDialogComponent({
+      el: document.createElement('div'),
+      propsData
+    })
+  }
+
+  import goodsProductIdDialog from 'admin/components/dialog/app/goodsProductId'
+  const goodsProductIdDialogComponent = Vue.extend(goodsProductIdDialog)
+
+  const openGoodsProductIdDialog = (propsData = {
+    visible: true
+  }) => {
+    return new goodsProductIdDialogComponent({
       el: document.createElement('div'),
       propsData
     })
@@ -162,6 +177,29 @@
           visible: true,
           callback: new_goods => {
             this.app.goods[index] = new_goods
+          },
+        })
+      },
+
+      editGoodsProductId(goods, sdk) {
+        let index = goods.product_ids.findIndex(x => x.sdk == sdk)
+
+        let productIdInfo = goods.product_ids[index] || {
+          app_goods_id: goods.id,
+          sdk: sdk,
+          product_id: '',
+        }
+
+        openGoodsProductIdDialog({
+          goodsName: goods.name,
+          productIdInfo: productIdInfo,
+          callback: newProductIdInfo => {
+            if (index == -1) {
+              goods.product_ids.push(newProductIdInfo)
+            }
+            else {
+              goods.product_ids[index] == newProductIdInfo
+            }
           },
         })
       },

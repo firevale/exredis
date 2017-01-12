@@ -2,27 +2,12 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.titles.editGoodsInfo', {appName: appName}) }}</h5>
+        <h5 class="title is-5">{{ $t('admin.titles.editGoodsProductId', {goodsName: goodsName, sdk: $t('admin.sdks.' + productIdInfo.sdk)}) }}</h5>
       </div>
-      <validation name="goods" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.app.goods.id') }}: </label>
+      <validation name="productId" @submit.prevent="handleSubmit">
+        <label class="label"> {{ $t('admin.app.goods.productId', {sdk: productIdInfo.sdk}) }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="goods.id">
-        </p>
-
-        <label class="label"> {{ $t('admin.app.goods.name') }}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="goods.name">
-        </p>
-
-        <label class="label"> {{ $t('admin.app.goods.description') }}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="goods.description">
-        </p>
-
-        <label class="label"> {{ $t('admin.app.goods.price') + '[' + $t('admin.currency.' + currency) + ']' }}: </label>
-        <p class="control">
-          <input class="input" type="number" v-model.trim="price">
+          <input class="input" type="text" v-model.trim="productIdInfo.product_id">
         </p>
 
         <div class="container has-text-centered" style="margin-top: 15px">
@@ -52,36 +37,22 @@
         type: Boolean,
         default: true
       },
-      appId: String,
-      appName: String,
-      goods: Object,
-      currency: String,
+      goodsName: String,
+      productIdInfo: Object, 
       callback: Function,
     },
 
     data() {
       return {
         processing: false,
-        price: 0,
-      }
-    },
-
-    mounted: function() {
-      this.price = this.goods.price / 100
-    },
-
-    watch: {
-      price: function(val) {
-        this.goods.price = val * 100
       }
     },
 
     methods: {
       handleSubmit() {
         this.processing = true
-        this.$http.post('/admin_actions/update_app_goods_info', {
-            app_id: this.appId,
-            goods: this.goods,
+        this.$http.post('/admin_actions/update_app_goods_product_id', {
+            product_id_info: this.productIdInfo,
           })
           .then(response => response.json())
           .then(result => {
@@ -89,14 +60,16 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.goodsInfoUpdated', {goodsName: result.goods.name}),
+                message: this.$t('admin.messages.goodsProductIdUpdated', {
+                  goodsName: this.goodsName, 
+                  sdk: this.$t('admin.sdks.' + result.product_id_info.sdk)
+                }),
                 type: 'success',
                 duration: 4500,
-                container: '.notifications',
               })
 
               if (this.callback) {
-                this.callback(result.goods)
+                this.callback(result.product_id_info)
               }
               this.visible = false
             } else {

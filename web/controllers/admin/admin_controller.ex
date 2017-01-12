@@ -176,4 +176,31 @@ defmodule Acs.AdminController do
     end
   end
 
+  def update_app_goods_product_id(conn, %{"product_id_info" => %{"app_goods_id" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  def update_app_goods_product_id(conn, %{"product_id_info" => %{"product_id" => ""}}) do 
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  def update_app_goods_product_id(conn, %{"product_id_info" => %{} = product_id_info}) do 
+    case Repo.get_by(AppGoodsProductId, app_goods_id: product_id_info["app_goods_id"], sdk: product_id_info["sdk"]) do 
+      nil ->
+        case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do 
+          {:ok, new_product_id_info} ->
+            conn |> json(%{success: true, product_id_info: new_product_id_info})
+          
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end                
+      %AppGoodsProductId{} = product_id_record ->
+        case AppGoodsProductId.changeset(product_id_record, product_id_info) |> Repo.update do 
+          {:ok, new_product_id_info} ->
+            conn |> json(%{success: true, product_id_info: new_product_id_info})
+          
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end 
+    end
+  end
+
 end

@@ -23,6 +23,7 @@
       <game-campaign ref="campaign" :campaigns="campaignList"></game-campaign>
     </div>
     <div class="content-item" v-show="type == 'notice'">
+      <game-notice ref="notice" :notices="noticeList"></game-notice>
     </div>
     <div class="content-item" v-show="type == 'news'">
     </div>
@@ -30,11 +31,11 @@
 </template>
 <script>
   import gameCampaign from "../components/gameCampaign"
-
+  import gameNotice from "../components/gameNotice"
   export default {
     data() {
       return {
-        type: 'campaign',
+        type: 'notice',
         campaignList: [{
           url: 'http://img5.imgtn.bdimg.com/it/u=2886811038,3749890815&fm=11&gp=0.jpg',
           content: '# 感恩节回馈活动 \n'+
@@ -59,6 +60,39 @@
           url: 'http://img1.imgtn.bdimg.com/it/u=1446531649,1771675728&fm=23&gp=0.jpg',
           content: '',
         }],
+        noticeList: [{
+          title: '11月12日补丁更新公告',
+          content: '# 感恩节回馈活动 \n'+
+                  '## 枪神默示录感恩节回馈活动 \n'+
+                  '* 活动时间： 11月24日-11月27日.\r'+
+                  '* 感恩节\r'+
+                  '怀着一颗感恩的心\r'+
+                  '俺们准备了一波感恩节回馈活动精彩内容，尽在百度攻略: \r'+
+                  '   * 谢谢你们能喜欢的枪神所创造的平安世界\r'+
+                  '```'+
+                  '活动内容:'+
+                  '```\n'+
+                  '![mahua](http://img5.imgtn.bdimg.com/it/u=2886811038,3749890815&fm=11&gp=0.jpg)\n'+
+                  '',
+        },{
+          title: '10月8日补丁更新公告',
+          content: '',
+        },{
+          title: '补丁更新公告（11.07）',
+          content: '',
+        },{
+          title: '补丁更新公告（10.22-10.27）',
+          content: '',
+        },{
+          title: '<枪神默示录>手游ios安装包更新公告',
+          content: '',
+        },{
+          title: '9月8日服务器维护公告',
+          content: '',
+        },{
+          title: '关于《枪神默示录》禁止第三方交易行为的公告',
+          content: '',
+        },],
       }
     },
     methods: {
@@ -72,6 +106,7 @@
     },
     components: {
       gameCampaign,
+      gameNotice,
     }
   }
 </script>

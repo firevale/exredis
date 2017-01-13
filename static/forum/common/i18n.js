@@ -87,7 +87,7 @@ export default {
         title: '活动',
         gameCampaign: '游戏活动',
         gameNotice: '游戏公告',
-        gameNews: '游戏新闻',
+        gameNews: '官方新闻',
       },
     },
   }

@@ -59,6 +59,12 @@
       this.bindUserId = this.$route.query.bindUserId
     },
 
+    computed: {
+      ...mapGetters([
+        'redirectUri'
+      ]),
+    },
+
     methods: {
       ...mapActions([
         'addAccountExistence', 'setLoginAccountId', 'setRegisterAccountId', 'addLoginnedAccount'
@@ -94,8 +100,6 @@
             this.processing = false
             return response.json()
           }).then(result => {
-            console.log(result)
-
             if (result.success) {
               this.addAccountExistence({
                 account: this.accountId,
@@ -107,8 +111,8 @@
               if (window.acsConfig.inApp) {
                 nativeApi.closeWebviewWithResult(result)
               } else {
-                if (this.$route.query.redirect_uri) {
-                  window.location = atob(this.$route.query.redirect_uri) + '?access_token=' + result.access_token
+                if (this.redirectUri) {
+                  window.location = this.redirectUri
                 }
               }
             } else {

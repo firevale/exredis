@@ -29,7 +29,11 @@
       }
     },
 
-    created: function() {},
+    created: function() {
+      if (this.$route.query.redirect_uri) {
+        this.setRedirectUri(atob(this.$route.query.redirect_uri))
+      }
+    },
 
     computed: {
       ...mapGetters([
@@ -39,7 +43,7 @@
 
     methods: {
       ...mapActions([
-        'setTransitionName'
+        'setTransitionName', 'setRedirectUri'
       ]),
 
       onClose: function() {

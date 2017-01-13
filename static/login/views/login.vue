@@ -72,7 +72,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri' 
       ]),
     },
 
@@ -121,8 +121,8 @@
                 nativeApi.closeWebviewWithResult(result)
               }
               else {
-                if (this.$route.query.redirect_uri) {
-                  window.location = atob(this.$route.query.redirect_uri) + '?access_token=' + result.access_token
+                if (this.redirectUri) {
+                  window.location = redirectUri
                 }
               }
             } else {

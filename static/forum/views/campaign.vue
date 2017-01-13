@@ -110,7 +110,7 @@
               title: '感恩节回馈计划全情报公开'
             },
           ],
-          newsList: [{
+          list: [{
             title: '颠覆性工会玩法！《枪神默示录》新系统开放',
             content: '# 感恩节回馈活动 \n' +
               '## 枪神默示录感恩节回馈活动 \n' +
@@ -124,12 +124,15 @@
               '```\n' +
               '![mahua](http://img5.imgtn.bdimg.com/it/u=2886811038,3749890815&fm=11&gp=0.jpg)\n' +
               '',
+            time: '2016-10-31',
           }, {
             title: '颠覆性工会玩法！《枪神默示录》新系统开放',
             content: '',
+            time: '2016-10-28',
           }, {
             title: '颠覆性工会玩法！《枪神默示录》新系统开放',
             content: '',
+            time: '2016-1-31',
           }, ],
         },
       }
@@ -138,6 +141,8 @@
       goBack() {
         if (this.type == 'campaign' && this.$refs.campaign.showDetail) {
           this.$refs.campaign.showDetail = false
+        } if (this.type == 'news' && this.$refs.news.showDetail) {
+          this.$refs.news.showDetail = false
         } else {
           this.$router.go(-1)
         }

@@ -64,3 +64,9 @@ export const addLoginnedAccount = ({
 }, account) => {
   commit('ADD_LOGINNED_ACCOUNT', account)
 }
+
+export const setRedirectUri = ({
+  commit
+}, uri) => {
+  commit('SET_REDIRECT_URI', uri)
+}

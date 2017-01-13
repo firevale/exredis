@@ -37,7 +37,6 @@ export default {
     document.addEventListener('visibilitychange', handler)
     window.addEventListener('DOMContentLoaded', handler)
     window.addEventListener('resize', handler)
-
   },
 
   mounted: function() {
@@ -53,7 +52,7 @@ export default {
     'toggleDevice',
     'toggleSidebar',
     'fetchPlatformApps',
-    'fetchSupportedSdks'
+    'fetchSupportedSdks',
   ])
 }
 </script>

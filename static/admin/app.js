@@ -18,8 +18,8 @@ Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 sync(store, router)
 
 const nprogress = new NProgress({ parent: '.nprogress-container' })
-
 const { state } = store
+
 
 router.beforeEach((route, redirect, next) => {
   if (state.app.device.isMobile && state.app.sidebar.opened) {

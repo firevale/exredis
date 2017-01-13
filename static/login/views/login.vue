@@ -72,7 +72,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri' 
       ]),
     },
 
@@ -120,8 +120,11 @@
               if (window.acsConfig.inApp) {
                 nativeApi.closeWebviewWithResult(result)
               }
-
-              console.log("processing login success....")
+              else {
+                if (this.redirectUri) {
+                  window.location = redirectUri
+                }
+              }
             } else {
               this.errorMessage = this.$t(result.message)
             }

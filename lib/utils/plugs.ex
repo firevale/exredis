@@ -4,6 +4,9 @@ defmodule Acs.Plugs do
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
+  alias   Acs.RedisAccessToken
+  alias   Acs.Repo
+  alias   Acs.AdminUser
   require Gettext
 
   def no_cache(%Plug.Conn{} = conn, _options) do 
@@ -47,6 +50,7 @@ defmodule Acs.Plugs do
       %{host: nil} ->
         raise ArgumentError,
           "invalid check_origin: #{inspect origin} (expected an origin with a host)"
+
       %{scheme: scheme, port: port, host: host} ->
         {scheme, host, port}
     end
@@ -144,7 +148,7 @@ defmodule Acs.Plugs do
   end
 
   def fetch_user_id(%Plug.Conn{} = conn, _options) do 
-    case fetch_session_user_id(conn) || fetch_header_user_id(conn) || fetch_params_user_id(conn) do 
+    case _fetch_session_user_id(conn) || _fetch_header_user_id(conn) || _fetch_params_user_id(conn) do 
       nil -> conn
       user_id -> 
         Logger.metadata(user_id: user_id) 
@@ -152,14 +156,14 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp fetch_session_user_id(%Plug.Conn{private: private} = conn) do 
+  defp _fetch_session_user_id(%Plug.Conn{private: private} = conn) do 
     case Map.fetch(private, :plug_session_fetch) do 
       {:ok, :done} -> get_session(conn, :user_id) 
       _ -> nil
     end
   end
 
-  defp fetch_header_user_id(%Plug.Conn{} = conn) do 
+  defp _fetch_header_user_id(%Plug.Conn{} = conn) do 
     case get_req_header(conn, "acs-user-id") do 
       nil -> nil
       [] -> nil
@@ -167,7 +171,7 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp fetch_params_user_id(%Plug.Conn{} = conn) do 
+  defp _fetch_params_user_id(%Plug.Conn{} = conn) do 
     case conn.params["user_id"] do 
       nil -> nil
       x -> x
@@ -254,11 +258,25 @@ defmodule Acs.Plugs do
   def fetch_user(%Plug.Conn{} = conn, _options), do: conn
 
   def fetch_access_token(%Plug.Conn{} = conn, _options) do 
-    case get_req_header(conn, "acs-access-token") do 
+    case _fetch_header_access_token(conn) || _fetch_session_access_token(conn) do 
       nil -> conn
-      [] -> conn
-      [access_token | _] -> 
+      access_token ->
         conn |> put_private(:acs_access_token, access_token)
+    end
+  end
+
+  defp _fetch_header_access_token(%Plug.Conn{} = conn) do 
+    case get_req_header(conn, "acs-access-token") do 
+      nil -> nil
+      [] -> nil
+      [access_token | _] -> access_token
+    end
+  end
+
+  defp _fetch_session_access_token(%Plug.Conn{} = conn) do 
+    case Map.fetch(conn.private, :plug_session_fetch) do 
+      {:ok, :done} -> get_session(conn, :access_token) 
+      _ -> nil
     end
   end
 
@@ -297,5 +315,42 @@ defmodule Acs.Plugs do
   defp _translate_locale("zh-Hant" <> _), do: "zh-hant"
   defp _translate_locale("en" <> _), do: "en"
   defp _translate_locale(_), do: "zh-hans"
+
+  def check_admin_access(%Plug.Conn{private: %{acs_access_token: nil}} = conn, _options) do 
+    _response_admin_access_failed(conn)
+  end
+  def check_admin_access(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do 
+    _response_admin_access_failed(conn)
+  end
+  def check_admin_access(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do 
+    case RedisAccessToken.find(access_token) do 
+      nil -> _response_admin_access_failed(conn)
+
+      %RedisAccessToken{user_id: user_id, app_id: app_id, device_id: device_id} = token ->
+        case RedisUser.find(user_id) do 
+          nil -> _response_admin_access_failed(conn)
+
+          %RedisUser{} = user ->
+            case Repo.get_by(AdminUser, account_id: user.email) || Repo.get_by(AdminUser, account_id: user.mobile) do 
+              nil -> _response_admin_access_failed(conn)
+              _ -> conn 
+            end
+        end
+    end    
+  end
+  def check_admin_access(%Plug.Conn{} = conn, _options) do 
+    _response_admin_access_failed(conn)
+  end
+
+  defp _response_admin_access_failed(%Plug.Conn{private: %{phoenix_format: "json"}} = conn) do 
+    conn |> Phoenix.Controller.json(%{success: false, need_authentication: true}) |> halt
+  end
+  defp _response_admin_access_failed(%Plug.Conn{} = conn) do 
+    conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
+  end
+
+  defp _base_encoded_path(%Plug.Conn{path_info: path_info}) do 
+    "/" <> Path.join(path_info) |> Base.encode64
+  end
 
 end

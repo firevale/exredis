@@ -20,6 +20,7 @@ const state = {
   captchaUrl: undefined,
   transitionName: 'slide-left',
   historyAccounts: restoreHistoryAccounts(),
+  redirectUri: '',
 }
 
 const mutations = {
@@ -55,6 +56,10 @@ const mutations = {
 
     localStorage.setItem('_acs_history_accounts_', JSON.stringify(accounts))
     state.historyAccounts = accounts.slice()
+  },
+
+  'SET_REDIRECT_URI' (state, uri) {
+    state.redirectUri = uri
   },
 }
 

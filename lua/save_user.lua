@@ -43,11 +43,13 @@ local user_old_email = ARGV[6]
 local user_old_mobile = ARGV[7]
 local user_old_device_id = ARGV[8]
 
+local ttl = 604800
+
 -- cache user data for 1 week 
-redis.call('setex', user_base_key..user_id, 604800, user_data)
+redis.call('setex', user_base_key..user_id, ttl, user_data)
 
 if user_email ~= user_old_email and is_email(user_email)  then
-  redis.call('set', email_index_key..user_email, user_id)
+  redis.call('setex', email_index_key..user_email, ttl, user_id)
 end
 
 if user_email ~= user_old_email and is_email(user_old_email)  then
@@ -55,7 +57,7 @@ if user_email ~= user_old_email and is_email(user_old_email)  then
 end
 
 if user_mobile ~= user_old_mobile and is_mobile(user_mobile)  then
-  redis.call('set', mobile_index_key..user_mobile, user_id)
+  redis.call('setex', mobile_index_key..user_mobile, ttl, user_id)
 end
 
 if user_mobile ~= user_old_mobile and is_mobile(user_old_mobile)  then
@@ -64,7 +66,7 @@ end
 
 if is_device_id(user_device_id) then 
   if is_empty(user_email) and is_empty(user_mobile) and is_empty(user_old_mobile) and is_empty(user_old_mobile) then 
-    redis.call('set', device_index_key..user_device_id, user_id)
+    redis.call('setex', device_index_key..user_device_id, ttl, user_id)
 
     if is_device_id(user_old_device_id) then 
       redis.call('del', device_index_key..user_old_device_id)

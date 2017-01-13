@@ -215,6 +215,8 @@ defmodule Acs.UserController do
                   end
 
       conn |> put_session(:access_token, access_token.id)
+           |> put_session(:platform, platform)
+           |> put_session(:device_id, device_id)
            |> delete_session(:failed_attempts)
            |> delete_session(:last_failed_timestamp)
            |> delete_session(:register_verify_code)

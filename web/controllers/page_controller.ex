@@ -4,6 +4,8 @@ defmodule Acs.PageController do
   plug :fetch_user
   plug :fetch_app_id
   plug :fetch_app
+  plug :fetch_access_token 
+  plug :check_admin_access when action == :show_admin_page
 
   def index(conn, _params) do
     render conn, "index.html"
@@ -65,9 +67,9 @@ defmodule Acs.PageController do
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 
-  def show_admin_page(conn, params) do
+  def show_admin_page(%Plug.Conn{private: %{acs_access_token: access_token}} = conn, params) do
     conn |> put_layout(false) 
-         |> render("admin.html")
+         |> render("admin.html", access_token: access_token)
   end
 
   def show_forum_page(%Plug.Conn{private: %{acs_browser: browser, 

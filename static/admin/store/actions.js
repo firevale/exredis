@@ -1,5 +1,8 @@
 import * as types from './mutation-types'
-import Vue from 'vue'
+import Vue from 'admin/common/vue-i18n'
+import {
+  processAjaxError
+} from 'admin/common/utils'
 
 export const toggleSidebar = ({
   commit
@@ -31,11 +34,13 @@ export const fetchPlatformApps = ({
 }) => {
   Vue.http.get('/admin_actions/fetch_apps', {})
     .then(res => res.json())
-    .then(json => {
-      if (json.success) {
-        commit(types.UPDATE_APPS, json.apps)
+    .then(result => {
+      if (result.success) {
+        commit(types.UPDATE_APPS, result.apps)
+      } else {
+        return Promise.reject(result)
       }
-    })
+    }).catch(e => processAjaxError(e))
 }
 
 export const fetchSupportedSdks = ({
@@ -43,11 +48,13 @@ export const fetchSupportedSdks = ({
 }) => {
   Vue.http.get('/admin_actions/fetch_supported_sdks', {})
     .then(res => res.json())
-    .then(json => {
-      if (json.success) {
-        commit(types.UPDATE_SDKS, json.sdks)
+    .then(result => {
+      if (result.success) {
+        commit(types.UPDATE_SDKS, result.sdks)
+      } else {
+        return Promise.reject(result)
       }
-    })
+    }).catch(e => processAjaxError(e))
 }
 
 export const addApp = ({

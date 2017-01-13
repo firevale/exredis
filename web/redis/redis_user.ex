@@ -358,7 +358,7 @@ defmodule Acs.RedisUser do
 
   def authenticate(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     case find(account_id) do
-      :undefined -> {:error, :notfound}
+      nil -> {:error, :notfound}
       user ->
         if Utils.check_password(password, user.encrypted_password) do
           {:ok, user}

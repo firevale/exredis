@@ -120,8 +120,11 @@
               if (window.acsConfig.inApp) {
                 nativeApi.closeWebviewWithResult(result)
               }
-
-              console.log("processing login success....")
+              else {
+                if (this.$route.query.redirect_uri) {
+                  window.location = atob(this.$route.query.redirect_uri) + '?access_token=' + result.access_token
+                }
+              }
             } else {
               this.errorMessage = this.$t(result.message)
             }

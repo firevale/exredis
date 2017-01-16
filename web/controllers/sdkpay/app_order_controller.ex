@@ -68,7 +68,7 @@ defmodule Acs.SdkPay.AppOrderController do
   def add_vivo_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, params) do 
     case app.sdk_bindings.vivo do
       nil ->
-        Logger.error "can't get app vivo binding info for app: #{inspect app, pretty: true}"
+        e "can't get app vivo binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application vivo binding not set"})
 
       %{"app_id" => vivo_app_id, "cp_id" => vivo_cp_id, "cp_key" => vivo_cp_key} ->

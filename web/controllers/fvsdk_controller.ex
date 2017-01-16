@@ -101,12 +101,7 @@ defmodule Acs.FVSdkController do
                                         
     conn |> json(%{success: true}) 
   end
-
   def report_activity(conn, params) do 
-    d "device_id: #{conn.private.acs_device_id}"
-    d "acs_platform: #{conn.private.acs_platform}"
-    d "params: #{inspect params, pretty: true}"
-    
     conn |> json(%{success: true}) 
   end
 

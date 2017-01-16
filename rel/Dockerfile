@@ -18,6 +18,6 @@ RUN { \
 
 ENTRYPOINT ["/bin/sh"]
 
-EXPOSE 10443
+EXPOSE 4000
 
 CMD ["/start.sh"]

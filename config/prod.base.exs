@@ -16,12 +16,19 @@ config :phoenix, :serve_endpoints, true
 config :logger, :exsyslog_info,
   level: :info,
   format: "$metadata -- $level --: $message \n",
-  metadata: [:module, :line, :function, :user_id],
+  metadata: [:module, :line, :function, :user_id, :device_id],
   ident: "acs",
   facility: :local3,
   option: [:pid, :cons]
 
+config :logger, :filelog_info,
+  path: "/var/log/acs/info.log",
+  level: :info
+
 config :logger,
-  backends: [{ExSyslog, :exsyslog_info}]
+  backends: [
+    {ExSyslog, :exsyslog_info},
+    {LoggerFileBackend, :filelog_info},
+  ]
 
 config :acs, allow_origin: "//*.firevale.com"

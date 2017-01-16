@@ -23,7 +23,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "animejs": "^1.1.1",
-    "bulma": "^0.2.3",
+    "bulma": "^0.3.1",
     "font-awesome": "4.7.0",
     "markdown": "^0.5.0",
     "markdown-it": "^8.2.2",
@@ -79,7 +79,7 @@
     "compression-webpack-plugin": "^0.3.2",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
-    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "extract-text-webpack-plugin": "^2.0.0-beta.5",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.24.1",
     "imports-loader": "^0.7.0",

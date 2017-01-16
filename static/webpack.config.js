@@ -156,7 +156,7 @@ if (isProduction()) {
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
-    new WebpackMd5Hash(),
+    new WebpackMd5Hash()
   )
 } else {
   module.exports.devtool = '#inline-source-map'

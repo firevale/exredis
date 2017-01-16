@@ -4,7 +4,7 @@ defmodule Acs.Endpoint do
 
   socket "/socket", Acs.UserSocket
  
-  @allow_origin Application.get_env(:fvac, :allow_origin, "//*.firevale.com")
+  @allow_origin Application.get_env(:acs, :allow_origin, "//*.firevale.com")
   @valid_static_pattern ~w(js css images assets fonts favicon.ico robots.txt verify-68e4f3a600bb881fa4ef46bbfff0.txt)
 
   # check origin

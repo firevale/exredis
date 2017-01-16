@@ -18,8 +18,6 @@ config :acs, Acs.Endpoint,
 
 # Do not print debug messages in production
 config :logger, level: :info
-
-
 config :acs, sm_provider: nil
 
 # ## SSL Support

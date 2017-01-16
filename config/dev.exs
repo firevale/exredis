@@ -37,6 +37,8 @@ config :phoenix, :stacktrace_depth, 20
 
 config :acs, sm_provider: :meisheng
 
+config :acs, allow_origin: "*"
+
 # Configure your database
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,

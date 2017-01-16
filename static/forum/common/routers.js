@@ -36,6 +36,10 @@ export default function (VueRouter) {
       name: 'campaign',
       component: require('../views/campaign.vue'),
     }, {
+      path: '/forum/surroundingMall',
+      name: 'surroundingMall',
+      component: require('../views/surroundingMall.vue'),
+    }, {
       path: '*',
       redirect: '/'
     }]

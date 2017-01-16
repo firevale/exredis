@@ -66,8 +66,7 @@
     "vue-scroll": "^2.0.1",
     "vue-validator": "^3.0.0-alpha.2",
     "vuex": "^2.1.1",
-    "vuex-router-sync": "4.0.2",
-    "wysiwyg.css": "0.0.2"
+    "vuex-router-sync": "4.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.6.0",

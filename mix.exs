@@ -49,7 +49,6 @@ defmodule Acs.Mixfile do
         :sweet_xml,
         :gen_smtp,
         :bugsnag,
-        :mandrill,
         :bamboo,
         :bamboo_smtp,
         :plugsnag,
@@ -88,8 +87,8 @@ defmodule Acs.Mixfile do
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},
      {:oauther, "~> 1.1"},
      {:timex, "~> 3.1", override: true},
-     {:bamboo, "~> 0.7"},
-     {:bamboo_smtp, "~> 1.2"},
+     {:bamboo, "~> 0.8"},
+     {:bamboo_smtp, "~> 1.3"},
      {:exrm, "~> 1.0"},
     ]
   end

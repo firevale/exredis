@@ -66,8 +66,7 @@
     "vue-scroll": "^2.0.1",
     "vue-validator": "^3.0.0-alpha.2",
     "vuex": "^2.1.1",
-    "vuex-router-sync": "4.0.2",
-    "wysiwyg.css": "0.0.2"
+    "vuex-router-sync": "4.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.6.0",
@@ -85,7 +84,7 @@
     "html-webpack-plugin": "^2.24.1",
     "imports-loader": "^0.7.0",
     "json-loader": "^0.5.4",
-    "node-sass": "^4.1.1",
+    "node-sass": "^4.3.0",
     "postcss-loader": "^1.2.1",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",

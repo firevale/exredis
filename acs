@@ -17,12 +17,12 @@ docker_run() {
 								 --privileged \
 								 --rm \
 								 --expose 4000 \
-								 -error "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -error "ACS_MYSQL_USER=root" \
-								 -error "ACS_MYSQL_PASSWORD=firevale" \
-								 -error "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -error "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
-								 -error "ACS_HOST=${USERNAME}.firevale.com" \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
 								 --network acs_default \
@@ -45,12 +45,12 @@ run() {
 								 --privileged \
 								 --rm \
 								 --expose 4000 \
-								 -error "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -error "ACS_MYSQL_USER=root" \
-								 -error "ACS_MYSQL_PASSWORD=firevale" \
-								 -error "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -error "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
-								 -error "ACS_HOST=${USERNAME}.firevale.com" \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
 								 --network acs_default \
@@ -66,11 +66,11 @@ test() {
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
-								 -error "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -error "ACS_MYSQL_USER=root" \
-								 -error "ACS_MYSQL_PASSWORD=firevale" \
-								 -error "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -error "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
+								 -e "ACS_MYSQL_USER=root" \
+								 -e "ACS_MYSQL_PASSWORD=firevale" \
+								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
+								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -v ${PWD}:/code \
 								 --network acs_default \
 								 --link acs_mysql:acs_mysql \

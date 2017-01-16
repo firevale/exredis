@@ -18,7 +18,41 @@ defmodule Acs.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Acs, []},
-     extra_applications: [:inets, :crypto, :ssl, :logger]]
+     included_applications: [
+       :exsyslog
+     ],
+     applications: [ 
+        :inets, 
+        :poolboy, 
+        :ssl, 
+        :public_key, 
+        :timex,
+        :des_ecb3,
+        :phoenix, 
+        :phoenix_pubsub,
+        # :phoenix_pubsub_redis,
+        :mogrify,
+        :phoenix_html,
+        :cowboy,
+        :logger, 
+        :logger_file_backend,
+        :gettext,
+        :phoenix_ecto,
+        :mariaex,
+        :exredis,
+        :redis_poolex,
+        :oauth2,
+        :oauther,
+        :comeonin, 
+        :httpotion,
+        :pbkdf2,
+        :sweet_xml,
+        :gen_smtp,
+        :bugsnag,
+        :bamboo,
+        :bamboo_smtp,
+        :plugsnag,
+    ]]
   end
 
   # Specifies which paths to compile per environment.
@@ -53,8 +87,8 @@ defmodule Acs.Mixfile do
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},
      {:oauther, "~> 1.1"},
      {:timex, "~> 3.1", override: true},
-     {:bamboo, "~> 0.7"},
-     {:bamboo_smtp, "~> 1.2"},
+     {:bamboo, "~> 0.8"},
+     {:bamboo_smtp, "~> 1.3"},
      {:exrm, "~> 1.0"},
     ]
   end

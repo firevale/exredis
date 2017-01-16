@@ -1,19 +1,41 @@
-defmodule ElasticSearch.Worker do
+defmodule Elasticsearch.Worker do
   use     GenServer
+  use     LogAlias
+
   alias   Utils.Httpc
   alias   Utils.JSON
-  require Logger
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
   end
 
+  @request_timeout 60_000
   def request %{worker: worker, 
                 method: method, 
                 path: path, 
                 body: body, 
                 params: params} do 
-    GenServer.call(worker, {method, path, body, params}, 60_000)
+    GenServer.call(worker, {method, path, body, params}, @request_timeout)
+  end
+
+  def request %{worker: worker, 
+                method: method, 
+                path: path,
+                body: body} do 
+    GenServer.call(worker, {method, path, body, nil}, @request_timeout)
+  end
+
+  def request %{worker: worker, 
+                method: method, 
+                path: path,
+                params: params} do  
+    GenServer.call(worker, {method, path, nil, params}, @request_timeout)
+  end
+
+  def request %{worker: worker, 
+                method: method, 
+                path: path} do 
+    GenServer.call(worker, {method, path, nil, nil}, @request_timeout)
   end
 
   def init(args) do 
@@ -45,7 +67,7 @@ defmodule ElasticSearch.Worker do
   defp handle_http_request(method, url, body, params) do 
     headers = case method do 
                 :delete -> []
-                _ -> [{"content-type", "application/json"}]
+                _ -> ["content-type": "application/json"]
               end
 
     url = case params do 
@@ -63,7 +85,7 @@ defmodule ElasticSearch.Worker do
            end
 
     try do 
-      response = Httpc.request(method, url, body: body, headers: headers, timeout: 60_000)
+      response = Httpc.request(method, url, body: body, headers: headers, timeout: @request_timeout)
 
       result = case response.body do 
                  "" -> response.status_code
@@ -73,19 +95,19 @@ defmodule ElasticSearch.Worker do
                end
 
       curl = "curl -X#{String.upcase(method |> to_string)} #{inspect url} -d #{inspect body, pretty: true}"
-      Logger.debug "#{curl}\n\n#{inspect response, pretty: true}\n\n"
+      d "#{curl}\n\n#{inspect response, pretty: true}\n\n"
 
       if Httpc.success?(response) do 
         {:ok,  result}
       else 
         curl = "curl -X#{String.upcase(method |> to_string)} #{inspect url} -d #{inspect body, pretty: true}"
-        Logger.error "#{curl}\n\n#{inspect response, pretty: true}\n\n"
+        error "#{curl}\n\n#{inspect response, pretty: true}\n\n"
         {:error, nil}
       end
     rescue
       e in HTTPotion.HTTPError -> 
         curl = "curl -X#{String.upcase(method |> to_string)} #{inspect url} -d #{inspect body, pretty: true}"
-        Logger.error "#{curl}\n\n#{inspect e, pretty: true}\n\n"
+        error "#{curl}\n\n#{inspect e, pretty: true}\n\n"
         {:error, nil}
     end
   end

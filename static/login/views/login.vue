@@ -113,6 +113,7 @@
             this.processing = false
             return response.json()
           }).then(result => {
+            console.log(result)
             if (result.success) {
               this.addLoginnedAccount(result)
               this.setLoginAccountId(this.accountId)
@@ -122,13 +123,13 @@
               }
               else {
                 if (this.redirectUri) {
-                  window.location = redirectUri
+                  window.location = this.redirectUri
                 }
               }
             } else {
               this.errorMessage = this.$t(result.message)
             }
-          }).catch(_ => {
+          }).catch(_x => {
             this.processing = false
             this.errorMessage = this.$t('account.error.networkError')  
           })

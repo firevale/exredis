@@ -14,9 +14,9 @@ defmodule Acs do
     :ok = Application.ensure_started(:redis_poolex)
 
     es_cfg = Application.get_env(:acs, :elasticsearch)
-    pool_args = es_cfg[:pool] ++ [name: {:local, :elasticsearch}, worker_module: ElasticSearch.Worker]
+    pool_args = es_cfg[:pool] ++ [name: {:local, :elasticsearch}, worker_module: Elasticsearch.Worker]
 
-    :ok = ElasticSearch.ensure_can_start
+    :ok = Elasticsearch.ensure_can_start
 
     # Define workers and child supervisors to be supervised
     children = [
@@ -50,7 +50,7 @@ defmodule Acs do
   end
 
   defp init_elasticsearch_mappings() do 
-   unless ElasticSearch.is_index?("acs") do 
+   unless Elasticsearch.is_index?("acs") do 
       settings = %{
         number_of_shards: 5, 
         number_of_replicas: 1, 
@@ -58,22 +58,21 @@ defmodule Acs do
 
       orders_mapping = %{
         properties: %{
-          app_id: :keyword,
-          user_id: :keyword,
-          goods_id: :keyword,
-          device_id: :keyword,
-          cp_order_id: :text,
-          transaction_id: :text,
-          app_user_id: :keyword,
-          sdk_user_id: :keyword,
+          app_id: %{type: :keyword},
+          user_id: %{type: :keyword},
+          goods_id: %{type: :keyword},
+          device_id: %{type: :keyword},
+          cp_order_id: %{type: :text},
+          transaction_id: %{type: :text},
+          app_user_id: %{type: :keyword},
+          sdk_user_id: %{type: :keyword},
         }
       }
 
-      ElasticSearch.create_index("acs", settings, %{
+      Elasticsearch.create_index("acs", settings, %{
         orders: orders_mapping
       })
     end
   end
 
-  end
 end

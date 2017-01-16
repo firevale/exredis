@@ -15,19 +15,19 @@ defmodule LogAlias do
           end
       end
 
-      defmacrop i(msg) do 
+      defmacrop info(msg) do 
         quote do 
           Logger.info(unquote(msg))
         end
       end
 
-      defmacrop w(msg) do 
+      defmacrop warn(msg) do 
         quote do 
           Logger.warn(unquote(msg))
         end
       end
 
-      defmacrop e(msg) do 
+      defmacrop error(msg) do 
         quote do 
           Logger.error(unquote(msg))
         end

@@ -1,6 +1,6 @@
-defmodule ElasticSearch do
+defmodule Elasticsearch do
   require Logger
-  require ElasticSearch.Worker
+  alias Elasticsearch.Worker
 
   def ensure_can_start do
     :ok = Application.ensure_started(:inets)
@@ -17,26 +17,26 @@ defmodule ElasticSearch do
                {%{}, nil} -> %{mappings: mappings}
                {%{}, %{}} -> %{settings: settings, mappings: mappings}
              end
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :put, 
-                                     path: [name], 
-                                     body: body}
+      Worker.request %{worker: worker, 
+                       method: :put, 
+                       path: [name], 
+                       body: body}
     end
   end
 
   def delete_index(name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :delete, 
-                                     path: [name]}
+      Worker.request(%{worker: worker, 
+                       method: :delete, 
+                       path: [name]})
     end
   end
 
   def is_index?(name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      case ElasticSearch.Worker.request %{worker: worker, 
-                                          method: :head, 
-                                          path: [name]} do
+      case Worker.request(%{worker: worker, 
+                            method: :head, 
+                            path: [name]}) do
         {:ok, _} -> true
         _ -> false
       end
@@ -45,33 +45,33 @@ defmodule ElasticSearch do
 
   def get_index(name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :get, 
-                                     path: [name]}
+      Worker.request %{worker: worker, 
+                       method: :get, 
+                       path: [name]}
     end
   end    
 
   def open_index(name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :post, 
-                                     path: [name, "_open"]}
+      Worker.request %{worker: worker, 
+                       method: :post, 
+                       path: [name, "_open"]}
     end
   end   
 
   def close_index(name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :post, 
-                                     path: [name, "_close"]}
+      Worker.request %{worker: worker, 
+                       method: :post, 
+                       path: [name, "_close"]}
     end
   end   
 
   def is_type?(index, name) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      case ElasticSearch.Worker.request %{worker: worker, 
-                                          method: :head, 
-                                          path: [index, name]} do
+      case Worker.request %{worker: worker, 
+                            method: :head, 
+                            path: [index, name]} do
         {:ok, _} -> true
         _ -> false
       end
@@ -80,9 +80,9 @@ defmodule ElasticSearch do
 
   def delete_type(index, type) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :delete, 
-                                     path: [index, type]}
+      Worker.request %{worker: worker, 
+                       method: :delete, 
+                       path: [index, type]}
     end
   end
 
@@ -96,18 +96,18 @@ defmodule ElasticSearch do
     end   
   end
   defp _index(worker, index, type, doc, nil, params) do  
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :post, 
-                                   path: [index, type], 
-                                   body: doc,
-                                   params: params}
+    Worker.request %{worker: worker, 
+                     method: :post, 
+                     path: [index, type], 
+                     body: doc,
+                     params: params}
   end
   defp _index(worker, index, type, doc, id, params) do  
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :put, 
-                                   path: [index, type, id], 
-                                   body: doc,
-                                   params: params}
+    Worker.request %{worker: worker, 
+                     method: :put, 
+                     path: [index, type, id], 
+                     body: doc,
+                     params: params}
   end
 
   def update(%{index: nil}), do: {:error, "invalid index"}
@@ -122,11 +122,11 @@ defmodule ElasticSearch do
     end   
   end
   defp _update(worker, index, type, doc, id, params) do 
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :post, 
-                                   path: [index, type, id, "_update"], 
-                                   body: doc,
-                                   params: params}    
+    Worker.request %{worker: worker, 
+                     method: :post, 
+                     path: [index, type, id, "_update"], 
+                     body: doc,
+                     params: params}    
   end
 
   def delete(%{index: nil}), do: {:error, "invalid index"}
@@ -141,10 +141,10 @@ defmodule ElasticSearch do
     end   
   end
   defp _delete(worker, index, type, id, params) do 
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :delete, 
-                                   path: [index, type, id], 
-                                   params: params}    
+    Worker.request %{worker: worker, 
+                     method: :delete, 
+                     path: [index, type, id], 
+                     params: params}    
   end
 
   def get(%{index: nil}), do: {:error, "invalid index"}
@@ -153,10 +153,10 @@ defmodule ElasticSearch do
   def get(%{type: ""}), do: {:error, "invalid type"}
   def get %{index: index, type: type, id: id, params: params} do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :get, 
-                                     path: [index, type, id, "_source"],
-                                     params: params}    
+      Worker.request %{worker: worker, 
+                       method: :get, 
+                       path: [index, type, id, "_source"],
+                       params: params}    
     end 
   end
 
@@ -166,12 +166,12 @@ defmodule ElasticSearch do
   def mget(%{type: ""}), do: {:error, "invalid type"}
   def mget(index, type, ids) when is_list(ids) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :get, 
-                                     path: [index, type, "_mget"],
-                                     body: %{
-                                       ids: ids
-                                     }}    
+      Worker.request %{worker: worker, 
+                       method: :get, 
+                       path: [index, type, "_mget"],
+                       body: %{
+                         ids: ids
+                       }}    
     end 
   end
 
@@ -185,11 +185,11 @@ defmodule ElasticSearch do
     end   
   end
   defp _search(worker, index, type, query, params) do 
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :post, 
-                                   path: [index, type, "_search"], 
-                                   body: query,
-                                   params: params}    
+    Worker.request %{worker: worker, 
+                     method: :post, 
+                     path: [index, type, "_search"], 
+                     body: query,
+                     params: params}    
   end
 
   def get_mapping(%{index: nil}), do: {:error, "invalid index"}
@@ -198,9 +198,9 @@ defmodule ElasticSearch do
   def get_mapping(%{type: ""}), do: {:error, "invalid type"}
   def get_mapping %{index: index, type: type} do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                     method: :get, 
-                                     path: [index, "_mapping", type]}    
+      Worker.request %{worker: worker, 
+                       method: :get, 
+                       path: [index, "_mapping", type]}    
     end   
   end
 
@@ -210,11 +210,11 @@ defmodule ElasticSearch do
   def put_mapping(%{type: ""}), do: {:error, "invalid type"}
   def put_mapping %{index: index, type: type, mapping: mapping} do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
-      ElasticSearch.Worker.request %{worker: worker, 
-                                      method: :put, 
-                                      path: [index, "_mapping", type],
-                                      body: mapping,
-                                      params: %{ignore_conflicts: true}}    
+      Worker.request %{worker: worker, 
+                       method: :put, 
+                       path: [index, "_mapping", type],
+                       body: mapping,
+                       params: %{ignore_conflicts: true}}    
     end   
   end
 
@@ -235,10 +235,10 @@ defmodule ElasticSearch do
               [index, type, "_count"]
            end
 
-    ElasticSearch.Worker.request %{worker: worker, 
-                                   method: :post, 
-                                   path: path, 
-                                   body: query,
-                                   params: params}    
+    Worker.request %{worker: worker, 
+                     method: :post, 
+                     path: path, 
+                     body: query,
+                     params: params}    
   end
 end

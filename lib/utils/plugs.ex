@@ -331,7 +331,18 @@ defmodule Acs.Plugs do
           nil -> _response_admin_access_failed(conn)
 
           %RedisUser{} = user ->
-            case Repo.get_by(AdminUser, account_id: user.email) || Repo.get_by(AdminUser, account_id: user.mobile) do 
+            admin_user = unless is_nil(user.email) do 
+                           Repo.get_by(AdminUser, account_id: user.email) 
+                         end
+
+            admin_user = if is_nil(admin_user) and !is_nil(user.mobile) do 
+              Repo.get_by(AdminUser, account_id: user.mobile) 
+            else 
+              admin_user
+            end
+            
+            d "admin_user: #{inspect admin_user}"
+            case admin_user do 
               nil -> _response_admin_access_failed(conn)
               _ -> conn 
             end

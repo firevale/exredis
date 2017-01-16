@@ -20,7 +20,7 @@ defmodule Acs.PaymentHelper do
   def notify_cp(order = %AppOrder{}) do 
     case RedisApp.find(order.app_id) do 
       :nil -> 
-        e "app id [#{order.app_id}] in order #{order.id} not exists"
+        error "app id [#{order.app_id}] in order #{order.id} not exists"
         {:error, :app_not_found}
 
       app -> 
@@ -64,14 +64,14 @@ defmodule Acs.PaymentHelper do
 
           if Httpc.success?(response) do 
             if Regex.match?(~r/ok/iu, response.body) do 
-              i "notify_cp #{callback_url} success, order: #{inspect order, pretty: true}"
+              info "notify_cp #{callback_url} success, order: #{inspect order, pretty: true}"
               save_order_success(order) 
               :ok
             else 
               #TODO: send email if retry count >= 20
               save_order_failed(order, response.body) 
               chaoxin_notify(app, order, "[#{app.name}], 调用CP发货接口\"#{callback_url}\"失败, 返回: #{response.body}")
-              e "notify_cp failed, url: #{callback_url}, params: #{inspect params}, result: #{inspect response, pretty: true}" 
+              error "notify_cp failed, url: #{callback_url}, params: #{inspect params}, result: #{inspect response, pretty: true}" 
               {:cp_failed, response.body}
             end
           else

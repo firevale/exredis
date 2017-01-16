@@ -45,7 +45,7 @@ var plugins = [
 
   new CommonsChunkPlugin({
     name: "admin_commons",
-    filename: isProduction() ? 'js/admin_commons-[hash].js' : 'js/admin_commons.js',
+    filename: 'js/admin_commons.js',
     chunks: ['admin'],
     minChunks: function(module, count) {
       return (
@@ -57,7 +57,7 @@ var plugins = [
 
   new CommonsChunkPlugin({
     name: "login_commons",
-    filename: isProduction() ? 'js/login_commons-[hash].js' : 'js/login_commons.js',
+    filename: 'js/login_commons.js',
     chunks: ['login'],
     minChunks: function(module, count) {
       return (
@@ -69,7 +69,7 @@ var plugins = [
 
   new CommonsChunkPlugin({
     name: "payment_commons",
-    filename: isProduction() ? 'js/payment_commons-[hash].js' : 'js/payment_commons.js',
+    filename: 'js/payment_commons.js',
     chunks: ['payment'],
     minChunks: function(module, count) {
       return (
@@ -81,7 +81,7 @@ var plugins = [
 
   new CommonsChunkPlugin({
     name: "forum_commons",
-    filename: isProduction() ? 'js/forum_commons-[hash].js' : 'js/forum_commons.js',
+    filename: 'js/forum_commons.js',
     chunks: ['forum'],
     minChunks: function(module, count) {
       return (
@@ -91,7 +91,7 @@ var plugins = [
     }
   }),
 
-  new ExtractTextPlugin(isProduction() ? 'css/[name]-[hash].css' : 'css/[name].css'),
+  new ExtractTextPlugin('css/[name].css'),
 ]
 
 module.exports = {
@@ -104,7 +104,7 @@ module.exports = {
 
   output: {
     path: outputPath(),
-    filename: isProduction() ? 'js/[name]-[chunkhash].js' : 'js/[name].js',
+    filename: 'js/[name].js',
   },
 
   resolve: {
@@ -131,13 +131,13 @@ module.exports = {
       exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
     }, {
       test: /\.(jpg|png|gif)$/,
-      loader: "url-loader?limit=16384&name=/images/[name].[hash:7].[ext]"
+      loader: "url-loader?limit=16384&name=/images/[name].[ext]"
     }, {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "url-loader?limit=16384&minetype=application/font-woff&name=/fonts/[name].[hash:7].[ext]"
+      loader: "url-loader?limit=16384&minetype=application/font-woff&name=/fonts/[name].[ext]"
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "file-loader?name=/fonts/[name].[hash:7].[ext]"
+      loader: "file-loader?name=/fonts/[name].[ext]"
     }].concat(utils.styleLoaders({}))
   },
 
@@ -149,14 +149,18 @@ module.exports = {
 };
 
 if (isProduction()) {
-  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({
+  module.exports.plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      'screw-ie8': true,
+      sourceMap: true,
       compress: {
         warnings: false
+      },
+      output: {
+        comments: false,
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new WebpackMd5Hash()
+    new webpack.optimize.OccurrenceOrderPlugin()
   )
 } else {
   module.exports.devtool = '#inline-source-map'

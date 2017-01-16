@@ -157,9 +157,6 @@ if (isProduction()) {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new WebpackMd5Hash(),
-    new ManifestPlugin({
-      fileName: './build-manifest.json'
-    })
   )
 } else {
   module.exports.devtool = '#inline-source-map'

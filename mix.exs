@@ -53,6 +53,7 @@ defmodule Acs.Mixfile do
         :mandrill,
         :bamboo,
         :bamboo_smtp,
+        :plugsnag,
     ]]
   end
 

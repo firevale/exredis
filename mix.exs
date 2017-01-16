@@ -48,7 +48,6 @@ defmodule Acs.Mixfile do
         :pbkdf2,
         :sweet_xml,
         :gen_smtp,
-        :mailer,
         :bugsnag,
         :mandrill,
         :bamboo,

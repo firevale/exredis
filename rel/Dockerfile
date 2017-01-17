@@ -3,12 +3,6 @@ MAINTAINER xiaobin@firevale.com
 
 COPY rel /rel
 
-WORKDIR /opt/app/
-
-RUN mkdir -p /opt/app/.ssh && chmod 600 /opt/app/.ssh
-
-COPY id_rsa* /opt/app/.ssh/
-
 VOLUME ["/rel/acs/lib/acs-0.0.1/priv/static", "/var/log/acs"]
 
 RUN { \

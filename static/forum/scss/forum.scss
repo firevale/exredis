@@ -17,6 +17,7 @@ $fa-font-path: '~font-awesome/fonts/';
     flex-direction: row;
     text-align: center;
     position: relative;
+    flex: 1;
 }
 
 .columnLine {
@@ -122,18 +123,15 @@ $fa-font-path: '~font-awesome/fonts/';
     width: 100%;
 }
 
-.search-title {
-    display: flex;
-    flex-direction: column;
+.top-title {
     justify-content: center;
     font-size: 1.4rem;
-    flex: 9;
     text-align: center;
+    padding: 0;
 }
 
 .note-new {
     padding: .3rem .5rem;
-    width: 100%;
 }
 
 .note-content {
@@ -203,3 +201,184 @@ $fa-font-path: '~font-awesome/fonts/';
     cursor: pointer;
 }
 
+.main-menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1rem;
+    span {
+      margin-top: .6rem;
+      font-size: 1.5rem;
+    }
+    .button {
+      margin-top: .2rem;
+      padding: .5rem 1.3rem;
+    }
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .main-menu {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: .6rem;
+      span {
+        margin-top: .6rem;
+        font-size: 1.5rem;
+      }
+      .button {
+        margin-top: .2rem;
+        padding: .1rem .5rem;
+      }
+    }
+  }
+  
+  .create-note {
+    background-color: $primary !important;
+    color: $white !important;
+  }
+
+  .horizontal-seprate {
+    height: .3rem;
+    margin: .5rem 1rem;
+    background-color: $text-grey;
+    .move-box-left {
+      height: 100%;
+      background-color: $link;
+      width: 16.66%;
+      margin-left: 8.4%;
+      transition: margin 1s ease;
+    }
+    .move-box-center {
+      height: 100%;
+      background-color: $link;
+      width: 16.66%;
+      margin-left: 41.6%;
+      transition: margin 1s ease;
+    }
+    .move-box-right {
+      height: 100%;
+      background-color: $link;
+      width: 16.66%;
+      margin-left: 74.9%;
+      transition: margin 1s ease;
+    }
+    .arrow-down {
+      height: .4rem;
+      width: .4rem;
+      border: .5rem solid transparent;
+      border-top: .7rem solid $link;
+      margin: 0 auto;
+    }
+  }
+  
+  .row-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+    justify-content: space-around;
+    font-size: 1.3rem;
+    margin: 1rem 1rem;
+    .service-menu{
+      font-size: 1rem;
+    }
+    .mall-menu {
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  }
+
+  .search-box {
+    width: 100%;
+    font-size: 1rem;
+    padding: .5rem;
+    padding-left: 3rem;
+    padding-right: 4rem;
+    border: .1rem solid $dark;
+  }
+  
+  .search-btn {
+    width: 100%;
+    color: $white;
+    font-size: 1.1rem;
+    padding: .5rem;
+    background: $primary;
+  }
+  
+  .his-key {
+    width: 50%;
+    padding: .5rem;
+    float: left;
+    border-top: 1px solid $dark;
+    border-bottom: 1px solid $dark;
+    border-right: 1px solid $dark;
+    box-sizing: border-box;
+    text-align: center;
+    color: $black;
+    font-size: 1rem;
+  }
+  
+  .his-key:nth-child(n+3) {
+    border-top: none;
+  }
+  
+  .his-key:hover {
+    color: $primary;
+    cursor: pointer;
+  }
+  
+  .his-box {
+    border-left: 1px solid $dark;
+  }
+  
+  .his-box:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  
+  .clear-his {
+    text-align: center;
+    color: $primary;
+    font-size: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: .6rem;
+    top: .3rem;
+    font-size: 1.7rem !important;
+    color: $dark;
+  }
+  
+  .times-icon {
+    position: absolute;
+    right: 1rem;
+    top: .3rem;
+    font-size: 1.7rem !important;
+    color: $dark;
+  }
+  
+  .search-tip {
+    text-align: left;
+    font-size: 1.3rem;
+    color: $dark;
+    margin-bottom: 2rem;
+  }
+
+  .product {
+    text-align: center;
+    margin-top: .4rem;
+    font-size: 1rem;
+    cursor: pointer;
+    .product-img {
+      border: 1px solid $text-grey;
+      width: 20rem;
+    }
+    .product-name {}
+    .product-price {
+      color: $link;
+    }
+  }

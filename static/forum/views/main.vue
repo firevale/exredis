@@ -4,7 +4,7 @@
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true"></i>
       </div>
-      <div class="search-title">
+      <div class="rowLine top-title">
         {{ $t('forum.main.title') }}
       </div>
       <div class="main-menu">
@@ -177,40 +177,4 @@ export default {
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .main-menu {
-    position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 1rem;
-    span {
-      margin-top: .6rem;
-      font-size: 1.5rem;
-    }
-    .button {
-      margin-top: .2rem;
-      padding: .5rem 1.3rem;
-    }
-  }
-  
-  @media only screen and (max-width: 768px) {
-    .main-menu {
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: .6rem;
-      span {
-        margin-top: .6rem;
-        font-size: 1.5rem;
-      }
-      .button {
-        margin-top: .2rem;
-        padding: .1rem .5rem;
-      }
-    }
-  }
-  
-  .create-note {
-    background-color: $primary !important;
-    color: $white !important;
-  }
 </style>

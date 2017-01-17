@@ -4,7 +4,7 @@
       <div style="flex: 1;text-align: left;">
         <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div class="search-title">
+      <div class="rowLine top-title">
         <span class="title is-5">{{ $t('forum.newNote.title') }}</span>
       </div>
       <div style="flex: 1;">

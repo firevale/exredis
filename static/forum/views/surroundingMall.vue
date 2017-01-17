@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="horizontal-seprate" style="height: .7rem;"></div>
-    <div v-show = "!detailItem" class="row-menu">
+    <div v-show="!detailItem" class="row-menu">
       <div v-for="item in products" class="product">
         <figure>
           <img class="product-img" :src="item.url" @click="goProductDetail(item)"></img>
@@ -24,7 +24,7 @@
         </span>
       </div>
     </div>
-    <product-detail v-show = "detailItem" :product-detail="detailItem? detailItem: {}"></product-detail>
+    <product-detail v-show="detailItem" :product-detail="detailItem? detailItem: {}"></product-detail>
   </div>
 </template>
 <script>
@@ -66,19 +66,19 @@
       }
     },
     computed: {
-    
+
     },
     methods: {
       goBack() {
-        if(this.detailItem){
+        if (this.detailItem) {
           this.detailItem = null
-        }else{
+        } else {
           this.$router.go(-1)
         }
       },
 
       goProductDetail(item) {
-        this.detailItem= item
+        this.detailItem = item
       },
 
       goMine() {
@@ -92,39 +92,5 @@
   }
 </script>
 <style lang="scss">
-  @import "../scss/color";
-  .row-menu {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    position: relative;
-    justify-content: space-around;
-    font-size: 1.3rem;
-    margin: .5rem 1rem;
-    .mall-menu {
-      cursor: pointer;
-      font-size: 1rem;
-    }
-  }
-  
-  .horizontal-seprate {
-    height: .3rem;
-    margin: .2rem 1rem;
-    background-color: $text-grey;
-  }
-  
-  .product {
-    text-align: center;
-    margin-top: .4rem;
-    font-size: 1rem;
-    cursor: pointer;
-    .product-img {
-      border: 1px solid $text-grey;
-      width: 20rem;
-    }
-    .product-name {}
-    .product-price {
-      color: $link;
-    }
-  }
+  @import "../scss/forum";
 </style>

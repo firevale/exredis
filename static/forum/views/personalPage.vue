@@ -4,7 +4,7 @@
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
-      <div class="search-title">
+      <div class="rowLine top-title">
         {{ $t('forum.personal.title') }}
       </div>
     </div>
@@ -141,51 +141,5 @@
   }
 </script>
 <style lang="scss">
-  @import "../scss/color";
-  .row-menu {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    position: relative;
-    justify-content: space-around;
-    font-size: 1.3rem;
-    margin: .5rem 1rem;
-    .service-menu {
-      font-size: 1rem;
-    }
-  }
-  
-  .horizontal-seprate {
-    height: .3rem;
-    margin: .2rem 1rem;
-    background-color: $text-grey;
-    .move-box-left {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 8.4%;
-      transition: margin 1s ease;
-    }
-    .move-box-center {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 41.6%;
-      transition: margin 1s ease;
-    }
-    .move-box-right {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 74.9%;
-      transition: margin 1s ease;
-    }
-    .arrow-down {
-      height: .4rem;
-      width: .4rem;
-      border: .5rem solid transparent;
-      border-top: .7rem solid $link;
-      margin: 0 auto;
-    }
-  }
+  @import "../scss/forum";
 </style>

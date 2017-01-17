@@ -15,12 +15,12 @@ config :acs, Acs.Repo,
   username: "acs",
   password: "A2m#x@8#Y%jVPv7*",
   database: "acs",
-  hostname: "10.10.235.15",
+  hostname: "10.10.235.154",
   pool_size: 10
 
 config :acs, :elasticsearch, 
   pool: [size: 10, max_overflow: 20],
-  connection: [host: {:system, "ACS_ELASTICSEARCH_HOSTNAME"}, port: {:system, "ACS_ELASTICSEARCH_PORT"}]
+  connection: [host: "10.10.56.136", port: 9200]
 
 config :redis_poolex,
   host: "10.10.56.136",

@@ -23,8 +23,8 @@ config :acs, :elasticsearch,
   connection: [host: {:system, "ACS_ELASTICSEARCH_HOSTNAME"}, port: {:system, "ACS_ELASTICSEARCH_PORT"}]
 
 config :redis_poolex,
-  host: "10.10.241.252",
-  port: 6380,
+  host: "10.10.56.136",
+  port: 6379,
   password: "",
   db: 0,
   reconnect: :no_reconnect,

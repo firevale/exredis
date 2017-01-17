@@ -12,14 +12,14 @@ $fa-font-path: '~font-awesome/fonts/';
     overflow: auto;
 }
 
-.rowLine{
+.rowLine {
     display: flex; 
     flex-direction: row;
     text-align: center;
     position: relative;
 }
 
-.columnLine{
+.columnLine {
     display: flex; 
     flex-direction: column;
     text-align: center;

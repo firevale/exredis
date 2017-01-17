@@ -91,6 +91,9 @@ export default {
       },
       surroundingMall: {
         title: '周边商城',
+        productDetail: '商品详情',
+        stock: '库存',
+        postage: '邮费',
         back: '返回',
         mine: '我的',
       }

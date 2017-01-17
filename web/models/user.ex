@@ -29,7 +29,7 @@ defmodule Acs.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :email, :mobile, :encrypted_password, :nickname, :resident_id, :resident_name, 
+    |> cast(params, [:id, :email, :mobile, :encrypted_password, :device_id, :nickname, :resident_id, :resident_name, 
                      :gender, :age, :avatar_url])
     |> validate_required([:id])
     |> validate_format(:email, @email_check_regex)

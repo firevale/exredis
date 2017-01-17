@@ -3,16 +3,16 @@ defmodule ImportFvacModel do
   require Redis
   require Utils
 
+  alias   Utils.JSON
   alias   Acs.App
   alias   Acs.AppSdkBinding
   alias   Acs.AppGoods
   alias   Acs.AppGoodsProductId
-  # alias   Utils.JSON
-  # alias   Acs.RedisApp
+  alias   Acs.User
+  alias   Acs.UserSdkBinding 
 
-  # import  Ecto
-  # import  Ecto.Changeset
-  # import  Ecto.Query
+  import  Ecto
+  import  Ecto.Query
 
   alias   Acs.Repo
 
@@ -27,19 +27,21 @@ defmodule ImportFvacModel do
           App.changeset(app, Map.from_struct(client)) |> Repo.update!     
       end
 
-      client.bindings |> Enum.each(fn({sdk, binding}) -> 
-        sdk = case sdk do 
-                "ccplay" -> "cc"
-                x -> x
-              end
+      if Map.has_key?(client, :bindings) do 
+        client.bindings |> Enum.each(fn({sdk, binding}) -> 
+          sdk = case sdk do 
+                  "ccplay" -> "cc"
+                  x -> x
+                end
 
-        case Repo.get_by(AppSdkBinding, sdk: "#{sdk}", app_id: client.id) do 
-          nil ->
-            AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: client.id, sdk: "#{sdk}", binding: binding}) |> Repo.insert!
-          x -> 
-            AppSdkBinding.changeset(x, %{app_id: client.id, sdk: "#{sdk}", binding: binding}) |> Repo.update!
-        end    
-      end)
+          case Repo.get_by(AppSdkBinding, sdk: "#{sdk}", app_id: client.id) do 
+            nil ->
+              AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: client.id, sdk: "#{sdk}", binding: binding}) |> Repo.insert!
+            x -> 
+              AppSdkBinding.changeset(x, %{app_id: client.id, sdk: "#{sdk}", binding: binding}) |> Repo.update!
+          end    
+        end)
+      end
 
       if Map.has_key?(client, :goods) do 
         client.goods |> Enum.each(fn({id, info}) -> 
@@ -75,5 +77,42 @@ defmodule ImportFvacModel do
       import_fvac_client(data)
     end)
   end
+
+  def import_all_users() do 
+    max_user_id = Redis.get("fvac.counter.uid") |> String.to_integer
+    min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
+
+    (min_user_id .. max_user_id) |> Enum.each(fn(user_id) -> 
+      case Redis.hget("fvac.tables.users", user_id) do 
+        :undefined -> :ok
+        raw ->
+          user = JSON.decode!(raw, keys: :atoms) 
+
+          User.changeset(%User{}, %{
+            id: user.id,
+            email: user[:email],
+            mobile: user[:mobile],
+            encrypted_password: user[:encrypted_password],
+            device_id: user[:device_id],
+            nickname: user[:nickname],
+          }) |> Repo.insert!
+
+          user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
+            [sdk, app_id] = String.split(bkey)
+
+            UserSdkBinding.changeset(%UserSdkBinding{}, %{
+              user_id: user.id,
+              app_id: app_id,
+              sdk: sdk,
+              sdk_user_id: sdk_user_id
+            }) |> Repo.insert!
+          end)          
+      end
+      :timer.sleep(1)
+    end)
+
+  end
+
+
 
 end

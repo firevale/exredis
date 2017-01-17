@@ -24,7 +24,6 @@
           <i class="fa fa-angle-right title is-4 dark" aria-hidden="true" style="position:absolute; right: 1rem;"></i>
         </div>
       </div>
-
       <div class="column is-full" v-show="issuePageCount > 1">
         <pagination ref="pag" :page-count="issuePageCount" :current-page="issueCurrentPage"></pagination>
       </div>
@@ -45,17 +44,16 @@
   import Vue from 'vue'
   import pagination from './pagination.vue'
 
-  export default{
-    components:{
+  export default {
+    components: {
       pagination,
     },
-    data () {
+    data() {
       return {
         issuePageCount: 5,
         issueCurrentPage: 1,
-        issues: ['闪退卡顿','无法登录','无法连接','充值问题','游客账号'],
-        result: [
-          {
+        issues: ['闪退卡顿', '无法登录', '无法连接', '充值问题', '游客账号'],
+        result: [{
             id: '001',
             title: '问题：总是充值失败',
           },
@@ -68,17 +66,19 @@
             title: '问题：充值未到账',
           },
         ],
-        issueDetail:null,
+        issueDetail: null,
       }
     },
-    computed:{
-      issueTitle(){
-        return this.$t('forum.customService.issueTitle', {title: this.issueDetail&&this.issueDetail.title})
+    computed: {
+      issueTitle() {
+        return this.$t('forum.customService.issueTitle', {
+          title: this.issueDetail && this.issueDetail.title
+        })
       }
     },
-    methods:{
-      getIssueDetail(issue){
-        Vue.set(this,'issueDetail',{
+    methods: {
+      getIssueDetail(issue) {
+        Vue.set(this, 'issueDetail', {
           id: '001',
           title: '无法登录',
           state: 'Edited',
@@ -95,80 +95,10 @@
         // }).then(result=>{
 
         // })
-      },  
+      },
     }
   }
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .service-menu {
-    flex: 1;
-    border-right: 1px solid $dark;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  .service-menu:last-child {
-    border-right: none;
-  }
-  
-  .menu-selected {
-    color: $link;
-  }
-  
-  .search-input {
-    flex: 3;
-    font-size: 1.2rem;
-    padding: .6rem;
-    padding-left: 3rem;
-    margin: .1rem auto;
-  }
-  
-  .search-button {
-    flex: 1;
-    background-color: $primary;
-    color: $white;
-    font-size: 1.2rem;
-    margin: .1rem auto;
-  }
-  
-  .search-result {
-    margin-left: 1rem;
-    font-size: 1.2rem;
-    padding: 1rem;
-    border-bottom: 1px solid $dark;
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .float-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    border-left: 1px solid $dark;
-    margin: auto 1rem;
-    flex-wrap: wrap;
-    .issue {
-      text-align: center;
-      border: 1px solid $dark;
-      border-left: none;
-      padding: .5rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-      float: left;
-      width: 33.33%;
-      box-sizing: border-box;
-    }
-    .issue:nth-child(n+4) {
-      border-top: none;
-    }
-  }
-  
-  .issue-content {
-    resize: vertical;
-    flex: 1;
-    height: 18rem;
-    padding: 0 1rem;
-    font-size: 1.2rem;
-  }
 </style>

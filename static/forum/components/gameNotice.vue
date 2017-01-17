@@ -8,7 +8,7 @@
         <div class="arrow-down" @click="scrollDown"></div>
       </div>
     </div>
-    <div ref="detailBox" v-html="detailHtml"  class="detail-html">
+    <div ref="detailBox" v-html="detailHtml" class="detail-html">
     </div>
   </div>
 </template>
@@ -26,8 +26,8 @@
   });
 
   export default {
-    mounted(){
-      this.notices&&this.notices.length? this.showNoticeDetail(this.notices[0]): ''
+    mounted() {
+      this.notices && this.notices.length ? this.showNoticeDetail(this.notices[0]) : ''
     },
 
     props: {
@@ -37,7 +37,7 @@
     },
 
     computed: {
-      
+
     },
 
     data() {
@@ -56,11 +56,11 @@
         this.detailHtml = marked(item.content)
       },
 
-      changScroll(e){
+      changScroll(e) {
         this.scrollPosition = e.target.scrollTop
       },
 
-      scrollDown(){
+      scrollDown() {
         this.$refs.menuBox.scrollTop += 30
       },
 
@@ -69,50 +69,4 @@
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .row-menu {
-    img {
-      margin-top: .5rem;
-    }
-  }
-  
-  .menu-left {
-    flex: 1.2;
-    height: 50vh;
-    display: flex;
-    flex-direction: column;
-    margin-right: 1rem;
-    overflow-x: hidden;
-  }
-  
-  .menu-tree {
-    flex: 1;
-    overflow-y: hidden;
-    padding-bottom: .5rem;
-    .menu-item {
-      padding-left: .5rem;
-      padding-top: .2rem;
-      border: 1px solid $dark;
-      min-height: 3rem;
-      font-size: .9rem;
-      margin-top: .8rem;
-      
-      cursor: pointer;
-    }
-  }
-  
-  .arrow-down {
-    height: .4rem;
-    width: .4rem;
-    border: .5rem solid transparent;
-    border-top: .7rem solid $link;
-    margin: .4rem auto;
-    cursor: pointer;
-  }
-  
-  .detail-html {
-    flex: 3;
-    font-size: 1rem;
-    padding: .5rem;
-    border: 1px solid $text-grey;
-  }
 </style>

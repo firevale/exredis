@@ -287,6 +287,9 @@ $fa-font-path: '~font-awesome/fonts/';
       cursor: pointer;
       font-size: 1rem;
     }
+    img {
+      margin-top: .5rem;
+    }
   }
 
   .search-box {
@@ -382,3 +385,433 @@ $fa-font-path: '~font-awesome/fonts/';
       color: $link;
     }
   }
+
+
+
+
+
+
+
+
+
+
+  //components scss below
+
+  .follow-btn {
+    padding: .2rem;
+    cursor: pointer;
+    color: $white;
+    background-color: $link;
+  }
+  
+  .detail-title {
+    margin: 0 !important;
+    font-weight: bold;
+  }
+  
+  .detail-info {
+    padding-top: 0;
+  }
+  
+  .detail-imgs {}
+  
+  .is-256x256 {
+    width: 256px;
+    height: 256px;
+  }
+  
+  .note-author {
+    color: $link;
+  }
+  
+  .note-delete {
+    color: $red;
+    margin-left: 2rem;
+    cursor: pointer;
+  }
+
+
+  .note-picture {
+    font-size: 1.3rem;
+    vertical-align: middle !important;
+    color: green;
+  }
+  
+  .note-title {
+    vertical-align: middle;
+    font-size: 1rem;
+    color: $black;
+  }
+  
+  .note-title:hover {
+    cursor: pointer;
+  }
+  
+  .headerTag {
+    font-weight: bold;
+    border-radius: .3rem;
+    vertical-align: middle !important;
+    padding: 0;
+    color: $white;
+    font-size: .7rem;
+    background-color: $red !important;
+  }
+  
+  .tailTag {
+    border-radius: .3rem;
+    vertical-align: middle !important;
+    padding: 0;
+    color: $white;
+    margin-right: .5rem;
+    font-size: .7rem;
+    background-color: $red !important;
+  }
+  
+  .author-name {
+    color: $link;
+    font-size: .7rem;
+  }
+  
+  .note-info {
+    color: $dark;
+    font-size: .7rem;
+  }
+  
+  .excellent {
+    background-color: $olive !important;
+  }
+  
+  .note-item {
+    padding: .8rem .2rem;
+    border-bottom: 1px solid $text-grey;
+  }
+  
+  .note-item:last-child {
+    border-bottom: none;
+  }
+  
+  .note-item .column {
+    padding-top: 0;
+    padding-bottom: .2rem;
+  }
+
+  
+  .originalNote{
+    background-color: $text-grey; 
+  }
+  
+  
+  .myReply-item {
+    padding: 1rem;
+    margin: 0 1rem 0 1rem;
+    border: 1px solid $text-grey;
+    border-bottom: none;
+    span.button {
+      background-color: $red;
+      color: $white;
+      font-size: .5rem;
+      height: 2rem;
+      width: 4rem;
+    }
+  }
+  
+  .myReply-item:last-child {
+    border-bottom: 1px solid $text-grey;
+  }
+  
+  .myReply-item .column {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  
+  .excellentBtn {
+    border-color: $olive !important;
+    color: $olive;
+    font-size: .5rem;
+    height: 1.6rem !important;
+  }
+  
+  .mynote-item {
+    padding: 1rem;
+    margin: 0 1rem 0 1rem;
+    border: 1px solid $text-grey;
+    border-bottom: none;
+    display: flex;
+    flex-direction: row;
+    span.button {
+      background-color: $red;
+      color: $white;
+      font-size: .5rem;
+      height: 2rem;
+      width: 4rem;
+    }
+  }
+  
+  .mynote-item:last-child {
+    border-bottom: 1px solid $text-grey;
+  }
+  
+  .mynote-item .column {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  
+  .myFavor-item {
+    padding: 1rem;
+    margin: 0 1rem 0 1rem;
+    border: 1px solid $text-grey;
+    border-bottom: none;
+    display: flex;
+    flex-direction: row;
+    span.button {
+      background-color: $red;
+      color: $white;
+      font-size: .5rem;
+      height: 2rem;
+      width: 4rem;
+    }
+  }
+  
+  .myFavor-item:last-child {
+    border-bottom: 1px solid $text-grey;
+  }
+  
+  .myFavor-item .column {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  
+  .menu-left {
+    flex: 1.2;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+    overflow-x: hidden;
+  }
+  
+  .menu-tree {
+    flex: 1;
+    overflow-y: hidden;
+    padding-bottom: .5rem;
+    .menu-item {
+      padding-left: .5rem;
+      padding-top: .2rem;
+      border: 1px solid $dark;
+      min-height: 3rem;
+      font-size: .9rem;
+      margin-top: .8rem;
+      
+      cursor: pointer;
+    }
+  }
+
+  .row-news {
+    font-size: .9rem;
+    margin: 3rem 3rem 3rem 3rem;
+    cursor: pointer;
+  }
+  
+  .news-box {
+    border: 1px solid $text-grey;
+  }
+  
+  .detail-html {
+    flex: 3;
+    font-size: 1rem;
+    padding: .5rem;
+    border: 1px solid $text-grey;
+  }
+  
+  .top-img {
+    font-size: .9rem;
+  }
+
+  .issue-content {
+    resize: vertical;
+    flex: 1; 
+    height: 18rem;
+    padding: 1rem 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .writeIcon {
+    padding: 1rem 4rem;
+  }
+  
+  .pencil-icon {
+    display: block !important;
+    position: absolute;
+    top: 3rem;
+    left: 1rem;
+    font-size: 2rem !important;
+    color: $dark;
+  }
+  
+  .submit-btn {
+    background: $primary;
+    color: $white;
+    font-size: 1.3rem;
+    padding: 1rem 12rem;
+  }
+  
+  .bottom-box {
+    background: $text-grey;
+    margin: 3rem .1rem .1rem .1rem;
+    height: 10rem;
+  }
+  
+  .bottom-contact {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    span {
+      color: $link;
+    }
+  }
+
+  .service-menu {
+    flex: 1;
+    border-right: 1px solid $dark;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .service-menu:last-child {
+    border-right: none;
+  }
+  
+  .menu-selected {
+    color: $link;
+  }
+  
+  .search-input {
+    flex: 3;
+    font-size: 1.2rem;
+    padding: .6rem;
+    padding-left: 3rem;
+    margin: .1rem auto;
+  }
+  
+  .search-button {
+    flex: 1;
+    background-color: $primary;
+    color: $white;
+    font-size: 1.2rem;
+    margin: .1rem auto;
+  }
+  
+  .search-result {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-bottom: 1px solid $dark;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .float-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border-left: 1px solid $dark;
+    margin: auto 1rem;
+    flex-wrap: wrap;
+    .issue {
+      text-align: center;
+      border: 1px solid $dark;
+      border-left: none;
+      padding: .5rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      float: left;
+      width: 33.33%;
+      box-sizing: border-box;
+    }
+    .issue:nth-child(n+4) {
+      border-top: none;
+    }
+  }
+
+  .tip-message {
+    position: absolute;
+    z-index: 3;
+    background: transparent;
+    top: 0%;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    animation: message 2s ease;
+    .body-message {
+      width: 50%;
+      padding: 1rem;
+      margin: 0 auto;
+      color: $white;
+      text-align: center;
+      background: $black;
+      border-radius: 1rem;
+      transition: all 1s ease;
+    }
+  }
+  
+  @keyframes message {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    50% {
+      top: 0;
+      opacity: .8;
+    }
+    80% {
+      top: 0;
+      opacity: .8;
+    }
+    100% {
+      top: 0;
+      opacity: 0;
+    }
+  }
+
+  .modal-card {
+    width: 80%;
+    max-width: 350px;
+    max-height: none;
+  }
+  
+  .modal-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px solid $dark;
+    .modal-item-name {
+      flex: 1;
+    }
+    .modal-item-check {}
+  }
+  
+  .modal-item:last-child {
+    border-bottom: none;
+  }
+
+  .warning-sign {
+    color: $olive;
+  }
+  
+  .modal-footer {
+    background: #fff;
+    text-align: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    a {
+      width: 45%;
+      background-color: $dark;
+      border-radius: 5px;
+      font-size: 1.2rem;
+    }
+  }
+ 
+  

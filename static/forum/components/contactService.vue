@@ -4,7 +4,7 @@
       <i class="fa fa-pencil-square-o" style="display: none;" :class="{'pencil-icon': showIcon}" aria-hidden="true"></i>
       <textarea v-model="message" class="issue-content" :class="{'writeIcon': showIcon}" :placeholder="$t('forum.customService.contactPlaceHolder')"
         @focus="showIcon=false" @blur="checkIcon">
-      </textarea>
+        </textarea>
     </div>
     <div class="row-menu">
       <input class="submit-btn" type="button" :value="$t('forum.customService.submitBtn')"></input>
@@ -24,22 +24,22 @@
   </div>
 </template>
 <script>
-  export default{
-    data () {
+  export default {
+    data() {
       return {
         showIcon: true,
         message: '',
       }
     },
-    computed:{
-      
+    computed: {
+
     },
-    methods:{
-      checkIcon(){
-        if(this.message){
-          this.showIcon=false
-        }else{
-          this.showIcon=true
+    methods: {
+      checkIcon() {
+        if (this.message) {
+          this.showIcon = false
+        } else {
+          this.showIcon = true
         }
       },
     }
@@ -47,46 +47,4 @@
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .issue-content {
-    resize: vertical;
-    flex: 1;
-    height: 18rem;
-    padding: 1rem 1rem;
-    font-size: 1.2rem;
-  }
-  
-  .writeIcon {
-    padding: 1rem 4rem;
-  }
-  
-  .pencil-icon {
-    display: block !important;
-    position: absolute;
-    top: 3rem;
-    left: 1rem;
-    font-size: 2rem !important;
-    color: $dark;
-  }
-  
-  .submit-btn {
-    background: $primary;
-    color: $white;
-    font-size: 1.3rem;
-    padding: 1rem 12rem;
-  }
-  
-  .bottom-box {
-    background: $text-grey;
-    margin: 3rem .1rem .1rem .1rem;
-    height: 10rem;
-  }
-  
-  .bottom-contact {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    span {
-      color: $link;
-    }
-  }
 </style>

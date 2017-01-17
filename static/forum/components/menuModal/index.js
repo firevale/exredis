@@ -9,7 +9,7 @@ export default {
     });
     list ? instance.list = list : ''
     instance.onOk = onOk
-    defaultSelected ? instance.selectedItem = defaultSelected: ''
+    defaultSelected ? instance.selectedItem = defaultSelected : ''
     Vue.nextTick(_ => instance.visible = true)
   },
 };

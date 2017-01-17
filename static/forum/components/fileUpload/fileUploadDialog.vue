@@ -50,23 +50,23 @@
 
   export default {
     props: {
-      params:{
+      params: {
         type: Object,
         default: {},
       }
     },
-    computed:{
-      file(){
+    computed: {
+      file() {
         let curFile = null
-        this.files.forEach(file=>{
-          if(file.active){
+        this.files.forEach(file => {
+          if (file.active) {
             curFile = file
           }
         })
         return curFile
       }
     },
-    data: function() {
+    data: function () {
       return {
         files: [],
         upload: undefined,
@@ -75,50 +75,53 @@
         visible: false,
       }
     },
-    mounted(){
+    mounted() {
       this.files = []
       this.upload = this.$refs.upload
       this.modal = this.$refs.modal
     },
     methods: {
-      addFileUpload: function(file, upload) {
+      addFileUpload: function (file, upload) {
         let newFile = true
         this.files.forEach(
-          (item)=>{
-            if(item.name == file.name){
+          (item) => {
+            if (item.name == file.name) {
               newFile = false
               return
             }
           }
         )
-        newFile? this.files.push(file): ''
+        newFile ? this.files.push(file) : ''
         this.upload = upload
       },
 
       afterFileUpload(file, component) {
         let response = this.file.data
         let errno = this.file.errno
-        
-        this.files=this.files.filter((item ,index)=>{
-          return item.name!=file.name
+
+        this.files = this.files.filter((item, index) => {
+          return item.name != file.name
         })
 
-        if (typeof(this.callback) == 'function') {
+        if (typeof (this.callback) == 'function') {
           if (!errno) {
-            this.callback({code: 0, data:{
-              id: 'imgname',
-              url: 'http://img0.imgtn.bdimg.com/it/u=3156638004,2702203078&fm=23&gp=0.jpg',
-            }})
+            this.callback({
+              code: 0,
+              data: {
+                id: 'imgname',
+                url: 'http://img0.imgtn.bdimg.com/it/u=3156638004,2702203078&fm=23&gp=0.jpg',
+              }
+            })
           } else {
             this.callback(response)
           }
-        } 
-        if(!this.files||!this.files.length){
-          if(this.upload){
+        }
+        if (!this.files || !this.files.length) {
+          if (this.upload) {
             this.upload.files = []
             this.modal.deactive()
           }
-        } 
+        }
       },
     },
 

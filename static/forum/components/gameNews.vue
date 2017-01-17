@@ -36,8 +36,7 @@
   });
 
   export default {
-    mounted() {
-    },
+    mounted() {},
 
     props: {
       news: {
@@ -64,8 +63,8 @@
         this.showDetail = true
       },
 
-      loadNewsByPage(page = 1){
-        console.log('load news in page: '+page)
+      loadNewsByPage(page = 1) {
+        console.log('load news in page: ' + page)
       }
     },
 
@@ -76,24 +75,4 @@
 </script>
 <style lang="scss">
   @import "../scss/forum";
-  .row-news {
-    font-size: .9rem;
-    margin: 3rem 3rem 3rem 3rem;
-    cursor: pointer;
-  }
-  
-  .news-box {
-    border: 1px solid $text-grey;
-  }
-  
-  .detail-html {
-    flex: 3;
-    font-size: 1rem;
-    padding: .5rem;
-    border: 1px solid $text-grey;
-  }
-  
-  .top-img {
-    font-size: .9rem;
-  }
 </style>

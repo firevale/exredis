@@ -19,8 +19,6 @@
   </div>
 </template>
 <script>
-  
-
   export default {
     props: {
       visible: Boolean,
@@ -29,15 +27,15 @@
         default: 'fade'
       }
     },
-    mounted () {
+    mounted() {
       document.body.appendChild(this.$el)
     },
     watch: {
-      visible (val) {
+      visible(val) {
         this.show = val
       }
     },
-    data: function() {
+    data: function () {
       return {
         title: "this is a card modal",
         message: "message",
@@ -47,13 +45,13 @@
       }
     },
 
-    compiled: function() {
+    compiled: function () {
       this.modal = this.$refs.modal
     },
 
     methods: {
       ok() {
-        this.visible=false
+        this.visible = false
 
         if (typeof this.onOk == 'function') {
           this.onOk()
@@ -61,7 +59,7 @@
       },
 
       cancel() {
-        this.visible=false
+        this.visible = false
 
         if (typeof this.onCancel == 'function') {
           this.onCancel()
@@ -71,21 +69,5 @@
   }
 </script>
 <style lang="scss">
-  @import "../../scss/color";
-  .warning-sign {
-    color: $olive;
-  }
-  
-  .modal-footer {
-    background: #fff;
-    text-align: center;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    a {
-      width: 45%;
-      background-color: $dark;
-      border-radius: 5px;
-      font-size: 1.2rem;
-    }
-  }
+  @import "../../scss/forum";
 </style>

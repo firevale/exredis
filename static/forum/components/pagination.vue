@@ -46,25 +46,23 @@
   </nav>
 </template>
 <script>
+  export default {
+    props: {
+      pageCount: {
+        type: Number,
+        default: 1
+      },
 
-export default {
-  props: {
-    pageCount: {
-      type: Number,
-      default: 1
+      currentPage: {
+        type: Number,
+        default: 1
+      },
     },
 
-    currentPage: {
-      type: Number,
-      default: 1
-    },
-  },
-
-  methods: {
-    selectPage: function(page) {
-      this.$emit('switch-page', page)      
+    methods: {
+      selectPage: function (page) {
+        this.$emit('switch-page', page)
+      }
     }
   }
-}
-
 </script>

@@ -36,27 +36,34 @@
   </div>
 </template>
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
   import AlertDialog from './alertDialog'
   export default {
-    props:{
-      itemData:{
+    props: {
+      itemData: {
         type: Object,
         default: null,
       },
     },
     computed: {
-      
+
     },
     methods: {
-      deleteFollowNote(){
-        AlertDialog.showModal({message: this.$t('forum.detail.deleteTip'),onOk: this.onOK,onCancel: this.onCancel})
+      deleteFollowNote() {
+        AlertDialog.showModal({
+          message: this.$t('forum.detail.deleteTip'),
+          onOk: this.onOK,
+          onCancel: this.onCancel
+        })
       },
 
-      onOK(){
+      onOK() {
 
       },
-      onCancel(){
+      onCancel() {
 
       }
 
@@ -64,37 +71,5 @@
   }
 </script>
 <style lang="scss">
-  @import "../scss/color";
-  .follow-btn {
-    padding: .2rem;
-    cursor: pointer;
-    color: $white;
-    background-color: $link;
-  }
-  
-  .detail-title {
-    margin: 0 !important;
-    font-weight: bold;
-  }
-  
-  .detail-info {
-    padding-top: 0;
-  }
-  
-  .detail-imgs {}
-  
-  .is-256x256 {
-    width: 256px;
-    height: 256px;
-  }
-  
-  .note-author {
-    color: $link;
-  }
-  
-  .note-delete {
-    color: $red;
-    margin-left: 2rem;
-    cursor: pointer;
-  }
-</style>
+  @import "../scss/forum";
+</style>s

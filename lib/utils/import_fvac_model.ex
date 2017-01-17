@@ -41,30 +41,32 @@ defmodule ImportFvacModel do
         end    
       end)
 
-      client.goods |> Enum.each(fn({id, info}) -> 
-        case Repo.get(AppGoods, id) do 
-          nil ->
-            AppGoods.changeset(%AppGoods{}, %{id: id, app_id: client.id, name: info.name, description: info.title, price: info.price}) |> Repo.insert!
-          x ->
-            AppGoods.changeset(x, %{name: info.name, description: info.title, price: info.price, app_id: client.id}) |> Repo.update!
-        end  
+      if Map.has_key?(client, :goods) do 
+        client.goods |> Enum.each(fn({id, info}) -> 
+          case Repo.get(AppGoods, id) do 
+            nil ->
+              AppGoods.changeset(%AppGoods{}, %{id: id, app_id: client.id, name: info.name, description: info.title, price: info.price}) |> Repo.insert!
+            x ->
+              AppGoods.changeset(x, %{name: info.name, description: info.title, price: info.price, app_id: client.id}) |> Repo.update!
+          end  
 
-        if not is_nil(info.product_ids) do 
-          info.product_ids |> Enum.each(fn({sdk, product_id}) -> 
-            sdk = case "#{sdk}" do 
-                    "ccplay" -> "cc"
-                    x -> x
-                  end
-                  
-            case Repo.get_by(AppGoodsProductId, app_goods_id: id, sdk: sdk) do 
-              nil ->
-                AppGoodsProductId.changeset(%AppGoodsProductId{}, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.insert!
-              x ->
-                AppGoodsProductId.changeset(x, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.update!
-            end               
-          end)
-        end
-      end)
+          if not is_nil(info.product_ids) do 
+            info.product_ids |> Enum.each(fn({sdk, product_id}) -> 
+              sdk = case "#{sdk}" do 
+                      "ccplay" -> "cc"
+                      x -> x
+                    end
+                    
+              case Repo.get_by(AppGoodsProductId, app_goods_id: id, sdk: sdk) do 
+                nil ->
+                  AppGoodsProductId.changeset(%AppGoodsProductId{}, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.insert!
+                x ->
+                  AppGoodsProductId.changeset(x, %{sdk: sdk, product_id: product_id, app_goods_id: id}) |> Repo.update!
+              end               
+            end)
+          end
+        end)
+      end
     end)  
   end
 

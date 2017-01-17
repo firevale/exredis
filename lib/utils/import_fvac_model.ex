@@ -86,7 +86,7 @@ defmodule ImportFvacModel do
       case Redis.hget("fvac.tables.users", user_id) do 
         :undefined -> :ok
         raw ->
-          user = JSON.decode!(raw, keys: :atoms) 
+          user = JSON.decode!(raw, keys: :atoms) |> Map.from_struct 
 
           User.changeset(%User{}, %{
             id: user.id,

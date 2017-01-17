@@ -68,4 +68,10 @@ defmodule ImportFvacModel do
     end)  
   end
 
+  def import_all_apps() do 
+    Redis.hvals("fvac.tables.clients") |> Enum.each(fn(data) -> 
+      import_fvac_client(data)
+    end)
+  end
+
 end

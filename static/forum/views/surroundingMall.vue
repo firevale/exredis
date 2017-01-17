@@ -7,7 +7,7 @@
       <div style="flex: 1;text-align: center;">
         {{ $t('forum.surroundingMall.title') }}
       </div>
-      <div @click="mine">
+      <div @click="goMine">
         {{ $t('forum.surroundingMall.mine') }}
       </div>
     </div>
@@ -63,7 +63,7 @@
 
       },
 
-      mine() {
+      goMine() {
 
       }
     },

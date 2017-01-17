@@ -3,7 +3,7 @@ MAINTAINER xiaobin@firevale.com
 
 COPY rel /rel
 
-VOLUME ["/uploads", "/var/log/acs"]
+VOLUME ["/rel/acs/lib/acs-0.0.1/priv/static", "/var/log/acs"]
 
 RUN { \
         echo '#/bin/sh'; \

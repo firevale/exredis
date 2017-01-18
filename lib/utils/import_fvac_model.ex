@@ -135,6 +135,9 @@ defmodule ImportFvacModel do
 
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
+
+          {:error, %{errors: [mobile: _ ]}} ->
+            IO.puts "user mobile #{inspect user, pretty: true} is invalid, not imported"
         end
     end
   end

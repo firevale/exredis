@@ -19,7 +19,7 @@ defmodule Acs.Emails do
   defp base_email(locale) do
     Gettext.put_locale(Acs.Gettext, locale)
 
-    new_email
+    new_email()
     |> put_html_layout({Acs.LayoutView, "email.html"})
   end
 end

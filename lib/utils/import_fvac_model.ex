@@ -115,17 +115,21 @@ defmodule ImportFvacModel do
           nickname: user[:nickname],
         }) |> Repo.insert do 
 
-          {:ok, _ } ->
+          {:ok, db_user} ->
             if Map.has_key?(user, :bindings) do 
               user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
-                [sdk, app_id] = String.split(to_string(bkey), ".")
-
-                UserSdkBinding.changeset(%UserSdkBinding{}, %{
+                [sdk, app_id] = String.split(to_string(bkey), ".", trim: true)
+                case UserSdkBinding.changeset(%UserSdkBinding{}, %{
                   user_id: user.id,
                   app_id: app_id,
                   sdk: sdk,
                   sdk_user_id: sdk_user_id
-                }) |> Repo.insert!
+                }) |> Repo.insert do 
+                  {:ok, _} -> :ok
+                  {:error, changeset} ->
+                    IO.puts "insert user sdk binding failed: #{inspect changeset}"
+                    Repo.delete!(db_user)
+                end
               end)          
             end
 

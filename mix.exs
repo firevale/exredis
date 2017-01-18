@@ -19,7 +19,8 @@ defmodule Acs.Mixfile do
   def application do
     [mod: {Acs, []},
      included_applications: [
-       :exsyslog
+       :exsyslog,
+       :cf,
      ],
      applications: [ 
         :inets, 
@@ -90,6 +91,7 @@ defmodule Acs.Mixfile do
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
      {:exrm, "~> 1.0"},
+     {:cf, "~> 0.2.2"},
     ]
   end
 

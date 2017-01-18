@@ -14,7 +14,7 @@
   "des_ecb3": {:git, "https://github.com/xbinxu/des_ecb3.git", "d6ed379d654b32835a9e641d36d7ac02c46a38e4", []},
   "ecto": {:hex, :ecto, "2.1.2", "8d7bde4170b33e1049850a5dbe0112bfd232824e63c73ee63383df4c6ffd4064", [:mix], [{:db_connection, "~> 1.1", [hex: :db_connection, optional: true]}, {:decimal, "~> 1.2", [hex: :decimal, optional: false]}, {:mariaex, "~> 0.8.0", [hex: :mariaex, optional: true]}, {:poison, "~> 2.2 or ~> 3.0", [hex: :poison, optional: true]}, {:poolboy, "~> 1.5", [hex: :poolboy, optional: false]}, {:postgrex, "~> 0.13.0", [hex: :postgrex, optional: true]}, {:sbroker, "~> 1.0", [hex: :sbroker, optional: true]}]},
   "eredis": {:hex, :eredis, "1.0.8", "ab4fda1c4ba7fbe6c19c26c249dc13da916d762502c4b4fa2df401a8d51c5364", [], []},
-  "erlware_commons": {:hex, :erlware_commons, "0.22.0", "051bed79a34e66678c1cbeebc7b66360c827d081a0c5e2528878011e31ddcdca", [:rebar3], [{:cf, "0.2.2", [hex: :cf, optional: false]}]},
+  "erlware_commons": {:hex, :erlware_commons, "1.0.0", "087467de5833c0bb5b3ccdd387f9e9c1fb816a75b7a709629bf24b5ed3246c51", [:rebar3], [{:cf, "0.2.2", [hex: :cf, optional: false]}]},
   "exjsx": {:hex, :exjsx, "3.2.1", "1bc5bf1e4fd249104178f0885030bcd75a4526f4d2a1e976f4b428d347614f0f", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, optional: false]}]},
   "exredis": {:hex, :exredis, "0.2.5", "34d02fa9ef32174cbd790b166746f91b3dbc131ce37a2d9a2451e8bba164b423", [], [{:eredis, ">= 1.0.8", [hex: :eredis, optional: false]}]},
   "exrm": {:hex, :exrm, "1.0.8", "5aa8990cdfe300282828b02cefdc339e235f7916388ce99f9a1f926a9271a45d", [:mix], [{:relx, "~> 3.5", [hex: :relx, optional: false]}]},

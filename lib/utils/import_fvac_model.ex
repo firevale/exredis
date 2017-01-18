@@ -84,13 +84,12 @@ defmodule ImportFvacModel do
 
     ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
       import_user(user_id)
-      :timer.sleep(1)
     end)
   end
 
   def import_user(user_id) do 
     case Redis.hget("fvac.tables.users", user_id) do 
-      :undefined -> :ok
+      :undefined -> :not_exists 
       raw ->
         user = JSON.decode!(raw, keys: :atoms) |> Map.delete(:__struct__) 
 

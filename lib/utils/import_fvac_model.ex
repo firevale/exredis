@@ -106,11 +106,16 @@ defmodule ImportFvacModel do
             Repo.delete!(old_user)
         end
 
+        device_id = case user[:nickname] do 
+                      "anonymous" -> user[:device_id]
+                      _ -> nil
+                    end
+
         case User.changeset(%User{}, %{
           id: user.id,
           email: String.downcase(user[:email]),
           encrypted_password: user[:encrypted_password],
-          device_id: user[:device_id],
+          device_id: device_id,
           nickname: user[:nickname],
         }) |> Repo.insert do 
 

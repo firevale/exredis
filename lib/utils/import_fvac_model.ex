@@ -109,7 +109,6 @@ defmodule ImportFvacModel do
         case User.changeset(%User{}, %{
           id: user.id,
           email: String.downcase(user[:email]),
-          mobile: user[:mobile],
           encrypted_password: user[:encrypted_password],
           device_id: user[:device_id],
           nickname: user[:nickname],
@@ -135,9 +134,6 @@ defmodule ImportFvacModel do
 
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
-
-          {:error, %{errors: [mobile: _ ]}} ->
-            IO.puts "user mobile #{inspect user, pretty: true} is invalid, not imported"
         end
     end
   end

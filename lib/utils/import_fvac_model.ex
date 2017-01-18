@@ -83,36 +83,39 @@ defmodule ImportFvacModel do
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
     ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
-      case Redis.hget("fvac.tables.users", user_id) do 
-        :undefined -> :ok
-        raw ->
-          user = JSON.decode!(raw, keys: :atoms) |> Map.delete(:__struct__) 
-
-          User.changeset(%User{}, %{
-            id: user.id,
-            email: user[:email],
-            mobile: user[:mobile],
-            encrypted_password: user[:encrypted_password],
-            device_id: user[:device_id],
-            nickname: user[:nickname],
-          }) |> Repo.insert!
-
-          if Map.has_key?(user, :bindings) do 
-            user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
-              [sdk, app_id] = String.split(bkey)
-
-              UserSdkBinding.changeset(%UserSdkBinding{}, %{
-                user_id: user.id,
-                app_id: app_id,
-                sdk: sdk,
-                sdk_user_id: sdk_user_id
-              }) |> Repo.insert!
-            end)          
-          end
-      end
+      import_user(user_id)
       :timer.sleep(1)
     end)
+  end
 
+  def import_user(user_id) do 
+    case Redis.hget("fvac.tables.users", user_id) do 
+      :undefined -> :ok
+      raw ->
+        user = JSON.decode!(raw, keys: :atoms) |> Map.delete(:__struct__) 
+
+        User.changeset(%User{}, %{
+          id: user.id,
+          email: user[:email],
+          mobile: user[:mobile],
+          encrypted_password: user[:encrypted_password],
+          device_id: user[:device_id],
+          nickname: user[:nickname],
+        }) |> Repo.insert!
+
+        if Map.has_key?(user, :bindings) do 
+          user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
+            [sdk, app_id] = String.split(bkey)
+
+            UserSdkBinding.changeset(%UserSdkBinding{}, %{
+              user_id: user.id,
+              app_id: app_id,
+              sdk: sdk,
+              sdk_user_id: sdk_user_id
+            }) |> Repo.insert!
+          end)          
+        end
+    end
   end
 
 

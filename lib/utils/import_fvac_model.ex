@@ -118,7 +118,7 @@ defmodule ImportFvacModel do
           {:ok, _ } ->
             if Map.has_key?(user, :bindings) do 
               user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
-                [sdk, app_id] = String.split(bkey)
+                [sdk, app_id] = String.split(bkey, ".")
 
                 UserSdkBinding.changeset(%UserSdkBinding{}, %{
                   user_id: user.id,

@@ -106,26 +106,31 @@ defmodule ImportFvacModel do
             Repo.delete!(old_user)
         end
 
-        User.changeset(%User{}, %{
+        case User.changeset(%User{}, %{
           id: user.id,
           email: String.downcase(user[:email]),
           mobile: user[:mobile],
           encrypted_password: user[:encrypted_password],
           device_id: user[:device_id],
           nickname: user[:nickname],
-        }) |> Repo.insert!
+        }) |> Repo.insert do 
 
-        if Map.has_key?(user, :bindings) do 
-          user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
-            [sdk, app_id] = String.split(bkey)
+          {:ok, _ } ->
+            if Map.has_key?(user, :bindings) do 
+              user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
+                [sdk, app_id] = String.split(bkey)
 
-            UserSdkBinding.changeset(%UserSdkBinding{}, %{
-              user_id: user.id,
-              app_id: app_id,
-              sdk: sdk,
-              sdk_user_id: sdk_user_id
-            }) |> Repo.insert!
-          end)          
+                UserSdkBinding.changeset(%UserSdkBinding{}, %{
+                  user_id: user.id,
+                  app_id: app_id,
+                  sdk: sdk,
+                  sdk_user_id: sdk_user_id
+                }) |> Repo.insert!
+              end)          
+            end
+
+          {:error, %{errors: [email: _ ]}} ->
+            IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
         end
     end
   end

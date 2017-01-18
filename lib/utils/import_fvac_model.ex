@@ -82,6 +82,8 @@ defmodule ImportFvacModel do
     max_user_id = Redis.get("fvac.counter.uid") |> String.to_integer
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
+    IO.puts "import users from #{min_user_id + 1} to #{max_user_id}"
+
     ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
       if rem(user_id, 1000) == 0 do 
         IO.puts "import user: #{user_id}"
@@ -96,9 +98,17 @@ defmodule ImportFvacModel do
       raw ->
         user = JSON.decode!(raw, keys: :atoms) |> Map.delete(:__struct__) 
 
+        case Repo.get_by(User, email: user[:email]) do 
+          nil ->
+            :ok
+          old_user ->
+            IO.puts "email: #{user[:email]} exists, delete old user #{inspect old_user, pretty: true}"
+            Repo.delete!(old_user)
+        end
+
         User.changeset(%User{}, %{
           id: user.id,
-          email: user[:email],
+          email: String.downcase(user[:email]),
           mobile: user[:mobile],
           encrypted_password: user[:encrypted_password],
           device_id: user[:device_id],

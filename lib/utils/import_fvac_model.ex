@@ -127,7 +127,7 @@ defmodule ImportFvacModel do
                   user_id: user.id,
                   app_id: app_id,
                   sdk: sdk,
-                  sdk_user_id: sdk_user_id
+                  sdk_user_id: to_string(sdk_user_id)
                 }) |> Repo.insert do 
                   {:ok, _} -> :ok
                   {:error, changeset} ->

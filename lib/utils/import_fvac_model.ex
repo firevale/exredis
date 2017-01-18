@@ -4,6 +4,7 @@ defmodule ImportFvacModel do
   require Utils
 
   alias   Utils.JSON
+  alias   Utils.Httpc
   alias   Acs.App
   alias   Acs.AppSdkBinding
   alias   Acs.AppGoods
@@ -146,6 +147,38 @@ defmodule ImportFvacModel do
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
         end
+    end
+  end
+
+  def import_all_orders() do 
+    response = Httpc.post_json("http://10.10.134.58:9200/payment/orders/_search?search_type=scan&scroll=1m&size=50&pretty=true", %{
+      query: %{ match_all: %{} }
+    })
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: scroll_id}} ->
+          import_scroll_orders(scroll_id)
+        _ ->
+          IO.puts "create cursor failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "create scroll cursor failed..."
+    end
+  end
+
+  def import_scroll_orders(scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: scroll_id} = result} ->
+          IO.inspect result, pretty: true
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
     end
   end
 

@@ -39,7 +39,7 @@
             name: '经典黑色T恤',
             price: '120.00',
             postage: 10,
-            stock: 100,
+            stock: 0,
           },
           {
             url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2851737279,1311002239&fm=23&gp=0.jpg',
@@ -91,6 +91,3 @@
     }
   }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-</style>

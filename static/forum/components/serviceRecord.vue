@@ -63,14 +63,3 @@
     }
   }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-  .reply-box {
-    border: 1px solid $dark;
-    height: 5rem;
-  }
-  
-  .link {
-    color: $link;
-  }
-</style>

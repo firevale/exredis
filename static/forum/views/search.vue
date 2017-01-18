@@ -148,6 +148,3 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-</style>

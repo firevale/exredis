@@ -3,7 +3,6 @@
 @import "~bulma";
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
-
 #app {
     height: 100vh;
     box-sizing: border-box;
@@ -13,15 +12,15 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .rowLine {
-    display: flex; 
+    display: flex;
     flex-direction: row;
-    text-align: center;
+    justify-content: center;
     position: relative;
     flex: 1;
 }
 
 .columnLine {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     text-align: center;
     position: relative;
@@ -207,72 +206,72 @@ $fa-font-path: '~font-awesome/fonts/';
     top: 0;
     font-size: 1rem;
     span {
-      margin-top: .6rem;
-      font-size: 1.5rem;
-    }
-    .button {
-      margin-top: .2rem;
-      padding: .5rem 1.3rem;
-    }
-  }
-  
-  @media only screen and (max-width: 768px) {
-    .main-menu {
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: .6rem;
-      span {
         margin-top: .6rem;
         font-size: 1.5rem;
-      }
-      .button {
-        margin-top: .2rem;
-        padding: .1rem .5rem;
-      }
     }
-  }
-  
-  .create-note {
+    .button {
+        margin-top: .2rem;
+        padding: .5rem 1.3rem;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .main-menu {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: .6rem;
+        span {
+            margin-top: .6rem;
+            font-size: 1.5rem;
+        }
+        .button {
+            margin-top: .2rem;
+            padding: .1rem .5rem;
+        }
+    }
+}
+
+.create-note {
     background-color: $primary !important;
     color: $white !important;
-  }
+}
 
-  .horizontal-seprate {
+.horizontal-seprate {
     height: .3rem;
     margin: .5rem 1rem;
     background-color: $text-grey;
     .move-box-left {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 8.4%;
-      transition: margin 1s ease;
+        height: 100%;
+        background-color: $link;
+        width: 16.66%;
+        margin-left: 8.4%;
+        transition: margin 1s ease;
     }
     .move-box-center {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 41.6%;
-      transition: margin 1s ease;
+        height: 100%;
+        background-color: $link;
+        width: 16.66%;
+        margin-left: 41.6%;
+        transition: margin 1s ease;
     }
     .move-box-right {
-      height: 100%;
-      background-color: $link;
-      width: 16.66%;
-      margin-left: 74.9%;
-      transition: margin 1s ease;
+        height: 100%;
+        background-color: $link;
+        width: 16.66%;
+        margin-left: 74.9%;
+        transition: margin 1s ease;
     }
     .arrow-down {
-      height: .4rem;
-      width: .4rem;
-      border: .5rem solid transparent;
-      border-top: .7rem solid $link;
-      margin: 0 auto;
+        height: .4rem;
+        width: .4rem;
+        border: .5rem solid transparent;
+        border-top: .7rem solid $link;
+        margin: 0 auto;
     }
-  }
-  
-  .row-menu {
+}
+
+.row-menu {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -280,36 +279,36 @@ $fa-font-path: '~font-awesome/fonts/';
     justify-content: space-around;
     font-size: 1.3rem;
     margin: 1rem 1rem;
-    .service-menu{
-      font-size: 1rem;
+    .service-menu {
+        font-size: 1rem;
     }
     .mall-menu {
-      cursor: pointer;
-      font-size: 1rem;
+        cursor: pointer;
+        font-size: 1rem;
     }
     img {
-      margin-top: .5rem;
+        margin-top: .5rem;
     }
-  }
+}
 
-  .search-box {
+.search-box {
     width: 100%;
     font-size: 1rem;
     padding: .5rem;
     padding-left: 3rem;
     padding-right: 4rem;
     border: .1rem solid $dark;
-  }
-  
-  .search-btn {
+}
+
+.search-btn {
     width: 100%;
     color: $white;
     font-size: 1.1rem;
     padding: .5rem;
     background: $primary;
-  }
-  
-  .his-key {
+}
+
+.his-key {
     width: 50%;
     padding: .5rem;
     float: left;
@@ -320,134 +319,142 @@ $fa-font-path: '~font-awesome/fonts/';
     text-align: center;
     color: $black;
     font-size: 1rem;
-  }
-  
-  .his-key:nth-child(n+3) {
+}
+
+.his-key:nth-child(n+3) {
     border-top: none;
-  }
-  
-  .his-key:hover {
+}
+
+.his-key:hover {
     color: $primary;
     cursor: pointer;
-  }
-  
-  .his-box {
+}
+
+.his-box {
     border-left: 1px solid $dark;
-  }
-  
-  .his-box:after {
+}
+
+.his-box:after {
     content: '';
     display: block;
     clear: both;
-  }
-  
-  .clear-his {
+}
+
+.clear-his {
     text-align: center;
     color: $primary;
     font-size: 1rem;
     margin-top: 2rem;
-  }
-  
-  .search-icon {
+}
+
+.search-icon {
     position: absolute;
     left: .6rem;
     top: .3rem;
     font-size: 1.7rem !important;
     color: $dark;
-  }
-  
-  .times-icon {
+}
+
+.times-icon {
     position: absolute;
     right: 1rem;
     top: .3rem;
     font-size: 1.7rem !important;
     color: $dark;
-  }
-  
-  .search-tip {
+}
+
+.search-tip {
     text-align: left;
     font-size: 1.3rem;
     color: $dark;
     margin-bottom: 2rem;
-  }
+}
 
-  .product {
+.product {
     text-align: center;
     margin-top: .4rem;
     font-size: 1rem;
     cursor: pointer;
     .product-img {
-      border: 1px solid $text-grey;
-      width: 20rem;
+        border: 1px solid $text-grey;
+        width: 20rem;
     }
     .product-name {}
     .product-price {
-      color: $link;
+        color: $link;
     }
-  }
+}
 
+.goodsCountBtn {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: .2rem 1rem;
+}
 
+.no-padding {
+    padding: 0 !important;
+}
 
+.no-border {
+    border: none !important;
+}
 
+.dark-background {
+    background: $text-grey;
+    color: $white;
+}
 
-
-
-
-
-
-  //components scss below
-
-  .follow-btn {
+//components scss below
+.follow-btn {
     padding: .2rem;
     cursor: pointer;
     color: $white;
     background-color: $link;
-  }
-  
-  .detail-title {
+}
+
+.detail-title {
     margin: 0 !important;
     font-weight: bold;
-  }
-  
-  .detail-info {
+}
+
+.detail-info {
     padding-top: 0;
-  }
-  
-  .detail-imgs {}
-  
-  .is-256x256 {
+}
+
+.detail-imgs {}
+
+.is-256x256 {
     width: 256px;
     height: 256px;
-  }
-  
-  .note-author {
+}
+
+.note-author {
     color: $link;
-  }
-  
-  .note-delete {
+}
+
+.note-delete {
     color: $red;
     margin-left: 2rem;
     cursor: pointer;
-  }
+}
 
-
-  .note-picture {
+.note-picture {
     font-size: 1.3rem;
     vertical-align: middle !important;
     color: green;
-  }
-  
-  .note-title {
+}
+
+.note-title {
     vertical-align: middle;
     font-size: 1rem;
     color: $black;
-  }
-  
-  .note-title:hover {
+}
+
+.note-title:hover {
     cursor: pointer;
-  }
-  
-  .headerTag {
+}
+
+.headerTag {
     font-weight: bold;
     border-radius: .3rem;
     vertical-align: middle !important;
@@ -455,9 +462,9 @@ $fa-font-path: '~font-awesome/fonts/';
     color: $white;
     font-size: .7rem;
     background-color: $red !important;
-  }
-  
-  .tailTag {
+}
+
+.tailTag {
     border-radius: .3rem;
     vertical-align: middle !important;
     padding: 0;
@@ -465,74 +472,71 @@ $fa-font-path: '~font-awesome/fonts/';
     margin-right: .5rem;
     font-size: .7rem;
     background-color: $red !important;
-  }
-  
-  .author-name {
+}
+
+.author-name {
     color: $link;
     font-size: .7rem;
-  }
-  
-  .note-info {
+}
+
+.note-info {
     color: $dark;
     font-size: .7rem;
-  }
-  
-  .excellent {
+}
+
+.excellent {
     background-color: $olive !important;
-  }
-  
-  .note-item {
+}
+
+.note-item {
     padding: .8rem .2rem;
     border-bottom: 1px solid $text-grey;
-  }
-  
-  .note-item:last-child {
+}
+
+.note-item:last-child {
     border-bottom: none;
-  }
-  
-  .note-item .column {
+}
+
+.note-item .column {
     padding-top: 0;
     padding-bottom: .2rem;
-  }
+}
 
-  
-  .originalNote{
-    background-color: $text-grey; 
-  }
-  
-  
-  .myReply-item {
+.originalNote {
+    background-color: $text-grey;
+}
+
+.myReply-item {
     padding: 1rem;
     margin: 0 1rem 0 1rem;
     border: 1px solid $text-grey;
     border-bottom: none;
     span.button {
-      background-color: $red;
-      color: $white;
-      font-size: .5rem;
-      height: 2rem;
-      width: 4rem;
+        background-color: $red;
+        color: $white;
+        font-size: .5rem;
+        height: 2rem;
+        width: 4rem;
     }
-  }
-  
-  .myReply-item:last-child {
+}
+
+.myReply-item:last-child {
     border-bottom: 1px solid $text-grey;
-  }
-  
-  .myReply-item .column {
+}
+
+.myReply-item .column {
     padding-top: 0;
     padding-bottom: 0;
-  }
+}
 
-  
-  .excellentBtn {
+.excellentBtn {
     border-color: $olive !important;
     color: $olive;
     font-size: .5rem;
     height: 1.6rem !important;
-  }
-  
-  .mynote-item {
+}
+
+.mynote-item {
     padding: 1rem;
     margin: 0 1rem 0 1rem;
     border: 1px solid $text-grey;
@@ -540,25 +544,24 @@ $fa-font-path: '~font-awesome/fonts/';
     display: flex;
     flex-direction: row;
     span.button {
-      background-color: $red;
-      color: $white;
-      font-size: .5rem;
-      height: 2rem;
-      width: 4rem;
+        background-color: $red;
+        color: $white;
+        font-size: .5rem;
+        height: 2rem;
+        width: 4rem;
     }
-  }
-  
-  .mynote-item:last-child {
+}
+
+.mynote-item:last-child {
     border-bottom: 1px solid $text-grey;
-  }
-  
-  .mynote-item .column {
+}
+
+.mynote-item .column {
     padding-top: 0;
     padding-bottom: 0;
-  }
+}
 
-  
-  .myFavor-item {
+.myFavor-item {
     padding: 1rem;
     margin: 0 1rem 0 1rem;
     border: 1px solid $text-grey;
@@ -566,154 +569,152 @@ $fa-font-path: '~font-awesome/fonts/';
     display: flex;
     flex-direction: row;
     span.button {
-      background-color: $red;
-      color: $white;
-      font-size: .5rem;
-      height: 2rem;
-      width: 4rem;
+        background-color: $red;
+        color: $white;
+        font-size: .5rem;
+        height: 2rem;
+        width: 4rem;
     }
-  }
-  
-  .myFavor-item:last-child {
+}
+
+.myFavor-item:last-child {
     border-bottom: 1px solid $text-grey;
-  }
-  
-  .myFavor-item .column {
+}
+
+.myFavor-item .column {
     padding-top: 0;
     padding-bottom: 0;
-  }
+}
 
-  
-  .menu-left {
+.menu-left {
     flex: 1.2;
     height: 50vh;
     display: flex;
     flex-direction: column;
     margin-right: 1rem;
     overflow-x: hidden;
-  }
-  
-  .menu-tree {
+}
+
+.menu-tree {
     flex: 1;
     overflow-y: hidden;
     padding-bottom: .5rem;
     .menu-item {
-      padding-left: .5rem;
-      padding-top: .2rem;
-      border: 1px solid $dark;
-      min-height: 3rem;
-      font-size: .9rem;
-      margin-top: .8rem;
-      
-      cursor: pointer;
+        padding-left: .5rem;
+        padding-top: .2rem;
+        border: 1px solid $dark;
+        min-height: 3rem;
+        font-size: .9rem;
+        margin-top: .8rem;
+        cursor: pointer;
     }
-  }
+}
 
-  .row-news {
+.row-news {
     font-size: .9rem;
     margin: 3rem 3rem 3rem 3rem;
     cursor: pointer;
-  }
-  
-  .news-box {
+}
+
+.news-box {
     border: 1px solid $text-grey;
-  }
-  
-  .detail-html {
+}
+
+.detail-html {
     flex: 3;
     font-size: 1rem;
     padding: .5rem;
     border: 1px solid $text-grey;
-  }
-  
-  .top-img {
-    font-size: .9rem;
-  }
+}
 
-  .issue-content {
+.top-img {
+    font-size: .9rem;
+}
+
+.issue-content {
     resize: vertical;
-    flex: 1; 
+    flex: 1;
     height: 18rem;
     padding: 1rem 1rem;
     font-size: 1.2rem;
-  }
-  
-  .writeIcon {
+}
+
+.writeIcon {
     padding: 1rem 4rem;
-  }
-  
-  .pencil-icon {
+}
+
+.pencil-icon {
     display: block !important;
     position: absolute;
     top: 3rem;
     left: 1rem;
     font-size: 2rem !important;
     color: $dark;
-  }
-  
-  .submit-btn {
+}
+
+.submit-btn {
     background: $primary;
     color: $white;
     font-size: 1.3rem;
     padding: 1rem 12rem;
-  }
-  
-  .bottom-box {
+}
+
+.bottom-box {
     background: $text-grey;
     margin: 3rem .1rem .1rem .1rem;
     height: 10rem;
-  }
-  
-  .bottom-contact {
+}
+
+.bottom-contact {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     span {
-      color: $link;
+        color: $link;
     }
-  }
+}
 
-  .service-menu {
+.service-menu {
     flex: 1;
     border-right: 1px solid $dark;
     text-align: center;
     cursor: pointer;
-  }
-  
-  .service-menu:last-child {
+}
+
+.service-menu:last-child {
     border-right: none;
-  }
-  
-  .menu-selected {
+}
+
+.menu-selected {
     color: $link;
-  }
-  
-  .search-input {
+}
+
+.search-input {
     flex: 3;
     font-size: 1.2rem;
     padding: .6rem;
     padding-left: 3rem;
     margin: .1rem auto;
-  }
-  
-  .search-button {
+}
+
+.search-button {
     flex: 1;
     background-color: $primary;
     color: $white;
     font-size: 1.2rem;
     margin: .1rem auto;
-  }
-  
-  .search-result {
+}
+
+.search-result {
     margin-left: 1rem;
     font-size: 1.2rem;
     padding: 1rem;
     border-bottom: 1px solid $dark;
     position: relative;
     cursor: pointer;
-  }
-  
-  .float-container {
+}
+
+.float-container {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -721,22 +722,22 @@ $fa-font-path: '~font-awesome/fonts/';
     margin: auto 1rem;
     flex-wrap: wrap;
     .issue {
-      text-align: center;
-      border: 1px solid $dark;
-      border-left: none;
-      padding: .5rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-      float: left;
-      width: 33.33%;
-      box-sizing: border-box;
+        text-align: center;
+        border: 1px solid $dark;
+        border-left: none;
+        padding: .5rem;
+        font-size: 1.2rem;
+        cursor: pointer;
+        float: left;
+        width: 33.33%;
+        box-sizing: border-box;
     }
     .issue:nth-child(n+4) {
-      border-top: none;
+        border-top: none;
     }
-  }
+}
 
-  .tip-message {
+.tip-message {
     position: absolute;
     z-index: 3;
     background: transparent;
@@ -746,72 +747,83 @@ $fa-font-path: '~font-awesome/fonts/';
     width: 100%;
     animation: message 2s ease;
     .body-message {
-      width: 50%;
-      padding: 1rem;
-      margin: 0 auto;
-      color: $white;
-      text-align: center;
-      background: $black;
-      border-radius: 1rem;
-      transition: all 1s ease;
+        width: 50%;
+        padding: 1rem;
+        margin: 0 auto;
+        color: $white;
+        text-align: center;
+        background: $black;
+        border-radius: 1rem;
+        transition: all 1s ease;
     }
-  }
-  
-  @keyframes message {
+}
+
+@keyframes message {
     0% {
-      top: 0;
-      opacity: 0;
+        top: 0;
+        opacity: 0;
     }
     50% {
-      top: 0;
-      opacity: .8;
+        top: 0;
+        opacity: .8;
     }
     80% {
-      top: 0;
-      opacity: .8;
+        top: 0;
+        opacity: .8;
     }
     100% {
-      top: 0;
-      opacity: 0;
+        top: 0;
+        opacity: 0;
     }
-  }
+}
 
-  .modal-card {
+.modal-card {
     width: 80%;
     max-width: 350px;
     max-height: none;
-  }
-  
-  .modal-item {
+}
+
+.modal-item {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     border-bottom: 1px solid $dark;
     .modal-item-name {
-      flex: 1;
+        flex: 1;
     }
     .modal-item-check {}
-  }
-  
-  .modal-item:last-child {
-    border-bottom: none;
-  }
+}
 
-  .warning-sign {
+.modal-item:last-child {
+    border-bottom: none;
+}
+
+.warning-sign {
     color: $olive;
-  }
-  
-  .modal-footer {
+}
+
+.modal-footer {
     background: #fff;
     text-align: center;
     padding-top: 2rem;
     padding-bottom: 2rem;
     a {
-      width: 45%;
-      background-color: $dark;
-      border-radius: 5px;
-      font-size: 1.2rem;
+        width: 45%;
+        background-color: $dark;
+        border-radius: 5px;
+        font-size: 1.2rem;
     }
-  }
- 
-  
+}
+
+.reply-box {
+    border: 1px solid $dark;
+    height: 5rem;
+}
+
+.link {
+    color: $link;
+}
+
+.border-link {
+    border: 1px solid $link;
+}

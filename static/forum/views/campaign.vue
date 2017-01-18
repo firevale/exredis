@@ -1,10 +1,10 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
+  <div class="is-ancestor is-parent is-vertical">
     <div class="is-child content-item rowLine">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
-      <div class="rowLine top-title"> 
+      <div class="rowLine top-title">
         {{ $t('forum.campaign.title') }}
       </div>
     </div>
@@ -141,7 +141,8 @@
       goBack() {
         if (this.type == 'campaign' && this.$refs.campaign.showDetail) {
           this.$refs.campaign.showDetail = false
-        } if (this.type == 'news' && this.$refs.news.showDetail) {
+        }
+        if (this.type == 'news' && this.$refs.news.showDetail) {
           this.$refs.news.showDetail = false
         } else {
           this.$router.go(-1)
@@ -155,6 +156,3 @@
     }
   }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-</style>

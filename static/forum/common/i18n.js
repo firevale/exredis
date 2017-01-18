@@ -92,6 +92,10 @@ export default {
       surroundingMall: {
         title: '周边商城',
         productDetail: '商品详情',
+        buyNow: '立即购买',
+        plus: '+',
+        minus: '-',
+        soldOut: '已售磬',
         stock: '库存',
         postage: '邮费',
         back: '返回',

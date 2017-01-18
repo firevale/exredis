@@ -82,7 +82,7 @@ defmodule ImportFvacModel do
     max_user_id = Redis.get("fvac.counter.uid") |> String.to_integer
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
-    (min_user_id .. max_user_id) |> Enum.each(fn(user_id) -> 
+    ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
       case Redis.hget("fvac.tables.users", user_id) do 
         :undefined -> :ok
         raw ->
@@ -97,16 +97,18 @@ defmodule ImportFvacModel do
             nickname: user[:nickname],
           }) |> Repo.insert!
 
-          user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
-            [sdk, app_id] = String.split(bkey)
+          if Map.has_key?(:bindings) do 
+            user.bindings |> Enum.each(fn({bkey, sdk_user_id}) -> 
+              [sdk, app_id] = String.split(bkey)
 
-            UserSdkBinding.changeset(%UserSdkBinding{}, %{
-              user_id: user.id,
-              app_id: app_id,
-              sdk: sdk,
-              sdk_user_id: sdk_user_id
-            }) |> Repo.insert!
-          end)          
+              UserSdkBinding.changeset(%UserSdkBinding{}, %{
+                user_id: user.id,
+                app_id: app_id,
+                sdk: sdk,
+                sdk_user_id: sdk_user_id
+              }) |> Repo.insert!
+            end)          
+          end
       end
       :timer.sleep(1)
     end)

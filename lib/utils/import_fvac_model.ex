@@ -83,6 +83,9 @@ defmodule ImportFvacModel do
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
     ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
+      if rem(user_id, 1000) == 0 do 
+        IO.puts "import user: #{user_id}"
+      end
       import_user(user_id)
     end)
   end

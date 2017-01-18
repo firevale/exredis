@@ -1,4 +1,4 @@
-FROM xiaobin/ass_base
+FROM docker-registry.firevale.com/ass_base
 MAINTAINER xiaobin@firevale.com
 
 COPY rel /rel

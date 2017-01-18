@@ -6,7 +6,7 @@
           <file-upload class="file-upload" ref="upload" name="file" :drop="true" :multiple="true" :post-action="params.action" :accept="params.accept"
             :extensions="params.extensions" :header="params.headers" @addFileUpload="addFileUpload" @afterFileUpload="afterFileUpload"></file-upload>
         </div>
-        <div v-if="files&&files.length" class="tile is-child is-9 is-vertical">
+        <div v-if="files&&files.length" class="tile is-child is-8 is-vertical">
           <div class="columns" style="margin-bottom: 0">
             <div class="column is-3">
               <label class="label pull-right">{{$t('forum.upload.filename')}}:</label>

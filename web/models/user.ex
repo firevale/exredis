@@ -32,8 +32,8 @@ defmodule Acs.User do
     |> cast(params, [:id, :email, :mobile, :encrypted_password, :device_id, :nickname, :resident_id, :resident_name, 
                      :gender, :age, :avatar_url])
     |> validate_required([:id])
-    |> validate_format(:email, @email_check_regex)
-    |> validate_format(:mobile, ~r/^\d+/)
+    # |> validate_format(:email, @email_check_regex)
+    # |> validate_format(:mobile, ~r/^\d+/)
   end
 
 

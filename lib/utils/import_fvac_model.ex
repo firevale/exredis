@@ -178,8 +178,6 @@ defmodule ImportFvacModel do
   def import_scroll_orders(n, scroll_id) do 
     response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
 
-    IO.puts "import orders....#{n}"
-
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
@@ -252,39 +250,47 @@ defmodule ImportFvacModel do
                   end
               end
 
-    IO.puts "import order [#{id}], platform: #{order.platform}, sdk: #{order.sdk}"
+    unless is_nil(user_id) do 
+      app_user_id = case Repo.get_by(AppUser, app_id: order[:client_id], user_id: user_id, zone_id: "0") do 
+                     nil -> nil
+                     %{id: id} -> id
+                    end  
 
-    AppOrder.changeset(%AppOrder{}, %{
-      id: id,
-      platform: order[:platform],
-      device_id: order[:device_id],
-      sdk: order[:sdk],
-      sdk_user_id: order[:sdk_user_id],
-      cp_order_id: order[:cp_order_id],
-      zone_id: to_string(order[:zone_id]),
-      market: order[:market],
-      status: case order[:status] do 
-                "delivered" -> AppOrder.Status.delivered()
-                "paid" -> AppOrder.Status.paid()
-                _ -> AppOrder.Status.created()
-              end,
-      paid_at: paid_at_naive,
-      created_at: created_at_naive,
-      deliver_at: delivered_at_naive,
-      try_delivered_at: try_delivered_at_naive,
-      price: order[:price],
-      currency: app_currency,
-      goods_name: order[:goods_name],
-      goods_id: goods_id,
-      paid_channel: order[:paid_channel],
-      debug_mode: order[:debug_mode] || false,
-      fee: order[:total_fee],
-      transaction_currency: order[:trade_currency],
-      transaction_id: order[:trade_no],
-      transaction_status: order[:trade_status],
-      app_id: order[:client_id],
-      user_id: user_id
-    }) |> Repo.insert!(on_conflict: :nothing)
+      AppOrder.changeset(%AppOrder{}, %{
+        id: id,
+        platform: order[:platform],
+        device_id: order[:device_id],
+        sdk: order[:sdk],
+        sdk_user_id: order[:sdk_user_id],
+        cp_order_id: order[:cp_order_id],
+        zone_id: to_string(order[:zone_id]),
+        market: order[:market],
+        status: case order[:status] do 
+                  "delivered" -> AppOrder.Status.delivered()
+                  "paid" -> AppOrder.Status.paid()
+                  _ -> AppOrder.Status.created()
+                end,
+        paid_at: paid_at_naive,
+        created_at: created_at_naive,
+        deliver_at: delivered_at_naive,
+        try_delivered_at: try_delivered_at_naive,
+        price: order[:price],
+        currency: app_currency,
+        goods_name: order[:goods_name],
+        goods_id: goods_id,
+        paid_channel: order[:paid_channel],
+        debug_mode: order[:debug_mode] || false,
+        fee: order[:total_fee],
+        transaction_currency: order[:trade_currency],
+        transaction_id: order[:trade_no],
+        transaction_status: order[:trade_status],
+        app_id: order[:client_id],
+        user_id: user_id,
+        app_user_id: app_user_id,
+      }) |> Repo.insert!(on_conflict: :nothing)
+    else 
+      IO.puts "invalid user id, order not import: \n#{inspect order, pretty: true}"
+    end
   end
 
   def import_all_devices() do 

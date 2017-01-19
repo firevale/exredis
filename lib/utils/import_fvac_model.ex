@@ -194,6 +194,9 @@ defmodule ImportFvacModel do
   end
 
   def import_order(%{_id: id, _source: order}) do 
+    [created_at_iso8601 | _] = String.split(order[:created_at], "+")
+    created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)
+
     [paid_at_iso8601 | _] = String.split(order[:paid_at], "+")
     paid_at_naive = NaiveDateTime.from_iso8601!(paid_at_iso8601)
 
@@ -262,7 +265,8 @@ defmodule ImportFvacModel do
                 _ -> AppOrder.Status.created()
               end,
       paid_at: paid_at_naive,
-      delivered_at: delivered_at_naive,
+      created_at: created_at_naive,
+      deliver_at: delivered_at_naive,
       try_delivered_at: try_delivered_at_naive,
       price: order[:price],
       currency: app_currency,

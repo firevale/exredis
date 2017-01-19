@@ -21,6 +21,7 @@ defmodule Acs.AppOrder do
     field :zone_id, :string
     field :market, :string
     field :status, :integer
+    field :created_at, :naive_datetime
     field :paid_at, :naive_datetime
     field :deliver_at, :naive_datetime
     field :try_deliver_at, :naive_datetime
@@ -52,8 +53,8 @@ defmodule Acs.AppOrder do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :platform, :device_id, :sdk, :sdk_user_id, :cp_order_id, :zone_id, :market, :status, :paid_at, 
-                     :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name, 
+    |> cast(params, [:id, :platform, :device_id, :sdk, :sdk_user_id, :cp_order_id, :zone_id, :market, :status, :created_at, 
+                     :paid_at, :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name, 
                      :debug_mode, :paid_channel, :fee, :transaction_currency, :transaction_id, :transaction_status,
                      :app_id, :user_id, :app_user_id, :goods_id, :cp_result])
     |> validate_required([:id, :platform, :cp_order_id, :app_id])

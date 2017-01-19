@@ -229,9 +229,13 @@ defmodule ImportFvacModel do
                   end
                end
 
-    user_id = case RedisUser.find(String.to_integer(order.user_id)) do 
-                nil -> nil 
-                _ -> order.user_id
+    user_id = case order.user_id do 
+                "g" <> _ -> nil
+                _ -> 
+                  case RedisUser.find(String.to_integer(order.user_id)) do 
+                    nil -> nil 
+                    _ -> order.user_id
+                  end
               end
 
     AppOrder.changeset(%AppOrder{}, %{

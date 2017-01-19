@@ -410,8 +410,44 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_app_user(%{_id: device_id, _type: app_id, _source: app_device_info} = x) do 
-    IO.inspect x, pretty: true
+  def import_app_user(%{_id: user_id, _type: app_id, _source: app_user_info} = x) do 
+    app = case Process.get({:app, app_id}) do 
+            nil ->
+              x = RedisApp.find(app_id)
+              Process.put({:app, app_id}, x)
+              x
+            v -> v
+          end
+
+    unless is_nil(app) do 
+      [created_at_iso8601 | _] = String.split(app_user_info[:reg_date], "+")
+      created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)      
+
+      [last_active_at_iso8601 | _] = String.split(app_user_info[:last_active_at], "+")
+      last_active_at_naive = NaiveDateTime.from_iso8601!(last_active_at_iso8601)      
+
+      [reg_date_iso8601 | _] = String.split(app_user_info[:reg_date], "T")
+      reg_date = Date.from_iso8601!(reg_date_iso8601)   
+
+      last_paid_at_naive = case app_user_info[:last_paid_at] do 
+                             "1900-01-01T00:00:00+0800" -> nil
+                             "" -> nil
+                             nil -> nil
+                             x ->
+                              [xx | _] = String.split(x, "+")
+                              NaiveDateTime.from_iso8601!(xx)
+                            end
+
+      AppDevice.changeset(%AppDevice{}, %{
+        pay_amount: app_user_info[:amount],
+        last_active_at: last_active_at_naive,
+        reg_date: reg_date,
+        created_at: created_at_naive,
+        last_paid_at: last_paid_at_naive,
+        app_id: app_id, 
+        device_id: device_id
+      }) |> Repo.insert!(on_conflict: :nothing)                       
+    end
   end
 
 end

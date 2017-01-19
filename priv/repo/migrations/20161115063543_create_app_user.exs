@@ -9,8 +9,11 @@ defmodule Acs.Repo.Migrations.CreateAppUser do
 
       add :active_seconds, :integer, default: 0
       add :pay_amount, :integer, default: 0
-      add :last_pay_at, :naive_datetime
-      add :create_date, :date
+
+      add :reg_date, :date
+      add :created_at, :naive_datetime
+      add :last_active_at, :naive_datetime
+      add :last_paid_at, :naive_datetime
 
       add :zone_id, :string
 
@@ -24,9 +27,13 @@ defmodule Acs.Repo.Migrations.CreateAppUser do
     create index(:app_users, [:user_id])
     create index(:app_users, [:zone_id])
     create index(:app_users, [:app_user_id])
-    create index(:app_users, [:app_id, :create_date])
-    create index(:app_users, [:app_id, :zone_id, :create_date])
-    create index(:app_users, [:app_id, :user_id], unique: true)
+    create index(:app_users, [:created_at])
+    create index(:app_users, [:reg_date])
+    create index(:app_users, [:last_active_at])
+    create index(:app_users, [:last_paid_at])
+    create index(:app_users, [:app_id, :reg_date])
+    create index(:app_users, [:app_id, :zone_id, :reg_date])
+    create index(:app_users, [:app_id, :user_id])
     create index(:app_users, [:app_id, :user_id, :zone_id], unique: true)
 
   end

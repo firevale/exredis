@@ -209,6 +209,25 @@ defmodule ImportFvacModel do
                      _ -> app.currency
                    end
 
+    goods_id = case order[:goods_id] do 
+                nil -> nil
+                "" -> nil
+                x -> 
+                  case Process.get({:goods, x}) do 
+                    nil ->
+                      case Repo.get(AppGoods, x) do 
+                        nil ->
+                          Process.put({:goods, x}, :not_configured)
+                          nil
+                        y ->
+                          Process.put({:goods, x}, y)
+                          x
+                      end
+                    :not_configured -> nil
+                    v -> v
+                  end
+               end
+
     AppOrder.changeset(%AppOrder{}, %{
       id: id,
       platform: order[:platform],
@@ -229,7 +248,7 @@ defmodule ImportFvacModel do
       price: order[:price],
       currency: app_currency,
       goods_name: order[:goods_name],
-      goods_id: order[:goods_id],
+      goods_id: goods_id,
       paid_channel: order[:paid_channel],
       debug_mode: order[:debug_mode] || false,
       fee: order[:total_fee],

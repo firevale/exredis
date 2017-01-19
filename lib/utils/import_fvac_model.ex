@@ -323,7 +323,7 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_device(%{id: device_id, _type: app_id, _source: app_device_info}) do 
+  def import_device(%{_id: device_id, _type: app_id, _source: app_device_info}) do 
     [created_at_iso8601 | _] = String.split(app_device_info[:reg_date], "+")
     created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)
 

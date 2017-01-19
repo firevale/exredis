@@ -56,7 +56,7 @@ defmodule Acs.AppOrder do
                      :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name, 
                      :debug_mode, :paid_channel, :fee, :transaction_currency, :transaction_id, :transaction_status,
                      :app_id, :user_id, :app_user_id, :goods_id, :cp_result])
-    |> validate_required([:id, :platform, :cp_order_id, :app_id, :user_id])
+    |> validate_required([:id, :platform, :cp_order_id, :app_id])
     |> validate_inclusion(:sdk, @sdks)
     |> validate_inclusion(:platform, @platforms)
 

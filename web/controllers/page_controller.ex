@@ -163,6 +163,7 @@ defmodule Acs.PageController do
           sdk: params["sdk"] || "firevale",
           cp_order_id: cp_order_id, 
           status: AppOrder.Status.created,
+          created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
           price: price,
           debug_mode: params["debug_mode"] == "true",
           fee: case params["debug_mode"] do 

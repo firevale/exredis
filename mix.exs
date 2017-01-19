@@ -19,7 +19,7 @@ defmodule Acs.Mixfile do
   def application do
     [mod: {Acs, []},
      included_applications: [
-       :exsyslog
+       :exsyslog,
      ],
      applications: [ 
         :inets, 

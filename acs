@@ -23,6 +23,7 @@ docker_run() {
 								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
+								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
 								 --network acs_default \
@@ -51,6 +52,7 @@ run() {
 								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
+								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
 								 --network acs_default \
@@ -71,6 +73,7 @@ test() {
 								 -e "ACS_MYSQL_PASSWORD=firevale" \
 								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
+								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -v ${PWD}:/code \
 								 --network acs_default \
 								 --link acs_mysql:acs_mysql \

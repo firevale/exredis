@@ -21,5 +21,7 @@ defmodule Acs.UserSdkBinding do
     |> cast(params, [:sdk, :sdk_user_id, :app_id, :user_id])
     |> validate_required([:sdk, :sdk_user_id, :app_id, :user_id])
     |> validate_inclusion(:sdk, @sdks)
+    |> foreign_key_constraint(:app_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

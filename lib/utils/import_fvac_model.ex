@@ -373,4 +373,45 @@ defmodule ImportFvacModel do
     end
   end
 
+  def import_all_app_users() do 
+    response = Httpc.post_json("http://10.10.134.58:9200/app_users/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+      query: %{ match_all: %{} }
+    })
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: scroll_id}} ->
+          import_scroll_app_users(scroll_id)
+        _ ->
+          IO.puts "create cursor failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "create scroll cursor failed..."
+    end
+  end
+
+  def import_scroll_app_users(scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "all devices imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: app_users}}} ->
+          app_users |> Enum.each(&(import_app_user(&1)))
+          # import_scroll_app_users(res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end
+  end
+
+  def import_app_user(%{_id: device_id, _type: app_id, _source: app_device_info} = x) do 
+    IO.inspect x, pretty: true
+  end
+
 end

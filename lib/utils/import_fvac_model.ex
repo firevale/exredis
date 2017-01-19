@@ -174,11 +174,16 @@ defmodule ImportFvacModel do
   def import_scroll_orders(scroll_id) do 
     response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
 
+    IO.puts "import orders...."
+
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          IO.puts "all orders imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: orders}}} ->
           orders |> Enum.each(&(import_order(&1)))
           import_scroll_orders(res_scroll_id)
+          :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
       end
@@ -265,7 +270,6 @@ defmodule ImportFvacModel do
       transaction_currency: order[:trade_currency],
       transaction_id: order[:trade_no],
       transaction_status: order[:trade_status],
-
       app_id: order[:client_id],
       user_id: user_id
     }) |> Repo.insert(on_conflict: :nothing)

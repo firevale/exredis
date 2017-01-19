@@ -11,6 +11,7 @@ defmodule ImportFvacModel do
   alias   Acs.AppGoodsProductId
   alias   Acs.User
   alias   Acs.UserSdkBinding 
+  alias   Acs.AppOrder
 
   import  Ecto
   import  Ecto.Query
@@ -172,14 +173,71 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: scroll_id} = result} ->
-          IO.inspect result, pretty: true
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: orders}}} ->
+          orders |> Enum.each(&(import_order(&1)))
+          import_scroll_orders(res_scroll_id)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
       end
     else 
       IO.puts "fetch scroll_id: #{scroll_id} content failed"
     end
+  end
+
+  def import_order(%{_id: id, _source: order}) do 
+    [paid_at_iso8601 | _] = String.split(order[:paid_at], "+")
+    paid_at_naive = NaiveDateTime.from_iso8601!(paid_at_iso8601)
+
+    [delivered_at_iso8601 | _] = String.split(order[:delivered_at], "+")
+    delivered_at_naive = NaiveDateTime.from_iso8601!(delivered_at_iso8601)
+
+    [try_delivered_at_iso8601 | _] = String.split(order[:last_try_deliver_at], "+")
+    try_delivered_at_naive = NaiveDateTime.from_iso8601!(try_delivered_at_iso8601)
+
+    app = case Process.get({:app, order[:client_id]}) do 
+            nil ->
+              x = RedisApp.find(order[:client_id])
+              Process.put({:app, order[:client_id]}, x)
+              x
+            v -> v
+          end
+    
+    app_currency = case app do 
+                     nil -> "CNY"
+                     _ -> app.currency
+                   end
+
+    AppOrder.changeset(%AppOrder{}, %{
+      id: id,
+      platform: order[:platform],
+      device_id: order[:device_id],
+      sdk: order[:sdk],
+      sdk_user_id: order[:sdk_user_id],
+      cp_order_id: order[:cp_order_id],
+      zone_id: order[:zone_id],
+      market: order[:market],
+      status: case order[:status] do 
+                "delivered" -> AppOrder.Status.delivered()
+                "paid" -> AppOrder.Status.paid()
+                _ -> AppOrder.Status.created()
+              end,
+      paid_at: paid_at_naive,
+      delivered_at: delivered_at_naive,
+      try_delivered_at: try_delivered_at_naive,
+      price: order[:price],
+      currency: app_currency,
+      goods_name: order[:goods_name],
+      goods_id: order[:goods_id],
+      paid_channel: order[:paid_channel],
+      debug_mode: order[:debug_mode] || false,
+      fee: order[:total_fee],
+      transaction_currency: order[:trade_currency],
+      transaction_id: order[:trade_no],
+      transaction_status: order[:trade_status],
+
+      app_id: order[:client_id],
+      user_id: order[:user_id]
+    }) |> Repo.insert(on_conflict: :nothing)
   end
 
 

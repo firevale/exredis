@@ -471,4 +471,12 @@ defmodule ImportFvacModel do
     end
   end
 
+  def import_all() do 
+    import_all_apps()
+    import_all_users()
+    import_all_devices()
+    import_all_app_users()
+    import_all_orders()
+  end
+
 end

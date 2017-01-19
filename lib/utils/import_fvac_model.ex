@@ -253,7 +253,7 @@ defmodule ImportFvacModel do
       sdk: order[:sdk],
       sdk_user_id: order[:sdk_user_id],
       cp_order_id: order[:cp_order_id],
-      zone_id: order[:zone_id],
+      zone_id: to_string(order[:zone_id]),
       market: order[:market],
       status: case order[:status] do 
                 "delivered" -> AppOrder.Status.delivered()

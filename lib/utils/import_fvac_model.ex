@@ -313,7 +313,7 @@ defmodule ImportFvacModel do
           IO.puts "all devices imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: devices}}} ->
           devices |> Enum.each(&(import_device(&1)))
-          # import_scroll_devices(res_scroll_id)
+          import_scroll_devices(res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"

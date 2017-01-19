@@ -13,6 +13,8 @@ defmodule ImportFvacModel do
   alias   Acs.UserSdkBinding 
   alias   Acs.AppOrder
 
+  alias   Acs.RedisApp
+
   import  Ecto
   import  Ecto.Query
 

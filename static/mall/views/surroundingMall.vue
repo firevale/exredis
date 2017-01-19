@@ -91,3 +91,6 @@
     }
   }
 </script>
+<style lang="scss">
+  @import "../scss/mall";
+</style>

@@ -104,6 +104,38 @@ defmodule Acs.PageController do
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 
+  def show_mall_page(%Plug.Conn{private: %{acs_browser: browser, 
+                                            acs_platform: platform}} = conn,
+             params) do
+    decoded_redirect_url = case params["redirect_url"] do 
+                              nil -> "/"
+                              "" -> "/"
+                              v -> v |> Base.url_decode64!
+                            end
+
+    locale = case conn.private[:acs_locale] do 
+               nil -> "zh-hans"
+               _ -> "zh-hans"
+             end
+
+    browser = case Mix.env do 
+                :dev -> 
+                  case params["browser"] do 
+                    nil -> browser 
+                    x -> x
+                  end
+                _ -> browser
+              end
+
+    conn |> put_layout(false) 
+         |> put_session(:locale, locale)
+         |> render("mall.html", redirect_url: decoded_redirect_url, 
+                                 browser: browser,
+                                 platform: platform,
+                                 locale: locale,
+                                 is_mobile_account_supported: @is_mobile_account_supported)
+  end
+
   # 兼容旧版本
   def show_payment_page(%Plug.Conn{private: %{acs_browser: browser, 
                                               acs_app: app,

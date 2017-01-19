@@ -91,6 +91,18 @@ var plugins = [
     }
   }),
 
+  new CommonsChunkPlugin({
+    name: "mall_commons",
+    filename: 'js/mall_commons.js',
+    chunks: ['mall'],
+    minChunks: function(module, count) {
+      return ( 
+        (module.resource &&
+          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
+      )
+    }
+  }),
+
   new ExtractTextPlugin('css/[name].css'),
 ]
 
@@ -100,6 +112,7 @@ module.exports = {
     forum: ['./forum'],
     admin: ['./admin'],
     payment: ['./payment'],
+    mall: ['./mall'],
   },
 
   output: {
@@ -114,6 +127,7 @@ module.exports = {
       login: path.join(__dirname, './login'),
       admin: path.join(__dirname, './admin'),
       forum: path.join(__dirname, './forum'),
+      mall: path.join(__dirname, './mall'),
     }
   },
 

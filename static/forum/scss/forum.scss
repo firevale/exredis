@@ -370,26 +370,7 @@ $fa-font-path: '~font-awesome/fonts/';
     margin-bottom: 2rem;
 }
 
-.product {
-    text-align: center;
-    margin-top: .4rem;
-    font-size: 1rem;
-    cursor: pointer;
-    .product-img {
-        border: 1px solid $text-grey;
-        width: 20rem;
-    }
-    .product-name {}
-    .product-price {
-        color: $link;
-    }
-}
 
-.goodsCountBtn {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin: .2rem 1rem;
-}
 
 .no-padding {
     padding: 0 !important;

@@ -14,6 +14,7 @@ defmodule ImportFvacModel do
   alias   Acs.AppOrder
 
   alias   Acs.RedisApp
+  alias   Acs.RedisUser
 
   import  Ecto
   import  Ecto.Query
@@ -228,6 +229,11 @@ defmodule ImportFvacModel do
                   end
                end
 
+    user_id = case RedisUser.find(String.to_integer(order.user_id)) do 
+                nil -> nil 
+                _ -> order.user_id
+              end
+
     AppOrder.changeset(%AppOrder{}, %{
       id: id,
       platform: order[:platform],
@@ -257,7 +263,7 @@ defmodule ImportFvacModel do
       transaction_status: order[:trade_status],
 
       app_id: order[:client_id],
-      user_id: order[:user_id]
+      user_id: user_id
     }) |> Repo.insert(on_conflict: :nothing)
   end
 

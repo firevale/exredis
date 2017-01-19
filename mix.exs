@@ -90,7 +90,6 @@ defmodule Acs.Mixfile do
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
      {:exrm, "~> 1.0"},
-     {:relx, "~> 3.22", override: true},
     ]
   end
 

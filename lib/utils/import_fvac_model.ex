@@ -231,7 +231,7 @@ defmodule ImportFvacModel do
                           x
                       end
                     :not_configured -> nil
-                    v -> v
+                    v -> v.id 
                   end
                end
 

@@ -275,7 +275,7 @@ defmodule ImportFvacModel do
       transaction_status: order[:trade_status],
       app_id: order[:client_id],
       user_id: user_id
-    }) |> Repo.insert(on_conflict: :nothing)
+    }) |> Repo.insert!(on_conflict: :nothing)
   end
 
 

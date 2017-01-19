@@ -96,10 +96,13 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .pagination{
-    li{
-        margin: 0 .1rem 0 .1rem;
-        float: left;
-    }    
+    ul {
+        margin: 0 auto;
+        li {
+            margin: 0 .1rem 0 .1rem;
+            float: left;
+        }
+    }
 }
 .pagination:after{
     content: '';

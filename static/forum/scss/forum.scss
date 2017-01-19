@@ -371,8 +371,6 @@ $fa-font-path: '~font-awesome/fonts/';
     margin-bottom: 2rem;
 }
 
-
-
 .no-padding {
     padding: 0 !important;
 }
@@ -810,13 +808,17 @@ $fa-font-path: '~font-awesome/fonts/';
     border: 1px solid $link;
 }
 
-.pagination{
-    li{
-        margin: 0 .1rem 0 .1rem;
-        float: left;
-    }    
+.pagination {
+    ul {
+        margin: 0 auto;
+        li {
+            margin: 0 .1rem 0 .1rem;
+            float: left;
+        }
+    }
 }
-.pagination:after{
+
+.pagination:after {
     content: '';
     display: block;
     clear: both;

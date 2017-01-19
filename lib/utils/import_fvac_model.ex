@@ -14,6 +14,7 @@ defmodule ImportFvacModel do
   alias   Acs.AppOrder
   alias   Acs.Device
   alias   Acs.AppDevice
+  alias   Acs.AppUser
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
@@ -438,14 +439,17 @@ defmodule ImportFvacModel do
                               NaiveDateTime.from_iso8601!(xx)
                             end
 
-      AppDevice.changeset(%AppDevice{}, %{
+      AppUser.changeset(%AppUser{}, %{
+        app_user_id: app_user_info[:app_user_id],
+        app_user_name: app_user_info[:app_user_name],
         pay_amount: app_user_info[:amount],
         last_active_at: last_active_at_naive,
         reg_date: reg_date,
         created_at: created_at_naive,
         last_paid_at: last_paid_at_naive,
         app_id: app_id, 
-        device_id: device_id
+        user_id: user_id,
+        zone_id: "1"
       }) |> Repo.insert!(on_conflict: :nothing)                       
     end
   end

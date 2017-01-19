@@ -283,6 +283,45 @@ defmodule ImportFvacModel do
     }) |> Repo.insert!(on_conflict: :nothing)
   end
 
+  def import_all_devices() do 
+    response = Httpc.post_json("http://10.10.134.58:9200/app_devices/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+      query: %{ match_all: %{} }
+    })
 
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: scroll_id}} ->
+          import_scroll_devices(scroll_id)
+        _ ->
+          IO.puts "create cursor failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "create scroll cursor failed..."
+    end
+  end
+
+  def import_scroll_devices(scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "all devices imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: devices}}} ->
+          devices |> Enum.each(&(import_device(&1)))
+          # import_scroll_devices(res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end
+  end
+
+  def import_device(what) do 
+    IO.inspect what, pretty: true
+  end
 
 end

@@ -155,14 +155,14 @@ defmodule ImportFvacModel do
   end
 
   def import_all_orders() do 
-    response = Httpc.post_json("http://10.10.134.58:9200/payment/orders/_search?search_type=scan&scroll=1m&size=50&pretty=true", %{
+    response = Httpc.post_json("http://10.10.134.58:9200/payment/orders/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
       query: %{ match_all: %{} }
     })
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: scroll_id}} ->
-          import_scroll_orders(scroll_id)
+          import_scroll_orders(1, scroll_id)
         _ ->
           IO.puts "create cursor failed: #{inspect response.body}"
       end
@@ -171,18 +171,19 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_scroll_orders(scroll_id) do 
+  def import_scroll_orders(n, scroll_id) do 
     response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
 
-    IO.puts "import orders...."
+    IO.puts "import orders....#{n}"
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all orders imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: orders}}} ->
           orders |> Enum.each(&(import_order(&1)))
-          import_scroll_orders(res_scroll_id)
+          import_scroll_orders(n+1, res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"

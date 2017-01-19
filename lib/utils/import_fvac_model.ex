@@ -244,6 +244,8 @@ defmodule ImportFvacModel do
                   end
               end
 
+    IO.puts "import order [#{id}]"
+
     AppOrder.changeset(%AppOrder{}, %{
       id: id,
       platform: order[:platform],

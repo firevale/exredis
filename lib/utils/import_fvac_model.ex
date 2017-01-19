@@ -369,7 +369,8 @@ defmodule ImportFvacModel do
         created_at: created_at_naive,
         last_paid_at: last_paid_at_naive,
         app_id: app_id, 
-        device_id: device_id
+        device_id: device_id,
+        zone_id: "0"
       }) |> Repo.insert!(on_conflict: :nothing)                       
     end
   end
@@ -420,7 +421,17 @@ defmodule ImportFvacModel do
             v -> v
           end
 
-    unless is_nil(app) do 
+    user_exists = case user_id do 
+                    "g" <> _ -> false
+                    "" -> false
+                    _ -> 
+                      case RedisUser.find(String.to_integer(user_id)) do 
+                        nil -> false 
+                        _ -> true
+                      end
+                  end
+
+    if !is_nil(app) and user_exists do 
       [created_at_iso8601 | _] = String.split(app_user_info[:reg_date], "+")
       created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)      
 
@@ -449,7 +460,7 @@ defmodule ImportFvacModel do
         last_paid_at: last_paid_at_naive,
         app_id: app_id, 
         user_id: user_id,
-        zone_id: "1"
+        zone_id: "0"
       }) |> Repo.insert!(on_conflict: :nothing)                       
     end
   end

@@ -6,7 +6,7 @@ defmodule Acs.AppUser do
     field :app_user_name, :string
     field :app_user_level, :integer, default: 1
 
-    field :zone_id, :string
+    field :zone_id, :string, default: "0"
 
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0

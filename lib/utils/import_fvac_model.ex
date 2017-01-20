@@ -17,6 +17,7 @@ defmodule ImportFvacModel do
   alias   Acs.Device
   alias   Acs.AppDevice
   alias   Acs.AppUser
+  alias   Acs.AppUserDailyActivity
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
@@ -538,7 +539,7 @@ defmodule ImportFvacModel do
           IO.puts "all app user activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
           array |> Enum.each(&(import_app_user_activity(&1)))
-          # import_scroll_app_users(res_scroll_id)
+          import_scroll_app_users(res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
@@ -548,8 +549,22 @@ defmodule ImportFvacModel do
     end  
   end
 
-  def import_app_user_activity(data) do 
-    IO.inspect data, pretty: true
+  def import_app_user_activity(%{_id: user_id, _type: app_id, _index: index, _source: %{
+    active_counter: active_counter
+  }}) do 
+    case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: "0") do 
+      nil ->
+        IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
+
+      %AppUser{} = app_user ->
+        ["app", "users", date] = String.split(index, "_", trim: true)
+        AppUser.changeset(app_user, %{active_seconds: app_user.active_seconds + 300*active_counter}) |> Repo.update!
+        AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+          active_seconds: 300*active_counter,
+          app_user_id: app_user.id,
+          date: date
+        }) |> Repo.insert!
+    end
   end
 
 

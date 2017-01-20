@@ -30,30 +30,32 @@ defmodule Acs.UserController do
                                          acs_platform: platform}} = conn, 
                    %{"account_id" => account_id, "password" => password}) do 
     d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}"
-    if RedisUser.exists?(account_id) do 
-      now = Utils.unix_timestamp
-      last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
+    case RedisUser.find(account_id) do 
+      nil ->
+        conn |> json(%{success: false, message: "account.error.accountNotExist"})
+      
+      %RedisUser{} ->
+        now = Utils.unix_timestamp
+        last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
 
-      failed_attempts = if now - last_failed_timestamp > 300 do 
-                          0 # cooldown time reached, clear failed_attempts counter
-                        else 
-                          get_session(conn, :failed_attempts) || 0
-                        end
+        failed_attempts = if now - last_failed_timestamp > 300 do 
+                            0 # cooldown time reached, clear failed_attempts counter
+                          else 
+                            get_session(conn, :failed_attempts) || 0
+                          end
 
-      if failed_attempts < 10 do 
-        case RedisUser.authenticate(account_id, password) do 
-          {:ok, user} ->
-            create_and_response_access_token(conn, user, app_id, device_id, platform)          
-          _ ->
-            conn |> put_session(:failed_attempts, failed_attempts + 1)
-                 |> put_session(:last_failed_timestamp, now)
-                 |> json(%{success: false, message: "account.error.passwordNotMatch"})
+        if failed_attempts < 10 do 
+          case RedisUser.authenticate(account_id, password) do 
+            {:ok, user} ->
+              create_and_response_access_token(conn, user, app_id, device_id, platform)          
+            _ ->
+              conn |> put_session(:failed_attempts, failed_attempts + 1)
+                  |> put_session(:last_failed_timestamp, now)
+                  |> json(%{success: false, message: "account.error.passwordNotMatch"})
+          end
+        else
+          conn |> json(%{success: false, message: "account.error.tooManyFails"})
         end
-      else
-        conn |> json(%{success: false, message: "account.error.tooManyFails"})
-      end
-    else 
-      conn |> json(%{success: false, message: "account.error.accountNotExist"})
     end  
   end
 

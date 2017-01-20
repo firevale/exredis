@@ -1,5 +1,7 @@
 defmodule ImportFvacModel do 
 
+  use     Timex
+
   require Redis
   require Utils
 
@@ -15,6 +17,8 @@ defmodule ImportFvacModel do
   alias   Acs.Device
   alias   Acs.AppDevice
   alias   Acs.AppUser
+  alias   Acs.AppUserDailyActivity
+  alias   Acs.AppDeviceDailyActivity
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
@@ -22,7 +26,7 @@ defmodule ImportFvacModel do
 
   import  Ecto
   import  Ecto.Query
-
+  alias   Ecto.Adapters.SQL
   alias   Acs.Repo
 
   def import_fvac_client(data) do 
@@ -91,14 +95,18 @@ defmodule ImportFvacModel do
     max_user_id = Redis.get("fvac.counter.uid") |> String.to_integer
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
-    IO.puts "import users from #{min_user_id + 1} to #{max_user_id}"
+    if max_user_id > min_user_id do 
+      IO.puts "import users from #{min_user_id + 1} to #{max_user_id}"
 
-    ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
-      if rem(user_id, 1000) == 0 do 
-        IO.puts "import user: #{user_id}"
-      end
-      import_user(user_id)
-    end)
+      ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
+        if rem(user_id, 1000) == 0 do 
+          IO.puts "import user: #{user_id}"
+        end
+        import_user(user_id)
+      end)
+    else 
+      IO.puts "no users to be imported"
+    end
   end
 
   def import_user(user_id) do 
@@ -154,13 +162,27 @@ defmodule ImportFvacModel do
 
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
+
+          {:error, %{errors: [device_id: error]}} ->
+            case Repo.get_by(User, device_id: device_id) do 
+              nil ->
+                IO.puts "user device #{inspect user, pretty: true} is existing, not imported"
+              %User{} = u ->
+                Repo.delete(u)
+                import_user(user_id)
+            end
+
         end
     end
   end
 
-  def import_all_orders() do 
+  def import_all_orders(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/payment/orders/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -178,13 +200,12 @@ defmodule ImportFvacModel do
   def import_scroll_orders(n, scroll_id) do 
     response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
 
-    IO.puts "import orders....#{n}"
-
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all orders imported"
+
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: orders}}} ->
           orders |> Enum.each(&(import_order(&1)))
           import_scroll_orders(n+1, res_scroll_id)
@@ -246,50 +267,62 @@ defmodule ImportFvacModel do
                 "g" <> _ -> nil
                 "" -> nil
                 _ -> 
-                  case RedisUser.find(String.to_integer(order.user_id)) do 
+                  case Repo.get(User, order.user_id) do 
                     nil -> nil 
                     _ -> order.user_id
                   end
               end
 
-    IO.puts "import order [#{id}], platform: #{order.platform}, sdk: #{order.sdk}"
+    unless is_nil(user_id) do 
+      app_user_id = case Repo.get_by(AppUser, app_id: order[:client_id], user_id: user_id, zone_id: "0") do 
+                     nil -> nil
+                     %{id: id} -> id
+                    end  
 
-    AppOrder.changeset(%AppOrder{}, %{
-      id: id,
-      platform: order[:platform],
-      device_id: order[:device_id],
-      sdk: order[:sdk],
-      sdk_user_id: order[:sdk_user_id],
-      cp_order_id: order[:cp_order_id],
-      zone_id: to_string(order[:zone_id]),
-      market: order[:market],
-      status: case order[:status] do 
-                "delivered" -> AppOrder.Status.delivered()
-                "paid" -> AppOrder.Status.paid()
-                _ -> AppOrder.Status.created()
-              end,
-      paid_at: paid_at_naive,
-      created_at: created_at_naive,
-      deliver_at: delivered_at_naive,
-      try_delivered_at: try_delivered_at_naive,
-      price: order[:price],
-      currency: app_currency,
-      goods_name: order[:goods_name],
-      goods_id: goods_id,
-      paid_channel: order[:paid_channel],
-      debug_mode: order[:debug_mode] || false,
-      fee: order[:total_fee],
-      transaction_currency: order[:trade_currency],
-      transaction_id: order[:trade_no],
-      transaction_status: order[:trade_status],
-      app_id: order[:client_id],
-      user_id: user_id
-    }) |> Repo.insert!(on_conflict: :nothing)
+      AppOrder.changeset(%AppOrder{}, %{
+        id: id,
+        platform: order[:platform],
+        device_id: order[:device_id],
+        sdk: order[:sdk],
+        sdk_user_id: order[:sdk_user_id],
+        cp_order_id: order[:cp_order_id],
+        zone_id: to_string(order[:zone_id]),
+        market: order[:market],
+        status: case order[:status] do 
+                  "delivered" -> AppOrder.Status.delivered()
+                  "paid" -> AppOrder.Status.paid()
+                  _ -> AppOrder.Status.created()
+                end,
+        paid_at: paid_at_naive,
+        created_at: created_at_naive,
+        deliver_at: delivered_at_naive,
+        try_delivered_at: try_delivered_at_naive,
+        price: order[:price],
+        currency: app_currency,
+        goods_name: order[:goods_name],
+        goods_id: goods_id,
+        paid_channel: order[:paid_channel],
+        debug_mode: order[:debug_mode] || false,
+        fee: order[:total_fee],
+        transaction_currency: order[:trade_currency],
+        transaction_id: order[:trade_no],
+        transaction_status: order[:trade_status],
+        app_id: order[:client_id],
+        user_id: user_id,
+        app_user_id: app_user_id,
+      }) |> Repo.insert!(on_conflict: :nothing)
+    else 
+      IO.puts "invalid user id, order not import: \n#{inspect order, pretty: true}"
+    end
   end
 
-  def import_all_devices() do 
+  def import_all_devices(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/app_devices/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -369,14 +402,19 @@ defmodule ImportFvacModel do
         created_at: created_at_naive,
         last_paid_at: last_paid_at_naive,
         app_id: app_id, 
-        device_id: device_id
+        device_id: device_id,
+        zone_id: "0"
       }) |> Repo.insert!(on_conflict: :nothing)                       
     end
   end
 
-  def import_all_app_users() do 
+  def import_all_app_users(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/app_users/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -398,10 +436,10 @@ defmodule ImportFvacModel do
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
-          IO.puts "all devices imported"
+          IO.puts "all app users imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: app_users}}} ->
           app_users |> Enum.each(&(import_app_user(&1)))
-          # import_scroll_app_users(res_scroll_id)
+          import_scroll_app_users(res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
@@ -420,7 +458,17 @@ defmodule ImportFvacModel do
             v -> v
           end
 
-    unless is_nil(app) do 
+    user_exists = case user_id do 
+                    "g" <> _ -> false
+                    "" -> false
+                    _ -> 
+                      case Repo.get(User, user_id) do 
+                        nil -> false 
+                        _ -> true
+                      end
+                  end
+
+    if !is_nil(app) and user_exists do 
       [created_at_iso8601 | _] = String.split(app_user_info[:reg_date], "+")
       created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)      
 
@@ -449,9 +497,202 @@ defmodule ImportFvacModel do
         last_paid_at: last_paid_at_naive,
         app_id: app_id, 
         user_id: user_id,
-        zone_id: "1"
+        zone_id: "0"
       }) |> Repo.insert!(on_conflict: :nothing)                       
     end
+  end
+
+  def import_all_app_user_activities(from \\ ~D[2015-01-01]) do 
+    days = Timex.diff(Timex.today(), from, :days)
+
+    SQL.query(Repo, "update app_users set active_seconds = 0")
+
+    (0 .. days) |> Enum.each(fn(duration) ->
+      date = Timex.add(from, Duration.from_days(duration)) |> Timex.format!("{YYYY}-{0M}-{0D}")
+      response = Httpc.head("http://10.10.134.58:9200/app_users_#{date}")
+
+      if Httpc.success?(response) do 
+        response = Httpc.post_json("http://10.10.134.58:9200/app_users_#{date}/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+          query: %{match_all: %{}}
+        })        
+
+        if Httpc.success?(response) do 
+          case JSON.decode(response.body, keys: :atoms) do 
+            {:ok, %{ _scroll_id: scroll_id}} ->
+              import_scroll_app_user_activities(date, scroll_id)
+            _ ->
+              IO.puts "create cursor failed: #{inspect response.body}"
+          end
+        else 
+          IO.puts "create scroll cursor failed..."
+        end
+      else
+        IO.puts "index[app_users_#{date}] not exists"
+      end
+    end)
+  end
+
+  def import_scroll_app_user_activities(date, scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "#{date} all app user activities imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
+          array |> Enum.each(&(import_app_user_activity(&1)))
+          import_scroll_app_user_activities(date, res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end  
+  end
+
+  def import_app_user_activity(%{_id: user_id, _type: app_id, _index: index, _source: %{
+    active_counter: active_counter,
+    reg_date: reg_date
+  }} = data) do 
+    case user_id do 
+      "g" <> _ -> :ok
+      _ ->
+        case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: "0") do 
+          nil ->
+            case Repo.get(User, user_id) do  
+              nil ->
+                IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
+              
+              _ ->
+                [created_at_iso8601 | _] = String.split(reg_date, ".")
+                created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)  
+                AppUser.changeset(%AppUser{}, %{
+                  app_id: app_id,
+                  user_id: user_id,
+                  app_user_id: user_id,
+                  app_user_name: "未命名",
+                  zone_id: "0",
+                  created_at: created_at_naive,
+                }) |> Repo.insert!   
+                import_app_user_activity(data)
+            end
+
+          %AppUser{} = app_user ->
+            ["app", "users", date] = String.split(index, "_", trim: true)
+            AppUser.changeset(app_user, %{active_seconds: app_user.active_seconds + 300*active_counter}) |> Repo.update!
+            AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+              active_seconds: 300*active_counter,
+              app_user_id: app_user.id,
+              date: date
+            }) |> Repo.insert!
+        end
+    end
+  end
+
+  def import_all_app_device_activities(from \\ ~D[2015-01-01]) do 
+    days = Timex.diff(Timex.today(), from, :days)
+
+    SQL.query(Repo, "update app_devices set active_seconds = 0")
+
+    (0 .. days) |> Enum.each(fn(duration) ->
+      date = Timex.add(from, Duration.from_days(duration)) |> Timex.format!("{YYYY}-{0M}-{0D}")
+      response = Httpc.head("http://10.10.134.58:9200/app_devices_#{date}")
+
+      if Httpc.success?(response) do 
+        response = Httpc.post_json("http://10.10.134.58:9200/app_devices_#{date}/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+          query: %{match_all: %{}}
+        })        
+
+        if Httpc.success?(response) do 
+          case JSON.decode(response.body, keys: :atoms) do 
+            {:ok, %{ _scroll_id: scroll_id}} ->
+              import_scroll_app_device_activities(date, scroll_id)
+            _ ->
+              IO.puts "create cursor failed: #{inspect response.body}"
+          end
+        else 
+          IO.puts "create scroll cursor failed..."
+        end
+      else
+        IO.puts "index[app_devices_#{date}] not exists"
+      end
+    end)
+  end
+
+  def import_scroll_app_device_activities(date, scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "#{date} all app device activities imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
+          array |> Enum.each(&(import_app_device_activity(&1)))
+          import_scroll_app_device_activities(date, res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end  
+  end
+
+  def import_app_device_activity(%{_id: device_id, _type: app_id, _index: index, _source: %{
+    active_counter: active_counter,
+    reg_date: reg_date
+  }} = data) do 
+    case Repo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: "0") do 
+      nil ->
+        case Repo.get(Device, device_id) do  
+          nil ->
+            IO.puts "app device not found for app_id: #{app_id}, device_id: #{device_id}"
+          
+          _ ->
+            [created_at_iso8601 | _] = String.split(reg_date, ".")
+            created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)  
+            AppDevice.changeset(%AppDevice{}, %{
+              app_id: app_id,
+              device_id: device_id,
+              zone_id: "0",
+              created_at: created_at_naive,
+            }) |> Repo.insert!   
+            import_app_device_activity(data)
+        end
+
+      %AppDevice{} = app_device ->
+        ["app", "devices", date] = String.split(index, "_", trim: true)
+        AppDevice.changeset(app_device, %{active_seconds: app_device.active_seconds + 300*active_counter}) |> Repo.update!
+        AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
+          active_seconds: 300*active_counter,
+          app_device_id: app_device.id,
+          date: date
+        }) |> Repo.insert!
+    end
+  end
+
+  def import_all() do 
+    from_date = "2010-01-01 00:00:00"
+    import_all_apps()
+    import_all_users()
+    import_all_devices(from_date)
+    import_all_app_users(from_date)
+    import_all_orders(from_date)
+    import_all_app_user_activities()
+    import_all_app_device_activities()
+  end
+
+  def import_latest() do 
+    from_date = "2017-01-18 00:00:00"
+    import_all_users()
+    import_all_devices(from_date)
+    import_all_app_users(from_date)
+    import_all_orders(from_date)
+    import_all_app_user_activities(~D[2017-01-18])
+    import_all_app_device_activities(~D[2017-01-18])
   end
 
 end

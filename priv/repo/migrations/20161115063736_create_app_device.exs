@@ -9,7 +9,7 @@ defmodule Acs.Repo.Migrations.CreateAppDevice do
       add :last_active_at, :naive_datetime
       add :created_at, :naive_datetime
       add :reg_date, :date # add this field for daily report calculation
-      add :zone_id, :string, default: "1"
+      add :zone_id, :string, default: "0"
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)
       add :device_id, references(:devices, type: :string, on_delete: :delete_all)

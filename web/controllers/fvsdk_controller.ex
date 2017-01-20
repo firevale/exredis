@@ -1,5 +1,6 @@
 defmodule Acs.FVSdkController do
   use     Acs.Web, :controller
+  use     Timex
 
   plug :fetch_app_id
   plug :fetch_app
@@ -50,8 +51,7 @@ defmodule Acs.FVSdkController do
                        "osver" => os,
                        "channel" => sdk,
                        "zone_id" => zone_id} = params) do 
-    {date, _} = :calendar.local_time
-    today = date |> Date.from_erl!
+    today = Timex.today 
 
     # oops, counter params only exists in android fvsdk
     active_seconds = String.to_integer(params["counter"] || "1") * 300
@@ -95,6 +95,7 @@ defmodule Acs.FVSdkController do
     case Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do 
       nil ->
         AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_user.id}) |> Repo.insert!
+        
       %AppDeviceDailyActivity{} = adda ->
         AppDeviceDailyActivity.changeset(adda, %{active_seconds: adda.active_seconds + active_seconds}) |> Repo.update!
     end

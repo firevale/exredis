@@ -34,7 +34,6 @@ defmodule Acs.Web do
       use     Phoenix.Controller
       use     LogAlias
 
-      alias   Acs.Repo
       import  Ecto
       import  Ecto.Query
 
@@ -51,6 +50,7 @@ defmodule Acs.Web do
       alias   Utils.JSON
       alias   Utils.Httpc
 
+      alias  Acs.Repo
       alias  Acs.RedisApp
       alias  Acs.RedisAppOrder
       alias  Acs.RedisUser

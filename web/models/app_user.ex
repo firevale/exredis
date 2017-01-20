@@ -6,7 +6,7 @@ defmodule Acs.AppUser do
     field :app_user_name, :string
     field :app_user_level, :integer, default: 1
 
-    field :zone_id, :string
+    field :zone_id, :string, default: "0"
 
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
@@ -29,5 +29,7 @@ defmodule Acs.AppUser do
     |> cast(params, [:app_user_id, :app_user_name, :zone_id, :app_user_level, :active_seconds, :pay_amount, :reg_date, :created_at, :last_paid_at, :last_active_at, :app_id, :user_id])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
+    |> foreign_key_constraint(:app_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

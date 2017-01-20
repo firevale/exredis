@@ -34,6 +34,10 @@ defmodule Acs.User do
     |> validate_required([:id])
     # |> validate_format(:email, @email_check_regex)
     # |> validate_format(:mobile, ~r/^\d+/)
+    |> unique_constraint(:mobile)
+    |> unique_constraint(:email)
+    |> unique_constraint(:device_id)
+
   end
 
 

@@ -154,6 +154,16 @@ defmodule ImportFvacModel do
 
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
+
+          {:error, %{errors: [device_id: error]}} ->
+            case Repo.get_by(User, device_id: device_id) do 
+              nil ->
+                IO.puts "user device #{inspect user, pretty: true} is existing, not imported"
+              %User{} = u ->
+                Repo.delete(u)
+                import_user(user_id)
+            end
+
         end
     end
   end

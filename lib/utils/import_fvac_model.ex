@@ -1,5 +1,7 @@
 defmodule ImportFvacModel do 
 
+  use     Timex
+
   require Redis
   require Utils
 
@@ -498,19 +500,74 @@ defmodule ImportFvacModel do
     end
   end
 
+  def import_all_app_user_activities() do 
+    from = ~D[2015-01-01]
+    days = Timex.diff(Timex.today(), from, :days)
+    (0 .. days) |> Enum.each(fn(duration) ->
+      date = Timex.add(from, Duration.from_days(duration)) |> Timex.format!("{YYYY}-{0M}-{0D}")
+      response = Httpc.head("http://10.10.134.58:9200/app_users_#{date}")
+
+      if Httpc.success?(response) do 
+        response = Httpc.post_json("http://10.10.134.58:9200/app_users_#{date}/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+          query: %{match_all: %{}}
+        })        
+
+        if Httpc.success?(response) do 
+          case JSON.decode(response.body, keys: :atoms) do 
+            {:ok, %{ _scroll_id: scroll_id}} ->
+              import_scroll_app_user_activities(scroll_id)
+            _ ->
+              IO.puts "create cursor failed: #{inspect response.body}"
+          end
+        else 
+          IO.puts "create scroll cursor failed..."
+        end
+      else
+        IO.puts "index[app_users_#{date}] not exists"
+      end
+    end)
+  end
+
+  def import_scroll_app_user_activities(scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "all app user activities imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
+          array |> Enum.each(&(import_app_user_activity(&1)))
+          # import_scroll_app_users(res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end  
+  end
+
+  def import_app_user_activity(data) do 
+    IO.inspect data, pretty: true
+  end
+
+
   def import_all() do 
+    from_date = "2010-01-01 00:00:00"
     import_all_apps()
     import_all_users()
-    import_all_devices("2010-01-01 00:00:00")
-    import_all_app_users("2010-01-01 00:00:00")
-    import_all_orders("2010-01-01 00:00:00")
+    import_all_devices(from_date)
+    import_all_app_users(from_date)
+    import_all_orders(from_date)
   end
 
   def import_latest() do 
+    from_date = "2017-01-18 00:00:00"
     import_all_users()
-    import_all_devices("2017-01-18 00:00:00")
-    import_all_app_users("2017-01-18 00:00:00")
-    import_all_orders("2017-01-18 00:00:00")
+    import_all_devices(from_date)
+    import_all_app_users(from_date)
+    import_all_orders(from_date)
   end
 
 end

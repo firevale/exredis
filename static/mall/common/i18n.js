@@ -100,6 +100,11 @@ export default {
         postage: '邮费',
         back: '返回',
         mine: '我的',
+      },
+      mine:{
+        title: '我的',
+        myOrder: '我的订单',
+        myAddress: '我的地址',
       }
     },
   }

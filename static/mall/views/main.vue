@@ -1,13 +1,13 @@
 <template>
   <div class="is-ancestor is-parent is-vertical">
     <div class="is-child content-item row-menu">
-      <div @click="goBack">
+      <div @click="goBack" class="pointer">
         {{ $t('forum.surroundingMall.back') }}
       </div>
       <div style="flex: 1;text-align: center;">
         {{ detailItem? $t('forum.surroundingMall.productDetail'): $t('forum.surroundingMall.title') }}
       </div>
-      <div @click="goMine">
+      <div @click="goMine" class="pointer">
         {{ $t('forum.surroundingMall.mine') }}
       </div>
     </div>
@@ -24,6 +24,9 @@
         </span>
       </div>
     </div>
+    <div class="column is-full" v-show="goodsPageCount > 1">
+      <pagination ref="pag" :page-count="goodsPageCount" :current-page="goodsCurrentPage"></pagination>
+    </div>
     <product-detail v-show="detailItem" :product-detail="detailItem? detailItem: {}"></product-detail>
   </div>
 </template>
@@ -33,8 +36,11 @@
   export default {
     data() {
       return {
+        goodsPageCount: 5,
+        goodsCurrentPage: 1,
         detailItem: null,
         products: [{
+            ID: 'TX001',
             url: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1561953326,95871027&fm=23&gp=0.jpg',
             name: '经典黑色T恤',
             price: '120.00',
@@ -42,6 +48,7 @@
             stock: 0,
           },
           {
+            ID: 'TX002',
             url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2851737279,1311002239&fm=23&gp=0.jpg',
             name: '经典白色T恤',
             price: '120.00',
@@ -49,6 +56,7 @@
             stock: 122,
           },
           {
+            ID: 'TX003',
             url: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1561953326,95871027&fm=23&gp=0.jpg',
             name: '经典黑色T恤',
             price: '120.00',
@@ -56,6 +64,7 @@
             stock: 1190,
           },
           {
+            ID: 'TX004',
             url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2851737279,1311002239&fm=23&gp=0.jpg',
             name: '经典白色T恤',
             price: '120.00',
@@ -82,7 +91,7 @@
       },
 
       goMine() {
-
+        this.$router.push({name: 'mine'})
       }
     },
 

@@ -1,17 +1,17 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
+  <div class="is-ancestor is-parent is-vertical">
     <div class="is-child fixed-top rowLine">
-      <div style="text-align: left;">
+      <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="rowLine top-title" style="font-weight: bold;">
         {{ $t('forum.detail.title') }}
       </div>
-      <input type="button" style="margin: 1rem .5rem;" class="reply-btn main-menu" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
+      <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
     </div>
-    <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll">
-      <note-item-detail v-for="item in detailList" :item-data="item"></note-item-detail>
-      <div v-if="detailList&&detailList.length" class="column is-full" v-show="searchPageCount > 1">
+    <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
+      <note-item-detail v-for="item,index in detailList" :item-data="item" :item-index="index"></note-item-detail>
+      <div v-if="detailList&&detailList.length" class="column is-full" style="padding-right: 0;padding-left: 0;" v-show="searchPageCount > 1">
         <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
       </div>
     </div>
@@ -49,7 +49,7 @@
         detailList: [{
             level: 'LV1. 烟雨游友',
             rank: '楼主',
-            portrait: 'http://img0.imgtn.bdimg.com/it/u=968493712,3702984510&fm=23&gp=0.jpg',
+            portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             collection: true,
             title: '[游戏攻略] 游戏攻略-奶妈培养推荐-蝴蝶精分析-御魂攻略',
             time: '2016-10-10 17:56:16',
@@ -66,17 +66,27 @@
           {
             level: 'LV3. 妙语书生',
             rank: '沙发',
+            portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             title: '',
             time: '2016-10-10 18:56:26',
             author: '火谷测试',
-            img: [{
-              src: 'http://img2.imgtn.bdimg.com/it/u=1739151439,314609329&fm=21&gp=0.jpg'
-            }, ],
+            img: [],
             description: '谢谢楼主分享',
           },
           {
             level: 'LV2. 杏坛小葩',
             rank: '板凳',
+            portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
+            title: '',
+            time: '2016-10-10 19:36:46',
+            author: '火谷测试',
+            img: [],
+            description: '抢沙发',
+          },
+          {
+            level: 'LV4. 听雨闲人',
+            rank: '4楼',
+            portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             title: '',
             time: '2016-10-10 19:36:46',
             author: '火谷测试',

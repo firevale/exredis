@@ -519,7 +519,7 @@ defmodule ImportFvacModel do
         if Httpc.success?(response) do 
           case JSON.decode(response.body, keys: :atoms) do 
             {:ok, %{ _scroll_id: scroll_id}} ->
-              import_scroll_app_user_activities(scroll_id)
+              import_scroll_app_user_activities(date, scroll_id)
             _ ->
               IO.puts "create cursor failed: #{inspect response.body}"
           end
@@ -532,17 +532,17 @@ defmodule ImportFvacModel do
     end)
   end
 
-  def import_scroll_app_user_activities(scroll_id) do 
+  def import_scroll_app_user_activities(date, scroll_id) do 
     response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
-          IO.puts "all app user activities imported"
+          IO.puts "#{date} all app user activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
           array |> Enum.each(&(import_app_user_activity(&1)))
-          import_scroll_app_user_activities(res_scroll_id)
+          import_scroll_app_user_activities(date, res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
@@ -553,14 +553,29 @@ defmodule ImportFvacModel do
   end
 
   def import_app_user_activity(%{_id: user_id, _type: app_id, _index: index, _source: %{
-    active_counter: active_counter
-  }}) do 
+    active_counter: active_counter,
+    reg_date: reg_date
+  }} = data) do 
     case user_id do 
       "g" <> _ -> :ok
       _ ->
         case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: "0") do 
           nil ->
-            IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
+            case Repo.get(User, user_id) do  
+              nil ->
+                IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
+              
+              _ ->
+                [created_at_iso8601 | _] = String.split(reg_date, ".")
+                created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)  
+                AppUser.changeset(%AppUser{}, %{
+                  app_id: app_id,
+                  user_id: user_id,
+                  zone_id: "0",
+                  created_at: created_at_naive,
+                }) |> Repo.insert!   
+                import_app_user_activity(data)
+            end
 
           %AppUser{} = app_user ->
             ["app", "users", date] = String.split(index, "_", trim: true)

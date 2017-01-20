@@ -494,9 +494,9 @@ defmodule ImportFvacModel do
 
   def import_latest() do 
     import_all_users()
-    import_all_users("2017-01-18 00:00:00")
-    import_all_devices("2010-01-18 00:00:00")
-    import_all_app_users("2010-01-18 00:00:00")
+    import_all_devices("2017-01-18 00:00:00")
+    import_all_app_users("2017-01-18 00:00:00")
+    import_all_orders("2017-01-18 00:00:00")
   end
 
 end

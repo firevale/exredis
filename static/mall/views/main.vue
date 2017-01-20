@@ -1,13 +1,13 @@
 <template>
   <div class="is-ancestor is-parent is-vertical">
     <div class="is-child content-item row-menu">
-      <div @click="goBack">
+      <div @click="goBack" class="pointer">
         {{ $t('forum.surroundingMall.back') }}
       </div>
       <div style="flex: 1;text-align: center;">
         {{ detailItem? $t('forum.surroundingMall.productDetail'): $t('forum.surroundingMall.title') }}
       </div>
-      <div @click="goMine">
+      <div @click="goMine" class="pointer">
         {{ $t('forum.surroundingMall.mine') }}
       </div>
     </div>
@@ -24,6 +24,9 @@
         </span>
       </div>
     </div>
+    <div class="column is-full" v-show="goodsPageCount > 1">
+      <pagination ref="pag" :page-count="goodsPageCount" :current-page="goodsCurrentPage"></pagination>
+    </div>
     <product-detail v-show="detailItem" :product-detail="detailItem? detailItem: {}"></product-detail>
   </div>
 </template>
@@ -33,6 +36,8 @@
   export default {
     data() {
       return {
+        goodsPageCount: 5,
+        goodsCurrentPage: 1,
         detailItem: null,
         products: [{
             ID: 'TX001',
@@ -86,7 +91,7 @@
       },
 
       goMine() {
-
+        this.$router.push({name: 'mine'})
       }
     },
 

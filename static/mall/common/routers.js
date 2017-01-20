@@ -8,6 +8,10 @@ export default function (VueRouter) {
       name: 'mall',
       component: require('../views/main.vue'),
     }, {
+      path: '/mall/mine',
+      name: 'mine',
+      component: require('../views/mine.vue'),
+    }, {
       path: '*',
       redirect: '/'
     }]

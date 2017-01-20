@@ -6,7 +6,7 @@
         <article class="media">
           <div class="media-content">
             <div class="content is-warning">
-              <p style="text-align: center;font-size: 1.3rem;"> {{ message }}? </p>
+              <p style="text-align: center;font-size: 1rem;"> {{ message }}? </p>
             </div>
           </div>
         </article>

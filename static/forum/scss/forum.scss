@@ -11,6 +11,12 @@ $fa-font-path: '~font-awesome/fonts/';
     overflow: auto;
 }
 
+.arrow-back{
+    position: absolute;
+    left: 3rem;
+    z-index: 3;
+}
+
 .rowLine {
     display: flex;
     flex-direction: row;
@@ -68,10 +74,10 @@ $fa-font-path: '~font-awesome/fonts/';
     cursor: pointer;
     position: fixed;
     bottom: 3rem;
-    right: 1.5rem;
+    right: 3rem;
     background: #ffffff;
     display: flex;
-    font-size: .6rem;
+    font-size: .5rem;
     border-radius: .3rem;
     flex-direction: column;
     color: $dark;
@@ -89,16 +95,20 @@ $fa-font-path: '~font-awesome/fonts/';
 .dark {
     color: $dark;
 }
-
+.dark-bottom{
+    border-bottom: 1px solid $text-grey;
+}
 .olive {
     color: $olive;
 }
 
 .reply-btn {
+    position: absolute;
+    top: 1rem;
+    right: 2.5rem;
     color: $white;
     font-size: 1rem;
     height: 2rem;
-    margin-top: .5rem;
     padding: .2rem 2rem;
     background: $primary;
 }
@@ -108,11 +118,12 @@ $fa-font-path: '~font-awesome/fonts/';
     top: 0;
     left: 0;
     padding: .5rem;
+    padding-top: 1rem;
     height: 4rem;
     width: 100%;
     z-index: 3;
     background: $white;
-    border-bottom: 1px solid $dark;
+    border-bottom: 1px solid $text-grey;
 }
 
 .scroll-box {
@@ -202,6 +213,7 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .main-menu {
+    margin-right: .5rem;
     position: absolute;
     right: 0;
     top: 0;
@@ -219,6 +231,7 @@ $fa-font-path: '~font-awesome/fonts/';
 @media only screen and (max-width: 768px) {
     .main-menu {
         position: absolute;
+        margin-right: 1.5rem;
         right: 0;
         top: 0;
         font-size: .6rem;
@@ -230,6 +243,16 @@ $fa-font-path: '~font-awesome/fonts/';
             margin-top: .2rem;
             padding: .1rem .5rem;
         }
+    }
+    .backTop {
+        right: 1rem;
+    }
+    .arrow-back {
+        left: 2rem;
+    }
+    .reply-btn{
+        top: .5rem;
+        right: 1rem;
     }
 }
 
@@ -389,6 +412,7 @@ $fa-font-path: '~font-awesome/fonts/';
     padding: .2rem;
     cursor: pointer;
     color: $white;
+    font-size: .6rem;
     background-color: $link;
 }
 

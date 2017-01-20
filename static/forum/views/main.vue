@@ -1,7 +1,7 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child content-item rowLine">
-      <div class="arrow-back">
+      <div class="arrow-back" style="left: 1rem;">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true"></i>
       </div>
       <div class="rowLine top-title">
@@ -37,143 +37,167 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import noteItem from '../components/noteItem.vue'
-import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
-export default {
-  components: {
-    noteItem,  
-    pagination,  
-  },
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
+  import noteItem from '../components/noteItem.vue'
+  import menuModal from '../components/menuModal'
+  import pagination from '../components/pagination.vue'
+  export default {
+    components: {
+      noteItem,
+      pagination,
+    },
 
-  mounted: function(){
-    this.$refs.pag.$on('switch-page', this.refreshPage)
-  },
+    mounted: function () {
+      this.$refs.pag.$on('switch-page', this.refreshPage)
+    },
 
-  watch: {
-    'noteLoadType' (newVal, oldVal){
-      this.refreshPage()
-    }
-  },
+    watch: {
+      'noteLoadType' (newVal, oldVal) {
+        this.refreshPage()
+      }
+    },
 
-  computed: {
-    ...mapGetters(['noteLoadType','noteLoadUrl','noteOrderType','noteOrderTypeStr','notePageCount','noteCurrentPage']),
-  },
+    computed: {
+      ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr', 'notePageCount',
+        'noteCurrentPage'
+      ]),
+    },
 
-  data(){
-    return {
-      noteList:[
-        {
+    data() {
+      return {
+        noteList: [{
             noteId: '',
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              ],
+            headerTag: [{
+              name: '置顶',
+              bgColor: '#f00',
+              color: '#fff'
+            }, ],
             title: '【游戏攻略】新手练级指南',
             hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
+            tailTag: [{
+                name: '精',
+                bgColor: '#ff0',
+                color: '#fff',
+                isTag: true
+              },
+              {
+                name: 'HOT',
+                bgColor: '#f00',
+                color: '#fff'
+              },
             ],
             author: '火谷测试',
             time: '2分钟前',
             noteCount: '2/11',
-        },
-        {
+          },
+          {
             noteId: '',
-            headerTag:[
-              
+            headerTag: [
+
             ],
             title: '【问题求助】游戏一只闪退肿么破？？',
             hasPicture: false,
-            tailTag:[
-            
+            tailTag: [
+
             ],
             author: '游客',
             time: '1小时前',
             noteCount: '0/0',
-        },
-        {
+          },
+          {
             noteId: '',
-            headerTag:[
-              
+            headerTag: [
+
             ],
             title: '【BUG反馈】副本闪退',
             hasPicture: true,
-            tailTag:[
-              {name: 'HOT', bgColor: '#f00', color: '#fff'},
-            ],
+            tailTag: [{
+              name: 'HOT',
+              bgColor: '#f00',
+              color: '#fff'
+            }, ],
             author: '火谷测试',
             time: '一天前',
             noteCount: '2/11',
-        },
-        {
+          },
+          {
             noteId: '',
-            headerTag:[
-              {name: '置顶', bgColor: '#f00', color: '#fff'},
-              ],
+            headerTag: [{
+              name: '置顶',
+              bgColor: '#f00',
+              color: '#fff'
+            }, ],
             title: '【玩家原创】新手练级指南',
             hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-            ],
+            tailTag: [{
+              name: '精',
+              bgColor: '#ff0',
+              color: '#fff',
+              isTag: true
+            }, ],
             author: '火谷测试',
             time: '2016-11-1 21:06',
             noteCount: '22/133',
-        },
-        {
+          },
+          {
             noteId: '',
-            headerTag:[
-              
-              ],
+            headerTag: [
+
+            ],
             title: '【玩家原创】新手练级指南',
             hasPicture: true,
-            tailTag:[
-              {name: '精', bgColor: '#ff0', color: '#fff', isTag: true},
-            ],
+            tailTag: [{
+              name: '精',
+              bgColor: '#ff0',
+              color: '#fff',
+              isTag: true
+            }, ],
             author: '火谷测试',
             time: '2016-10-11 14:06',
             noteCount: '22/433',
-        },
-      ]
-    }
-  },
-
-  methods: {
-    ...mapActions(['setNoteLoadType','setNoteOrderType','setNotePageCount','setNoteCurrentPage']),
-
-    orderChoose(){
-      menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
+          },
+        ]
+      }
     },
 
-    onOrderTypeChoose(type){
-      this.setNoteOrderType(type)
-      this.refreshPage()
-    },
+    methods: {
+      ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage']),
 
-    refreshPage(page = 1){
-      this.$http({
-        method: 'post',
-        url: this.noteLoadUrl,
-        params: {
-          page: page,
-          order: this.noteOrderType,
-        }
-      }).then(response => {
-        //this.noteList = response.json()
-        //this.setNotePageCount(this.noteList.length)
-        //this.setNoteCurrentPage(page)
-      }).then(result => {
-        if (result.success) {
-          this.setNoteCurrentPage(page);
-        } else {
-          
-        }
-      })
-    },
+      orderChoose() {
+        menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
+      },
 
-  },
-}
+      onOrderTypeChoose(type) {
+        this.setNoteOrderType(type)
+        this.refreshPage()
+      },
+
+      refreshPage(page = 1) {
+        this.$http({
+          method: 'post',
+          url: this.noteLoadUrl,
+          params: {
+            page: page,
+            order: this.noteOrderType,
+          }
+        }).then(response => {
+          //this.noteList = response.json()
+          //this.setNotePageCount(this.noteList.length)
+          //this.setNoteCurrentPage(page)
+        }).then(result => {
+          if (result.success) {
+            this.setNoteCurrentPage(page);
+          } else {
+
+          }
+        })
+      },
+
+    },
+  }
 </script>
 <style lang="scss">
   @import "../scss/forum";

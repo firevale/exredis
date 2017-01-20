@@ -25,7 +25,7 @@ defmodule ImportFvacModel do
 
   import  Ecto
   import  Ecto.Query
-
+  alias   Ecto.Adapters.SQL
   alias   Acs.Repo
 
   def import_fvac_client(data) do 
@@ -504,6 +504,9 @@ defmodule ImportFvacModel do
   def import_all_app_user_activities() do 
     from = ~D[2015-01-01]
     days = Timex.diff(Timex.today(), from, :days)
+
+    SQL.query(Repo, "update app_users set active_seconds = 0")
+
     (0 .. days) |> Enum.each(fn(duration) ->
       date = Timex.add(from, Duration.from_days(duration)) |> Timex.format!("{YYYY}-{0M}-{0D}")
       response = Httpc.head("http://10.10.134.58:9200/app_users_#{date}")
@@ -552,18 +555,22 @@ defmodule ImportFvacModel do
   def import_app_user_activity(%{_id: user_id, _type: app_id, _index: index, _source: %{
     active_counter: active_counter
   }}) do 
-    case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: "0") do 
-      nil ->
-        IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
+    case user_id do 
+      "g" <> _ -> :ok
+      _ ->
+        case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: "0") do 
+          nil ->
+            IO.puts "app user not found for app_id: #{app_id}, user_id: #{user_id}"
 
-      %AppUser{} = app_user ->
-        ["app", "users", date] = String.split(index, "_", trim: true)
-        AppUser.changeset(app_user, %{active_seconds: app_user.active_seconds + 300*active_counter}) |> Repo.update!
-        AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
-          active_seconds: 300*active_counter,
-          app_user_id: app_user.id,
-          date: date
-        }) |> Repo.insert!
+          %AppUser{} = app_user ->
+            ["app", "users", date] = String.split(index, "_", trim: true)
+            AppUser.changeset(app_user, %{active_seconds: app_user.active_seconds + 300*active_counter}) |> Repo.update!
+            AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+              active_seconds: 300*active_counter,
+              app_user_id: app_user.id,
+              date: date
+            }) |> Repo.insert!
+        end
     end
   end
 

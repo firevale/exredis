@@ -454,7 +454,7 @@ defmodule ImportFvacModel do
                     "g" <> _ -> false
                     "" -> false
                     _ -> 
-                      case RedisUser.find(String.to_integer(user_id)) do 
+                      case Repo.get(User, user_id) do 
                         nil -> false 
                         _ -> true
                       end

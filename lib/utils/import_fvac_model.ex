@@ -435,7 +435,7 @@ defmodule ImportFvacModel do
       case JSON.decode(response.body, keys: :atoms) do 
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
-          IO.puts "all devices imported"
+          IO.puts "all app users imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: app_users}}} ->
           app_users |> Enum.each(&(import_app_user(&1)))
           import_scroll_app_users(res_scroll_id)
@@ -539,7 +539,7 @@ defmodule ImportFvacModel do
           IO.puts "all app user activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
           array |> Enum.each(&(import_app_user_activity(&1)))
-          import_scroll_app_users(res_scroll_id)
+          import_app_user_activity(res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"

@@ -91,14 +91,18 @@ defmodule ImportFvacModel do
     max_user_id = Redis.get("fvac.counter.uid") |> String.to_integer
     min_user_id = Repo.one(from user in Acs.User, select: max(user.id)) || 100_001 
 
-    IO.puts "import users from #{min_user_id + 1} to #{max_user_id}"
+    if max_user_id > min_user_id do 
+      IO.puts "import users from #{min_user_id + 1} to #{max_user_id}"
 
-    ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
-      if rem(user_id, 1000) == 0 do 
-        IO.puts "import user: #{user_id}"
-      end
-      import_user(user_id)
-    end)
+      ((min_user_id + 1) .. max_user_id) |> Enum.each(fn(user_id) -> 
+        if rem(user_id, 1000) == 0 do 
+          IO.puts "import user: #{user_id}"
+        end
+        import_user(user_id)
+      end)
+    else 
+      IO.puts "no users to be imported"
+    end
   end
 
   def import_user(user_id) do 

@@ -158,9 +158,13 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_all_orders() do 
+  def import_all_orders(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/payment/orders/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -183,6 +187,7 @@ defmodule ImportFvacModel do
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all orders imported"
+
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: orders}}} ->
           orders |> Enum.each(&(import_order(&1)))
           import_scroll_orders(n+1, res_scroll_id)
@@ -293,9 +298,13 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_all_devices() do 
+  def import_all_devices(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/app_devices/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -381,9 +390,13 @@ defmodule ImportFvacModel do
     end
   end
 
-  def import_all_app_users() do 
+  def import_all_app_users(from_date) do 
     response = Httpc.post_json("http://10.10.134.58:9200/app_users/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
-      query: %{ match_all: %{} }
+      query: %{ range: %{
+        created_at: %{
+          gt: from_date
+        }
+      } }
     })
 
     if Httpc.success?(response) do 
@@ -474,9 +487,16 @@ defmodule ImportFvacModel do
   def import_all() do 
     import_all_apps()
     import_all_users()
-    import_all_devices()
-    import_all_app_users()
-    import_all_orders()
+    import_all_devices("2010-01-01 00:00:00")
+    import_all_app_users("2010-01-01 00:00:00")
+    import_all_orders("2010-01-01 00:00:00")
+  end
+
+  def import_latest() do 
+    import_all_users()
+    import_all_users("2017-01-18 00:00:00")
+    import_all_devices("2010-01-18 00:00:00")
+    import_all_app_users("2010-01-18 00:00:00")
   end
 
 end

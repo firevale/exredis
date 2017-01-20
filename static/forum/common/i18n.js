@@ -26,6 +26,7 @@ export default {
         replyBtn: '回复',
         author: '楼主',
         follow: '只看楼主',
+        followAll: '查看全部',
         collection: '收藏该帖',
         delete: '删除',
         goBack: '回到顶部',
@@ -89,18 +90,6 @@ export default {
         gameNotice: '游戏公告',
         gameNews: '官方新闻',
       },
-      surroundingMall: {
-        title: '周边商城',
-        productDetail: '商品详情',
-        buyNow: '立即购买',
-        plus: '+',
-        minus: '-',
-        soldOut: '已售磬',
-        stock: '库存',
-        postage: '邮费',
-        back: '返回',
-        mine: '我的',
-      }
     },
   }
 }

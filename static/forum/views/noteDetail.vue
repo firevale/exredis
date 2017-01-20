@@ -10,8 +10,8 @@
       <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
     </div>
     <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
-      <note-item-detail v-for="item,index in detailList" :item-data="item" :item-index="index"></note-item-detail>
-      <div v-if="detailList&&detailList.length" class="column is-full" style="padding-right: 0;padding-left: 0;" v-show="searchPageCount > 1">
+      <note-item-detail v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="index"></note-item-detail>
+      <div v-if="displayList&&displayList.length" class="column is-full" style="padding-right: 0;padding-left: 0;" v-show="searchPageCount > 1">
         <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
       </div>
     </div>
@@ -29,6 +29,10 @@
   import menuModal from '../components/menuModal'
   import pagination from '../components/pagination.vue'
   export default {
+    mounted () {
+      this.displayList = this.detailList.slice(0)
+    },
+
     components: {
       noteItemDetail,
       pagination,
@@ -69,7 +73,7 @@
             portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             title: '',
             time: '2016-10-10 18:56:26',
-            author: '火谷测试',
+            author: 'zsq',
             img: [],
             description: '谢谢楼主分享',
           },
@@ -79,7 +83,7 @@
             portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             title: '',
             time: '2016-10-10 19:36:46',
-            author: '火谷测试',
+            author: 'llw',
             img: [],
             description: '抢沙发',
           },
@@ -94,6 +98,7 @@
             description: '抢沙发',
           },
         ],
+        displayList: [],
       }
     },
 
@@ -133,6 +138,19 @@
       onScroll(e) {
         this.scrollPosition = e.target.scrollTop
       },
+
+      toggleFloorHost(author){ 
+        if(this.displayList && this.displayList.length && this.displayList.length != this.detailList.length){
+          this.displayList = this.detailList.slice(0)
+        }else{
+          this.displayList = this.detailList.filter(function(item){
+            if(item.author == author){
+              return true
+            }
+          })
+        }
+        
+      }
     }
   }
 </script>

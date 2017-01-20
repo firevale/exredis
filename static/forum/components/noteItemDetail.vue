@@ -1,5 +1,5 @@
 <template>
-  <div class="columns dark-bottom" style="margin:0;">
+  <div class="columns dark-bottom" style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
         <img :src="itemData.portrait"></img>
@@ -13,7 +13,7 @@
           {{itemData.title}}
         </div>
         <div class="column is-2" style="text-align: right;">
-          <span v-if="itemData.rank == $t('forum.detail.author')" class="follow-btn">{{$t('forum.detail.follow')}}</span>
+          <span v-if="itemData.rank == $t('forum.detail.author')" class="follow-btn" @click="floorHost">{{ onlyHost? $t('forum.detail.followAll'): $t('forum.detail.follow') }}</span>
         </div>
       </div>
       <div class="column detail-info">
@@ -51,9 +51,17 @@
         type: Number,
       }
     },
+
+    data(){
+      return{
+        onlyHost: false,  
+      }
+    },
+
     computed: {
 
     },
+
     methods: {
       deleteFollowNote() {
         AlertDialog.showModal({
@@ -66,9 +74,15 @@
       onOK() {
 
       },
+
       onCancel() {
 
-      }
+      },
+
+      floorHost(){
+        this.$emit('toggle-floorHost', this.itemData.author)
+        this.onlyHost = !this.onlyHost
+      },
 
     }
   }

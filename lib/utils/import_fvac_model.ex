@@ -18,6 +18,7 @@ defmodule ImportFvacModel do
   alias   Acs.AppDevice
   alias   Acs.AppUser
   alias   Acs.AppUserDailyActivity
+  alias   Acs.AppDeviceDailyActivity
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser

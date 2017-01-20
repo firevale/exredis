@@ -35,6 +35,7 @@
       return {
         detailItem: null,
         products: [{
+            ID: 'TX001',
             url: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1561953326,95871027&fm=23&gp=0.jpg',
             name: '经典黑色T恤',
             price: '120.00',
@@ -42,6 +43,7 @@
             stock: 0,
           },
           {
+            ID: 'TX002',
             url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2851737279,1311002239&fm=23&gp=0.jpg',
             name: '经典白色T恤',
             price: '120.00',
@@ -49,6 +51,7 @@
             stock: 122,
           },
           {
+            ID: 'TX003',
             url: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1561953326,95871027&fm=23&gp=0.jpg',
             name: '经典黑色T恤',
             price: '120.00',
@@ -56,6 +59,7 @@
             stock: 1190,
           },
           {
+            ID: 'TX004',
             url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2851737279,1311002239&fm=23&gp=0.jpg',
             name: '经典白色T恤',
             price: '120.00',

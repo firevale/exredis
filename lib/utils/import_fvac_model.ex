@@ -539,7 +539,7 @@ defmodule ImportFvacModel do
           IO.puts "all app user activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
           array |> Enum.each(&(import_app_user_activity(&1)))
-          import_app_user_activity(res_scroll_id)
+          import_scroll_app_user_activities(res_scroll_id)
           :timer.sleep(1)
         _ ->
           IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"

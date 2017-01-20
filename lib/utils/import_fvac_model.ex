@@ -571,6 +571,8 @@ defmodule ImportFvacModel do
                 AppUser.changeset(%AppUser{}, %{
                   app_id: app_id,
                   user_id: user_id,
+                  app_user_id: user_id,
+                  app_user_name: "未命名",
                   zone_id: "0",
                   created_at: created_at_naive,
                 }) |> Repo.insert!   

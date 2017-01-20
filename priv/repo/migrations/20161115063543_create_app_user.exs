@@ -18,7 +18,7 @@ defmodule Acs.Repo.Migrations.CreateAppUser do
       add :zone_id, :string, default: "0"
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
 
       timestamps()
     end

@@ -591,6 +591,89 @@ defmodule ImportFvacModel do
     end
   end
 
+  def import_all_app_device_activities() do 
+    from = ~D[2015-01-01]
+    days = Timex.diff(Timex.today(), from, :days)
+
+    SQL.query(Repo, "update app_devices set active_seconds = 0")
+
+    (0 .. days) |> Enum.each(fn(duration) ->
+      date = Timex.add(from, Duration.from_days(duration)) |> Timex.format!("{YYYY}-{0M}-{0D}")
+      response = Httpc.head("http://10.10.134.58:9200/app_devices_#{date}")
+
+      if Httpc.success?(response) do 
+        response = Httpc.post_json("http://10.10.134.58:9200/app_devices_#{date}/_search?search_type=scan&scroll=1m&size=100&pretty=true", %{
+          query: %{match_all: %{}}
+        })        
+
+        if Httpc.success?(response) do 
+          case JSON.decode(response.body, keys: :atoms) do 
+            {:ok, %{ _scroll_id: scroll_id}} ->
+              import_scroll_app_device_activities(date, scroll_id)
+            _ ->
+              IO.puts "create cursor failed: #{inspect response.body}"
+          end
+        else 
+          IO.puts "create scroll cursor failed..."
+        end
+      else
+        IO.puts "index[app_devices_#{date}] not exists"
+      end
+    end)
+  end
+
+  def import_scroll_app_device_activities(date, scroll_id) do 
+    response = Httpc.post("http://10.10.134.58:9200/_search/scroll?scroll=1m&pretty=true", body: scroll_id)
+
+    if Httpc.success?(response) do 
+      case JSON.decode(response.body, keys: :atoms) do 
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+          Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
+          IO.puts "#{date} all app device activities imported"
+        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
+          array |> Enum.each(&(import_app_device_activity(&1)))
+          import_scroll_app_device_activities(date, res_scroll_id)
+          :timer.sleep(1)
+        _ ->
+          IO.puts "fetch scroll_id: #{scroll_id} content failed: #{inspect response.body}"
+      end
+    else 
+      IO.puts "fetch scroll_id: #{scroll_id} content failed"
+    end  
+  end
+
+  def import_app_device_activity(%{_id: device_id, _type: app_id, _index: index, _source: %{
+    active_counter: active_counter,
+    reg_date: reg_date
+  }} = data) do 
+    case Repo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: "0") do 
+      nil ->
+        case Repo.get(Device, device_id) do  
+          nil ->
+            IO.puts "app device not found for app_id: #{app_id}, device_id: #{device_id}"
+          
+          _ ->
+            [created_at_iso8601 | _] = String.split(reg_date, ".")
+            created_at_naive = NaiveDateTime.from_iso8601!(created_at_iso8601)  
+            AppDevice.changeset(%AppDevice{}, %{
+              app_id: app_id,
+              device_id: device_id,
+              zone_id: "0",
+              created_at: created_at_naive,
+            }) |> Repo.insert!   
+            import_app_device_activity(data)
+        end
+
+      %AppDevice{} = app_device ->
+        ["app", "devices", date] = String.split(index, "_", trim: true)
+        AppDevice.changeset(app_device, %{active_seconds: app_device.active_seconds + 300*active_counter}) |> Repo.update!
+        AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
+          active_seconds: 300*active_counter,
+          app_device_id: app_device.id,
+          date: date
+        }) |> Repo.insert!
+    end
+  end
 
   def import_all() do 
     from_date = "2010-01-01 00:00:00"

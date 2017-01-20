@@ -30,7 +30,7 @@
       </div>
       <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
         <i class="fa fa-heart" :class="{'red': itemData.collection }" style="vertical-align: middle;"></i>
-        <span class="dark">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
+        <span class="dark" style="font-size: .9rem;" @click="noteCollection">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
       </div>
     </div>
   </div>
@@ -84,6 +84,18 @@
         this.onlyHost = !this.onlyHost
       },
 
+      noteCollection(){
+        this.itemData.collection=!this.itemData.collection
+      //   this.$http({
+      //     method: 'post',
+      //     url: '/noteCollection',
+      //     params: {
+      //       noteID: this.itemData.ID,
+      //     },
+      //   }).then((response)=>{
+
+      //   }).catch()
+      },
     }
   }
 </script>

@@ -12,7 +12,7 @@
     <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
       <note-item-detail v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="index"></note-item-detail>
       <div v-if="displayList&&displayList.length" class="column is-full" style="padding-right: 0;padding-left: 0;" v-show="searchPageCount > 1">
-        <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
+        <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage" @switch-page="freshListByPage"></pagination>
       </div>
     </div>
     <div v-show="canBackTop" class="backTop" @click="onBackTop">
@@ -51,10 +51,11 @@
         searchPageCount: 10,
         searchCurrentPage: 1,
         detailList: [{
+            ID: 'note_001',
             level: 'LV1. 烟雨游友',
             rank: '楼主',
             portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
-            collection: true,
+            collection: false,
             title: '[游戏攻略] 游戏攻略-奶妈培养推荐-蝴蝶精分析-御魂攻略',
             time: '2016-10-10 17:56:16',
             author: '火谷测试',
@@ -149,8 +150,11 @@
             }
           })
         }
-        
-      }
+      },
+
+      freshListByPage(page=1){
+        this.loadNoteDetail(page)
+      },
     }
   }
 </script>

@@ -144,6 +144,7 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .note-new {
     padding: .3rem .5rem;
+    width: 100%;
 }
 
 .note-content {
@@ -794,8 +795,6 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .modal-card {
     width: 80%;
-    max-width: 350px;
-    max-height: none;
 }
 
 .modal-item {

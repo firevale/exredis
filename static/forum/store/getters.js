@@ -18,6 +18,8 @@ const searchPageCount = state => state.search.pageCount
 
 const searchCurrentPage = state => state.search.currentPage
 
+const userInfo = state => state.user
+
 export {
   notePageCount,
   noteCurrentPage,
@@ -29,4 +31,5 @@ export {
   searchKeyHis,
   searchPageCount,
   searchCurrentPage,
+  userInfo,
 }

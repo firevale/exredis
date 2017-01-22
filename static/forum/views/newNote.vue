@@ -13,8 +13,8 @@
     <hr class="horizontal-line"></hr>
     <div class="column is-full" style="flex-direction: row; display: flex;">
       <div class="pointer" @click="orderChoose">
-        <span>{{ noteOrderTypeStr }}</span>
-        <i class="fa fa-caret-down title is-4" aria-hidden="true" style="vertical-align: middle;"></i>
+        <span class="dark">{{ noteOrderTypeStr }}</span>
+        <i class="fa fa-caret-down title is-4 dark" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
       <div v-show="!messageTip" class="column is-full red pointer" style="padding: 0 1rem;float:right; flex:1;text-align: right;">
         <span @click="onPreView">{{ pageView? $t('forum.newNote.editView'): $t('forum.newNote.preView') }}</span>

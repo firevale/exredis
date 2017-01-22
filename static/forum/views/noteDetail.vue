@@ -21,10 +21,6 @@
   </div>
 </template>
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
   import noteItemDetail from '../components/noteItemDetail.vue'
   import menuModal from '../components/menuModal'
   import pagination from '../components/pagination.vue'

@@ -55,3 +55,10 @@ export const setSearchCurrentPage = ({
   commit('SEARCH_SET_CURRENTPAGE', page)
 }
 
+export const setUserInfo = ({
+  commit
+}, user) => {
+  commit('USER_SET_INFO', user)
+}
+
+

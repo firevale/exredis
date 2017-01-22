@@ -24,7 +24,7 @@
         </div>
         <div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
           <figure v-for="item in itemData.img" class="image is-128x128">
-            <img src="item.src"></img>
+            <img :src="item.url"></img>
           </figure>
         </div>
         <div class="column" style="font-weight: bold;" v-html="itemData.description">

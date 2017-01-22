@@ -32,6 +32,9 @@ export default {
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
         cancelCollection: '取消收藏',
+        closeNote: '封贴',
+        essenceNote: '精品',
+        recommendNote: '置顶',
       },
       newNote: {
         title: '发帖子',

@@ -98,6 +98,7 @@ $fa-font-path: '~font-awesome/fonts/';
 .dark-bottom{
     border-bottom: 1px solid $text-grey;
 }
+
 .olive {
     color: $olive;
 }
@@ -404,6 +405,16 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .dark-background {
     background: $text-grey;
+    color: $white;
+}
+
+.red-background {
+    background: $red;
+    color: $white;
+}
+
+.primary-background {
+    background: $primary;
     color: $white;
 }
 

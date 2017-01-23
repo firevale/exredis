@@ -1,5 +1,5 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
+  <div class="is-ancestor is-parent is-vertical">
     <div class="is-child  fixed-top row-line">
       <div class="arrow-back" style="left: 1rem;">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div v-show="!pageView" class="scroll-box">
-      <div class="column is-full">
+      <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
         {{ replyTitle }}
         <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
         <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>

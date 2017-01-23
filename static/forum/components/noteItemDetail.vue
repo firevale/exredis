@@ -20,11 +20,12 @@
         <div class="column detail-info">
           <span class="note-time dark" style="font-size: .8rem;">{{ itemData.time }}</span>
           <span class="note-author" style="font-size: .9rem;">{{ itemData.author }}</span>
-          <span v-if="itemData.rank != $t('forum.detail.author')" class="note-delete" @click="deleteFollowNote" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
+          <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteFollowNote" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
         </div>
         <div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
           <figure v-for="item in itemData.img" class="image is-128x128">
             <img :src="item.url"></img>
+            <i v-if="preView" class="fa fa-times-circle img-remove-icon" @click="$emit('img-delete', item)"></i>
           </figure>
         </div>
         <div class="column" style="font-weight: bold;" v-html="itemData.description">
@@ -56,7 +57,11 @@
       },
       itemIndex: {
         type: Number,
-      }
+      },
+      preView: {
+        type: Boolean,
+        default: false,
+      },
     },
 
     data() {

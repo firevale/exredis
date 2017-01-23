@@ -7,7 +7,7 @@
     <div class="note-info">
       <span>{{ itemData.time }}</span>
     </div>
-    <div class="originalNote" @click="showDetail">
+    <div class="original-note" @click="showDetail">
       <span>{{ $t('forum.personal.originalNote') }}</span>
       <span class="note-title">{{ itemData.title }}</span>
     </div>

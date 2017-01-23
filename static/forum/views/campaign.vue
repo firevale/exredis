@@ -1,10 +1,10 @@
 <template>
   <div class="is-ancestor is-parent is-vertical">
-    <div class="is-child content-item rowLine">
+    <div class="is-child content-item row-line">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         {{ $t('forum.campaign.title') }}
       </div>
     </div>

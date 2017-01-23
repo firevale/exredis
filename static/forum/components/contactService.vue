@@ -2,7 +2,7 @@
   <div class="content-item">
     <div class="row-menu" style="padding-top: 2rem; position: relative;">
       <i class="fa fa-pencil-square-o" style="display: none;" :class="{'pencil-icon': showIcon}" aria-hidden="true"></i>
-      <textarea v-model="message" class="issue-content" :class="{'writeIcon': showIcon}" :placeholder="$t('forum.customService.contactPlaceHolder')"
+      <textarea v-model="message" class="issue-content" :class="{'write-icon': showIcon}" :placeholder="$t('forum.customService.contactPlaceHolder')"
         @focus="showIcon=false" @blur="checkIcon">
         </textarea>
     </div>

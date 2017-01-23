@@ -1,10 +1,10 @@
 <template>
   <div class="is-ancestor is-parent is-vertical">
-    <div class="is-child fixed-top rowLine">
+    <div class="is-child fixed-top row-line">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div class="rowLine top-title" style="font-weight: bold;">
+      <div class="row-line top-title" style="font-weight: bold;">
         {{ $t('forum.detail.title') }}
       </div>
       <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
@@ -15,7 +15,7 @@
         <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage" @switch-page="freshListByPage"></pagination>
       </div>
     </div>
-    <div v-show="canBackTop" class="backTop" @click="onBackTop">
+    <div v-show="canBackTop" class="back-top" @click="onBackTop">
       <i class="fa fa-caret-up" aria-hidden="true"></i> {{ $t('forum.detail.goBack') }}
     </div>
   </div>

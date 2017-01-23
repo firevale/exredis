@@ -1,85 +1,84 @@
 @mixin slideIn($from, $to) {
-  0% {
-    opacity: 0.3;
-    -webkit-transform: translate3d($from, -100%, 0);
-    transform: translate3d($from, -100%, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: translate3d($to, -100%, 0);
-    transform: translate3d($to, -100%, 0);
-  }
+    0% {
+        opacity: 0.3;
+        -webkit-transform: translate3d($from, -100%, 0);
+        transform: translate3d($from, -100%, 0);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translate3d($to, -100%, 0);
+        transform: translate3d($to, -100%, 0);
+    }
 }
 
 @-webkit-keyframes slideInLeft {
-  @include slideIn(-100%, 0);
+    @include slideIn(-100%, 0);
 }
 
 @keyframes slideInLeft {
-  @include slideIn(-100%, 0);
+    @include slideIn(-100%, 0);
 }
 
 @-webkit-keyframes slideInRight {
-  @include slideIn(100%, 0);
+    @include slideIn(100%, 0);
 }
 
 @keyframes slideInRight {
-  @include slideIn(100%, 0);
+    @include slideIn(100%, 0);
 }
 
 @mixin slideOut($from, $to) {
-  0% {
-    opacity: 1;
-    -webkit-transform: translate3d($from, 0, 0);
-    transform: translate3d($from, 0, 0);
-  }
-  100% {
-    opacity: 0;
-    -webkit-transform: translate3d($to, 0, 0);
-    transform: translate3d($to, 0, 0);
-  }
+    0% {
+        opacity: 1;
+        -webkit-transform: translate3d($from, 0, 0);
+        transform: translate3d($from, 0, 0);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: translate3d($to, 0, 0);
+        transform: translate3d($to, 0, 0);
+    }
 }
 
 @-webkit-keyframes slideOutLeft {
-  @include slideOut(0, -100%)
+    @include slideOut(0, -100%)
 }
 
 @keyframes slideOutLeft {
-  @include slideOut(0, -100%);
+    @include slideOut(0, -100%);
 }
 
 @-webkit-keyframes slideOutRight {
-  @include slideOut(0, 100%);
+    @include slideOut(0, 100%);
 }
 
 @keyframes slideOutRight {
-  @include slideOut(0, 100%);
+    @include slideOut(0, 100%);
 }
 
 $animation-time: 0.3s;
-
 @mixin animation($name) {
-  -webkit-animation-name: $name;
-  -webkit-animation-duration: $animation-time;
-  -webkit-animation-timing-function: ease;
-  animation-name: $name;
-  animation-duration: $animation-time;
-  animation-timing-function: ease;
+    -webkit-animation-name: $name;
+    -webkit-animation-duration: $animation-time;
+    -webkit-animation-timing-function: ease;
+    animation-name: $name;
+    animation-duration: $animation-time;
+    animation-timing-function: ease;
 }
 
 // use animation-name/duration/timing-function for safari
 .slide-left-enter-active {
-  @include animation(slideInRight);
+    @include animation(slideInRight);
 }
 
 .slide-left-leave-active {
-  @include animation(slideOutLeft);
+    @include animation(slideOutLeft);
 }
 
 .slide-right-enter-active {
-  @include animation(slideInLeft);
+    @include animation(slideInLeft);
 }
 
 .slide-right-leave-active {
-  @include animation(slideOutRight);
+    @include animation(slideOutRight);
 }

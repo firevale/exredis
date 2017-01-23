@@ -1,31 +1,24 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item rowLine">
-      <div style="flex: 1;text-align: left;">
-        <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="goBack"></i>
+    <div class="is-child  fixed-top content-item row-line">
+      <div class="arrow-back" style="left: 1rem;">
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         <span class="title is-5">{{ $t('forum.replyNote.title') }}</span>
       </div>
-      <div style="flex: 1;">
-      </div>
     </div>
-    <hr class="horizontal-line" style="margin-top: .3rem;"></hr>
-    <div v-show="!pageView">
+    <div v-show="!pageView" class="scroll-box">
       <div class="column is-full">
         {{ replyTitle }}
-        <i v-show="!messageTip" class="fa fa-search-plus red" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="red pointer" v-show="!messageTip" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
+        <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
+        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <textarea class="note-content" maxlength="500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
         <div class="upload-img">
-          <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
-          <div class="img-item" v-for="item in imgs">
-            <span>{{item.id}}</span>
-            <img class="shot-img" :src="item.url"></img>
-            <i class="fa fa-times red" style="vertical-align: middle;" aria-hidden="true" @click="deleteUploadImg(item.id)"></i>
-          </div>
+          <i class="fa fa-file-image-o" aria-hidden="true" @click="uploadImg"></i>
+          <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>
         </div>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
@@ -134,7 +127,7 @@
       },
 
       deleteUploadImg(imgId) {
-        //this.$http();
+        //this.$http({}).then().catch();
         for (var i = 0; i < this.imgs.length; i++) {
           if (this.imgs[i].id == imgId) {
             this.imgs.splice(i, 1);
@@ -180,6 +173,7 @@
       preview() {
         preViewNote({
           visible: true,
+          deleteImgFunc: this.deleteUploadImg,
           item: {
             level: this.userInfo.level,
             rank: '',
@@ -193,7 +187,6 @@
         })
       },
 
-      
     }
   }
 </script>

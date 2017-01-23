@@ -1,22 +1,22 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item rowLine">
+    <div class="is-child content-item row-line">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         {{ $t('forum.personal.title') }}
       </div>
     </div>
     <div class="horizontal-seprate"></div>
-    <div class="rowLine content-item">
-      <div class="columnLine" style="margin-left: 1rem;">
+    <div class="row-line content-item">
+      <div class="column-line" style="margin-left: 1rem;">
         <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
           <img :src="personal.portrait"></img>
         </figure>
         <div class="title is-6 txt-center olive" style="margin-top: 1rem; margin-bottom: .5rem;">{{personal.level}}</div>
       </div>
-      <div class="columnLine" style="flex: 1;text-align: left;margin: 0 3rem;">
+      <div class="column-line" style="flex: 1;text-align: left;margin: 0 3rem;">
         <div>
           {{ $t('forum.personal.nickName') }}
           <span>{{ personal.name }}</span>

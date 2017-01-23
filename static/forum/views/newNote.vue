@@ -1,10 +1,10 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item rowLine">
+    <div class="is-child content-item row-line">
       <div style="flex: 1;text-align: left;">
         <i class="fa fa-angle-left title is-3 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         <span class="title is-5">{{ $t('forum.newNote.title') }}</span>
       </div>
       <div style="flex: 1;">

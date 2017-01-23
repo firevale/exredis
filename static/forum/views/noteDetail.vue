@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical">
     <div class="is-child fixed-top row-line">
       <div class="arrow-back">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
       <div class="row-line top-title" style="font-weight: bold;">
         {{ $t('forum.detail.title') }}

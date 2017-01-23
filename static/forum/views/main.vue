@@ -1,8 +1,8 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child fixed-top content-item row-line">
+    <div class="is-child fixed-top  row-line">
       <div class="arrow-back" style="left: 1rem;">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
       <div class="row-line top-title">
         {{ $t('forum.main.title') }}

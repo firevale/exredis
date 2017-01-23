@@ -5,7 +5,7 @@
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
       <div class="row-line top-title">
-        <span class="title is-5">{{ $t('forum.replyNote.title') }}</span>
+        <span class="title is-4">{{ $t('forum.replyNote.title') }}</span>
       </div>
     </div>
     <div v-show="!pageView" class="scroll-box">

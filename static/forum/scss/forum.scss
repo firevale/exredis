@@ -13,7 +13,8 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .arrow-back {
     position: absolute;
-    left: 3rem;
+    top: .75rem;
+    left: 2rem;
     z-index: 3;
 }
 
@@ -221,7 +222,6 @@ $fa-font-path: '~font-awesome/fonts/';
 .main-menu {
     margin-right: .75rem;
     position: absolute;
-    right: 1.2rem;
     top: .7rem;
     font-size: 1rem;
     span {
@@ -237,9 +237,9 @@ $fa-font-path: '~font-awesome/fonts/';
 @media only screen and (max-width: 768px) {
     .main-menu {
         position: absolute;
-        margin-right: 1.5rem;
+        margin-right: .75rem;
         right: 0;
-        top: 0;
+        top: .75rem;
         font-size: .6rem;
         span {
             margin-top: .6rem;
@@ -253,11 +253,8 @@ $fa-font-path: '~font-awesome/fonts/';
     .back-top {
         right: 1rem;
     }
-    .arrow-back {
-        left: 2rem;
-    }
     .reply-btn {
-        top: .5rem;
+        top: .65rem;
         right: 1rem;
     }
 }

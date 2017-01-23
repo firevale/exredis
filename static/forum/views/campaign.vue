@@ -1,6 +1,6 @@
 <template>
   <div class="is-ancestor is-parent is-vertical">
-    <div class="is-child fixed-top content-item row-line">
+    <div class="is-child fixed-top  row-line">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>

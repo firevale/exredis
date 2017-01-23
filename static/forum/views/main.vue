@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="scroll-box">
-      <div class="tile  content-item">
-        <div class="tile control">
+      <div class="tile content-item">
+        <div class="tile control" style="margin-bottom: 0;">
           <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
           <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
           <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>

@@ -14,7 +14,7 @@
             {{itemData.title}}
           </div>
           <div class="column is-2" style="text-align: right;">
-            <span v-if="itemData.rank == $t('forum.detail.author')" class="follow-btn" @click="floorHost">{{ onlyHost? $t('forum.detail.followAll'): $t('forum.detail.follow') }}</span>
+            <span v-if="itemData.rank == $t('forum.detail.author')" class="button follow-btn" @click="floorHost">{{ onlyHost? $t('forum.detail.followAll'): $t('forum.detail.follow') }}</span>
           </div>
         </div>
         <div class="column detail-info">

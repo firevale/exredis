@@ -1,17 +1,16 @@
 import Vue from 'vue';
-const preView = Vue.extend(require('./preView.vue'));
+const swiper = Vue.extend(require('./swiperContainer.vue'));
 let instance
 
-export const preViewNote = (propsData = {
+export const swiperContainer = (propsData = {
 
 }) => {
   if (!instance) {
-    instance = new preView({
+    instance = new swiper({
       el: document.createElement('div'),
       propsData
     });
   } else {
     instance.visible = true
   }
-
 }

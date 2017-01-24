@@ -196,7 +196,17 @@ $fa-font-path: '~font-awesome/fonts/';
     cursor: pointer;
     font-size: 1.5rem;
 }
-
+.arrow-icon{
+    position: absolute;
+    font-size: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    top: 40%;
+    color: $white;
+    background: $olive;
+    border-radius: 50%;
+}
 .arrow-up {
     height: .4rem;
     width: .4rem;

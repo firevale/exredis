@@ -8,7 +8,7 @@
         <div class="title is-6 txt-center dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
         <div class="title is-6 txt-center" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
       </div>
-      <div class="column is-11">
+      <div class="column is-10">
         <div v-if="itemData.title" class="columns" style="margin: 0;">
           <div class="column is-10 title is-5 detail-title">
             {{itemData.title}}
@@ -23,8 +23,8 @@
           <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteFollowNote" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
         </div>
         <div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
-          <figure v-for="item in itemData.img" class="image is-128x128">
-            <img :src="item.url"></img>
+          <figure v-for="item in itemData.img" class="image is-256x256">
+            <img :src="item.url" @click="showAllImgInSwiper"></img>
             <i v-if="preView" class="fa fa-times-circle img-remove-icon" @click="$emit('img-delete', item)"></i>
           </figure>
         </div>
@@ -49,6 +49,10 @@
     mapActions
   } from 'vuex'
   import AlertDialog from './alertDialog'
+  import {
+    swiperContainer
+  } from '../components/swiper'
+
   export default {
     props: {
       itemData: {
@@ -124,6 +128,16 @@
 
         //   }).catch()
       },
+
+      showAllImgInSwiper() {
+        if (!this.preView) {
+          swiperContainer({
+            visible: true,
+            imgs: this.itemData.img
+          })
+        }
+
+      }
     }
   }
 </script>

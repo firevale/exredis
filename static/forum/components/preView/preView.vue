@@ -1,8 +1,8 @@
 <template>
   <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
     <div class="modal-background" @click="cancel"></div>
-    <div class="modal-card" style="max-width: 100vw;">
-      <section class="modal-card-body" style="border-radius: 1rem;width: 100%;margin: 0 auto;">
+    <div class="modal-card" style="max-width: 100vw;width: 85%;">
+      <section class="modal-card-body" style="border-radius: 1rem;width: 100%;margin: 0 auto;padding: 0;">
         <note-item-detail :item-data="item" @img-delete="deleteImgInPreview" :preView="true"></note-item-detail>
       </section>
     </div>

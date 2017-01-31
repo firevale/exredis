@@ -2,10 +2,10 @@
   <div class="note-item">
     <div class="columns">
       <div class="column is-10" @click="showDetail">
-        <a v-for="item in itemData.headerTag" class="headerTag">{{item.name}}</a>
+        <a v-for="item in itemData.headerTag" class="header-tag">{{item.name}}</a>
         <span class="note-title" v-html="filterKey"></span>
         <i v-if="itemData.hasPicture" class="fa fa-picture-o note-picture"></i>
-        <a v-for="item in itemData.tailTag" class="tailTag" :class="{'excellent': item.isTag}">{{item.name}}</a>
+        <a v-for="item in itemData.tailTag" class="tail-tag" :class="{'excellent': item.isTag}">{{item.name}}</a>
       </div>
       <div class="column is-2 txt-right note-info">{{itemData.time}}</div>
     </div>

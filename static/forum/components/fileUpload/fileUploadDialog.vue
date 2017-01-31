@@ -7,11 +7,11 @@
             :extensions="params.extensions" :header="params.headers" @addFileUpload="addFileUpload" @afterFileUpload="afterFileUpload"></file-upload>
         </div>
         <div v-if="files&&files.length" class="tile is-child is-8 is-vertical">
-          <div class="columns" style="margin-bottom: 0">
-            <div class="column is-3">
-              <label class="label pull-right">{{$t('forum.upload.filename')}}:</label>
+          <div class="tile" style="margin-bottom: 0">
+            <div style="margin:0 .5rem 0 0;">
+              <label class="label">{{$t('forum.upload.filename')}}:</label>
             </div>
-            <div class="column is-9">
+            <div>
               <label v-for="item in files" class="label">{{ item.name }}</label>
             </div>
           </div>

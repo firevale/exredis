@@ -1,10 +1,10 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item rowLine">
+    <div class="is-child fixed-top  row-line">
       <div class="arrow-back" style="left: 1rem;">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         {{ $t('forum.main.title') }}
       </div>
       <div class="main-menu">
@@ -13,26 +13,27 @@
         <a class="button create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
       </div>
     </div>
-    <hr class="horizontal-line"></hr>
-    <div class="tile is-chid content-item">
-      <div class="tile control">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
+    <div class="scroll-box">
+      <div class="tile content-item">
+        <div class="tile control" style="margin-bottom: 0;">
+          <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
+          <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
+          <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
+          <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
+          <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
+          <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
+        </div>
+        <div class="pointer" @click="orderChoose">
+          <span>{{ noteOrderTypeStr }}</span>
+          <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
+        </div>
       </div>
-      <div class="pointer" @click="orderChoose">
-        <span>{{ noteOrderTypeStr }}</span>
-        <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
+      <div class="box is-chid is-parent content-item" style="padding: 0;">
+        <note-item v-for="item in noteList" :item-data="item"></note-item>
       </div>
-    </div>
-    <div class="box is-chid is-parent content-item" style="padding: 0;">
-      <note-item v-for="item in noteList" :item-data="item"></note-item>
-    </div>
-    <div class="column is-full" v-show="notePageCount > 1">
-      <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+      <div class="column is-full" v-show="notePageCount > 1">
+        <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+      </div>
     </div>
   </div>
 </template>

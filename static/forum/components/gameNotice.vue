@@ -1,6 +1,9 @@
 <template>
   <div class="row-menu">
     <div class="menu-left">
+      <div>
+        <div v-show="scrollPosition > 0" class="arrow-up" @click="scrollUp"></div>
+      </div>
       <div ref="menuBox" class="menu-tree" @scroll="changScroll">
         <div v-for="item in notices" :class="{'olive': item.title == selectedTitle }" class="menu-item" @click="showNoticeDetail(item)">{{ item.title }}</div>
       </div>
@@ -58,6 +61,10 @@
 
       changScroll(e) {
         this.scrollPosition = e.target.scrollTop
+      },
+
+      scrollUp() {
+        this.$refs.menuBox.scrollTop -= 30
       },
 
       scrollDown() {

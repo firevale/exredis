@@ -1,60 +1,61 @@
 <template>
   <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child content-item rowLine">
+    <div class="is-child fixed-top  row-line">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
       </div>
-      <div class="rowLine top-title">
+      <div class="row-line top-title">
         {{ $t('forum.personal.title') }}
       </div>
     </div>
-    <div class="horizontal-seprate"></div>
-    <div class="rowLine content-item">
-      <div class="columnLine" style="margin-left: 1rem;">
-        <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
-          <img :src="personal.portrait"></img>
-        </figure>
-        <div class="title is-6 txt-center olive" style="margin-top: 1rem; margin-bottom: .5rem;">{{personal.level}}</div>
-      </div>
-      <div class="columnLine" style="flex: 1;text-align: left;margin: 0 3rem;">
-        <div>
-          {{ $t('forum.personal.nickName') }}
-          <span>{{ personal.name }}</span>
+    <div class="scroll-box">
+      <div class="row-line content-item">
+        <div class="column-line" style="margin-left: 1rem;">
+          <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
+            <img :src="personal.portrait"></img>
+          </figure>
+          <div class="title is-6 txt-center olive" style="margin-top: 1rem; margin-bottom: .5rem;">{{personal.level}}</div>
+        </div>
+        <div class="column-line" style="flex: 1;text-align: left;margin: 0 3rem;">
+          <div>
+            {{ $t('forum.personal.nickName') }}
+            <span>{{ personal.name }}</span>
+          </div>
+          <div>
+            {{ $t('forum.personal.noteCount') }}
+            <span>{{ personal.sentNoteCount }}</span>
+          </div>
+          <div>
+            {{ $t('forum.personal.registerTime') }}
+            <span>{{ personal.registerTime }}</span>
+          </div>
         </div>
         <div>
-          {{ $t('forum.personal.noteCount') }}
-          <span>{{ personal.sentNoteCount }}</span>
-        </div>
-        <div>
-          {{ $t('forum.personal.registerTime') }}
-          <span>{{ personal.registerTime }}</span>
         </div>
       </div>
-      <div>
+      <div class="horizontal-seprate"></div>
+      <div class="is-chid  row-menu">
+        <div class="service-menu" :class="{'menu-selected': type=='myNote'}" @click="type='myNote'">{{ $t('forum.personal.myNote') }}</div>
+        <div class="service-menu" :class="{'menu-selected': type=='myReply'}" @click="type='myReply'">{{ $t('forum.personal.myReply') }}</div>
+        <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">{{ $t('forum.personal.myFavor') }}</div>
       </div>
-    </div>
-    <div class="horizontal-seprate"></div>
-    <div class="is-chid  row-menu">
-      <div class="service-menu" :class="{'menu-selected': type=='myNote'}" @click="type='myNote'">{{ $t('forum.personal.myNote') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='myReply'}" @click="type='myReply'">{{ $t('forum.personal.myReply') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">{{ $t('forum.personal.myFavor') }}</div>
-    </div>
-    <div class="horizontal-seprate">
-      <div :class="{'move-box-left': type=='myNote','move-box-center': type=='myReply','move-box-right': type=='myFavor'}">
-        <div class="arrow-down"></div>
+      <div class="horizontal-seprate">
+        <div :class="{'move-box-left': type=='myNote','move-box-center': type=='myReply','move-box-right': type=='myFavor'}">
+          <div class="arrow-down"></div>
+        </div>
       </div>
-    </div>
-    <div class="content-item" v-show="type == 'myNote'">
-      <my-note v-for="item in personal.myNotes" :item-data="item"></my-note>
-    </div>
-    <div class="content-item" v-show="type == 'myReply'">
-      <my-reply v-for="item in personal.myReplys" :item-data="item"></my-reply>
-    </div>
-    <div class="content-item" v-show="type == 'myFavor'">
-      <my-favorate v-for="item in personal.myFavors" :item-data="item"></my-favorate>
-    </div>
-    <div class="column is-full" v-show="notePageCount > 1">
-      <pagination ref="pag" @switch-page="loadListByPage" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+      <div class="content-item" v-show="type == 'myNote'">
+        <my-note v-for="item in personal.myNotes" :item-data="item"></my-note>
+      </div>
+      <div class="content-item" v-show="type == 'myReply'">
+        <my-reply v-for="item in personal.myReplys" :item-data="item"></my-reply>
+      </div>
+      <div class="content-item" v-show="type == 'myFavor'">
+        <my-favorate v-for="item in personal.myFavors" :item-data="item"></my-favorate>
+      </div>
+      <div class="column is-full" v-show="notePageCount > 1">
+        <pagination ref="pag" @switch-page="loadListByPage" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+      </div>
     </div>
   </div>
 </template>

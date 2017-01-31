@@ -1,9 +1,9 @@
 <template>
-  <div class="mynote-item rowLine">
+  <div class="mynote-item row-line">
     <div style="flex: 1;text-align: left;">
       <div @click="showDetail">
         <span class="note-title">{{ itemData.title }}</span>
-        <a v-show="itemData.newReply" class="button excellentBtn">{{ $t('forum.personal.newReply') }}</a>
+        <a v-show="itemData.newReply" class="button excellent-btn">{{ $t('forum.personal.newReply') }}</a>
       </div>
       <div class="note-info">
         <span>{{ itemData.time }}</span>

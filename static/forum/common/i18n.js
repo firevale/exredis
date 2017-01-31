@@ -26,11 +26,15 @@ export default {
         replyBtn: '回复',
         author: '楼主',
         follow: '只看楼主',
+        followAll: '查看全部',
         collection: '收藏该帖',
         delete: '删除',
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
         cancelCollection: '取消收藏',
+        closeNote: '封贴',
+        essenceNote: '精品',
+        recommendNote: '置顶',
       },
       newNote: {
         title: '发帖子',
@@ -89,18 +93,6 @@ export default {
         gameNotice: '游戏公告',
         gameNews: '官方新闻',
       },
-      surroundingMall: {
-        title: '周边商城',
-        productDetail: '商品详情',
-        buyNow: '立即购买',
-        plus: '+',
-        minus: '-',
-        soldOut: '已售磬',
-        stock: '库存',
-        postage: '邮费',
-        back: '返回',
-        mine: '我的',
-      }
     },
   }
 }

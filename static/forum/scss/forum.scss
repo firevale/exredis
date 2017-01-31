@@ -11,13 +11,14 @@ $fa-font-path: '~font-awesome/fonts/';
     overflow: auto;
 }
 
-.arrow-back{
+.arrow-back {
     position: absolute;
-    left: 3rem;
+    top: .75rem;
+    left: 2rem;
     z-index: 3;
 }
 
-.rowLine {
+.row-line {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -25,7 +26,7 @@ $fa-font-path: '~font-awesome/fonts/';
     flex: 1;
 }
 
-.columnLine {
+.column-line {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -70,7 +71,7 @@ $fa-font-path: '~font-awesome/fonts/';
     justify-content: space-around;
 }
 
-.backTop {
+.back-top {
     cursor: pointer;
     position: fixed;
     bottom: 3rem;
@@ -95,9 +96,11 @@ $fa-font-path: '~font-awesome/fonts/';
 .dark {
     color: $dark;
 }
-.dark-bottom{
+
+.dark-bottom {
     border-bottom: 1px solid $text-grey;
 }
+
 .olive {
     color: $olive;
 }
@@ -143,6 +146,7 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .note-new {
     padding: .3rem .5rem;
+    width: 100%;
 }
 
 .note-content {
@@ -150,6 +154,7 @@ $fa-font-path: '~font-awesome/fonts/';
     width: 100%;
     height: 50vh;
     resize: vertical;
+    border-color: $text-grey;
 }
 
 .new-note {
@@ -170,24 +175,52 @@ $fa-font-path: '~font-awesome/fonts/';
         vertical-align: middle;
         font-size: 1.5rem !important;
     }
-    .img-item {
-        position: relative;
-        span {
-            margin-left: 1rem;
-        }
-        .shot-img {
-            visibility: hidden;
-            position: absolute;
-            left: 0;
-            top: -5rem;
-            z-index: 3;
-        }
+    .img-count {
+        border: 1px solid;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        cursor: pointer;
+        margin-left: 1rem;
+        text-align: center;
+        background: red;
+        color: white;
     }
-    .img-item:hover {
-        .shot-img {
-            visibility: visible;
-        }
-    }
+}
+
+.img-remove-icon {
+    position: absolute;
+    top: 0;
+    right: -1.5rem;
+    color: $red;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+.arrow-icon{
+    position: absolute;
+    font-size: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    top: 40%;
+    color: $white;
+    background: $olive;
+    border-radius: 50%;
+}
+.arrow-up {
+    height: .4rem;
+    width: .4rem;
+    border: .5rem solid transparent;
+    border-bottom: .7rem solid $link;
+    margin: 0 auto;
+}
+
+.arrow-down {
+    height: .4rem;
+    width: .4rem;
+    border: .5rem solid transparent;
+    border-top: .7rem solid $link;
+    margin: 0 auto;
 }
 
 .pre-view {
@@ -213,17 +246,16 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .main-menu {
-    margin-right: .5rem;
+    margin-right: .75rem;
     position: absolute;
-    right: 0;
-    top: 0;
+    top: .7rem;
     font-size: 1rem;
     span {
         margin-top: .6rem;
         font-size: 1.5rem;
     }
     .button {
-        margin-top: .2rem;
+        margin-top: .3rem;
         padding: .5rem 1.3rem;
     }
 }
@@ -231,9 +263,9 @@ $fa-font-path: '~font-awesome/fonts/';
 @media only screen and (max-width: 768px) {
     .main-menu {
         position: absolute;
-        margin-right: 1.5rem;
+        margin-right: .75rem;
         right: 0;
-        top: 0;
+        top: .75rem;
         font-size: .6rem;
         span {
             margin-top: .6rem;
@@ -244,14 +276,11 @@ $fa-font-path: '~font-awesome/fonts/';
             padding: .1rem .5rem;
         }
     }
-    .backTop {
+    .back-top {
         right: 1rem;
     }
-    .arrow-back {
-        left: 2rem;
-    }
-    .reply-btn{
-        top: .5rem;
+    .reply-btn {
+        top: .65rem;
         right: 1rem;
     }
 }
@@ -285,13 +314,6 @@ $fa-font-path: '~font-awesome/fonts/';
         width: 16.66%;
         margin-left: 74.9%;
         transition: margin 1s ease;
-    }
-    .arrow-down {
-        height: .4rem;
-        width: .4rem;
-        border: .5rem solid transparent;
-        border-top: .7rem solid $link;
-        margin: 0 auto;
     }
 }
 
@@ -407,6 +429,16 @@ $fa-font-path: '~font-awesome/fonts/';
     color: $white;
 }
 
+.red-background {
+    background: $red;
+    color: $white;
+}
+
+.primary-background {
+    background: $primary;
+    color: $white;
+}
+
 //components scss below
 .follow-btn {
     padding: .2rem;
@@ -458,7 +490,7 @@ $fa-font-path: '~font-awesome/fonts/';
     cursor: pointer;
 }
 
-.headerTag {
+.header-tag {
     font-weight: bold;
     border-radius: .3rem;
     vertical-align: middle !important;
@@ -468,7 +500,7 @@ $fa-font-path: '~font-awesome/fonts/';
     background-color: $red !important;
 }
 
-.tailTag {
+.tail-tag {
     border-radius: .3rem;
     vertical-align: middle !important;
     padding: 0;
@@ -506,7 +538,7 @@ $fa-font-path: '~font-awesome/fonts/';
     padding-bottom: .2rem;
 }
 
-.originalNote {
+.original-note {
     background-color: $text-grey;
 }
 
@@ -533,7 +565,7 @@ $fa-font-path: '~font-awesome/fonts/';
     padding-bottom: 0;
 }
 
-.excellentBtn {
+.excellent-btn {
     border-color: $olive !important;
     color: $olive;
     font-size: .5rem;
@@ -643,7 +675,7 @@ $fa-font-path: '~font-awesome/fonts/';
     font-size: 1.2rem;
 }
 
-.writeIcon {
+.write-icon {
     padding: 1rem 4rem;
 }
 
@@ -783,8 +815,6 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .modal-card {
     width: 80%;
-    max-width: 350px;
-    max-height: none;
 }
 
 .modal-item {

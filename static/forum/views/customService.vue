@@ -2,7 +2,7 @@
   <div class="is-ancestor is-parent is-vertical ">
     <div class="is-child fixed-top  row-line">
       <div class="arrow-back">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
+        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
       <div class="row-line top-title">
         {{ $t('forum.customService.title') }}
@@ -19,7 +19,7 @@
           <div class="arrow-down"></div>
         </div>
       </div>
-      <common-issue v-show="type=='issue'"></common-issue>
+      <common-issue ref="commonIssue" v-show="type=='issue'"></common-issue>
       <contact-service v-show="type=='contact'"></contact-service>
       <service-record v-show="type=='record'"></service-record>
     </div>
@@ -42,5 +42,15 @@
         type: 'issue',
       }
     },
+
+    methods: {
+      goBack() {
+        if (this.type == 'issue' && this.$refs.commonIssue.issueDetail != null) {
+          this.$refs.commonIssue.issueDetail = null
+        } else {
+          this.$router.go(-1)
+        }
+      }
+    }
   }
 </script>

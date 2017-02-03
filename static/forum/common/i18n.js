@@ -35,6 +35,12 @@ export default {
         closeNote: '封贴',
         essenceNote: '精品',
         recommendNote: '置顶',
+        sealNote: '封贴生效',
+        unSealNote: '封贴取消',
+        recommendNote: '精品生效',
+        unRecommendNote: '精品取消',
+        upNote: '置顶生效',
+        unUpNote: '置顶取消',
       },
       newNote: {
         title: '发帖子',

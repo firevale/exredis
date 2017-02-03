@@ -16,6 +16,10 @@
         type: Boolean,
         default: false,
       }
-    }
+    },
+    
+    mounted() {
+      document.body.appendChild(this.$el)
+    },
   }
 </script>

@@ -183,7 +183,7 @@ $fa-font-path: '~font-awesome/fonts/';
         cursor: pointer;
         margin-left: 1rem;
         text-align: center;
-        background: red;
+        background: $primary;
         color: white;
     }
 }
@@ -781,11 +781,13 @@ $fa-font-path: '~font-awesome/fonts/';
     left: 0;
     opacity: 0;
     width: 100%;
+    margin-top: 5rem;
     animation: message 2s ease;
     .body-message {
         width: 50%;
         padding: 1rem;
         margin: 0 auto;
+        font-weight: bold;
         color: $white;
         text-align: center;
         background: $black;

@@ -37,7 +37,7 @@
       </div>
     </div>
     <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
-      <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true">{{ $t('forum.detail.closeNote') }}</i>
+      <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="sealNote">{{ $t('forum.detail.closeNote') }}</i>
       <div class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true">{{ $t('forum.detail.essenceNote') }}</div>
       <div class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true">{{ $t('forum.detail.recommendNote') }}</div>
     </div>
@@ -52,6 +52,7 @@
   import {
     swiperContainer
   } from '../components/swiper'
+  import message from './message'
 
   export default {
     props: {
@@ -136,8 +137,17 @@
             imgs: this.itemData.img
           })
         }
+      },
 
-      }
+      sealNote(){
+        // this.$http({
+        //   url: '',
+        //   method: 'post',
+        //   params: {},
+        // })
+        message.showMsg(this.$t('forum.detail.sealNote'))
+        
+      },
     }
   }
 </script>

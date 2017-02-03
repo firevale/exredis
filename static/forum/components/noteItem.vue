@@ -24,13 +24,9 @@
   } from 'vuex'
   export default {
     props: {
-      tagBgColor: {
-        type: String,
-        default: '#f00',
-      },
-      tagColor: {
-        type: String,
-        default: '#fff',
+      searchModel: {
+        type: Boolean,
+        default: false,
       },
       itemData: {
         type: Object,
@@ -41,8 +37,8 @@
       ...mapGetters(['searchKey']),
 
       filterKey() {
-        return this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">' + this.searchKey +
-          '</span>')
+        return this.searchModel?this.itemData.title.replace(new RegExp(this.searchKey, 'g'), '<span class="red">' + this.searchKey +
+          '</span>'): this.itemData.title
       }
     },
 

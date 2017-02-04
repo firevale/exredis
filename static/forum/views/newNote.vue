@@ -16,16 +16,13 @@
           <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
           <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
         </div>
-        <div v-show="!messageTip" class="column is-full red pointer">
-          <span @click="onPreView">{{ pageView? $t('forum.newNote.editView'): $t('forum.newNote.preView') }}</span>
-        </div>
       </div>
-      <div v-show="!pageView">
+      <div>
         <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
           <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
         </div>
         <div class="column is-full" style="position: relative; padding-bottom: 0;">
-          <textarea class="note-content" maxlength="500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
+          <textarea class="note-content" maxlength="1500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
           <div class="upload-img">
             <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
             <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>
@@ -37,7 +34,7 @@
         </div>
       </div>
       <div class="column is-full" style="text-align: center;">
-        <a class="button new-note">{{ $t('forum.newNote.btnTxt') }}</a>
+        <a class="button new-note" @click="sentNote">{{ $t('forum.newNote.btnTxt') }}</a>
       </div>
     </div>
   </div>
@@ -55,6 +52,7 @@
     preViewNote
   } from '../components/preView'
   import utils from '../common/utils'
+  import message from '../components/message'
 
   var marked = require('marked');
   marked.setOptions({
@@ -113,7 +111,6 @@
             url: 'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'
           }
         ],
-        pageView: false,
         noteOrderTypeStr: this.$t('forum.main.discussion'),
       }
     },
@@ -148,10 +145,6 @@
             break;
           }
         }
-      },
-
-      onPreView() {
-        this.pageView = !this.pageView
       },
 
       orderChoose() {
@@ -199,6 +192,23 @@
         })
       },
 
+      sentNote(){
+        if(!this.title){
+          message.showMsg(this.$t('forum.newNote.titlePlaceholder'))
+        }else if(!this.content){
+          message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
+        }else{
+          this.$http({
+            url: '',
+            method: 'post',
+            params: {},
+          }).then(_=>{
+
+          }).catch(_=>{
+
+          })
+        }
+      }
     }
   }
 </script>

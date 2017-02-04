@@ -1,51 +1,54 @@
 @import "./color";
-
 html,
 body {
-  margin: 0;
-  padding: 0;
-  background-color: $white;
+    margin: 0;
+    padding: 0;
+    background-color: $white;
+}
+
+img {
+    display: block;
 }
 
 input {
-  border: 1px solid $dark;
-  border-radius: 0;
-  display: block;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    border: 1px solid $dark;
+    border-radius: 0;
+    display: block;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 a {
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 input:focus,
 select:focus,
 textarea:focus,
 button:focus {
-  outline: none;
+    outline: none;
 }
 
 input::-ms-clear {
-  display: none;
+    display: none;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 input[type="button"]:active,
 input[type="submit"]:active {
-  filter: brightness(0.6);
+    filter: brightness(0.6);
 }
 
 input.inputDisabled {
-  background: $dark !important;
+    background: $dark !important;
 }
 
 input.invalid {
-  border-color: $red;
+    border-color: $red;
 }
 
 input[type="email"]:focus,
@@ -54,26 +57,25 @@ input[type="text"]:focus,
 input[type="email"].invalid:focus,
 input[type="password"].invalid:focus,
 input[type="text"].invalid:focus {
-  border-color: $primary;
+    border-color: $primary;
 }
 
 @mixin border-radius($val) {
-  -webkit-border-radius: $val;
-  -moz-border-radius: $val;
-  border-radius: $val;
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
-  background-clip: padding-box;
+    -webkit-border-radius: $val;
+    -moz-border-radius: $val;
+    border-radius: $val;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
 }
 
 @mixin display-flex($direction, $justify, $align) {
-  display: -webkit-flex;
-  -webkit-flex-direction: $direction;
-  -webkit-justify-content: $justify;
-  -webkit-align-items: $align;
-
-  display: flex;
-  flex-direction: $direction;
-  justify-content: $justify;
-  align-items: $align;
+    display: -webkit-flex;
+    -webkit-flex-direction: $direction;
+    -webkit-justify-content: $justify;
+    -webkit-align-items: $align;
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
 }

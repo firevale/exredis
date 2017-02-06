@@ -1,6 +1,6 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child fixed-top  row-line">
+  <div class="is-ancestor is-parent is-vertical">
+    <div class="is-child fixed-top row-line" style="border-bottom: none;">
       <div class="arrow-back">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
@@ -9,6 +9,7 @@
       </div>
     </div>
     <div class="scroll-box">
+      <div class="horizontal-seprate"></div>
       <div class="is-chid  row-menu">
         <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customService.commonIssues') }}</div>
         <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customService.contactService') }}</div>

@@ -1,7 +1,7 @@
 <template>
   <div class="content-item">
     <div v-for="item in records" class="content-item" @click="selectedId==item.id?selectedId='':selectedId=item.id">
-      <div class="row-menu ">
+      <div class="row-menu">
         <span style="flex: 1;">{{item.time}}</span>
         <span :class="{'link': item.state=='已回复'}">{{item.state}}</span>
       </div>

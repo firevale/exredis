@@ -115,8 +115,11 @@ case "$1" in
 	test)
 		test
 		;;
+	docker_run)
+		docker_run $2
+		;;
 	*)
-		echo "$0 COMMAND"
+		echo "$0 COMMAND" && echo "volumn from local: $PWD"
 		echo "COMMAND: shell -- run shell command in acs container"
 		echo "COMMAND: update -- update docker images used by ACS server"
 		;;

@@ -69,6 +69,9 @@ $fa-font-path: '~font-awesome/fonts/';
 .content-item {
     margin: auto 1rem !important;
     justify-content: space-around;
+    .row-menu{
+        font-size: 1rem;
+    }
 }
 
 .back-top {
@@ -716,6 +719,7 @@ $fa-font-path: '~font-awesome/fonts/';
 }
 
 .bottom-contact {
+    font-size: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -780,7 +784,7 @@ $fa-font-path: '~font-awesome/fonts/';
         border: 1px solid $dark;
         border-left: none;
         padding: .5rem;
-        font-size: 1.2rem;
+        font-size: 1rem;
         cursor: pointer;
         float: left;
         width: 33.33%;

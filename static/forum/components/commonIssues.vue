@@ -1,24 +1,20 @@
 <template>
-  <div>
-    <div v-show="!issueDetail">
-      <div v-show="!result.length&&issues&&issues.length" class="is-chid content-item">
-        <div class="row-menu">
-          <input class="search-input" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')"></input>
-          <input class="search-button" type="button" :value="$t('forum.customService.searchBtn')"></input>
-          <i class="fa fa-search search-icon" aria-hidden="true" style="top: .5rem;"></i>
+  <div style="margin-top: 2rem;">
+    <div v-show="!issueDetail" class="content-item">
+      <div class="row-menu is-child content-item">
+          <div style="display: flex; flex: 3;position: relative;">
+            <input class="search-input" v-model="issueKey" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')" @keyup.enter="searchIssueByKey(issueKey)"></input>
+            <i v-show="issueKey" class="fa fa-times times-icon" style="top: .5rem;" aria-hidden="true" @click="issueKey=''"></i>
+            <i class="fa fa-search search-icon" aria-hidden="true" style="top: .5rem;"></i>
+          </div>
+          <input class="search-button" type="button" :value="$t('forum.customService.searchBtn')" @click="searchIssueByKey(issueKey)"></input>
         </div>
+      <div v-show="!issueKey && !result.length" style="margin-top: 2rem;">
         <div class="float-container">
-          <div v-for="item in issues" class="issue">{{item}}</div>
+          <div v-for="item in issues" class="issue" @click="searchIssueByKey(item)">{{item}}</div>
         </div>
       </div>
-      <div v-show="result&&result.length" class="is-chid content-item">
-        <div class="row-menu">
-          <input class="search-input" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')"></input>
-          <input class="search-button" type="button" :value="$t('forum.customService.searchBtn')"></input>
-          <i class="fa fa-search search-icon" aria-hidden="true" style="top: .5rem;"></i>
-        </div>
-      </div>
-      <div class="is-child content-item">
+      <div style="margin-top: 2rem;">
         <div v-for="item in result" class="search-result" @click="getIssueDetail(item)">
           {{item.title}}
           <i class="fa fa-angle-right title is-4 dark" aria-hidden="true" style="position:absolute; right: 1rem;"></i>
@@ -50,10 +46,12 @@
     },
     data() {
       return {
+        issueKey: '',
         issuePageCount: 5,
         issueCurrentPage: 1,
-        issues: ['闪退卡顿', '无法登录', '无法连接', '充值问题', '游客账号'],
-        result: [{
+        issues: ['闪退卡顿', '登录', '无法连接', '充值', '游客账号'],
+        result: [],
+        simulateResult: [{
             id: '001',
             title: '问题：总是充值失败',
           },
@@ -65,10 +63,23 @@
             id: '003',
             title: '问题：充值未到账',
           },
+          {
+            id: '003',
+            title: '问题：登录不上去,闪退卡顿',
+          },
         ],
         issueDetail: null,
       }
     },
+    
+    watch: {
+      'issueKey'(newVal, oldVal){
+        if(oldVal && !newVal){
+          this.result = []
+        }
+      }
+    },
+
     computed: {
       issueTitle() {
         return this.$t('forum.customService.issueTitle', {
@@ -95,6 +106,13 @@
         // }).then(result=>{
 
         // })
+      },
+      searchIssueByKey(key) {
+        this.issueKey = key
+        this.result = this.simulateResult.filter(
+          function(item){
+            return new RegExp(key,"g").test(item.title)
+        })
       },
     }
   }

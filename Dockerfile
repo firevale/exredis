@@ -1,4 +1,4 @@
-FROM docker-registry.firevale.com/acs_dev:latest 
+FROM docker-registry.firevale.com/ass_dev:latest 
 
 EXPOSE 80
 

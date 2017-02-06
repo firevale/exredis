@@ -23,7 +23,7 @@
         <p v-show="!noteList&&searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
       </div>
       <div v-if="noteList&&noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-        <note-item v-for="item in noteList" search-model="true" :item-data="item" :mark-key="key"></note-item>
+        <note-item v-for="item in noteList" search-model :item-data="item" :mark-key="key"></note-item>
       </div>
       <div v-if="noteList&&noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
         <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>

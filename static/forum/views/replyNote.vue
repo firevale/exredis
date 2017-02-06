@@ -15,7 +15,7 @@
         <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <textarea class="note-content" maxlength="500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
+        <textarea class="note-content" maxlength="1500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
         <div class="upload-img">
           <i class="fa fa-file-image-o" aria-hidden="true" @click="uploadImg"></i>
           <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>

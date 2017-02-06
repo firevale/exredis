@@ -34,10 +34,17 @@
         </div>
       </div>
       <div class="horizontal-seprate"></div>
-      <div class="is-chid  row-menu">
-        <div class="service-menu" :class="{'menu-selected': type=='myNote'}" @click="type='myNote'">{{ $t('forum.personal.myNote') }}</div>
-        <div class="service-menu" :class="{'menu-selected': type=='myReply'}" @click="type='myReply'">{{ $t('forum.personal.myReply') }}</div>
-        <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">{{ $t('forum.personal.myFavor') }}</div>
+      <div class="is-child  row-menu">
+        <div class="service-menu" :class="{'menu-selected': type=='myNote'}" @click="type='myNote'">
+          <span>{{ $t('forum.personal.myNote') }}</span>
+          <span v-show="personal.myNotes.length" class="note-count">{{ personal.myNotes.length }}</span>
+        </div>
+        <div class="service-menu" :class="{'menu-selected': type=='myReply'}" @click="type='myReply'">
+          <span>{{ $t('forum.personal.myReply') }}</span>
+        </div>
+        <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">
+          <span>{{ $t('forum.personal.myFavor') }}</span>
+        </div>
       </div>
       <div class="horizontal-seprate">
         <div :class="{'move-box-left': type=='myNote','move-box-center': type=='myReply','move-box-right': type=='myFavor'}">

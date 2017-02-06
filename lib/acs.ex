@@ -37,7 +37,7 @@ defmodule Acs do
     res = Supervisor.start_link(children, opts)
     # run migration when app startup
     Ecto.Migrator.run Acs.Repo, Path.join(["#{:code.priv_dir(:acs)}", "repo", "migrations"]), :up, all: true
-    init_elasticsearch_mappings()
+    # init_elasticsearch_mappings()
     # return res
     res 
   end

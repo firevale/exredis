@@ -48,6 +48,8 @@ app |> App.changeset(%{payment_callback: "http://127.0.0.1:4000/api/sdkpay/defau
 
 AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com"}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhangshiqing@firevale.com"}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxiaobin@firevale.com"}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxb@firevale.com"}) |> Repo.insert
 
 
 

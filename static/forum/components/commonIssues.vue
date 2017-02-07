@@ -11,7 +11,7 @@
         </div>
       <div v-show="!issueKey && !result.length" style="margin-top: 2rem;">
         <div class="float-container">
-          <div v-for="item in issues" class="issue" @click="searchIssueByKey(item)">{{item}}</div>
+          <div v-for="item in commonIssues" class="issue" @click="searchIssueByKey(item)">{{item}}</div>
         </div>
       </div>
       <div style="margin-top: 2rem;">
@@ -38,6 +38,10 @@
 </template>
 <script>
   import Vue from 'vue'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
   import pagination from './pagination.vue'
 
   export default {
@@ -81,6 +85,8 @@
     },
 
     computed: {
+      ...mapGetters(['commonIssues']),
+
       issueTitle() {
         return this.$t('forum.customService.issueTitle', {
           title: this.issueDetail && this.issueDetail.title

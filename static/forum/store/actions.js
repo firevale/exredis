@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import utils from '../common/utils'
-
 export const setNoteLoadType = ({
   commit
 }, type) => {
@@ -59,6 +56,12 @@ export const setUserInfo = ({
   commit
 }, user) => {
   commit('USER_SET_INFO', user)
+}
+
+export const setCommonIssues = ({
+  commit
+}, issues) => {
+  commit('COMMON_ISSUES_SET', issues)
 }
 
 

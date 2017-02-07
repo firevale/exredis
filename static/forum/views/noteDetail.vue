@@ -89,7 +89,7 @@
             description: '抢沙发',
           },
           {
-            level: 'LV4. 听雨闲人',
+            level: 'LV1. 烟雨游友',
             rank: '4楼',
             portrait: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
             title: '',

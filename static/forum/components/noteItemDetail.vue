@@ -8,7 +8,7 @@
         <div class="title is-6 txt-center dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
         <div class="title is-6 txt-center" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
       </div>
-      <div class="column is-10">
+      <div class="column is-10.5">
         <div v-if="itemData.title" class="columns" style="margin: 0;">
           <div class="column is-10 title is-5 detail-title">
             {{itemData.title}}
@@ -20,11 +20,11 @@
         <div class="column detail-info">
           <span class="note-time dark" style="font-size: .8rem;">{{ itemData.time }}</span>
           <span class="note-author" style="font-size: .9rem;">{{ itemData.author }}</span>
-          <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteFollowNote" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
+          <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteNoteQuestion" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
         </div>
         <div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
-          <figure v-for="item in itemData.img" class="image is-256x256">
-            <img :src="item.url" @click="showAllImgInSwiper"></img>
+          <figure v-for="(item, index) in itemData.img" class="image is-256x256">
+            <img :src="item.url" @click="showAllImgInSwiper(index)"></img>
             <i v-if="preView" class="fa fa-times-circle img-remove-icon" @click="$emit('img-delete', item)"></i>
           </figure>
         </div>
@@ -38,8 +38,8 @@
     </div>
     <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
       <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="sealNote">{{ $t('forum.detail.closeNote') }}</i>
-      <div class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true">{{ $t('forum.detail.essenceNote') }}</div>
-      <div class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true">{{ $t('forum.detail.recommendNote') }}</div>
+      <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="essenceNote">{{ $t('forum.detail.essenceNote') }}</i>
+      <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="recommendNote">{{ $t('forum.detail.recommendNote') }}</i>
     </div>
   </div>
 </template>
@@ -96,20 +96,22 @@
     },
 
     methods: {
-      deleteFollowNote() {
+      deleteNoteQuestion() {
         AlertDialog.showModal({
           message: this.$t('forum.detail.deleteTip'),
-          onOk: this.onOK,
-          onCancel: this.onCancel
+          onOk: this.deleteFollowNote,
+          onCancel: null,
         })
       },
 
-      onOK() {
-
-      },
-
-      onCancel() {
-
+      deleteFollowNote() {
+        this.$http({
+          url: 'deleteFollowNote',
+          method: 'POST',
+          params: {
+            noteID: this.itemData.ID,
+          },
+        }).then().catch()
       },
 
       floorHost() {
@@ -130,24 +132,49 @@
         //   }).catch()
       },
 
-      showAllImgInSwiper() {
+      showAllImgInSwiper(index) {
         if (!this.preView) {
           swiperContainer({
             visible: true,
-            imgs: this.itemData.img
+            imgs: this.itemData.img,
+            rank: index,
           })
         }
       },
 
       sealNote(){
-        // this.$http({
-        //   url: '',
-        //   method: 'post',
-        //   params: {},
-        // })
+        this.$http({
+          url: 'sealNote',
+          method: 'post',
+          params: {
+            noteID: this.itemData.ID,
+          },
+        }).then().catch()
+
         message.showMsg(this.$t('forum.detail.sealNote'))
         
       },
+
+      essenceNote(){
+        this.$http({
+          url: 'essenceNote',
+          method: 'post',
+          params: {
+            noteID: this.itemData.ID,
+          },
+        }).then().catch()
+      },
+
+      recommendNote(){
+        this.$http({
+          url: 'recommendNote',
+          method: 'post',
+          params: {
+            noteID: this.itemData.ID,
+          },
+        }).then().catch()
+      },
+
     }
   }
 </script>

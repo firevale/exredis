@@ -1,5 +1,4 @@
 defmodule ImportFvacModel do 
-
   use     Timex
 
   require Redis
@@ -28,6 +27,8 @@ defmodule ImportFvacModel do
   import  Ecto.Query
   alias   Ecto.Adapters.SQL
   alias   Acs.Repo
+
+  require Elasticsearch
 
   def import_fvac_client(data) do 
     client = data |> Base.decode64! |> :erlang.binary_to_term
@@ -672,6 +673,41 @@ defmodule ImportFvacModel do
           date: date
         }) |> Repo.insert!
     end
+  end
+
+  def save_orders_to_elasticsearch() do 
+    count = Repo.one!(from order in AppOrder, select: count(order.id))
+    IO.puts "save #{count} orders to elasticsearch..."
+
+    0 .. round(count / 100) |> Enum.each(fn(page) -> 
+      IO.puts "saving orders, page: #{page}"
+      query = from order in AppOrder,
+              select: order, 
+              order_by: [asc: order.created_at],
+              limit: 100,
+              offset: ^(page * 100)
+      
+      Repo.all(query) |> Enum.each(fn(order) -> 
+        Elasticsearch.index(%{
+          index: "acs",
+          type: "orders",
+          doc: %{
+            app_id: order.app_id,
+            user_id: order.user_id,
+            app_user_id: order.app_user_id,
+            sdk_user_id: order.sdk_user_id,
+            goods_id: order.goods_id,
+            device_id: order.device_id,
+            cp_order_id: order.cp_order_id,
+            transaction_id: order.transaction_id,
+          },
+          params: nil,
+          id: order.id
+        }) 
+      end)
+
+      :timer.sleep(100)
+    end)
   end
 
   def import_all() do 

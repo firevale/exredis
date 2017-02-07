@@ -46,7 +46,7 @@ export default new Router({
     }, {
       name: 'Settings',
       path: 'settings',
-      component: require('../views/Settingsx')
+      component: require('../views/Settings')
     }],
   }, {
     path: '*',

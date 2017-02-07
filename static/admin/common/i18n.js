@@ -47,6 +47,7 @@ export default {
           add: '添加新商品',
         }
       },
+      
 
       upload: {
         title: '上传',
@@ -105,6 +106,7 @@ export default {
         ok: '确认',
         cancel: '取消',
         warning: '警告',
+        searchOrders: '输入用户ID/订单号搜索',
       },
 
       messages: {

@@ -4,15 +4,24 @@ const state = {
   list: [],
   hash: {},
   sdks: [],
+  goods: {},
 }
 
 const mutations = {
   [types.UPDATE_APPS](state, apps) {
     state.list = apps
+    let hash = {}
     for (let index in apps) {
       let app = apps[index]
-      state.hash[app.id] = app
+      hash[app.id] = app
+      if (typeof app.goods == 'object') {
+        for (let j in app.goods) {
+          let goods = app.goods[j]
+          state.goods[`${app.id}-${goods.id}`] = goods
+        }
+      }
     }
+    state.hash = hash
   },
 
   [types.UPDATE_SDKS](state, sdks) {

@@ -7,13 +7,15 @@ import locales from './common/i18n'
 import utils from './common/utils'
 import store from './store'
 import filters from './common/filters'
+import VueQuillEditor from 'vue-quill-editor'
+
 // vue-transfer-dom
-import VueTransferDom from 'vue-transfer-dom'
-Vue.use(VueTransferDom)
+// import VueTransferDom from 'vue-transfer-dom'
+// Vue.use(VueTransferDom)
 Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
-
+Vue.use(VueQuillEditor)
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

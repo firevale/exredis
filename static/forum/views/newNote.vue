@@ -22,14 +22,12 @@
           <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
         </div>
         <div class="column is-full" style="position: relative; padding-bottom: 0;">
-          <textarea class="note-content" maxlength="1500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
-          <div class="upload-img">
-            <i class="fa fa-file-image-o " aria-hidden="true" @click="uploadImg"></i>
-            <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>
-          </div>
+          <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+            @ready="onEditorReady($event)" @change="onEditorChange($event)">
+          </quill-editor>
         </div>
         <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-          <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true" @click="uploadImg"></i>
+          <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
           <span>{{messageTip}}</span>
         </div>
       </div>
@@ -67,12 +65,9 @@
   });
 
   export default {
-    mounted() {
-
-    },
-
+    
     components: {
-
+      
     },
     computed: {
       ...mapGetters(['userInfo']),
@@ -86,67 +81,18 @@
           return ""
         }
       },
-
-      markdownToHtml() {
-        let imgstr = '';
-        this.imgs.map(
-          function (e) {
-            imgstr += '![no img](' + e.url + ') '
-          }
-        )
-        return marked('# 【' + this.noteOrderTypeStr + '】' + this.title + ' \n ' + imgstr + ' \n# ' + this.content)
-      }
     },
 
     data() {
       return {
+        editorOption: {},
         title: '',
         content: '',
-        imgs: [{
-            id: '001',
-            url: 'http://img4.imgtn.bdimg.com/it/u=2189848546,1084553826&fm=23&gp=0.jpg'
-          },
-          {
-            id: '002',
-            url: 'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'
-          }
-        ],
         noteOrderTypeStr: this.$t('forum.main.discussion'),
       }
     },
 
     methods: {
-      uploadImg() {
-        upload.showModal({
-          action: 'http://zhangshiqing.firevale.com:3000/uploadImage',
-          headers: this.requestHeaders,
-          accept: 'image/*',
-          extensions: 'png,jpg,gif',
-          title: '上传图片',
-          callback: response => {
-            if (typeof response == 'object') {
-              if (response.code == 0) {
-                this.imgs.push(response.data)
-              } else {
-                //error
-              }
-            } else {
-              //error
-            }
-          },
-        })
-      },
-
-      deleteUploadImg(imgId) {
-        //this.$http();
-        for (var i = 0; i < this.imgs.length; i++) {
-          if (this.imgs[i].id == imgId) {
-            this.imgs.splice(i, 1);
-            break;
-          }
-        }
-      },
-
       orderChoose() {
         menuModal.showModal([{
             name: this.$t('forum.main.discussion'),
@@ -178,7 +124,6 @@
       preview() {
         preViewNote({
           visible: true,
-          deleteImgFunc: this.deleteUploadImg,
           item: {
             level: this.userInfo.level,
             rank: '',
@@ -192,23 +137,38 @@
         })
       },
 
-      sentNote(){
-        if(!this.title){
+      sentNote() {
+        if (!this.title) {
           message.showMsg(this.$t('forum.newNote.titlePlaceholder'))
-        }else if(!this.content){
+        } else if (!this.content) {
           message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
-        }else{
+        } else {
           this.$http({
             url: '',
             method: 'post',
             params: {},
-          }).then( _ => {
+          }).then(_ => {
 
-          }).catch( _ => {
+          }).catch(_ => {
 
           })
         }
-      }
+      },
+      onEditorBlur(e) {
+
+      },
+      onEditorFocus(e) {
+
+      },
+      onEditorReady(e) {
+
+      },
+      onEditorChange(e){
+        this.content = e.html
+      },
+
+      
+
     }
   }
 </script>

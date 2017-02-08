@@ -8,10 +8,10 @@
         <div class="title is-6 txt-center dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
         <div class="title is-6 txt-center" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
       </div>
-      <div class="column is-10.5">
+      <div class="column is-10.5 ql-editor">
         <div v-if="itemData.title" class="columns" style="margin: 0;">
           <div class="column is-10 title is-5 detail-title">
-            {{itemData.title}}
+            <p>{{itemData.title}}</p>
           </div>
           <div class="column is-2" style="text-align: right;">
             <span v-if="itemData.rank == $t('forum.detail.author')" class="button follow-btn" @click="floorHost">{{ onlyHost? $t('forum.detail.followAll'): $t('forum.detail.follow') }}</span>
@@ -22,12 +22,12 @@
           <span class="note-author" style="font-size: .9rem;">{{ itemData.author }}</span>
           <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteNoteQuestion" style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
         </div>
-        <div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
+        <!--<div v-if="itemData.img&&itemData.img.length" class="column detail-imgs">
           <figure v-for="(item, index) in itemData.img" class="image is-256x256">
             <img :src="item.url" @click="showAllImgInSwiper(index)"></img>
             <i v-if="preView" class="fa fa-times-circle img-remove-icon" @click="$emit('img-delete', item)"></i>
           </figure>
-        </div>
+        </div>-->
         <div class="column" style="font-weight: bold;" v-html="itemData.description">
         </div>
         <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
@@ -55,6 +55,18 @@
   import message from './message'
 
   export default {
+    mounted() {
+      if(this.itemData.rank == '楼主'){
+        window.document.addEventListener('click', this.checkImgClick)
+      }
+    },
+
+    destroyed () {
+      if(this.itemData.rank == '楼主'){
+        window.document.removeEventListener('click', this.checkImgClick)
+      }
+    },
+
     props: {
       itemData: {
         type: Object,
@@ -72,6 +84,7 @@
     data() {
       return {
         onlyHost: false,
+        imgsPreview: document.getElementsByTagName('img'),
       }
     },
 
@@ -136,7 +149,7 @@
         if (!this.preView) {
           swiperContainer({
             visible: true,
-            imgs: this.itemData.img,
+            imgs: this.imgsPreview,
             rank: index,
           })
         }
@@ -173,6 +186,12 @@
             noteID: this.itemData.ID,
           },
         }).then().catch()
+      },
+
+      checkImgClick(e){
+        if(e.target.tagName.toLowerCase()=="img"){
+          this.showAllImgInSwiper(0)
+        }
       },
 
     }

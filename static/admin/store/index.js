@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
 
-import app from './modules/app'
+import main from './modules/main'
 import apps from './modules/apps'
 import menu from './modules/menu'
 
@@ -14,7 +14,7 @@ const store = new Vuex.Store({
   actions,
   getters,
   modules: {
-    app,
+    main,
     menu,
     apps
   },

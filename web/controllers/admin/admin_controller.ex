@@ -192,6 +192,7 @@ defmodule Acs.AdminController do
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
         end                
+
       %AppGoodsProductId{} = product_id_record ->
         case AppGoodsProductId.changeset(product_id_record, product_id_info) |> Repo.update do 
           {:ok, new_product_id_info} ->
@@ -201,6 +202,21 @@ defmodule Acs.AdminController do
             conn |> json(%{success: false, message: translate_errors(errors)})
         end 
     end
+  end
+
+  def fetch_orders(conn, %{"page" => page, "records_per_page" => records_per_page}) do 
+    total = Repo.one!(from order in AppOrder, select: count(order.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from order in AppOrder,
+              select: order,
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: order.created_at]
+
+    orders = Repo.all(query)
+
+    conn |> json(%{success: true, orders: orders, total: total_page})     
   end
 
 end

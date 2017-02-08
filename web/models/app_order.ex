@@ -10,6 +10,8 @@ defmodule Acs.AppOrder do
     def cheat, do: 403 
   end
 
+  @derive {Poison.Encoder, except: [:app, :user, :app_user, :goods, :__meta__]}
+
   @primary_key false
   schema "app_orders" do
     field :id, :string, primary_key: true

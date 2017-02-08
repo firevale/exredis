@@ -107,6 +107,9 @@ export default {
         cancel: '取消',
         warning: '警告',
         searchOrders: '输入用户ID/订单号搜索',
+        oops: '哦噢。。。',
+        noOrderToDisplay: '当前没有任何可以显示的订单',
+        loading: '正在加载数据...',
       },
 
       messages: {

@@ -22,7 +22,7 @@ const { state } = store
 
 
 router.beforeEach((route, redirect, next) => {
-  if (state.app.device.isMobile && state.app.sidebar.opened) {
+  if (state.main.device.isMobile && state.main.sidebar.opened) {
     store.commit(TOGGLE_SIDEBAR, false)
   }
   next()

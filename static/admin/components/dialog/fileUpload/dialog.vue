@@ -135,10 +135,10 @@
                     duration: 4500,
                   })
                 }
-                else if (typeof file.response == 'object' && typeof file.response.message == 'string') {
+                else if (typeof file.response == 'object' && typeof file.response.i18n_message == 'string') {
                   openNotification({
                     title: this.$t('admin.titles.uploadFailed'),
-                    message: this.$t(file.response.message, file.response.message_object),
+                    message: this.$t(file.response.i18n_message, file.response.i18n_message_object),
                     type: 'danger',
                     duration: 6000,
                   })

@@ -211,6 +211,7 @@ defmodule Acs.AdminController do
     query = from order in AppOrder,
               select: order,
               limit: ^records_per_page,
+              where: order.status != 1,
               offset: ^((page - 1) * records_per_page),
               order_by: [desc: order.created_at]
 

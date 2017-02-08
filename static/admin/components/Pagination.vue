@@ -60,11 +60,18 @@ export default {
       type: Number,
       default: 1
     },
+
+    onPageChange: {
+      type: Function,
+      default: undefined
+    }
   },
 
   methods: {
     selectPage: function(page) {
-      this.$dispatch('switch-page', page)      
+      if (this.onPageChange) {
+        this.onPageChange(page)
+      }
     }
   }
 }

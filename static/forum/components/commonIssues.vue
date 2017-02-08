@@ -3,7 +3,7 @@
     <div v-show="!issueDetail" class="content-item">
       <div class="row-menu is-child content-item">
           <div style="display: flex; flex: 3;position: relative;">
-            <input class="search-input" v-model="issueKey" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')" @keyup.enter="searchIssueByKey(issueKey)"></input>
+            <input class="search-input dark" v-model="issueKey" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')" @keyup.enter="searchIssueByKey(issueKey)"></input>
             <i v-show="issueKey" class="fa fa-times times-icon" style="top: .5rem;" aria-hidden="true" @click="issueKey=''"></i>
             <i class="fa fa-search search-icon" aria-hidden="true" style="top: .5rem;"></i>
           </div>
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div style="margin-top: 2rem;">
-        <div v-for="item in result" class="search-result" @click="getIssueDetail(item)">
+        <div v-for="item in result" class="search-result dark" @click="getIssueDetail(item)">
           {{item.title}}
           <i class="fa fa-angle-right title is-4 dark" aria-hidden="true" style="position:absolute; right: 1rem;"></i>
         </div>
@@ -30,7 +30,7 @@
         </input>
       </div>
       <div class="row-menu" style="padding-top: 2rem;">
-        <textarea disabled class="issue-content" :value="issueDetail&&issueDetail.content">
+        <textarea disabled class="issue-content dark" :value="issueDetail&&issueDetail.content">
         </textarea>
       </div>
     </div>

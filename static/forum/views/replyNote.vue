@@ -25,9 +25,9 @@
         <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true" @click="uploadImg"></i>
         <span>{{messageTip}}</span>
       </div>
-    </div>
-    <div class="column is-full" style="text-align: center;">
-      <a class="button new-note">{{ $t('forum.newNote.btnTxt') }}</a>
+      <div class="column is-full" style="text-align: center;">
+        <a class="button new-note" @click="replyNote">{{ $t('forum.newNote.btnTxt') }}</a>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +44,7 @@
     preViewNote
   } from '../components/preView'
   import utils from '../common/utils'
+  import message from '../components/message'
 
   var marked = require('marked');
   marked.setOptions({
@@ -63,7 +64,7 @@
     },
 
     components: {
-    
+
     },
 
     computed: {
@@ -91,13 +92,18 @@
       }
     },
 
-    data() {
+    data() { 
       return {
         title: '',
         content: '',
-        imgs: [
-          {id: '001', url:'http://img4.imgtn.bdimg.com/it/u=2189848546,1084553826&fm=23&gp=0.jpg'},
-          {id: '002', url:'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'}
+        imgs: [{
+            id: '001',
+            url: 'http://img4.imgtn.bdimg.com/it/u=2189848546,1084553826&fm=23&gp=0.jpg'
+          },
+          {
+            id: '002',
+            url: 'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'
+          }
         ],
         pageView: false,
         noteOrderTypeStr: this.$t('forum.main.discussion'),
@@ -124,6 +130,22 @@
             }
           },
         })
+      },
+
+      replyNote(){
+        if(!this.content){
+          message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
+        }else{
+          this.$http({
+            url: '',
+            method: 'post',
+            params: {},
+          }).then( _ => {
+
+          }).catch( _ => {
+
+          })
+        }
       },
 
       deleteUploadImg(imgId) {

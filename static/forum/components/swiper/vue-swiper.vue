@@ -37,20 +37,18 @@
         type: Boolean,
         default: false
       },
-      preClick: {
+
+      focusIndex: {
         type: Number,
-      },
-      nextClick: {
-        type: Number,
+        default: -1,
       }
     },
     watch: {
-      'preClick' (oldVal, nowVal) {
-        this.prev()
-      },
-      'nextClick' (oldVal, nowVal) {
-        this.next()
-      },
+      'focusIndex' (newVal, oldVal) {
+        if (newVal != oldVal) {
+          this.setPage(newVal + 1)
+        }
+      }
     },
     data() {
       return {
@@ -108,6 +106,7 @@
           return i > page - 2 ? total : total + el[propName];
         }, 0);
         this._onTransitionStart();
+        this.$emit('currentPage', page - 1)
       },
       isHorizontal() {
         return this.direction === HORIZONTAL;

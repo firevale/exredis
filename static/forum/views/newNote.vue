@@ -149,23 +149,23 @@
 
       orderChoose() {
         menuModal.showModal([{
-            name: '综合讨论',
+            name: this.$t('forum.main.discussion'),
             code: 'discussion'
           },
           {
-            name: '攻略心得',
+            name: this.$t('forum.main.experience'),
             code: 'experience'
           },
           {
-            name: '转帖分享',
+            name: this.$t('forum.main.ras'),
             code: 'ras'
           },
           {
-            name: '玩家原创',
+            name: this.$t('forum.main.original'),
             code: 'original'
           },
           {
-            name: '问题求助',
+            name: this.$t('forum.main.appeal'),
             code: 'appeal'
           }
         ], this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -202,9 +202,9 @@
             url: '',
             method: 'post',
             params: {},
-          }).then(_=>{
+          }).then( _ => {
 
-          }).catch(_=>{
+          }).catch( _ => {
 
           })
         }

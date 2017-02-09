@@ -10,7 +10,7 @@
               <img :src="item.url" style="width: 100%;"></img>
             </figure>
           </div>
-          </swiper>
+        </swiper>
       </section>
       <i v-show="rank>0" class="fa fa-arrow-left olive button arrow-icon" style="left: 0;" aria-hidden="true" @click="navImg('')"></i>
       <i v-show="rank<imgs.length-1" class="fa fa-arrow-right olive button arrow-icon" style="right: 0;" aria-hidden="true" @click="navImg(1)"></i>

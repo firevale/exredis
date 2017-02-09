@@ -15,14 +15,12 @@
         <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <textarea class="note-content" maxlength="1500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
-        <div class="upload-img">
-          <i class="fa fa-file-image-o" aria-hidden="true" @click="uploadImg"></i>
-          <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>
-        </div>
+        <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+          @ready="onEditorReady($event)" @change="onEditorChange($event)">
+        </quill-editor>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true" @click="uploadImg"></i>
+        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
         <span>{{messageTip}}</span>
       </div>
       <div class="column is-full" style="text-align: center;">
@@ -80,58 +78,19 @@
           return ""
         }
       },
-
-      markdownToHtml() {
-        let imgstr = '';
-        this.imgs.map(
-          function (e) {
-            imgstr += '![no img](' + e.url + ') '
-          }
-        )
-        return marked('# ' + this.replyTitle + ' \n ' + imgstr + ' \n# ' + this.content)
-      }
     },
 
     data() { 
       return {
+        editorOption: {},
         title: '',
         content: '',
-        imgs: [{
-            id: '001',
-            url: 'http://img4.imgtn.bdimg.com/it/u=2189848546,1084553826&fm=23&gp=0.jpg'
-          },
-          {
-            id: '002',
-            url: 'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'
-          }
-        ],
         pageView: false,
         noteOrderTypeStr: this.$t('forum.main.discussion'),
       }
     },
 
     methods: {
-      uploadImg() {
-        upload.showModal({
-          action: 'http://zhangshiqing.firevale.com:3000/uploadImage',
-          headers: this.requestHeaders,
-          accept: 'image/*',
-          extensions: 'png,jpg,gif',
-          title: '上传图片',
-          callback: response => {
-            if (typeof response == 'object') {
-              if (response.code == 0) {
-                this.imgs.push(response.data)
-              } else {
-                //error
-              }
-            } else {
-              //error
-            }
-          },
-        })
-      },
-
       replyNote(){
         if(!this.content){
           message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
@@ -145,16 +104,6 @@
           }).catch( _ => {
 
           })
-        }
-      },
-
-      deleteUploadImg(imgId) {
-        //this.$http({}).then().catch();
-        for (var i = 0; i < this.imgs.length; i++) {
-          if (this.imgs[i].id == imgId) {
-            this.imgs.splice(i, 1);
-            break;
-          }
         }
       },
 
@@ -207,6 +156,19 @@
             description: this.content,
           },
         })
+      },
+
+      onEditorBlur(e) {
+
+      },
+      onEditorFocus(e) {
+
+      },
+      onEditorReady(e) {
+
+      },
+      onEditorChange(e){
+        this.content = e.html
       },
 
     }

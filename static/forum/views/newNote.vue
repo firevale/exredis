@@ -1,5 +1,5 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
+  <div class="is-ancestor is-parent is-vertical">
     <div class="is-child fixed-top  row-line">
       <div class="arrow-back" style="left: 1rem;">
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
@@ -24,7 +24,7 @@
         <div class="column is-full" style="position: relative; padding-bottom: 0;">
           <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
             @ready="onEditorReady($event)" @change="onEditorChange($event)">
-          </quill-editor>
+            </quill-editor>
         </div>
         <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
           <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
@@ -65,9 +65,9 @@
   });
 
   export default {
-    
+
     components: {
-      
+
     },
     computed: {
       ...mapGetters(['userInfo']),
@@ -163,11 +163,11 @@
       onEditorReady(e) {
 
       },
-      onEditorChange(e){
+      onEditorChange(e) {
         this.content = e.html
       },
 
-      
+
 
     }
   }

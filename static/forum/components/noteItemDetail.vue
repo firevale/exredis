@@ -48,6 +48,7 @@
     preViewing
   } from '../components/swiper'
   import message from './message'
+  import md5 from 'js-md5'
 
   export default {
     mounted() {
@@ -58,7 +59,7 @@
         for (var i = 0; i < htmlCollection.length; i++) {
           this.imgsPreview.push({
             url: htmlCollection[i].src,
-            id: this.imgsPreview.length
+            id: md5(htmlCollection[i].src)
           })
         }
       }
@@ -181,7 +182,8 @@
 
       checkImgClick(e) {
         if (e.target.tagName.toLowerCase() == "img") {
-          this.showAllImgInSwiper(0)
+          let imgId = md5(e.target.src)
+          this.showAllImgInSwiper(this.imgsPreview.findIndex(item => item.id == imgId))
         }
       },
 

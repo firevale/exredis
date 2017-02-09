@@ -17,7 +17,7 @@
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
           @ready="onEditorReady($event)" @change="onEditorChange($event)">
-        </quill-editor>
+          </quill-editor>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
         <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
@@ -80,7 +80,7 @@
       },
     },
 
-    data() { 
+    data() {
       return {
         editorOption: {},
         title: '',
@@ -91,17 +91,17 @@
     },
 
     methods: {
-      replyNote(){
-        if(!this.content){
+      replyNote() {
+        if (!this.content) {
           message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
-        }else{
+        } else {
           this.$http({
             url: '',
             method: 'post',
             params: {},
-          }).then( _ => {
+          }).then(_ => {
 
-          }).catch( _ => {
+          }).catch(_ => {
 
           })
         }
@@ -109,23 +109,23 @@
 
       orderChoose() {
         menuModal.showModal([{
-            name: '综合讨论',
+            name: this.$t('forum.main.discussion'),
             code: 'discussion'
           },
           {
-            name: '攻略心得',
+            name: this.$t('forum.main.experience'),
             code: 'experience'
           },
           {
-            name: '转帖分享',
+            name: this.$t('forum.main.ras'),
             code: 'ras'
           },
           {
-            name: '玩家原创',
+            name: this.$t('forum.main.original'),
             code: 'original'
           },
           {
-            name: '问题求助',
+            name: this.$t('forum.main.appeal'),
             code: 'appeal'
           }
         ], this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -167,7 +167,7 @@
       onEditorReady(e) {
 
       },
-      onEditorChange(e){
+      onEditorChange(e) {
         this.content = e.html
       },
 

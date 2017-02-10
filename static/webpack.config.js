@@ -154,7 +154,8 @@ module.exports = {
       loader: "file-loader?name=/fonts/[name].[ext]"
     }].concat(utils.styleLoaders({
       sourceMap: false,
-      extract: isProduction()
+      // extract: isProduction()
+      extract: true,
     }))
   },
 

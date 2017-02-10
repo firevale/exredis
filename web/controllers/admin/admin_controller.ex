@@ -220,8 +220,28 @@ defmodule Acs.AdminController do
     conn |> json(%{success: true, orders: orders, total: total_page})     
   end
 
-  def search_orders(conn, %{"keyword" => keyword}) do 
-
+  def search_orders(conn, %{"keyword" => keyword, "page" => page, "redords_per_page" => records_per_page}) do 
+    query = %{
+      query: %{
+        bool: %{
+          should: [
+            %{term: %{app_id: keyword}},
+            %{term: %{user_id: keyword}},
+            %{term: %{goods_id: keyword}},
+            %{term: %{device_id: keyword}},
+            %{term: %{app_user_id: keyword}},
+            %{term: %{sdk_user_id: keyword}},
+            %{match: %{cp_order_id: keyword}},
+            %{match: %{transaction_id: keyword}},
+          ]
+        },
+        minimum_should_match: 1,
+        boost: 1.0,
+        sort: %{created_at: %{order: :desc}},
+        offset: (page - 1) * records_per_page,
+        size: records_per_page,
+      }
+    } 
   end
 
 end

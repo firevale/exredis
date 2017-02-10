@@ -68,6 +68,7 @@ defmodule Acs do
           transaction_id: %{type: :text},
           app_user_id: %{type: :keyword},
           sdk_user_id: %{type: :keyword},
+          created_at: %{type: :date},
         }
       }
 

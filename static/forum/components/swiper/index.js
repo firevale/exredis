@@ -15,3 +15,5 @@ export const swiperContainer = (propsData = {
   }
   instance.rank = propsData.rank
 }
+
+export const preViewing = () => instance && instance.visible

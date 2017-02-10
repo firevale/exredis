@@ -24,7 +24,7 @@
 
       deleteImgFunc: {
         type: Function,
-        required: true,
+        required: false,
       }
     },
 
@@ -51,6 +51,7 @@
     methods: {
       cancel() {
         this.visible = false
+        document.body.removeChild(this.$el)
         if (typeof this.onCancel == 'function') {
           this.onCancel()
         }

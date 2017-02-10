@@ -215,6 +215,7 @@ defmodule Acs.UserController do
                         binding: %{}
                       })
                   end
+                  
 
       conn |> put_session(:access_token, access_token.id)
            |> put_session(:platform, platform)

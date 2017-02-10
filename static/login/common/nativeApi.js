@@ -3,7 +3,8 @@ import utils from './utils'
 export default {
   closeWebviewWithResult: function(result) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeWebviewWithResult === 'function') {
-      AndroidNativeAPI.closeWebviewWithResult(result)
+      console.log(JSON.stringify(result));
+      AndroidNativeAPI.closeWebviewWithResult(JSON.stringify(result))
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeWebviewWithResult === 'function') {
       IOSNativeAPI.closeWebviewWithResult(result)
     } else if (window.acsConfig.platform == 'wp8') {
@@ -16,7 +17,8 @@ export default {
 
   showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
-      AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle, callback)
+      window.showAlertDialogCallback = callback
+      AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback === 'function') {
       IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback(title, message, cancelBtnTitle, okBtnTitle, callback)
     } else {

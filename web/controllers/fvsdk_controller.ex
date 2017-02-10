@@ -28,6 +28,7 @@ defmodule Acs.FVSdkController do
     conn |> render("app_info.android.json", %{app: app})
   end
   def get_app_info(conn, _params) do 
+    error "bad request headers: #{inspect conn.req_headers, pretty: true}"
     conn |> json(%{success: false, message: "bad request params"})
   end 
   

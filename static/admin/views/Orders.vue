@@ -3,6 +3,7 @@
     <div class="control has-icon has-icon-left">
       <input type="text"
              class="input"
+             @keyup.enter="onSearchBoxSubmit"
              :placeholder="$t('admin.titles.searchOrders')"
              v-model="keyword">
       <span class="icon is-small">
@@ -125,6 +126,7 @@
     mounted : function() {
       if (Object.keys(this.appHash).length > 0) {
         this.fetchOrders(this.page, this.recordsPerPage) 
+        this.loading = true
       }
       else {
         this.initing = true
@@ -134,6 +136,7 @@
     watch: {
       appHash: function() {
         this.initing = false
+        this.loading = true
         this.fetchOrders(this.page, this.recordsPerPage) 
       }
     },
@@ -232,12 +235,22 @@
         this.fetchOrders(page, this.recordsPerPage)
       },
 
+      onSearchBoxSubmit: function() {
+        if (this.keyword) {
+          this.searchOrders(1) 
+        } 
+        else {
+          this.fetchOrders(1, this.recordsPerPage)
+        }
+      },
+
       fetchOrders: function(page, recordsPerPage) {
         this.$http.post('/admin_actions/fetch_orders', {
           page, 
           records_per_page: recordsPerPage
         }).then(res => res.json())
           .then(result => {
+            this.loading = false
             if (result.success) {
               this.total = result.total
               this.orders = result.orders
@@ -245,8 +258,33 @@
             } else {
               return Promise.reject(result)
             }
-          }).catch(e => processAjaxError(e))
-      }
+          }).catch(e => {
+            this.loading = false
+            processAjaxError(e)
+          })
+      },
+
+      searchOrders: function(page) {
+        this.searching = true
+        this.$http.post('/admin_actions/search_orders', {
+          keyword: this.keyword,
+          page: page, 
+          records_per_page: this.recordsPerPage
+        }).then(res => res.json())
+          .then(result => {
+            this.searching = false
+            if (result.success) {
+              this.total = result.total
+              this.orders = result.orders
+              this.page = page
+            } else {
+              return Promise.reject(result)
+            }
+          }).catch(e => {
+            this.searching = false
+            processAjaxError(e)
+          })           
+      },
     },
 
     components: {

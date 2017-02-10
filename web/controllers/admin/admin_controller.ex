@@ -220,7 +220,9 @@ defmodule Acs.AdminController do
     conn |> json(%{success: true, orders: orders, total: total_page})     
   end
 
-  def search_orders(conn, %{"keyword" => keyword, "page" => page, "redords_per_page" => records_per_page}) do 
+  def search_orders(conn, %{"keyword" => keyword, 
+                            "page" => page, 
+                            "records_per_page" => records_per_page}) do 
     query = %{
       query: %{
         bool: %{
@@ -233,15 +235,30 @@ defmodule Acs.AdminController do
             %{term: %{sdk_user_id: keyword}},
             %{match: %{cp_order_id: keyword}},
             %{match: %{transaction_id: keyword}},
-          ]
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
         },
-        minimum_should_match: 1,
-        boost: 1.0,
-        sort: %{created_at: %{order: :desc}},
-        offset: (page - 1) * records_per_page,
-        size: records_per_page,
-      }
+      },
+      sort: %{created_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
     } 
+
+    case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do 
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        ids = Enum.map(hits, &(&1._id))
+        query = from order in AppOrder,
+                  select: order,
+                  where: order.id in ^ids
+        
+        orders = Repo.all(query)
+        conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})
+
+      error -> 
+        error "search orders failed: #{inspect error, pretty: true}"
+        conn |> json(%{success: false})
+    end
   end
 
 end

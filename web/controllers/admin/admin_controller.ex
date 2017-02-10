@@ -250,7 +250,8 @@ defmodule Acs.AdminController do
         ids = Enum.map(hits, &(&1._id))
         query = from order in AppOrder,
                   select: order,
-                  where: order.id in ^ids
+                  where: order.id in ^ids, 
+                  order_by: [desc: order.created_at]
         
         orders = Repo.all(query)
         conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})

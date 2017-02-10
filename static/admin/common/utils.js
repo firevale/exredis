@@ -17,7 +17,7 @@ export const processAjaxError = e => {
     }
 
     openNotification({
-      title: Vue.t('admin.titles.updateFailed'),
+      title: Vue.t('admin.titles.requestFailed'),
       message: message,
       type: 'danger',
       duration: 6000,

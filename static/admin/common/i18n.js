@@ -108,6 +108,7 @@ export default {
         uploadSuccess: '文件上传成功',
         uploadFailed: '文件上传失败',
         updateFailed: '保存失败',
+        requestFailed: '请求失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
         uploadAppIcon: '修改应用『{appName}』的图标',
         editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',

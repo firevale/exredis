@@ -700,6 +700,7 @@ defmodule ImportFvacModel do
             device_id: order.device_id,
             cp_order_id: order.cp_order_id,
             transaction_id: order.transaction_id,
+            created_at: order.created_at,
           },
           params: nil,
           id: order.id

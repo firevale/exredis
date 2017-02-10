@@ -20,7 +20,9 @@
     mapGetters,
     mapActions
   } from 'vuex'
+  
   import nativeApi from '../common/nativeApi'
+  import 'login/scss/login.scss'
 
   export default {
     data: function() {
@@ -58,6 +60,3 @@
     },
   }
 </script>
-<style lang="scss">
-  @import '../scss/login';
-</style>

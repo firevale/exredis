@@ -11,6 +11,8 @@ import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue'
 import { Navbar, Sidebar, AppMain, FooterBar} from './components/layout'
 import { mapGetters, mapActions } from 'vuex'
 
+import 'admin/scss/admin.scss'
+
 export default {
   components: {
     'navbar': Navbar,
@@ -56,6 +58,3 @@ export default {
   ])
 }
 </script>
-<style lang="scss">
-  @import './scss/admin';  
-</style>

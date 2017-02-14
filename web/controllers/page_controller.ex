@@ -15,10 +15,11 @@ defmodule Acs.PageController do
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
   # TODO: refactor this module, loclae/browser etc,
-
-  def show_login_page(%Plug.Conn{private: %{acs_browser: browser, 
-                                            acs_platform: platform}} = conn,
-             params) do 
+  def show_login_page(%Plug.Conn{
+                        private: %{
+                          acs_browser: browser, 
+                          acs_platform: platform}} = conn,
+                      params) do 
     
     d "show login page for app: #{conn.private[:acs_app_id]}"
                

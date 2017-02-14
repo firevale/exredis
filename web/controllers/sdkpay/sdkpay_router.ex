@@ -14,6 +14,7 @@ defmodule Acs.SdkPayRouter do
     pipe_through :sdkpay
 
     get  "/add_channel_order", AppOrderController, :add_order
+    post "/add_channel_order", AppOrderController, :add_order
     get  "/add_meizu_order",   AppOrderController, :add_meizu_order
     get  "/add_vivo_order",    AppOrderController, :add_vivo_order
 

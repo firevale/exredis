@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+  import 'forum/scss/forum.scss'
   import {
     mapGetters,
     mapActions
@@ -201,6 +202,3 @@
     },
   }
 </script>
-<style lang="scss">
-  @import "../scss/forum";
-</style>

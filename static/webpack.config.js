@@ -128,6 +128,7 @@ module.exports = {
       admin: path.join(__dirname, './admin'),
       forum: path.join(__dirname, './forum'),
       mall: path.join(__dirname, './mall'),
+      payment: path.join(__dirname, './payment'),
     }
   },
 

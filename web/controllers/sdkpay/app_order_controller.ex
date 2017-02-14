@@ -41,7 +41,7 @@ defmodule Acs.SdkPay.AppOrderController do
       transaction_currency: params["currency_code"] || params["currency"] || "CNY", 
       transaction_status: "UNKNOWN",
       goods_id: params["goods_id"] || params["product_id"],
-      goods_name: params["product_name"] || params["product_id"] || params["goods_id"],
+      goods_name: params["goods_name"] || params["product_name"] || params["product_id"] || params["goods_id"],
     }
 
     order_info = case params["goods_id"] do 

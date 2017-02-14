@@ -15,12 +15,16 @@
     </div>
   </div>
 </template>
+
 <script>
   import {
     mapGetters,
     mapActions
   } from 'vuex'
+
   import nativeApi from '../common/nativeApi'
+
+  import 'payment/scss/payment.scss'
 
   export default {
     data: function() {
@@ -54,6 +58,3 @@
     },
   }
 </script>
-<style lang="scss">
-  @import '../scss/payment'
-</style>

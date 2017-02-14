@@ -90,7 +90,7 @@ defmodule Elasticsearch do
   def index(%{index: ""}), do: {:error, "invalid index"}
   def index(%{type: nil}), do: {:error, "invalid type"}
   def index(%{type: ""}), do: {:error, "invalid type"}
-  def index %{index: index, type: type, doc: doc = %{}, params: params, id: id} do 
+  def index(%{index: index, type: type, doc: doc = %{}, params: params, id: id}) do 
     :poolboy.transaction :elasticsearch, fn(worker) ->
       _index(worker, index, type, doc, id, params)
     end   

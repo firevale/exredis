@@ -1,11 +1,21 @@
 export default {
   'zh-hans': {
     admin: {
+      admin: '管理后台',
+      firevalePlatform: '火谷平台',
+      showDetail: '查看详情',
+      edit: '编辑',
+      editConfig: '修改配置',
+      submit: '提交修改',
+      cancel: '取消',
+      next: '下一页',
+      previous: '上一页',
+
       menu: {
         dashboard: '概况',
         appManage: '应用管理',
         userManage: '账号管理',
-        orderManage: '充值管理',
+        orderManage: '订单管理',
         forumManage: '论坛管理',
         adminUsers: '管理员账户管理',
         appGoods: '商品管理',
@@ -20,7 +30,7 @@ export default {
         Dashboard: '概况',
         AppManage: '应用管理',
         Users: '账号管理',
-        Orders: '充值管理',
+        Orders: '订单管理',
         Forums: '论坛管理',
         Settings: '系统设置',
         AppInfo: '应用基本信息',
@@ -47,6 +57,7 @@ export default {
           add: '添加新商品',
         }
       },
+      
 
       upload: {
         title: '上传',
@@ -73,6 +84,12 @@ export default {
         forumName: '论坛名称',
         forumUrl: '论坛链接',
         csPhoneNumber: '客服电话',
+        cpOrderId: 'CP订单号',
+        transactionId: '交易ID',
+        userId: '用户ID',
+        createdAt: '创建时间',
+        paidAt: '支付时间',
+        deliveredAt: '发货时间',
       },
 
       currency: {
@@ -81,14 +98,6 @@ export default {
         USD: '美元',
         undefined: '货币未设置',
       },
-
-      admin: '管理后台',
-      firevalePlatform: '火谷平台',
-      showDetail: '查看详情',
-      edit: '编辑',
-      editConfig: '修改配置',
-      submit: '提交修改',
-      cancel: '取消',
 
       titles: {
         upload: '拖拽文件以上传',
@@ -99,12 +108,17 @@ export default {
         uploadSuccess: '文件上传成功',
         uploadFailed: '文件上传失败',
         updateFailed: '保存失败',
+        requestFailed: '请求失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
         uploadAppIcon: '修改应用『{appName}』的图标',
         editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
         ok: '确认',
         cancel: '取消',
         warning: '警告',
+        searchOrders: '输入用户ID/订单号搜索',
+        oops: '哦噢。。。',
+        noOrderToDisplay: '当前没有任何可以显示的订单',
+        loading: '正在加载数据...',
       },
 
       messages: {

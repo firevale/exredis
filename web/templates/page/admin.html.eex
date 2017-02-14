@@ -26,6 +26,7 @@
     <meta content="app" name="x5-page-mode"/>
     <meta content="no" name="msapplication-tap-highlight"/>
     <meta content="no-siteapp" http-equiv="Cache-Control"/>
+    <link href="<%= static_url(@conn, "/css/admin_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/admin.css") %>" rel="stylesheet"/>
 </html>
 <body>

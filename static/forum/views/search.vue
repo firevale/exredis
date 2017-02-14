@@ -6,7 +6,7 @@
       </div>
       <div style="flex: 7;position: relative;">
         <i class="fa fa-search search-icon" aria-hidden="true"></i>
-        <input v-model.trim="key" @keyup.enter="searchByKey(key)" maxlength="30" class="search-box" :placeholder="$t('forum.search.placeholder')"></input>
+        <input v-model.trim="key" @keyup.enter="searchByKey(key)" maxlength="30" class="search-box dark" :placeholder="$t('forum.search.placeholder')"></input>
         <i v-show="key" class="fa fa-times times-icon" aria-hidden="true" @click="clearKey"></i>
       </div>
       <div style="flex:.5;"></div>

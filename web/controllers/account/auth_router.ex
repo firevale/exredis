@@ -50,8 +50,8 @@ defmodule Acs.AuthApiRouter do
     post "/gen_token", UserController, :create_token
     get  "/create_token", UserController, :create_token
     get  "/update_token", UserController, :update_token
-    get  "/bind_token", UserController, :bind_token
     post "/update_token", UserController, :update_token
+    get  "/bind_token", UserController, :bind_token
     get  "/anonymous_token", UserController, :create_anonymous_token
   end
 end

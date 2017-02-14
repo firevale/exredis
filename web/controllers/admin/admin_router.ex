@@ -28,6 +28,9 @@ defmodule Acs.AdminRouter do
     post "/update_app_goods_product_id", AdminController, :update_app_goods_product_id
     post "/delete_app_goods", AdminController, :delete_app_goods
     post "/update_app_icon", AdminController, :update_app_icon
+
+    post "/fetch_orders", AdminController, :fetch_orders
+    post "/search_orders", AdminController, :search_orders
   end
 
 end

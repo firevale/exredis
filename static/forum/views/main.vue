@@ -63,6 +63,7 @@
 
     computed: {
       ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr', 'notePageCount',
+      
         'noteCurrentPage'
       ]),
     },

@@ -20,6 +20,8 @@ const searchCurrentPage = state => state.search.currentPage
 
 const userInfo = state => state.user
 
+const commonIssues = state => state.commonIssues.issues
+
 export {
   notePageCount,
   noteCurrentPage,
@@ -32,4 +34,5 @@ export {
   searchPageCount,
   searchCurrentPage,
   userInfo,
+  commonIssues
 }

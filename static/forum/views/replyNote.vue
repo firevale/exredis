@@ -15,19 +15,17 @@
         <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <textarea class="note-content" maxlength="1500" v-model="content" :placeholder="$t('forum.newNote.textAreaPlaceHolder')"></textarea>
-        <div class="upload-img">
-          <i class="fa fa-file-image-o" aria-hidden="true" @click="uploadImg"></i>
-          <span v-show="imgs.length" class="img-count" @click="preview">{{ imgs.length }}</span>
-        </div>
+        <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+          @ready="onEditorReady($event)" @change="onEditorChange($event)">
+          </quill-editor>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true" @click="uploadImg"></i>
+        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
         <span>{{messageTip}}</span>
       </div>
-    </div>
-    <div class="column is-full" style="text-align: center;">
-      <a class="button new-note">{{ $t('forum.newNote.btnTxt') }}</a>
+      <div class="column is-full" style="text-align: center;">
+        <a class="button new-note" @click="replyNote">{{ $t('forum.newNote.btnTxt') }}</a>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +42,7 @@
     preViewNote
   } from '../components/preView'
   import utils from '../common/utils'
+  import message from '../components/message'
 
   var marked = require('marked');
   marked.setOptions({
@@ -63,7 +62,7 @@
     },
 
     components: {
-    
+
     },
 
     computed: {
@@ -79,82 +78,54 @@
           return ""
         }
       },
-
-      markdownToHtml() {
-        let imgstr = '';
-        this.imgs.map(
-          function (e) {
-            imgstr += '![no img](' + e.url + ') '
-          }
-        )
-        return marked('# ' + this.replyTitle + ' \n ' + imgstr + ' \n# ' + this.content)
-      }
     },
 
     data() {
       return {
+        editorOption: {},
         title: '',
         content: '',
-        imgs: [
-          {id: '001', url:'http://img4.imgtn.bdimg.com/it/u=2189848546,1084553826&fm=23&gp=0.jpg'},
-          {id: '002', url:'http://img2.imgtn.bdimg.com/it/u=2047126277,2804394883&fm=23&gp=0.jpg'}
-        ],
         pageView: false,
         noteOrderTypeStr: this.$t('forum.main.discussion'),
       }
     },
 
     methods: {
-      uploadImg() {
-        upload.showModal({
-          action: 'http://zhangshiqing.firevale.com:3000/uploadImage',
-          headers: this.requestHeaders,
-          accept: 'image/*',
-          extensions: 'png,jpg,gif',
-          title: '上传图片',
-          callback: response => {
-            if (typeof response == 'object') {
-              if (response.code == 0) {
-                this.imgs.push(response.data)
-              } else {
-                //error
-              }
-            } else {
-              //error
-            }
-          },
-        })
-      },
+      replyNote() {
+        if (!this.content) {
+          message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
+        } else {
+          this.$http({
+            url: '',
+            method: 'post',
+            params: {},
+          }).then(_ => {
 
-      deleteUploadImg(imgId) {
-        //this.$http({}).then().catch();
-        for (var i = 0; i < this.imgs.length; i++) {
-          if (this.imgs[i].id == imgId) {
-            this.imgs.splice(i, 1);
-            break;
-          }
+          }).catch(_ => {
+
+          })
         }
       },
 
       orderChoose() {
         menuModal.showModal([{
-            name: '综合讨论',
+            name: this.$t('forum.main.discussion'),
             code: 'discussion'
           },
           {
-            name: '攻略心得',
+            name: this.$t('forum.main.experience'),
             code: 'experience'
           },
           {
-            name: '转帖分享',
+            name: this.$t('forum.main.ras'),
             code: 'ras'
           },
           {
-            name: '玩家原创',
+            name: this.$t('forum.main.original'),
             code: 'original'
           },
           {
-            name: '问题求助',
+            name: this.$t('forum.main.appeal'),
             code: 'appeal'
           }
         ], this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -185,6 +156,19 @@
             description: this.content,
           },
         })
+      },
+
+      onEditorBlur(e) {
+
+      },
+      onEditorFocus(e) {
+
+      },
+      onEditorReady(e) {
+
+      },
+      onEditorChange(e) {
+        this.content = e.html
       },
 
     }

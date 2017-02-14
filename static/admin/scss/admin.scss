@@ -340,3 +340,32 @@
       color: $danger;
     }
   }
+
+  i.is-success {
+    color: $success;
+  }
+
+  i.is-danger {
+    color: $danger;
+  }
+
+  i.is-info {
+    color: $info;
+  }
+
+  i.is-primary {
+    color: $primary;
+  }
+
+  div.modal-container, div.modal-content {
+    overflow-x: hidden;
+  }
+
+  nav.pagination {
+    ul {
+      width: 100%;
+      li {
+        display: inline-block;
+      }
+    }
+  }

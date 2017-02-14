@@ -23,7 +23,6 @@
   } from 'vuex'
 
   import nativeApi from '../common/nativeApi'
-
   import 'payment/scss/payment.scss'
 
   export default {

@@ -9,11 +9,13 @@ defmodule Acs.AlipayController do
                               "callback_url" => callback_url} = _params) do 
     case Repo.get(AppOrder, order_id) do 
       order = %AppOrder{} ->
+        # update order info (paid channel)
+        AppOrder.changeset(order, %{paid_channel: "alipay"}) |> Repo.update!
         case SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform, merchant_url, callback_url) do 
           {:ok, result} ->
             case SDKAlipay.get_request_token(result) do 
               {:ok, token} ->
-                conn |> json(%{ success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
+                conn |> json(%{success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
               _ ->
                 conn |> json(%{success: false, message: "can't get alipay request token"})
             end
@@ -27,6 +29,8 @@ defmodule Acs.AlipayController do
   def alipay_redirect(conn, %{"payment_order_id" => order_id} = _params) do 
     case Repo.get(AppOrder, order_id) do 
       order = %AppOrder{} ->
+        # update order info (paid channel)
+        AppOrder.changeset(order, %{paid_channel: "alipay"}) |> Repo.update!
         case SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform) do 
           {:ok, result} ->
             case SDKAlipay.get_request_token(result) do 

@@ -5,6 +5,7 @@ defmodule Acs.PageController do
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_access_token 
+  plug :fetch_zone_id
   plug :check_admin_access when action == :show_admin_page
 
   def index(conn, _params) do
@@ -210,34 +211,18 @@ defmodule Acs.PageController do
   end
 
   # 新版本
-  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser, 
-                                              acs_access_token: access_token,
-                                              acs_platform: platform}} = conn,
+  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser}} = conn,
              %{
                "order_id" => order_id,
                "version" => "3"
              } = params) do
 
     locale = case conn.private[:acs_locale] do 
-               nil -> "zh-hans"
-               _ -> "zh-hans"
-             end
+              nil -> "zh-hans"
+              _ -> "zh-hans"
+            end
 
-    browser = case Mix.env do 
-                :dev -> 
-                  case params["browser"] do 
-                    nil -> browser 
-                    x -> x
-                  end
-                _ -> browser
-              end
-
-    conn |> put_layout(false) 
-         |> put_session(:locale, locale)
-         |> render("payment.html", browser: browser,
-                                   order_id: order_id,
-                                   platform: platform,
-                                   locale: locale)
+    show_payment_page_by_order_id(conn |> put_session(:locale, locale), order_id)
   end
 
   # callback from alipay
@@ -252,15 +237,16 @@ defmodule Acs.PageController do
   end
   def show_payment_page(conn, params) do 
     conn |> put_resp_content_type("application/json")
-         |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params"}))
+         |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params, order id not specified"}))
          |> halt()
   end
 
   defp show_payment_page_by_order_id(%Plug.Conn{private: %{acs_browser: browser}} = conn, order_id) do 
     case Repo.get(AppOrder, order_id) do 
       nil ->
+        error "render payment page error: order[id: #{order_id}] not found"
         conn |> put_resp_content_type("application/json")
-             |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params"}))
+             |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params, order[id: #{order_id}] not found"}))
              |> halt()
 
       %AppOrder{} = app_order ->

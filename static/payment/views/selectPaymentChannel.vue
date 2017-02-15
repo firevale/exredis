@@ -10,6 +10,7 @@
       </div>
     </div>
   </div>
+
 </template>
 <script>
   import utils from '../common/utils'

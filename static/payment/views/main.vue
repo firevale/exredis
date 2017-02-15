@@ -10,8 +10,6 @@
           <router-view> </router-view>
         </transition>
       </div>
-      <div ref="msg">
-      </div>
     </div>
   </div>
 </template>

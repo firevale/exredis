@@ -14,7 +14,7 @@ config :acs, Acs.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [npm: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
+  watchers: [yarn: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
 
 
 # Watch static and templates for browser reloading.

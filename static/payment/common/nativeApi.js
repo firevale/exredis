@@ -3,7 +3,8 @@ import utils from './utils'
 export default {
   closeWebviewWithResult: function(result) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeWebviewWithResult === 'function') {
-      AndroidNativeAPI.closeWebviewWithResult(result)
+      let jsonStr = JSON.stringify(result)
+      AndroidNativeAPI.closeWebviewWithResult(jsonStr)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.closeWebviewWithResult === 'function') {
       IOSNativeAPI.closeWebviewWithResult(result)
     } else if (window.acsConfig.platform == 'wp8') {

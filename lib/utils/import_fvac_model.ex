@@ -723,7 +723,7 @@ defmodule ImportFvacModel do
   end
 
   def import_latest() do 
-    from_date = "2017-01-18 00:00:00"
+    from_date = "2017-02-15 00:00:00"
     import_all_users()
     import_all_devices(from_date)
     import_all_app_users(from_date)

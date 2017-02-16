@@ -79,7 +79,6 @@
         })
 
         added.push('alipay') // alipay and wechat are payment sdks
-        added.push('wechat')
         added.push('applestore')
         added.push('appstore')
         added.push('firevale')

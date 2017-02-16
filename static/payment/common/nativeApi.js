@@ -35,4 +35,14 @@ export default {
     }
   },
 
+  isWechatPaySupport: function() {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
+      return AndroidNativeAPI.isWechatPaySupport()
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
+      return false
+    } else {
+      return false
+    }
+  }
+
 }

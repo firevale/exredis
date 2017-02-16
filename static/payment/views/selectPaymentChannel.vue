@@ -23,8 +23,9 @@
   export default {
     data: function() {
       return {
-        channels: ['alipay'],
+        channels: ['alipay', 'wechat'],
         processing: false,
+        isWechatPaySupport: nativeApi.isWechatPaySupport(),
       }
     },
 

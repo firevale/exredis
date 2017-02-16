@@ -136,12 +136,20 @@ defmodule Acs.AppChannel do
 
     app_user_daily_activity = case Repo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do 
                                 nil ->
-                                  AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{date: today, app_user_id: app_user.id, active_seconds: 0}) |> Repo.insert!
+                                  AppUserDailyActivity.changeset(%AppUserDailyActivity{}, 
+                                   %{date: today, 
+                                     app_user_id: app_user.id, 
+                                     active_seconds: 0}
+                                  ) |> Repo.insert!
                                 v -> v
                               end
 
     if Repo.get(Device, device_id) == nil do 
-      Device.changeset(%Device{}, %{id: device_id, model: device_model, platform: platform, os: os}) |> Repo.insert!
+      Device.changeset(%Device{}, %{
+        id: device_id, 
+        model: device_model, 
+        platform: platform, 
+        os: os}) |> Repo.insert!
     end
 
     app_device = case Repo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do 
@@ -157,7 +165,10 @@ defmodule Acs.AppChannel do
 
     app_device_daily_activity = case Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do 
                                   nil ->
-                                    AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_device.id, active_seconds: 0}) |> Repo.insert!
+                                    AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
+                                      date: today, 
+                                      app_device_id: app_device.id, 
+                                      active_seconds: 0}) |> Repo.insert!
                                   v -> v
                                 end              
 
@@ -180,13 +191,24 @@ defmodule Acs.AppChannel do
                             app_user_daily_activity: app_user_daily_activity,
                             app_device_daily_activity: app_device_daily_activity}}) do 
     active_seconds = Utils.unix_timestamp - join_at
-    Logger.info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
+    info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
     if active_seconds > 30 do
-      AppUser.changeset(app_user, %{active_seconds: app_user.active_seconds + active_seconds}) |> Repo.update!
-      AppDevice.changeset(app_device, %{active_seconds: app_device.active_seconds + active_seconds}) |> Repo.update!
-      AppUserDailyActivity.changeset(app_user_daily_activity, %{active_seconds: app_user_daily_activity.active_seconds + active_seconds}) |> Repo.update!
-      AppDeviceDailyActivity.changeset(app_device_daily_activity, %{active_seconds: app_device_daily_activity.active_seconds + active_seconds}) |> Repo.update!
+      AppUser.changeset(app_user, %{
+        active_seconds: app_user.active_seconds + active_seconds
+      }) |> Repo.update!
+
+      AppDevice.changeset(app_device, %{
+        active_seconds: app_device.active_seconds + active_seconds
+      }) |> Repo.update!
+
+      AppUserDailyActivity.changeset(app_user_daily_activity, %{
+        active_seconds: app_user_daily_activity.active_seconds + active_seconds
+      }) |> Repo.update!
+
+      AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
+        active_seconds: app_device_daily_activity.active_seconds + active_seconds
+      }) |> Repo.update!
     end
   end
   defp do_stat(_socket), do: :ok

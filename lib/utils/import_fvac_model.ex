@@ -718,8 +718,8 @@ defmodule ImportFvacModel do
     import_all_devices(from_date)
     import_all_app_users(from_date)
     import_all_orders(from_date)
-    import_all_app_user_activities()
-    import_all_app_device_activities()
+    # import_all_app_user_activities()
+    # import_all_app_device_activities()
   end
 
   def import_latest() do 
@@ -728,8 +728,8 @@ defmodule ImportFvacModel do
     import_all_devices(from_date)
     import_all_app_users(from_date)
     import_all_orders(from_date)
-    import_all_app_user_activities(~D[2017-01-18])
-    import_all_app_device_activities(~D[2017-01-18])
+    # import_all_app_user_activities(~D[2017-01-18])
+    # import_all_app_device_activities(~D[2017-01-18])
   end
 
 end

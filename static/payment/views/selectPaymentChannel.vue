@@ -23,9 +23,8 @@
   export default {
     data: function() {
       return {
-        channels: ['alipay', 'wechat'],
+        channels: nativeApi.isWechatPaySupport() ? ['alipay', 'wechat'] : ['alipay'],
         processing: false,
-        isWechatPaySupport: nativeApi.isWechatPaySupport(),
       }
     },
 
@@ -44,6 +43,10 @@
         switch (channel) {
           case 'alipay':
             this.alipayRedirect()
+            break;
+          
+          case 'wechat':
+            this.wechatPay()
             break;
         }
       },
@@ -72,6 +75,11 @@
           this.processing = false
           nativeApi.closeWebviewWithResult({success: false, message: 'something went wrong'})
         })
+      },
+
+      wechatPay: function() {
+        console.log('wechat pay selected....')
+        // calling nativeApi to start wechat pay process
       }
     },
   }

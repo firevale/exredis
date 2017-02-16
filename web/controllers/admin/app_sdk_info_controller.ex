@@ -97,6 +97,9 @@ defmodule Acs.AppSdkInfoController do
   def generate_dummy_sdk_info(conn, %{"sdk" => "sogou"}) do # 搜狗 
     conn |> json(%{success: true, binding: %{app_id: "", app_key: "", app_secret: "", pay_key: ""}})
   end
+  def generate_dummy_sdk_info(conn, %{"sdk" => "wechat"}) do # 微信 
+    conn |> json(%{success: true, binding: %{app_id: "", app_secret: "", signature: "", package_name: ""}})
+  end
 
   def update_app_sdk_info(conn, %{"app_id" => app_id, 
                                   "sdk" => "facebook", 
@@ -257,6 +260,11 @@ defmodule Acs.AppSdkInfoController do
                                   "sdk" => "sogou", 
                                   "binding" => %{"app_id" => _, "app_key" => _, "app_secret" => _, "pay_key" => _} = binding}) do 
     _update_app_sdk_info(conn, app_id, "sogou", binding)
+  end
+  def update_app_sdk_info(conn, %{"app_id" => app_id, 
+                                  "sdk" => "wechat", 
+                                  "binding" => %{"app_id" => _, "app_secret" => _, "signature" => _, "package_name" => _} = binding}) do 
+    _update_app_sdk_info(conn, app_id, "wechat", binding)
   end
   def update_app_sdk_info(conn, _params) do 
     conn |> send_resp(500, "bad request") |> halt 

@@ -180,6 +180,7 @@ export default {
         qq: '腾讯QQ',
         tbt: '同步推',
         xy: 'XY助手',
+        wechat: '微信',
 
         assigned: '分配的',
         add: '添加',
@@ -201,6 +202,8 @@ export default {
           client_secret: '客户端秘钥[Client Secret]',
           cp_id: 'CP ID',
           cp_key: 'CP KEY',
+          signature: '签名',
+          package_name: '包名',
         }
       }
     },

@@ -7,7 +7,7 @@ defmodule Acs.Repo.Migrations.CreateAppDeviceDailyActivity do
 
       add :active_seconds, :integer
       add :pay_amount, :integer
-      add :app_device_id, references(:app_devices, on_delete: :nothing)
+      add :app_device_id, references(:app_devices, on_delete: :delete_all)
 
       timestamps()
     end

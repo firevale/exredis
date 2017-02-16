@@ -157,7 +157,7 @@ defmodule Acs.AppChannel do
 
     app_device_daily_activity = case Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do 
                                   nil ->
-                                    AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_user.id, active_seconds: 0}) |> Repo.insert!
+                                    AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{date: today, app_device_id: app_device.id, active_seconds: 0}) |> Repo.insert!
                                   v -> v
                                 end              
 

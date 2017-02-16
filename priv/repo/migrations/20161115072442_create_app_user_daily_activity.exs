@@ -8,7 +8,7 @@ defmodule Acs.Repo.Migrations.CreateAppUserDailyActivity do
       add :active_seconds, :integer, default: 0
       add :pay_amount, :integer, default: 0
 
-      add :app_user_id, references(:app_users, on_delete: :nothing)
+      add :app_user_id, references(:app_users, on_delete: :delete_all)
 
       timestamps()
     end

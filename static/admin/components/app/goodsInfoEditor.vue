@@ -6,7 +6,7 @@
           <table class="table is-bordered is-striped is-narrow goods-table">
             <thead v-show="app.goods && app.goods.length > 0">
               <tr>
-                <th></th>
+                <th>{{ $t('admin.app.goods.icon') }}</th>
                 <th>{{ $t('admin.app.goods.id')}}</th>
                 <th>{{ $t('admin.app.goods.name')}}</th>
                 <th>{{ $t('admin.app.goods.description')}}</th>
@@ -40,7 +40,6 @@
                 <td v-for="sdk in sdks" class="is-icon">
                   <span class="sdk-icon" 
                         :class="classOfGoodsSdk(goods, sdk)" 
-                        style="width: 32px; height: 32px"
                         @click.prevent="editGoodsProductId(goods, sdk)"></span>
                 </td>
                 <td class="is-icon">

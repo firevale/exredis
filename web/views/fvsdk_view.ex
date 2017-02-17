@@ -45,6 +45,12 @@ defmodule Acs.FVSdkView do
       use_custom_iap: @android_custom_iap,
       supported_custom_iap_channels: @android_custom_iap_channels,
       currency: app.currency,
+      wechat_pay_info: case app.sdk_bindings[:wechat] do 
+                         nil -> %{}
+                         wechat_info = %{} -> 
+                           wechat_info |> Map.delete(:app_secret)
+                         _ -> %{}
+                        end,
       goods: goods,
      }
   end

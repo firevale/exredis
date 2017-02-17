@@ -98,7 +98,7 @@ defmodule Acs.AppSdkInfoController do
     conn |> json(%{success: true, binding: %{app_id: "", app_key: "", app_secret: "", pay_key: ""}})
   end
   def generate_dummy_sdk_info(conn, %{"sdk" => "wechat"}) do # 微信 
-    conn |> json(%{success: true, binding: %{app_id: "", app_secret: "", signature: "", package_name: ""}})
+    conn |> json(%{success: true, binding: %{partnerid: "", app_id: "", app_secret: "", signature: "", package_name: ""}})
   end
 
   def update_app_sdk_info(conn, %{"app_id" => app_id, 
@@ -263,7 +263,7 @@ defmodule Acs.AppSdkInfoController do
   end
   def update_app_sdk_info(conn, %{"app_id" => app_id, 
                                   "sdk" => "wechat", 
-                                  "binding" => %{"app_id" => _, "app_secret" => _, "signature" => _, "package_name" => _} = binding}) do 
+                                  "binding" => %{"partnerid" => _, "app_id" => _, "app_secret" => _, "signature" => _, "package_name" => _} = binding}) do 
     _update_app_sdk_info(conn, app_id, "wechat", binding)
   end
   def update_app_sdk_info(conn, _params) do 

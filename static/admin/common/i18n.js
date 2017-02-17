@@ -205,6 +205,7 @@ export default {
           cp_key: 'CP KEY',
           signature: '签名',
           package_name: '包名',
+          partnerid: "商户号",
         }
       }
     },

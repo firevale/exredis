@@ -79,7 +79,13 @@
 
       wechatPay: function() {
         console.log('wechat pay selected....')
+        // prepay
+        
+        // signature
+
+
         // calling nativeApi to start wechat pay process
+        nativeApi.openWechatPay()
       }
     },
   }

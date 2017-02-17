@@ -99,7 +99,7 @@ defmodule Acs.SdkInfoGenerator do
   def generate_sdk_info("sogou") do # 搜狗 
     %{app_id: "", app_key: "", app_secret: "", pay_key: ""}
   end
-  def generate_sdk_info("wechat") do # 搜狗 
+  def generate_sdk_info("wechat") do # 微信 
     %{partnerid: "", app_id: "", app_secret: "", signature: "", package_name: ""}
   end
 

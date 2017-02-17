@@ -15,7 +15,8 @@ defmodule Acs.AdminController do
 
     apps = Repo.all(query) |> Enum.map(fn(app) -> 
       sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
-        binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding) 
+        binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding |> JSON.encode!() |> JSON.decode!(keys: :atoms)) 
+        d "old: #{inspect x.binding, pretty: true}, new: #{inspect binding, pretty: true}"
         Map.put(x, :binding, binding)
       end)
       Map.put(app, :sdk_bindings, sdk_bindings)

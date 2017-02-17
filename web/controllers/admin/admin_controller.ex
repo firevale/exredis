@@ -2,6 +2,7 @@ defmodule Acs.AdminController do
   use Acs.Web, :controller
 
   require Mogrify
+  alias   Acs.SdkInfoGenerator
 
   def fetch_apps(conn, params) do 
     query = from app in App,
@@ -12,12 +13,16 @@ defmodule Acs.AdminController do
             select: app,
             preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
 
-    apps = Repo.all(query)
-
+    apps = Repo.all(query) |> Enum.map(fn(app) -> 
+      sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
+        binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding) 
+        Map.put(x, :binding, binding)
+      end)
+      Map.put(app, :sdk_bindings, sdk_bindings)
+    end) 
+    
     conn |> json(%{success: true, apps: apps})
   end
-
-  @sdks      Application.get_env(:acs, :sdks)
   def fetch_supported_sdks(conn, params) do 
     conn |> json(%{success: true, sdks: @sdks})
   end

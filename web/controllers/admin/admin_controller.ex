@@ -10,6 +10,7 @@ defmodule Acs.AdminController do
             left_join: goods in assoc(app, :goods),
             left_join: product_ids in assoc(goods, :product_ids),
             order_by: [desc: app.inserted_at, asc: sdk.inserted_at, asc: goods.inserted_at],
+            where: app.active == true,
             select: app,
             preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
 

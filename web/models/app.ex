@@ -13,6 +13,9 @@ defmodule Acs.App do
     field :currency, :string, default: "CNY"
     field :payment_callback, :string
 
+    field :active, :boolean, default: true
+    field :has_forum, :boolean, default: false
+
     field :chaoxin_group_id, :string # 超信运营群号
     
     field :cs_phone_number, :string

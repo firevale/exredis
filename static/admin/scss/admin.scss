@@ -300,14 +300,40 @@
     }
   }
   
-  .goods-table {
+ .goods-table {
     thead,
     tfoot,
     tbody {
       tr {
-        th,
-        td {
+        th {
+          text-align: center;
+        }
+        th,td {
           vertical-align: middle;
+
+          &.is-icon {
+            text-align: center;
+
+            figure.is-32x32 {
+              display: inline-block;
+              width: 25px;
+              height: 25px;
+            }
+
+            span.sdk-icon {
+              margin: 0;
+              width: 25px;
+              height: 25px;
+              display: inline-block;
+            }
+
+            a {
+              margin-right: 10px;
+              i.fa {
+                font-size: 20px;
+              }
+            }
+          } 
         }
       }
     }

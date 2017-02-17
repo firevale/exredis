@@ -48,6 +48,7 @@ export default {
         add: '添加新应用',
 
         goods: {
+          icon: '商品图片',
           id: '商品ID',
           name: '商品名称',
           description: '商品简介',

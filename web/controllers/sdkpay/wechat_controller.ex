@@ -1,21 +1,24 @@
 defmodule Acs.WechatController do
   use     Acs.Web, :controller
   require SDKWechat
+  require Acs.Router.Helpers
 
+  plug :fetch_app_id
+  plug :fetch_app
   plug :fetch_access_token
 
   def prepay(%Plug.Conn{private: %{acs_app: %RedisApp{
                         sdk_bindings: %{wechat: wechat_info}}}} = conn, 
-             %{"payment_order_id" => order_id, 
-               "notify_url" => notify_url} = _params) do 
+             %{"payment_order_id" => order_id} = _params) do 
 
     case Repo.get(AppOrder, order_id) do 
       order = %AppOrder{} ->
         # update order info (paid channel)
-        
         AppOrder.changeset(order, %{paid_channel: "wechat"}) |> Repo.update!
 
-        case SDKWechat.prepay(order.id, order.goods_name, order.price, wechat_info.app_id, wechat_info.partnerid, wechat_info.sign_key, notify_url, conn.remote_ip) do 
+        notify_url = wechat_url(conn,:notify)
+        case SDKWechat.prepay(order.id, order.goods_name, order.price, wechat_info.app_id, wechat_info.partnerid, 
+             wechat_info.sign_key, notify_url, conn.remote_ip) do 
           {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
             conn |> json(%{success: true, partnerid: partnerid, prepay_id: prepay_id, noncestr: noncestr, timestamp: timestamp, sign: sign})
           _ -> 
@@ -26,7 +29,7 @@ defmodule Acs.WechatController do
     end
   end
   def prepay(conn, _params) do 
-    d "req : #{inspect conn.req_headers, pretty: true}"
+    d "req : #{inspect conn.private.acs_app.sdk_bindings, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end
 

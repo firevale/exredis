@@ -49,6 +49,7 @@ defmodule Acs.AuthApiRouter do
     get "/bind/youku", YoukuAuthBind, :bind
     get "/bind/yyh", YYHAuthBind, :bind
 
+    get  "/authorization_token", PageController, :show_login_page
     post "/gen_token", UserController, :create_token
     get  "/create_token", UserController, :create_token
     get  "/update_token", UserController, :update_token

@@ -14,6 +14,7 @@ defmodule Acs.Router do
     plug :put_secure_browser_headers
     plug :parse_user_agent
     plug :fetch_user_id
+    plug :fetch_user
     plug :fetch_device_id
     plug :fetch_locale
   end
@@ -23,6 +24,7 @@ defmodule Acs.Router do
     plug :fetch_session
     plug :parse_user_agent
     plug :fetch_user_id
+    plug :fetch_user
     plug :fetch_device_id
     plug :fetch_locale
   end
@@ -67,13 +69,7 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     # 兼容wp8 
-    get "/authorization_token", PageController, :show_login_page
-    post "/gen_token", UserController, :create_token
-    get  "/create_token", UserController, :create_token
-    get  "/update_token", UserController, :update_token
-    post "/update_token", UserController, :update_token
-    get  "/bind_token", UserController, :bind_token
-    get  "/anonymous_token", UserController, :create_anonymous_token
+    get  "/authorization_token", UserController, :authorization_token
     get  "/verify_token", UserController, :verify_token
     post "/verify_token", UserController, :verify_token
   end

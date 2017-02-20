@@ -294,5 +294,10 @@ defmodule Acs.UserController do
         end
     end
   end
+
+  def authorization_token(conn, params) do 
+    d "authorization_token, params: #{inspect params}"
+    conn |> redirect(to: "/login/")
+  end
                   
 end

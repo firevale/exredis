@@ -67,11 +67,6 @@ defmodule Acs.AppleStoreController do
                   debug_mode: receipt_type == "ProductionSandbox",
                 }
 
-                order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-                              nil -> order_info 
-                              %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
-                            end
-
                 AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
 
                 conn |> json(%{success: true})

@@ -42,6 +42,13 @@ config :acs, :alipay,
   callback_url: "https://fvac.firevale.com/api/alipay/callback?platform=%{platform}",
   merchant_url: "https://fvac.firevale.com/mobile/native_bridge/%{platform}"
 
+config :acs, :wechat,
+  prepay_url: "https://api.mch.weixin.qq.com/pay/unifiedorder",
+  check_url: "https://api.mch.weixin.qq.com/pay/orderquery",
+  close_url: "https://api.mch.weixin.qq.com/pay/closeorder",
+  refund_url: "https://api.mch.weixin.qq.com/secapi/pay/refund",
+  refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery"
+
 config :acs, Acs.MeishengSmsSender,
   server_ip: "112.74.76.186",
   server_port: 8030,

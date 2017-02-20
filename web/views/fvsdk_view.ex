@@ -48,7 +48,7 @@ defmodule Acs.FVSdkView do
       wechat_pay_info: case app.sdk_bindings[:wechat] do 
                          nil -> %{}
                          wechat_info = %{} -> 
-                           wechat_info |> Map.delete(:app_secret)
+                           wechat_info |> Map.drop([:app_secret,:signature,:partnerid]) 
                          _ -> %{}
                         end,
       goods: goods,

@@ -100,7 +100,7 @@ defmodule Acs.SdkInfoGenerator do
     %{app_id: "", app_key: "", app_secret: "", pay_key: ""}
   end
   def generate_sdk_info("wechat") do # 微信 
-    %{partnerid: "", app_id: "", app_secret: "", signature: "", package_name: ""}
+    %{partnerid: "", app_id: "", app_secret: "", signature: "", package_name: "", sign_key: ""}
   end
 
 end

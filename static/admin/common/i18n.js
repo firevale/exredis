@@ -206,6 +206,7 @@ export default {
           signature: '签名',
           package_name: '包名',
           partnerid: "商户号",
+          sign_key: "签名Key",
         }
       }
     },

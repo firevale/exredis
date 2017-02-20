@@ -85,6 +85,15 @@ defmodule Acs.Router do
       get   "/callback", AlipayController, :callback
     end  
 
+    scope path: "/wechat" do
+      get  "/prepay", WechatController, :prepay
+      post  "/prepay", WechatController, :prepay
+      get  "/callback", WechatController, :callback
+      
+      get  "/notify", WechatController, :notify
+      post  "/notify",   AlipayController, :notify
+    end 
+
     forward "/auth", AuthApiRouter 
     forward "/user", UserApiRouter
     forward "/pay", PayRouter

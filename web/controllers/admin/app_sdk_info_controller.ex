@@ -168,7 +168,7 @@ defmodule Acs.AppSdkInfoController do
   end
   def update_app_sdk_info(conn, %{"app_id" => app_id, 
                                   "sdk" => "wechat", 
-                                  "binding" => %{"partnerid" => _, "app_id" => _, "app_secret" => _, "signature" => _, "package_name" => _} = binding}) do 
+                                  "binding" => %{"partnerid" => _, "app_id" => _, "app_secret" => _, "signature" => _, "package_name" => _, "sign_key" => _} = binding}) do 
     _update_app_sdk_info(conn, app_id, "wechat", binding)
   end
   def update_app_sdk_info(conn, _params) do 

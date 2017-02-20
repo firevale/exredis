@@ -45,9 +45,9 @@ export default {
     }
   },
 
-  openWechatPay: function() {
+  openWechatPay: function(partnerId,prepayId,nonceStr,timeStamp,sign) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
-      return AndroidNativeAPI.openWechatPay()
+      return AndroidNativeAPI.openWechatPay(partnerId,prepayId,nonceStr,timeStamp,sign)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
       return false
     } else {

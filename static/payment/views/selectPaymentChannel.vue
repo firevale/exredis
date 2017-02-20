@@ -79,13 +79,29 @@
 
       wechatPay: function() {
         console.log('wechat pay selected....')
-        // prepay
-        
-        // signature
+        this.processing = true
 
-
-        // calling nativeApi to start wechat pay process
-        nativeApi.openWechatPay()
+        this.$http({
+          method: 'post',
+          url: '/api/wechat/prepay',
+          params: {
+            payment_order_id: window.acsConfig.order_id,
+            notify_url: `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`,
+          }
+        }).then(response => {
+          this.processing = false
+          return response.json()
+        }).then(result => {
+          if (result.success) {
+            // calling nativeApi to start wechat pay process
+            nativeApi.openWechatPay(result.partnerId,result.prepay_id, result.nonceStr, result.timeStamp, result.sign)
+          } else {
+            console.log(result.message)
+          }
+        }).catch(e => {
+          console.error(e)
+          this.processing = false
+        })
       }
     },
   }

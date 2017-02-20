@@ -61,7 +61,7 @@ defmodule Acs.AlipayController do
                 status: AppOrder.Status.paid,
                 paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
                 transaction_id: "alipay." <> notify_data.trade_no, 
-                paid_channel: :alipay,
+                paid_channel: "alipay",
                 fee: total_fee
               }) |> Repo.update              
 

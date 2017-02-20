@@ -7,6 +7,8 @@ defmodule Acs.AuthApiRouter do
   pipeline :auth do 
     plug :fetch_app_id
     plug :fetch_app
+    plug :fetch_user_id
+    plug :fetch_user
   end
 
   # "/api/auth forward from main router"
@@ -53,6 +55,8 @@ defmodule Acs.AuthApiRouter do
     post "/update_token", UserController, :update_token
     get  "/bind_token", UserController, :bind_token
     get  "/anonymous_token", UserController, :create_anonymous_token
+    get  "/verify_token", UserController, :verify_token
+    post "/verify_token", UserController, :verify_token
   end
 end
 

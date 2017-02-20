@@ -94,6 +94,10 @@ defmodule Acs.UserController do
       create_and_response_access_token(conn, user, app_id, device_id, platform)          
     end
   end
+  def email_regist(conn, params) do 
+    error "invalid email regist params: #{inspect params, pretty: true}"
+    conn |> json(%{success: false, message: "invalid request params"})
+  end
 
   def create_user(conn, %{"verify_code" => ""}) do 
       conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})

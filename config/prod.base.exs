@@ -22,8 +22,8 @@ config :logger, :exsyslog_info,
   option: [:pid, :cons]
 
 config :logger, :filelog_info,
-  path: "/var/log/acs/info.log",
-  level: :info
+  path: "/var/log/acs/debug.log",
+  level: :debug
 
 config :logger,
   backends: [

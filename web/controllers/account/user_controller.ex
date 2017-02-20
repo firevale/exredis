@@ -263,4 +263,36 @@ defmodule Acs.UserController do
         end
     end
   end
+
+  def verify_token(%Plug.Conn{private: %{acs_app: app, 
+                                         acs_user: user}} = conn,  
+                   %{"access_token" => token_id, 
+                     "sign" => sign
+                     }) do 
+  
+    case RedisAccessToken.find(token_id) do 
+      nil ->
+        conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
+
+      token -> 
+        case Utils.md5_sign("#{token_id}#{app.secret}") do 
+          ^sign ->
+            if user.id == token.user_id do 
+              conn |> json(%{success: true,
+                             message: "ok",
+                             email: user.email,
+                             mobile: user.mobile,
+                             id: user.id,
+                             avatar_url: user.avatar_url})
+            else 
+              conn |> json(%{success: false,
+                             message: "user[#{user.id}] don't own token[#{token_id}]"})
+            end
+          x ->
+            error "receive invalid verify token request, their_sign: #{sign}, our_sign: #{x}"
+            conn |> json(%{success: false, message: "signature mismatch"})
+        end
+    end
+  end
+                  
 end

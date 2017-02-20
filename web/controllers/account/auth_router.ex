@@ -82,6 +82,7 @@ defmodule Acs.UserApiRouter do
     get  "/send_forgot_password_token", VerifyCodeController, :send_retrieve_password_verify_code
     get  "/check_forgot_password_token", VerifyCodeController, :check_retrieve_password_verify_code
     get  "/reset_password", UserController, :update_password
+    get  "/email_regist", UserController, :email_regist
   end
 
 end

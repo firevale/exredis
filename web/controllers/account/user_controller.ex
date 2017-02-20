@@ -82,6 +82,19 @@ defmodule Acs.UserController do
     end
   end
 
+  def email_regist(%Plug.Conn{private: %{acs_app_id: app_id, 
+                                         acs_device_id: device_id,
+                                         acs_platform: platform}} = conn, 
+                   %{"email" => account_id, "password" => password} = params) do 
+    if RedisUser.exists?(account_id) do 
+      conn |> json(%{success: false, message: "account.error.accountInUse"})
+    else
+      user = RedisUser.create!(account_id, password)  
+      user = RedisUser.save!(user)
+      create_and_response_access_token(conn, user, app_id, device_id, platform)          
+    end
+  end
+
   def create_user(conn, %{"verify_code" => ""}) do 
       conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})
   end
@@ -123,6 +136,9 @@ defmodule Acs.UserController do
       end
     end
   end
+
+
+
 
   def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do 
     update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})

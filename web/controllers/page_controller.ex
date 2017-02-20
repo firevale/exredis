@@ -205,6 +205,7 @@ defmodule Acs.PageController do
                                    platform: platform,
                                    order_id: app_order.id,
                                    goods_name: app_order.goods_name,
+                                   access_token: conn.private[:acs_access_token],
                                    price: price,
                                    currency: app_order.currency,
                                    locale: locale)
@@ -254,6 +255,7 @@ defmodule Acs.PageController do
              |> render("payment.html", browser: browser,
                                        platform: app_order.platform,
                                        app_id: app_order.app_id,
+                                       access_token: conn.private[:acs_access_token],
                                        order_id: app_order.id,
                                        goods_name: app_order.goods_name,
                                        price: app_order.price,

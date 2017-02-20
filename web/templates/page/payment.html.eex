@@ -46,6 +46,7 @@
       order_id: '<%= @order_id %>',
       goods_name: '<%= @goods_name %>',
       price: <%= @price %>,
+      accessToken: '<%= @access_token %>',
       currency: '<%= @currency %>',
       deviceId: '<%= @conn.private[:acs_device_id] %>', 
     }

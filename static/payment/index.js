@@ -16,6 +16,7 @@ Vue.use(VueRouter)
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
+Vue.http.headers.common['acs-access-token'] = window.acsConfig.accessToken
 Vue.http.headers.common['acs-app-id'] = utils.getAppId()
 Vue.http.headers.common['acs-device-id'] = utils.getDeviceId()
 

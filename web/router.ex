@@ -47,10 +47,6 @@ defmodule Acs.Router do
 
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
-
-    # 兼容wp8 
-    get "/auth/authorization_token", PageController, :show_login_page
-
   end
   
   scope "/user", Acs do
@@ -65,6 +61,21 @@ defmodule Acs.Router do
     post "/update_password", UserController, :update_password # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
+  end
+
+  scope "/auth", Acs do 
+    pipe_through :browser # Use the default browser stack
+
+    # 兼容wp8 
+    get "/authorization_token", PageController, :show_login_page
+    post "/gen_token", UserController, :create_token
+    get  "/create_token", UserController, :create_token
+    get  "/update_token", UserController, :update_token
+    post "/update_token", UserController, :update_token
+    get  "/bind_token", UserController, :bind_token
+    get  "/anonymous_token", UserController, :create_anonymous_token
+    get  "/verify_token", UserController, :verify_token
+    post "/verify_token", UserController, :verify_token
   end
 
   scope path: "/api", alias: Acs do

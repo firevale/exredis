@@ -46,6 +46,7 @@ router.beforeEach((route, redirect, next) => {
 })
 
 Object.keys(filters).forEach(key => {
+  console.log(`add filter: ${key}`)
   Vue.filter(key, filters[key])
 })
 

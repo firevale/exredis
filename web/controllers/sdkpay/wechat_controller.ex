@@ -20,7 +20,8 @@ defmodule Acs.WechatController do
         case SDKWechat.prepay(order.id, order.goods_name, order.price, wechat_info.app_id, wechat_info.partnerid, 
              wechat_info.sign_key, notify_url, conn.remote_ip) do 
           {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
-            conn |> json(%{success: true, partnerid: partnerid, prepay_id: prepay_id, noncestr: noncestr, timestamp: timestamp, sign: sign})
+            conn |> json(%{success: true, partnerid: partnerid, prepay_id: prepay_id, 
+                    noncestr: noncestr, timestamp: timestamp, sign: sign})
           _ -> 
             conn |> json(%{success: false, message: "wechat get prepay_id fail"})
         end
@@ -65,7 +66,7 @@ defmodule Acs.WechatController do
     # end
   end
 
-  def callback(conn, params) do 
+  def payresult(conn, params) do 
     # query = URI.encode_query(%{success: (params["result"] == "success"), 
     #                            trade_no: params["trade_no"], 
     #                            order_id: params["out_trade_no"]} )

@@ -39,11 +39,8 @@ config :acs, :pbkdf2,
   iterations: 4096,
   derived_length: 20
 
-config :acs, Acs.LocalMailer,
-  adapter: Bamboo.LocalAdapter
-
-config :acs, :email_service,
-  provider: Acs.LocalMailer
+config :acs, Acs.LocalMailer, adapter: Bamboo.LocalAdapter
+config :acs, email_service_provider: Acs.LocalMailer
 
 config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
 

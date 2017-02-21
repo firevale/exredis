@@ -14,6 +14,7 @@ defmodule Acs.Router do
     plug :put_secure_browser_headers
     plug :parse_user_agent
     plug :fetch_user_id
+    plug :fetch_user
     plug :fetch_device_id
     plug :fetch_locale
   end
@@ -23,6 +24,7 @@ defmodule Acs.Router do
     plug :fetch_session
     plug :parse_user_agent
     plug :fetch_user_id
+    plug :fetch_user
     plug :fetch_device_id
     plug :fetch_locale
   end
@@ -47,10 +49,6 @@ defmodule Acs.Router do
 
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
-
-    # 兼容wp8 
-    get "/auth/authorization_token", PageController, :show_login_page
-
   end
   
   scope "/user", Acs do
@@ -65,6 +63,15 @@ defmodule Acs.Router do
     post "/update_password", UserController, :update_password # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
+  end
+
+  scope "/auth", Acs do 
+    pipe_through :browser # Use the default browser stack
+
+    # 兼容wp8 
+    get  "/authorization_token", UserController, :authorization_token
+    get  "/verify_token", UserController, :verify_token
+    post "/verify_token", UserController, :verify_token
   end
 
   scope path: "/api", alias: Acs do
@@ -87,11 +94,11 @@ defmodule Acs.Router do
 
     scope path: "/wechat" do
       get  "/prepay", WechatController, :prepay
-      post  "/prepay", WechatController, :prepay
+      post "/prepay", WechatController, :prepay
       get  "/callback", WechatController, :callback
       
       get  "/notify", WechatController, :notify
-      post  "/notify",   AlipayController, :notify
+      post "/notify",   AlipayController, :notify
     end 
 
     forward "/auth", AuthApiRouter 

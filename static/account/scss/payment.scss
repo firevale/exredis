@@ -1,0 +1,36 @@
+@import '~login/scss/login';
+
+body.in-app,
+body.wp8 {
+  div.g-con {
+    height: 100%;
+    display: block;
+  }
+
+  div.g-mask {
+    height: 100%;
+  }
+
+  div.login-box {
+    margin-top: 25%;
+    height: 160px;
+  }
+
+  div.row-login {
+    height: 40px;
+  }
+  div.horizontal-stack-box {
+    height: 120px;    
+
+    .tile {
+      height: 80%;
+      @include display-flex(column, space-around, center);
+
+      .sdk-icon {
+        &.alipay {
+          background-image: url(../assets/alipay@1x.png);
+        }
+      }
+    }
+  }
+}

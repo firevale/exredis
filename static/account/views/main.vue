@@ -10,18 +10,18 @@
           <router-view> </router-view>
         </transition>
       </div>
-      <div ref="msg">
-      </div>
     </div>
   </div>
 </template>
+
 <script>
   import {
     mapGetters,
     mapActions
   } from 'vuex'
-  
+
   import nativeApi from '../common/nativeApi'
+  import 'payment/scss/payment.scss'
 
   export default {
     data: function() {
@@ -30,11 +30,7 @@
       }
     },
 
-    created: function() {
-      if (this.$route.query.redirect_uri) {
-        this.setRedirectUri(atob(this.$route.query.redirect_uri))
-      }
-    },
+    created: function() {},
 
     computed: {
       ...mapGetters([
@@ -44,11 +40,11 @@
 
     methods: {
       ...mapActions([
-        'setTransitionName', 'setRedirectUri'
+        'setTransitionName'
       ]),
 
       onClose: function() {
-        nativeApi.closeWebviewWithResult({success: false})
+        nativeApi.closeWebviewWithResult({success: false, message: "user cancel"})
       },
     },
 
@@ -59,7 +55,3 @@
     },
   }
 </script>
-
-<style lang="scss">
-  @import 'login/scss/login'
-</style>

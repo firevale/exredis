@@ -29,13 +29,14 @@ defmodule Acs.FVSdkView do
       @android_custom_iap_channels channels 
   end
 
-
   def render("app_info.ios.3.json", %{app: %RedisApp{} = app, sdk: sdk}) do 
     goods = transform_goods(app.goods, sdk)
     %{success: true,
       use_custom_iap: @ios_custom_iap,
       supported_custom_iap_channels: @ios_custom_iap_channels,
       currency: app.currency,
+      has_forum: app.has_forum,
+      has_mall: app.has_mall,
       goods: goods
      }
   end
@@ -45,6 +46,8 @@ defmodule Acs.FVSdkView do
       use_custom_iap: @android_custom_iap,
       supported_custom_iap_channels: @android_custom_iap_channels,
       currency: app.currency,
+      has_forum: app.has_forum, 
+      has_mall: app.has_mall,
       wechat_pay_info: case app.sdk_bindings[:wechat] do 
                          nil -> %{}
                          wechat_info = %{} -> 

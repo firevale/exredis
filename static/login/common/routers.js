@@ -42,14 +42,6 @@ export default function(VueRouter) {
         path: 'retrievePasswordStep3',
         name: 'retrievePasswordStep3',
         component: require('../views/retrievePasswordStep3.vue')
-      }, {
-        path: 'myProfile',
-        name: 'myProfile',
-        component: require('../views/myProfile.vue')
-      }, {
-        path: 'myAvatar',
-        name: 'myAvatar',
-        component: require('../views/myAvatar.vue')
       }]
     }, {
       path: '*',

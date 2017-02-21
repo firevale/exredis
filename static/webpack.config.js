@@ -68,6 +68,18 @@ var plugins = [
   }),
 
   new CommonsChunkPlugin({
+    name: "account_commons",
+    filename: 'js/account_commons.js',
+    chunks: ['account'],
+    minChunks: function(module, count) {
+      return (
+        (module.resource &&
+          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
+      )
+    }
+  }),
+
+  new CommonsChunkPlugin({
     name: "payment_commons",
     filename: 'js/payment_commons.js',
     chunks: ['payment'],
@@ -109,6 +121,7 @@ var plugins = [
 module.exports = {
   entry: {
     login: ['./login'],
+    account: ['./account'],
     forum: ['./forum'],
     admin: ['./admin'],
     payment: ['./payment'],
@@ -124,7 +137,9 @@ module.exports = {
     extensions: ['.js', '.vue', '.css', '.json'],
     alias: {
       vue: 'vue/dist/vue.common.js',
+      common: path.join(__dirname, './common'),
       login: path.join(__dirname, './login'),
+      account: path.join(__dirname, './account'),
       admin: path.join(__dirname, './admin'),
       forum: path.join(__dirname, './forum'),
       mall: path.join(__dirname, './mall'),
@@ -137,19 +152,19 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.vue$/,
-      loader: 'vue-loader'
+      loader: 'vue-loader',
+      options: require('./vue-loader.conf'),
     }, {
       test: /\.js$/,
-      // exclude: /node_modules/,
       loader: 'babel-loader',
       include: projectRoot,
       exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
     }, {
-      test: /\.(jpg|png|gif)$/,
-      loader: "url-loader?limit=16384&name=/images/[name].[ext]"
+      test: /\.(jpe?g|png|gif|svg)$/,
+      loader: "url-loader?limit=4096&name=/images/[name].[ext]"
     }, {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "url-loader?limit=16384&minetype=application/font-woff&name=/fonts/[name].[ext]"
+      loader: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: "file-loader?name=/fonts/[name].[ext]"

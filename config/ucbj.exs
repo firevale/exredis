@@ -7,7 +7,7 @@ config :acs, Acs.Endpoint,
   static_url: [host: "fvaccdn.firevale.com", port: 443, scheme: "https"]
 
 config :acs, sm_provider: :meisheng
-config :acs, :email_service, provider: Acs.SendCloudMailer
+config :acs, email_service_provider: Acs.SendCloudMailer
 
 # Configure your database
 config :acs, Acs.Repo,

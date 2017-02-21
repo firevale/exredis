@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :acs, Acs.Endpoint,
-  http: [port: 4000],
+  http: [port: 4000, compress: true],
   ssl: false,
   debug_errors: false,
   code_reloader: false,

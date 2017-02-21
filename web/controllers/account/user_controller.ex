@@ -141,9 +141,6 @@ defmodule Acs.UserController do
     end
   end
 
-
-
-
   def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do 
     update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})
   end

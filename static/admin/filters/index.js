@@ -33,7 +33,8 @@ Date.prototype.Format = function(fmt) { //author: meizz
 
 export const formatServerDateTime = val => {
   if (val) {
-    let date = new Date(`${val}+0800`)
+    let a = val.split(/[^0-9]/)
+    let date = new Date(a[0], a[1], a[2], a[3], a[4], a[5])
     return date.Format('yyyy-MM-dd hh:mm:ss')
   } else {
     return ''

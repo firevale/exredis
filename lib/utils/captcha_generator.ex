@@ -1,5 +1,5 @@
 defmodule Acs.CaptchaGenerator do 
-  require Logger
+  use LogAlias
 
   def generate(value) do 
     image_file = Path.join(System.tmp_dir, "#{value}.png")
@@ -7,7 +7,7 @@ defmodule Acs.CaptchaGenerator do
               -font Candice -annotate #{annotate_param} #{value} -wave -#{distortion_param} \
               #{image_file}" |> String.split 
 
-    Logger.debug "params: #{inspect params}"
+    d "params: #{inspect params}"
 
     {_, 0} = System.cmd("convert", params)
     image_data = File.read!(image_file) |> Base.encode64

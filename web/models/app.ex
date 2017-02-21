@@ -15,6 +15,7 @@ defmodule Acs.App do
 
     field :active, :boolean, default: true
     field :has_forum, :boolean, default: false
+    field :has_mall, :boolean, default: false
 
     field :chaoxin_group_id, :string # 超信运营群号
     
@@ -44,7 +45,7 @@ defmodule Acs.App do
     struct
     |> cast(params, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
                      :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
-                     :public_weixin_name, :public_weixin_url, :active, :has_forum])
+                     :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall])
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
   end

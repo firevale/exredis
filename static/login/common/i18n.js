@@ -53,7 +53,7 @@ export default {
         gotoSelectAccount: '其他账号登陆>',
       },
 
-      personalCenter: {
+      myProfile: {
         title: '个人中心',
         changeAccount: '切换账号',
         nickName: '昵称 : ',
@@ -61,10 +61,10 @@ export default {
         userNameStr: '用户名 : {nickName}',
       },
 
-      personalPortrait: {
+      myAvatar: {
         title: '修改头像',
         choosePicture: '从相册选一张',
-        pictureShot: '拍一张照片',
+        takePicture: '拍一张照片',
       },
 
       error: {

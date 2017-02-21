@@ -169,8 +169,7 @@ module.exports = {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: "file-loader?name=/fonts/[name].[ext]"
     }].concat(utils.styleLoaders({
-      sourceMap: true,
-      // extract: isProduction()
+      sourceMap: !isProduction(),
       extract: true,
     }))
   },

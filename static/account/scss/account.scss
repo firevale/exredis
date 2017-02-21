@@ -25,12 +25,6 @@ body.wp8 {
     .tile {
       height: 80%;
       @include display-flex(column, space-around, center);
-
-      .sdk-icon {
-        &.alipay {
-          background-image: url(../assets/alipay@1x.png);
-        }
-      }
     }
   }
 }

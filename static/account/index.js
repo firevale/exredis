@@ -5,9 +5,8 @@ import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import locales from './common/i18n'
 import utils from './common/utils'
-import nativeApi from './common/nativeApi'
 import store from './store'
-import filters from './common/filters'
+import * as filters from 'common/filters'
 
 Vue.use(VueI18n)
 Vue.use(VueResource)

@@ -79,6 +79,7 @@ defmodule Acs.AdminController do
         nil ->
           case AppGoods.changeset(%AppGoods{}, goods) |> Repo.insert do 
             {:ok, new_goods} ->
+              RedisApp.refresh(new_goods.app_id)
               conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
             
             {:error, %{errors: errors}} ->
@@ -88,6 +89,7 @@ defmodule Acs.AdminController do
         %AppGoods{} = old_goods ->
           case AppGoods.changeset(old_goods, goods) |> Repo.update do 
             {:ok, new_goods} ->
+              RedisApp.refresh(new_goods.app_id)
               conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
             
             {:error, %{errors: errors}} ->

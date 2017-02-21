@@ -21,7 +21,6 @@
   } from 'vuex'
 
   import nativeApi from '../common/nativeApi'
-  import 'payment/scss/payment.scss'
 
   export default {
     data: function() {
@@ -55,3 +54,7 @@
     },
   }
 </script>
+
+<style lang="scss">
+  @import 'account/scss/account'
+</style>

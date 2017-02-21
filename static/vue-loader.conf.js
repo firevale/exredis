@@ -4,7 +4,7 @@ const utils = require('./webpack.utils')
 
 module.exports = {
   loaders: utils.cssLoaders({
-    sourceMap: true,
+    sourceMap: process.env.NODE_ENV !== 'production',
     extract: true
   }),
   postcss: [

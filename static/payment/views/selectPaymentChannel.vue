@@ -85,8 +85,7 @@
           method: 'post',
           url: '/api/wechat/prepay',
           params: {
-            payment_order_id: window.acsConfig.order_id,
-            notify_url: `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`,
+            payment_order_id: window.acsConfig.order_id
           }
         }).then(response => {
           this.processing = false
@@ -94,7 +93,7 @@
         }).then(result => {
           if (result.success) {
             // calling nativeApi to start wechat pay process
-            nativeApi.openWechatPay(result.partnerId,result.prepay_id, result.nonceStr, result.timeStamp, result.sign)
+            nativeApi.openWechatPay(JSON.stringify(result))
           } else {
             console.log(result.message)
           }

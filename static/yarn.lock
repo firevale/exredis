@@ -228,7 +228,7 @@ atob-lite@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/atob-lite/-/atob-lite-1.0.0.tgz#b88dca6006922b962094f7556826bab31c4a296b"
 
-autoprefixer@^6.3.1, autoprefixer@^6.7.2:
+autoprefixer@^6.3.1:
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.7.2.tgz#172ab07b998ae9b957530928a59a40be54a45023"
   dependencies:
@@ -237,6 +237,17 @@ autoprefixer@^6.3.1, autoprefixer@^6.7.2:
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
     postcss "^5.2.11"
+    postcss-value-parser "^3.2.3"
+
+autoprefixer@^6.7.4:
+  version "6.7.4"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.7.4.tgz#b4405a263325c04a7c2b1c86fc603ad7bbfe01c6"
+  dependencies:
+    browserslist "^1.7.4"
+    caniuse-db "^1.0.30000624"
+    normalize-range "^0.1.2"
+    num2fraction "^1.2.2"
+    postcss "^5.2.14"
     postcss-value-parser "^3.2.3"
 
 aws-sign2@~0.6.0:
@@ -255,7 +266,7 @@ babel-code-frame@^6.11.0, babel-code-frame@^6.16.0, babel-code-frame@^6.22.0:
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-babel-core@^6.21.0, babel-core@^6.23.0:
+babel-core@^6.23.0, babel-core@^6.23.1:
   version "6.23.1"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.23.1.tgz#c143cb621bb2f621710c220c5d579d15b8a442df"
   dependencies:
@@ -420,9 +431,9 @@ babel-helpers@^6.23.0:
     babel-runtime "^6.22.0"
     babel-template "^6.23.0"
 
-babel-loader@^6.2.10:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-6.3.0.tgz#e0b47dfb3442a2024f6ffebaae76a1eda376f356"
+babel-loader@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-6.3.2.tgz#18de4566385578c1b4f8ffe6cbc668f5e2a5ef03"
   dependencies:
     find-cache-dir "^0.1.1"
     loader-utils "^0.2.16"
@@ -688,7 +699,7 @@ babel-plugin-transform-exponentiation-operator@^6.22.0:
     babel-plugin-syntax-exponentiation-operator "^6.8.0"
     babel-runtime "^6.22.0"
 
-babel-plugin-transform-export-extensions@^6.8.0:
+babel-plugin-transform-export-extensions@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-export-extensions/-/babel-plugin-transform-export-extensions-6.22.0.tgz#53738b47e75e8218589eea946cbbd39109bbe653"
   dependencies:
@@ -715,7 +726,7 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
-babel-preset-es2015@^6.14.0:
+babel-preset-es2015@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015/-/babel-preset-es2015-6.22.0.tgz#af5a98ecb35eb8af764ad8a5a05eb36dc4386835"
   dependencies:
@@ -744,7 +755,7 @@ babel-preset-es2015@^6.14.0:
     babel-plugin-transform-es2015-unicode-regex "^6.22.0"
     babel-plugin-transform-regenerator "^6.22.0"
 
-babel-preset-stage-2@^6.18.0:
+babel-preset-stage-2@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-preset-stage-2/-/babel-preset-stage-2-6.22.0.tgz#ccd565f19c245cade394b21216df704a73b27c07"
   dependencies:
@@ -1021,6 +1032,13 @@ browserslist@^1.0.1, browserslist@^1.5.2, browserslist@^1.7.1:
     caniuse-db "^1.0.30000622"
     electron-to-chromium "^1.2.2"
 
+browserslist@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-1.7.4.tgz#56a12da876f787223743a866224ccd8f97014628"
+  dependencies:
+    caniuse-db "^1.0.30000624"
+    electron-to-chromium "^1.2.2"
+
 buffer-equal@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal/-/buffer-equal-0.0.1.tgz#91bc74b11ea405bc916bc6aa908faafa5b4aac4b"
@@ -1100,6 +1118,10 @@ caniuse-api@^1.5.2:
 caniuse-db@^1.0.30000346, caniuse-db@^1.0.30000618, caniuse-db@^1.0.30000622:
   version "1.0.30000623"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000623.tgz#6e9dc4385d00a8f587efbb23fcbed7916f186e5d"
+
+caniuse-db@^1.0.30000624:
+  version "1.0.30000624"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000624.tgz#554b87547895e36f5fe128f4b7448a2ea5bf2213"
 
 canvas-gauges@2.0.6:
   version "2.0.6"
@@ -3707,9 +3729,9 @@ md5@^2.0.0:
     crypt "~0.0.1"
     is-buffer "~1.1.1"
 
-mdi@1.7.22:
-  version "1.7.22"
-  resolved "https://registry.yarnpkg.com/mdi/-/mdi-1.7.22.tgz#b01ff825a91c19d388b033ea768e17ff6e7a0904"
+mdi@^1.8.36:
+  version "1.8.36"
+  resolved "https://registry.yarnpkg.com/mdi/-/mdi-1.8.36.tgz#2e3eb6525636e1a8b331a5ec94bb22965072f4c5"
 
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
@@ -4683,6 +4705,15 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
+postcss@^5.2.14:
+  version "5.2.14"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-5.2.14.tgz#47b4fbde363fd4f81e547f7e0e43d6d300267330"
+  dependencies:
+    chalk "^1.1.3"
+    js-base64 "^2.1.9"
+    source-map "^0.5.6"
+    supports-color "^3.2.3"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -5213,9 +5244,9 @@ sass-graph@^2.1.1:
     lodash "^4.0.0"
     yargs "^4.7.1"
 
-sass-loader@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-6.0.0.tgz#f7ce02901e6c19c99af313fe3377c9c2bbe050a2"
+sass-loader@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-6.0.1.tgz#fcfa0251cd18a61e62c8a6ec0eb56dd6baa8278c"
   dependencies:
     async "^2.0.1"
     loader-utils "^0.2.15"
@@ -5539,9 +5570,9 @@ style-loader@^0.13.1:
   dependencies:
     loader-utils "^0.2.7"
 
-stylus-loader@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/stylus-loader/-/stylus-loader-2.4.0.tgz#2ffbf2854a2071086b88bc338f423ad985b43544"
+stylus-loader@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/stylus-loader/-/stylus-loader-2.5.0.tgz#4f921afc99f7a3d2f89d45ebcbc145822bf3fe71"
   dependencies:
     loader-utils "^0.2.9"
     when "~3.6.x"
@@ -5596,6 +5627,10 @@ svgo@^0.7.0:
     mkdirp "~0.5.1"
     sax "~1.2.1"
     whet.extend "~0.9.9"
+
+swiper@^3.3.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-3.4.1.tgz#05f2e72c4fdc8f618e3570f5583696c54641d3a2"
 
 tapable@^0.2.5, tapable@~0.2.5:
   version "0.2.6"
@@ -5959,7 +5994,13 @@ vt-pbf@^2.0.2:
     point-geometry "0.0.0"
     vector-tile "^1.1.3"
 
-vue-awesome@^2.0.2:
+vue-awesome-swiper@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/vue-awesome-swiper/-/vue-awesome-swiper-2.3.2.tgz#b63e24b289534c9f85b6c6e2e3b3c3bc7327e4fb"
+  dependencies:
+    swiper "^3.3.1"
+
+vue-awesome@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/vue-awesome/-/vue-awesome-2.1.0.tgz#dbf22b97670765cb8eedc776355532307a3d5b66"
   dependencies:
@@ -5987,7 +6028,7 @@ vue-bulma-collapse@^1.0.3:
   dependencies:
     animejs "1"
 
-vue-bulma-datepicker@1.2.3:
+vue-bulma-datepicker@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/vue-bulma-datepicker/-/vue-bulma-datepicker-1.2.3.tgz#82564a04d532610853d6a03bbb780d5e42b527f7"
   dependencies:
@@ -6043,11 +6084,11 @@ vue-bulma-rating@^1.0.0:
   dependencies:
     starability "1.0.4-rc.1"
 
-vue-bulma-slider@^1.0.1:
+vue-bulma-slider@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/vue-bulma-slider/-/vue-bulma-slider-1.0.2.tgz#7b8e0dd0bc2c1a7c5e77d117059847ba41eaff14"
 
-vue-bulma-switch@^1.0.2:
+vue-bulma-switch@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/vue-bulma-switch/-/vue-bulma-switch-1.0.4.tgz#52e99de5b57baa39b1bc80240b3ae5d43f53c522"
 
@@ -6055,7 +6096,7 @@ vue-bulma-tabs@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/vue-bulma-tabs/-/vue-bulma-tabs-1.1.1.tgz#9ae8767c959a28e4bc602079b7f21d0a02e46344"
 
-vue-bulma-tooltip@^1.0.1:
+vue-bulma-tooltip@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/vue-bulma-tooltip/-/vue-bulma-tooltip-1.0.2.tgz#2f86f7e70ff4a521e7b1233894bb1f1b9f1bbb3d"
   dependencies:
@@ -6074,9 +6115,9 @@ vue-cleave@^1.1.1:
   dependencies:
     cleave.js "0.7.14"
 
-vue-devtools@^2.3.1-beta1:
-  version "2.3.1-beta1"
-  resolved "https://registry.yarnpkg.com/vue-devtools/-/vue-devtools-2.3.1-beta1.tgz#c29781c743b05c68de99b5a88d54dde09bf96c05"
+vue-devtools@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/vue-devtools/-/vue-devtools-3.0.8.tgz#41f245cd79f7e19f17278ff27abd0bb67658e754"
 
 vue-dragula@^1.3.0:
   version "1.3.0"
@@ -6088,13 +6129,13 @@ vue-hot-reload-api@^2.0.1:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.0.8.tgz#b3ba6a9a443d561b14f2785c8ea056618cb2faa3"
 
-vue-i18n@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-5.0.0.tgz#d1dc7c97eb01faf909fbaa3b93f64cc2f22989e4"
+vue-i18n@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-5.0.2.tgz#82794b9bb0dbfc0241186496a97c10f40e307386"
 
-vue-loader@^11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-11.0.0.tgz#6a901684346c1dc84358512aa3b95b3416dc9d8d"
+vue-loader@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-11.1.0.tgz#8f3fcdd8a233ce96b3e99bd3d56e83cc0f2050f2"
   dependencies:
     consolidate "^0.14.0"
     hash-sum "^1.0.2"
@@ -6115,15 +6156,15 @@ vue-lory@0.0.4:
   dependencies:
     lory.js "^2.2.1"
 
-vue-nprogress@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/vue-nprogress/-/vue-nprogress-0.1.4.tgz#5f839ec9ad99cbc41b632999301e126c96a22e2c"
+vue-nprogress@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/vue-nprogress/-/vue-nprogress-0.1.5.tgz#574b412f1034012daaf46299d5505d5812f406e6"
   dependencies:
     nprogress "0.2.0"
 
-vue-peity@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/vue-peity/-/vue-peity-0.4.0.tgz#934369bfd9de58bc73b814c215f820ce12ca40bc"
+vue-peity@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/vue-peity/-/vue-peity-0.5.0.tgz#0729d04c6850c218cba4d6d7219bf1cfe5a3bfcb"
 
 vue-quill-editor@^1.1.1:
   version "1.1.1"
@@ -6173,7 +6214,7 @@ vue@^2.0.1, vue@^2.1.10, vue@^2.1.4:
   version "2.1.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.1.10.tgz#c9235ca48c7925137be5807832ac4e3ac180427b"
 
-vuex-router-sync@4.1.2:
+vuex-router-sync@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/vuex-router-sync/-/vuex-router-sync-4.1.2.tgz#584d6315909257adec2914a63d54b428c016b8ec"
 

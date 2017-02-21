@@ -6,7 +6,7 @@ import VueValidator from 'vue-validator'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import * as filters from 'common/filters'
+import * as filters from 'admin/common/filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
 
 Date.prototype.Format = function (fmt) { //author: meizz 

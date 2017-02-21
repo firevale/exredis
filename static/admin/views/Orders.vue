@@ -38,8 +38,8 @@
                       </tooltip>
                     </td>
                     <td style="border-bottom: none"> {{ order.user_id }} </td>
-                    <td rowspan="2"> 
-                      <span class="icon" style="color: #c0c0c0; width: 1.2rem; height: 1rem; line-height: 1rem; vertical-align: middle; font-size: 18px">
+                    <td rowspan="2" style="min-width: 60px; color: firebrick"> 
+                      <span class="icon" style="width: 1.2rem; height: 1rem; line-height: 1rem; vertical-align: middle; font-size: 18px">
                         <i :class="`fa fa-${order.transaction_currency.toLowerCase()}`"></i>
                       </span>{{ (order.fee / 100).toFixed(0) }} 
                     </td>

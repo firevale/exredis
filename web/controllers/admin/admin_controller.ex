@@ -176,6 +176,7 @@ defmodule Acs.AdminController do
       %AppGoods{app_id: ^app_id} = goods ->
         case Repo.delete(goods) do 
           {:ok, _} ->
+            RedisApp.refresh(app_id)
             conn |> json(%{success: true})
           
           {:error, %{errors: errors}} ->

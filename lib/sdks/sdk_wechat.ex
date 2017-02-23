@@ -1,10 +1,12 @@
 defmodule SDKWechat do
   use     HTTPotion.Base
-  require Logger
+  use     LogAlias
   import  SweetXml
   require Utils
-
+  
+  alias Acs.Repo
   alias Acs.AppOrder
+  alias Acs.RedisApp
   
   @wechat_config      Application.get_env(:acs, :wechat)
   @prepay_url         @wechat_config[:prepay_url]
@@ -45,14 +47,14 @@ defmodule SDKWechat do
 
         response = post(@prepay_url, body: req_data)
         
-        Logger.inf "wechat prepay, response: #{inspect response.body, pretty: true}"
+        d "wechat prepay, response: #{inspect response.body, pretty: true}"
         if HTTPotion.Response.success?(response) do 
           case get_prepay_id(response.body) do
               {:ok, prepay_id} -> 
                   resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
                   {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]} 
               {:error, return_msg} ->
-                  Logger.info "wechat, get_prepay_id error: #{return_msg}" 
+                  d "wechat, get_prepay_id error: #{return_msg}" 
                   {:error, return_msg}
               _ -> 
                   {:error, "wechat prepay, get_prepay_id fail"}
@@ -86,7 +88,7 @@ defmodule SDKWechat do
                       transaction_currency: fee_type
                     }) |> Repo.update
 
-                    PaymentHelper.notify_cp(order)
+                    Acs.PaymentHelper.notify_cp(order)
                     {:ok, "购买成功"}
                 {:error, errorstr} -> {:error, errorstr}
               end
@@ -107,11 +109,11 @@ defmodule SDKWechat do
         req_params = params_with_sign(params,sign_key)
         req_data = "<xml>" <> Enum.map_join(req_params, "", fn({key, value}) -> "<#{key}>#{value}</#{key}>" end) <> "</xml>"
 
-        Logger.info "wechat, check_order_status request data: #{req_data}"
+        d "wechat, check_order_status request data: #{req_data}"
 
         response = post(@check_url, body: req_data)
     
-        Logger.info "wechat check_order_status, response: #{inspect response.body, pretty: true}"
+        d "wechat check_order_status, response: #{inspect response.body, pretty: true}"
     
         if HTTPotion.Response.success?(response) do 
           result = response.body
@@ -127,26 +129,30 @@ defmodule SDKWechat do
                   
                   # check sign
                   case check_sign(result, sign_key) do
-                    {:error, msg} -> {:error, "签名失败"} 
-                  end
+                    :ok -> 
                   
-                  if result_code == "SUCCESS" do 
-                      trade_state = result |> xpath(~x"//trade_state/text()") |> to_string()
-                      fee_type = result |> xpath(~x"//fee_type/text()") |> to_string()
-                      transaction_id = result |> xpath(~x"//transaction_id/text()") |> to_string()
-                      trade_state_desc = result |> xpath(~x"//trade_state_desc/text()") |> to_string()
-                      total_fee = result |> xpath(~x"//total_fee/text()") |> to_string()
-                      if trade_state == "SUCCESS" do
+                      if result_code == "SUCCESS" do 
+                        trade_state = result |> xpath(~x"//trade_state/text()") |> to_string()
+                        fee_type = result |> xpath(~x"//fee_type/text()") |> to_string()
+                        transaction_id = result |> xpath(~x"//transaction_id/text()") |> to_string()
+                        trade_state_desc = result |> xpath(~x"//trade_state_desc/text()") |> to_string()
+                        total_fee = result |> xpath(~x"//total_fee/text()") |> to_string()
+                        if trade_state == "SUCCESS" do
                           {:ok, transaction_id, total_fee, fee_type}                     
+                        else
+                          {:error, trade_state_desc}                     
+                        end
                       else
-                        {:error, trade_state_desc}                     
-                      end
-                  else
-                    {:error, err_code_des}
-                  end  
-                  {:error, nil}                  
-                _ -> {:error, return_msg}
-          end
+                        {:error, err_code_des}
+                      end    
+                  
+                    _ -> {:error, "签名失败"} 
+                  
+                end
+              
+              _ -> {:error, return_msg}
+          
+        end
         else
           {:error, nil}
       end
@@ -176,28 +182,30 @@ def on_notify(result) do
               else
                 # check sign
                 case check_sign(result, wechat_info.sign_key) do
-                  {:error, msg} -> {:error, "签名失败"} 
+                  :ok ->
+                    if result_code == "SUCCESS" do 
+                      # update order status
+                      AppOrder.changeset(order, %{
+                              status: @status_paid,
+                              paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                              transaction_id: "wechat." <> transaction_id, 
+                              paid_channel: :wechat,
+                              fee: total_fee,
+                              transaction_currency: fee_type
+                            }) |> Repo.update              
+
+                      Acs.PaymentHelper.notify_cp(order)
+                      
+                      {:ok, "OK"}
+
+                    else
+                      {:error, err_code_des}
+                    end
+
+                  _ -> 
+                    {:error, "签名失败"} 
                 end
 
-                if  result_code == "SUCCESS" do 
-                  # update order status
-                  AppOrder.changeset(order, %{
-                          status: @status_paid,
-                          paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                          transaction_id: "wechat." <> transaction_id, 
-                          paid_channel: :wechat,
-                          fee: total_fee,
-                          transaction_currency: fee_type
-                        }) |> Repo.update              
-
-                  PaymentHelper.notify_cp(order)
-                  
-                  {:ok, "OK"}
-
-                else
-                  {:error, err_code_des}
-                end
-                
               end
             _ -> 
               {:error, "订单不存在"}
@@ -224,9 +232,7 @@ end
   end
 
   def check_sign(xmlstr, sign_key) do
-
-    {:ok, "OK"}
-
+   :ok
   end
 
   def create_xml_reply(code, msg) do

@@ -28,14 +28,20 @@ defmodule Acs.WechatController do
   end
 
   def notify(conn, _params) do
+    case read_body(conn) do 
+      {:ok, body, _}  ->
+        d "wechat notify: #{inspect body , pretty: true}"
 
-    d "wechat notify: #{inspect conn.body, pretty: true}"
+        case SDKWechat.on_notify(body) do
+          {:ok, msg} -> 
+            conn |> text(SDKWechat.create_xml_reply("SUCCESS","OK"))
 
-    case SDKWechat.on_notify(conn.body) do
-      {:ok, msg} -> conn |> text(SDKWechat.create_xml_reply("SUCCESS","OK"))
-      {:error, return_msg} -> conn |> text(SDKWechat.create_xml_reply("FAIL",return_msg))
+          {:error, return_msg} -> 
+            conn |> text(SDKWechat.create_xml_reply("FAIL",return_msg))
+        end
+      _ ->
+        conn |> text(SDKWechat.create_xml_reply("FAIL", "read request body failed"))
     end
-
   end
 
   def payresult(%Plug.Conn{private: %{acs_app: %RedisApp{
@@ -43,15 +49,15 @@ defmodule Acs.WechatController do
                %{"errcode" => errcode,
                  "order_id" => order_id} = _params) do
     case errcode do
-      0 -> 
+      "0" -> 
           # check order status
           case SDKWechat.on_check(order_id, wechat_info) do 
             {:ok, msg} ->  conn |> text(msg) 
             {:error, errorstr} -> conn |> text(errorstr) 
           end 
 
-      -1 -> conn |> text("签名错误／未注册APPID／APPID不正确／其他异常等") 
-      -2 -> conn |> text("用户取消了支付") 
+      "-1" -> conn |> text("签名错误／未注册APPID／APPID不正确／其他异常等") 
+      "-2" -> conn |> text("用户取消了支付") 
     end
   end
 

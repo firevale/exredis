@@ -2,18 +2,18 @@
   <div class="login-box">
     <validation name="portrait">
       <div class="row-login">
-        <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.myAvatar.title') }}</p>
+        <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.avatar.title') }}</p>
       </div>
       <div class="row-login" style="justify-content: center;margin-top: .2rem;">
         <img class="is-84x84" :src="picUrl"></img>
       </div>
       <div class="row-login">
-        <input type="submit" class="native-button" :class="{'is-disabled': processing}" :value="$t('account.myAvatar.choosePicture')"
+        <input type="submit" class="native-button" :class="{'is-disabled': processing}" :value="$t('account.avatar.choosePicture')"
           :disabled="processing" @click="choosePicture" />
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
       <div class="row-login">
-        <input type="submit" class="native-button" :class="{'is-disabled': processing}" :value="$t('account.myAvatar.takePicture')"
+        <input type="submit" class="native-button" :class="{'is-disabled': processing}" :value="$t('account.avatar.takePicture')"
           :disabled="processing" @click="shotPicture" />
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>

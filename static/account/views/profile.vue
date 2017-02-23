@@ -2,18 +2,18 @@
   <div class="login-box">
     <validation name="personal">
       <div class="row-login">
-        <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.myProfile.title') }}</p>
+        <p class="title" style="font-size: 1.2rem;line-height: 1rem;">{{ $t('account.profile.title') }}</p>
       </div>
       <div class="row-login" style="justify-content: center;margin-top: .2rem;">
         <img class="is-84x84" :src="picUrl" @click="changePortrait"></img>
       </div>
       <div v-show="!editNick" style="text-align: center;">
-        <span class="nick-txt">{{ $t('account.myProfile.nickName') }}</span>
+        <span class="nick-txt">{{ $t('account.profile.nickName') }}</span>
         <span class="nick-name" style="color: black;">{{ nickName }}</span>
         <span class="icon edit-sign" @click="editNick=!editNick"></span>
       </div>
       <div v-show="editNick" class="row-login">
-        <span class="nick-txt">{{ $t('account.myProfile.nickName') }}</span>
+        <span class="nick-txt">{{ $t('account.profile.nickName') }}</span>
         <validity ref="accountId" field="accountId" :validators="{
                 required: {rule: true, message: $t('account.error.requireUserName')}, 
                 validNickName: {rule: true, message: invalidNickNameErrorMessage},
@@ -21,14 +21,14 @@
           <input type="text" maxlength="12" minlength="6" class="nick-name" v-model.trim="nickName" autocomplete="off" name="user"
             @focusout="handleValidate" />
         </validity>
-        <input class="confirm-button" type="button" :value="$t('account.myProfile.confirm')" @click="onSaveNickName"></input>
+        <input class="confirm-button" type="button" :value="$t('account.profile.confirm')" @click="onSaveNickName"></input>
         <span v-show="!nickName" class="icon addon-icon error-sign pull-right" style="right: 3.6rem;"></span>
       </div>
       <p class="user-name">
         {{ userName }}
       </p>
       <div class="row-login">
-        <input type="submit" class="submit-button" :class="{'is-disabled': processing}" :value="$t('account.myProfile.changeAccount')"
+        <input type="submit" class="submit-button" :class="{'is-disabled': processing}" :value="$t('account.profile.changeAccount')"
           :disabled="processing" @click="changeAccount" />
         <span v-show="processing" class="icon progress-icon rotating"></span
       </div>
@@ -70,7 +70,7 @@
       },
 
       userName() {
-        return this.$t('account.myProfile.userNameStr', {
+        return this.$t('account.profile.userNameStr', {
           nickName: 'test@firevale.com'
         })
       },
@@ -119,7 +119,7 @@
 
       changePortrait() {
         this.$router.push({
-          name: 'myAvatar'
+          name: 'avatar'
         })
       }
     },

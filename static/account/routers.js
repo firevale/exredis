@@ -7,17 +7,14 @@ export default function(VueRouter) {
       path: '/account',
       component: require('./views/main.vue'),
       children: [{
-        path: 'my_profile',
-        name: 'myProfile',
-        component: require('./views/myProfile.vue'),
+        path: 'profile',
+        name: 'profile',
+        component: require('./views/profile.vue'),
       }, {
-        path: 'my_avatar',
-        name: 'myAvatar',
-        component: require('./views/myAvatar.vue'),
+        path: 'avatar',
+        name: 'avatar',
+        component: require('./views/avatar.vue'),
       }]
-    }, {
-      path: '*',
-      redirect: '/account/my_profile'
     }]
   });
 }

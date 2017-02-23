@@ -1,10 +1,18 @@
 export default {
   'zh-hans': {
-    payment: {
-      selectPaymentChannel: '请选择充值方式:',
-      channel: {
-        alipay: '支付宝',
-        wechat: '微信支付',
+    account: {
+      profile: {
+        title: '个人中心',
+        changeAccount: '切换账号',
+        nickName: '昵称 : ',
+        confirm: '确认',
+        userNameStr: '用户名 : {nickName}',
+      },
+
+      avatar: {
+        title: '修改头像',
+        choosePicture: '从相册选一张',
+        takePicture: '拍一张照片',
       },
     },
   }

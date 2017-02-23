@@ -10,7 +10,7 @@ defmodule Acs.PageController do
   plug :check_admin_access when action == :show_admin_page
 
   def index(conn, _params) do
-    render conn, "index.html"
+    conn |> redirect(to: "forum")
   end
 
   @sm_provider                  Application.get_env(:acs, :sm_provider)
@@ -152,7 +152,7 @@ defmodule Acs.PageController do
         }
 
         AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
-        
+
       %AppOrder{} = x -> x
     end
 

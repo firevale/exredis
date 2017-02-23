@@ -46,6 +46,7 @@ defmodule Acs.Mixfile do
         :comeonin, 
         :httpotion,
         :pbkdf2,
+        :xmerl,
         :sweet_xml,
         :gen_smtp,
         :bugsnag,

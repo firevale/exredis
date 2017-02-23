@@ -6,6 +6,7 @@ defmodule Acs.PageController do
   plug :fetch_app
   plug :fetch_access_token 
   plug :fetch_zone_id
+  plug :fetch_body_class 
   plug :check_admin_access when action == :show_admin_page
 
   def index(conn, _params) do
@@ -15,127 +16,98 @@ defmodule Acs.PageController do
   @sm_provider                  Application.get_env(:acs, :sm_provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
-  # TODO: refactor this module, loclae/browser etc,
+  defp fetch_body_class(%Plug.Conn{private: %{
+                          acs_browser: browser, 
+                          acs_platform: platform}} = conn, 
+                        _options) do 
+    class = case platform do 
+      "wp8" -> "wp8 in-app"
+      "ios" -> 
+        case browser do 
+          "webview" -> "ios in-app"
+          _ -> "ios"
+        end
+      "android" -> 
+        case browser do 
+          "webview" -> "android in-app"
+          _ -> "android"
+        end
+      _ -> ""
+    end
+
+    conn |> put_private(:acs_body_class, class)
+  end
+
   def show_login_page(%Plug.Conn{
                         private: %{
+                          acs_locale: locale,
                           acs_browser: browser, 
                           acs_platform: platform}} = conn,
                       params) do 
     
-    d "show login page for app: #{conn.private[:acs_app_id]}"
-               
-    decoded_redirect_url = case params["redirect_url"] do 
-                              nil -> "/"
-                              "" -> "/"
-                              v -> v |> Base.url_decode64!
-                            end
-
-    locale = case conn.private[:acs_locale] do 
-               nil -> "zh-hans"
-               _ -> "zh-hans"
-             end
-
-    browser = case Mix.env do 
-                :dev -> 
-                  case params["browser"] do 
-                    nil -> browser 
-                    x -> x
-                  end
-                _ -> browser
-              end
-
-    body_class = case platform do 
-                  "wp8" -> "wp8 in-app"
-                  "ios" -> 
-                    case browser do 
-                      "webview" -> "ios in-app"
-                      _ -> "ios"
-                    end
-                  "android" -> 
-                    case browser do 
-                      "webview" -> "android in-app"
-                      _ -> "android"
-                    end
-                  _ -> ""
-                end
+    redirect_url = case params["redirect_url"] do 
+                     nil -> "/"
+                     "" -> "/"
+                     v -> v |> Base.url_decode64!
+                   end
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)
-         |> render("login.html", redirect_url: decoded_redirect_url, 
+         |> render("login.html", redirect_url: redirect_url, 
                                  browser: browser,
                                  platform: platform,
-                                 body_class: body_class,
                                  locale: locale,
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 
-  def show_admin_page(%Plug.Conn{private: %{acs_access_token: access_token}} = conn, params) do
+  def show_admin_page(%Plug.Conn{
+                        private: %{
+                          acs_access_token: access_token }} = conn, 
+                      _params) do
     conn |> put_layout(false) 
          |> render("admin.html", access_token: access_token)
   end
 
-  def show_forum_page(%Plug.Conn{private: %{acs_browser: browser, 
-                                            acs_platform: platform}} = conn,
-             params) do
-    decoded_redirect_url = case params["redirect_url"] do 
-                              nil -> "/"
-                              "" -> "/"
-                              v -> v |> Base.url_decode64!
-                            end
-
-    locale = case conn.private[:acs_locale] do 
-               nil -> "zh-hans"
-               _ -> "zh-hans"
-             end
-
-    browser = case Mix.env do 
-                :dev -> 
-                  case params["browser"] do 
-                    nil -> browser 
-                    x -> x
-                  end
-                _ -> browser
-              end
+  def show_account_page(%Plug.Conn{
+                          private: %{
+                            acs_browser: browser, 
+                            acs_locale: locale, 
+                            acs_platform: platform}} = conn,
+                        _params) do
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)
-         |> render("forum.html", redirect_url: decoded_redirect_url, 
-                                 browser: browser,
-                                 platform: platform,
-                                 locale: locale,
-                                 is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("account.html", browser: browser,
+                                   platform: platform,
+                                   locale: locale)
   end
 
-  def show_mall_page(%Plug.Conn{private: %{acs_browser: browser, 
-                                            acs_platform: platform}} = conn,
-             params) do
-    decoded_redirect_url = case params["redirect_url"] do 
-                              nil -> "/"
-                              "" -> "/"
-                              v -> v |> Base.url_decode64!
-                            end
-
-    locale = case conn.private[:acs_locale] do 
-               nil -> "zh-hans"
-               _ -> "zh-hans"
-             end
-
-    browser = case Mix.env do 
-                :dev -> 
-                  case params["browser"] do 
-                    nil -> browser 
-                    x -> x
-                  end
-                _ -> browser
-              end
+  def show_forum_page(%Plug.Conn{
+                        private: %{
+                          acs_browser: browser, 
+                          acs_locale: locale, 
+                          acs_platform: platform}} = conn,
+                      _params) do
 
     conn |> put_layout(false) 
          |> put_session(:locale, locale)
-         |> render("mall.html", redirect_url: decoded_redirect_url, 
-                                 browser: browser,
+         |> render("forum.html", browser: browser,
                                  platform: platform,
-                                 locale: locale,
-                                 is_mobile_account_supported: @is_mobile_account_supported)
+                                 locale: locale)
+  end
+
+  def show_mall_page(%Plug.Conn{
+                       private: %{
+                         acs_locale: locale,
+                         acs_browser: browser, 
+                         acs_platform: platform}} = conn,
+                     _params) do
+
+    conn |> put_layout(false) 
+         |> put_session(:locale, locale)
+         |> render("mall.html", browser: browser,
+                                platform: platform,
+                                locale: locale)
   end
 
   # 兼容旧版本
@@ -212,11 +184,12 @@ defmodule Acs.PageController do
   end
 
   # 新版本
-  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser}} = conn,
-             %{
-               "order_id" => order_id,
-               "version" => "3"
-             } = params) do
+  def show_payment_page(%Plug.Conn{
+                          private: %{acs_browser: browser}} = conn,
+                        %{
+                          "order_id" => order_id,
+                          "version" => "3"
+                        } = params) do
 
     locale = case conn.private[:acs_locale] do 
               nil -> "zh-hans"
@@ -264,10 +237,5 @@ defmodule Acs.PageController do
     end
   end
 
-  # NOTE: 兼容旧版本SDK
-  def show_native_bridge(conn, params) do 
-    conn |> put_layout(false)
-         |> render("native_bridge.html", platform: params["platform"])
-  end
 
 end

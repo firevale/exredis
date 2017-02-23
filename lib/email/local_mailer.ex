@@ -1,5 +1,5 @@
 defmodule Acs.LocalMailer do
-  use    Bamboo.Mailer, otp_app: :acs
+    use    Bamboo.Mailer, otp_app: :acs
   import Bamboo.Email
   import Acs.Gettext
   alias  Acs.Emails

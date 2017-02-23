@@ -37,16 +37,16 @@ defmodule Acs.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/", PageController, :index
-    get  "/mobile/native_bridge/:platform", PageController, :show_native_bridge
     get  "/login/*path", PageController, :show_login_page
     get  "/admin/*path", PageController, :show_admin_page
     get  "/forum/*path", PageController, :show_forum_page
-    get  "/mall/*path", PageController, :show_mall_page
+    get  "/mall/*path",  PageController, :show_mall_page
+    get  "/account/*path", PageController, :show_account_page
     get  "/payment/*path", PageController, :show_payment_page
+
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha 
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code
-
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
   end
@@ -95,11 +95,12 @@ defmodule Acs.Router do
     scope path: "/wechat" do
       get  "/prepay", WechatController, :prepay
       post "/prepay", WechatController, :prepay
+
       get  "/notify", WechatController, :notify
       post "/notify", WechatController, :notify
+
       get  "/payresult", WechatController, :payresult
       get  "/orderquery", WechatController, :orderquery
-
     end 
 
     forward "/auth", AuthApiRouter 
@@ -112,11 +113,4 @@ defmodule Acs.Router do
   scope path: "/admin_actions", alias: Acs do 
     forward "/", AdminRouter
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", Acs do
-  #   pipe_through :api
-  # end
-
-
 end

@@ -174,7 +174,11 @@ defmodule Acs.Plugs do
   defp _fetch_params_user_id(%Plug.Conn{} = conn) do 
     case conn.params["user_id"] do 
       nil -> nil
-      x -> x
+      x  -> 
+        cond do 
+          Regex.match?(~r/^\d+$/, x) -> x 
+          true -> nil
+        end
     end
   end
 

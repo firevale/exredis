@@ -8,11 +8,11 @@ export default function(VueRouter) {
       component: require('./views/main.vue'),
       children: [{
         path: 'my_profile',
-        name: 'my_profile',
+        name: 'myProfile',
         component: require('./views/myProfile.vue'),
       }, {
         path: 'my_avatar',
-        name: 'my_avatar',
+        name: 'myAvatar',
         component: require('./views/myAvatar.vue'),
       }]
     }, {

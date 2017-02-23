@@ -5,11 +5,11 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [{
       path: '/payment',
-      component: require('../views/main.vue'),
+      component: require('./views/main.vue'),
       children: [{
         path: 'pay_proxy',
         name: 'pay_proxy',
-        component: require('../views/selectPaymentChannel.vue'),
+        component: require('./views/selectPaymentChannel.vue'),
       },]
     }, {
       path: '*',

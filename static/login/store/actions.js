@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import utils from '../common/utils'
+import * as utils from 'common/utils'
 
 export const addAccountExistence = ({
   commit

@@ -1,4 +1,3 @@
-import utils from '../../common/utils'
 
 const state = {
   transitionName: 'slide-left',

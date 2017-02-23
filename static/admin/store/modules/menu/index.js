@@ -1,4 +1,4 @@
-import Vue from 'admin/common/vue-i18n'
+import Vue from 'admin/vue-i18n'
 
 import * as types from '../../mutation-types'
 import x from './apps.js'

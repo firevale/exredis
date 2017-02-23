@@ -1,54 +1,38 @@
-export default {
-  isValidEmail: function(val) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(val);
-  },
+import './date'
 
-  isValidMobileNumber: function(val) {
-    return /^1[34578]\d{9}$/.test(val);
-  },
+export const isValidEmail = val => {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(val)
+}
 
-  isValidAccountName: function(val) {
-    if (window.acsConfig.isMobileAccountSupported) {
-      return this.isValidEmail(val) || this.isValidMobileNumber(val)
-    } else {
-      return this.isValidEmail(val)
-    }
-  },
+export const isValidMobileNumber = val => {
+  return /^1[34578]\d{9}$/.test(val)
+}
 
-  emailMask: function(val) {
-    return val.replace(/^([^<>()\[\]\\,;:\s@"]{2})[^@]*@/g, '$1***@')
-  },
+export const isValidAccountName = val => {
+  if (window.acsConfig.isMobileAccountSupported) {
+    return this.isValidEmail(val) || this.isValidMobileNumber(val)
+  } else {
+    return this.isValidEmail(val)
+  }
+}
 
-  mobileMask: function(val) {
-    return val.replace(/^(\d{3})\d{6}(\d{2})/g, '$1******$2')
-  },
+export const emailMask = val => {
+  return val.replace(/^([^<>()\[\]\\,;:\s@"]{2})[^@]*@/g, '$1***@')
+}
 
-  guid: function() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  },
+export const mobileMask = val => {
+  return val.replace(/^(\d{3})\d{6}(\d{2})/g, '$1******$2')
+}
 
-  getAppId: function() {
-    return window.acsConfig.appId ? window.acsConfig.appId : 'account-center'
-  },
+export const guid = _ => {
+  const s4 = _ => {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 
-  getDeviceId: function() {
-    let deviceId = window.acsConfig.deviceId
-
-    if (!deviceId) {
-      deviceId = localStorage.getItem('__acs_device_id__')
-
-      if (!deviceId) {
-        deviceId = `${window.acsConfig.platform}.${this.guid()}`
-        localStorage.setItem('__acs_device_id__', deviceId)
-      }
-    }
-
-    return deviceId
-  },
-
-
+export const getNowFormatDate = _ => {
+  var date = new Date();
+  return date.Format('yyyy-MM-dd hh:mm:ss')
 }

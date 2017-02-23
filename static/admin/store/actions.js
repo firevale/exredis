@@ -1,8 +1,8 @@
 import * as types from './mutation-types'
-import Vue from 'admin/common/vue-i18n'
+import Vue from 'admin/vue-i18n'
 import {
   processAjaxError
-} from 'admin/common/utils'
+} from 'admin/miscellaneous'
 
 export const toggleSidebar = ({
   commit

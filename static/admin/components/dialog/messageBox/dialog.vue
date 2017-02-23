@@ -33,7 +33,7 @@
     Modal
   } from 'vue-bulma-modal'
 
-  import Vue from 'admin/common/vue-i18n'
+  import Vue from 'admin/vue-i18n'
 
   export default {
     props: {

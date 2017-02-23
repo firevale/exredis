@@ -96,7 +96,7 @@
 
   import {
     processAjaxError
-  } from 'admin/common/utils'
+  } from 'admin/miscellaneous'
 
   import { mapGetters, mapActions } from 'vuex'
   import * as getters from 'admin/store/getters'

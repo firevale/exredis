@@ -1,5 +1,3 @@
-import utils from './utils'
-
 export default {
   closeWebviewWithResult: function(result) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeWebviewWithResult === 'function') {
@@ -45,9 +43,9 @@ export default {
     }
   },
 
-  openWechatPay: function(partnerId,prepayId,nonceStr,timeStamp,sign) {
+  openWechatPay: function(payinfo) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
-      return AndroidNativeAPI.openWechatPay(partnerId,prepayId,nonceStr,timeStamp,sign)
+      return AndroidNativeAPI.openWechatPay(payinfo)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
       return false
     } else {

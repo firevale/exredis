@@ -49,8 +49,9 @@
   import {
     preViewNote
   } from '../components/preView'
-  import utils from '../common/utils'
   import message from '../components/message'
+
+  import * as utils from 'common/utils'
 
   var marked = require('marked');
   marked.setOptions({

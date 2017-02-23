@@ -20,8 +20,7 @@
     mapActions
   } from 'vuex'
 
-  import nativeApi from '../common/nativeApi'
-  import 'payment/scss/payment.scss'
+  import nativeApi from 'common/nativeApi'
 
   export default {
     data: function() {

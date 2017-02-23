@@ -10,7 +10,7 @@ export default function(VueRouter) {
         path: 'pay_proxy',
         name: 'pay_proxy',
         component: require('./views/selectPaymentChannel.vue'),
-      },]
+      }, ]
     }, {
       path: '*',
       redirect: '/payment/pay_proxy'

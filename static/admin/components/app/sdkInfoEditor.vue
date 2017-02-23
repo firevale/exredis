@@ -20,7 +20,7 @@
     mapActions
   } from 'vuex'
 
-  import Vue from 'admin/common/vue-i18n'
+  import Vue from 'admin/vue-i18n'
 
   import sdkInfoDialog from 'admin/components/dialog/app/sdkInfo'
   const sdkInfoDialogComponent = Vue.extend(sdkInfoDialog)
@@ -48,7 +48,7 @@
 
   import {
     processAjaxError
-  } from 'admin/common/utils'
+  } from 'admin/miscellaneous'
 
   export default {
     props: {

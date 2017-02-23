@@ -39,12 +39,9 @@
   } from 'vue-bulma-modal'
 
   import {
-    openNotification
-  } from 'admin/common/notification'
-
-  import {
+    openNotification,
     processAjaxError
-  } from 'admin/common/utils'
+  } from 'admin/miscellaneous'
 
   export default {
     props: {
@@ -89,7 +86,9 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.goodsInfoUpdated', {goodsName: result.goods.name}),
+                message: this.$t('admin.messages.goodsInfoUpdated', {
+                  goodsName: result.goods.name
+                }),
                 type: 'success',
                 duration: 4500,
                 container: '.notifications',

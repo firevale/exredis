@@ -70,7 +70,7 @@
 
   import {
     openNotification
-  } from 'admin/common/notification'
+  } from 'admin/miscellaneous'
 
   export default {
     props: {

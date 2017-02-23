@@ -5,15 +5,15 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [{
       path: '/account',
-      component: require('../views/main.vue'),
+      component: require('./views/main.vue'),
       children: [{
         path: 'my_profile',
         name: 'my_profile',
-        component: require('../views/myProfile.vue'),
-      },{
+        component: require('./views/myProfile.vue'),
+      }, {
         path: 'my_avatar',
         name: 'my_avatar',
-        component: require('../views/myAvatar.vue'),
+        component: require('./views/myAvatar.vue'),
       }]
     }, {
       path: '*',

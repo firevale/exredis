@@ -6,11 +6,11 @@ export default function (VueRouter) {
     routes: [{
       path: '/mall',
       name: 'mall',
-      component: require('../views/main.vue'),
+      component: require('./views/main.vue'),
     }, {
       path: '/mall/mine',
       name: 'mine',
-      component: require('../views/mine.vue'),
+      component: require('./views/mine.vue'),
     }, {
       path: '*',
       redirect: '/'

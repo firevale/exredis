@@ -1,4 +1,4 @@
-import utils from '../../common/utils'
+import * as acs from 'common/acs'
 
 function restoreHistoryAccounts() {
   let jsonAccounts = localStorage.getItem('_acs_history_accounts_')
@@ -12,8 +12,8 @@ function restoreHistoryAccounts() {
 }
 
 const state = {
-  appId: utils.getAppId(), 
-  deviceId: utils.getDeviceId(),
+  appId: acs.getAppId(), 
+  deviceId: acs.getDeviceId(),
   accountExistences: {},
   loginAccount: localStorage.getItem('_acs_login_account_id_'),
   registerAccount: localStorage.getItem('_acs_register_account_id_'),

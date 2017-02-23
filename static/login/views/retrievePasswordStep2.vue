@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import utils from '../common/utils'
+  import * as utils from 'common/utils'
   import {
     mapGetters,
     mapActions

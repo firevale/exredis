@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-  import utils from '../common/utils'
+  import * as utils from 'common/utils'
   import msg from '../components/message'
   import Vue from 'vue'
   import {
@@ -177,7 +177,3 @@
     },
   }
 </script>
-
-<style lang="scss">
-
-</style>

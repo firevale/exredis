@@ -1,4 +1,4 @@
-import Vue from 'admin/common/vue-i18n'
+import Vue from 'admin/vue-i18n'
 
 const FileUploadDialog = Vue.extend(require('./dialog'));
 

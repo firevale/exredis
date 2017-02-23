@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <router-link class="button is-primary pull-right" style="top: -60px; right: -20px;" :to="{name: 'NewApp'}">
+    <router-link class="button is-primary pull-right" style="position: absolute; top: 20px; right: 20px;" :to="{name: 'NewApp'}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.app.add') }}
     </router-link>
     <div class="columns is-multiline">

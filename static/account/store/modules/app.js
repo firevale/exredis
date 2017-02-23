@@ -1,8 +1,8 @@
-import utils from '../../common/utils'
+import * as acs from 'common/acs'
 
 const state = {
-  appId: utils.getAppId(), 
-  deviceId: utils.getDeviceId(),
+  appId: acs.getAppId(), 
+  deviceId: acs.getDeviceId(),
   transitionName: 'slide-left',
 }
 

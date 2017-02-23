@@ -25,12 +25,9 @@
   } from 'vue-bulma-modal'
 
   import {
-    openNotification
-  } from 'admin/common/notification'
-
-  import {
+    openNotification,
     processAjaxError
-  } from 'admin/common/utils'
+  } from 'admin/miscellaneous'
 
   export default {
     props: {

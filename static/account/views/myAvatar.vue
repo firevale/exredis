@@ -20,12 +20,15 @@
     </validation>
   </div>
 </template>
+
 <script>
   import {
     mapGetters,
     mapActions
   } from 'vuex'
-  import native from '../common/nativeApi'
+
+  import native from 'common/nativeApi'
+
   export default {
     data: function() {
       return {
@@ -36,15 +39,15 @@
     },
 
     computed: {
-      
+
     },
 
     methods: {
-      choosePicture(){
+      choosePicture() {
         native
       },
 
-      shotPicture(){
+      shotPicture() {
         native
       },
     },

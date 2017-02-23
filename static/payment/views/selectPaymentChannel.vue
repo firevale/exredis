@@ -13,8 +13,8 @@
 
 </template>
 <script>
-  import utils from '../common/utils'
-  import nativeApi from '../common/nativeApi'
+  import nativeApi from 'common/nativeApi'
+
   import {
     mapGetters,
     mapActions

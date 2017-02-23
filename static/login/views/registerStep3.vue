@@ -31,8 +31,7 @@
   </div>
 </template>
 <script>
-  import utils from '../common/utils'
-  import nativeApi from '../common/nativeApi'
+  import nativeApi from 'common/nativeApi'
   import msg from '../components/message'
   import {
     mapGetters,

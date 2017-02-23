@@ -30,7 +30,6 @@
   </div>
 </template>
 <script>
-  import utils from '../common/utils'
   import msg from '../components/message'
   import {
     mapGetters,

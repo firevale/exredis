@@ -66,10 +66,6 @@
   } from 'vuex'
 
   import {
-    openNotification
-  } from 'admin/common/notification'
-
-  import {
     showFileUploadDialog
   } from '../dialog/fileUpload'
 
@@ -78,10 +74,11 @@
   } from '../dialog/messageBox'
 
   import {
+    openNotification,
     processAjaxError
-  } from 'admin/common/utils'
+  } from 'admin/miscellaneous'
 
-  import Vue from 'admin/common/vue-i18n'
+  import Vue from 'admin/vue-i18n'
 
   import goodsInfoDialog from 'admin/components/dialog/app/goodsInfo'
   const goodsInfoDialogComponent = Vue.extend(goodsInfoDialog)
@@ -195,8 +192,7 @@
           callback: newProductIdInfo => {
             if (index == -1) {
               goods.product_ids.push(newProductIdInfo)
-            }
-            else {
+            } else {
               goods.product_ids[index] == newProductIdInfo
             }
           },

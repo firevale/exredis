@@ -114,15 +114,12 @@
     mapActions
   } from 'vuex'
 
-  import Vue from 'admin/common/vue-i18n'
+  import Vue from 'admin/vue-i18n'
 
   import {
-    openNotification
-  } from 'admin/common/notification'
-
-  import {
-    processAjaxError
-  } from 'admin/common/utils'
+    openNotification,
+    processAjaxError,
+  } from 'admin/miscellaneous'
 
   export default {
     props: {

@@ -27,7 +27,7 @@ defmodule Acs.WechatController do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
-  def notify(conn, _params) do
+  def notify(conn, params) do
     case read_body(conn) do 
       {:ok, body, _}  ->
         d "wechat notify: #{inspect body , pretty: true}"

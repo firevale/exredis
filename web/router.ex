@@ -20,7 +20,7 @@ defmodule Acs.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json", "xml"]
     plug :fetch_session
     plug :parse_user_agent
     plug :fetch_user_id

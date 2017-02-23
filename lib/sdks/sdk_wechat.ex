@@ -72,6 +72,7 @@ defmodule SDKWechat do
   def on_check(order_id, wechat_info) do
       case Repo.get(AppOrder, order_id) do 
         order = %AppOrder{} ->
+
           case order.status do
             @status_paid -> 
               {:ok, "购买成功"}
@@ -83,12 +84,12 @@ defmodule SDKWechat do
                       status: @status_paid,
                       paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
                       transaction_id: "wechat." <> transaction_id, 
-                      paid_channel: :wechat,
+                      paid_channel: "wechat",
                       fee: total_fee,
                       transaction_currency: fee_type
-                    }) |> Repo.update
+                    }) |> Repo.update!
 
-                    Acs.PaymentHelper.notify_cp(order)
+                    #Acs.PaymentHelper.notify_cp(order)
                     {:ok, "购买成功"}
                 {:error, errorstr} -> {:error, errorstr}
               end
@@ -184,17 +185,18 @@ def on_notify(result) do
                 case check_sign(result, wechat_info.sign_key) do
                   :ok ->
                     if result_code == "SUCCESS" do 
+
                       # update order status
                       AppOrder.changeset(order, %{
                               status: @status_paid,
                               paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
                               transaction_id: "wechat." <> transaction_id, 
-                              paid_channel: :wechat,
+                              paid_channel: "wechat",
                               fee: total_fee,
                               transaction_currency: fee_type
-                            }) |> Repo.update              
+                            }) |> Repo.update!              
 
-                      Acs.PaymentHelper.notify_cp(order)
+                      #Acs.PaymentHelper.notify_cp(order)
                       
                       {:ok, "OK"}
 

@@ -1,4 +1,4 @@
-import utils from 'common/acs'
+import * as acs from 'common/acs'
 
 const state = {
   appId: acs.getAppId(), 

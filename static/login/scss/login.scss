@@ -2,7 +2,6 @@
 @import "./font";
 @import "./common";
 @import "./transition";
-
 html {
   font-size: $middle;
 }
@@ -35,7 +34,6 @@ body.in-app *:not(input) {
 }
 
 $form-height: 230px;
-
 .g-doc {
   background: $white;
   position: absolute;
@@ -66,7 +64,7 @@ $form-height: 230px;
   height: $form-height;
 }
 
-body.in-app, 
+body.in-app,
 body.wp8 {
   .g-doc {
     display: block;
@@ -219,12 +217,10 @@ hr {
       color: $link;
       font-size: .6rem;
       padding-top: .5rem;
-
       &.pull-left {
         position: absolute;
         left: 0rem;
       }
-
       &.pull-right {
         position: absolute;
         right: 0rem;
@@ -600,9 +596,7 @@ only screen and (min-resolution: 2.25dppx) {
   }
 }
 
-
-
-.is-84x84{
+.is-84x84 {
   width: 84px;
   height: 84px;
   border: 1px solid $dark;
@@ -610,32 +604,34 @@ only screen and (min-resolution: 2.25dppx) {
   overflow: hidden;
 }
 
-.user-name{
+.user-name {
   color: $text-grey;
   text-align: center;
   font-size: .8rem;
   margin: 0 0 .5rem 0;
 }
 
-.nick-name{
+.nick-name {
   margin-top: .5rem;
   padding: .2rem .2rem !important;
   font-size: .8rem !important;
 }
 
-.error-sign{
+.error-sign {
   width: .9rem;
   height: .9rem;
   background-image: url(~login/assets/error-sign@1x.png);
 }
-.nick-txt{
+
+.nick-txt {
   color: $text-grey;
   line-height: 2rem;
   margin-top: .35rem;
   margin-right: .2rem;
   font-size: .8rem;
 }
-.confirm-button{
+
+.confirm-button {
   font-size: .6rem !important;
   flex: 0 !important;
   padding: .3rem .8rem !important;
@@ -646,12 +642,13 @@ only screen and (min-resolution: 2.25dppx) {
   color: $white;
   cursor: pointer;
 }
-.submit-button{
+
+.submit-button {
   font-size: .9rem !important;
   padding: .5rem !important;
 }
 
-.edit-sign{
+.edit-sign {
   width: .9rem;
   height: .9rem;
   display: inline-block;
@@ -659,7 +656,8 @@ only screen and (min-resolution: 2.25dppx) {
   background-image: url(~login/assets/edit@1x.png);
   cursor: pointer;
 }
-.native-button{
+
+.native-button {
   font-size: .9rem !important;
   margin-top: .6rem !important;
 }

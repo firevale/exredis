@@ -1,0 +1,28 @@
+defmodule Acs.ForumPost do
+  use Acs.Web, :model
+
+  schema "forums_posts" do
+    field :title, :string
+    field :content, :string
+    field :is_top, :boolean, default: false
+    field :is_hot, :boolean, default: false
+    field :is_vote, :boolean, default: false
+    field :last_reply_at, Ecto.DateTime
+    
+    belongs_to :section, Acs.ForumSection
+    belongs_to :user, Acs.User, type: :integer
+
+    timestamps()
+  end
+
+  @doc """
+  Builds a changeset based on the `struct` and `params`.
+  """
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :last_reply_at])
+    |> validate_required([:title, :content, :is_top, :is_hot, :is_vote, :last_reply_at])
+    |> foreign_key_constraint(:section_id)
+    |> foreign_key_constraint(:user_id)
+  end
+end

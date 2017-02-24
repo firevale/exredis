@@ -11,8 +11,7 @@ defmodule Acs.WechatController do
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
-    # notify_url = wechat_url(conn, :notify)
-    notify_url = ""
+    notify_url = "#{url(conn)}/api/pay/alipay/notify"
 
     # handling request via nginx reverse proxy
     ip_address = case conn.get_req_header(conn, "x-forwarded-for") do
@@ -39,7 +38,7 @@ defmodule Acs.WechatController do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
-  def notify(conn, params) do
+  def notify(conn, _params) do
     with {:ok, body, _} <- read_body(conn),
          notify_params <- XmlUtils.convert(body),
          "SUCCESS" <- notify_params[:return_code],

@@ -19,6 +19,7 @@ defmodule Acs.AlipayController do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
+  @status_paid AppOrder.Status.paid()
   def notify(conn, params) do
     with {:ok, notify_data} <- SDKAlipay.verify_notify(params),
          %AppOrder{} = order <- Repo.get(AppOrder, notify_data.out_trade_no),
@@ -39,13 +40,13 @@ defmodule Acs.AlipayController do
         error "alipay payment order not found when receive notify, params: #{inspect params, pretty: true}"
         conn |> text("fail")
       false ->
-        error "invalid trade status"
+        error "invalid trade status in alipay notify: #{inspect params, pretty: true}"
         conn |> text("fail")
       {:error, reason} ->
-        error "processing alipay notify failed: #{inspect reason}"
+        error "processing alipay notify failed: #{inspect reason}, params: #{inspect params, pretty: true}"
         conn |> text("fail")
       _ ->
-        error "processing alipay notify failed"
+        error "processing alipay notify failed, #{inspect params, pretty: true}"
         conn |> text("fail")
     end
   end

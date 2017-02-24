@@ -44,21 +44,4 @@ defmodule Acs.WechatController do
     end
   end
 
-  def payresult(%Plug.Conn{private: %{acs_app: %RedisApp{
-                          sdk_bindings: %{wechat: wechat_info}}}} = conn, 
-               %{"errcode" => errcode,
-                 "order_id" => order_id} = _params) do
-
-    # check order status
-    case SDKWechat.on_check(order_id, wechat_info) do 
-      {:ok, msg} ->  
-        conn |> put_layout(false)
-             |> render("payresult.html",:ok,msg)
-
-      {:error, errorstr} -> 
-        conn |> put_layout(false)
-             |> render("payresult.html",:error,errorstr)
-    end 
-  end
-
 end

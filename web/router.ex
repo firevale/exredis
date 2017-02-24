@@ -98,9 +98,6 @@ defmodule Acs.Router do
 
       get  "/notify", WechatController, :notify
       post "/notify", WechatController, :notify
-
-      get  "/payresult", WechatController, :payresult
-      get  "/orderquery", WechatController, :orderquery
     end 
 
     forward "/auth", AuthApiRouter 

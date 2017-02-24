@@ -47,7 +47,7 @@ defmodule Acs.WechatController do
          :ok <- SDKWechat.check_sign(notify_params, sign_key)
     do
       AppOrder.changeset(order, %{
-        status: @status_paid,
+        status: AppOrder.Status.paid(),
         paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
         transaction_id: "wechat." <> notify_params[:transaction_id],
         paid_channel: "wechat",

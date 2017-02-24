@@ -19,7 +19,6 @@ defmodule Acs.AlipayController do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
-  @status_paid AppOrder.Status.paid()
   def notify(conn, params) do
     with {:ok, notify_data} <- SDKAlipay.verify_notify(params),
          %AppOrder{} = order <- Repo.get(AppOrder, notify_data.out_trade_no),
@@ -27,7 +26,7 @@ defmodule Acs.AlipayController do
     do
       total_fee = String.to_float(notify_data.total_fee) * 100 |> Float.to_string(decimals: 0)
       AppOrder.changeset(order, %{
-        status: AppOrder.Status.paid,
+        status: AppOrder.Status.paid(),
         paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
         transaction_id: "alipay." <> notify_data.trade_no,
         paid_channel: "alipay",

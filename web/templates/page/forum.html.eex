@@ -2,51 +2,31 @@
 <html lang="zh-cmn-Hans">
   <head>
     <meta charset="utf-8"/>
-    <title>
-      forum
-    </title>
-    <meta name="forum" content="app-id=com.firevale.vrstorecn">
-    <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>
-    <%= if @browser == "webview" do %>
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <% else %>
-      <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <% end %>
-    <meta content="APP" name="description"/>
-    <meta content="APP" name="keywords"/>
-    <meta content="APP" name="author"/>
-    <meta content="APP" name="copyright"/>
-    <meta content="yes" name="apple-mobile-web-app-capable"/>
-    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-    <meta content="telephone=no, email=no" name="format-detection"/>
-    <meta content="webkit" name="renderer"/>
-    <meta content="true" name="HandheldFriendly"/>
-    <meta content="320" name="MobileOptimized"/>
-    <meta content="portrait" name="screen-orientation"/>
-    <meta content="portrait" name="x5-orientation"/>
-    <meta content="yes" name="full-screen"/>
-    <meta content="true" name="x5-fullscreen"/>
-    <meta content="application" name="browsermode"/>
-    <meta content="app" name="x5-page-mode"/>
-    <meta content="no" name="msapplication-tap-highlight"/>
-    <meta content="no-siteapp" http-equiv="Cache-Control"/>
+    <title> <%= gettext("Firevale Forum") %> </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
     <link href="<%= static_url(@conn, "/css/forum_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/forum.css") %>" rel="stylesheet"/>
+  </head>
+  <body class="<%= @conn.private[:acs_body_class] %>">
+    <div id="app">
+      <router-view></router-view>
+    </div>
+    <script>
+      window.acsConfig = {
+        csrfToken: '<%= get_csrf_token() %>',
+        inApp: <%= @conn.private[:acs_browser] == "webview" || @conn.private[:acs_platform] == "wp8" %>,
+        platform: '<%= @conn.private[:acs_platform] %>',
+        locale: '<%= @conn.private[:acs_locale] %>',
+        appId: '<%= @conn.private[:acs_app_id] %>',
+        deviceId: '<%= @conn.private[:acs_device_id] %>',
+      }
+    </script>
+    <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/forum.js") %>"></script>
+  </body>
 </html>
-<body<%= if @browser == "webview" do %> class="in-app" <% end %>>
-  <div id="app">
-    <router-view></router-view>
-  </div>
-  <script>
-    window.acsConfig = {
-      csrfToken: '<%= get_csrf_token() %>',
-      inApp: <%= @browser == "webview" %>,
-      platform: '<%= @platform %>',
-      locale: '<%= @locale %>',
-      appId: '<%= @conn.private[:acs_app_id] %>', 
-      deviceId: '<%= @conn.private[:acs_device_id] %>', 
-    }
-  </script>
-  <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>
-  <script src="<%= static_url(@conn, "/js/forum.js") %>"></script>
-</body>

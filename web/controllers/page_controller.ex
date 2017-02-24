@@ -9,12 +9,140 @@ defmodule Acs.PageController do
   plug :fetch_body_class
   plug :check_admin_access when action == :show_admin_page
 
+  @sm_provider                  Application.get_env(:acs, :sm_provider)
+  @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
+
   def index(conn, _params) do
     conn |> redirect(to: "forum")
   end
 
-  @sm_provider                  Application.get_env(:acs, :sm_provider)
-  @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
+  # 用户登录
+  def show_login_page(conn, params) do
+    redirect_url = case params["redirect_url"] do
+                     nil -> "/"
+                     "" -> "/"
+                     v -> v |> Base.url_decode64!
+                   end
+
+    conn |> put_layout(false)
+         |> put_session(:locale, conn.private[:acs_locale])
+         |> render("login.html", redirect_url: redirect_url,
+                                 is_mobile_account_supported: @is_mobile_account_supported)
+  end
+
+  # 管理后台
+  def show_admin_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("admin.html")
+  end
+
+  # 用户中心
+  def show_account_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("account.html")
+  end
+
+  # 论坛
+  def show_forum_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("forum.html")
+  end
+
+  # 商城
+  def show_mall_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("mall.html")
+  end
+
+  # 购买商品页面, 兼容旧版本
+  def show_payment_page(%Plug.Conn{private: %{acs_app: app,
+                                              acs_user: user,
+                                              acs_platform: platform}} = conn,
+                       %{"order_id" => cp_order_id,
+                         "goods_id" => goods_id,
+                         "price" => price} = params) do
+
+    zone_id = params["zone_id"] || "1"
+
+    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+
+    app_order = case Repo.get_by(AppOrder, app_id: app.id, cp_order_id: cp_order_id) do
+      nil ->
+        order_info = %{
+          id: Utils.generate_token(16),
+          app_id: app.id,
+          user_id: user.id,
+          platform: platform,
+          app_user_id: app_user && app_user.id,
+          zone_id: zone_id,
+          sdk: params["sdk"] || "firevale",
+          cp_order_id: cp_order_id,
+          status: AppOrder.Status.created(),
+          created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+          price: price,
+          debug_mode: params["debug_mode"] == "true",
+          fee: case params["debug_mode"] do
+                "true" -> 0
+                _ -> params["price_in_cent"] || 0
+              end,
+          currency: app.currency,
+          market: params["market"],
+          transaction_id: "empty." <> Utils.generate_token(32),
+          transaction_currency: params["currency_code"] || params["currency"] || "CNY",
+          transaction_status: "UNKNOWN",
+          goods_id: params["goods_id"],
+          goods_name: params["goods_name"] || params["goods_id"],
+        }
+
+        AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
+
+      %AppOrder{} = x -> x
+    end
+
+    conn |> put_layout(false)
+         |> render("payment.html", platform: app_order.platform,
+                                   app_id: app.id,
+                                   order_id: app_order.id,
+                                   goods_name: app_order.goods_name,
+                                   price: price,
+                                   currency: app_order.currency)
+  end
+  def show_payment_page(conn, %{"order_id" => order_id, "version" => "3"} = params) do
+    show_payment_page_by_order_id(conn, order_id)
+  end
+  def show_payment_page(conn, %{"out_trade_no" => order_id} = params) do
+    show_payment_page_by_order_id(conn, order_id)
+  end
+  def show_payment_page(conn, %{"merchant_order_id" => order_id} = params) do
+    show_payment_page_by_order_id(conn, order_id)
+  end
+  def show_payment_page(conn, params) do
+    conn |> put_resp_content_type("application/json")
+         |> send_resp(500, JSON.encode!(%{
+              success: false,
+              message: "bad request params, order id not specified"
+            }))
+         |> halt()
+  end
+
+  defp show_payment_page_by_order_id(conn, order_id) do
+    case Repo.get(AppOrder, order_id) do
+      nil ->
+        error "render payment page error: order[id: #{order_id}] not found"
+        conn |> put_resp_content_type("application/json")
+             |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params, order[id: #{order_id}] not found"}))
+             |> halt()
+
+      %AppOrder{} = app_order ->
+        conn |> put_layout(false)
+             |> render("payment.html", platform: app_order.platform,
+                                       app_id: app_order.app_id,
+                                       order_id: app_order.id,
+                                       goods_name: app_order.goods_name,
+                                       price: app_order.price,
+                                       currency: app_order.currency)
+    end
+  end
 
   defp fetch_body_class(%Plug.Conn{private: %{
                           acs_browser: browser,
@@ -37,204 +165,4 @@ defmodule Acs.PageController do
 
     conn |> put_private(:acs_body_class, class)
   end
-
-  def show_login_page(%Plug.Conn{
-                        private: %{
-                          acs_locale: locale,
-                          acs_browser: browser,
-                          acs_platform: platform}} = conn,
-                      params) do
-
-    redirect_url = case params["redirect_url"] do
-                     nil -> "/"
-                     "" -> "/"
-                     v -> v |> Base.url_decode64!
-                   end
-
-    conn |> put_layout(false)
-         |> put_session(:locale, locale)
-         |> render("login.html", redirect_url: redirect_url,
-                                 browser: browser,
-                                 platform: platform,
-                                 locale: locale,
-                                 is_mobile_account_supported: @is_mobile_account_supported)
-  end
-
-  def show_admin_page(%Plug.Conn{
-                        private: %{
-                          acs_access_token: access_token }} = conn,
-                      _params) do
-    conn |> put_layout(false)
-         |> render("admin.html", access_token: access_token)
-  end
-
-  def show_account_page(%Plug.Conn{
-                          private: %{
-                            acs_browser: browser,
-                            acs_locale: locale,
-                            acs_platform: platform}} = conn,
-                        _params) do
-
-    conn |> put_layout(false)
-         |> put_session(:locale, locale)
-         |> render("account.html", browser: browser,
-                                   platform: platform,
-                                   locale: locale)
-  end
-
-  def show_forum_page(%Plug.Conn{
-                        private: %{
-                          acs_browser: browser,
-                          acs_locale: locale,
-                          acs_platform: platform}} = conn,
-                      _params) do
-
-    conn |> put_layout(false)
-         |> put_session(:locale, locale)
-         |> render("forum.html", browser: browser,
-                                 platform: platform,
-                                 locale: locale)
-  end
-
-  def show_mall_page(%Plug.Conn{
-                       private: %{
-                         acs_locale: locale,
-                         acs_browser: browser,
-                         acs_platform: platform}} = conn,
-                     _params) do
-
-    conn |> put_layout(false)
-         |> put_session(:locale, locale)
-         |> render("mall.html", browser: browser,
-                                platform: platform,
-                                locale: locale)
-  end
-
-  # 兼容旧版本
-  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser,
-                                              acs_app: app,
-                                              acs_user: user,
-                                              acs_platform: platform}} = conn,
-                       %{"order_id" => cp_order_id,
-                         "goods_id" => goods_id,
-                         "price" => price} = params) do
-
-    zone_id = params["zone_id"] || "1"
-
-    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
-
-    app_order = case Repo.get_by(AppOrder, app_id: app.id, cp_order_id: cp_order_id) do
-      nil ->
-        order_info = %{
-          id: Utils.generate_token(16),
-          app_id: app.id,
-          user_id: user.id,
-          platform: platform,
-          app_user_id: app_user && app_user.id,
-          zone_id: zone_id,
-          sdk: params["sdk"] || "firevale",
-          cp_order_id: cp_order_id,
-          status: AppOrder.Status.created,
-          created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-          price: price,
-          debug_mode: params["debug_mode"] == "true",
-          fee: case params["debug_mode"] do
-                "true" -> 0
-                _ -> params["price_in_cent"] || 0
-              end,
-          currency: app.currency,
-          market: params["market"],
-          transaction_id: "empty." <> Utils.generate_token(32),
-          transaction_currency: params["currency_code"] || params["currency"] || "CNY",
-          transaction_status: "UNKNOWN",
-          goods_id: params["goods_id"],
-          goods_name: params["goods_name"] || params["goods_id"],
-        }
-
-        AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
-
-      %AppOrder{} = x -> x
-    end
-
-    locale = case conn.private[:acs_locale] do
-               nil -> "zh-hans"
-               _ -> "zh-hans"
-             end
-
-    browser = case Mix.env do
-                :dev ->
-                  case params["browser"] do
-                    nil -> browser
-                    x -> x
-                  end
-                _ -> browser
-              end
-
-    conn |> put_layout(false)
-         |> put_session(:locale, locale)
-         |> render("payment.html", browser: browser,
-                                   platform: platform,
-                                   order_id: app_order.id,
-                                   goods_name: app_order.goods_name,
-                                   access_token: conn.private[:acs_access_token],
-                                   price: price,
-                                   currency: app_order.currency,
-                                   locale: locale)
-  end
-
-  # 新版本
-  def show_payment_page(%Plug.Conn{
-                          private: %{acs_browser: browser}} = conn,
-                        %{
-                          "order_id" => order_id,
-                          "version" => "3"
-                        } = params) do
-
-    locale = case conn.private[:acs_locale] do
-              nil -> "zh-hans"
-              _ -> "zh-hans"
-            end
-
-    show_payment_page_by_order_id(conn |> put_session(:locale, locale), order_id)
-  end
-
-  # callback from alipay
-  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser}} = conn,
-                        %{"out_trade_no" => order_id} = params) do
-    show_payment_page_by_order_id(conn, order_id)
-  end
-  # merchant url back from alipay
-  def show_payment_page(%Plug.Conn{private: %{acs_browser: browser}} = conn,
-                        %{"merchant_order_id" => order_id} = params) do
-    show_payment_page_by_order_id(conn, order_id)
-  end
-  def show_payment_page(conn, params) do
-    conn |> put_resp_content_type("application/json")
-         |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params, order id not specified"}))
-         |> halt()
-  end
-
-  defp show_payment_page_by_order_id(%Plug.Conn{private: %{acs_browser: browser}} = conn, order_id) do
-    case Repo.get(AppOrder, order_id) do
-      nil ->
-        error "render payment page error: order[id: #{order_id}] not found"
-        conn |> put_resp_content_type("application/json")
-             |> send_resp(500, JSON.encode!(%{success: false, message: "bad request params, order[id: #{order_id}] not found"}))
-             |> halt()
-
-      %AppOrder{} = app_order ->
-        conn |> put_layout(false)
-             |> render("payment.html", browser: browser,
-                                       platform: app_order.platform,
-                                       app_id: app_order.app_id,
-                                       access_token: conn.private[:acs_access_token],
-                                       order_id: app_order.id,
-                                       goods_name: app_order.goods_name,
-                                       price: app_order.price,
-                                       currency: app_order.currency,
-                                       locale: get_session(conn, :locale))
-    end
-  end
-
-
 end

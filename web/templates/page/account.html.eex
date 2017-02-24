@@ -23,6 +23,15 @@
         locale: '<%= @conn.private[:acs_locale] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
+        user: {
+          id: <%= @user.id %>,
+          nickname: '<%= @user.nickname %>',
+          email: '<%= @user.email %>',
+          mobile: '<%= @user.mobile %>',
+          gender: '<%= @user.gender %>',
+          residentId: '<%= @user.resident_id %>',
+          residentName: '<%= @user.resident_name %>',
+        }
       }
     </script>
     <script src="<%= static_url(@conn, "/js/account_commons.js") %>"></script>

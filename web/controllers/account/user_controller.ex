@@ -260,7 +260,6 @@ defmodule Acs.UserController do
              })
   end
 
-
   def logout(conn, _params) do
     case get_session(conn, :access_token) do
       nil ->
@@ -315,5 +314,4 @@ defmodule Acs.UserController do
     d "authorization_token, params: #{inspect params}"
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")
   end
-
 end

@@ -38,8 +38,15 @@ defmodule Acs.PageController do
 
   # 用户中心
   def show_account_page(conn, _params) do
+    user =
+      case RedisAccessToken.find(conn.private[:acs_access_token]) do
+        nil -> nil
+        token ->
+          RedisUser.find(token.user_id)
+      end
+
     conn |> put_layout(false)
-         |> render("account.html")
+         |> render("account.html", user: user)
   end
 
   # 论坛

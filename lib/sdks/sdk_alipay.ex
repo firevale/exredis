@@ -31,19 +31,24 @@ defmodule SDKAlipay do
   }
 
   def direct(out_trade_no, subject, total_fee, platform) do
-    merchant_url = String.replace(@merchant_url, "%{platform}", to_string(platform))
-    callback_url = String.replace(@callback_url, "%{platform}", to_string(platform))
+    merchant_url = String.replace(@merchant_url, "{order_id}", out_trade_no)
+    callback_url = String.replace(@callback_url, "{order_id}", out_trade_no)
     do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
   end
-  def direct(out_trade_no, subject, total_fee, platform, merchant_url) do
-    callback_url = String.replace(@callback_url, "%{platform}", to_string(platform))
+  def direct(out_trade_no, subject, total_fee, platform, %{
+    "merchant_url" => merchant_url,
+    "callback_url" => callback_url,
+    "notify_url" => notify_url,
+  }), do: do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url)
+  def direct(out_trade_no, subject, total_fee, platform, %{
+    "merchant_url" => merchant_url,
+    "callback_url" => callback_url,
+  }), do: do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
+  def direct(out_trade_no, subject, total_fee, platform, %{
+    "merchant_url" => merchant_url,
+  }) do
+    callback_url = String.replace(@callback_url, "{order_id}", out_trade_no)
     do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
-  end
-  def direct(out_trade_no, subject, total_fee, platform, merchant_url, callback_url) do
-    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
-  end
-  def direct(out_trade_no, subject, total_fee, platform, merchant_url, callback_url, notify_url) do
-    do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url)
   end
 
   defp do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url) do

@@ -56,7 +56,7 @@ export default {
     alipayRedirect: function() {
       this.$http({
         method: 'post',
-        url: '/api/alipay/redirect',
+        url: '/api/pay/alipay/redirect',
         params: {
           payment_order_id: window.acsConfig.order_id,
           merchant_url: `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?merchant_order_id=${window.acsConfig.order_id}`,
@@ -88,7 +88,7 @@ export default {
       console.log('wechat pay selected....')
       this.$http({
         method: 'post',
-        url: '/api/wechat/prepay',
+        url: '/api/pay/wechat/prepay',
         params: {
           payment_order_id: window.acsConfig.order_id
         }

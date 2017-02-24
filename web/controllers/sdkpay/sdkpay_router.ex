@@ -3,7 +3,14 @@ defmodule Acs.SdkPayRouter do
 
   import  Acs.Plugs
 
-  pipeline :sdkpay do 
+  pipeline :sdkpay do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug :parse_user_agent
+    plug :fetch_user_id
+    plug :fetch_user
+    plug :fetch_device_id
+    plug :fetch_locale
     plug :fetch_app_id
     plug :fetch_app
   end
@@ -109,7 +116,7 @@ defmodule Acs.SdkPayRouter do
 
     get  "/yyh/:client_id", YYHCallbackController, :purchase_callback
     post "/yyh/:client_id", YYHCallbackController, :purchase_callback
-    
+
   end
 
 end

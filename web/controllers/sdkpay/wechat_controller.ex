@@ -11,7 +11,8 @@ defmodule Acs.WechatController do
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
-    notify_url = wechat_url(conn, :notify)
+    # notify_url = wechat_url(conn, :notify)
+    notify_url = ""
 
     # handling request via nginx reverse proxy
     ip_address = case conn.get_req_header(conn, "x-forwarded-for") do
@@ -42,7 +43,7 @@ defmodule Acs.WechatController do
     with {:ok, body, _} <- read_body(conn),
          notify_params <- XmlUtils.convert(body),
          "SUCCESS" <- notify_params[:return_code],
-         {:ok, order} <- get_notify_order(notify_params),
+         %AppOrder{} = order <- Repo.get(AppOrder, notify_params[:out_trade_no]),
          {:ok, sign_key} <- get_wechat_sign_key(order),
          :ok <- SDKWechat.check_sign(notify_params, sign_key)
     do
@@ -55,19 +56,14 @@ defmodule Acs.WechatController do
         transaction_currency: notify_params[:fee_type]
       }) |> Repo.update! |> Acs.PaymentHelper.notify_cp
 
-      conn |> text(SDKWechat.xml_response("SUCCESS", "OK"))
+      conn |> text(xml_response("SUCCESS", "OK"))
     else
+      nil ->
+        conn |> text(xml_response("FAIL", "order not found"))
       {:error, msg} ->
-        conn |> text(SDKWechat.xml_response("FAIL", msg))
+        conn |> text(xml_response("FAIL", msg))
       _ ->
-        conn |> text(SDKWechat.xml_response("FAIL", "unknown error"))
-    end
-  end
-
-  defp get_notify_order(notify_params) do
-    case Repo.get(AppOrder, notify_params[:out_trade_no]) do
-      nil -> {:error, "order not found"}
-      %AppOrder{} = order -> {:ok, order}
+        conn |> text(xml_response("FAIL", "unknown error"))
     end
   end
 

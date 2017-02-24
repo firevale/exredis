@@ -3,7 +3,14 @@ defmodule Acs.PayRouter do
 
   import  Acs.Plugs
 
-  pipeline :sdkpay do 
+  pipeline :sdkpay do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug :parse_user_agent
+    plug :fetch_user_id
+    plug :fetch_user
+    plug :fetch_device_id
+    plug :fetch_locale
     plug :fetch_app_id
     plug :fetch_app
   end
@@ -13,13 +20,19 @@ defmodule Acs.PayRouter do
 
     scope path: "/alipay" do
       get   "/redirect", AlipayController, :alipay_redirect
-      post  "/redirect", AlipayController, :alipay_redirect 
+      post  "/redirect", AlipayController, :alipay_redirect
 
       get   "/notify",   AlipayController, :notify
       post  "/notify",   AlipayController, :notify
+    end
 
-      get   "/callback", AlipayController, :callback
-    end  
+    scope path: "/wechat" do
+      get  "/prepay", WechatController, :prepay
+      post "/prepay", WechatController, :prepay
+
+      get  "/notify", WechatController, :notify
+      post "/notify", WechatController, :notify
+    end
 
     get  "/add_applestore_order",     AppleStoreController, :add_order
     post "/add_applestore_order",     AppleStoreController, :add_order

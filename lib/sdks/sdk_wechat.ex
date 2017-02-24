@@ -13,10 +13,7 @@ defmodule SDKWechat do
   @close_url          @wechat_config[:close_url]
   @refund_url         @wechat_confi[:refund_url]
   @refundquery_url    @wechat_confi[:refundquery_url]
-
-  @config  %{
-    trade_type: "APP"
-  }
+  @trade_type         "APP"
 
   @status_paid AppOrder.Status.paid()
 
@@ -35,7 +32,7 @@ defmodule SDKWechat do
           out_trade_no: order.id,
           spbill_create_ip: ip_address,
           total_fee: order.price,
-          trade_type: @config[:trade_type]
+          trade_type: @trade_type,
         }
 
         req_params = params_with_sign(params, wechat_info.sign_key)
@@ -90,9 +87,9 @@ defmodule SDKWechat do
 
     case result[:return_code] do
       "SUCCESS" ->
-          {:ok, result[:prepay_id]}
-        _ ->
-          {:error, result[:return_msg]}
+        {:ok, result[:prepay_id]}
+      _ ->
+        {:error, result[:return_msg]}
     end
   end
 

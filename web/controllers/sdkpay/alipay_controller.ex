@@ -2,92 +2,55 @@ defmodule Acs.AlipayController do
   use     Acs.Web, :controller
   require SDKAlipay
 
-  # conflict with imported redirect function
-  # TODO: refactor this function
-  def alipay_redirect(conn, %{"payment_order_id" => order_id, 
-                              "merchant_url" => merchant_url,
-                              "callback_url" => callback_url} = _params) do 
-    case Repo.get(AppOrder, order_id) do 
-      order = %AppOrder{} ->
-        # update order info (paid channel)
-        AppOrder.changeset(order, %{paid_channel: "alipay"}) |> Repo.update!
-        case SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform, merchant_url, callback_url) do 
-          {:ok, result} ->
-            case SDKAlipay.get_request_token(result) do 
-              {:ok, token} ->
-                conn |> json(%{success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
-              _ ->
-                conn |> json(%{success: false, message: "can't get alipay request token"})
-            end
-          _ -> 
-            conn |> json(%{success: false, message: "alipay direct failed"})
-        end
-      _ -> 
+  def alipay_redirect(conn, %{"payment_order_id" => order_id} = params) do
+    with %AppOrder{} = order <- Repo.get(AppOrder, order_id),
+         {:ok, direct_result} <- SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform, params),
+         {:ok, token} <- SDKAlipay.get_request_token(direct_result)
+    do
+      conn |> json(%{success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
+    else
+      nil ->
         conn |> json(%{success: false, message: "order not found"})
+      {:error, msg} ->
+        conn |> json(%{success: false, message: to_string(msg)})
     end
   end
-  def alipay_redirect(conn, %{"payment_order_id" => order_id} = _params) do 
-    case Repo.get(AppOrder, order_id) do 
-      order = %AppOrder{} ->
-        # update order info (paid channel)
-        AppOrder.changeset(order, %{paid_channel: "alipay"}) |> Repo.update!
-        case SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform) do 
-          {:ok, result} ->
-            case SDKAlipay.get_request_token(result) do 
-              {:ok, token} ->
-                conn |> json(%{ success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})
-              _ ->
-                conn |> json(%{success: false, message: "can't get alipay request token"})
-            end
-          _ -> 
-            conn |> json(%{success: false, message: "alipay direct failed"})
-        end
-      _ -> 
-        conn |> json(%{success: false, message: "order not found"})
-    end
-  end
-  def alipay_redirect(conn, _params) do 
+  def alipay_redirect(conn, _params) do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
-  def notify(conn, params) do 
-    case SDKAlipay.verify_notify(params) do 
-      {:ok, notify_data} ->
-        case Repo.get(AppOrder, notify_data.out_trade_no) do 
-          order = %AppOrder{} ->
-            if notify_data.trade_status == "TRADE_SUCCESS" or notify_data.trade_status == "TRADE_FINISHED" do 
-              total_fee = String.to_float(notify_data.total_fee) * 100 |> Float.to_string(decimals: 0)
-              {:ok, order} = AppOrder.changeset(order, %{
-                status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                transaction_id: "alipay." <> notify_data.trade_no, 
-                paid_channel: "alipay",
-                fee: total_fee
-              }) |> Repo.update              
+  def notify(conn, params) do
+    with {:ok, notify_data} <- SDKAlipay.verify_notify(params),
+         %AppOrder{} = order <- Repo.get(AppOrder, notify_data.out_trade_no),
+         true <- is_trade_success(notify_data)
+    do
+      total_fee = String.to_float(notify_data.total_fee) * 100 |> Float.to_string(decimals: 0)
+      AppOrder.changeset(order, %{
+        status: AppOrder.Status.paid,
+        paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+        transaction_id: "alipay." <> notify_data.trade_no,
+        paid_channel: "alipay",
+        fee: total_fee
+      }) |> Repo.update! |> PaymentHelper.notify_cp
 
-              PaymentHelper.notify_cp(order)
-              conn |> text("success") 
-            else
-              Logger.info "receive alipay notification: #{inspect notify_data, pretty: true}"
-              conn |> text("success") 
-            end
-          _ -> 
-            Logger.error "payment order[#{notify_data.out_trade_no}] not found"
-            conn |> text("success")
-        end
-
+      conn |> text("success")
+    else
+      nil ->
+        error "alipay payment order not found when receive notify, params: #{inspect params, pretty: true}"
+        conn |> text("fail")
+      false ->
+        error "invalid trade status"
+        conn |> text("fail")
       {:error, reason} ->
-        Logger.error "verify alipay notify failed: #{reason}"
+        error "processing alipay notify failed: #{inspect reason}"
+        conn |> text("fail")
+      _ ->
+        error "processing alipay notify failed"
         conn |> text("fail")
     end
   end
 
-  def callback(conn, params) do 
-    query = URI.encode_query(%{success: (params["result"] == "success"), 
-                               trade_no: params["trade_no"], 
-                               order_id: params["out_trade_no"]} )
-    redirect_url = "/mobile/native_bridge/#{params["platform"]}?#{query}"  
-    conn |> redirect(to: redirect_url)
-  end
-
+  defp is_trade_success(%{trade_status: "TRADE_SUCCESS"}), do: true
+  defp is_trade_success(%{trade_status: "TRADE_FINISHED"}), do: true
+  defp is_trade_success(_), do: false
 end

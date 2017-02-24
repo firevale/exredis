@@ -1,6 +1,6 @@
 'use strict';
 
-export default function (VueRouter) {
+export default function(VueRouter) {
   return new VueRouter({
     mode: 'history',
     routes: [{

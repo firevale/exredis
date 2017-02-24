@@ -46,7 +46,8 @@ defmodule Acs.PageController do
       end
 
     conn |> put_layout(false)
-         |> render("account.html", user: user)
+         |> render("account.html", user: user,
+                                   is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   # 论坛
@@ -89,9 +90,9 @@ defmodule Acs.PageController do
           price: price,
           debug_mode: params["debug_mode"] == "true",
           fee: case params["debug_mode"] do
-                "true" -> 0
-                _ -> params["price_in_cent"] || 0
-              end,
+                 "true" -> 0
+                 _ -> params["price_in_cent"] || 0
+               end,
           currency: app.currency,
           market: params["market"],
           transaction_id: "empty." <> Utils.generate_token(32),

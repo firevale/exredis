@@ -2,9 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
+import VueValidator from 'vue-validator'
 
 // TODO: use vue-validator instead
-import VueValidator from './components/fvVueValidator/vue-validator'
+// import VueValidator from './components/fvVueValidator/vue-validator'
+
 
 import routerMap from './routers'
 import locales from './i18n'
@@ -35,10 +37,10 @@ Object.keys(filters).forEach(function(k) {
 const transitionSlideLeftToRight = 'slide-right'
 const transitionSlideRightToLeft = 'slide-left'
 
-// insert popstate event listener before router, 
+// insert popstate event listener before router,
 // by doing so, we can change transition name while user press "Back" button
 window.addEventListener('popstate', _ => {
-  store.commit('SET_TRANSITION_NAME', transitionSlideLeftToRight)  
+  store.commit('SET_TRANSITION_NAME', transitionSlideLeftToRight)
 })
 
 let router = routerMap(VueRouter)
@@ -51,4 +53,3 @@ let App = new Vue({
   router,
   store,
 }).$mount('#app')
-

@@ -31,7 +31,10 @@
           gender: '<%= @user.gender %>',
           residentId: '<%= @user.resident_id %>',
           residentName: '<%= @user.resident_name %>',
-        }
+          avatarUrl: '<%= @user.avatar_url %>',
+        },
+        defaultAvatarUrl: 'https://fvvrres.firevale.com/avatar/6b55aad73c03a9fca6fb0c81b8b564a7.png',
+        is_mobile_account_supported: <%= @is_mobile_account_supported %>,
       }
     </script>
     <script src="<%= static_url(@conn, "/js/account_commons.js") %>"></script>

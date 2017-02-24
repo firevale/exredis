@@ -596,13 +596,6 @@ only screen and (min-resolution: 2.25dppx) {
   }
 }
 
-.is-84x84 {
-  width: 84px;
-  height: 84px;
-  border: 1px solid $dark;
-  border-radius: 50%;
-  overflow: hidden;
-}
 
 .user-name {
   color: $text-grey;
@@ -611,36 +604,10 @@ only screen and (min-resolution: 2.25dppx) {
   margin: 0 0 .5rem 0;
 }
 
-.nick-name {
-  margin-top: .5rem;
-  padding: .2rem .2rem !important;
-  font-size: .8rem !important;
-}
-
 .error-sign {
   width: .9rem;
   height: .9rem;
   background-image: url(~login/assets/error-sign@1x.png);
-}
-
-.nick-txt {
-  color: $text-grey;
-  line-height: 2rem;
-  margin-top: .35rem;
-  margin-right: .2rem;
-  font-size: .8rem;
-}
-
-.confirm-button {
-  font-size: .6rem !important;
-  flex: 0 !important;
-  padding: .3rem .8rem !important;
-  margin-top: .5rem !important;
-  margin-left: .2rem !important;
-  text-align: center;
-  background: $link;
-  color: $white;
-  cursor: pointer;
 }
 
 .submit-button {

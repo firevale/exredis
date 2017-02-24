@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
+import VueValidator from 'vue-validator'
 
 import routerMap from './routers'
 import locales from './i18n'
@@ -13,6 +14,7 @@ import * as acs from 'common/acs'
 Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.use(VueValidator)
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

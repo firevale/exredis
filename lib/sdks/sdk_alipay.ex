@@ -15,19 +15,19 @@ defmodule SDKAlipay do
   @merchant_url       @alipay_config[:merchant_url]
 
   @config  %{
-    :gateway => "http://wappaygw.alipay.com/service/rest.htm",
-    :service_direct => "alipay.wap.trade.create.direct",
-    :service_auth_and_execute => "alipay.wap.auth.authAndExecute",
-    :partner_id => "2088411392957036",
-    :seller_email => "albertma@firevale.com",
-    :key => "qhjlbz1r2tgy5sdymqbz3upjpoztw7fa", # only for MD5
-    :private_key => "#{@key_root}/alipay_our_private_key.pem",
-    :public_key => "#{@key_root}/alipay_our_public_key.pem",
-    :alipay_public_key => "#{@key_root}/alipay_public_key.pem",
-    :sign_type => "0001", # RSA encryption
-    :input_charset => "utf-8",
-    :cacert => "#{@key_root}/alipay_cacert.pem",
-    :transport => "http"
+    gateway: "http://wappaygw.alipay.com/service/rest.htm",
+    service_direct: "alipay.wap.trade.create.direct",
+    service_auth_and_execute: "alipay.wap.auth.authAndExecute",
+    partner_id: "2088411392957036",
+    seller_email: "albertma@firevale.com",
+    key: "qhjlbz1r2tgy5sdymqbz3upjpoztw7fa", # only for MD5
+    private_key: "#{@key_root}/alipay_our_private_key.pem",
+    public_key: "#{@key_root}/alipay_our_public_key.pem",
+    alipay_public_key: "#{@key_root}/alipay_public_key.pem",
+    sign_type: "0001", # RSA encryption
+    input_charset: "utf-8",
+    cacert: "#{@key_root}/alipay_cacert.pem",
+    transport: "http"
   }
 
   def direct(out_trade_no, subject, total_fee, platform) do
@@ -63,16 +63,16 @@ defmodule SDKAlipay do
 
     info "alipay, request data: #{req_data}"
 
-    param_tokens = %{
-      :service => @config[:service_direct],
-      :partner => @config[:partner_id],
-      :sec_id  => @config[:sign_type],
-      :format  => "xml",
-      :v => "2.0",
-      :req_id => req_id,
-      :req_data => req_data,
-      :_input_charset => @config[:input_charset]
-    }
+    param_tokens = [
+      service: @config[:service_direct],
+      partner: @config[:partner_id],
+      sec_id: @config[:sign_type],
+      format: "xml",
+      v: "2.0",
+      req_id: req_id,
+      req_data: req_data,
+      _input_charset: @config[:input_charset]
+    ]
 
     response = Httpc.post_msg(@config[:gateway], params_with_sign(param_tokens))
 
@@ -93,7 +93,8 @@ defmodule SDKAlipay do
                    "0001" ->
                       key_file = Application.app_dir(:acs, @config[:private_key])
                       Utils.rsa_priv_decrypt(key_file, query["res_data"])
-                   _ -> query["res_data"]
+                   _ ->
+                     query["res_data"]
                  end
 
       token = res_data |> xpath(~x"/direct_trade_create_res/request_token/text()[1]")
@@ -110,16 +111,16 @@ defmodule SDKAlipay do
   def auth_and_execute(request_token) do
     req_data = "<auth_and_execute_req><request_token>#{request_token}</request_token></auth_and_execute_req>"
 
-    params = %{
-      :service => @config[:service_auth_and_execute],
-      :partner => @config[:partner_id],
-      :sec_id  => @config[:sign_type],
-      :format  => "xml",
-      :v => "2.0",
-      :req_id => Utils.generate_token,
-      :req_data => req_data,
-      :_input_charset => @config[:input_charset]
-    }
+    params = [
+      service: @config[:service_auth_and_execute],
+      partner: @config[:partner_id],
+      sec_id: @config[:sign_type],
+      format: "xml",
+      v: "2.0",
+      req_id: Utils.generate_token,
+      req_data: req_data,
+      _input_charset: @config[:input_charset]
+    ]
 
     signed_params = params_with_sign(params)
 
@@ -184,31 +185,21 @@ defmodule SDKAlipay do
     Httpc.success?(response) && Regex.match?(~r/true$/, response.body)
   end
 
-  defp params_with_sign(%{} = params) do
-    filtered_params = Enum.reduce(params, %{}, fn({key, value}, result) ->
-      unless is_nil(value) or value == "" do
-        Map.put(result, key, value)
-      else
-        result
-      end
-    end)
-
-    param_string = make_param_string(filtered_params)
-
+  defp params_with_sign(params) do
     sign = case params[:sec_id] do
       "MD5" ->
-        Utils.md5_sign("#{param_string}#{@config[:key]}")
+        Utils.md5_sign("#{make_param_string(params)}#{@config[:key]}")
       x when x in ["0001", "RSA"] ->
         key_file = Application.app_dir(:acs, @config[:private_key])
-        Utils.rsa_priv_sign(key_file, param_string)
+        Utils.rsa_priv_sign(key_file, make_param_string(params))
       _ ->
         "invald"
     end
 
-    Map.put(filtered_params, :sign, sign)
+    [params | {:sign, sign}]
   end
 
-  defp make_param_string(%{} = params) do
+  defp make_param_string(params) do
     params
       |> Enum.reject(fn({k, v}) -> is_nil(v) or v == "" end)
       |> Enum.map(fn({k, v}) -> "#{k}=#{v}" end)

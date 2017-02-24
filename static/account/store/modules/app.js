@@ -1,9 +1,10 @@
 import * as acs from 'common/acs'
 
 const state = {
-  appId: acs.getAppId(), 
+  appId: acs.getAppId(),
   deviceId: acs.getDeviceId(),
   transitionName: 'slide-left',
+  user: JSON.parse(JSON.stringify(window.acsConfig.user))
 }
 
 const mutations = {

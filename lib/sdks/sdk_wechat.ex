@@ -1,12 +1,12 @@
 defmodule SDKWechat do
-  use     HTTPotion.Base
   use     LogAlias
   require Utils
-  
+
+  alias Utils.Httpc
   alias Acs.Repo
   alias Acs.AppOrder
   alias Acs.RedisApp
-  
+
   @wechat_config      Application.get_env(:acs, :wechat)
   @prepay_url         @wechat_config[:prepay_url]
   @check_url          @wechat_config[:check_url]
@@ -15,200 +15,111 @@ defmodule SDKWechat do
   @refundquery_url    @wechat_confi[:refundquery_url]
 
   @config  %{
-    :trade_type => "APP"
+    trade_type: "APP"
   }
 
   @status_paid AppOrder.Status.paid()
 
   def prepay(order_id, wechat_info, ip_address, notify_url) do
-    
-    case Repo.get(AppOrder, order_id) do 
+    case Repo.get(AppOrder, order_id) do
       order = %AppOrder{} ->
         # update order info (paid channel)
         AppOrder.changeset(order, %{paid_channel: "wechat"}) |> Repo.update!
-        {a,b,c,d}=ip_address
 
         params = %{
-          :appid => wechat_info.app_id,
-          :body => order.goods_name,
-          :mch_id => wechat_info.partnerid,
-          :nonce_str => Utils.nonce,
-          :notify_url => notify_url,
-          :out_trade_no => order.id,
-          :spbill_create_ip => "#{a}.#{b}.#{c}.#{d}",
-          :total_fee => order.price,
-          :trade_type => @config[:trade_type]
+          appid: wechat_info.app_id,
+          body: order.goods_name,
+          mch_id: wechat_info.partnerid,
+          nonce_str: Utils.nonce,
+          notify_url: notify_url,
+          out_trade_no: order.id,
+          spbill_create_ip: ip_address,
+          total_fee: order.price,
+          trade_type: @config[:trade_type]
         }
 
-        req_params = params_with_sign(params,wechat_info.sign_key)
+        req_params = params_with_sign(params, wechat_info.sign_key)
 
-        req_data = "<xml>" <> Enum.map_join(req_params, "", fn({key, value}) -> "<#{key}>#{value}</#{key}>" end) <> "</xml>"
+        req_data = """
+          <xml>
+            #{Enum.map_join(req_params, "", fn({k, v}) -> "<#{k}>#{v}</#{k}>" end)}
+          </xml>
+        """
 
-        response = post(@prepay_url, body: req_data)
-        
+        response = Httpc.post(@prepay_url, body: req_data)
+
         d "wechat prepay, response: #{inspect response.body, pretty: true}"
-        if HTTPotion.Response.success?(response) do 
+        if Httpc.success?(response) do
           case get_prepay_id(response.body) do
-              {:ok, prepay_id} -> 
-                  resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
-                  {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]} 
-              {:error, return_msg} ->
-                  d "wechat, get_prepay_id error: #{return_msg}" 
-                  {:error, return_msg}
-              _ -> 
-                  {:error, "wechat prepay, get_prepay_id fail"}
+            {:ok, prepay_id} ->
+              resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
+              {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
+            {:error, return_msg} ->
+              d "wechat, get_prepay_id error: #{return_msg}"
+              {:error, return_msg}
+            _ ->
+              {:error, "wechat prepay, get_prepay_id fail"}
           end
         else
           {:error, nil}
         end
-
-      _ -> 
+      _ ->
         {:error, "order not found"}
     end
-    
   end
 
-  def on_check(order_id, wechat_info) do
-      case Repo.get(AppOrder, order_id) do 
-        order = %AppOrder{} ->
+  def on_notify(result_str) do
+    result = XmlUtils.convert(result_str)
 
-          case order.status do
-            @status_paid -> 
-              {:ok, "购买成功"}
-            _ ->
-              case check_order_status(wechat_info.app_id, wechat_info.partnerid, 
-                              order_id, wechat_info.sign_key) do
-                {:ok, transaction_id, total_fee, fee_type} -> 
+    case result[:return_code] do
+      "SUCCESS" ->
+        case Repo.get(AppOrder, result[:out_trade_no]) do
+          order = %AppOrder{} ->
+            wechat_info = RedisApp.find(order.app_id).sdk_bindings[:wechat]
+            if is_nil(wechat_info) do
+              {:error, "Wechat pay is not supported"}
+            else
+              # check sign
+              case check_sign(result, wechat_info.sign_key) do
+                :ok ->
+                  if result[:result_code] == "SUCCESS" do
+                    # update order status
                     AppOrder.changeset(order, %{
                       status: @status_paid,
                       paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                      transaction_id: "wechat." <> transaction_id, 
+                      transaction_id: "wechat." <> result[:transaction_id],
                       paid_channel: "wechat",
-                      fee: total_fee,
-                      transaction_currency: fee_type
+                      fee: result[:total_fee],
+                      transaction_currency: result[:fee_type]
                     }) |> Repo.update!
 
-                    #Acs.PaymentHelper.notify_cp(order)
-                    {:ok, "购买成功"}
-                {:error, errorstr} -> {:error, errorstr}
+                    Acs.PaymentHelper.notify_cp(order)
+
+                    {:ok, "OK"}
+                  else
+                    {:error, result[:err_code_des]}
+                  end
+                _ ->
+                  {:error, "invalid signature"}
               end
-          end
-        _ -> 
-          {:error, "订单不存在"}
-      end
-  end
-
-  defp check_order_status(app_id, mch_id, order_id, sign_key) do
-        params = %{
-          :appid => app_id,
-          :mch_id => mch_id,
-          :nonce_str => Utils.nonce,
-          :out_trade_no => order_id
-        }
-
-        req_params = params_with_sign(params,sign_key)
-        req_data = "<xml>" <> Enum.map_join(req_params, "", fn({key, value}) -> "<#{key}>#{value}</#{key}>" end) <> "</xml>"
-
-        d "wechat, check_order_status request data: #{req_data}"
-
-        response = post(@check_url, body: req_data)
-    
-        d "wechat check_order_status, response: #{inspect response.body, pretty: true}"
-
-        if HTTPotion.Response.success?(response) do 
-          result = response.body |> XmlUtils.convert
-
-          case result[:return_code] do 
-              "SUCCESS" -> 
-                  
-                  # check sign
-                  case check_sign(result, sign_key) do
-                    :ok -> 
-                  
-                      case result[:result_code] do 
-                        "SUCCESS" ->  
-                            case result[:trade_state] do
-                              "SUCCESS" ->
-                                  {:ok, result[:transaction_id], result[:total_fee], result[:fee_type]}                     
-                              _ ->   
-                                  {:error, result[:trade_state_desc]}                     
-                            end
-                         _ ->
-                            {:error, result[:err_code_des]}
-                      end    
-                  
-                    _ -> {:error, "签名失败"} 
-                  
-                end
-              
-              _ -> {:error, result[:return_msg]}
-          
+            end
+          _ ->
+            {:error, "order not exists"}
         end
-        else
-          {:error, nil}
-      end
- end 
-
-def on_notify(resultstr) do
-    
-    result = resultstr |> XmlUtils.convert
-   
-    case result[:return_code] do 
-        "SUCCESS" -> 
-
-         case Repo.get(AppOrder, result[:out_trade_no]) do 
-            order = %AppOrder{} ->
-              wechat_info = RedisApp.find(order.app_id).sdk_bindings[:wechat]
-              if nil == wechat_info do
-                {:error, "不支持微信支付"}
-              else
-                # check sign
-                case check_sign(result, wechat_info.sign_key) do
-                  :ok ->
-                    if result[:result_code] == "SUCCESS" do 
-
-                      # update order status
-                      AppOrder.changeset(order, %{
-                              status: @status_paid,
-                              paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                              transaction_id: "wechat." <> result[:transaction_id], 
-                              paid_channel: "wechat",
-                              fee: result[:total_fee],
-                              transaction_currency: result[:fee_type]
-                            }) |> Repo.update!              
-
-                      #Acs.PaymentHelper.notify_cp(order)
-                      
-                      {:ok, "OK"}
-
-                    else
-                      {:error, result[:err_code_des]}
-                    end
-
-                  _ -> 
-                    {:error, "签名失败"} 
-                end
-
-              end
-            _ -> 
-              {:error, "订单不存在"}
-          end
-
-        _ ->
-          {:error, result[:return_msg]} 
+      _ ->
+        {:error, result[:return_msg]}
     end
-
-end
+  end
 
   def re_sign(app_id, partnerid, prepay_id, sign_key) do
       # re sign
       params = %{
-        :appid => app_id,
-        :noncestr => Utils.nonce,
-        :package => "Sign=WXPay",
-        :partnerid => partnerid,
-        :prepayid => prepay_id,
-        :timestamp => Utils.unix_timestamp
+        appid: app_id,
+        noncestr: Utils.nonce,
+        package: "Sign=WXPay",
+        partnerid: partnerid,
+        prepayid: prepay_id,
+        timestamp: Utils.unix_timestamp
       }
 
       params_with_sign(params,sign_key)
@@ -216,13 +127,8 @@ end
 
   def check_sign(xml, sign_key) do
     their_sign = xml[:sign]
-    
-    param_string = xml |> Enum.reject(fn({k, v}) -> v == "" or k == :sign end)
-                       |> Enum.sort_by(fn({k, _}) -> k end)
-                       |> Enum.map(fn({k, v}) -> "#{k}=#{v}" end)
-                       |> Enum.join("&")
 
-    case String.upcase(Utils.md5_sign("#{param_string}&key=#{sign_key}")) do 
+    case String.upcase(Utils.md5_sign("#{make_param_string(xml)}&key=#{sign_key}")) do
       ^their_sign -> :ok
       _ -> {:error, :not_match}
     end
@@ -238,34 +144,25 @@ end
   end
 
   defp get_prepay_id(resultstr) do
+    result = resultstr |> XmlUtils.convert
 
-     result = resultstr |> XmlUtils.convert
-
-     case result[:return_code] do 
-        "SUCCESS" -> 
-            {:ok, result[:prepay_id]}
-          _ ->  {:error, result[:return_msg]}
-     end
+    case result[:return_code] do
+      "SUCCESS" ->
+          {:ok, result[:prepay_id]}
+        _ ->  {:error, result[:return_msg]}
+    end
   end
 
-  defp params_with_sign(%{} = params,sign_key) do 
-    filtered_params = Enum.reduce(params, %{}, fn({key, value}, result) ->
-      unless is_nil(value) or value == "" do 
-        Map.put(result, key, value)
-      else
-        result
-      end
-    end)
-
-    param_string = filtered_params |> make_param_string
-
-    sign = String.upcase(Utils.md5_sign("#{param_string}&key=#{sign_key}"))
-
-    Map.put(filtered_params, :sign, sign)
+  defp params_with_sign(params, sign_key) do
+    sign = "#{make_param_string(params)}&key=#{sign_key}" |> Utils.md5_sign |> String.upcase
+    Map.put(params, :sign, sign)
   end
 
-  defp make_param_string(%{} = params) do 
-    Enum.map_join(params, "&", fn({key, value}) -> "#{key}=#{value}" end)
+  defp make_param_string(params) do
+    params |> Enum.reject(fn({k, v}) -> v == "" or is_nil(v) or k == :sign end)
+           |> Enum.sort_by(fn({k, _}) -> k end)
+           |> Enum.map(fn({k, v}) -> "#{k}=#{v}" end)
+           |> Enum.join("&")
   end
-  
+
 end

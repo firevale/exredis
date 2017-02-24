@@ -23,7 +23,7 @@
         inApp: <%= @conn.private[:acs_browser] == "webview" || @platform == "wp8" %>,
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         platform: '<%= @platform %>',
-        locale: '<%= get_session(@conn, :locale) %>',
+        locale: '<%= @conn.private[:acs_locale] %>',
         appId: '<%= @app_id %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         order_id: '<%= @order_id %>',

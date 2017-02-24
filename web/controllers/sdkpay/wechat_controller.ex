@@ -13,6 +13,7 @@ defmodule Acs.WechatController do
 
     notify_url = wechat_url(conn, :notify)
 
+    # handling request via nginx reverse proxy
     ip_address = case conn.get_req_header(conn, "x-forwarded-for") do
       [val | _] -> val
       _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
@@ -41,7 +42,7 @@ defmodule Acs.WechatController do
     with {:ok, body, _} <- read_body(conn),
          notify_params <- XmlUtils.convert(body),
          "SUCCESS" <- notify_params[:return_code],
-         {:ok, order} <- get_order(notify_params),
+         {:ok, order} <- get_notify_order(notify_params),
          {:ok, sign_key} <- get_wechat_sign_key(order),
          :ok <- SDKWechat.check_sign(notify_params, sign_key)
     do
@@ -63,7 +64,7 @@ defmodule Acs.WechatController do
     end
   end
 
-  defp get_order(notify_params) do
+  defp get_notify_order(notify_params) do
     case Repo.get(AppOrder, notify_params[:out_trade_no]) do
       nil -> {:error, "order not found"}
       %AppOrder{} = order -> {:ok, order}

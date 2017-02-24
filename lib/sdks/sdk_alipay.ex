@@ -180,6 +180,8 @@ defmodule SDKAlipay do
     end
   end
 
+  defp is_valid_notify_id(nil), do: false
+  defp is_valid_notify_id(""), do: false
   defp is_valid_notify_id(notify_id) do
     response = Httpc.get(@verify_gateway_ssl <> "&partner=#{@config[:partner_id]}&notify_id=#{notify_id}")
     Httpc.success?(response) && Regex.match?(~r/true$/, response.body)

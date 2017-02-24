@@ -5,7 +5,7 @@
   </div>
   <div class="horizontal-stack-box">
     <div class="tile" v-for="channel in channels">
-      <a class="sdk-icon" :class="channel + (processing ? ' rotating' : '')" @click="onPurchaseByChannel(channel)"> </a>
+      <a class="sdk-icon" :class="channel + (activeChannel  == channel ? ' rotating' : '')" @click="onPurchaseByChannel(channel)"> </a>
       <p>{{ $t(`payment.channel.${channel}`) }}</p>
     </div>
   </div>
@@ -24,7 +24,7 @@ export default {
   data: function() {
     return {
       channels: nativeApi.isWechatPaySupport() ? ['alipay', 'wechat'] : ['alipay'],
-      processing: false,
+      activeChannel: null,
     }
   },
 
@@ -40,6 +40,8 @@ export default {
 
   methods: {
     onPurchaseByChannel: function(channel) {
+      this.activeChannel = channel
+
       switch (channel) {
         case 'alipay':
           this.alipayRedirect()
@@ -52,7 +54,6 @@ export default {
     },
 
     alipayRedirect: function() {
-      this.processing = true
       this.$http({
         method: 'post',
         url: '/api/alipay/redirect',
@@ -62,7 +63,7 @@ export default {
           callback_url: `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`,
         }
       }).then(response => {
-        this.processing = false
+        this.activeChannel = null
         return response.json()
       }).then(result => {
         if (result.success) {
@@ -75,7 +76,7 @@ export default {
         }
       }).catch(e => {
         console.error(e)
-        this.processing = false
+        this.activeChannel = null
         nativeApi.closeWebviewWithResult({
           success: false,
           message: 'something went wrong'
@@ -85,8 +86,6 @@ export default {
 
     wechatPay: function() {
       console.log('wechat pay selected....')
-      this.processing = true
-
       this.$http({
         method: 'post',
         url: '/api/wechat/prepay',
@@ -94,7 +93,7 @@ export default {
           payment_order_id: window.acsConfig.order_id
         }
       }).then(response => {
-        this.processing = false
+        this.activeChannel = null
         return response.json()
       }).then(result => {
         if (result.success) {
@@ -105,7 +104,7 @@ export default {
         }
       }).catch(e => {
         console.error(e)
-        this.processing = false
+        this.activeChannel = null
       })
     }
   },

@@ -1,0 +1,18 @@
+defmodule Acs.ForumManagerTest do
+  use Acs.ModelCase
+
+  alias Acs.ForumManager
+
+  @valid_attrs %{logins: 42}
+  @invalid_attrs %{}
+
+  test "changeset with valid attributes" do
+    changeset = ForumManager.changeset(%ForumManager{}, @valid_attrs)
+    assert changeset.valid?
+  end
+
+  test "changeset with invalid attributes" do
+    changeset = ForumManager.changeset(%ForumManager{}, @invalid_attrs)
+    refute changeset.valid?
+  end
+end

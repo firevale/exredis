@@ -13,47 +13,77 @@ defmodule Acs.WechatController do
 
     notify_url = wechat_url(conn, :notify)
 
-    ip_address = case get_req_header(conn, "x-forwarded-for") do
+    ip_address = case conn.get_req_header(conn, "x-forwarded-for") do
       [val | _] -> val
       _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
     end
 
     case SDKWechat.prepay(order_id, wechat_info, ip_address, notify_url) do
-        {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
-          conn |> json(%{
-            success: true,
-            partnerid: partnerid,
-            prepay_id: prepay_id,
-            noncestr: noncestr,
-            timestamp: timestamp,
-            sign: sign
-          })
-        _ ->
-          conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+      {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
+        conn |> json(%{
+          success: true,
+          partnerid: partnerid,
+          prepay_id: prepay_id,
+          noncestr: noncestr,
+          timestamp: timestamp,
+          sign: sign
+        })
+      _ ->
+        conn |> json(%{success: false, message: "wechat get prepay_id fail"})
     end
-
   end
-
   def prepay(conn, _params) do
     d "req : #{inspect conn.private.acs_app.sdk_bindings, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
   def notify(conn, params) do
-    case read_body(conn) do
-      {:ok, body, _}  ->
-        d "wechat notify: #{inspect body , pretty: true}"
+    with {:ok, body, _} <- read_body(conn),
+         notify_params <- XmlUtils.convert(body),
+         "SUCCESS" <- notify_params[:return_code],
+         {:ok, order} <- get_order(notify_params),
+         {:ok, sign_key} <- get_wechat_sign_key(order),
+         :ok <- SDKWechat.check_sign(notify_params, sign_key)
+    do
+      AppOrder.changeset(order, %{
+        status: @status_paid,
+        paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+        transaction_id: "wechat." <> notify_params[:transaction_id],
+        paid_channel: "wechat",
+        fee: notify_params[:total_fee],
+        transaction_currency: notify_params[:fee_type]
+      }) |> Repo.update! |> Acs.PaymentHelper.notify_cp
 
-        case SDKWechat.on_notify(body) do
-          {:ok, msg} ->
-            conn |> text(SDKWechat.create_xml_reply("SUCCESS", "OK"))
-
-          {:error, return_msg} ->
-            conn |> text(SDKWechat.create_xml_reply("FAIL", return_msg))
-        end
+      conn |> text(SDKWechat.xml_response("SUCCESS", "OK"))
+    else
+      {:error, msg} ->
+        conn |> text(SDKWechat.xml_response("FAIL", msg))
       _ ->
-        conn |> text(SDKWechat.create_xml_reply("FAIL", "read request body failed"))
+        conn |> text(SDKWechat.xml_response("FAIL", "unknown error"))
     end
   end
 
+  defp get_order(notify_params) do
+    case Repo.get(AppOrder, notify_params[:out_trade_no]) do
+      nil -> {:error, "order not found"}
+      %AppOrder{} = order -> {:ok, order}
+    end
+  end
+
+  defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do
+    case RedisApp.find(app_id) do
+      nil -> {:error, "app not found"}
+      %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
+      _ -> {:error, "wechat configuration not found"}
+    end
+  end
+
+  def xml_response(code, msg) do
+    """
+      <xml>
+        <return_code><![CDATA[#{code}]]></return_code>
+        <return_msg><![CDATA[#{msg}]]></return_msg>
+      </xml>
+    """
+  end
 end

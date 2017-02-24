@@ -49,80 +49,31 @@ defmodule SDKWechat do
         response = Httpc.post(@prepay_url, body: req_data)
 
         d "wechat prepay, response: #{inspect response.body, pretty: true}"
-        if Httpc.success?(response) do
-          case get_prepay_id(response.body) do
-            {:ok, prepay_id} ->
-              resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
-              {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
-            {:error, return_msg} ->
-              d "wechat, get_prepay_id error: #{return_msg}"
-              {:error, return_msg}
-            _ ->
-              {:error, "wechat prepay, get_prepay_id fail"}
-          end
+        with true <- Httpc.success?(response),
+             {:ok, prepay_id} <- get_prepay_id(response.body)
+        do
+          resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
+          {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
         else
-          {:error, nil}
+          _ -> {:error, "get prepay id failed"}
         end
       _ ->
         {:error, "order not found"}
     end
   end
 
-  def on_notify(result_str) do
-    result = XmlUtils.convert(result_str)
-
-    case result[:return_code] do
-      "SUCCESS" ->
-        case Repo.get(AppOrder, result[:out_trade_no]) do
-          order = %AppOrder{} ->
-            wechat_info = RedisApp.find(order.app_id).sdk_bindings[:wechat]
-            if is_nil(wechat_info) do
-              {:error, "Wechat pay is not supported"}
-            else
-              # check sign
-              case check_sign(result, wechat_info.sign_key) do
-                :ok ->
-                  if result[:result_code] == "SUCCESS" do
-                    # update order status
-                    AppOrder.changeset(order, %{
-                      status: @status_paid,
-                      paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                      transaction_id: "wechat." <> result[:transaction_id],
-                      paid_channel: "wechat",
-                      fee: result[:total_fee],
-                      transaction_currency: result[:fee_type]
-                    }) |> Repo.update!
-
-                    Acs.PaymentHelper.notify_cp(order)
-
-                    {:ok, "OK"}
-                  else
-                    {:error, result[:err_code_des]}
-                  end
-                _ ->
-                  {:error, "invalid signature"}
-              end
-            end
-          _ ->
-            {:error, "order not exists"}
-        end
-      _ ->
-        {:error, result[:return_msg]}
-    end
-  end
-
   def re_sign(app_id, partnerid, prepay_id, sign_key) do
-      # re sign
-      params = %{
-        appid: app_id,
-        noncestr: Utils.nonce,
-        package: "Sign=WXPay",
-        partnerid: partnerid,
-        prepayid: prepay_id,
-        timestamp: Utils.unix_timestamp
-      }
+    # re sign
+    params = %{
+      appid: app_id,
+      noncestr: Utils.nonce,
+      package: "Sign=WXPay",
+      partnerid: partnerid,
+      prepayid: prepay_id,
+      timestamp: Utils.unix_timestamp
+    }
 
-      params_with_sign(params,sign_key)
+    params_with_sign(params, sign_key)
   end
 
   def check_sign(xml, sign_key) do
@@ -130,17 +81,8 @@ defmodule SDKWechat do
 
     case String.upcase(Utils.md5_sign("#{make_param_string(xml)}&key=#{sign_key}")) do
       ^their_sign -> :ok
-      _ -> {:error, :not_match}
+      _ -> {:error, "signature not match"}
     end
-  end
-
-  def create_xml_reply(code, msg) do
-    """
-      <xml>
-        <return_code><![CDATA[#{code}]]></return_code>
-        <return_msg><![CDATA[#{msg}]]></return_msg>
-      </xml>
-    """
   end
 
   defp get_prepay_id(resultstr) do
@@ -149,7 +91,8 @@ defmodule SDKWechat do
     case result[:return_code] do
       "SUCCESS" ->
           {:ok, result[:prepay_id]}
-        _ ->  {:error, result[:return_msg]}
+        _ ->
+          {:error, result[:return_msg]}
     end
   end
 

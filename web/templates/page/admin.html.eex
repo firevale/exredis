@@ -34,7 +34,7 @@
   <script>
     window.acsConfig = {
       csrfToken: '<%= get_csrf_token() %>',
-      accessToken: '<%= @access_token %>',
+      accessToken: '<%= @conn.private[:acs_access_token] %>',
     }
   </script>
   <script src="<%= static_url(@conn, "/js/admin_commons.js") %>"></script>

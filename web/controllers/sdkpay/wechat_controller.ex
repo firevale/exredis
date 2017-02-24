@@ -48,17 +48,17 @@ defmodule Acs.WechatController do
                           sdk_bindings: %{wechat: wechat_info}}}} = conn, 
                %{"errcode" => errcode,
                  "order_id" => order_id} = _params) do
-    case errcode do
-      "0" -> 
-          # check order status
-          case SDKWechat.on_check(order_id, wechat_info) do 
-            {:ok, msg} ->  conn |> text(msg) 
-            {:error, errorstr} -> conn |> text(errorstr) 
-          end 
 
-      "-1" -> conn |> text("签名错误／未注册APPID／APPID不正确／其他异常等") 
-      "-2" -> conn |> text("用户取消了支付") 
-    end
+    # check order status
+    case SDKWechat.on_check(order_id, wechat_info) do 
+      {:ok, msg} ->  
+        conn |> put_layout(false)
+             |> render("payresult.html",:ok,msg)
+
+      {:error, errorstr} -> 
+        conn |> put_layout(false)
+             |> render("payresult.html",:error,errorstr)
+    end 
   end
 
 end

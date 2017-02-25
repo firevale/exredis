@@ -9,10 +9,11 @@ build() {
 }
 
 check_build_image() {
-	docker images | grep -qi 'docker-registry.firevale.com/acs_dev' || build 
+	docker images | grep -qi 'docker-registry.firevale.com/acs_dev' || build
 }
 
 docker_run() {
+	mkdir -p _build/yarn_cache _build/hex_cache
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
@@ -26,11 +27,14 @@ docker_run() {
 								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
+								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
+								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
+								 --name acs \
 								 --network acs_default \
 								 --link acs_mysql:acs_mysql \
 								 --link acs_elasticsearch:acs_elasticsearch \
 								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev $1 
+								 docker-registry.firevale.com/acs_dev $1
 }
 
 console() {
@@ -40,6 +44,7 @@ console() {
 }
 
 run() {
+	mkdir -p _build/yarn_cache _build/hex_cache
 	docker-compose up -d
 	check_build_image
 	docker run -it --workdir /code \
@@ -55,14 +60,18 @@ run() {
 								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -p 80:4000 \
 								 -v ${PWD}:/code \
+								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
+								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
+								 --name acs \
 								 --network acs_default \
 								 --link acs_mysql:acs_mysql \
 								 --link acs_elasticsearch:acs_elasticsearch \
 								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev -c 'iex -S mix phoenix.server' 	
+								 docker-registry.firevale.com/acs_dev -c 'iex -S mix phoenix.server'
 }
 
-test() {
+new_for_test() {
+	mkdir -p _build/yarn_cache _build/hex_cache
 	docker-compose up -d
 	check_build_image
 	docker run -it --workdir /code \
@@ -75,17 +84,38 @@ test() {
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -e "HEX_MIRROR=https://hexpm.upyun.com" \
 								 -v ${PWD}:/code \
+								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
+								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
+								 --name acs \
 								 --network acs_default \
 								 --link acs_mysql:acs_mysql \
 								 --link acs_elasticsearch:acs_elasticsearch \
 								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev -c 'mix test' 
+								 docker-registry.firevale.com/acs_dev -c 'mix test'
+}
+
+mix() {
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$'
+	if [ $? -eq 0 ]; then
+		docker exec acs mix $1
+	else
+		echo "acs container is not started yet, run ./acs shell to start it first!"
+	fi
+}
+
+test() {
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$'
+	if [ $? -eq 0 ]; then
+		docker exec acs mix test
+	else
+		new_for_test
+	fi
 }
 
 shell() {
 	docker-compose up -d
 	check_build_image
-	docker_run 
+	docker_run
 }
 
 update() {
@@ -115,6 +145,9 @@ case "$1" in
 	test)
 		test
 		;;
+	mix)
+		mix $2
+		;;
 	docker_run)
 		docker_run $2
 		;;
@@ -124,12 +157,3 @@ case "$1" in
 		echo "COMMAND: update -- update docker images used by ACS server"
 		;;
 esac
-
-
-
-
-
-
-
-
-

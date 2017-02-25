@@ -1,10 +1,12 @@
-FROM docker-registry.firevale.com/ass_dev:latest 
+FROM docker-registry.firevale.com/ass_dev:latest
 
 EXPOSE 80
 
 VOLUME ["/code"]
 
 WORKDIR /code
+
+VOLUME ['/usr/local/share/.cache', '/opt/app/.cache']
 
 RUN  mkdir -p /run/nginx && \
      mkdir -p /code && \

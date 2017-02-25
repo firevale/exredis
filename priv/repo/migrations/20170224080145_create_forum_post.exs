@@ -8,7 +8,7 @@ defmodule Acs.Repo.Migrations.CreateForumPost do
       add :is_top, :boolean, default: false, null: false
       add :is_hot, :boolean, default: false, null: false
       add :is_vote, :boolean, default: false, null: false
-      add :last_reply_at, :datetime
+      add :last_reply_at, :naive_datetime
 
       add :section_id, references(:forums_sections, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)

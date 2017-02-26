@@ -95,7 +95,7 @@ new_for_test() {
 }
 
 mix() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$'
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
 	if [ $? -eq 0 ]; then
 		docker exec acs mix $1
 	else
@@ -104,7 +104,7 @@ mix() {
 }
 
 test() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$'
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
 	if [ $? -eq 0 ]; then
 		docker exec acs mix test
 	else

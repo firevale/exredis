@@ -14,5 +14,7 @@ defmodule Acs.AdminUser do
     struct
     |> cast(params, [:account_id])
     |> validate_required([:account_id])
+    |> validate_format(:account_id, ~r/[^@]+@firevale\.com/)
+    |> unique_constraint(:account_id)
   end
 end

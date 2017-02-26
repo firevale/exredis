@@ -105,6 +105,6 @@ defmodule Acs.Mixfile do
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.reset", "test"]]
+     "test": ["ecto.create --quiet", "ecto.migrate --quiet", "test"]]
   end
 end

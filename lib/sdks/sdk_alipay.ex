@@ -4,6 +4,7 @@ defmodule SDKAlipay do
   require Utils
   use     LogAlias
   alias   Utils.Httpc
+  require XmlUtils
 
   @verify_gateway_ssl "https://mapi.alipay.com/gateway.do?service=notify_verify"
   @verify_gateway     "http://notify.alipay.com/trade/notify_query.do"
@@ -139,30 +140,26 @@ defmodule SDKAlipay do
           "0001" ->
             key_file = Application.app_dir(:acs, @config[:private_key])
             Utils.rsa_priv_decrypt(key_file, notify_data)
-          _ -> notify_data
+
+          _ ->
+            notify_data
         end
 
     params = Map.put(params, "notify_data", notify_data)
 
     if verify_notify_sign(params) do
-      notify =
-        notify_data
-          |> xpath(~x"//notify",
-                notify_id: ~x"./notify_id/text()[1]",
-                trade_no: ~x"./trade_no/text()[1]",
-                out_trade_no: ~x"./out_trade_no/text()[1]",
-                trade_status: ~x"./trade_status/text()[1]",
-                total_fee:  ~x"./total_fee/text()[1]")
-          |> Enum.into(%{}, fn({k, v}) -> {k, (v |> to_string |> String.strip)} end)
+      notify = XmlUtils.convert(notify_data)
 
       cond do
-        is_nil(notify.notify_id) ->
+        is_nil(notify[:notify_id]) ->
           error "notify id is nil in #{inspect notify_data}"
           {:error, :invalid_notify_id}
-        is_valid_notify_id(notify.notify_id) ->
+
+        is_valid_notify_id(notify[:notify_id]) ->
           {:ok, notify}
+
         true ->
-          error "invalid notify id: #{notify.notify_id}"
+          error "invalid notify id: #{notify[:notify_id]}"
           {:error, :invalid_notify_id}
       end
     else
@@ -177,9 +174,11 @@ defmodule SDKAlipay do
     case sec_id do
       "MD5" ->
         sign == Utils.md5_sign("#{param_string}#{@config[:key]}")
+
       x when x in ["RSA", "0001"] ->
         key_file = Application.app_dir(:acs, @config[:alipay_public_key])
         Utils.rsa_public_verify(key_file, param_string, sign)
+
       _ ->
         false
     end

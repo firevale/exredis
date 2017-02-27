@@ -2,11 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
-import VueValidator from 'vue-validator'
+// import VueValidator from 'vue-validator'
 
 // TODO: use vue-validator instead
-// import VueValidator from './components/fvVueValidator/vue-validator'
-
+import VueValidator from './components/fvVueValidator/vue-validator'
 
 import routerMap from './routers'
 import locales from './i18n'

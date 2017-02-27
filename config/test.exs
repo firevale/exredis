@@ -7,7 +7,7 @@ config :acs, Acs.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :info
 
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,
@@ -19,7 +19,7 @@ config :acs, Acs.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 
-config :acs, :elasticsearch, 
+config :acs, :elasticsearch,
   pool: [size: 10, max_overflow: 20],
   connection: [host: System.get_env("ACS_ELASTICSEARCH_HOSTNAME") || "localhost", port: 9200]
 
@@ -30,4 +30,4 @@ config :redis_poolex,
   db: 15,
   reconnect: :no_reconnect,
   pool_size: 100,
-  pool_max_overflow: 100 
+  pool_max_overflow: 100

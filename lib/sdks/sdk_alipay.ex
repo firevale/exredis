@@ -30,21 +30,21 @@ defmodule SDKAlipay do
     transport: "http"
   }
 
-  def direct(out_trade_no, subject, total_fee, platform) do
+  def direct(out_trade_no, subject, total_fee) do
     merchant_url = String.replace(@merchant_url, "{order_id}", out_trade_no)
     callback_url = String.replace(@callback_url, "{order_id}", out_trade_no)
     do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
   end
-  def direct(out_trade_no, subject, total_fee, platform, %{
+  def direct(out_trade_no, subject, total_fee, %{
     "merchant_url" => merchant_url,
     "callback_url" => callback_url,
     "notify_url" => notify_url,
   }), do: do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, notify_url)
-  def direct(out_trade_no, subject, total_fee, platform, %{
+  def direct(out_trade_no, subject, total_fee, %{
     "merchant_url" => merchant_url,
     "callback_url" => callback_url,
   }), do: do_direct(out_trade_no, subject, total_fee, merchant_url, callback_url, @notify_url)
-  def direct(out_trade_no, subject, total_fee, platform, %{
+  def direct(out_trade_no, subject, total_fee, %{
     "merchant_url" => merchant_url,
   }) do
     callback_url = String.replace(@callback_url, "{order_id}", out_trade_no)
@@ -61,10 +61,10 @@ defmodule SDKAlipay do
         <seller_account_name>#{@config.seller_email}</seller_account_name>
         <out_trade_no>#{out_trade_no}</out_trade_no>
         <subject>#{subject}</subject>
-        <total_fee>#{Float.to_string(total_fee, [decimals: 2])}</total_fee>
+        <total_fee>#{:erlang.float_to_binary(total_fee, [decimals: 2])}</total_fee>
         <merchant_url>#{merchant_url}</merchant_url>
       </direct_trade_create_req>
-    """
+    """ |> String.trim
 
     info "alipay, request data: #{req_data}"
 
@@ -203,12 +203,13 @@ defmodule SDKAlipay do
         "invald"
     end
 
-    [params | {:sign, sign}]
+    [{:sign, sign} | params]
   end
 
   defp make_param_string(params) do
     params
-      |> Enum.reject(fn({k, v}) -> is_nil(v) or v == "" end)
+      |> Enum.reject(fn({_k, v}) -> is_nil(v) or v == "" end)
+      |> Enum.sort_by(fn({k, _}) -> k end)
       |> Enum.map(fn({k, v}) -> "#{k}=#{v}" end)
       |> Enum.join("&")
   end

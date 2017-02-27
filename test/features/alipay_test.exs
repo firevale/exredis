@@ -24,8 +24,8 @@ defmodule Acs.AlipayTest do
     goods = AppGoods.changeset(%AppGoods{}, %{
       id: "alipay.test.goods.001",
       app_id: app.id,
-      name: "测试商品",
-      description: "测试商品",
+      name: "一小袋金币",
+      description: "一小袋金币",
       price: 1
       }) |> Repo.insert!(on_conflict: :nothing)
 
@@ -39,23 +39,34 @@ defmodule Acs.AlipayTest do
 
     redis_user = RedisUser.refresh(user.id)
 
-    IO.puts "setup redis_user: #{inspect redis_user, pretty: true}"
-
-    {:ok, %{tags | conn: conn |> put_req_header("acs-app-id", app.id)
-                              |> put_req_header("acs-user-id", to_string(user.id))
-                              |> put_req_header("acs-locale", "zh-Hans")
-                              |> put_req_header("acs-zone-id", "1")
-                              |> put_req_header("acs-device-id", "idfa.#{Utils.generate_token()}")
-                              |> put_req_header("user-agent", "fvacwebview android")}
+    {:ok, %{tags | conn: set_acs_header(conn, app, user)}
     }
   end
 
-  test "POST /api/sdkpay/add_channel_order", context do
+  test "create order, pay through alipay, get alipay notify success", context do
     resp = post(context.conn, "/api/sdkpay/add_channel_order", %{
       cp_order_id: Utils.generate_token(10),
       goods_id: "alipay.test.goods.001",
       sdk_user_id: "fvalipaytest",
       debug_mode: false,
+    })
+
+    app = resp.private[:acs_app]
+    user = resp.private[:acs_user]
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+
+    assert resp.status == 200
+    assert result.success
+
+    conn =
+      context.conn
+      |> recycle()
+      |> set_acs_header(app, user)
+
+    resp = post(conn, "/api/pay/alipay/redirect", %{
+      payment_order_id: result.order_id,
+      merchant_url: "https://fvac.firevale.com/payment/pay_proxy"
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -64,9 +75,18 @@ defmodule Acs.AlipayTest do
     assert result.success
 
 
-
-
   end
+
+
+  defp set_acs_header(conn, app, user) do
+    conn |> put_req_header("acs-app-id", app.id)
+         |> put_req_header("acs-user-id", to_string(user.id))
+         |> put_req_header("acs-locale", "zh-Hans")
+         |> put_req_header("acs-zone-id", "1")
+         |> put_req_header("acs-device-id", "idfa.#{Utils.generate_token()}")
+         |> put_req_header("user-agent", "fvacwebview android")
+  end
+
 
   # test "GET /", %{conn: conn} do
   #   conn = get conn, "/"

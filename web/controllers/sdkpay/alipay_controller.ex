@@ -4,7 +4,7 @@ defmodule Acs.AlipayController do
 
   def alipay_redirect(conn, %{"payment_order_id" => order_id} = params) do
     with %AppOrder{} = order <- Repo.get(AppOrder, order_id),
-         {:ok, direct_result} <- SDKAlipay.direct(order.id, order.goods_name, order.price / 100, order.platform, params),
+         {:ok, direct_result} <- SDKAlipay.direct(order.id, order.goods_name, order.price / 100, params),
          {:ok, token} <- SDKAlipay.get_request_token(direct_result)
     do
       conn |> json(%{success: true, redirect_uri: SDKAlipay.auth_and_execute(token)})

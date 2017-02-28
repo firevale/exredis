@@ -11,10 +11,20 @@ docker hub 服务在国内访问比较慢，可以通过VPN或者使用dao cloud
 ```bash
 ./acs console
 ```
-  * 单元测试可以执行'./acs test'命令
+  * 通过命令'./acs mix [task]'可以在container内执行mix任务
 
 ```bash
-./acs test
+# 重置数据库
+./acs mix ecto.reset
+# 执行migration
+./acs mix ecto.migrate
+...
+# mix 任务可以通过./acs mix --help 查看任务列表
+```
+  * 单元测试可以执行'./acs mix test'命令
+
+```bash
+./acs mix test
 ```
 
   * 开发环境有变化时，通过'./acs update'升级.

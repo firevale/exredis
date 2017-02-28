@@ -19,7 +19,7 @@ docker hub 服务在国内访问比较慢，可以通过VPN或者使用dao cloud
 # 执行migration
 ./acs mix ecto.migrate
 ...
-# mix 任务可以通过./acs mix --help 查看任务列表
+# ./acs mix --help 可以查看任务列表
 ```
   * 单元测试可以执行'./acs mix test'命令
 

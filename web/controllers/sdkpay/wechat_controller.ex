@@ -14,7 +14,7 @@ defmodule Acs.WechatController do
     notify_url = "#{url(conn)}/api/pay/alipay/notify"
 
     # handling request via nginx reverse proxy
-    ip_address = case conn.get_req_header(conn, "x-forwarded-for") do
+    ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
       [val | _] -> val
       _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
     end

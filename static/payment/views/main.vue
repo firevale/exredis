@@ -57,3 +57,5 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">@import '~payment/scss/payment'</style>

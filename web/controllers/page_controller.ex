@@ -13,7 +13,7 @@ defmodule Acs.PageController do
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
   def index(conn, _params) do
-    conn |> redirect(to: "forum")
+    conn |> redirect(to: "/forum")
   end
 
   # 用户登录

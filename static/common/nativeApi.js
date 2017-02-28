@@ -15,7 +15,8 @@ export default {
 
   showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
-      AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle, callback)
+      window.showAlertDialogCallback = callback
+      AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback === 'function') {
       IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback(title, message, cancelBtnTitle, okBtnTitle, callback)
     } else {

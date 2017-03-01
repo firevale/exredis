@@ -24,11 +24,11 @@ defmodule Acs.AlipayController do
          %AppOrder{} = order <- Repo.get(AppOrder, notify_data[:out_trade_no]),
          true <- is_trade_success(notify_data[:trade_status])
     do
-      total_fee = String.to_float(notify_data.total_fee) * 100 |> Float.to_string(decimals: 0)
+      total_fee = String.to_float(notify_data[:total_fee]) * 100 |> Float.to_string(decimals: 0)
       AppOrder.changeset(order, %{
         status: AppOrder.Status.paid(),
         paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-        transaction_id: "alipay." <> notify_data.trade_no,
+        transaction_id: "alipay." <> notify_data[:trade_no],
         paid_channel: "alipay",
         fee: total_fee
       }) |> Repo.update! |> PaymentHelper.notify_cp

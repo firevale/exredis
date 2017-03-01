@@ -1,5 +1,5 @@
 <template>
-  <div class="login-box">  
+  <div class="login-box">
     <validation name="retrieve" @submit.prevent="handleSubmit">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
@@ -9,7 +9,7 @@
       </p>
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
-                required: {rule: true, message: $t('account.error.requireUserName')}, 
+                required: {rule: true, message: $t('account.error.requireUserName')},
                 maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
                 validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
                 }">
@@ -24,7 +24,7 @@
       </p>
       <div class="row-login">
         <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon rotating"></span
+        <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
     </validation>
   </div>
@@ -59,7 +59,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
       ]),
     },
 

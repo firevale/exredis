@@ -1,204 +1,207 @@
 <template>
-  <div class="is-ancestor is-parent is-vertical ">
-    <div class="is-child fixed-top  row-line">
-      <div class="arrow-back" style="left: 1rem;">
-        <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
-      </div>
-      <div class="row-line top-title">
-        {{ $t('forum.main.title') }}
-      </div>
-      <div class="main-menu">
-        <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
-        <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
-        <a class="button create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
-      </div>
+<div class="is-ancestor is-parent is-vertical ">
+  <div class="is-child fixed-top  row-line">
+    <div class="arrow-back" style="left: 1rem;">
+      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
     </div>
-    <div class="scroll-box">
-      <div class="tile content-item">
-        <div class="tile control" style="margin-bottom: 0;">
-          <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-          <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
-          <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
-          <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
-          <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
-          <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
-        </div>
-        <div class="pointer" @click="orderChoose">
-          <span>{{ noteOrderTypeStr }}</span>
-          <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
-        </div>
-      </div>
-      <div class="box is-chid is-parent content-item" style="padding: 0;">
-        <note-item v-for="item in noteList" :item-data="item"></note-item>
-      </div>
-      <div class="column is-full" v-show="notePageCount > 1">
-        <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
-      </div>
+    <div class="row-line top-title">
+      {{ $t('forum.main.title') }}
+    </div>
+    <div class="main-menu">
+      <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
+      <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
+      <a class="button create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
     </div>
   </div>
+  <div class="scroll-box">
+    <div class="tile content-item">
+      <div class="tile control" style="margin-bottom: 0;">
+        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
+      </div>
+      <div class="pointer" @click="orderChoose">
+        <span>{{ noteOrderTypeStr }}</span>
+        <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
+      </div>
+    </div>
+    <div class="box is-chid is-parent content-item" style="padding: 0;">
+      <note-item v-for="item in noteList" :key="item.id" :item-data="item"></note-item>
+    </div>
+    <div class="column is-full" v-show="notePageCount > 1">
+      <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+    </div>
+  </div>
+</div>
 </template>
 <script>
-  import 'forum/scss/forum.scss'
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
-  import noteItem from '../components/noteItem.vue'
-  import menuModal from '../components/menuModal'
-  import pagination from '../components/pagination.vue'
-  export default {
-    components: {
-      noteItem,
-      pagination,
-    },
+import 'forum/scss/forum.scss'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+import noteItem from '../components/noteItem.vue'
+import menuModal from '../components/menuModal'
+import pagination from '../components/pagination.vue'
+export default {
+  components: {
+    noteItem,
+    pagination,
+  },
 
-    mounted: function () {
-      this.$refs.pag.$on('switch-page', this.refreshPage)
-    },
+  mounted: function() {
+    this.$refs.pag.$on('switch-page', this.refreshPage)
+  },
 
-    watch: {
-      'noteLoadType' (newVal, oldVal) {
-        this.refreshPage()
-      }
-    },
+  watch: {
+    'noteLoadType' (newVal, oldVal) {
+      this.refreshPage()
+    }
+  },
 
-    computed: {
-      ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr', 'notePageCount',
-      
-        'noteCurrentPage'
-      ]),
-    },
+  computed: {
+    ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr',
+      'notePageCount',
 
-    data() {
-      return {
-        noteList: [{
-            noteId: '',
-            headerTag: [{
-              name: '置顶',
-              bgColor: '#f00',
-              color: '#fff'
-            }, ],
-            title: '【游戏攻略】新手练级指南',
-            hasPicture: true,
-            tailTag: [{
-                name: '精',
-                bgColor: '#ff0',
-                color: '#fff',
-                isTag: true
-              },
-              {
-                name: 'HOT',
-                bgColor: '#f00',
-                color: '#fff'
-              },
-            ],
-            author: '火谷测试',
-            time: '2分钟前',
-            noteCount: '2/11',
-          },
-          {
-            noteId: '',
-            headerTag: [
+      'noteCurrentPage'
+    ]),
+  },
 
-            ],
-            title: '【问题求助】游戏一只闪退肿么破？？',
-            hasPicture: false,
-            tailTag: [
-
-            ],
-            author: '游客',
-            time: '1小时前',
-            noteCount: '0/0',
-          },
-          {
-            noteId: '',
-            headerTag: [
-
-            ],
-            title: '【BUG反馈】副本闪退',
-            hasPicture: true,
-            tailTag: [{
+  data() {
+    return {
+      noteList: [{
+          id: '',
+          headerTag: [{
+            name: '置顶',
+            bgColor: '#f00',
+            color: '#fff'
+          }, ],
+          title: '【游戏攻略】新手练级指南',
+          hasPicture: true,
+          tailTag: [{
+              name: '精',
+              bgColor: '#ff0',
+              color: '#fff',
+              isTag: true
+            },
+            {
               name: 'HOT',
               bgColor: '#f00',
               color: '#fff'
-            }, ],
-            author: '火谷测试',
-            time: '一天前',
-            noteCount: '2/11',
-          },
-          {
-            noteId: '',
-            headerTag: [{
-              name: '置顶',
-              bgColor: '#f00',
-              color: '#fff'
-            }, ],
-            title: '【玩家原创】新手练级指南',
-            hasPicture: true,
-            tailTag: [{
-              name: '精',
-              bgColor: '#ff0',
-              color: '#fff',
-              isTag: true
-            }, ],
-            author: '火谷测试',
-            time: '2016-11-1 21:06',
-            noteCount: '22/133',
-          },
-          {
-            noteId: '',
-            headerTag: [
+            },
+          ],
+          author: '火谷测试',
+          time: '2分钟前',
+          noteCount: '2/11',
+        },
+        {
+          id: '',
+          headerTag: [
 
-            ],
-            title: '【玩家原创】新手练级指南',
-            hasPicture: true,
-            tailTag: [{
-              name: '精',
-              bgColor: '#ff0',
-              color: '#fff',
-              isTag: true
-            }, ],
-            author: '火谷测试',
-            time: '2016-10-11 14:06',
-            noteCount: '22/433',
-          },
-        ]
-      }
+          ],
+          title: '【问题求助】游戏一只闪退肿么破？？',
+          hasPicture: false,
+          tailTag: [
+
+          ],
+          author: '游客',
+          time: '1小时前',
+          noteCount: '0/0',
+        },
+        {
+          id: '',
+          headerTag: [
+
+          ],
+          title: '【BUG反馈】副本闪退',
+          hasPicture: true,
+          tailTag: [{
+            name: 'HOT',
+            bgColor: '#f00',
+            color: '#fff'
+          }, ],
+          author: '火谷测试',
+          time: '一天前',
+          noteCount: '2/11',
+        },
+        {
+          id: '',
+          headerTag: [{
+            name: '置顶',
+            bgColor: '#f00',
+            color: '#fff'
+          }, ],
+          title: '【玩家原创】新手练级指南',
+          hasPicture: true,
+          tailTag: [{
+            name: '精',
+            bgColor: '#ff0',
+            color: '#fff',
+            isTag: true
+          }, ],
+          author: '火谷测试',
+          time: '2016-11-1 21:06',
+          noteCount: '22/133',
+        },
+        {
+          id: '',
+          headerTag: [
+
+          ],
+          title: '【玩家原创】新手练级指南',
+          hasPicture: true,
+          tailTag: [{
+            name: '精',
+            bgColor: '#ff0',
+            color: '#fff',
+            isTag: true
+          }, ],
+          author: '火谷测试',
+          time: '2016-10-11 14:06',
+          noteCount: '22/433',
+        },
+      ]
+    }
+  },
+
+  methods: {
+    ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage']),
+
+    orderChoose() {
+      menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
     },
 
-    methods: {
-      ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage']),
+    onOrderTypeChoose(type) {
+      this.setNoteOrderType(type)
+      this.refreshPage()
+    },
 
-      orderChoose() {
-        menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
-      },
-
-      onOrderTypeChoose(type) {
-        this.setNoteOrderType(type)
-        this.refreshPage()
-      },
-
-      refreshPage(page = 1) {
-        this.$http({
+    refreshPage(page = 1) {
+      this.$http({
           method: 'post',
           url: this.noteLoadUrl,
           params: {
             page: page,
             order: this.noteOrderType,
           }
-        }).then(response => {
+        })
+        .then(response => {
           //this.noteList = response.json()
           //this.setNotePageCount(this.noteList.length)
           //this.setNoteCurrentPage(page)
-        }).then(result => {
+        })
+        .then(result => {
           if (result.success) {
             this.setNoteCurrentPage(page);
           } else {
 
           }
         })
-      },
-
     },
-  }
+
+  },
+}
 </script>

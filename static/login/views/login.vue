@@ -6,7 +6,7 @@
       </div>
       <div class="row-login">
         <validity ref="accountId" field="accountId" :validators="{
-            required: {rule: true, message: $t('account.error.requireUserName')}, 
+            required: {rule: true, message: $t('account.error.requireUserName')},
             validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
           }">
           <input type="email" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="accountIdPlaceholder"
@@ -16,7 +16,7 @@
       </div>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
-              required: {rule: true, message: $t('account.error.requirePassword')}, 
+              required: {rule: true, message: $t('account.error.requirePassword')},
           }">
           <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
             @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" />
@@ -72,7 +72,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri' 
+        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri'
       ]),
     },
 
@@ -100,7 +100,7 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.login.valid && this.accountId && this.password) {
+        if (this.$validation.login.valid && this.accountId && this.password && !this.processing) {
           this.processing = true
           this.$http({
             method: 'post',
@@ -131,7 +131,7 @@
             }
           }).catch(_x => {
             this.processing = false
-            this.errorMessage = this.$t('account.error.networkError')  
+            this.errorMessage = this.$t('account.error.networkError')
           })
         }
       },

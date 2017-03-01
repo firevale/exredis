@@ -5,7 +5,7 @@ defmodule Acs.RedisUser do
   require Logger
 
   alias   Acs.Repo
-  import  Ecto.Query 
+  import  Ecto.Query
 
   alias   Acs.User
   alias   Acs.UserSdkBinding
@@ -17,19 +17,19 @@ defmodule Acs.RedisUser do
             encrypted_password: nil,
             device_id: nil,
             nickname: nil,
-            resident_id: nil,    # 身份证号码, 参考<<中华人民共和国网络安全法>> 
+            resident_id: nil,    # 身份证号码, 参考<<中华人民共和国网络安全法>>
             resident_name: nil,  # 实名
             gender: "male",      # 性别 ()
             age: 1,              # 年龄
             avatar_url: nil,
             last_login_at: nil,
-            bindings: %{}       
+            bindings: %{}
 
 
   ########################################
   use     Utils.Jsonable # should define after defstruct
 
-  defmodule Scripts do 
+  defmodule Scripts do
     import Redis.Script
 
     defredis_script :save_user, file_path: "lua/save_user.lua"
@@ -37,16 +37,16 @@ defmodule Acs.RedisUser do
     defredis_script :del_user,  file_path: "lua/delete_user.lua"
   end
 
-  defmodule OpException do 
+  defmodule OpException do
     defexception message: "redis user operation error"
   end
-  defmodule AccountIdInUse do 
+  defmodule AccountIdInUse do
     defexception message: "account id is alreay in use"
   end
-  defmodule AccountIdNotFound do 
+  defmodule AccountIdNotFound do
     defexception message: "account id not found"
   end
-  defmodule InvalidAccountId do 
+  defmodule InvalidAccountId do
     defexception message: "account id is not valid"
   end
 
@@ -60,15 +60,15 @@ defmodule Acs.RedisUser do
 
   def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     if not exists?(account_id) do
-      case parse_account_id(account_id) do 
+      case parse_account_id(account_id) do
         :email ->
           [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
-          %__MODULE__{email: String.downcase(account_id), 
-                      encrypted_password: Utils.hash_password(password), 
+          %__MODULE__{email: String.downcase(account_id),
+                      encrypted_password: Utils.hash_password(password),
                       nickname: nickname}
 
         :mobile ->
-          %__MODULE__{mobile: account_id, 
+          %__MODULE__{mobile: account_id,
                       encrypted_password: Utils.hash_password(password)}
 
         _ ->
@@ -79,14 +79,14 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def create!(account_id, password, device_id) when is_bitstring(account_id) and is_bitstring(password) and is_bitstring(device_id) do 
+  def create!(account_id, password, device_id) when is_bitstring(account_id) and is_bitstring(password) and is_bitstring(device_id) do
     # find anonymouse user
-    case find(device_id) do 
+    case find(device_id) do
       nil ->
         create!(account_id, password)
 
       %{email: nil, mobile: nil, nickname: "anonymous"} = user ->
-        case parse_account_id(account_id) do 
+        case parse_account_id(account_id) do
           :email ->
             [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
             %{user | email: String.downcase(account_id), device_id: nil, nickname: nickname, encrypted_password: Utils.hash_password(password)}
@@ -100,18 +100,18 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def bind_sdk_user(%{sdk: sdk, 
-                      app_id: app_id, 
-                      sdk_user_id: sdk_user_id, 
+  def bind_sdk_user(%{sdk: sdk,
+                      app_id: app_id,
+                      sdk_user_id: sdk_user_id,
                       email: email,
                       mobile: mobile,
                       nickname: nickname,
                       device_id: device_id,
-                      avatar_url: avatar_url}) do 
+                      avatar_url: avatar_url}) do
 
     bkey = "#{sdk}.#{app_id}"
 
-    case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) || find(device_id) do 
+    case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) || find(device_id) do
       nil ->
         user =  %__MODULE__{
                     email: email, # make email case insensitive
@@ -134,12 +134,12 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def fetch_anonymous_user(device_id) do 
-    case find(device_id) do 
-      %{email: nil, mobile: nil, nickname: "anonymous"} = anonymous_user -> 
-        anonymous_user 
+  def fetch_anonymous_user(device_id) do
+    case find(device_id) do
+      %{email: nil, mobile: nil, nickname: "anonymous"} = anonymous_user ->
+        anonymous_user
 
-      _ -> 
+      _ ->
         save!(%__MODULE__{
           nickname: "anonymous",
           device_id: device_id,
@@ -148,19 +148,19 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def bind_anonymous_user(account_id, password, device_id, bind_user_id) do 
-    case find(String.to_integer(bind_user_id)) do 
+  def bind_anonymous_user(account_id, password, device_id, bind_user_id) do
+    case find(String.to_integer(bind_user_id)) do
       %{nickname: "anonymous", device_id: ^device_id} = user ->
-        new_user = case parse_account_id(account_id) do 
+        new_user = case parse_account_id(account_id) do
                      :email ->
                       [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
-                       %{user | email: account_id, 
-                                encrypted_password: Utils.hash_password(password), 
+                       %{user | email: account_id,
+                                encrypted_password: Utils.hash_password(password),
                                 nickname: nickname,
                                 device_id: nil}
                      :mobile ->
-                       %{user | mobile: account_id, 
-                                encrypted_password: Utils.hash_password(password), 
+                       %{user | mobile: account_id,
+                                encrypted_password: Utils.hash_password(password),
                                 nickname: "fvu#{user.id}",
                                 device_id: nil}
                      _ ->
@@ -175,35 +175,35 @@ defmodule Acs.RedisUser do
     user = %{user | id: if user.id <= 100_000 do
                           gen_user_id()
                         else
-                          user.id 
+                          user.id
                         end,
-                    email: case user.email do 
+                    email: case user.email do
                              nil -> nil
                              v when is_bitstring(v) -> String.downcase(user.email)
                            end}
 
-    Repo.transaction(fn -> 
+    Repo.transaction(fn ->
       # ecto's upset is not stable for now
-      case Repo.get(User, user.id) do 
+      case Repo.get(User, user.id) do
         nil ->
           User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert!
           "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
         %User{} = old_user ->
           User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
-          "ok" = Scripts.save_user([], [to_json(user), 
-                                 user.id, 
-                                 user.email, 
-                                 user.mobile, 
-                                 user.device_id, 
-                                 old_user.email, 
-                                 old_user.mobile, 
+          "ok" = Scripts.save_user([], [to_json(user),
+                                 user.id,
+                                 user.email,
+                                 user.mobile,
+                                 user.device_id,
+                                 old_user.email,
+                                 old_user.mobile,
                                  old_user.device_id])
       end
 
-      user.bindings |> Enum.each(fn({k, v}) -> 
+      user.bindings |> Enum.each(fn({k, v}) ->
         Redis.set(@binding_index_key <> "#{k}.#{v}", user.id)
         [sdk, app_id] = String.split(to_string(k), ".", parts: 2, trim: true)
-        case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do 
+        case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do
           nil ->
             UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.insert!
           %UserSdkBinding{} = binding ->
@@ -226,23 +226,23 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def save_cache(%__MODULE__{} = user) do 
+  def save_cache(%__MODULE__{} = user) do
     "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
     :ok
   end
 
   def find(nil), do: nil
   def find(id) when is_integer(id) do
-    case Redis.get(@user_base_key <> to_string(id)) do 
+    case Redis.get(@user_base_key <> to_string(id)) do
       :undefined -> refresh(id)
       json -> from_json(json)
     end
   end
   def find(account_id) when is_bitstring(account_id) do
-    case parse_account_id(account_id) do 
+    case parse_account_id(account_id) do
       :unknown -> nil
       type ->
-        case Scripts.find_user([type |> to_string], [account_id]) do 
+        case Scripts.find_user([type |> to_string], [account_id]) do
           "undefined" -> refresh(type, account_id)
           result -> result |> from_json
         end
@@ -265,77 +265,77 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(id) when is_integer(id) do 
+  def refresh(id) when is_integer(id) do
     query = from user in User,
-            left_join: bindings in assoc(user, :sdk_bindings), 
+            left_join: bindings in assoc(user, :sdk_bindings),
             where: user.id == ^id,
             select: user,
             preload: [sdk_bindings: bindings]
 
-    case Repo.one(query) do 
+    case Repo.one(query) do
       nil -> nil
       %User{} = user -> _refresh(user)
     end
   end
 
-  def refresh(:email, account_id) do 
+  def refresh(:email, account_id) do
     query = from user in User,
-            left_join: bindings in assoc(user, :sdk_bindings), 
+            left_join: bindings in assoc(user, :sdk_bindings),
             where: user.email == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
-    case Repo.one(query) do 
+    case Repo.one(query) do
       nil -> nil
       %User{} = user -> _refresh(user)
     end
   end
 
-  def refresh(:mobile, account_id) do 
+  def refresh(:mobile, account_id) do
     query = from user in User,
-            left_join: bindings in assoc(user, :sdk_bindings), 
+            left_join: bindings in assoc(user, :sdk_bindings),
             where: user.mobile == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
-    case Repo.one(query) do 
+    case Repo.one(query) do
       nil -> nil
       %User{} = user -> _refresh(user)
     end
   end
 
-  def refresh(:device, account_id) do 
+  def refresh(:device, account_id) do
     query = from user in User,
-            left_join: bindings in assoc(user, :sdk_bindings), 
+            left_join: bindings in assoc(user, :sdk_bindings),
             where: user.device_id == ^account_id,
             select: user,
             preload: [sdk_bindings: bindings]
 
-    case Repo.one(query) do 
+    case Repo.one(query) do
       nil -> nil
       %User{} = user -> _refresh(user)
     end
   end
 
-  def refresh(:sdk, account_id) do 
+  def refresh(:sdk, account_id) do
     [sdk, app_id, sdk_user_id] = String.split(account_id, ".")
     query = from user in User,
-            left_join: binding in assoc(user, :sdk_bindings), 
+            left_join: binding in assoc(user, :sdk_bindings),
             where: binding.sdk == ^sdk and binding.app_id == ^app_id and binding.sdk_user_id == ^sdk_user_id,
             select: user,
             preload: [sdk_bindings: binding]
 
-    case Repo.one(query) do 
+    case Repo.one(query) do
       nil -> nil
       %User{} = user -> _refresh(user)
     end
   end
 
-  def refresh(_, _), do: nil 
+  def refresh(_, _), do: nil
 
-  def _refresh(%User{} = user) do 
+  def _refresh(%User{} = user) do
     sdk_bindings = user.sdk_bindings |> Enum.map(fn(%UserSdkBinding{sdk: sdk, app_id: app_id, sdk_user_id: sdk_user_id}) ->
-      {"#{sdk}.#{app_id}", sdk_user_id} 
+      {"#{sdk}.#{app_id}", sdk_user_id}
     end) |> Enum.into(%{})
 
     cache = %__MODULE__{
@@ -345,7 +345,7 @@ defmodule Acs.RedisUser do
               encrypted_password: user.encrypted_password,
               device_id: user.device_id,
               nickname: user.nickname,
-              resident_id: user.resident_id,    # 身份证号码, 参考<<中华人民共和国网络安全法>> 
+              resident_id: user.resident_id,    # 身份证号码, 参考<<中华人民共和国网络安全法>>
               resident_name: user.resident_name,  # 实名
               gender: user.gender,      # 性别 ()
               age: user.age,              # 年龄
@@ -369,32 +369,26 @@ defmodule Acs.RedisUser do
   end
 
   def exists?(account_id) when is_bitstring(account_id) do
-    case parse_account_id(account_id) do 
-      :email -> Redis.exists(@email_index_key <> String.downcase(account_id)) > 0
-      :mobile -> Redis.exists(@mobile_index_key <> account_id) > 0
-      :id -> Redis.exists(@user_base_key <> account_id) > 0
-      :device -> Redis.exists(@device_index_key <> account_id) > 0
-      :sdk -> Redis.exists(@binding_index_key <> account_id) > 0
-      :unknown -> false
-    end
+    # can we find the user?
+    account_id |> find |> is_nil |> Kernel.not
   end
 
   # account_id: email, mobile phone nunmber, id, device_id
   def delete(account_id) when is_bitstring(account_id) do
-    case parse_account_id(account_id) do 
+    case parse_account_id(account_id) do
       :unknown ->
-        :error 
+        :error
       type ->
-        case Scripts.del_user([type |> to_string], [account_id]) do 
+        case Scripts.del_user([type |> to_string], [account_id]) do
           "ok" ->
-            if type in [:email, :mobile] do 
-              case Repo.get_by(User, [{type, account_id}]) do 
+            if type in [:email, :mobile] do
+              case Repo.get_by(User, [{type, account_id}]) do
                 %User{} = user ->
                   Repo.delete(user)
                 _ ->
                   :ok
                end
-            else 
+            else
               :ok
             end
            _ -> :ok
@@ -402,9 +396,9 @@ defmodule Acs.RedisUser do
     end
   end
   def delete(id) when is_integer(id) do
-    case Scripts.del_user(["id"], [id]) do 
+    case Scripts.del_user(["id"], [id]) do
       "ok" ->
-        case Repo.get_by(User, id: id) do 
+        case Repo.get_by(User, id: id) do
           %User{} = user ->
             Repo.delete(user)
           _ ->
@@ -415,16 +409,16 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def delete!(id) when is_integer(id) do 
-    case delete(id) do 
+  def delete!(id) when is_integer(id) do
+    case delete(id) do
       :ok -> :ok
       {:ok, _} -> :ok
       _ ->
         raise OpException, message: "can not delete user by id #{id}"
     end
   end
-  def delete!(account_id) when is_bitstring(account_id) do 
-    case delete(account_id) do 
+  def delete!(account_id) when is_bitstring(account_id) do
+    case delete(account_id) do
       :ok -> :ok
       {:ok, _} -> :ok
       _ ->
@@ -446,7 +440,7 @@ defmodule Acs.RedisUser do
   end
 
   def parse_account_id(account_id) when is_bitstring(account_id) do
-    cond do 
+    cond do
       Regex.match?(~r/^yyh\.([a-zA-Z0-9\-_]+)\.yyh@([^@]+)/, account_id) -> :sdk
       Regex.match?(~r/([^@]+)@([^@]+)/, account_id) -> :email
       Regex.match?(~r/^(idfa|idfv|android_id)\.(.*)/, account_id) -> :device
@@ -458,8 +452,8 @@ defmodule Acs.RedisUser do
   end
 
   @uid_counter_key     "fvac.counter.uid"
-  defp gen_user_id() do 
-    case Redis.incr(@uid_counter_key) do 
+  defp gen_user_id() do
+    case Redis.incr(@uid_counter_key) do
       uid when uid <= 100_000 ->
         Redis.set @uid_counter_key, 100_001
         100_001

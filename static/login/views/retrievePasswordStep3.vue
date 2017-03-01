@@ -9,10 +9,10 @@
       </p>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
-                required: {rule: true, message: $t('account.error.requirePassword')}, 
+                required: {rule: true, message: $t('account.error.requirePassword')},
                 minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
-          <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" 
+          <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
                  v-model.trim="password" autocomplete="off" name="password" @focusout="handleValidate" />
         </validity>
         <span class="icon addon-icon icon-lock"></span>
@@ -83,7 +83,7 @@
       },
 
       handleSubmit: function(e) {
-        if (this.$validation.retrieve.valid && this.password) {
+        if (this.$validation.retrieve.valid && this.password && !this.processing) {
           this.processing = true
           this.$http({
             method: 'post',

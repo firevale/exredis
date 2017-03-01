@@ -7,7 +7,7 @@
       <p class="code-tip"> {{ $t('account.registerPage.pleaseInputPassword') }}: </p>
       <div class="row-login">
         <validity ref="password" field="password" :validators="{
-                required: {rule: true, message: $t('account.error.requirePassword')}, 
+                required: {rule: true, message: $t('account.error.requirePassword')},
                 minlength: {rule: 6, message: $t('account.error.passwordWrong')},
                 }">
           <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
@@ -84,7 +84,7 @@
       },
 
       handleSubmit: function() {
-        if (this.$validation.register.valid && this.accountId && this.password && this.verifyCode) {
+        if (this.$validation.register.valid && this.accountId && this.password && this.verifyCode && !this.processing) {
           this.processing = true
           this.$http({
             method: 'post',

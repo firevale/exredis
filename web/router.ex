@@ -88,6 +88,14 @@ defmodule Acs.Router do
     forward "/pay", PayRouter
     forward "/sdkpay", SdkPayRouter
 
+    scope path: "/alipay" do
+      get   "/redirect", AlipayController, :alipay_redirect
+      post  "/redirect", AlipayController, :alipay_redirect
+
+      get   "/notify",   AlipayController, :notify
+      post  "/notify",   AlipayController, :notify
+    end
+
   end # end scope ap
 
   scope path: "/admin_actions", alias: Acs do

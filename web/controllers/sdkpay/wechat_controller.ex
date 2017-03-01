@@ -11,7 +11,7 @@ defmodule Acs.WechatController do
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
-    notify_url = "#{url(conn)}/api/pay/alipay/notify"
+    notify_url = "#{url(conn)}/api/pay/wechat/notify"
 
     # handling request via nginx reverse proxy
     ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do

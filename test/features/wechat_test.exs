@@ -13,6 +13,8 @@ defmodule Acs.WechatTest do
 
   require Utils
 
+  @sign_key    "FireVale2017GoforMillionsFortune"
+
   setup %{conn: conn} = tags do
     app = App.changeset(%App{}, %{
         id: "wechatpay.test.app.001",
@@ -38,7 +40,7 @@ defmodule Acs.WechatTest do
         app_secret: "916f1b7eb6570daf3f3322a2f88aef66",
         package_name: "com.firevale.wxqz.fv",
         partnerid: "1426834702",
-        sign_key: "FireVale2017GoforMillionsFortune",
+        sign_key: @sign_key,
         signature: "84a28a826d5fbc76571de9004d5bf1ff"}
       }) |> Repo.insert!(on_conflict: :nothing)
 
@@ -83,6 +85,8 @@ defmodule Acs.WechatTest do
       |> recycle()
       |> set_acs_header(app, user)
 
+    order_id = result.order_id
+
     # prepay
     resp = post(conn, "/api/pay/wechat/prepay", %{
       payment_order_id: result.order_id
@@ -90,22 +94,49 @@ defmodule Acs.WechatTest do
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
 
+    IO.inspect result
+
     assert resp.status == 200
     assert result.success
 
     # notify
-    # params = %{
-    #   "notify_data" => "zWXqs+MfpidotWZwxB8Trxf7MvRNfEn1bLvp5wshxyT4JktI+X7xfWQDUNTrlbDNPTqLViMtU+Qk9Ix2UwfYueZoWbXLl9YRKWoS1TmTKEN/SMm227t0hGRVxV8dHDHD7XDDcNGcv0Che79fOa2XswpaLMMCSkX/GITDGECB/1Soh+j8OI6XgFpXikDCvTJjA8TsI+XKdZkcfBlfftTKuOJVJgEw7nV0N55efNj4g6IgqHS4gq9/noJTlE+pDe4k6L2EtTHe+GtV2Z/O3SjMH5Exfl/M1FXfFoGuv12gCO0WDHLBGV4ulHCtuIfevAOQ8VsJ8Zq1G4wfkJzc1j673tSnr3s30j+L9Bzj/PpeB/+/Tddx9OzhGdUGCaWgVkjU+JwKothnETJfymSrZ6bXsx0N1ct3dZeouqVyr2tjwzX/HtG81Xt8Q/VHbFWJTbH36R6LDhzC4L/5MX+oYjw2996eoOWaJYaya8NeZekXfczKqu4icyeUsgUqqJ2T0FtQFvr8uBSBOM9+PPalJfFen/uKvr+qnqkMqIy6INiTO1wp8VdKZzkbAtJuVHEc1Kmgf+geIPQFDlmTyLoE+5u6KlLIBsZNLAyc3ZFHWxMKG9VL/5z+Vk3ij17Au8AIZb01eJz/4+eHzqpo61rNvl6vSWt8Y5bDH/G71kU5xM7lSFkxEPTgOdXHnmsdbWGb4OZsrJG2xIWonjwfvykAHf6L2eS/3hO+NJAtJS27wNMmvd9WDmxM4ibAcT18GMrwYBbSD+RGTMnyPbdW2eabG1UjP+ZQ1m4XKD9KbCIdcXMcu4qDbCfMT0KHgc8VUF/SY0gjbfKpr2Xuf1blU6TkaOYR49Y4Sx47IRhG2P+0mYo0wAs/6+MTKS26FsswC4ri4Sg3/kTJrPZib4Mqj0nRMS6tgth7CCn9AGOUUQ4wePhDZpayY+20Q9O4roeRbyWZpD4SXHMUWnqj6ZtwhIlDzIQvr53KJ4A6Pv03HK1AVb/9og/PgHE8ZkRSwdOdM4rWBUhLrZ61npmntLI/0R/Hz1rLuoKb7V3GBO9L/IpIB7LlL6yV5/NqMwCBSSG/JPeuemf45HlGrsokBmH0fRatyYlrQ8G5Z87Egk//lhB0uPXRKOu0VTjGFU1XH0qeV2TJBMckiPZxiLa/k06e3snE3UejFFnyFfng2vLfqA47aqs/Wg3AxNrYSWkGTI5IYCIjsLx3HRl/K8o+c+VwOJLU3m3w+Vs5PrBgT7d9+JxD0kO3jk9c4yJUQmgjTdKcBm+F9zTwRVQS1pSlK/i6+n6S2uG3PZVyVHm9OSnO9MU401Fwf+q8t8v2yyqOKMPX/D0RyL+z3VgGYd/i/mJZWfrTl4Om4jGeVN9zjbBCG525znjeyPQpoIkaOdFqXYJpI7ny3WuBimPiEVUy3gbRcOPtO2lfkl2/mR4Ioc8kQ396CNib1TL6jYiNzwgYz3v3vYNzamcsmhSlYI5OjU5Pqt5g0+B9nhjXDmnd89EPLu2hhlhh0Z5ZufF+++aEiJ8OBgyEptOO",
-    #   "sec_id" => "0001",
-    #   "service" => "alipay.wap.trade.create.direct",
-    #   "sign" => "MY9xOR/g9fyaWootN70Nrh5tFWddFV9KwAG7uTMBQtc7brE3pzwRRZn5eUSU/jEZkT5h86pp0n7deBizDcO7VR//4HAJ1O5day7OC/px7ky8mO9h6U32/iELogv7kX/rNcp8onyo25vuXsemUTGs7Qr+U9zuBOEG6wAUu02Gmj4=",
-    #   "v" => "1.0"}
-    #
-    # assert {:error, :invalid_notify_id} = SDKAlipay.verify_notify(params)
-    #
-    # resp = post(build_conn(), "/api/pay/alipay/notify", params)
-    # assert resp.status == 200
-    # assert resp.resp_body == "fail, invalid_notify_id"
+    resp_body = %{
+      appid: "wx06aa585d82e1bed7",
+      bank_type: "ICBC_DEBIT",
+      cash_fee: "1",
+      fee_type: "CNY",
+      is_subscribe: "N",
+      mch_id: "1426834702",
+      nonce_str: "2464611910",
+      openid: "oXKBYwrCX-9hSQQjNrx-keiVwZkk",
+      out_trade_no: order_id,
+      result_code: "SUCCESS",
+      return_code: "SUCCESS",
+      time_end: "20170301164805",
+      total_fee: 1,
+      trade_type: "APP",
+      transaction_id: "4004272001201703011809263647"
+    }
+
+    resp_ok =
+      """
+        <xml>
+          <return_code><![CDATA[SUCCESS]]></return_code>
+          <return_msg><![CDATA[OK]]></return_msg>
+        </xml>
+      """
+    notify_params = SDKWechat.params_with_sign(resp_body, @sign_key)
+    assert "SUCCESS" == notify_params[:return_code]
+    assert :ok == SDKWechat.check_sign(notify_params, @sign_key)
+    req_data = """
+      <xml>
+        #{Enum.map_join(notify_params, "", fn({k, v}) -> "<#{k}>#{v}</#{k}>" end)}
+      </xml>
+    """
+    testconn = build_conn() |> put_req_header("content-type", "text/plain")
+    resp = post(testconn, "/api/pay/wechat/notify", req_data)
+    assert resp.status == 200
+    assert resp.resp_body == resp_ok
   end
 
   defp set_acs_header(conn, app, user) do

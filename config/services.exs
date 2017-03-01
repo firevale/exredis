@@ -38,7 +38,7 @@ config :acs, Acs.SendCloudMailer,
 
 config :acs, :alipay,
   certs_root: "priv/certs",
-  notify_url: "https://fvac.firevale.com/api/alipay/notify",
+  notify_url: "https://fvac.firevale.com/api/pay/alipay/notify",
   callback_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}",
   merchant_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}"
 

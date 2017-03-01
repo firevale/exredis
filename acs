@@ -99,7 +99,16 @@ mix() {
 	if [ $? -eq 0 ]; then
 		docker exec acs mix $1
 	else
-		echo "acs container is not started yet, run ./acs shell to start it first!"
+		echo "acs container is not started yet, run ./acs shell or ./acs console to start it first!"
+	fi
+}
+
+yarn() {
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
+	if [ $? -eq 0 ]; then
+		docker exec acs /bin/zsh -c "cd /code/static/ && yarn $1"
+	else
+		echo "acs container is not started yet, run ./acs shell or ./acs console to start it first!"
 	fi
 }
 
@@ -147,6 +156,9 @@ case "$1" in
 		;;
 	mix)
 		mix $2
+		;;
+	yarn)
+		yarn $2
 		;;
 	docker_run)
 		docker_run $2

@@ -93,7 +93,7 @@ defmodule SDKWechat do
     end
   end
 
-  defp params_with_sign(params, sign_key) do
+  def params_with_sign(params, sign_key) do
     sign = "#{make_param_string(params)}&key=#{sign_key}" |> Utils.md5_sign |> String.upcase
     Map.put(params, :sign, sign)
   end

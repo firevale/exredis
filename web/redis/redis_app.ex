@@ -1,6 +1,6 @@
 defmodule Acs.RedisApp do
   require Redis
-  
+
   alias   Acs.Repo
   import  Ecto.Query
 
@@ -9,7 +9,7 @@ defmodule Acs.RedisApp do
   alias   Acs.AppGoods
   alias   Acs.AppGoodsProductId
   alias   Acs.AppSdkPaymentCallback
-  
+
   require Logger
 
   ########################################
@@ -38,22 +38,22 @@ defmodule Acs.RedisApp do
             sdk_payment_callbacks: %{},
             goods: %{}
 
-  use     Utils.Jsonable 
+  use     Utils.Jsonable
 
   @app_cache_key     "fvac.app_cache"
 
-  def find(id) when is_bitstring(id) do 
+  def find(id) when is_bitstring(id) do
     redis_key = "#{@app_cache_key}.#{id}"
 
-    case Redis.get(redis_key) do 
+    case Redis.get(redis_key) do
       :undefined ->
         refresh(id)
-      raw -> 
+      raw ->
         raw |> from_json
     end
   end
 
-  def refresh(id) when is_bitstring(id) do 
+  def refresh(id) when is_bitstring(id) do
     redis_key = "#{@app_cache_key}.#{id}"
 
     query = from app in App,
@@ -62,26 +62,26 @@ defmodule Acs.RedisApp do
               left_join: callbacks in assoc(app, :sdk_payment_callbacks),
               left_join: goods_product_ids in assoc(goods, :product_ids),
               where: app.id == ^id,
-              select: app, 
-              preload: [sdk_bindings: bindings, 
+              select: app,
+              preload: [sdk_bindings: bindings,
                         goods: {goods, product_ids: goods_product_ids},
-                        sdk_payment_callbacks: callbacks] 
+                        sdk_payment_callbacks: callbacks]
 
-    case Repo.one(query) do 
-      nil -> nil 
+    case Repo.one(query) do
+      nil -> nil
       %App{} = app ->
         sdk_bindings = app.sdk_bindings |> Enum.map(fn(%AppSdkBinding{sdk: sdk, binding: binding}) ->
-          {sdk |> String.to_atom, binding} 
+          {sdk |> String.to_atom, binding}
         end) |> Enum.into(%{})
 
-        goods = app.goods |> Enum.map(fn(%AppGoods{} = goods) -> 
-          product_ids = goods.product_ids |> Enum.map(fn(%AppGoodsProductId{sdk: sdk, product_id: product_id}) -> 
+        goods = app.goods |> Enum.map(fn(%AppGoods{} = goods) ->
+          product_ids = goods.product_ids |> Enum.map(fn(%AppGoodsProductId{sdk: sdk, product_id: product_id}) ->
             {sdk |> String.to_atom, product_id}
           end) |> Enum.into(%{})
-          {goods.id, %{id: goods.id, 
-                       name: goods.name, 
-                       description: goods.description, 
-                       price: goods.price, 
+          {goods.id, %{id: goods.id,
+                       name: goods.name,
+                       description: goods.description,
+                       price: goods.price,
                        icon: goods.icon,
                        product_ids: product_ids}}
         end) |> Enum.into(%{})
@@ -90,7 +90,7 @@ defmodule Acs.RedisApp do
           {"#{platform}-#{sdk}", callback}
         end) |> Enum.into(%{})
 
-        Logger.debug "mysql app: #{inspect app, pretty: true}"
+        #Logger.debug "mysql app: #{inspect app, pretty: true}"
 
         cache = %__MODULE__{
           id: app.id,
@@ -113,7 +113,7 @@ defmodule Acs.RedisApp do
           website_name: app.website_name,
           website_url: app.website_url,
           public_weixin_name: app.public_weixin_name,
-          public_weixin_url: app.public_weixin_url, 
+          public_weixin_url: app.public_weixin_url,
           sdk_bindings: sdk_bindings,
           sdk_payment_callbacks: payment_callbacks,
           goods: goods

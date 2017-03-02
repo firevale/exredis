@@ -6,9 +6,13 @@ services:
     environment:
       - MYSQL_DATABASE=acs_dev
       - MYSQL_ROOT_PASSWORD=firevale
+    ports:
+      - "3307:3306"
   redis:
     image: docker-registry.firevale.com/redis
     container_name: acs_redis
+    ports:
+      - "6380:6379"
   elasticsearch:
     container_name: acs_elasticsearch
     environment:

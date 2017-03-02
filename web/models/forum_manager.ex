@@ -3,6 +3,7 @@ defmodule Acs.ForumManager do
 
   schema "forums_managers" do
     field :logins, :integer
+    field :created_at, :naive_datetime
 
     belongs_to :forum, Acs.Forum
     belongs_to :user, Acs.User, type: :integer
@@ -15,8 +16,8 @@ defmodule Acs.ForumManager do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:logins])
-    |> validate_required([:logins])
+    |> cast(params, [:logins, :created_at])
+    |> validate_required([:logins, :created_at])
     |> foreign_key_constraint(:forum_id)
     |> foreign_key_constraint(:user_id)
   end

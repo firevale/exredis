@@ -7,9 +7,12 @@ defmodule Acs.ForumPost do
     field :is_top, :boolean, default: false
     field :is_hot, :boolean, default: false
     field :is_vote, :boolean, default: false
-    field :last_reply_at, Ecto.DateTime
-    
-    belongs_to :section, Acs.ForumSection
+    field :reads, :integer, default: 0
+    field :replys, :integer, default: 0
+    field :created_at, :naive_datetime
+    field :last_reply_at, :naive_datetime
+
+    belongs_to :section, Acs.ForumSection, type: :integer
     belongs_to :user, Acs.User, type: :integer
 
     timestamps()
@@ -20,8 +23,8 @@ defmodule Acs.ForumPost do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :last_reply_at])
-    |> validate_required([:title, :content, :is_top, :is_hot, :is_vote, :last_reply_at])
+    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at])
+    |> validate_required([:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at])
     |> foreign_key_constraint(:section_id)
     |> foreign_key_constraint(:user_id)
   end

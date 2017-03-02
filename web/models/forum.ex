@@ -4,9 +4,10 @@ defmodule Acs.Forum do
   schema "forums" do
     field :title, :string
     field :status, :integer
+    field :created_at, :naive_datetime
 
     belongs_to :app, Acs.App, type: :string
-    
+
     timestamps()
   end
 
@@ -15,8 +16,8 @@ defmodule Acs.Forum do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :status])
-    |> validate_required([:title, :status])
+    |> cast(params, [:title, :status, :created_at])
+    |> validate_required([:title, :status], :created_at)
     |> foreign_key_constraint(:app_id)
   end
 end

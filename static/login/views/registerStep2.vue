@@ -1,164 +1,168 @@
 <template>
-  <div class="login-box">
-    <validation name="register" @submit.prevent="handleSubmit">
-      <div class="row-login">
-        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
+<div class="login-box">
+  <form @submit.prevent="handleSubmit">
+    <div class="row-login">
+      <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
+    </div>
+    <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
+    <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
+    <div class="row-login">
+      <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
+          autocomplete="off" maxlength="10" class="outsideText" name="verifyCode" @input="handleInput" />
+      <div v-if="!isMobileAccount" class="captchaBox">
+        <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
       </div>
-      <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
-      <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
-      <div class="row-login">
-        <validity ref="verifyCode" field="verifyCode" :validators="{
-                required: {rule: true, message: $t('account.loginPage.verifyCodePlaceholder')}, 
-                minlength: {rule: 4, message: $t('account.error.verifyCodeTooShort')},
-                }">
-          <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
-            maxlength="10" class="outsideText" name="verifyCode" @focusout="handleValidate" />
-        </validity>
-        <div v-if="!isMobileAccount" class="captchaBox">
-          <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
-        </div>
-        <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input"
+      <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input"
           :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
-        </input>
-        <span class="icon addon-icon icon-check"></span>
-      </div>
-      <p class="errors">
-        <span v-if="errorMessage" class="icon error-sign"></span>
-        <span>{{ errorMessage }}</span>
-      </p>
-      <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon rotating"></span>
-      </div>
-      <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
-      </div>
-    </validation>
-  </div>
+      </input>
+      <span class="icon addon-icon icon-check"></span>
+    </div>
+    <p class="errors">
+      <span v-if="errorHint" class="icon error-sign"></span>
+      <span>{{ errorHint }}</span>
+    </p>
+    <div class="row-login">
+      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')"
+          :disabled="processing" />
+      <span v-show="processing" class="icon progress-icon rotating"></span>
+    </div>
+    <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
+      <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+    </div>
+  </form>
+</div>
 </template>
 <script>
-  import * as utils from 'common/utils'
-  import msg from '../components/message'
-  import Vue from 'vue'
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import * as utils from 'common/utils'
+import msg from '../components/message'
 
-  export default {
-    data: function() {
-      return {
-        isMobileAccount: false,
-        hasSentCode: false,
-        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
-        cooldownCounter: 0,
-        accountId: '',
-        verifyCode: '',
-        errorMessage: '',
-        processing: false,
-        bindUserId: ''
-      }
+import {
+  required,
+  minLength,
+  maxLength
+} from 'vuelidate/lib/validators'
+
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+export default {
+  validations: {
+    verifyCode: {
+      required,
+      minLength: minLength(4),
+      maxLength: maxLength(6),
     },
+  },
 
-    created: function() {
-      this.bindUserId = this.$route.query.bindUserId
-      this.accountId = atob(this.$route.query.accountId)
-      if (utils.isValidEmail(this.accountId)) {
-        this.updateCaptcha()
-        this.isMobileAccount = false
-      } else {
-        this.isMobileAccount = true
-        this.sendMobileVerifyCode()
-      }
-    },
+  data: function() {
+    return {
+      isMobileAccount: false,
+      hasSentCode: false,
+      isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
+      cooldownCounter: 0,
+      accountId: '',
+      verifyCode: '',
+      errorMessage: '',
+      processing: false,
+      bindUserId: ''
+    }
+  },
 
-    computed: {
-      ...mapGetters([
-        'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder' 
-      ]),
+  created: function() {
+    this.bindUserId = this.$route.query.bindUserId
+    this.accountId = atob(this.$route.query.accountId)
+    if (utils.isValidEmail(this.accountId)) {
+      this.updateCaptcha()
+      this.isMobileAccount = false
+    } else {
+      this.isMobileAccount = true
+      this.sendMobileVerifyCode()
+    }
+  },
 
-      sendCodeTitle: function() {
-        if (this.cooldownCounter > 0) {
-          return this.$t('account.registerPage.cooldownText', {
-            timer: this.cooldownCounter
-          })
-        } else {
-          if (this.hasSentCode) {
-            return this.$t('account.registerPage.sendAgain')
-          } else {
-            return this.$t('account.loginPage.sendVerifyCode')
-          }
-        }
-      },
-    },
+  computed: {
+    ...mapGetters([
+      'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+    ]),
 
-    methods: {
-      ...mapActions(['updateCaptcha']),
-
-      handleValidate: function(e) {
-        this.errorMessage = ''
-        e.target.$validity.validate(_ => {
-          if (this.$refs.verifyCode &&
-            this.$refs.verifyCode.invalid &&
-            this.$refs.verifyCode.result.errors &&
-            this.$refs.verifyCode.result.errors.length > 0) {
-            this.errorMessage = this.$refs.verifyCode.result.errors[0].message
-          } else {
-            this.errorMessage = ''
-          }
+    sendCodeTitle: function() {
+      if (this.cooldownCounter > 0) {
+        return this.$t('account.registerPage.cooldownText', {
+          timer: this.cooldownCounter
         })
-      },
-
-      cooldownTimer: function() {
-        if (this.cooldownCounter > 0) {
-          this.cooldownCounter--;
-          setTimeout(this.cooldownTimer, 1000);
+      } else {
+        if (this.hasSentCode) {
+          return this.$t('account.registerPage.sendAgain')
+        } else {
+          return this.$t('account.loginPage.sendVerifyCode')
         }
-      },
+      }
+    },
 
-      sendMobileVerifyCode: function() {
-        if (window.acsConfig.isMobileAccountSupported &&
-          utils.isValidMobileNumber(this.accountId)) {
-          this.$http({
-            method: 'post',
-            url: "/send_mobile_register_verify_code",
-            params: {
-              mobile: this.accountId
-            }
-          }).then(response => {
-            return response.json()
-          }).then(result => {
-            if (result.success) {
-              msg.showMsg({
-                msg: this.$t('account.registerPage.messageTip'),
-                target: this.$parent.$refs.msg
-              })
-              this.hasSentCode = true
-              this.cooldownCounter = 60
-              setTimeout(this.cooldownTimer, 1000)
-            } else {
-              this.errorMessage = this.$t(result.message)
-            }
-          })
+    errorHint: function() {
+      if (this.$v.$error) {
+        if (!this.$v.verifyCode.required) {
+          return this.$t('account.error.requireUserName')
+        } else if (!this.$v.verifyCode.minLength) {
+          return this.$t('account.error.invalidVerifyCodeLength')
+        } else if (!this.$v.verifyCode.maxLength) {
+          return this.$t('account.error.invalidVerifyCodeLength')
         }
-      },
+      } else {
+        return this.errorMessage
+      }
+    },
+  },
 
-      handleSubmit: function() {
-        if (this.$validation.register.valid && this.verifyCode) {
-          this.processing = true
-          this.$http({
-            method: 'post',
-            url: '/check_register_verify_code',
-            params: {
-              verify_code: this.verifyCode,
-            }
-          }).then(response => {
-            this.processing = false
-            return response.json()
-          }).then(result => {
-            if (result.exists) {
-              this.errorMessage = this.$t('account.error.accountInUse')
-            } else {
+  methods: {
+    ...mapActions(['updateCaptcha']),
+
+    handleInput: function() {
+      this.$v.$touch()
+      this.errorMessage = ''
+    },
+
+    cooldownTimer: function() {
+      if (this.cooldownCounter > 0) {
+        this.cooldownCounter--;
+        setTimeout(this.cooldownTimer, 1000);
+      }
+    },
+
+    sendMobileVerifyCode: async function() {
+      if (window.acsConfig.isMobileAccountSupported &&
+        utils.isValidMobileNumber(this.accountId)) {
+        try {
+          let result = await this.$acs.sendMobileVerifyCode(this.accountId)
+          if (result.success) {
+            msg.showMsg({
+              msg: this.$t('account.registerPage.messageTip'),
+              target: this.$parent.$refs.msg
+            })
+            this.hasSentCode = true
+            this.cooldownCounter = 60
+            setTimeout(this.cooldownTimer, 1000)
+          } else {
+            this.errorMessage = this.$t(result.message)
+          }
+        } catch (_) {
+          this.errorMessage = this.$t('account.error.networkError')
+          setTimeout(_ => {
+            this.errorMessage = ''
+          }, 3000)
+        }
+      }
+    },
+
+    handleSubmit: async function() {
+      if (!this.$v.$error && this.accountId && !this.processing) {
+        this.processing = true
+        try {
+          let result = await this.$acs.checkRegisterVerifyCode(this.verifyCode)
+          if (result.success) {
+            if (result.match) {
               this.$router.replace({
                 name: 'registerStep3',
                 query: {
@@ -167,13 +171,21 @@
                   bindUserId: this.$route.query.bindUserId,
                 }
               })
+            } else {
+              this.errorMessage = this.$t('account.error.invalidVerifyCode')
             }
-          }).catch(error => {
-            this.processing = false
-            this.errorMessage = this.$t('account.error.networkError')
-          })
+          } else {
+            this.errorMessage = this.$t(result.message)
+          }
+        } catch (_) {
+          this.errorMessage = this.$t('account.error.networkError')
+          setTimeout(_ => {
+            this.errorMessage = ''
+          }, 3000)
         }
-      },
+        this.processing = false
+      }
     },
-  }
+  },
+}
 </script>

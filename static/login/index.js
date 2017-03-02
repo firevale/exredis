@@ -1,23 +1,24 @@
+import 'babel-polyfill'
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
-// import VueValidator from 'vue-validator'
-
-// TODO: use vue-validator instead
-import VueValidator from './components/fvVueValidator/vue-validator'
+import Vuelidate from 'vuelidate'
 
 import routerMap from './routers'
 import locales from './i18n'
 import store from './store'
+import ServerApi from './serverApi'
 
 import * as filters from 'common/filters'
 import * as acs from 'common/acs'
 
-Vue.use(VueValidator)
+Vue.use(Vuelidate)
 Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.use(ServerApi)
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

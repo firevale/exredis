@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import * as utils from 'common/utils'
 
-export const addAccountExistence = ({
-  commit
-}, payload) => {
-  commit('ADD_ACCOUNT_EXISTENCE', payload)
-}
-
 export const setLoginAccountId = ({
   commit
 }, account) => {
@@ -19,16 +13,17 @@ export const setRegisterAccountId = ({
   commit('SET_REGISTER_ACCOUNT', account)
 }
 
-export const updateCaptcha = ({
-  commit
-}) => {
-  Vue.http.post('/reset_register_captcha', {})
-    .then(res => res.json())
-    .then(json => {
-      if (json.success) {
-        commit('SET_CAPTCHA_URL', json.image_url)
-      }
-    })
+export const updateCaptcha = async ({commit}) => {
+  try {
+    let response = await Vue.http.post("/reset_register_captcha", {})
+    let result = await response.json()
+
+    if (result.success) {
+      commit('SET_CAPTCHA_URL', result.image_url)
+    }
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 export const validateAccountId = ({

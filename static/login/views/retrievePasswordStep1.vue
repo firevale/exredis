@@ -1,114 +1,116 @@
 <template>
-  <div class="login-box">
-    <validation name="retrieve" @submit.prevent="handleSubmit">
-      <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
-      </div>
-      <p class="code-tip">
-        {{ $t('account.retrievePasswordPage.pleaseInputAccountName') }}:
-      </p>
-      <div class="row-login">
-        <validity ref="accountId" field="accountId" :validators="{
-                required: {rule: true, message: $t('account.error.requireUserName')},
-                maxlength: {rule: 50, message: $t('account.error.userNameTooLong')},
-                validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
-                }">
-          <input type="email" class="outsideText" :placeholder="accountIdPlaceholder"
-            v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" />
-        </validity>
-        <span class="icon addon-icon icon-user"></span>
-      </div>
-      <p class="errors">
-        <span v-if="errorMessage" class="icon error-sign"></span>
-        <span>{{ errorMessage }}</span>
-      </p>
-      <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon rotating"></span>
-      </div>
-    </validation>
-  </div>
+<div class="login-box">
+  <form @submit.prevent="handleSubmit">
+    <div class="row-login">
+      <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
+    </div>
+    <p class="code-tip">
+      {{ $t('account.retrievePasswordPage.pleaseInputAccountName') }}:
+    </p>
+    <div class="row-login">
+      <input type="text" class="outsideText" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
+          name="user" @input="handleInput" />
+      <span class="icon addon-icon icon-user"></span>
+    </div>
+    <p class="errors">
+      <span v-if="errorHint" class="icon error-sign"></span>
+      <span>{{ errorHint }}</span>
+    </p>
+    <div class="row-login">
+      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')"
+          :disabled="processing" />
+      <span v-show="processing" class="icon progress-icon rotating"></span>
+    </div>
+  </form>
+</div>
 </template>
 
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  required,
+  minLength,
+  maxLength
+} from 'vuelidate/lib/validators'
 
-  export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+export default {
+  validations: {
+    accountId: {
+      required,
+      valid: function(val) {
+        return this.validateAccountId(val)
       },
     },
+  },
 
-    beforeMount: function() {
-      this.accountId = this.loginAccount
-    },
+  beforeMount: function() {
+    this.accountId = this.loginAccount
+  },
 
-    data: function() {
-      return {
-        accountId: '',
-        errorMessage: '',
-        processing: false,
+  data: function() {
+    return {
+      accountId: '',
+      errorMessage: '',
+      processing: false,
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+    ]),
+
+    errorHint: function() {
+      if (this.$v.$error) {
+        if (!this.$v.accountId.required) {
+          return this.$t('account.error.requireUserName')
+        } else if (!this.$v.accountId.valid) {
+          return this.invalidAccountIdErrorMessage
+        }
+      } else {
+        return this.errorMessage
       }
     },
+  },
 
-    computed: {
-      ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
-      ]),
+  methods: {
+    ...mapActions([
+      'validateAccountId'
+    ]),
+
+    handleInput: function() {
+      this.$v.$touch()
+      this.errorMessage = ''
     },
 
-    methods: {
-      ...mapActions([
-        'validateAccountId'
-      ]),
-
-      handleValidate: function(e) {
-        e.target.$validity.validate(_ => {
-          if (this.$refs.accountId &&
-            this.$refs.accountId.invalid &&
-            this.$refs.accountId.result.errors.length > 0) {
-            this.errorMessage = this.$refs.accountId.result.errors[0].message
+    handleSubmit: async function(e) {
+      if (!this.$v.$error && !this.processing) {
+        this.processing = true
+        try {
+          let result = await this.$acs.sendRetrievePasswordVerifyCode(this.accountId)
+          if (result.success) {
+            this.$router.replace({
+              name: 'retrievePasswordStep2',
+              query: {
+                accountId: btoa(this.accountId)
+              }
+            })
           } else {
-            this.errorMessage = ''
+            this.errorMessage = this.$t(result.message)
           }
-        })
-      },
-
-      handleSubmit: function(e) {
-        if (this.$validation.retrieve.valid && this.accountId) {
-          this.processing = true
-          this.$http({
-            method: 'post',
-            url: '/send_retrieve_password_verify_code',
-            params: {
-              account_id: this.accountId,
-            }
-          }).then(response => {
-            this.processing = false
-            return response.json()
-          }).then(result => {
-            if (result.success) {
-              this.$router.replace({
-                name: 'retrievePasswordStep2',
-                query: {
-                  accountId: btoa(this.accountId)
-                }
-              })
-            } else {
-              this.errorMessage = this.$t(result.message)
-            }
-          }).catch(e => {
-            this.processing = false
-            this.errorMessage = this.$t('account.error.networkError')
-          })
+        } catch (e) {
+          this.errorMessage = this.$t('account.error.networkError')
+          setTimeout(_ => {
+            this.errorMessage = ''
+          }, 3000)
         }
-      },
+        this.processing = false
+      }
     },
-  }
+  },
+}
 </script>

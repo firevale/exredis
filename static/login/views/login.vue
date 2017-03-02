@@ -1,150 +1,154 @@
 <template>
-  <div class="login-box">
-    <validation name="login" @submit.prevent="handleSubmit">
-      <div class="row-login">
-        <p class="title">{{ $t('account.loginPage.title') }}</p>
-      </div>
-      <div class="row-login">
-        <validity ref="accountId" field="accountId" :validators="{
-            required: {rule: true, message: $t('account.error.requireUserName')},
-            validAccountId: {rule: true, message: invalidAccountIdErrorMessage},
-          }">
-          <input type="email" maxlength="50" v-model.trim="accountId" autocomplete="off" name="user" @focusout="handleValidate" :placeholder="accountIdPlaceholder"
-          />
-        </validity>
-        <span class="icon addon-icon icon-user"></span>
-      </div>
-      <div class="row-login">
-        <validity ref="password" field="password" :validators="{
-              required: {rule: true, message: $t('account.error.requirePassword')},
-          }">
-          <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
-            @focusout="handleValidate" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" />
-        </validity>
-        <span class="icon addon-icon icon-lock"></span>
-        <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
-      </div>
-      <p class="errors">
-        <span v-if="errorMessage" class="icon error-sign"></span>
-        <span>{{ errorMessage }}</span>
-      </p>
-      <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing"/>
-        <span v-show="processing" class="icon progress-icon rotating"></span>
-      </div>
-      <div class="row-login">
-        <router-link class="pull-left" :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
-        <router-link class="pull-right" :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
-      </div>
-    </validation>
+<div class="login-box">
+  <div class="row-login">
+    <p class="title">{{ $t('account.loginPage.title') }}</p>
   </div>
+  <form @submit.prevent="handleSubmit">
+    <div class="row-login">
+      <input type="text" maxlength="50" v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder"
+          autocomplete="off" @input="handleInput" />
+      <span class="icon addon-icon icon-user"></span>
+    </div>
+    <div class="row-login">
+      <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off"
+          name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleInput"
+      />
+      <span class="icon addon-icon icon-lock"></span>
+      <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
+    </div>
+    <p class="errors">
+      <span class="icon error-sign" v-if="errorHint"></span>
+      <span>{{ errorHint }}</span>
+    </p>
+    <div class="row-login">
+      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')"
+          :disabled="processing" />
+      <span v-show="processing" class="icon progress-icon rotating"></span>
+    </div>
+    <div class="row-login">
+      <router-link class="pull-left" :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>
+      <router-link class="pull-right" :to="{ name: 'retrievePasswordStep1' }">{{ $t('account.loginPage.forgetPassword') }}</router-link>
+    </div>
+  </form>
+</div>
 </template>
 
 <script>
-  import nativeApi from 'common/nativeApi'
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import nativeApi from 'common/nativeApi'
 
-  export default {
-    validators: {
-      validAccountId: function(val) {
-        return this.validateAccountId(val).then(result => {
-          return result ? Promise.resolve() : Promise.reject()
-        })
+import {
+  required,
+  minLength,
+  maxLength
+} from 'vuelidate/lib/validators'
+
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+export default {
+  validations: {
+    accountId: {
+      required,
+      valid: function(val) {
+        return this.validateAccountId(val)
       },
     },
+    password: {
+      required,
+      minLength: minLength(6),
+      maxLength: maxLength(20),
+    },
+  },
 
-    beforeMount: function() {
-      this.accountId = this.loginAccount
+  beforeMount: function() {
+    this.accountId = this.loginAccount
+  },
+
+  data: function() {
+    return {
+      accountId: '',
+      password: '',
+      passwordIcon: 'eye-slash',
+      errorMessage: '',
+      processing: false,
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri'
+    ]),
+
+    errorHint: function() {
+      if (this.$v.$error) {
+        if (!this.$v.accountId.required) {
+          return this.$t('account.error.requireUserName')
+        } else if (!this.$v.accountId.valid) {
+          return this.invalidAccountIdErrorMessage
+        } else if (!this.$v.password.required) {
+          return this.$t('account.error.requirePassword')
+        } else if (!this.$v.password.minLength) {
+          return this.$t('account.error.invalidPasswordLength')
+        } else if (!this.$v.password.maxLength) {
+          return this.$t('account.error.invalidPasswordLength')
+        }
+      } else {
+        return this.errorMessage
+      }
+    },
+  },
+
+  methods: {
+    ...mapActions([
+      'setLoginAccountId', 'validateAccountId', 'addLoginnedAccount',
+    ]),
+
+    handleInput: function() {
+      this.$v.$touch()
+      this.errorMessage = ''
     },
 
-    data: function() {
-      return {
-        accountId: '',
-        password: '',
-        passwordIcon: 'eye-slash',
-        errorMessage: '',
-        processing: false,
+    handleSubmit: async function() {
+      if (!this.$v.$error && !this.processing) {
+        this.processing = true
+        try {
+          let result = await this.$acs.createToken(this.accountId, this.password)
+
+          if (result.success) {
+            this.addLoginnedAccount(result)
+            this.setLoginAccountId(this.accountId)
+
+            if (window.acsConfig.inApp) {
+              nativeApi.closeWebviewWithResult(result)
+            } else {
+              if (this.redirectUri) {
+                window.location = this.redirectUri
+              }
+            }
+          } else {
+            this.errorMessage = this.$t(result.message)
+          }
+        } catch (error) {
+          this.errorMessage = this.$t('account.error.networkError')
+          setTimeout(_ => {
+            this.errorMessage = ''
+          }, 3000)
+        }
+        this.processing = false
       }
     },
 
-    computed: {
-      ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri'
-      ]),
+    togglePasswordVisibility: function() {
+      if (this.passwordIcon == 'eye') {
+        this.passwordIcon = 'eye-slash'
+        this.$refs.password.$el.type = 'password'
+      } else {
+        this.passwordIcon = 'eye'
+        this.$refs.password.$el.type = 'text'
+      }
     },
-
-    methods: {
-      ...mapActions([
-        'addAccountExistence', 'setLoginAccountId', 'validateAccountId', 'addLoginnedAccount'
-      ]),
-
-      handleValidate: function(e) {
-        e.target.$validity.validate(_ => {
-          if (this.$refs.accountId &&
-            this.$refs.accountId.invalid &&
-            this.$refs.accountId.result.errors &&
-            this.$refs.accountId.result.errors.length > 0) {
-            this.errorMessage = this.$refs.accountId.result.errors[0].message
-          } else if (this.$refs.password &&
-            this.$refs.password.invalid &&
-            this.$refs.password.result.errors &&
-            this.$refs.password.result.errors.length > 0) {
-            this.errorMessage = this.$refs.password.result.errors[0].message
-          } else {
-            this.errorMessage = ''
-          }
-        })
-      },
-
-      handleSubmit: function() {
-        if (this.$validation.login.valid && this.accountId && this.password && !this.processing) {
-          this.processing = true
-          this.$http({
-            method: 'post',
-            url: '/user/create_token',
-            params: {
-              account_id: this.accountId,
-              password: this.password
-            }
-          }).then(response => {
-            this.processing = false
-            return response.json()
-          }).then(result => {
-            console.log(result)
-            if (result.success) {
-              this.addLoginnedAccount(result)
-              this.setLoginAccountId(this.accountId)
-
-              if (window.acsConfig.inApp) {
-                nativeApi.closeWebviewWithResult(result)
-              }
-              else {
-                if (this.redirectUri) {
-                  window.location = this.redirectUri
-                }
-              }
-            } else {
-              this.errorMessage = this.$t(result.message)
-            }
-          }).catch(_x => {
-            this.processing = false
-            this.errorMessage = this.$t('account.error.networkError')
-          })
-        }
-      },
-
-      togglePasswordVisibility: function() {
-        if (this.passwordIcon == 'eye') {
-          this.passwordIcon = 'eye-slash'
-          this.$refs.password.$el.type = 'password'
-        } else {
-          this.passwordIcon = 'eye'
-          this.$refs.password.$el.type = 'text'
-        }
-      },
-    },
-  }
+  },
+}
 </script>

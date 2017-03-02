@@ -716,6 +716,14 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
+babel-polyfill@^6.22.0:
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
+  dependencies:
+    babel-runtime "^6.22.0"
+    core-js "^2.4.0"
+    regenerator-runtime "^0.10.0"
+
 babel-preset-es2015@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015/-/babel-preset-es2015-6.22.0.tgz#af5a98ecb35eb8af764ad8a5a05eb36dc4386835"
@@ -6272,6 +6280,10 @@ vue-validator@^3.0.0-alpha.2:
 vue@^2.0.1, vue@^2.1.4, vue@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.2.1.tgz#ddbfd2f0caf38f374f5a36eea2e1edf25225b68e"
+
+vuelidate@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.2.0.tgz#7c50b220ef3700b1a28900f32825c442df809337"
 
 vuex-router-sync@^4.1.2:
   version "4.1.2"

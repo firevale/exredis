@@ -1,9 +1,7 @@
 import * as acs from 'common/acs'
 
 function restoreHistoryAccounts() {
-  let jsonAccounts = localStorage.getItem('_acs_history_accounts_')
-
-  console.log(jsonAccounts)
+  let jsonAccounts = localStorage.getItem('_acs_history_accounts2_')
 
   if (jsonAccounts) {
     return JSON.parse(jsonAccounts).filter(v => v.is_anonymous)
@@ -64,7 +62,7 @@ const mutations = {
         accounts.pop()
       }
 
-      localStorage.setItem('_acs_history_accounts_', JSON.stringify(accounts))
+      localStorage.setItem('_acs_history_accounts2_', JSON.stringify(accounts))
       state.historyAccounts = accounts.slice()
     }
   },

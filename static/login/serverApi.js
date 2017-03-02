@@ -1,6 +1,5 @@
 export default {
   install : function(Vue, options) {
-    console.log('install acs server api plugin')
     Vue.prototype.$acs = {
       async isAccountExists(val) {
         let response = await Vue.http.post('/user/is_account_exists', {account_id: val})
@@ -9,6 +8,11 @@ export default {
 
       async createToken(account_id, password) {
         let response = await Vue.http.post('/user/create_token', {account_id, password})
+        return await response.json()
+      },
+
+      async updateToken(access_token) {
+        let response = await Vue.http.post('/user/update_token', {access_token})
         return await response.json()
       },
 

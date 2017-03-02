@@ -81,55 +81,44 @@ export default {
     ]),
 
     handleSubmit: async function() {
-      if (!this.$v.error && !this.processing) {
-        this.processing = true
-        this.$http({
-            method: 'post',
-            url: '/user/update_token',
-            params: {
-              access_token: this.currentAccount.access_token
+      if (!this.processing) {
+        try {
+          this.processing = true
+          let result = await this.$acs.updateToken(this.currentAccount.access_token)
+          if (result.success) {
+            if (!result.is_anonymous && result.sdk == 'firevale') {
+              this.setLoginAccountId(result.user_email || result.user_mobile)
             }
-          })
-          .then(response => {
-            this.processing = false
-            return response.json()
-          })
-          .then(result => {
-            if (result.success) {
-              if (!result.is_anonymous && result.sdk == 'firevale') {
-                this.setLoginAccountId(result.user_email || result.user_mobile)
-              }
-              this.addLoginnedAccount(result)
-              this.currentAccount = result
-              if (window.acsConfig.inApp) {
-                nativeApi.closeWebviewWithResult(result)
-              }
+            this.addLoginnedAccount(result)
+            this.currentAccount = result
+            if (window.acsConfig.inApp) {
+              nativeApi.closeWebviewWithResult(result)
+            }
+          } else {
+            if (!this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
+              this.setLoginAccountId(this.currentAccount.user_email || this.currentAccount.user_mobile)
+              this.$router.replace({
+                name: 'login'
+              })
+            } else if (this.currentAccount.is_anonymous && this.currentAccount.sdk ==
+              'firevale') {
+              this.$router.replace({
+                name: 'selectAccountType'
+              })
             } else {
-              if (!this.currentAccount.is_anonymous && this.currentAccount.sdk == 'firevale') {
-                this.setLoginAccountId(this.currentAccount.user_email || this.currentAccount.user_mobile)
-                this.$router.replace({
-                  name: 'login'
-                })
-              } else if (this.currentAccount.is_anonymous && this.currentAccount.sdk ==
-                'firevale') {
-                this.$router.replace({
-                  name: 'selectAccountType'
-                })
-              } else {
-                // TODO: goto some other page when
-                this.$router.replace({
-                  name: 'login'
-                })
-              }
+              // TODO: goto some other page when
+              this.$router.replace({
+                name: 'login'
+              })
             }
-          })
-          .catch(e => {
-            this.processing = false
-            this.errorMessage = this.$t('account.error.networkError')
-            setTimeout(_ => {
-              this.errorMessage = ''
-            }, 3000)
-          })
+          }
+        } catch (_) {
+          this.errorMessage = this.$t('account.error.networkError')
+          setTimeout(_ => {
+            this.errorMessage = ''
+          }, 3000)
+        }
+        this.processing = false
       }
     },
 

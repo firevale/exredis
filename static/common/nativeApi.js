@@ -26,7 +26,7 @@ export default {
 
   getActiveSession : function() {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.getActiveSession === 'function') {
-      return AndroidNativeAPI.getActiveSession()
+      return JSON.parse(AndroidNativeAPI.getActiveSession())
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
       return IOSNativeAPI.getActiveSession()
     } else {

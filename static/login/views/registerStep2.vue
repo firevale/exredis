@@ -98,7 +98,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updateCaptcha']),
+    ...mapActions(['setCaptchaUrl']),
+
+    updateCaptcha: async function() {
+      let result = await this.$acs.updateCaptcha()
+      if (result.success) {
+        this.setCaptchaUrl(result.image_url)
+      }
+    },
 
     cooldownTimer: function() {
       if (this.cooldownCounter > 0) {

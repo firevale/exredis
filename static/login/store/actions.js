@@ -13,17 +13,10 @@ export const setRegisterAccountId = ({
   commit('SET_REGISTER_ACCOUNT', account)
 }
 
-export const updateCaptcha = async ({commit}) => {
-  try {
-    let response = await Vue.http.post("/reset_register_captcha", {})
-    let result = await response.json()
-
-    if (result.success) {
-      commit('SET_CAPTCHA_URL', result.image_url)
-    }
-  } catch (e) {
-    console.error(e)
-  }
+export const setCaptchaUrl = ({
+  commit
+}, imageUrl) => {
+  commit('SET_CAPTCHA_URL', imageUrl)
 }
 
 export const setRetrievePasswordAccountId = ({

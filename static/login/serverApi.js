@@ -50,6 +50,11 @@ export default {
         let response = await Vue.http.post("/check_retrieve_password_verify_code", {verify_code})
         return await response.json()
       },
+
+      async updateCaptcha() {
+        let response = await Vue.http.post("/reset_register_captcha", {})
+        return await response.json()
+      }
     }
   }
 }

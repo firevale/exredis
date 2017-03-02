@@ -15,10 +15,10 @@ export default {
     togglePasswordVisibility: function() {
       if (this.passwordIcon == 'eye') {
         this.passwordIcon = 'eye-slash'
-        this.$refs.password.$el.type = 'password'
+        this.$refs.password.type = 'password'
       } else {
         this.passwordIcon = 'eye'
-        this.$refs.password.$el.type = 'text'
+        this.$refs.password.type = 'text'
       }
     }
   },

@@ -36,12 +36,17 @@
 </template>
 <script>
 import nativeApi from 'common/nativeApi'
+
 import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
+
 export default {
+  mixins: [loginFormMixin],
+
   beforeMount: function() {
     let activeSession = nativeApi.getActiveSession()
     if (activeSession) {
@@ -113,10 +118,7 @@ export default {
             }
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
       }

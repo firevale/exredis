@@ -7,7 +7,7 @@
     <p class="code-tip"> {{ $t('account.registerPage.pleaseInputAccountName') }}: </p>
     <div class="row-login">
       <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
-          name="user" @input="handleInput" />
+          name="user" @input="handleValidation" />
       <span class="icon addon-icon icon-user"></span>
     </div>
     <p class="errors">
@@ -33,20 +33,16 @@ import {
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
 import {
-  required,
-  minLength,
-  maxLength
-} from 'vuelidate/lib/validators'
+  accountId
+} from './loginValidation'
+
 export default {
+  mixins: [loginFormMixin],
 
   validations: {
-    accountId: {
-      required,
-      valid: function(val) {
-        return this.validateAccountId(val)
-      },
-    },
+    accountId,
   },
 
   data: function() {
@@ -68,29 +64,12 @@ export default {
     ...mapGetters([
       'registerAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
     ]),
-
-    errorHint: function() {
-      if (this.$v.$error) {
-        if (!this.$v.accountId.required) {
-          return this.$t('account.error.requireUserName')
-        } else if (!this.$v.accountId.valid) {
-          return this.invalidAccountIdErrorMessage
-        }
-      } else {
-        return this.errorMessage
-      }
-    },
   },
 
   methods: {
     ...mapActions([
-      'setRegisterAccountId', 'validateAccountId'
+      'setRegisterAccountId',
     ]),
-
-    handleInput: function() {
-      this.$v.$touch()
-      this.errorMessage = ''
-    },
 
     handleSubmit: async function() {
       if (!this.$v.$error && !this.processing) {
@@ -100,7 +79,7 @@ export default {
 
           if (result.success) {
             if (result.exists) {
-              this.errorMessage = this.$t('account.error.accountInUse')
+              this.setErrorMessage(this.$t('account.error.accountInUse'))
             } else {
               this.setRegisterAccountId(this.accountId)
               this.$router.replace({
@@ -112,13 +91,10 @@ export default {
               })
             }
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (e) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
       }

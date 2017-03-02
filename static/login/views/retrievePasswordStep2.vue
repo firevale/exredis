@@ -7,7 +7,7 @@
     <p class="code-tip" v-html="verifyCodeSentHint"> </p>
     <div class="row-login">
       <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
-          autocomplete="off" class="outsideText" name="verifyCode" @input="handleInput" />
+          autocomplete="off" class="outsideText" name="verifyCode" @input="handleValidation" />
       <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex"
           @click.prevent="sendVerifyCode">
       </input>
@@ -30,23 +30,20 @@
 import * as utils from 'common/utils'
 
 import {
-  required,
-  minLength,
-  maxLength
-} from 'vuelidate/lib/validators'
-
-import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
+import {
+  verifyCode
+} from './loginValidation'
+
 export default {
+  mixins: [loginFormMixin],
+
   validations: {
-    verifyCode: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(6),
-    },
+    verifyCode,
   },
 
   data: function() {
@@ -93,28 +90,9 @@ export default {
         }
       }
     },
-
-    errorHint: function() {
-      if (this.$v.$error) {
-        if (!this.$v.verifyCode.required) {
-          return this.$t('account.error.requireUserName')
-        } else if (!this.$v.verifyCode.minLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
-        } else if (!this.$v.verifyCode.maxLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
-        }
-      } else {
-        return this.errorMessage
-      }
-    },
   },
 
   methods: {
-    handleInput: function() {
-      this.$v.$touch()
-      this.errorMessage = ''
-    },
-
     cooldownTimer: function() {
       if (this.cooldownCounter > 0) {
         this.cooldownCounter--;
@@ -130,17 +108,14 @@ export default {
           if (result.success) {
             this.cooldownCounter = 60
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.sendingVerifyCode = false
       } else {
-        this.errorMessage = this.$t('account.error.sendSmsCooldown')
+        this.setErrorMessage(this.$t('account.error.sendSmsCooldown'))
       }
     },
 
@@ -158,13 +133,10 @@ export default {
               }
             })
           } else {
-            this.errorMessage = this.$t('account.error.invalidVerifyCode')
+            this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
       }

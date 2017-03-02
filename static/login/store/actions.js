@@ -26,16 +26,6 @@ export const updateCaptcha = async ({commit}) => {
   }
 }
 
-export const validateAccountId = ({
-  commit
-}, accountId) => {
-  if (window.acsConfig.isMobileAccountSupported) {
-    return utils.isValidEmail(accountId) || utils.isValidMobileNumber(accountId)
-  } else {
-    return utils.isValidEmail(accountId)
-  }
-}
-
 export const setRetrievePasswordAccountId = ({
   commit
 }, accountId) => {

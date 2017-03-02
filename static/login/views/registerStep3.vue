@@ -7,7 +7,7 @@
     <p class="code-tip"> {{ $t('account.registerPage.pleaseInputPassword') }}: </p>
     <div class="row-login">
       <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
-          v-model.trim="password" autocomplete="off" name="password" @input="handleInput" />
+          v-model.trim="password" autocomplete="off" name="password" @input="handleValidation" />
       <span class="icon addon-icon icon-lock"></span>
       <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
     </div>
@@ -31,23 +31,20 @@ import nativeApi from 'common/nativeApi'
 import msg from '../components/message'
 
 import {
-  required,
-  minLength,
-  maxLength
-} from 'vuelidate/lib/validators'
-
-import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
+import {
+  password
+} from './loginValidation'
+
 export default {
+  mixins: [loginFormMixin],
+
   validations: {
-    password: {
-      required,
-      minLength: minLength(6),
-      maxLength: maxLength(20),
-    },
+    password,
   },
 
   data: function() {
@@ -73,31 +70,12 @@ export default {
     ...mapGetters([
       'redirectUri'
     ]),
-
-    errorHint: function() {
-      if (this.$v.$error) {
-        if (!this.$v.password.required) {
-          return this.$t('account.error.requirePassword')
-        } else if (!this.$v.password.minLength) {
-          return this.$t('account.error.invalidPasswordLength')
-        } else if (!this.$v.password.maxLength) {
-          return this.$t('account.error.invalidPasswordLength')
-        }
-      } else {
-        return this.errorMessage
-      }
-    },
   },
 
   methods: {
     ...mapActions([
       'setLoginAccountId', 'setRegisterAccountId', 'addLoginnedAccount'
     ]),
-
-    handleInput: function() {
-      this.$v.$touch()
-      this.errorMessage = ''
-    },
 
     handleSubmit: async function() {
       if (!this.$v.$error && this.accountId && this.verifyCode && !this.processing) {
@@ -118,22 +96,12 @@ export default {
               }
             }
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
-      }
-    },
-
-    togglePasswordVisibility: function() {
-      if (this.passwordIcon === 'eye') {
-        this.passwordIcon = 'eye-slash'
-        this.$refs.password.$el.type = 'password'
-      } else {
-        this.passwordIcon = 'eye'
-        this.$refs.password.$el.type = 'text'
       }
     },
   },

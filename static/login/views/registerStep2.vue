@@ -8,7 +8,7 @@
     <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
     <div class="row-login">
       <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
-          autocomplete="off" maxlength="10" class="outsideText" name="verifyCode" @input="handleInput" />
+          autocomplete="off" maxlength="10" class="outsideText" name="verifyCode" @input="handleValidation" />
       <div v-if="!isMobileAccount" class="captchaBox">
         <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
       </div>
@@ -37,23 +37,18 @@ import * as utils from 'common/utils'
 import msg from '../components/message'
 
 import {
-  required,
-  minLength,
-  maxLength
-} from 'vuelidate/lib/validators'
-
-import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
+import {verifyCode} from './loginValidation'
+
 export default {
+  mixins: [loginFormMixin],
+
   validations: {
-    verifyCode: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(6),
-    },
+    verifyCode,
   },
 
   data: function() {
@@ -100,29 +95,10 @@ export default {
         }
       }
     },
-
-    errorHint: function() {
-      if (this.$v.$error) {
-        if (!this.$v.verifyCode.required) {
-          return this.$t('account.error.requireUserName')
-        } else if (!this.$v.verifyCode.minLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
-        } else if (!this.$v.verifyCode.maxLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
-        }
-      } else {
-        return this.errorMessage
-      }
-    },
   },
 
   methods: {
     ...mapActions(['updateCaptcha']),
-
-    handleInput: function() {
-      this.$v.$touch()
-      this.errorMessage = ''
-    },
 
     cooldownTimer: function() {
       if (this.cooldownCounter > 0) {
@@ -145,13 +121,10 @@ export default {
             this.cooldownCounter = 60
             setTimeout(this.cooldownTimer, 1000)
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
       }
     },
@@ -172,16 +145,13 @@ export default {
                 }
               })
             } else {
-              this.errorMessage = this.$t('account.error.invalidVerifyCode')
+              this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
             }
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (_) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
       }

@@ -6,12 +6,12 @@
   <form @submit.prevent="handleSubmit">
     <div class="row-login">
       <input type="text" maxlength="50" v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder"
-          autocomplete="off" @input="handleInput" />
+          autocomplete="off" @input="handleValidation" />
       <span class="icon addon-icon icon-user"></span>
     </div>
     <div class="row-login">
       <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off"
-          name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleInput"
+          name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleValidation"
       />
       <span class="icon addon-icon icon-lock"></span>
       <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
@@ -37,29 +37,18 @@
 import nativeApi from 'common/nativeApi'
 
 import {
-  required,
-  minLength,
-  maxLength
-} from 'vuelidate/lib/validators'
-
-import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import loginFormMixin from './loginFormMixin'
+import {accountId, password} from './loginValidation'
+
 export default {
+  mixins: [loginFormMixin],
+
   validations: {
-    accountId: {
-      required,
-      valid: function(val) {
-        return this.validateAccountId(val)
-      },
-    },
-    password: {
-      required,
-      minLength: minLength(6),
-      maxLength: maxLength(20),
-    },
+    accountId, password
   },
 
   beforeMount: function() {
@@ -80,35 +69,12 @@ export default {
     ...mapGetters([
       'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder', 'redirectUri'
     ]),
-
-    errorHint: function() {
-      if (this.$v.$error) {
-        if (!this.$v.accountId.required) {
-          return this.$t('account.error.requireUserName')
-        } else if (!this.$v.accountId.valid) {
-          return this.invalidAccountIdErrorMessage
-        } else if (!this.$v.password.required) {
-          return this.$t('account.error.requirePassword')
-        } else if (!this.$v.password.minLength) {
-          return this.$t('account.error.invalidPasswordLength')
-        } else if (!this.$v.password.maxLength) {
-          return this.$t('account.error.invalidPasswordLength')
-        }
-      } else {
-        return this.errorMessage
-      }
-    },
   },
 
   methods: {
     ...mapActions([
-      'setLoginAccountId', 'validateAccountId', 'addLoginnedAccount',
+      'setLoginAccountId', 'addLoginnedAccount',
     ]),
-
-    handleInput: function() {
-      this.$v.$touch()
-      this.errorMessage = ''
-    },
 
     handleSubmit: async function() {
       if (!this.$v.$error && !this.processing) {
@@ -128,25 +94,12 @@ export default {
               }
             }
           } else {
-            this.errorMessage = this.$t(result.message)
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (error) {
-          this.errorMessage = this.$t('account.error.networkError')
-          setTimeout(_ => {
-            this.errorMessage = ''
-          }, 3000)
+          this.setErrorMessage(this.$t('account.error.networkError'))
         }
         this.processing = false
-      }
-    },
-
-    togglePasswordVisibility: function() {
-      if (this.passwordIcon == 'eye') {
-        this.passwordIcon = 'eye-slash'
-        this.$refs.password.$el.type = 'password'
-      } else {
-        this.passwordIcon = 'eye'
-        this.$refs.password.$el.type = 'text'
       }
     },
   },

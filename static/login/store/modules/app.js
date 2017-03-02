@@ -12,7 +12,7 @@ function restoreHistoryAccounts() {
 }
 
 const state = {
-  appId: acs.getAppId(), 
+  appId: acs.getAppId(),
   deviceId: acs.getDeviceId(),
   accountExistences: {},
   loginAccount: localStorage.getItem('_acs_login_account_id_'),
@@ -47,10 +47,13 @@ const mutations = {
   },
 
   'ADD_LOGINNED_ACCOUNT' (state, account) {
-    account.label = account.is_anonymous ? account.nick_name : (account.user_mobile ? account.user_mobile : account.user_email)
+    let _account = {
+      ...account,
+      label: account.is_anonymous ? account.nick_name : (account.user_mobile ? account.user_mobile : account.user_email)
+    }
     let accounts = state.historyAccounts.slice().filter(v => v.user_id != account.user_id)
 
-    if (accounts.unshift(account) > 4) {
+    if (accounts.unshift(_account) > 4) {
       accounts.pop()
     }
 

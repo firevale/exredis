@@ -8,6 +8,8 @@ defmodule Acs.Repo.Migrations.CreateForumPost do
       add :is_top, :boolean, default: false, null: false
       add :is_hot, :boolean, default: false, null: false
       add :is_vote, :boolean, default: false, null: false
+      add :reads, :integer, default: 0
+      add :replys, :integer, default: 0
       add :created_at, :naive_datetime
       add :last_reply_at, :naive_datetime
 

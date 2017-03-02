@@ -3,10 +3,11 @@ import * as acs from 'common/acs'
 function restoreHistoryAccounts() {
   let jsonAccounts = localStorage.getItem('_acs_history_accounts_')
 
+  console.log(jsonAccounts)
+
   if (jsonAccounts) {
-    return JSON.parse(jsonAccounts)
-  }
-  else {
+    return JSON.parse(jsonAccounts).filter(v => v.is_anonymous)
+  } else {
     return []
   }
 }
@@ -20,7 +21,7 @@ const state = {
   captchaUrl: undefined,
   transitionName: 'slide-left',
   historyAccounts: restoreHistoryAccounts(),
-  redirectUri: '',
+  redirectUri: ''
 }
 
 const mutations = {
@@ -47,26 +48,33 @@ const mutations = {
   },
 
   'ADD_LOGINNED_ACCOUNT' (state, account) {
-    let _account = {
-      ...account,
-      label: account.is_anonymous ? account.nick_name : (account.user_mobile ? account.user_mobile : account.user_email)
-    }
-    let accounts = state.historyAccounts.slice().filter(v => v.user_id != account.user_id)
+    // don't add anonymous user to history accounts
+    if (!account.is_anonymous) {
+      let _account = {
+        ...account,
+        label: account.is_anonymous
+          ? account.nick_name
+          : (account.user_mobile
+            ? account.user_mobile
+            : account.user_email),
+      }
+      let accounts = state.historyAccounts.slice().filter(v => v.user_id != account.user_id)
 
-    if (accounts.unshift(_account) > 4) {
-      accounts.pop()
-    }
+      if (accounts.unshift(_account) > 4) {
+        accounts.pop()
+      }
 
-    localStorage.setItem('_acs_history_accounts_', JSON.stringify(accounts))
-    state.historyAccounts = accounts.slice()
+      localStorage.setItem('_acs_history_accounts_', JSON.stringify(accounts))
+      state.historyAccounts = accounts.slice()
+    }
   },
 
   'SET_REDIRECT_URI' (state, uri) {
     state.redirectUri = uri
-  },
+  }
 }
 
 export default {
   state,
-  mutations
+  mutations,
 }

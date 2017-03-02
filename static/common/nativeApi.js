@@ -1,5 +1,5 @@
 export default {
-  closeWebviewWithResult: function(result) {
+  closeWebviewWithResult : function(result) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.closeWebviewWithResult === 'function') {
       let jsonStr = JSON.stringify(result)
       AndroidNativeAPI.closeWebviewWithResult(jsonStr)
@@ -13,7 +13,7 @@ export default {
     }
   },
 
-  showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
+  showAlertDialog : function(title, message, cancelBtnTitle, okBtnTitle, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
       window.showAlertDialogCallback = callback
       AndroidNativeAPI.showAlertDialog(title, message, cancelBtnTitle, okBtnTitle)
@@ -24,7 +24,7 @@ export default {
     }
   },
 
-  getActiveSession: function() {
+  getActiveSession : function() {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.getActiveSession === 'function') {
       return AndroidNativeAPI.getActiveSession()
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
@@ -34,7 +34,7 @@ export default {
     }
   },
 
-  isWechatPaySupport: function() {
+  isWechatPaySupport : function() {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
       return AndroidNativeAPI.isWechatPaySupport()
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
@@ -44,7 +44,7 @@ export default {
     }
   },
 
-  openWechatPay: function(payinfo) {
+  openWechatPay : function(payinfo) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
       return AndroidNativeAPI.openWechatPay(payinfo)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
@@ -52,6 +52,5 @@ export default {
     } else {
       return false
     }
-  }
-
+  },
 }

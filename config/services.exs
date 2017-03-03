@@ -1,7 +1,5 @@
 use Mix.Config
 
-config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
-
 config :acs, :chaoxin_bot,
   api_key: "239277:1d9ee0a4c5e5e54cad94f165c13734b1",
   default_group_id: 127697

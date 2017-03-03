@@ -82,7 +82,7 @@ defmodule Acs.Mixfile do
      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
      {:comeonin, "~> 2.6"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
-     {:plugsnag, "~> 1.2"},
+     {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
      {:exsyslog, "~> 1.0"},
      {:poison, "~> 3.0", override: true},

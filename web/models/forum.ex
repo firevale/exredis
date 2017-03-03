@@ -1,10 +1,13 @@
 defmodule Acs.Forum do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
+
   schema "forums" do
     field :title, :string
-    field :status, :integer
+    field :active, :boolean, default: true
     field :created_at, :naive_datetime
+    field :icon, :string
 
     belongs_to :app, Acs.App, type: :string
 
@@ -16,8 +19,8 @@ defmodule Acs.Forum do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :status, :created_at])
-    |> validate_required([:title, :status], :created_at)
+    |> cast(params, [:title, :active, :created_at, :app_id, :icon])
+    |> validate_required([:title, :active, :created_at, :app_id])
     |> foreign_key_constraint(:app_id)
   end
 end

@@ -23,8 +23,8 @@ defmodule Acs.ForumPost do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at])
-    |> validate_required([:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at])
+    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at, :section_id, :user_id])
+    |> validate_required([:title, :content, :is_top, :is_hot, :is_vote, :reads, :replys, :created_at, :last_reply_at, :section_id, :user_id])
     |> foreign_key_constraint(:section_id)
     |> foreign_key_constraint(:user_id)
   end

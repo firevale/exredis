@@ -62,3 +62,17 @@ export const addApp = ({
 }, app) => {
   commit(types.ADD_APP, app)
 }
+
+export const fetchForums = ({
+  commit
+}) => {
+  Vue.http.get('/admin_actions/fetch_forums', {})
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        commit(types.UPDATE_FORUMS, result.forums)
+      } else {
+        return Promise.reject(result)
+      }
+    }).catch(e => processAjaxError(e))
+}

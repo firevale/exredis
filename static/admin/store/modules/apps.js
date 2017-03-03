@@ -25,7 +25,7 @@ const mutations = {
   },
 
   [types.UPDATE_SDKS](state, sdks) {
-    state.sdks = sdks 
+    state.sdks = sdks
   },
 
   [types.ADD_APP](state, app) {

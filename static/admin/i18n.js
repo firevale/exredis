@@ -41,6 +41,11 @@ export default {
         AppStats: '应用统计数据',
       },
 
+      forum: {
+        enterForum: '进入论坛',
+        add: '添加新论坛',
+      },
+
       app: {
         basicInfo: '基本信息',
         sdkInfo: 'SDK配置',
@@ -58,7 +63,6 @@ export default {
           add: '添加新商品',
         }
       },
-      
 
       upload: {
         title: '上传',
@@ -112,6 +116,7 @@ export default {
         requestFailed: '请求失败',
         uploadGoodsIcon: '修改商品『{goodsName}』的图标',
         uploadAppIcon: '修改应用『{appName}』的图标',
+        uploadForumIcon: '修改论坛『{forumName}』的图标',
         editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
         ok: '确认',
         cancel: '取消',
@@ -162,7 +167,7 @@ export default {
         qxz: '七匣子',
         htc: 'HTC聚乐',
         sogou: '搜狗',
-        uc: 'UC', 
+        uc: 'UC',
         vivo: 'VIVO',
         yyh: '应用汇',
         youku: '优酷',

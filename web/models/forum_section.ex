@@ -16,8 +16,8 @@ defmodule Acs.ForumSection do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :sort, :created_at])
-    |> validate_required([:title, :sort, :created_at])
+    |> cast(params, [:title, :sort, :created_at, :forum_id])
+    |> validate_required([:title, :sort, :created_at, :forum_id])
     |> foreign_key_constraint(:form_id)
   end
 end

@@ -3,8 +3,9 @@ defmodule Acs.ForumReply do
 
   schema "forums_replys" do
     field :content, :string
+    field :created_at, :naive_datetime
 
-    belongs_to :post, Acs.ForumPost
+    belongs_to :post, Acs.ForumPost, type: :integer
     belongs_to :user, Acs.User, type: :integer
 
     timestamps()
@@ -15,8 +16,8 @@ defmodule Acs.ForumReply do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content])
-    |> validate_required([:content])
+    |> cast(params, [:content, :created_at, :post_id, :user_id])
+    |> validate_required([:content, :created_at, :post_id, :user_id])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:post_id)
   end

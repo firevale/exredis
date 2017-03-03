@@ -42,7 +42,8 @@ export default {
   mounted: function() {
     this.fetchPlatformApps()
     this.fetchSupportedSdks()
-  }, 
+    this.fetchForums()
+  },
 
   computed: mapGetters({
     sidebar: 'sidebar'
@@ -53,6 +54,7 @@ export default {
     'toggleSidebar',
     'fetchPlatformApps',
     'fetchSupportedSdks',
+    'fetchForums',
   ])
 }
 </script>

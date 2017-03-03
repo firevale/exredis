@@ -42,8 +42,8 @@ export default new Router({
     }, {
       name: 'Forums',
       path: 'forums',
-      component: require('../views/Forums')
-    }, {
+      component: require('../views/forums/forums')
+    },{
       name: 'Settings',
       path: 'settings',
       component: require('../views/Settings')

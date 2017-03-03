@@ -3,6 +3,7 @@ defmodule Acs.AdminController do
 
   require Mogrify
   alias   Acs.SdkInfoGenerator
+  alias   Acs.Forum
 
   def fetch_apps(conn, params) do
     query = from app in App,
@@ -270,6 +271,60 @@ defmodule Acs.AdminController do
       error ->
         error "search orders failed: #{inspect error, pretty: true}"
         conn |> json(%{success: false})
+    end
+  end
+
+  def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
+    fetch_forums(conn, page, records_per_page)
+  end
+  def fetch_forums(conn, _params) do
+    fetch_forums(conn, 1, 100)
+  end
+  defp fetch_forums(conn, page, records_per_page) do
+    total = Repo.one!(from forum in Forum, select: count(forum.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from forum in Forum,
+              select: forum,
+              limit: ^records_per_page,
+              where: forum.active == true,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: forum.id]
+
+    forums = Repo.all(query)
+
+    conn |> json(%{success: true, forums: forums, total: total_page})
+  end
+
+
+  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
+    case Repo.get(Forum, forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
+
+      %Forum{} = forum ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 128, height: 128} = upload_image ->
+            if upload_image.format == "png" do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/forum_icons/"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
+              icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
+              d "icon_url: #{icon_url}"
+              Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+              #RedisApp.refresh(app_id)
+              conn |> json(%{success: true, icon_url: icon_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
     end
   end
 

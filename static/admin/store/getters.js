@@ -7,6 +7,7 @@ const device = state => state.main.device
 const sidebar = state => state.main.sidebar
 const effect = state => state.main.effect
 const menuitems = state => state.menu.items
+const forumList = state => state.forums.list
 
 export {
   main,
@@ -18,4 +19,5 @@ export {
   sidebar,
   effect,
   menuitems,
+  forumList,
 }

@@ -4,14 +4,14 @@ defmodule Acs.AdminRouter do
 
   import  Acs.Plugs
 
-  pipeline :admin do 
+  pipeline :admin do
     plug :accepts, ["json"]
-    plug :fetch_session 
+    plug :fetch_session
     plug :parse_user_agent
     plug :fetch_user_id
     plug :fetch_locale
     plug :fetch_access_token
-    plug :check_admin_access 
+    plug :check_admin_access
   end
 
   scope "/", Acs do
@@ -31,6 +31,9 @@ defmodule Acs.AdminRouter do
 
     post "/fetch_orders", AdminController, :fetch_orders
     post "/search_orders", AdminController, :search_orders
+
+    get  "/fetch_forums", AdminController, :fetch_forums
+    post "/update_forum_icon", AdminController, :update_forum_icon
   end
 
 end

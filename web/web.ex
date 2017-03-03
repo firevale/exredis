@@ -69,6 +69,12 @@ defmodule Acs.Web do
       alias  Acs.AppDevice
       alias  Acs.AppDeviceDailyActivity
 
+      alias  Acs.Forum
+      alias  Acs.ForumSection
+      alias  Acs.ForumReply
+      alias  Acs.ForumPost
+      alias  Acs.ForumManager
+
       alias  Acs.PaymentHelper
       alias  Acs.ChaoxinNotifier
     end

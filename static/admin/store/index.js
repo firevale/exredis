@@ -6,6 +6,7 @@ import * as getters from './getters'
 import main from './modules/main'
 import apps from './modules/apps'
 import menu from './modules/menu'
+import forums from './modules/forums'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
   modules: {
     main,
     menu,
-    apps
+    apps,
+    forums
   },
   state: {
   },

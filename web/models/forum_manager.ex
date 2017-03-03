@@ -16,8 +16,8 @@ defmodule Acs.ForumManager do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:logins, :created_at])
-    |> validate_required([:logins, :created_at])
+    |> cast(params, [:logins, :created_at, :forum_id, :user_id])
+    |> validate_required([:logins, :created_at, :forum_id, :user_id])
     |> foreign_key_constraint(:forum_id)
     |> foreign_key_constraint(:user_id)
   end

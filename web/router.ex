@@ -74,6 +74,17 @@ defmodule Acs.Router do
     post "/verify_token", UserController, :verify_token
   end
 
+  scope "/forum", Acs do
+    pipe_through :browser # Use the default browser stack
+
+    get  "/detail", ForumController, :show_detail_page
+    get  "/new_post", ForumController, :show_newpost_page
+    get  "/new_reply", ForumController, :show_newreply_page
+
+    post "/create_post", ForumController, :create_post
+    post "/create_reply", ForumController, :create_reply
+  end
+
   scope path: "/api", alias: Acs do
     pipe_through :api
 

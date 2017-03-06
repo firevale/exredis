@@ -3,7 +3,7 @@ defmodule Acs.ForumReply do
 
   @derive {Poison.Encoder, except: [:post, :user, :__meta__]}
 
-  schema "forums_replys" do
+  schema "forums_comments" do
     field :content, :string
     field :created_at, :naive_datetime
 

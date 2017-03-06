@@ -22,11 +22,7 @@
       <div class="column is-8">
         <label class="label"> {{ $t('admin.label.forumActive')}}: </label>
         <p class="control">
-          <span class="select">
-            <select v-model.trim="forum.active">
-              <option v-for="status in states" :value="status">{{$t('admin.status.' + status)}}</option>
-            </select>
-          </span>
+          <input  class="checkbox" type="checkbox"  v-model.trim="forum.active">
         </p>
       </div>
     </div>

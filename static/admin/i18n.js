@@ -110,7 +110,7 @@ export default {
         forumId: '论坛ID',
         forumAppId: '应用ID(APP ID)',
         forumTitle: '论坛名称',
-        forumActive: '状态',
+        forumActive: '是否开启',
         forumCreatedAt: '创建时间',
       },
 

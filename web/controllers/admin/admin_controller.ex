@@ -285,14 +285,14 @@ defmodule Acs.AdminController do
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from forum in Forum,
-              select: forum,
+              left_join: sections in assoc(forum, :sections),
+              order_by: [desc: forum.id],
               limit: ^records_per_page,
-              where: forum.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: forum.id]
+              select: forum,
+              preload: [sections: sections]
 
     forums = Repo.all(query)
-
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
 

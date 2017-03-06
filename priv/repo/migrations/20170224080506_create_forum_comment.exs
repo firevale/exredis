@@ -1,4 +1,4 @@
-defmodule Acs.Repo.Migrations.CreateForumReply do
+defmodule Acs.Repo.Migrations.CreateForumComment do
   use Ecto.Migration
 
   def change do

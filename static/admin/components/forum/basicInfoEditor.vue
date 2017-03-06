@@ -91,14 +91,14 @@
                 container: '.notifications',
               })
 
-              // if (result.forum) {
-              //   this.addForum(result.forum)
-              //   this.$nextTick(_ => {
-              //     this.$router.replace({
-              //       path: `/admin/forums/edit/${result.forum.id}`
-              //     })
-              //   })
-              // }
+              if (result.forum) {
+                this.addForum(result.forum)
+                this.$nextTick(_ => {
+                  this.$router.replace({
+                    path: `/admin/forums/edit/${result.forum.id}`
+                  })
+                })
+              }
             } else {
               return Promise.reject(result.message)
             }

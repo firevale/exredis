@@ -10,6 +10,7 @@ defmodule Acs.Forum do
     field :icon, :string
 
     belongs_to :app, Acs.App, type: :string
+    has_many :sections, Acs.ForumSection, references: :id
 
     timestamps()
   end
@@ -19,7 +20,7 @@ defmodule Acs.Forum do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :active, :created_at, :app_id, :icon])
+    |> cast(params, [:title, :created_at, :app_id, :icon])
     |> validate_required([:title, :active, :created_at, :app_id])
     |> foreign_key_constraint(:app_id)
   end

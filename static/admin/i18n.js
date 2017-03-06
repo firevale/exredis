@@ -160,6 +160,7 @@ export default {
         goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
         confirmDeleteSection: '您确定要禁用该论坛版块么?',
         sectionInfoUpdated: '论坛版块信息已成功更新',
+        forumInfoUpdated: '论坛信息已成功更新',
       },
 
       serverSuccess: {

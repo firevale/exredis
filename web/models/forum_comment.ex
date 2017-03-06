@@ -1,4 +1,4 @@
-defmodule Acs.ForumReply do
+defmodule Acs.ForumComment do
   use Acs.Web, :model
 
   @derive {Poison.Encoder, except: [:post, :user, :__meta__]}

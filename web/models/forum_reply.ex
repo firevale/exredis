@@ -1,6 +1,8 @@
 defmodule Acs.ForumReply do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:post, :user, :__meta__]}
+
   schema "forums_replys" do
     field :content, :string
     field :created_at, :naive_datetime

@@ -328,4 +328,53 @@ defmodule Acs.AdminController do
     end
   end
 
+  def update_forum_info(conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
+    case Repo.get(Forum, forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound"})
+
+      %Forum{} = forum ->
+        Forum.changeset(forum, forum_info) |> Repo.update!
+        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
+    end
+  end
+
+  def update_section_info(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  def update_section_info(conn, %{"section" => %{"title" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptySectionTitle"})
+  end
+  def update_section_info(conn, %{"section" => %{"forum_id" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyForumId"})
+  end
+  def update_section_info(conn, %{"section" => %{
+      "id" => id,
+      "title" => title,
+      "sort" => sort,
+      "active" => active,
+      "forum_id" => forum_id,
+    } = section}) do
+    case Repo.get(ForumSection, id) do
+      nil ->
+        section = Map.put(section, "created_at", :calendar.local_time |> NaiveDateTime.from_erl!)
+        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+
+      %ForumSection{} = old_section ->
+        case ForumSection.changeset(old_section, section) |> Repo.update do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+    end
+  end
+
 end

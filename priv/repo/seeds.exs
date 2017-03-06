@@ -45,8 +45,8 @@ now_time = :calendar.local_time |> NaiveDateTime.from_erl!
 
 Forum.changeset(%Forum{}, %{title: "战神大陆-iOS专区", active: true, created_at: now_time, app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
-ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, created_at: now_time, forum_id: 1}) |> Repo.insert
-ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, created_at: now_time, forum_id: 1}) |> Repo.insert
-ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, created_at: now_time, forum_id: 1}) |> Repo.insert
-ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, created_at: now_time, forum_id: 1}) |> Repo.insert
-ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, created_at: now_time, forum_id: 1}) |> Repo.insert
+ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
+ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
+ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
+ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
+ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert

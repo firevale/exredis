@@ -34,6 +34,7 @@ defmodule Acs.AdminRouter do
 
     get  "/fetch_forums", AdminController, :fetch_forums
     post "/update_forum_icon", AdminController, :update_forum_icon
+    post "/update_forum_info", AdminController, :update_forum_info  
   end
 
 end

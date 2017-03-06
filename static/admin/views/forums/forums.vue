@@ -11,7 +11,7 @@
           </figure>
           <div class="tile is-vertical is-child" style="padding-left: 5px;">
             <h3 style="font-weight: bold"> {{forum.title}} </h3>
-            <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{path: '/forums/:forumId', params: {forumId: forum.id}}">
+            <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'EditForum', params: {forumId: forum.id}}">
               <span class="icon is-small"><i class="fa fa-search"></i></span>
               <span> {{ $t('admin.forum.enterForum') }} </span>
             </router-link>

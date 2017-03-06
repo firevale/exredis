@@ -5,7 +5,7 @@
         <basic-info-editor v-if="forum" :forum="forum"></basic-info-editor>
       </tab-pane>
       <tab-pane icon="fa fa-support" :label="$t('admin.forum.sectionInfo')">
-        <section-info-editor v-if="forum" :app="forum"></section-info-editor>
+        <section-info-editor v-if="forum" :forum="forum"></section-info-editor>
       </tab-pane>
     </tabs>
   </div>

@@ -1,11 +1,11 @@
 <template>
   <validation name="basicInfo" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
-      <div class="column is-8" >
-        <label class="label"> {{ $t('admin.label.forumId')}}: </label>
-        <p class="control">
-          <input class="input is-disabled" type="text" v-model.trim="forum.id">
-        </p>
+      <div class="column is-4" >
+        <label class="label"> {{ $t('admin.label.forumId')}}: {{forum.id}} </label>
+      </div>
+      <div class="column is-4">
+        <label class="label"> {{ $t('admin.label.forumCreatedAt')}}: {{forum.created_at | formatServerDateTime}} </label>
       </div>
       <div class="column is-8" >
         <label class="label"> {{ $t('admin.label.forumAppId')}}: </label>
@@ -27,12 +27,6 @@
               <option v-for="status in states" :value="status">{{$t('admin.status.' + status)}}</option>
             </select>
           </span>
-        </p>
-      </div>
-      <div class="column is-8">
-        <label class="label"> {{ $t('admin.label.forumCreatedAt')}}: </label>
-        <p class="control">
-          <input class="input is-disabled" type="text" v-model.trim="forum.created_at">
         </p>
       </div>
     </div>

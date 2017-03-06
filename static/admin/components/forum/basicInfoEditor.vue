@@ -20,9 +20,11 @@
         </p>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.label.forumActive')}}: </label>
         <p class="control">
-          <input  class="checkbox" type="checkbox"  v-model.trim="forum.active">
+          <label class="checkbox">
+            <input class="checkbox" type="checkbox"  v-model.trim="forum.active">
+            {{ $t('admin.label.forumActive')}}
+          </label>
         </p>
       </div>
     </div>

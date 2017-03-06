@@ -29,7 +29,7 @@
                 <td> {{ section.title }} </td>
                 <td> {{ section.sort }} </td>
                 <td> {{ section.created_at | formatServerDateTime }} </td>
-                <td> {{ section.active }} </td>
+                <td v-if="section.active">正常</td><td v-else>禁用</td>
                 <td class="is-icon">
                   <a @click.prevent="editSectionInfo(section, index)">
                     <i class="fa fa-pencil"></i>
@@ -87,7 +87,7 @@
           section: section,
           visible: true,
           callback: new_section => {
-            this.forum.section[index] = new_goods
+            this.forum.sections[index] = new_section
           },
         })
       },
@@ -103,7 +103,7 @@
           },
           visible: true,
           callback: section => {
-            this.forum.section.push(section)
+            this.forum.sections.push(section)
           },
         })
       },

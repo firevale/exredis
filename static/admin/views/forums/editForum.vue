@@ -29,7 +29,11 @@
     mounted() {
       let forum = this.forumHash[this.$route.params.forumId]
 
-      if (typeof forum != 'undefined'){
+      if (typeof forum == 'undefined'){
+        this.$router.replace({
+          name: 'Forums'
+        })
+      } else {
         this.forum = forum
       }
     },

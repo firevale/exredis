@@ -15,9 +15,11 @@
           <input class="input" type="text" v-model.trim="section.sort">
         </p>
 
-        <label class="label"> {{ $t('admin.forum.section.active') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="section.active">
+          <label class="checkbox">
+            <input class="checkbox" type="checkbox"  v-model.trim="section.active">
+            {{ $t('admin.forum.section.active') }}
+          </label>
         </p>
 
         <div class="container has-text-centered" style="margin-top: 15px">
@@ -57,6 +59,7 @@
     methods: {
       handleSubmit() {
         this.processing = true
+        if(!this.section.id) this.section.id=0
         this.$http.post('/admin_actions/update_section_info', {
             section: this.section,
           })

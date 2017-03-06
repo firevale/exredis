@@ -286,7 +286,7 @@ defmodule Acs.AdminController do
 
     query = from forum in Forum,
               left_join: sections in assoc(forum, :sections),
-              order_by: [desc: forum.id],
+              order_by: [desc: forum.id, desc: sections.sort],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               select: forum,
@@ -339,9 +339,6 @@ defmodule Acs.AdminController do
     end
   end
 
-  def update_section_info(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
-  end
   def update_section_info(conn, %{"section" => %{"title" => ""}}) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.emptySectionTitle"})
   end

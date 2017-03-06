@@ -52,7 +52,7 @@ export default {
           title: '版块名称',
           sort: '版块排序',
           created_at: '创建时间',
-          active: '状态',
+          active: '是否启用',
           add: '添加新版块',
           edit: '修改',
         }
@@ -110,7 +110,7 @@ export default {
         forumId: '论坛ID',
         forumAppId: '应用ID(APP ID)',
         forumTitle: '论坛名称',
-        forumActive: '是否开启',
+        forumActive: '是否启用',
         forumCreatedAt: '创建时间',
       },
 

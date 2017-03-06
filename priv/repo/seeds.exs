@@ -40,6 +40,7 @@ AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com"}) |> Repo
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhangshiqing@firevale.com"}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxiaobin@firevale.com"}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxb@firevale.com"}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com"}) |> Repo.insert
 
 now_time = :calendar.local_time |> NaiveDateTime.from_erl!
 

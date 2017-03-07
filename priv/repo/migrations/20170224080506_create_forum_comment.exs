@@ -12,5 +12,8 @@ defmodule Acs.Repo.Migrations.CreateForumComment do
       timestamps()
     end
 
+    create index(:forums_comments, [:post_id])
+    create index(:forums_comments, [:user_id])
+
   end
 end

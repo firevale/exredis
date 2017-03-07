@@ -9,15 +9,19 @@ defmodule Acs.Repo.Migrations.CreateForumPost do
       add :is_hot, :boolean, default: false, null: false
       add :is_vote, :boolean, default: false, null: false
       add :reads, :integer, default: 0
-      add :replys, :integer, default: 0
+      add :comms, :integer, default: 0   #回复数
       add :created_at, :naive_datetime
       add :last_reply_at, :naive_datetime
+      add :active, :boolean, default: true
 
       add :section_id, references(:forums_sections, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
 
       timestamps()
     end
+
+    create index(:forums_posts, [:user_id])
+    create index(:forums_posts, [:section_id])
 
   end
 end

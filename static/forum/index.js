@@ -7,6 +7,7 @@ import VueQuillEditor from 'vue-quill-editor'
 import routerMap from './routers'
 import locales from './i18n'
 import store from './store'
+import ServerApi from './serverApi'
 
 import * as filters from 'common/filters'
 import * as acs from 'common/acs'
@@ -15,6 +16,7 @@ Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.use(VueQuillEditor)
+Vue.use(ServerApi)
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

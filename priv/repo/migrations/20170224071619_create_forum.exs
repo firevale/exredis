@@ -14,5 +14,7 @@ defmodule Acs.Repo.Migrations.CreateForum do
 
    end
 
+   create index(:forums, [:app_id], unique: true)
+
   end
 end

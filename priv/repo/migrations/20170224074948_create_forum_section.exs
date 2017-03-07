@@ -13,5 +13,7 @@ defmodule Acs.Repo.Migrations.CreateForumSection do
       timestamps()
     end
 
+    create index(:forums_sections, [:forum_id])
+
   end
 end

@@ -40,11 +40,11 @@ defmodule Acs.ForumController do
               limit: ^records_per_page,
               where: post.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: order.created_at]
+              order_by: [desc: post.id]
 
-    orders = Repo.all(query)
+    posts = Repo.all(query)
 
-    conn |> json(%{success: true, orders: orders, total: total_page})
+    conn |> json(%{success: true, posts: posts, total: total_page})
   end
 
   defp get_forum_info_by_id(forum_id) do

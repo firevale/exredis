@@ -101,6 +101,12 @@
           <input class="input" type="text" v-model.trim="app.forum_url">
         </p>
       </div>
+      <div class="column">
+        <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
+        <p class="control">
+          <input  type="checkbox" v-model.trim="app.has_forum">
+        </p>
+      </div>
     </div>
     <div class="container has-text-centered" style="margin-top: 15px">
       <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
@@ -141,7 +147,8 @@
 
     methods: {
       ...mapActions([
-        'addApp'
+        'addApp',
+        'addForum'
       ]),
 
       handleSubmit: function() {
@@ -162,6 +169,10 @@
                 duration: 4500,
                 container: '.notifications',
               })
+
+              if(result.forum){
+                this.addForum(result.forum)
+              }
 
               if (result.app) {
                 this.addApp(result.app)

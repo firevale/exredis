@@ -39,7 +39,15 @@ defmodule Acs.AdminController do
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
+        case update_app_forum(app_info) do
+           {:ok, forum} ->
+             d "req : #{inspect forum, pretty: true}"
+             conn |> json(%{success: true, forum: forum, i18n_message: "admin.serverSuccess.appUpdated"})
+           {:error, %{errors: errors}}->
+             conn |> json(%{success: false, message: translate_errors(errors)})
+            nil ->
+              conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
+        end
     end
   end
   def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do
@@ -51,6 +59,30 @@ defmodule Acs.AdminController do
 
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
+
+  defp update_app_forum(%{"id" => app_id, "name" => app_title}=app_info) do
+    forumRec=Repo.get_by(Forum, app_id: app_id)
+    unless forumRec do
+       now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+       case Forum.changeset(%Forum{}, %{title: app_title, active: true, created_at: now_time, app_id: app_id}) |> Repo.insert do
+          {:ok, forum} ->
+            ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+            ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+            ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+            ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+            ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+
+            query = from f in Forum,
+                    left_join: sections in assoc(f, :sections),
+                    where: f.app_id == ^app_id,
+                    preload: [sections: sections]
+            result=Repo.one(query)
+            {:ok, result}
+          {:error, %{errors: errors}} ->
+            {:error,errors}
+       end
     end
   end
 

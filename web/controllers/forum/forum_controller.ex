@@ -9,7 +9,7 @@ defmodule Acs.ForumController do
     case get_forum_info_by_id(forum_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
-      %Acs.Forum{} = forum ->
+      %Forum{} = forum ->
         conn |> json(%{success: true, forum: forum})
     end
   end
@@ -20,7 +20,7 @@ defmodule Acs.ForumController do
         case get_forum_info_by_id(forum_id) do
           nil ->
             conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
-          %Acs.Forum{} = forum ->
+          %Forum{} = forum ->
             conn |> json(%{success: true, forum: forum})
         end
       _ ->
@@ -31,16 +31,19 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  def get_paged_post(conn, %{"page" => page, "records_per_page" => records_per_page}) do
+  def get_paged_post(conn, %{"page" => page,
+                             "records_per_page" => records_per_page,
+                             "order" => order}) do
     total = Repo.one!(from post in ForumPost, select: count(post.id))
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from post in ForumPost,
-              select: post,
+              select: {post.id, post.title, post.is_top, post.is_hot, post.is_vote, post.reads,
+               post.comms, post.created_at, post.last_reply_at, post.has_pic},
               limit: ^records_per_page,
               where: post.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: post.is_top, desc: post.id]
+              order_by: [desc: post.is_top, desc: get_order_type(post,order)]
 
     posts = Repo.all(query)
 
@@ -58,12 +61,21 @@ defmodule Acs.ForumController do
   end
 
   defp check_exist_by_appid(app_id) do
-    case Repo.get_by(Acs.Forum, app_id: app_id) do
+    case Repo.get_by(Forum, app_id: app_id) do
       nil ->
         {:error, i18n_message: "forum.serverError.forumNotExist"}
-      %Acs.Forum{} = forum ->
+      %Forum{} = forum ->
         {:ok, forum.id}
     end
   end
 
+  defp get_order_type(post,order) do
+    case order do
+      "created_at" -> post.created_at
+      "last_reply_at" -> post.last_reply_at
+      "is_hot" -> post.is_hot
+      "is_vote" -> post.is_vote
+      _ -> post.id
+    end
+  end
 end

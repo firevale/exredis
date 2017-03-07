@@ -14,6 +14,7 @@ defmodule Acs.ForumPost do
     field :created_at, :naive_datetime
     field :last_reply_at, :naive_datetime
     field :active, :boolean, default: true
+    field :has_pic, :boolean, default: false
 
     belongs_to :section, Acs.ForumSection, type: :integer
     belongs_to :user, Acs.User, type: :integer
@@ -27,7 +28,7 @@ defmodule Acs.ForumPost do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :reads, :comms, :active, :created_at, :last_reply_at, :section_id, :user_id])
+    |> cast(params, [:title, :content, :is_top, :is_hot, :is_vote, :reads, :comms, :active, :has_pic, :created_at, :last_reply_at, :section_id, :user_id])
     |> validate_required([:title, :content, :active, :created_at, :section_id, :user_id])
     |> foreign_key_constraint(:section_id)
     |> foreign_key_constraint(:user_id)

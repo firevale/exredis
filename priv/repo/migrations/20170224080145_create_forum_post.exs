@@ -13,6 +13,7 @@ defmodule Acs.Repo.Migrations.CreateForumPost do
       add :created_at, :naive_datetime
       add :last_reply_at, :naive_datetime
       add :active, :boolean, default: true
+      add :has_pic, :boolean, default: false
 
       add :section_id, references(:forums_sections, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)

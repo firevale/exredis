@@ -40,7 +40,7 @@ defmodule Acs.ForumController do
               limit: ^records_per_page,
               where: post.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: post.id]
+              order_by: [desc: post.is_top, desc: post.id]
 
     posts = Repo.all(query)
 

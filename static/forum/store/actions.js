@@ -1,3 +1,7 @@
+import Vue from 'vue'
+import * as utils from 'common/utils'
+import * as types from './mutation-types'
+
 export const setNoteLoadType = ({
   commit
 }, type) => {
@@ -64,4 +68,8 @@ export const setCommonIssues = ({
   commit('COMMON_ISSUES_SET', issues)
 }
 
-
+export const updateForum = ({
+  commit
+}, forum) => {
+  commit(types.UPDATE_FORUM, forum)
+}

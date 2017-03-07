@@ -5,7 +5,7 @@
       <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
     </div>
     <div class="row-line top-title">
-      {{ $t('forum.main.title') }}
+      {{forumInfo.title}}
     </div>
     <div class="main-menu">
       <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
@@ -15,13 +15,8 @@
   </div>
   <div class="scroll-box">
     <div class="tile content-item">
-      <div class="tile control" style="margin-bottom: 0;">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='discussion'}" @click="setNoteLoadType('discussion')">{{ $t('forum.main.discussion') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='experience'}" @click="setNoteLoadType('experience')">{{ $t('forum.main.experience') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='ras'}" @click="setNoteLoadType('ras')">{{ $t('forum.main.ras') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='original'}" @click="setNoteLoadType('original')">{{ $t('forum.main.original') }}</a>
-        <a class="button" :class="{'is-active': noteLoadType=='appeal'}" @click="setNoteLoadType('appeal')">{{ $t('forum.main.appeal') }}</a>
+      <div class="tile control" style="margin-bottom: 0;" v-for="section in forumInfo.sections">
+        <a class="button" :class="{'is-active': noteLoadType==section.id}" @click="setNoteLoadType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -53,20 +48,21 @@ export default {
   },
 
   mounted: function() {
-    this.$refs.pag.$on('switch-page', this.refreshPage)
+    //this.$refs.pag.$on('switch-page', this.refreshPage)
+    this.getForumInfo(1)
   },
 
   watch: {
     'noteLoadType' (newVal, oldVal) {
-      this.refreshPage()
+      // this.refreshPage()
     }
   },
 
   computed: {
     ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr',
       'notePageCount',
-
-      'noteCurrentPage'
+      'noteCurrentPage',
+      'forumInfo'
     ]),
   },
 
@@ -168,7 +164,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage']),
+    ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage', 'updateForum']),
 
     orderChoose() {
       menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -176,31 +172,51 @@ export default {
 
     onOrderTypeChoose(type) {
       this.setNoteOrderType(type)
-      this.refreshPage()
+      // this.refreshPage()
     },
 
-    refreshPage(page = 1) {
-      this.$http({
-          method: 'post',
-          url: this.noteLoadUrl,
-          params: {
-            page: page,
-            order: this.noteOrderType,
-          }
-        })
-        .then(response => {
-          //this.noteList = response.json()
-          //this.setNotePageCount(this.noteList.length)
-          //this.setNoteCurrentPage(page)
-        })
-        .then(result => {
+    getForumInfo: async function(forum_id){
+        try {
+          let result = await this.$acs.getForumInfo(forum_id)
           if (result.success) {
-            this.setNoteCurrentPage(page);
+            // alert(result.forum)
+            this.updateForum(result.forum)
           } else {
-
+            // this.setErrorMessage(this.$t(result.message))
           }
-        })
-    },
+        } catch (e) {
+          // this.setErrorMessage(this.$t('account.error.networkError'))
+        }
+    }
+
+    // refreshPage: async function(page = 1) {
+    //   if (!this.$v.$error && !this.processing) {
+    //     this.processing = true
+    //     try {
+    //       let result = await this.$acs.getPagedPost(page,records_per_page,order) (this.accountId)
+    //
+    //       if (result.success) {
+    //         if (result.exists) {
+    //           // this.setErrorMessage(this.$t('account.error.accountInUse'))
+    //         } else {
+    //           // this.setRegisterAccountId(this.accountId)
+    //           // this.$router.replace({
+    //           //   name: 'registerStep2',
+    //           //   query: {
+    //           //     accountId: btoa(this.accountId),
+    //           //     bindUserId: this.$route.query.bindUserId
+    //           //   }
+    //           // })
+    //         }
+    //       } else {
+    //         // this.setErrorMessage(this.$t(result.message))
+    //       }
+    //     } catch (e) {
+    //       // this.setErrorMessage(this.$t('account.error.networkError'))
+    //     }
+    //     this.processing = false
+    //   }
+    // },
 
   },
 }

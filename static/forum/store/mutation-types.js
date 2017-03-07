@@ -1,0 +1,1 @@
+export const UPDATE_FORUM = 'UPDATE_FORUM'

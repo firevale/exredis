@@ -14,18 +14,6 @@ export const setNoteOrderType = ({
   commit('NOTE_ORDERTYPE_CHANGE', type)
 }
 
-export const setNotePageCount = ({
-  commit
-}, type) => {
-  commit('NOTE_SET_PAGECOUNT', type)
-}
-
-export const setNoteCurrentPage = ({
-  commit
-}, type) => {
-  commit('NOTE_SET_CURRENTPAGE', type)
-}
-
 export const setSearchKey = ({
   commit
 }, key) => {

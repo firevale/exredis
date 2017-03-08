@@ -15,8 +15,9 @@
   </div>
   <div class="scroll-box">
     <div class="tile content-item">
-      <div class="tile control" style="margin-bottom: 0;" v-for="section in forumInfo.sections">
-        <a class="button" :class="{'is-active': noteLoadType==section.id}" @click="setNoteLoadType(section.id)">{{section.title}}</a>
+      <div class="tile control" style="margin-bottom: 0;" >
+        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">全部</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}" @click="setNoteLoadType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -26,7 +27,7 @@
     <div class="box is-chid is-parent content-item" style="padding: 0;">
       <note-item v-for="item in postList" :key="item.id" :item-data="item"></note-item>
     </div>
-    <div class="column is-full" v-show="notePageCount > 1">
+    <div class="column is-full" v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
     </div>
   </div>
@@ -62,11 +63,8 @@ export default {
   computed: {
     ...mapGetters([
       'noteLoadType',
-      'noteLoadUrl',
       'noteOrderType',
       'noteOrderTypeStr',
-      'notePageCount',
-      'noteCurrentPage',
       'forumInfo'
     ]),
   },
@@ -84,8 +82,6 @@ export default {
     ...mapActions([
       'setNoteLoadType',
       'setNoteOrderType',
-      'setNotePageCount',
-      'setNoteCurrentPage',
       'updateForum'
     ]),
 
@@ -95,7 +91,7 @@ export default {
 
     onOrderTypeChoose(type) {
       this.setNoteOrderType(type)
-      this.refreshPage()
+      this.refreshPage(1)
     },
 
     getForumInfo: async function(forum_id=1){

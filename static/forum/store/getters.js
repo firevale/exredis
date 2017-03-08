@@ -1,9 +1,6 @@
 import Vue from 'vue'
 
-const notePageCount = state => state.forum.pageCount
-const noteCurrentPage = state => state.forum.currentPage
 const noteLoadType = state => state.forum.loadType
-const noteLoadUrl = state => state.forum.loadUrl
 const noteOrderType = state => state.forum.orderType
 const noteOrderTypeStr = state => state.forum.orderTypeStr
 const searchKey = state => state.search.searchKey
@@ -15,10 +12,7 @@ const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
 
 export {
-  notePageCount,
-  noteCurrentPage,
   noteLoadType,
-  noteLoadUrl,
   noteOrderType,
   noteOrderTypeStr,
   searchKey,

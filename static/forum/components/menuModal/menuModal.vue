@@ -36,19 +36,19 @@
       return {
         list: [{
             name: '回复时间排序',
-            code: 'replay'
+            code: 'last_reply_at'
           },
           {
             name: '发帖时间排序',
-            code: 'create'
+            code: 'created_at'
           },
           {
             name: '热门排序',
-            code: 'hot'
+            code: 'is_hot'
           },
           {
             name: '精品贴',
-            code: 'expert'
+            code: 'is_vote'
           }
         ],
         selectedItem: '发帖时间排序',

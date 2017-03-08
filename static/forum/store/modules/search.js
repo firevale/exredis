@@ -1,8 +1,15 @@
 const state = {
   searchKey: '',
-  hisKeys: ['攻略', '任务', '赚钱', '综合讨论', '副本攻略', '指南'],
+  hisKeys: [
+    '攻略',
+    '任务',
+    '赚钱',
+    '综合讨论',
+    '副本攻略',
+    '指南',
+  ],
   pageCount: 10,
-  currentPage: 1,
+  currentPage: 1
 }
 
 const mutations = {
@@ -33,11 +40,10 @@ const mutations = {
 
   'SEARCH_SET_CURRENTPAGE' (state, page) {
     state.currentPage = page
-  }
-
+  },
 }
 
 export default {
   state,
-  mutations
+  mutations,
 }

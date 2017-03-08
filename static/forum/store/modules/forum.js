@@ -4,7 +4,7 @@ const state = {
   info: {},
   loadType: 'all',
   orderType: 'created_at',
-  orderTypeStr: '发帖时间排序',
+  orderTypeStr: '发帖时间排序'
 }
 
 const mutations = {
@@ -19,11 +19,10 @@ const mutations = {
 
   [types.UPDATE_FORUM](state, forum) {
     state.info = forum
-  }
-
+  },
 }
 
 export default {
   state,
-  mutations,
+  mutations
 }

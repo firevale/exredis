@@ -1,5 +1,5 @@
 <template>
-<div class="myReply-item">
+<div class="myComments-item">
   <div>
     <span>{{ $t('forum.personal.reply') }}</span>
     <span>{{ itemData.content }}</span>

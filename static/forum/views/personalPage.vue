@@ -35,27 +35,27 @@
     </div>
     <div class="horizontal-seprate"></div>
     <div class="is-child  row-menu">
-      <div class="service-menu" :class="{'menu-selected': type=='myNote'}" @click="type='myNote'">
-        <span>{{ $t('forum.personal.myNote') }}</span>
-        <span v-show="personal.myNotes.length" class="note-count">{{ personal.myNotes.length }}</span>
+      <div class="service-menu" :class="{'menu-selected': type=='myPosts'}" @click="type='myPosts'">
+        <span>{{ $t('forum.personal.myPosts') }}</span>
+        <span v-show="personal.myPostss.length" class="note-count">{{ personal.myPostss.length }}</span>
       </div>
-      <div class="service-menu" :class="{'menu-selected': type=='myReply'}" @click="type='myReply'">
-        <span>{{ $t('forum.personal.myReply') }}</span>
+      <div class="service-menu" :class="{'menu-selected': type=='myComments'}" @click="type='myComments'">
+        <span>{{ $t('forum.personal.myComments') }}</span>
       </div>
       <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">
         <span>{{ $t('forum.personal.myFavor') }}</span>
       </div>
     </div>
     <div class="horizontal-seprate">
-      <div :class="{'move-box-left': type=='myNote','move-box-center': type=='myReply','move-box-right': type=='myFavor'}">
+      <div :class="{'move-box-left': type=='myPosts','move-box-center': type=='myComments','move-box-right': type=='myFavor'}">
         <div class="arrow-down"></div>
       </div>
     </div>
-    <div class="content-item" v-show="type == 'myNote'">
-      <my-note v-for="item in personal.myNotes" :item-data="item"></my-note>
+    <div class="content-item" v-show="type == 'myPosts'">
+      <my-note v-for="item in personal.myPostss" :item-data="item"></my-note>
     </div>
-    <div class="content-item" v-show="type == 'myReply'">
-      <my-reply v-for="item in personal.myReplys" :item-data="item"></my-reply>
+    <div class="content-item" v-show="type == 'myComments'">
+      <my-reply v-for="item in personal.myCommentss" :item-data="item"></my-reply>
     </div>
     <div class="content-item" v-show="type == 'myFavor'">
       <my-favorate v-for="item in personal.myFavors" :item-data="item"></my-favorate>
@@ -67,9 +67,9 @@
 </div>
 </template>
 <script>
-import myNote from "../components/myNote"
+import myPosts from "../components/myPosts"
 import myFavorate from "../components/myFavorate"
-import myReply from "../components/myReply"
+import myComments from "../components/myComments"
 import pagination from "../components/pagination"
 export default {
   data() {
@@ -77,7 +77,7 @@ export default {
       noteLoadUrl: 'http://firevale.com',
       notePageCount: 6,
       noteCurrentPage: 1,
-      type: 'myReply',
+      type: 'myComments',
       personal: {
         id: 100,
         portrait: 'https://assets.servedby-buysellads.com/p/manage/asset/id/28536',
@@ -85,7 +85,7 @@ export default {
         name: '火谷测试',
         sentNoteCount: 121,
         registerTime: '2015-8-18 16:09',
-        myNotes: [{
+        myPostss: [{
           noteId: '',
           title: '[游戏攻略]新手练级指南',
           newReply: true,
@@ -100,7 +100,7 @@ export default {
           time: '2分钟前',
           noteCount: '2/11',
         }, ],
-        myReplys: [{
+        myCommentss: [{
           noteId: '',
           title: '[游戏攻略]新手练级指南',
           content: '好文章，收藏了。',
@@ -143,10 +143,10 @@ export default {
     }
   },
   components: {
-    myNote,
+    myPosts,
     myFavorate,
     pagination,
-    myReply,
+    myComments,
   }
 }
 </script>

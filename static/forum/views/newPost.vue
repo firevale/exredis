@@ -48,7 +48,7 @@
   import upload from '../components/fileUpload'
   import {
     preViewNote
-  } from '../components/preView'
+  } from '../components/preview'
   import message from '../components/message'
 
   import * as utils from 'common/utils'

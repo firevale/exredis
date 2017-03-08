@@ -5,15 +5,15 @@
       <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
     </div>
     <div class="row-line top-title">
-      {{ $t('forum.customService.title') }}
+      {{ $t('forum.customerService.title') }}
     </div>
   </div>
   <div class="scroll-box">
     <div class="horizontal-seprate"></div>
     <div class="is-chid  row-menu">
-      <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customService.commonIssues') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customService.contactService') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('forum.customService.serviceRecord') }}</div>
+      <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customerService.commonIssues') }}</div>
+      <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customerService.contactService') }}</div>
+      <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('forum.customerService.serviceRecord') }}</div>
     </div>
     <div class="horizontal-seprate">
       <div :class="{'move-box-left': type=='issue','move-box-center': type=='contact','move-box-right': type=='record'}">

@@ -7,7 +7,7 @@
     <div class="row-line top-title" style="font-weight: bold;">
       {{ $t('forum.detail.title') }}
     </div>
-    <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
+    <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="writeComment"></input>
   </div>
   <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
     <note-item-detail v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
@@ -113,9 +113,9 @@ export default {
         })
     },
 
-    replyNote() {
+    writeComment() {
       this.$router.push({
-        name: 'replyNote',
+        name: 'writeComment',
         params: {
           id: this.noteId,
           title: this.detailList[0].title

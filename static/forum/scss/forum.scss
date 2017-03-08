@@ -582,7 +582,7 @@ $fa-font-path: '~font-awesome/fonts/';
   background-color: $text-grey;
 }
 
-.myReply-item {
+.myComments-item {
   padding: 1rem;
   margin: 0 1rem;
   border: 1px solid $text-grey;
@@ -597,11 +597,11 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
-.myReply-item:last-child {
+.myComments-item:last-child {
   border-bottom: 1px solid $text-grey;
 }
 
-.myReply-item .column {
+.myComments-item .column {
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -613,7 +613,7 @@ $fa-font-path: '~font-awesome/fonts/';
   height: 1.6rem !important;
 }
 
-.mynote-item {
+.myPosts-item {
   padding: 1rem;
   margin: 0 1rem;
   border: 1px solid $text-grey;
@@ -630,11 +630,11 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
-.mynote-item:last-child {
+.myPosts-item:last-child {
   border-bottom: 1px solid $text-grey;
 }
 
-.mynote-item .column {
+.myPosts-item .column {
   padding-top: 0;
   padding-bottom: 0;
 }

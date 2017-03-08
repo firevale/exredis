@@ -5,7 +5,7 @@
         <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
       </div>
       <div class="row-line top-title">
-        <span class="title is-4">{{ $t('forum.replyNote.title') }}</span>
+        <span class="title is-4">{{ $t('forum.writeComment.title') }}</span>
       </div>
     </div>
     <div v-show="!pageView" class="scroll-box">
@@ -24,7 +24,7 @@
         <span>{{messageTip}}</span>
       </div>
       <div class="column is-full" style="text-align: center;">
-        <a class="button new-note" @click="replyNote">{{ $t('forum.newNote.btnTxt') }}</a>
+        <a class="button new-note" @click="writeComment">{{ $t('forum.newNote.btnTxt') }}</a>
       </div>
     </div>
   </div>
@@ -69,7 +69,7 @@
     computed: {
       ...mapGetters(['userInfo']),
       replyTitle() {
-        return this.$t('forum.replyNote.title') + ':' + this.$router.currentRoute.params.title
+        return this.$t('forum.writeComment.title') + ':' + this.$router.currentRoute.params.title
       },
 
       messageTip() {
@@ -92,7 +92,7 @@
     },
 
     methods: {
-      replyNote() {
+      writeComment() {
         if (!this.content) {
           message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
         } else {

@@ -18,20 +18,26 @@ defmodule Acs.CronController do
       if NaiveDateTime.diff(now, order.paid_at) < 604800 do
         cond do
           order.try_deliver_counter < 5 and elapsed <= 80 ->
-            PaymentHelper.notify_cp(order)
+            async_notify_cp(order)
           order.try_deliver_counter < 10 and elapsed >= 180 ->
-            PaymentHelper.notify_cp(order)
+            async_notify_cp(order)
           order.try_deliver_counter < 20 and elapsed >= 360 ->
-            PaymentHelper.notify_cp(order)
+            async_notify_cp(order)
           order.try_deliver_counter < 50 and elapsed >= 720 ->
-            PaymentHelper.notify_cp(order)
+            async_notify_cp(order)
           elapsed > 1200 and elapsed <= 604800 ->
-            PaymentHelper.notify_cp(order)
+            async_notify_cp(order)
           true ->
             :ok
         end
       end
     end)
     conn |> json(%{success: true, message: "done"})
+  end
+
+  defp async_notify_cp(order) do
+    Task.Supervisor.async(Acs.TaskSupervisor, fn ->
+      PaymentHelper.notify_cp(order)
+    end)
   end
 end

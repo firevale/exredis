@@ -22,7 +22,8 @@
         <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
+        <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
+          @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
         </quill-editor>
       </div>
       <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
@@ -47,7 +48,7 @@ import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
 import {
   preViewNote
-} from '../components/preView'
+} from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'
@@ -144,40 +145,16 @@ export default {
         message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
       } else {
         this.$http({
-          url: '',
-          method: 'post',
-          params: {},
-        }).then(_ => {
+            url: '',
+            method: 'post',
+            params: {},
+          })
+          .then(_ => {
 
-        }).catch(_ => {
+          })
+          .catch(_ => {
 
-        })
-      }
-    },
-    handleSubmit: async function() {
-      if (!this.$v.$error && !this.processing) {
-        this.processing = true
-        try {
-          let result = await this.$acs.createToken(this.accountId, this.password)
-
-          if (result.success) {
-            this.addLoginnedAccount(result)
-            this.setLoginAccountId(this.accountId)
-
-            if (window.acsConfig.inApp) {
-              nativeApi.closeWebviewWithResult(result)
-            } else {
-              if (this.redirectUri) {
-                window.location = this.redirectUri
-              }
-            }
-          } else {
-            this.setErrorMessage(this.$t(result.message))
-          }
-        } catch (error) {
-          this.setErrorMessage(this.$t('account.error.networkError'))
-        }
-        this.processing = false
+          })
       }
     },
     onEditorBlur(e) {

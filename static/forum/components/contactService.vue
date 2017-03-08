@@ -2,12 +2,12 @@
   <div class="content-item">
     <div class="row-menu" style="padding-top: 2rem; position: relative;">
       <i class="fa fa-pencil-square-o" style="display: none;" :class="{'pencil-icon': showIcon}" aria-hidden="true"></i>
-      <textarea v-model="message" class="issue-content" :class="{'write-icon': showIcon}" :placeholder="$t('forum.customService.contactPlaceHolder')"
+      <textarea v-model="message" class="issue-content" :class="{'write-icon': showIcon}" :placeholder="$t('forum.customerService.contactPlaceHolder')"
         @focus="showIcon=false" @blur="checkIcon">
         </textarea>
     </div>
     <div class="row-menu">
-      <input class="submit-btn" type="button" :value="$t('forum.customService.submitBtn')"></input>
+      <input class="submit-btn" type="button" :value="$t('forum.customerService.submitBtn')"></input>
     </div>
     <div class="bottom-box row-menu">
       <div class="bottom-contact">

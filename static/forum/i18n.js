@@ -63,12 +63,12 @@ export default {
         requireTitle: '请输入标题',
         requireContent: '请输入内容',
       },
-      replyNote: {
+      writeComment: {
         title: '回复',
         btnTxt: '回复',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
       },
-      customService: {
+      customerService: {
         title: '客服',
         commonIssues: '常见问题',
         contactService: '联系客服',
@@ -95,8 +95,8 @@ export default {
         nickName: '昵称 : ',
         noteCount: '发帖数 : ',
         registerTime: '注册时间 : ',
-        myNote: '我的帖子',
-        myReply: '我的回复',
+        myPosts: '我的帖子',
+        myComments: '我的回复',
         myFavor: '我的收藏',
         cancelFavor: '取消收藏',
         newReply: '新回复',

@@ -20,13 +20,13 @@ export default function(VueRouter) {
       name: 'newPost',
       component: require('./views/newPost.vue'),
     }, {
-      path: '/forum/replyNote',
-      name: 'replyNote',
-      component: require('./views/replyNote.vue'),
+      path: '/forum/writeComment',
+      name: 'writeComment',
+      component: require('./views/writeComment.vue'),
     }, {
-      path: '/forum/customService',
-      name: 'customService',
-      component: require('./views/customService.vue'),
+      path: '/forum/customerService',
+      name: 'customerService',
+      component: require('./views/customerService.vue'),
     }, {
       path: '/forum/personalPage',
       name: 'personalPage',

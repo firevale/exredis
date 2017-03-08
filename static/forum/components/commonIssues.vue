@@ -3,12 +3,12 @@
   <div v-show="!issueDetail" class="content-item">
     <div class="row-menu is-child content-item">
       <div style="display: flex; flex: 3;position: relative;">
-        <input class="search-input dark" v-model="issueKey" type="text" :placeholder="$t('forum.customService.searchPlaceHolder')"
+        <input class="search-input dark" v-model="issueKey" type="text" :placeholder="$t('forum.customerService.searchPlaceHolder')"
           @keyup.enter="searchIssueByKey(issueKey)"></input>
         <i v-show="issueKey" class="fa fa-times times-icon" style="top: .5rem;" aria-hidden="true" @click="issueKey=''"></i>
         <i class="fa fa-search search-icon" aria-hidden="true" style="top: .5rem;"></i>
       </div>
-      <input class="search-button" type="button" :value="$t('forum.customService.searchBtn')" @click="searchIssueByKey(issueKey)"></input>
+      <input class="search-button" type="button" :value="$t('forum.customerService.searchBtn')" @click="searchIssueByKey(issueKey)"></input>
     </div>
     <div v-show="!issueKey && !result.length" style="margin-top: 2rem;">
       <div class="float-container">
@@ -89,7 +89,7 @@ export default {
     ...mapGetters(['commonIssues']),
 
     issueTitle() {
-      return this.$t('forum.customService.issueTitle', {
+      return this.$t('forum.customerService.issueTitle', {
         title: this.issueDetail && this.issueDetail.title
       })
     }

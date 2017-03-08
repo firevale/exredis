@@ -1,5 +1,5 @@
 <template>
-  <div class="mynote-item row-line">
+  <div class="myPosts-item row-line">
     <div style="flex: 1;text-align: left;">
       <div @click="showDetail">
         <span class="note-title">{{ itemData.title }}</span>

@@ -1,36 +1,21 @@
 <template>
-<div class="is-ancestor is-parent is-vertical ">
-  <div class="is-child fixed-top  row-line">
-    <div class="arrow-back" style="left: 1rem;">
-      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
+<div class="scroll-box">
+  <div class="tile content-item">
+    <div class="tile control" style="margin-bottom: 0.8rem;">
+      <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.postList.all') }}</a>
+      <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection == section.id}"
+        @click="setCurrentSection(section.id)">{{section.title}}</a>
     </div>
-    <div class="row-line top-title">
-      {{forumInfo.title}}
-    </div>
-    <div class="main-menu">
-      <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
-      <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
-      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.postList.newPost') }}</a>
+    <div class="pointer" @click="orderChoose">
+      <span>{{ $t('forum.orderType.'+this.postsOrderByField) }}</span>
+      <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
     </div>
   </div>
-  <div class="scroll-box">
-    <div class="tile content-item">
-      <div class="tile control" style="margin-bottom: 0.8rem;">
-        <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.postList.all') }}</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection == section.id}"
-          @click="setCurrentSection(section.id)">{{section.title}}</a>
-      </div>
-      <div class="pointer" @click="orderChoose">
-        <span>{{ $t('forum.orderType.'+this.postsOrderByField) }}</span>
-        <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
-      </div>
-    </div>
-    <div class="box is-chid is-parent content-item" style="padding: 0;">
-      <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
-    </div>
-    <div class="column is-full" v-show="total > 1">
-      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-    </div>
+  <div class="box is-chid is-parent content-item" style="padding: 0;">
+    <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
+  </div>
+  <div class="column is-full" v-show="total > 1">
+    <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
   </div>
 </div>
 </template>
@@ -62,9 +47,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'currentSection',
-      'postsOrderByField',
-      'forumInfo'
+      'currentSection', 'postsOrderByField', 'forumInfo'
     ]),
   },
 

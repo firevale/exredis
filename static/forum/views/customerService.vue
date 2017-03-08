@@ -1,29 +1,19 @@
 <template>
-<div class="is-ancestor is-parent is-vertical">
-  <div class="is-child fixed-top row-line" style="border-bottom: none;">
-    <div class="arrow-back">
-      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
-    </div>
-    <div class="row-line top-title">
-      {{ $t('forum.customerService.title') }}
+<div class="scroll-box">
+  <div class="horizontal-seperator"></div>
+  <div class="is-chid  row-menu">
+    <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customerService.commonIssues') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customerService.contactService') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('forum.customerService.serviceRecord') }}</div>
+  </div>
+  <div class="horizontal-seperator">
+    <div :class="{'move-box-left': type=='issue','move-box-center': type=='contact','move-box-right': type=='record'}">
+      <div class="arrow-down"></div>
     </div>
   </div>
-  <div class="scroll-box">
-    <div class="horizontal-seperator"></div>
-    <div class="is-chid  row-menu">
-      <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customerService.commonIssues') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customerService.contactService') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('forum.customerService.serviceRecord') }}</div>
-    </div>
-    <div class="horizontal-seperator">
-      <div :class="{'move-box-left': type=='issue','move-box-center': type=='contact','move-box-right': type=='record'}">
-        <div class="arrow-down"></div>
-      </div>
-    </div>
-    <common-issue ref="commonIssue" v-show="type=='issue'"></common-issue>
-    <contact-service v-show="type=='contact'"></contact-service>
-    <service-record v-show="type=='record'"></service-record>
-  </div>
+  <common-issue ref="commonIssue" v-show="type=='issue'"></common-issue>
+  <contact-service v-show="type=='contact'"></contact-service>
+  <service-record v-show="type=='record'"></service-record>
 </div>
 </template>
 <script>

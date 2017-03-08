@@ -1,33 +1,23 @@
 <template>
-<div class="is-ancestor is-parent is-vertical">
-  <div class="is-child fixed-top  row-line">
-    <div class="arrow-back">
-      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="goBack"></i>
-    </div>
-    <div class="row-line top-title">
-      {{ $t('forum.campaign.title') }}
+<div class="scroll-box">
+  <div class="is-child  row-menu">
+    <div class="service-menu" :class="{'menu-selected': type=='campaign'}" @click="type='campaign'">{{ $t('forum.campaign.gameCampaign') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='notice'}" @click="type='notice'">{{ $t('forum.campaign.gameNotice') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='news'}" @click="type='news'">{{ $t('forum.campaign.gameNews') }}</div>
+  </div>
+  <div class="horizontal-seperator">
+    <div :class="{'move-box-left': type=='campaign','move-box-center': type=='notice','move-box-right': type=='news'}">
+      <div class="arrow-down"></div>
     </div>
   </div>
-  <div class="scroll-box">
-    <div class="is-chid  row-menu">
-      <div class="service-menu" :class="{'menu-selected': type=='campaign'}" @click="type='campaign'">{{ $t('forum.campaign.gameCampaign') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='notice'}" @click="type='notice'">{{ $t('forum.campaign.gameNotice') }}</div>
-      <div class="service-menu" :class="{'menu-selected': type=='news'}" @click="type='news'">{{ $t('forum.campaign.gameNews') }}</div>
-    </div>
-    <div class="horizontal-seperator">
-      <div :class="{'move-box-left': type=='campaign','move-box-center': type=='notice','move-box-right': type=='news'}">
-        <div class="arrow-down"></div>
-      </div>
-    </div>
-    <div class="content-item" v-show="type == 'campaign'">
-      <game-campaign ref="campaign" :campaigns="campaignList"></game-campaign>
-    </div>
-    <div class="content-item" v-show="type == 'notice'">
-      <game-notice ref="notice" :notices="noticeList"></game-notice>
-    </div>
-    <div class="content-item" v-show="type == 'news'">
-      <game-news ref="news" :news="news"></game-news>
-    </div>
+  <div class="content-item" v-show="type == 'campaign'">
+    <game-campaign ref="campaign" :campaigns="campaignList"></game-campaign>
+  </div>
+  <div class="content-item" v-show="type == 'notice'">
+    <game-notice ref="notice" :notices="noticeList"></game-notice>
+  </div>
+  <div class="content-item" v-show="type == 'news'">
+    <game-news ref="news" :news="news"></game-news>
   </div>
 </div>
 </template>

@@ -5,8 +5,8 @@
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
         <img :src="itemData.portrait"></img>
       </figure>
-      <div class="title is-6 txt-center dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
-      <div class="title is-6 txt-center" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
+      <div class="title is-6 has-text-centered dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
+      <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
     </div>
     <div class="column is-10.5 ql-editor">
       <div v-if="itemData.title" class="columns" style="margin: 0;">

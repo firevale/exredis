@@ -1,39 +1,29 @@
 <template>
-<div class="is-ancestor is-parent is-vertical">
-  <div class="is-child fixed-top  row-line">
-    <div class="arrow-back" style="left: 1rem;">
-      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
-    </div>
-    <div class="row-line top-title">
-      <span class="title is-4">{{ $t('forum.newPost.title') }}</span>
+<div class="scroll-box">
+  <div class="column is-full">
+    <div class="pointer">
+      <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>
+      <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
+      <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
+      <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
     </div>
   </div>
-  <div class="scroll-box">
-    <div class="column is-full">
-      <div class="pointer">
-        <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>
-        <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
-        <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
-      </div>
+  <div>
+    <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
+      <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
     </div>
-    <div>
-      <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
-        <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
-      </div>
-      <div class="column is-full" style="position: relative; padding-bottom: 0;">
-        <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
-          @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
-        </quill-editor>
-      </div>
-      <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-        <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
-        <span>{{messageTip}}</span>
-      </div>
+    <div class="column is-full" style="position: relative; padding-bottom: 0;">
+      <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
+        @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
+      </quill-editor>
     </div>
-    <div class="column is-full" style="text-align: center;">
-      <a class="button new-note" @click="sentNote">{{ $t('forum.newPost.btnTxt') }}</a>
+    <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
+      <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
+      <span>{{messageTip}}</span>
     </div>
+  </div>
+  <div class="column is-full" style="text-align: center;">
+    <a class="button new-note" @click="sentNote">{{ $t('forum.newPost.btnTxt') }}</a>
   </div>
 </div>
 </template>

@@ -1,5 +1,11 @@
 <template>
-<div class="tile is-ancestor">
+<div class="tile is-ancestor is-vertical">
+  <div class="tile is-child is-full stay-top title-bar">
+    <span class="icon nav-icon icon-back"></span>
+    <div class="top-title">
+      {{forumInfo.title}}
+    </div>
+  </div>
   <transition :name="transitionName">
     <router-view> </router-view>
   </transition>
@@ -25,7 +31,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'transitionName'
+      'transitionName', 'forumInfo'
     ]),
   },
 

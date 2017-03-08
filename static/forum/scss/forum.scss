@@ -2,8 +2,6 @@
 @import "./common";
 @import "./transition";
 @import "~bulma";
-$fa-font-path: '~font-awesome/fonts/';
-@import '~font-awesome/scss/font-awesome';
 
 #app {
   height: 100vh;
@@ -13,11 +11,46 @@ $fa-font-path: '~font-awesome/fonts/';
   overflow: auto;
 }
 
-.arrow-back {
-  position: absolute;
-  top: 0.75rem;
-  left: 2rem;
-  z-index: 3;
+.stay-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.title-bar {
+  padding: 1rem 0.5rem 0.5rem;
+  height: 4rem;
+  width: 100%;
+}
+
+.icon {
+  &.nav-icon {
+    position: absolute;
+    top: 0.75rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    z-index: 9999;
+
+    &:not(.pull-right) {
+      left: 0.8rem;
+    }
+
+    &.pull-right {
+      right: 0.8rem;
+    }
+  }
+
+  &.icon-back {
+    &.icon-close {
+      background-image: url("~login/assets/times@1x.png");
+    }
+
+    &.icon-back {
+      background-image: url("~login/assets/back@1x.png");
+    }
+  }
 }
 
 .row-line {
@@ -63,10 +96,6 @@ $fa-font-path: '~font-awesome/fonts/';
 .txt-right {
   text-align: right;
   margin-right: 0 !important;
-}
-
-.txt-center {
-  text-align: center;
 }
 
 .content-item {
@@ -123,18 +152,6 @@ $fa-font-path: '~font-awesome/fonts/';
   padding: 0.2rem 2rem;
   background: $blue;
   border: none;
-}
-
-.fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 1rem 0.5rem 0.5rem;
-  height: 4rem;
-  width: 100%;
-  z-index: 3;
-  background: $white;
-  border-bottom: 1px solid $text-grey;
 }
 
 .scroll-box {

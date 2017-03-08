@@ -1,14 +1,5 @@
 <template>
-<div class="is-ancestor is-parent is-vertical">
-  <div class="is-child fixed-top row-line">
-    <div class="arrow-back">
-      <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
-    </div>
-    <div class="row-line top-title" style="font-weight: bold;">
-      {{ $t('forum.detail.title') }}
-    </div>
-    <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
-  </div>
+<div>
   <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
     <post-detail-view v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
       :item-index="index"></post-detail-view>

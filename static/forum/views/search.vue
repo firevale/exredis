@@ -1,33 +1,17 @@
 <template>
-<div class="is-ancestor is-parent is-vertical ">
-  <div class="is-child fixed-top row-line">
-    <div style="flex: 1;">
-      <i class="fa fa-angle-left title is-2 dark" style="margin-left: .5rem;" aria-hidden="true" @click="$router.push({name:'forum'})"></i>
+<div class="scroll-box" style="padding-top: .2rem;">
+  <div class="is-chid content-item">
+    <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
+    <div v-if="!noteList && searchKeyHis.length" class="his-box">
+      <div v-for="item in searchKeyHis" class="his-key" @click="searchByKey(item)">{{item}}</div>
     </div>
-    <div style="flex: 7;position: relative;">
-      <i class="fa fa-search search-icon" aria-hidden="true"></i>
-      <input v-model.trim="key" @keyup.enter="searchByKey(key)" maxlength="30" class="search-box dark" :placeholder="$t('forum.search.placeholder')"></input>
-      <i v-show="key" class="fa fa-times times-icon" aria-hidden="true" @click="clearKey"></i>
-    </div>
-    <div style="flex:.5;"></div>
-    <div style="flex: 3">
-      <input type="button" class="search-btn" style="width: 99%;" :value="$t('forum.search.searchBtn')" @click="searchByKey(key)"></input>
-    </div>
+    <p v-show="!noteList && searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
   </div>
-  <div class="scroll-box" style="padding-top: .2rem;">
-    <div class="is-chid content-item">
-      <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
-      <div v-if="!noteList && searchKeyHis.length" class="his-box">
-        <div v-for="item in searchKeyHis" class="his-key" @click="searchByKey(item)">{{item}}</div>
-      </div>
-      <p v-show="!noteList && searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
-    </div>
-    <div v-if="noteList && noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-      <post-list-item v-for="item in noteList" search-model :post-info="item" :mark-key="key"></post-list-item>
-    </div>
-    <div v-if="noteList && noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
-      <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
-    </div>
+  <div v-if="noteList && noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
+    <post-list-item v-for="item in noteList" search-model :post-info="item" :mark-key="key"></post-list-item>
+  </div>
+  <div v-if="noteList && noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
+    <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
   </div>
 </div>
 </template>

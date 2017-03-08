@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
-const noteLoadType = state => state.forum.loadType
-const noteOrderType = state => state.forum.orderType
+const postListType = state => state.forum.postListType
+const noteOrderType = state => state.forum.postOrderType
 const noteOrderTypeStr = state => state.forum.orderTypeStr
 const searchKey = state => state.search.searchKey
 const searchKeyHis = state => state.search.hisKeys
@@ -12,7 +12,7 @@ const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
 
 export {
-  noteLoadType,
+  postListType,
   noteOrderType,
   noteOrderTypeStr,
   searchKey,

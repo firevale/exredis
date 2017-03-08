@@ -2,16 +2,16 @@ import Vue from 'vue'
 import * as utils from 'common/utils'
 import * as types from './mutationTypes'
 
-export const setNoteLoadType = ({
+export const setPostListType = ({
   commit
 }, type) => {
-  commit('NOTE_LOADTYPE_CHANGE', type)
+  commit(types.SET_POST_LIST_TYPE, type)
 }
 
-export const setNoteOrderType = ({
+export const setPostOrderType = ({
   commit
 }, type) => {
-  commit('NOTE_ORDERTYPE_CHANGE', type)
+  commit(types.SET_POST_ORDER_TYPE, type)
 }
 
 export const setSearchKey = ({

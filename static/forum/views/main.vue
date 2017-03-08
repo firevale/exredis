@@ -16,9 +16,9 @@
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0;">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}"
-            @click="setNoteLoadType(section.id)">{{section.title}}</a>
+        <a class="button" :class="{'is-active': postListType=='all'}" @click="setPostListType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': postListType==section.id}"
+            @click="setPostListType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -56,14 +56,14 @@ export default {
   },
 
   watch: {
-    'noteLoadType' (newVal, oldVal) {
+    'postListType' (newVal, oldVal) {
       this.refreshPage()
     }
   },
 
   computed: {
     ...mapGetters([
-      'noteLoadType',
+      'postListType',
       'noteOrderType',
       'noteOrderTypeStr',
       'forumInfo'
@@ -81,8 +81,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'setNoteLoadType',
-      'setNoteOrderType',
+      'setPostListType',
+      'setPostOrderType',
       'updateForum'
     ]),
 
@@ -91,7 +91,7 @@ export default {
     },
 
     onOrderTypeChoose(type) {
-      this.setNoteOrderType(type)
+      this.setPostOrderType(type)
       this.refreshPage(1)
     },
 

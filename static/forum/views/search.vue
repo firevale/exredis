@@ -92,7 +92,7 @@ export default {
     },
 
     onOrderTypeChoose(type) {
-      this.setNoteOrderType(type)
+      this.setPostOrderType(type)
       this.refreshPage()
     },
 

@@ -39,25 +39,15 @@ defmodule Acs.ForumController do
     order = String.to_atom(order)
 
     query = from post in ForumPost,
-              join: u in User, on: u.id == post.user_id,
-              join: s in ForumSection, on: s.id == post.section_id,
-              select: %{
-                id: post.id,
-                title: post.title,
-                is_top: post.is_top,
-                is_hot: post.is_hot,
-                is_vote: post.is_vote,
-                reads: post.reads,
-                comms: post.comms,
-                created_at: post.created_at,
-                last_reply_at: post.last_reply_at,
-                has_pic: post.has_pic,
-                author: u.nickname,
-                section: s.title},
-              limit: ^records_per_page,
-              where: post.active == true,
-              offset: ^((page - 1) * records_per_page),
-              order_by: [{:desc, post.is_top}, {:desc, ^order}]
+              join: u in assoc(post, :user),
+              join: s in assoc(post, :section),
+              select: map(post, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :created_at,
+                        :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title]]),
+             limit: ^records_per_page,
+             where: post.active == true,
+             offset: ^((page - 1) * records_per_page),
+             preload: [user: u, section: s],
+             order_by: [{:desc, post.is_top}, {:desc, ^order}]
 
     posts = Repo.all(query)
 

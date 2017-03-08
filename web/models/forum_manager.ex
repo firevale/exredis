@@ -1,6 +1,8 @@
 defmodule Acs.ForumManager do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:forum, :user, :__meta__]}
+
   schema "forums_managers" do
     field :logins, :integer
     field :created_at, :naive_datetime

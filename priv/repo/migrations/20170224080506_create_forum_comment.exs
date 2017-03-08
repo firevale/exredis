@@ -1,8 +1,8 @@
-defmodule Acs.Repo.Migrations.CreateForumReply do
+defmodule Acs.Repo.Migrations.CreateForumComment do
   use Ecto.Migration
 
   def change do
-    create table(:forums_replys) do
+    create table(:forums_comments) do
       add :content, :text
       add :created_at, :naive_datetime
 
@@ -11,6 +11,9 @@ defmodule Acs.Repo.Migrations.CreateForumReply do
 
       timestamps()
     end
+
+    create index(:forums_comments, [:post_id])
+    create index(:forums_comments, [:user_id])
 
   end
 end

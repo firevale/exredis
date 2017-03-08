@@ -63,6 +63,12 @@ export const addApp = ({
   commit(types.ADD_APP, app)
 }
 
+export const addForum = ({
+  commit
+}, forum) => {
+  commit(types.ADD_FORUM, forum)
+}
+
 export const fetchForums = ({
   commit
 }) => {

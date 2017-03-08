@@ -43,7 +43,11 @@ export default new Router({
       name: 'Forums',
       path: 'forums',
       component: require('../views/forums/forums')
-    },{
+    }, {
+      name: 'EditForum',
+      path: 'forums/edit/:forumId',
+      component: require('../views/forums/editForum')
+    }, {
       name: 'Settings',
       path: 'settings',
       component: require('../views/Settings')

@@ -8,6 +8,8 @@ const sidebar = state => state.main.sidebar
 const effect = state => state.main.effect
 const menuitems = state => state.menu.items
 const forumList = state => state.forums.list
+const forumHash = state => state.forums.hash
+const sections = state => state.forums.sections
 
 export {
   main,
@@ -20,4 +22,6 @@ export {
   effect,
   menuitems,
   forumList,
+  forumHash,
+  sections,
 }

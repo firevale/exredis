@@ -39,18 +39,60 @@ defmodule Acs.AdminController do
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
+        case update_app_forum(app_info["has_forum"],app_id,app_info["name"]) do
+           {:ok, forum} ->
+             d "req : #{inspect forum, pretty: true}"
+             conn |> json(%{success: true, forum: forum, i18n_message: "admin.serverSuccess.appUpdated"})
+          nil ->
+             conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
+           {:error, %{errors: errors}}->
+             conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
   def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do
     app_info = Map.put(app_info, "id", Utils.generate_token(16)) |> Map.put("secret", Utils.generate_token())
     case App.changeset(%App{}, app_info) |> Repo.insert do
-      {:ok, app} ->
-        RedisApp.refresh(app.id)
-        conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
-
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
+      {:ok, app} ->
+          RedisApp.refresh(app.id)
+          case update_app_forum(app.has_forum, app.id, app.name) do
+             {:ok, forum} ->
+               d "req2 : #{inspect forum, pretty: true}"
+               conn |> json(%{success: true, forum: forum, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
+              nil ->
+                conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
+              {:error, %{errors: errors}}->
+                  conn |> json(%{success: false, message: translate_errors(errors)})
+          end
+    end
+  end
+
+  defp update_app_forum(has_forum, app_id, app_title) do
+    unless has_forum do
+      nil
+    else
+      forumRec=Repo.get_by(Forum, app_id: app_id)
+      unless forumRec do
+         now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+         case Forum.changeset(%Forum{}, %{title: app_title, active: true, created_at: now_time, app_id: app_id}) |> Repo.insert do
+            {:ok, forum} ->
+              ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+
+              query = from f in Forum,
+                      where: f.app_id == ^app_id,
+                      preload: [:sections]
+              result=Repo.one(query)
+              {:ok, result}
+            {:error, %{errors: errors}} ->
+              {:error,errors}
+         end
+      end
     end
   end
 
@@ -285,14 +327,14 @@ defmodule Acs.AdminController do
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from forum in Forum,
-              select: forum,
+              left_join: sections in assoc(forum, :sections),
+              order_by: [desc: forum.id, desc: sections.sort],
               limit: ^records_per_page,
-              where: forum.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: forum.id]
+              select: forum,
+              preload: [sections: sections]
 
     forums = Repo.all(query)
-
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
 
@@ -325,6 +367,52 @@ defmodule Acs.AdminController do
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+
+  def update_forum_info(conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
+    case Repo.get(Forum, forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound"})
+
+      %Forum{} = forum ->
+        Forum.changeset(forum, forum_info) |> Repo.update!
+        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
+    end
+  end
+
+  def update_section_info(conn, %{"section" => %{"title" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptySectionTitle"})
+  end
+  def update_section_info(conn, %{"section" => %{"forum_id" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyForumId"})
+  end
+  def update_section_info(conn, %{"section" => %{
+      "id" => id,
+      "title" => title,
+      "sort" => sort,
+      "active" => active,
+      "forum_id" => forum_id,
+    } = section}) do
+    case Repo.get(ForumSection, id) do
+      nil ->
+        section = Map.put(section, "created_at", :calendar.local_time |> NaiveDateTime.from_erl!)
+        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+
+      %ForumSection{} = old_section ->
+        case ForumSection.changeset(old_section, section) |> Repo.update do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
 

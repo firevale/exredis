@@ -39,11 +39,23 @@ export default {
         AppGoods: '应用商品管理',
         AppOrders: '应用订单管理',
         AppStats: '应用统计数据',
+        EditForum: '修改论坛配置',
       },
 
       forum: {
-        enterForum: '进入论坛',
-        add: '添加新论坛',
+        enterForum: '论坛配置',
+        basicInfo: '基本信息',
+        sectionInfo: '版块配置',
+
+        section: {
+          id: '版块编号',
+          title: '版块名称',
+          sort: '版块排序',
+          created_at: '创建时间',
+          active: '是否启用',
+          add: '添加新版块',
+          edit: '修改',
+        }
       },
 
       app: {
@@ -88,6 +100,7 @@ export default {
         baiduTiebaUrl: '百度贴吧链接',
         forumName: '论坛名称',
         forumUrl: '论坛链接',
+        appHasForum: '是否启用论坛',
         csPhoneNumber: '客服电话',
         cpOrderId: 'CP订单号',
         transactionId: '交易ID',
@@ -95,6 +108,11 @@ export default {
         createdAt: '创建时间',
         paidAt: '支付时间',
         deliveredAt: '发货时间',
+        forumId: '论坛ID',
+        forumAppId: '应用ID(APP ID)',
+        forumTitle: '论坛名称',
+        forumActive: '是否启用',
+        forumCreatedAt: '创建时间',
       },
 
       currency: {
@@ -104,11 +122,17 @@ export default {
         undefined: '货币未设置',
       },
 
+      status: {
+        TRUE: '启用',
+        FALSE: '禁用',
+      },
+
       titles: {
         upload: '拖拽文件以上传',
         selectSdk: '请选择要添加的SDK:',
         editSdkInfo: '编辑{sdk}接入参数',
         editGoodsInfo: '编辑应用『{appName}』商品信息',
+        editSectionInfo: '编辑论坛版块信息',
         updateSuccess: '保存成功',
         uploadSuccess: '文件上传成功',
         uploadFailed: '文件上传失败',
@@ -135,6 +159,14 @@ export default {
         goodsInfoUpdated: '商品{goodsName}信息已成功更新',
         confirmDeleteGoods: '您确定要删除商品『{goodsName}』么?',
         goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
+        confirmDeleteSection: '您确定要禁用该论坛版块么?',
+        sectionInfoUpdated: '论坛版块信息已成功更新',
+        forumInfoUpdated: '论坛信息已成功更新',
+      },
+
+      serverSuccess: {
+        appUpdated: '应用更新成功',
+        forumUpdated: '论坛更新成功',
       },
 
       serverError: {
@@ -147,6 +179,9 @@ export default {
         emptyGoodsName: '商品名称不能为空',
         emptyGoodsDescription: '商品简介不能为空',
         invalidGoodsPrice: '商品价格不能为负数',
+        emptySectionTitle: '版块标题不能为空',
+        emptyForumId: '版块所属论坛编号不能为空',
+        forumNotFound: '未找到论坛',
       },
 
       sdks: {

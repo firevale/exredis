@@ -1,10 +1,13 @@
 defmodule Acs.ForumSection do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:forum, :__meta__]}
+
   schema "forums_sections" do
     field :title, :string
     field :sort, :integer
     field :created_at, :naive_datetime
+    field :active, :boolean, default: true
 
     belongs_to :forum, Acs.Forum
 
@@ -16,8 +19,8 @@ defmodule Acs.ForumSection do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :sort, :created_at, :forum_id])
-    |> validate_required([:title, :sort, :created_at, :forum_id])
+    |> cast(params, [:title, :sort, :created_at, :forum_id, :active])
+    |> validate_required([:title, :sort, :created_at, :forum_id, :active])
     |> foreign_key_constraint(:form_id)
   end
 end

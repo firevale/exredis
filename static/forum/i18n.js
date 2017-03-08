@@ -1,5 +1,5 @@
 export default {
-  'zh-hans': {
+  'zh-hans' : {
     forum: {
       main: {
         title: '游戏论坛',
@@ -13,7 +13,7 @@ export default {
         order: '{type}',
         top: '置顶',
         vote: '精',
-        hot: 'HOT',
+        hot: 'HOT'
       },
       search: {
         placeholder: '搜索帖子',
@@ -22,7 +22,13 @@ export default {
         noSearchRecord: '暂无搜索历史',
         noSearchResult: '暂无搜索结果',
         followSearchResult: '搜索结果如下:',
-        clearHisRecord: '清空历史搜索记录',
+        clearHisRecord: '清空历史搜索记录'
+      },
+      orderType: {
+        last_reply_at: '回复时间排序',
+        created_at: '发帖时间排序',
+        is_hot: '热门排序',
+        is_vote: '精品贴',
       },
       detail: {
         title: '帖子详情',
@@ -43,15 +49,14 @@ export default {
         RecommendNote: '精品生效',
         unRecommendNote: '精品取消',
         upNote: '置顶生效',
-        unUpNote: '置顶取消',
+        unUpNote: '置顶取消'
       },
       error: {
-        networkError: '网络错误',
+        networkError: '网络错误'
       },
       serverError: {
         badRequestParams: '请求参数错误',
-        forumNotExist: '论坛不存在',
-
+        forumNotExist: '论坛不存在'
       },
       newNote: {
         title: '发帖子',
@@ -61,12 +66,12 @@ export default {
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         requireTitle: '请输入标题',
-        requireContent: '请输入内容',
+        requireContent: '请输入内容'
       },
       writeComment: {
         title: '回复',
         btnTxt: '回复',
-        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
+        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～'
       },
       customerService: {
         title: '客服',
@@ -78,17 +83,17 @@ export default {
         issueTitle: '问题：{title}',
         reply: '回复 :',
         contactPlaceHolder: '请输入您的问题或建议',
-        submitBtn: '提交',
+        submitBtn: '提交'
       },
       pagination: {
         previous: '上一页',
-        next: '下一页',
+        next: '下一页'
       },
       upload: {
         filename: '文件名',
         progress: '进度',
         speed: '速率',
-        title: '上传',
+        title: '上传'
       },
       personal: {
         title: '个人主页',
@@ -102,14 +107,14 @@ export default {
         newReply: '新回复',
         deleteBtn: '删除',
         reply: '回复:',
-        originalNote: '原帖:',
+        originalNote: '原帖:'
       },
       campaign: {
         title: '活动',
         gameCampaign: '游戏活动',
         gameNotice: '游戏公告',
-        gameNews: '官方新闻',
-      },
-    },
+        gameNews: '官方新闻'
+      }
+    }
   }
 }

@@ -21,7 +21,7 @@
             @click="setPostListType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
-        <span>{{ noteOrderTypeStr }}</span>
+        <span>{{ $t('forum.orderType.'+this.postOrderType) }}</span>
         <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
@@ -64,8 +64,7 @@ export default {
   computed: {
     ...mapGetters([
       'postListType',
-      'noteOrderType',
-      'noteOrderTypeStr',
+      'postOrderType',
       'forumInfo'
     ]),
   },
@@ -87,7 +86,7 @@ export default {
     ]),
 
     orderChoose() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
+      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postOrderType}`))
     },
 
     onOrderTypeChoose(type) {
@@ -101,10 +100,10 @@ export default {
         if (result.success) {
           this.updateForum(result.forum)
         } else {
-          this.setErrorMessage(this.$t(result.message))
+          console.log(this.$t(result.i18n_message))
         }
       } catch (e) {
-        this.setErrorMessage(this.$t('forum.error.networkError'))
+        console.log(this.$t('forum.error.networkError'))
       }
     },
 
@@ -116,16 +115,17 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(this.postListType, page, this.recordsPerPage, this.postOrderType)
+          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postOrderType,
+            this.postListType)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total
             this.page = page
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            console.log(this.$t(result.i18n_message))
           }
         } catch (e) {
-          this.setErrorMessage(this.$t('forum.error.networkError'))
+          console.log(this.$t('forum.error.networkError'))
         }
         this.processing = false
       }

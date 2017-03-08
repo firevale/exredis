@@ -40,12 +40,12 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import postInfo from '../components/postInfo.vue'
+import postListItem from '../components/postListItem'
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
+import pagination from '../components/pagination'
 export default {
   components: {
-    postInfo,
+    postListItem,
     pagination,
   },
 

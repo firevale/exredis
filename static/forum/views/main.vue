@@ -16,7 +16,7 @@
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0;">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" :class="{'is-active': noteLoadType==0}" @click="setNoteLoadType(0)">{{ $t('forum.main.all') }}</a>
         <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}"
             @click="setNoteLoadType(section.id)">{{section.title}}</a>
       </div>
@@ -116,7 +116,7 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.noteOrderType)
+          let result = await this.$acs.getPagedPost(this.noteLoadType, page, this.recordsPerPage, this.noteOrderType)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total

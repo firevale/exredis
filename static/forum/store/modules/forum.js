@@ -2,7 +2,7 @@ import * as types from '../mutation-types'
 
 const state = {
   info: {},
-  loadType: 'all',
+  loadType: 0,
   orderType: 'created_at',
   orderTypeStr: '发帖时间排序'
 }

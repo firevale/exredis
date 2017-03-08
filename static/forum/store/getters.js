@@ -21,5 +21,5 @@ export {
   searchCurrentPage,
   userInfo,
   commonIssues,
-  forumInfo
+  forumInfo,
 }

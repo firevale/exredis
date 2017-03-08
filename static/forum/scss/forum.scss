@@ -1,3 +1,4 @@
+@import "./variables";
 @import "./common";
 @import "./transition";
 @import "~bulma";
@@ -35,27 +36,28 @@ $fa-font-path: '~font-awesome/fonts/';
   justify-content: space-between;
 }
 
-.control a.button.is-active {
-  background: $link;
-  color: $white;
-}
-
-.control a.button {
-  background: $dark;
-  padding: 0;
-  color: $white;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  min-width: 5rem;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
-  border: none;
-}
-
 .horizontal-line {
   height: 0.1rem;
   margin: 1rem;
+}
+
+.control {
+  a.button {
+    background: $grey;
+    padding: 0;
+    color: $white;
+    margin-right: 0.5rem;
+    font-weight: bold;
+    min-width: 5rem;
+    border-radius: 0.2rem;
+    font-size: 0.9rem;
+    border: none;
+
+    &.is-active {
+      background: $primary;
+      color: $white;
+    }
+  }
 }
 
 .txt-right {

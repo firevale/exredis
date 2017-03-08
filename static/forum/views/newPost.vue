@@ -5,7 +5,7 @@
       <i class="fa fa-angle-left title is-2 dark" aria-hidden="true" @click="$router.go(-1)"></i>
     </div>
     <div class="row-line top-title">
-      <span class="title is-4">{{ $t('forum.newNote.title') }}</span>
+      <span class="title is-4">{{ $t('forum.newPost.title') }}</span>
     </div>
   </div>
   <div class="scroll-box">
@@ -14,12 +14,12 @@
         <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>
         <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
         <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
+        <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
       </div>
     </div>
     <div>
       <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
-        <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newNote.titlePlaceholder')"></input>
+        <input class="note-new" maxlength="50" v-model="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="column is-full" style="text-align: center;">
-      <a class="button new-note" @click="sentNote">{{ $t('forum.newNote.btnTxt') }}</a>
+      <a class="button new-note" @click="sentNote">{{ $t('forum.newPost.btnTxt') }}</a>
     </div>
   </div>
 </div>
@@ -75,9 +75,9 @@ export default {
 
     messageTip() {
       if (!this.title) {
-        return this.$t('forum.newNote.requireTitle')
+        return this.$t('forum.newPost.requireTitle')
       } else if (!this.content) {
-        return this.$t('forum.newNote.requireContent')
+        return this.$t('forum.newPost.requireContent')
       } else {
         return ""
       }
@@ -138,24 +138,37 @@ export default {
       })
     },
 
-    sentNote() {
+    sentNote: async function() {
       if (!this.title) {
-        message.showMsg(this.$t('forum.newNote.titlePlaceholder'))
-      } else if (!this.content) {
-        message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
-      } else {
-        this.$http({
-            url: '',
-            method: 'post',
-            params: {},
-          })
-          .then(_ => {
-
-          })
-          .catch(_ => {
-
-          })
+        message.showMsg(this.$t('forum.newPost.titlePlaceholder'))
+        return;
       }
+
+      if (!this.content) {
+        message.showMsg(this.$t('forum.newPost.textAreaPlaceHolder'))
+        return;
+      }
+
+      try {
+        let result = await this.$acs.addPost(1, 1, this.title, this.content)
+        console.info("success:" + result.success)
+        if (result.success) {
+          message.showMsg(this.$t('forum.newPost.addSuccess'))
+          this.goForum()
+
+        } else {
+          message.showMsg(this.$t(result.message))
+        }
+      } catch (e) {
+        console.info(e)
+        message.showMsg(this.$t('forum.error.networkError'))
+      }
+
+    },
+    goForum: function() {
+      this.$router.push({
+        name: 'forum'
+      })
     },
     onEditorBlur(e) {
 

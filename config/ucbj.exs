@@ -18,14 +18,12 @@ config :acs, Acs.Repo,
   hostname: "10.10.235.154",
   pool_size: 10
 
-config :acs, :elasticsearch, 
+config :acs, :elasticsearch,
   pool: [size: 10, max_overflow: 20],
   connection: [host: "10.10.56.136", port: 9200]
 
 config :redis_poolex,
-  # host: "10.10.56.136",
-  # port: 6379,
-  host: "10.10.134.58",
+  host: "10.10.56.136",
   port: 6379,
   password: "",
   db: 0,

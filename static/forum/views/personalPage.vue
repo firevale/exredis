@@ -88,14 +88,14 @@ export default {
         myPostss: [{
           noteId: '',
           title: '[游戏攻略]新手练级指南',
-          newReply: true,
+          newComment: true,
           author: '火谷测试',
           time: '2分钟前',
           noteCount: '2/11',
         }, {
           noteId: '',
           title: '[游戏攻略]新手练级指南',
-          newReply: false,
+          newComment: false,
           author: '火谷测试',
           time: '2分钟前',
           noteCount: '2/11',

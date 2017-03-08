@@ -14,16 +14,12 @@ config :phoenix, :serve_endpoints, true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :exsyslog_info,
-  level: :info,
+  level: :debug,
   format: "$metadata -- $level --: $message \n",
   metadata: [:module, :line, :function, :user_id, :device_id],
   ident: "acs",
   facility: :local3,
   option: [:pid, :cons]
-
-config :logger, :filelog_info,
-  path: "/var/log/acs/debug.log",
-  level: :debug
 
 config :logger,
   backends: [

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="tile is-ancestor">
   <transition :name="transitionName">
     <router-view> </router-view>
   </transition>
@@ -49,6 +49,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import "forum/scss/forum";
-</style>
+<style lang="scss">@import "forum/scss/forum";</style>

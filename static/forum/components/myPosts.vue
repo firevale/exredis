@@ -3,7 +3,7 @@
     <div style="flex: 1;text-align: left;">
       <div @click="showDetail">
         <span class="post-title">{{ itemData.title }}</span>
-        <a v-show="itemData.newReply" class="button excellent-btn">{{ $t('forum.personal.newReply') }}</a>
+        <a v-show="itemData.newComment" class="button excellent-btn">{{ $t('forum.personal.newComment') }}</a>
       </div>
       <div class="post-info">
         <span>{{ itemData.time }}</span>

@@ -520,13 +520,13 @@ $fa-font-path: '~font-awesome/fonts/';
   color: green;
 }
 
-.note-title {
+.post-title {
   vertical-align: middle;
   font-size: 1rem;
   color: $black;
 }
 
-.note-title:hover {
+.post-title:hover {
   cursor: pointer;
 }
 
@@ -555,7 +555,7 @@ $fa-font-path: '~font-awesome/fonts/';
   font-size: 0.7rem;
 }
 
-.note-info {
+.post-info {
   color: $dark;
   font-size: 0.7rem;
 }

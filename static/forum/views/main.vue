@@ -15,9 +15,10 @@
   </div>
   <div class="scroll-box">
     <div class="tile content-item">
-      <div class="tile control" style="margin-bottom: 0;" >
+      <div class="tile control" style="margin-bottom: 0;">
         <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">全部</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}" @click="setNoteLoadType(section.id)">{{section.title}}</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}"
+          @click="setNoteLoadType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -56,7 +57,7 @@ export default {
 
   watch: {
     'noteLoadType' (newVal, oldVal) {
-     this.refreshPage()
+      this.refreshPage()
     }
   },
 
@@ -71,7 +72,7 @@ export default {
 
   data() {
     return {
-      postList:[],
+      postList: [],
       page: 1,
       total: 1,
       recordsPerPage: 10,
@@ -94,17 +95,17 @@ export default {
       this.refreshPage(1)
     },
 
-    getForumInfo: async function(forum_id=1){
-        try {
-          let result = await this.$acs.getForumInfo(forum_id)
-          if (result.success) {
-            this.updateForum(result.forum)
-          } else {
-            this.setErrorMessage(this.$t(result.message))
-          }
-        } catch (e) {
-          this.setErrorMessage(this.$t('forum.error.networkError'))
+    getForumInfo: async function(forum_id = 1) {
+      try {
+        let result = await this.$acs.getForumInfo(forum_id)
+        if (result.success) {
+          this.updateForum(result.forum)
+        } else {
+          this.setErrorMessage(this.$t(result.message))
         }
+      } catch (e) {
+        this.setErrorMessage(this.$t('forum.error.networkError'))
+      }
     },
 
     onPageChange: function(page) {
@@ -115,11 +116,11 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page,this.recordsPerPage,this.noteOrderType)
+          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.noteOrderType)
           if (result.success) {
-            this.postList=result.posts
-            this.total=result.total
-            this.page=page
+            this.postList = result.posts
+            this.total = result.total
+            this.page = page
           } else {
             this.setErrorMessage(this.$t(result.message))
           }

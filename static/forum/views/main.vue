@@ -27,7 +27,7 @@
       <note-item v-for="item in postList" :key="item.id" :item-data="item"></note-item>
     </div>
     <div class="column is-full" v-show="notePageCount > 1">
-      <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
+      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
     </div>
   </div>
 </div>
@@ -50,7 +50,7 @@ export default {
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.refreshPage)
     this.getForumInfo()
-    this.refreshPage()
+    this.refreshPage(this.page)
   },
 
   watch: {
@@ -74,6 +74,9 @@ export default {
   data() {
     return {
       postList:[],
+      page: 1,
+      total: 1,
+      recordsPerPage: 10,
     }
   },
 
@@ -108,15 +111,19 @@ export default {
         }
     },
 
-    refreshPage: async function() {
+    onPageChange: function(page) {
+      this.refreshPage(page)
+    },
+
+    refreshPage: async function(page) {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(this.noteCurrentPage,10,this.noteOrderType)
+          let result = await this.$acs.getPagedPost(page,this.recordsPerPage,this.noteOrderType)
           if (result.success) {
             this.postList=result.posts
-            this.notePageCount=result.total
-            this.noteCurrentPage=page
+            this.total=result.total
+            this.page=page
           } else {
             this.setErrorMessage(this.$t(result.message))
           }

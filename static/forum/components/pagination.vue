@@ -57,11 +57,18 @@
         type: Number,
         default: 1
       },
+      
+      onPageChange: {
+        type: Function,
+        default: undefined
+      }
     },
 
     methods: {
-      selectPage: function (page) {
-        this.$emit('switch-page', page)
+      selectPage: function(page) {
+        if (this.onPageChange) {
+          this.onPageChange(page)
+        }
       }
     }
   }

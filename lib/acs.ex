@@ -25,10 +25,12 @@ defmodule Acs do
       supervisor(Acs.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Acs.Endpoint, []),
+
       # Start your own worker by calling: Acs.Worker.start_link(arg1, arg2, arg3)
       # worker(Acs.Worker, [arg1, arg2, arg3]),
+      supervisor(Task.Supervisor, [[name: Acs.TaskSupervisor]]),
 
-      # start elasticsearch pool 
+      # start elasticsearch pool
       :poolboy.child_spec(:elasticsearch, pool_args, es_cfg[:connection]),
     ]
 
@@ -41,7 +43,7 @@ defmodule Acs do
     # this line will fail if elasticsearch is not correctly configured
     init_elasticsearch_mappings()
     # return res
-    res 
+    res
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -51,11 +53,11 @@ defmodule Acs do
     :ok
   end
 
-  defp init_elasticsearch_mappings() do 
-   unless Elasticsearch.is_index?("acs") do 
+  defp init_elasticsearch_mappings() do
+   unless Elasticsearch.is_index?("acs") do
       settings = %{
-        number_of_shards: 5, 
-        number_of_replicas: 1, 
+        number_of_shards: 5,
+        number_of_replicas: 1,
       }
 
       orders_mapping = %{

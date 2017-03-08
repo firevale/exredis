@@ -6,8 +6,9 @@ defmodule Acs.CronController do
     now = :calendar.local_time |> NaiveDateTime.from_erl!
     query = from order in AppOrder,
               select: order,
-              where: order.status == 2 and order.try_deliver_counter < 100,
-              order_by: [desc: order.paid_at]
+              where: order.status == 2 and
+                     order.try_deliver_counter < 100 and
+                     order.inserted_at > ago(2, "week")
 
     Repo.all(query) |> Enum.each(fn(order) ->
       elapsed = case order.try_deliver_at do

@@ -95,8 +95,11 @@ defmodule Acs.Router do
       get   "/notify",   AlipayController, :notify
       post  "/notify",   AlipayController, :notify
     end
-
   end # end scope ap
+
+  scope path: "/cron", alias: Acs do
+    get "/notify_cp", CronController, :notify_cp
+  end
 
   scope path: "/admin_actions", alias: Acs do
     forward "/", AdminRouter

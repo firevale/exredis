@@ -14,7 +14,7 @@
       <div class="service-menu" :class="{'menu-selected': type=='notice'}" @click="type='notice'">{{ $t('forum.campaign.gameNotice') }}</div>
       <div class="service-menu" :class="{'menu-selected': type=='news'}" @click="type='news'">{{ $t('forum.campaign.gameNews') }}</div>
     </div>
-    <div class="horizontal-seprate">
+    <div class="horizontal-seperator">
       <div :class="{'move-box-left': type=='campaign','move-box-center': type=='notice','move-box-right': type=='news'}">
         <div class="arrow-down"></div>
       </div>

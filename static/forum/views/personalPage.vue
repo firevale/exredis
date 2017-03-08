@@ -33,7 +33,7 @@
       <div>
       </div>
     </div>
-    <div class="horizontal-seprate"></div>
+    <div class="horizontal-seperator"></div>
     <div class="is-child  row-menu">
       <div class="service-menu" :class="{'menu-selected': type=='myPosts'}" @click="type='myPosts'">
         <span>{{ $t('forum.personal.myPosts') }}</span>
@@ -46,7 +46,7 @@
         <span>{{ $t('forum.personal.myFavor') }}</span>
       </div>
     </div>
-    <div class="horizontal-seprate">
+    <div class="horizontal-seperator">
       <div :class="{'move-box-left': type=='myPosts','move-box-center': type=='myComments','move-box-right': type=='myFavor'}">
         <div class="arrow-down"></div>
       </div>

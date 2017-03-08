@@ -2,11 +2,11 @@
 <div class="note-item">
   <div class="columns">
     <div class="column is-10" @click="showDetail">
-      <a v-if="itemData.is_top" class="header-tag">置顶</a> [{{itemData.section.title}}] <span class="note-title"
-        v-html="filterKey"></span>
+      <a v-if="itemData.is_top" class="header-tag">{{ $t('forum.main.top') }}</a> [{{itemData.section.title}}]
+      <span class="note-title" v-html="filterKey"></span>
       <i v-if="itemData.has_pic" class="fa fa-picture-o note-picture"></i>
-      <a v-if="itemData.is_vote" class="header-tag excellent">精</a>
-      <a v-if="itemData.is_hot" class="header-tag">HOT</a>
+      <a v-if="itemData.is_vote" class="header-tag excellent">{{ $t('forum.main.vote') }}</a>
+      <a v-if="itemData.is_hot" class="header-tag">{{ $t('forum.main.hot') }}</a>
     </div>
     <div class="column is-2 txt-right note-info">{{itemData.last_reply_at | formatServerDateTime}}</div>
   </div>

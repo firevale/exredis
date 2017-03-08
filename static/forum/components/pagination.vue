@@ -33,11 +33,14 @@
       </template>
     </template>
     <template v-else>
-      <li v-if="pageCount > 2"> <a class="button" @click.prevent="selectPage(2)" :class="{'is-primary': currentPage == 2}">2</a>
+      <li v-if="pageCount > 2">
+        <a class="button" @click.prevent="selectPage(2)" :class="{'is-primary': currentPage == 2}">2</a>
       </li>
-      <li v-if="pageCount > 3"> <a class="button" @click.prevent="selectPage(3)" :class="{'is-primary': currentPage == 3}">3</a>
+      <li v-if="pageCount > 3">
+        <a class="button" @click.prevent="selectPage(3)" :class="{'is-primary': currentPage == 3}">3</a>
       </li>
-      <li v-if="pageCount > 4"> <a class="button" @click.prevent="selectPage(4)" :class="{'is-primary': currentPage == 4}">4</a>
+      <li v-if="pageCount > 4">
+        <a class="button" @click.prevent="selectPage(4)" :class="{'is-primary': currentPage == 4}">4</a>
       </li>
     </template>
     <li> <a class="button" :class="{'is-primary': currentPage == pageCount}" @click.prevent="selectPage(pageCount)">{{ pageCount }}</a>        </li>
@@ -45,6 +48,7 @@
   </ul>
 </nav>
 </template>
+
 <script>
 export default {
   props: {

@@ -2,7 +2,7 @@ import * as types from '../mutationTypes'
 
 const state = {
   info: {},
-  postListType: 'all',
+  postListType: 0,
   postOrderType: 'created_at'
 }
 

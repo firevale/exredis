@@ -57,6 +57,27 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  def add_post(conn,%{"forum_id" => forum_id,
+                       "title" => title,
+                       "content" => content,
+                       "section_id" => section_id}) do
+
+
+
+  end
+  def add_post(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  def getPostDetail(conn,%{"post_id" => post_id}) do
+
+
+
+  end
+  def getPostDetail(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
   defp get_forum_info_by_id(forum_id) do
     query = from forum in Forum,
             left_join: sections in assoc(forum, :sections),

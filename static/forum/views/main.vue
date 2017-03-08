@@ -16,9 +16,9 @@
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0;">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">全部</a>
+        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
         <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}"
-          @click="setNoteLoadType(section.id)">{{section.title}}</a>
+            @click="setNoteLoadType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>

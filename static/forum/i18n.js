@@ -11,6 +11,9 @@ export default {
         original: '玩家原创',
         appeal: '问题求助',
         order: '{type}',
+        top: '置顶',
+        vote: '精',
+        hot: 'HOT',
       },
       search: {
         placeholder: '搜索帖子',

@@ -2,17 +2,17 @@ import * as types from '../mutationTypes'
 
 const state = {
   info: {},
-  postListType: 0,
-  postOrderType: 'created_at'
+  currentSection: 0,
+  postOrderByField: 'created_at'
 }
 
 const mutations = {
   [types.SET_POST_LIST_TYPE](state, type) {
-    state.postListType = type
+    state.currentSection = type
   },
 
   [types.SET_POST_ORDER_TYPE](state, type) {
-    state.postOrderType = type.code
+    state.postOrderByField = type.code
   },
 
   [types.UPDATE_FORUM](state, forum) {

@@ -1,7 +1,8 @@
 import Vue from 'vue'
 
-const postListType = state => state.forum.postListType
-const postOrderType = state => state.forum.postOrderType
+const transitionName = state => state.app.transitionName
+const currentSection = state => state.forum.currentSection
+const postOrderByField = state => state.forum.postOrderByField
 const searchKey = state => state.search.searchKey
 const searchKeyHis = state => state.search.hisKeys
 const searchPageCount = state => state.search.pageCount
@@ -11,8 +12,9 @@ const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
 
 export {
-  postListType,
-  postOrderType,
+  transitionName,
+  currentSection,
+  postOrderByField,
   searchKey,
   searchKeyHis,
   searchPageCount,

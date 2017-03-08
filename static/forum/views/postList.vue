@@ -16,12 +16,12 @@
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0.8rem;">
-        <a class="button" :class="{'is-active': postListType == 0}" @click="setPostListType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': postListType==section.id}"
+        <a class="button" :class="{'is-active': currentSection == 0}" @click="setPostListType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection==section.id}"
             @click="setPostListType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
-        <span>{{ $t('forum.orderType.'+this.postOrderType) }}</span>
+        <span>{{ $t('forum.orderType.'+this.postOrderByField) }}</span>
         <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
@@ -55,15 +55,15 @@ export default {
   },
 
   watch: {
-    'postListType' (newVal, oldVal) {
+    'currentSection' (newVal, oldVal) {
       this.refreshPage()
     }
   },
 
   computed: {
     ...mapGetters([
-      'postListType',
-      'postOrderType',
+      'currentSection',
+      'postOrderByField',
       'forumInfo'
     ]),
   },
@@ -85,7 +85,7 @@ export default {
     ]),
 
     orderChoose() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postOrderType}`))
+      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postOrderByField}`))
     },
 
     onOrderTypeChoose(type) {
@@ -114,8 +114,8 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postOrderType,
-            this.postListType)
+          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postOrderByField,
+            this.currentSection)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total

@@ -20,7 +20,7 @@
       <div class="column detail-info">
         <span class="note-time dark" style="font-size: .8rem;">{{ itemData.time }}</span>
         <span class="note-author" style="font-size: .9rem;">{{ itemData.author }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preView" class="note-delete" @click="deleteNoteQuestion"
+        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deleteNoteQuestion"
           style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
       </div>
       <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.description">
@@ -80,7 +80,7 @@ export default {
     itemIndex: {
       type: Number,
     },
-    preView: {
+    preview: {
       type: Boolean,
       default: false,
     },
@@ -143,7 +143,7 @@ export default {
     },
 
     showAllImgInSwiper(index) {
-      if (!this.preView && !preViewing()) {
+      if (!this.preview && !preViewing()) {
         swiperContainer({
           visible: true,
           imgs: this.imgsPreview,

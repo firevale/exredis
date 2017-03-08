@@ -12,7 +12,7 @@
       <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
         {{ replyTitle }}
         <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
+        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preview') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
@@ -34,13 +34,13 @@
     mapGetters,
     mapActions
   } from 'vuex'
-  import noteItemDetail from '../components/noteItemDetail.vue'
+  import postDetailView from '../components/postDetailView.vue'
   import menuModal from '../components/menuModal'
   import pagination from '../components/pagination.vue'
   import upload from '../components/fileUpload'
   import {
     preViewNote
-  } from '../components/preView'
+  } from '../components/preview'
   import message from '../components/message'
 
   import * as utils from 'common/utils'

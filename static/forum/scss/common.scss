@@ -12,7 +12,7 @@ img {
 }
 
 input {
-  border: 1px solid $dark;
+  border: 1px solid $grey;
   border-radius: 0;
   display: block;
   -webkit-appearance: none;
@@ -45,7 +45,7 @@ input[type="submit"]:active {
 }
 
 input.invalid {
-  border-color: $red;
+  border-color: $danger;
 }
 
 input[type="email"].invalid:focus,

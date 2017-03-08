@@ -56,9 +56,10 @@ export default {
       },
       serverError: {
         badRequestParams: '请求参数错误',
-        forumNotExist: '论坛不存在'
+        forumNotExist: '论坛不存在',
+
       },
-      newNote: {
+      newPost: {
         title: '发帖子',
         btnTxt: '发帖',
         preview: '预览',
@@ -66,7 +67,8 @@ export default {
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         requireTitle: '请输入标题',
-        requireContent: '请输入内容'
+        requireContent: '请输入内容',
+        addSuccess:'发帖成功'
       },
       writeComment: {
         title: '回复',

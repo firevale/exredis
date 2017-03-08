@@ -12,7 +12,7 @@
       <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
         {{ replyTitle }}
         <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preview') }}</span>
+        <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
       </div>
       <div class="column is-full" style="position: relative; padding-bottom: 0;">
         <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
@@ -24,7 +24,7 @@
         <span>{{messageTip}}</span>
       </div>
       <div class="column is-full" style="text-align: center;">
-        <a class="button new-note" @click="writeComment">{{ $t('forum.newNote.btnTxt') }}</a>
+        <a class="button new-note" @click="writeComment">{{ $t('forum.newPost.btnTxt') }}</a>
       </div>
     </div>
   </div>
@@ -74,7 +74,7 @@
 
       messageTip() {
         if (!this.content) {
-          return this.$t('forum.newNote.requireContent')
+          return this.$t('forum.newPost.requireContent')
         } else {
           return ""
         }
@@ -94,7 +94,7 @@
     methods: {
       writeComment() {
         if (!this.content) {
-          message.showMsg(this.$t('forum.newNote.textAreaPlaceHolder'))
+          message.showMsg(this.$t('forum.newPost.textAreaPlaceHolder'))
         } else {
           this.$http({
             url: '',

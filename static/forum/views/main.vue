@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding: 0;">
-      <note-item v-for="item in postList" :key="item.id" :item-data="item"></note-item>
+      <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
     </div>
     <div class="column is-full" v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
@@ -40,12 +40,12 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import noteItem from '../components/noteItem.vue'
+import postListItem from '../components/postListItem'
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
+import pagination from '../components/pagination'
 export default {
   components: {
-    noteItem,
+    postListItem,
     pagination,
   },
 

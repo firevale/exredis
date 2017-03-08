@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import * as utils from 'common/utils'
-import * as types from './mutation-types'
+import * as types from './mutationTypes'
 
 export const setNoteLoadType = ({
   commit

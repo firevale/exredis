@@ -3,13 +3,13 @@
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-card" style="max-width: 100vw;width: 85%;">
       <section class="modal-card-body" style="border-radius: 1rem;width: 100%;margin: 0 auto;padding: 0;">
-        <note-item-detail :item-data="item" @img-delete="deleteImgInPreview" :preView="true"></note-item-detail>
+        <post-detail-view :item-data="item" @img-delete="deleteImgInPreview" :preview="true"></post-detail-view>
       </section>
     </div>
   </div>
 </template>
 <script>
-  import noteItemDetail from "../noteItemDetail"
+  import postDetailView from "../postDetailView"
 
   export default {
     props: {
@@ -65,7 +65,7 @@
     },
 
     components: {
-      noteItemDetail
+      postDetailView
     }
   }
 </script>

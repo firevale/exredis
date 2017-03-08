@@ -14,7 +14,7 @@
         <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>
         <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
         <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preView') }}</span>
+        <span class="pointer dark" @click="preview()">{{ $t('forum.newNote.preview') }}</span>
       </div>
     </div>
     <div>
@@ -42,7 +42,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import noteItemDetail from '../components/noteItemDetail.vue'
+import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'

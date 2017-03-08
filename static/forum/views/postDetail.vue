@@ -10,8 +10,8 @@
     <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
   </div>
   <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
-    <note-item-detail v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
-      :item-index="index"></note-item-detail>
+    <post-detail-view v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
+      :item-index="index"></post-detail-view>
     <div v-if="displayList&&displayList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="searchPageCount > 1">
       <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage" @switch-page="freshListByPage"></pagination>
@@ -23,7 +23,7 @@
 </div>
 </template>
 <script>
-import noteItemDetail from '../components/noteItemDetail.vue'
+import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 
@@ -33,7 +33,7 @@ export default {
   },
 
   components: {
-    noteItemDetail,
+    postDetailView,
     pagination,
   },
   computed: {

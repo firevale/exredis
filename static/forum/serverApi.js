@@ -10,6 +10,11 @@ export default {
         let response = await Vue.http.post('/forum_actions/get_forum_info', {forum_id})
         return await response.json()
       },
+
+      async addPost(forum_id) {
+        let response = await Vue.http.post('/forum_actions/add_post', {forum_id})
+        return await response.json()
+      },
     }
   }
 }

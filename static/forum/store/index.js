@@ -5,7 +5,6 @@ import * as actions from './actions'
 import * as getters from './getters'
 
 import app from './modules/app'
-import main from './modules/main'
 import search from './modules/search'
 import user from './modules/user'
 import forum from './modules/forum'
@@ -19,7 +18,6 @@ const store = new Vuex.Store({
   getters,
   modules: {
     app,
-    main,
     search,
     user,
     commonIssues,

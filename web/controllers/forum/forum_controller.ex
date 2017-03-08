@@ -39,6 +39,8 @@ defmodule Acs.ForumController do
     order = String.to_atom(order)
 
     query = from post in ForumPost,
+              join: u in User, on: u.id == post.user_id,
+              join: s in ForumSection, on: s.id == post.section_id,
               select: %{
                 id: post.id,
                 title: post.title,
@@ -49,7 +51,9 @@ defmodule Acs.ForumController do
                 comms: post.comms,
                 created_at: post.created_at,
                 last_reply_at: post.last_reply_at,
-                has_pic: post.has_pic},
+                has_pic: post.has_pic,
+                author: u.nickname,
+                section: s.title},
               limit: ^records_per_page,
               where: post.active == true,
               offset: ^((page - 1) * records_per_page),

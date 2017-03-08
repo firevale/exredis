@@ -1,11 +1,11 @@
 import Vue from 'vue'
 
-const notePageCount = state => state.main.pageCount
-const noteCurrentPage = state => state.main.currentPage
-const noteLoadType = state => state.main.loadType
-const noteLoadUrl = state => state.main.loadUrl
-const noteOrderType = state => state.main.orderType
-const noteOrderTypeStr = state => state.main.orderTypeStr
+const notePageCount = state => state.forum.pageCount
+const noteCurrentPage = state => state.forum.currentPage
+const noteLoadType = state => state.forum.loadType
+const noteLoadUrl = state => state.forum.loadUrl
+const noteOrderType = state => state.forum.orderType
+const noteOrderTypeStr = state => state.forum.orderTypeStr
 const searchKey = state => state.search.searchKey
 const searchKeyHis = state => state.search.hisKeys
 const searchPageCount = state => state.search.pageCount

@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding: 0;">
-      <note-item v-for="item in noteList" :key="item.id" :item-data="item"></note-item>
+      <note-item v-for="item in postList" :key="item.id" :item-data="item"></note-item>
     </div>
     <div class="column is-full" v-show="notePageCount > 1">
       <pagination ref="pag" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>
@@ -73,98 +73,7 @@ export default {
 
   data() {
     return {
-      noteList: [{
-          id: '',
-          headerTag: [{
-            name: '置顶',
-            bgColor: '#f00',
-            color: '#fff'
-          }, ],
-          title: '【游戏攻略】新手练级指南',
-          hasPicture: true,
-          tailTag: [{
-              name: '精',
-              bgColor: '#ff0',
-              color: '#fff',
-              isTag: true
-            },
-            {
-              name: 'HOT',
-              bgColor: '#f00',
-              color: '#fff'
-            },
-          ],
-          author: '火谷测试',
-          time: '2分钟前',
-          noteCount: '2/11',
-        },
-        {
-          id: '',
-          headerTag: [
-
-          ],
-          title: '【问题求助】游戏一只闪退肿么破？？',
-          hasPicture: false,
-          tailTag: [
-
-          ],
-          author: '游客',
-          time: '1小时前',
-          noteCount: '0/0',
-        },
-        {
-          id: '',
-          headerTag: [
-
-          ],
-          title: '【BUG反馈】副本闪退',
-          hasPicture: true,
-          tailTag: [{
-            name: 'HOT',
-            bgColor: '#f00',
-            color: '#fff'
-          }, ],
-          author: '火谷测试',
-          time: '一天前',
-          noteCount: '2/11',
-        },
-        {
-          id: '',
-          headerTag: [{
-            name: '置顶',
-            bgColor: '#f00',
-            color: '#fff'
-          }, ],
-          title: '【玩家原创】新手练级指南',
-          hasPicture: true,
-          tailTag: [{
-            name: '精',
-            bgColor: '#ff0',
-            color: '#fff',
-            isTag: true
-          }, ],
-          author: '火谷测试',
-          time: '2016-11-1 21:06',
-          noteCount: '22/133',
-        },
-        {
-          id: '',
-          headerTag: [
-
-          ],
-          title: '【玩家原创】新手练级指南',
-          hasPicture: true,
-          tailTag: [{
-            name: '精',
-            bgColor: '#ff0',
-            color: '#fff',
-            isTag: true
-          }, ],
-          author: '火谷测试',
-          time: '2016-10-11 14:06',
-          noteCount: '22/433',
-        },
-      ]
+      postList:[],
     }
   },
 
@@ -199,13 +108,15 @@ export default {
         }
     },
 
-    refreshPage: async function(page=1,records_per_page=10,order="id") {
+    refreshPage: async function() {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page,records_per_page,order)
+          let result = await this.$acs.getPagedPost(this.noteCurrentPage,10,this.noteOrderType)
           if (result.success) {
-            alert(result.posts)
+            this.postList=result.posts
+            this.notePageCount=result.total
+            this.noteCurrentPage=page
           } else {
             this.setErrorMessage(this.$t(result.message))
           }

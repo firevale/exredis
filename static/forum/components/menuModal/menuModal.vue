@@ -6,8 +6,8 @@
       <article class="media">
         <div class="media-content">
           <div v-for="item in list" class="columns modal-item pointer" @click="ok(item)">
-            <span class="column item-name" :class="{'olive': selectedItem == item.name}"> {{ item.name }} </span>
-            <span v-show="selectedItem == item.name" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
+            <span class="column item-name" :class="{'olive': selectedItem == $t(`forum.orderType.${item.code}`)}"> {{ $t(`forum.orderType.${item.code}`) }} </span>
+            <span v-show="selectedItem == $t(`forum.orderType.${item.code}`)" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
           </div>
         </div>
       </article>
@@ -35,23 +35,19 @@ export default {
   data: function() {
     return {
       list: [{
-          name: '回复时间排序',
           code: 'last_reply_at'
         },
         {
-          name: '发帖时间排序',
           code: 'created_at'
         },
         {
-          name: '热门排序',
           code: 'is_hot'
         },
         {
-          name: '精品贴',
           code: 'is_vote'
         }
       ],
-      selectedItem: '发帖时间排序',
+      selectedItem: this.$t('forum.orderType.last_reply_at'),
       onOk: undefined,
     }
   },

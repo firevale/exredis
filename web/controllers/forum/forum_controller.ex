@@ -64,11 +64,20 @@ defmodule Acs.ForumController do
   def add_post(conn,%{"forum_id" => forum_id,
                        "title" => title,
                        "content" => content,
-                       "section_id" => section_id}) do
+                       "section_id" => section_id} = post) do
+      now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+      post = Map.put(post, "user_id", 100002)
+      post=Map.put(post,"created_at",now_time)
+      case ForumPost.changeset(%ForumPost{},post) |>   Repo.insert do
+        {:ok, post} ->
+          conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
 
-
-
+        {:error, %{errors: errors}} ->
+          d "errs: #{inspect errors, pretty: true}"
+          conn |> json(%{success: false, message: "forum.error.networkError"})
+      end
   end
+
   def add_post(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end

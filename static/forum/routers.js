@@ -16,9 +16,9 @@ export default function(VueRouter) {
       name: 'detail',
       component: require('./views/noteDetail.vue'),
     }, {
-      path: '/forum/newNote',
-      name: 'newNote',
-      component: require('./views/newNote.vue'),
+      path: '/forum/newPost',
+      name: 'newPost',
+      component: require('./views/newPost.vue'),
     }, {
       path: '/forum/replyNote',
       name: 'replyNote',

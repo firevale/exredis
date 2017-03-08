@@ -10,7 +10,7 @@
     <div class="main-menu">
       <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
       <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
-      <a class="button create-note" @click="$router.push({name:'newNote'})">{{ $t('forum.main.newNote') }}</a>
+      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.main.newNote') }}</a>
     </div>
   </div>
   <div class="scroll-box">

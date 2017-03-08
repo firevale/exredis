@@ -18,6 +18,9 @@ alias Acs.App
 alias Acs.AdminUser
 alias Acs.Forum
 alias Acs.ForumSection
+alias Acs.ForumPost
+alias Acs.ForumComment
+alias Acs.User
 
 require Logger
 
@@ -44,6 +47,9 @@ AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com"}) |> 
 
 now_time = :calendar.local_time |> NaiveDateTime.from_erl!
 
+User.changeset(%User{}, %{id: "100001", email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: "100002", email: "zhumingzhens@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
+
 Forum.changeset(%Forum{}, %{title: "战神大陆-iOS专区", active: true, created_at: now_time, app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
 ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
@@ -51,3 +57,33 @@ ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active
 ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
 ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
 ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, created_at: now_time, forum_id: 1}) |> Repo.insert
+
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章1", content: "测试内容1", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+ForumPost.changeset(%ForumPost{}, %{title: "测试文章2", content: "测试内容2", active: true, created_at: now_time, section_id: 1, user_id: "100001"}) |> Repo.insert
+
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容1", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert
+ForumComment.changeset(%ForumComment{}, %{content: "回复内容2", created_at: now_time, post_id: 1, user_id: "100001"}) |> Repo.insert

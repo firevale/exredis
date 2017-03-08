@@ -48,18 +48,23 @@ export default {
   },
 
   mounted: function() {
-    //this.$refs.pag.$on('switch-page', this.refreshPage)
-    this.getForumInfo(1)
+    this.$refs.pag.$on('switch-page', this.refreshPage)
+    this.getForumInfo()
+    this.refreshPage()
   },
 
   watch: {
     'noteLoadType' (newVal, oldVal) {
-      // this.refreshPage()
+     this.refreshPage()
     }
   },
 
   computed: {
-    ...mapGetters(['noteLoadType', 'noteLoadUrl', 'noteOrderType', 'noteOrderTypeStr',
+    ...mapGetters([
+      'noteLoadType',
+      'noteLoadUrl',
+      'noteOrderType',
+      'noteOrderTypeStr',
       'notePageCount',
       'noteCurrentPage',
       'forumInfo'
@@ -164,7 +169,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setNoteLoadType', 'setNoteOrderType', 'setNotePageCount', 'setNoteCurrentPage', 'updateForum']),
+    ...mapActions([
+      'setNoteLoadType',
+      'setNoteOrderType',
+      'setNotePageCount',
+      'setNoteCurrentPage',
+      'updateForum'
+    ]),
 
     orderChoose() {
       menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -172,51 +183,38 @@ export default {
 
     onOrderTypeChoose(type) {
       this.setNoteOrderType(type)
-      // this.refreshPage()
+      this.refreshPage()
     },
 
-    getForumInfo: async function(forum_id){
+    getForumInfo: async function(forum_id=1){
         try {
           let result = await this.$acs.getForumInfo(forum_id)
           if (result.success) {
-            // alert(result.forum)
             this.updateForum(result.forum)
           } else {
-            // this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.message))
           }
         } catch (e) {
-          // this.setErrorMessage(this.$t('account.error.networkError'))
+          this.setErrorMessage(this.$t('forum.error.networkError'))
         }
-    }
+    },
 
-    // refreshPage: async function(page = 1) {
-    //   if (!this.$v.$error && !this.processing) {
-    //     this.processing = true
-    //     try {
-    //       let result = await this.$acs.getPagedPost(page,records_per_page,order) (this.accountId)
-    //
-    //       if (result.success) {
-    //         if (result.exists) {
-    //           // this.setErrorMessage(this.$t('account.error.accountInUse'))
-    //         } else {
-    //           // this.setRegisterAccountId(this.accountId)
-    //           // this.$router.replace({
-    //           //   name: 'registerStep2',
-    //           //   query: {
-    //           //     accountId: btoa(this.accountId),
-    //           //     bindUserId: this.$route.query.bindUserId
-    //           //   }
-    //           // })
-    //         }
-    //       } else {
-    //         // this.setErrorMessage(this.$t(result.message))
-    //       }
-    //     } catch (e) {
-    //       // this.setErrorMessage(this.$t('account.error.networkError'))
-    //     }
-    //     this.processing = false
-    //   }
-    // },
+    refreshPage: async function(page=1,records_per_page=10,order="id") {
+      if (!this.processing) {
+        this.processing = true
+        try {
+          let result = await this.$acs.getPagedPost(page,records_per_page,order)
+          if (result.success) {
+            alert(result.posts)
+          } else {
+            this.setErrorMessage(this.$t(result.message))
+          }
+        } catch (e) {
+          this.setErrorMessage(this.$t('forum.error.networkError'))
+        }
+        this.processing = false
+      }
+    }
 
   },
 }

@@ -42,10 +42,13 @@ export default {
         upNote: '置顶生效',
         unUpNote: '置顶取消',
       },
+      error: {
+        networkError: '网络错误',
+      },
       serverError: {
         badRequestParams: '请求参数错误',
         forumNotExist: '论坛不存在',
-        
+
       },
       newNote: {
         title: '发帖子',

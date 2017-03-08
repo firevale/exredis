@@ -36,18 +36,31 @@ defmodule Acs.ForumController do
                              "order" => order}) do
     total = Repo.one!(from post in ForumPost, select: count(post.id))
     total_page = round(Float.ceil(total / records_per_page))
+    order = String.to_atom(order)
 
     query = from post in ForumPost,
-              select: {post.id, post.title, post.is_top, post.is_hot, post.is_vote, post.reads,
-               post.comms, post.created_at, post.last_reply_at, post.has_pic},
+              select: %{
+                id: post.id,
+                title: post.title,
+                is_top: post.is_top,
+                is_hot: post.is_hot,
+                is_vote: post.is_vote,
+                reads: post.reads,
+                comms: post.comms,
+                created_at: post.created_at,
+                last_reply_at: post.last_reply_at,
+                has_pic: post.has_pic},
               limit: ^records_per_page,
               where: post.active == true,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: post.is_top, desc: ^order]
+              order_by: [{:desc, post.is_top}, {:desc, ^order}]
 
     posts = Repo.all(query)
 
     conn |> json(%{success: true, posts: posts, total: total_page})
+  end
+  def get_paged_post(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
   defp get_forum_info_by_id(forum_id) do
@@ -69,13 +82,4 @@ defmodule Acs.ForumController do
     end
   end
 
-  defp get_order_type(post,order) do
-    case order do
-      "created_at" -> post.created_at
-      "last_reply_at" -> post.last_reply_at
-      "is_hot" -> post.is_hot
-      "is_vote" -> post.is_vote
-      _ -> post.id
-    end
-  end
 end

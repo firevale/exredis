@@ -92,7 +92,7 @@ export default {
     },
 
     onOrderTypeChoose(type) {
-      this.setPostOrderType(type)
+      this.setPostsOrderByField(type)
       this.refreshPage()
     },
 

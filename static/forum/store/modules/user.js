@@ -7,7 +7,7 @@ const state = {
 
 const mutations = {
 
-  'USER_SET_INFO' (state, info) {
+  'SET_USER_PROFILE' (state, info) {
     state.userID = info.userID
     state.userName = info.userName
     state.portrait = info.portrait

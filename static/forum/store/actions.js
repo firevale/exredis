@@ -2,16 +2,16 @@ import Vue from 'vue'
 import * as utils from 'common/utils'
 import * as types from './mutationTypes'
 
-export const setPostListType = ({
+export const setCurrentSection = ({
   commit
 }, type) => {
-  commit(types.SET_POST_LIST_TYPE, type)
+  commit(types.SET_CURRENT_SECTION, type)
 }
 
-export const setPostOrderType = ({
+export const setPostsOrderByField = ({
   commit
 }, type) => {
-  commit(types.SET_POST_ORDER_TYPE, type)
+  commit(types.SET_POSTS_ORDER_BY_FIELD, type)
 }
 
 export const setSearchKey = ({
@@ -44,10 +44,10 @@ export const setSearchCurrentPage = ({
   commit('SEARCH_SET_CURRENTPAGE', page)
 }
 
-export const setUserInfo = ({
+export const serUserProfile = ({
   commit
 }, user) => {
-  commit('USER_SET_INFO', user)
+  commit('SET_USER_PROFILE', user)
 }
 
 export const setCommonIssues = ({

@@ -3,7 +3,7 @@ export default {
     forum: {
       main: {
         title: '游戏论坛',
-        newNote: '发帖',
+        newPost: '发帖',
         all: '全部',
         discussion: '综合讨论',
         experience: '攻略心得',

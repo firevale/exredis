@@ -10,18 +10,18 @@
     <div class="main-menu">
       <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
       <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
-      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.main.newNote') }}</a>
+      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.main.newPost') }}</a>
     </div>
   </div>
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0.8rem;">
-        <a class="button" :class="{'is-active': currentSection == 0}" @click="setPostListType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection==section.id}"
-            @click="setPostListType(section.id)">{{section.title}}</a>
+        <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.main.all') }}</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection == section.id}"
+            @click="setCurrentSection(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
-        <span>{{ $t('forum.orderType.'+this.postOrderByField) }}</span>
+        <span>{{ $t('forum.orderType.'+this.postsOrderByField) }}</span>
         <i class="fa fa-caret-down title is-3" aria-hidden="true" style="vertical-align: middle;"></i>
       </div>
     </div>
@@ -63,7 +63,7 @@ export default {
   computed: {
     ...mapGetters([
       'currentSection',
-      'postOrderByField',
+      'postsOrderByField',
       'forumInfo'
     ]),
   },
@@ -79,17 +79,17 @@ export default {
 
   methods: {
     ...mapActions([
-      'setPostListType',
-      'setPostOrderType',
+      'setCurrentSection',
+      'setPostsOrderByField',
       'updateForum'
     ]),
 
     orderChoose() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postOrderByField}`))
+      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postsOrderByField}`))
     },
 
     onOrderTypeChoose(type) {
-      this.setPostOrderType(type)
+      this.setPostsOrderByField(type)
       this.refreshPage(1)
     },
 
@@ -114,7 +114,7 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postOrderByField,
+          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
             this.currentSection)
           if (result.success) {
             this.postList = result.posts

@@ -4,14 +4,14 @@ import * as types from './mutationTypes'
 
 export const setCurrentSection = ({
   commit
-}, type) => {
-  commit(types.SET_CURRENT_SECTION, type)
+}, sectionId) => {
+  commit(types.SET_CURRENT_SECTION, sectionId)
 }
 
 export const setPostsOrderByField = ({
   commit
-}, type) => {
-  commit(types.SET_POSTS_ORDER_BY_FIELD, type)
+}, fieldName) => {
+  commit(types.SET_POSTS_ORDER_BY_FIELD, fieldName)
 }
 
 export const setSearchKey = ({
@@ -56,8 +56,8 @@ export const setCommonIssues = ({
   commit('COMMON_ISSUES_SET', issues)
 }
 
-export const updateForum = ({
+export const updateForumInfo = ({
   commit
 }, forum) => {
-  commit(types.UPDATE_FORUM, forum)
+  commit(types.UPDATE_FORUM_INFO, forum)
 }

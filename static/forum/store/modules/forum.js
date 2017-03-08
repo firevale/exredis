@@ -1,9 +1,10 @@
 import * as types from '../mutationTypes'
 
 const state = {
+  id: undefined,
   info: {},
   currentSection: 0,
-  postsOrderByField: 'created_at'
+  postsOrderByField: 'created_at',
 }
 
 const mutations = {
@@ -15,7 +16,7 @@ const mutations = {
     state.postsOrderByField = type.code
   },
 
-  [types.UPDATE_FORUM](state, forum) {
+  [types.UPDATE_FORUM_INFO](state, forum) {
     state.info = forum
   }
 }

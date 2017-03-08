@@ -1,7 +1,7 @@
 export default {
   'zh-hans' : {
     forum: {
-      main: {
+      postList: {
         title: '游戏论坛',
         newPost: '发帖',
         all: '全部',

@@ -5,7 +5,7 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [
       {
-        path: '/forum',
+        path: '/forum/:id',
         name: 'forum',
         component: require('./views/main.vue'),
         children: [
@@ -43,10 +43,7 @@ export default function(VueRouter) {
             component: require('./views/campaign.vue'),
           },
         ],
-      }, {
-        path: '*',
-        redirect: '/forum/index'
-      },
+      }
     ],
   });
 }

@@ -2,11 +2,11 @@
 <div class="post-list-item">
   <div class="columns">
     <div class="column is-10" @click="showDetail">
-      <a v-if="postInfo.is_top" class="header-tag">{{ $t('forum.main.top') }}</a> [{{postInfo.section.title}}]
+      <a v-if="postInfo.is_top" class="header-tag">{{ $t('forum.postList.top') }}</a> [{{postInfo.section.title}}]
       <span class="post-title" v-html="filterKey"></span>
       <i v-if="postInfo.has_pic" class="fa fa-picture-o note-picture"></i>
-      <a v-if="postInfo.is_vote" class="header-tag excellent">{{ $t('forum.main.vote') }}</a>
-      <a v-if="postInfo.is_hot" class="header-tag">{{ $t('forum.main.hot') }}</a>
+      <a v-if="postInfo.is_vote" class="header-tag excellent">{{ $t('forum.postList.vote') }}</a>
+      <a v-if="postInfo.is_hot" class="header-tag">{{ $t('forum.postList.hot') }}</a>
     </div>
     <div class="column is-2 txt-right post-info">{{postInfo.last_reply_at | formatServerDateTime}}</div>
   </div>

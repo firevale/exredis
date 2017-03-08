@@ -10,15 +10,15 @@
     <div class="main-menu">
       <span class="fa fa-search" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name:'search'})"></span>
       <span class="fa fa-user" style="margin-right: .2rem;" aria-hidden="true" @click="$router.push({name: 'personalPage'})"></span>
-      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.main.newPost') }}</a>
+      <a class="button create-note" @click="$router.push({name:'newPost'})">{{ $t('forum.postList.newPost') }}</a>
     </div>
   </div>
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0.8rem;">
-        <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.main.all') }}</a>
+        <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.postList.all') }}</a>
         <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection == section.id}"
-            @click="setCurrentSection(section.id)">{{section.title}}</a>
+          @click="setCurrentSection(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ $t('forum.orderType.'+this.postsOrderByField) }}</span>
@@ -81,11 +81,12 @@ export default {
     ...mapActions([
       'setCurrentSection',
       'setPostsOrderByField',
-      'updateForum'
+      'updateForumInfo'
     ]),
 
     orderChoose() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(`forum.orderType.${this.postsOrderByField}`))
+      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(
+        `forum.orderType.${this.postsOrderByField}`))
     },
 
     onOrderTypeChoose(type) {
@@ -97,7 +98,7 @@ export default {
       try {
         let result = await this.$acs.getForumInfo(forum_id)
         if (result.success) {
-          this.updateForum(result.forum)
+          this.updateForumInfo(result.forum)
         } else {
           console.log(this.$t(result.i18n_message))
         }

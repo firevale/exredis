@@ -87,7 +87,7 @@
         title: '',
         content: '',
         pageView: false,
-        noteOrderTypeStr: this.$t('forum.main.discussion'),
+        noteOrderTypeStr: this.$t('forum.postList.discussion'),
       }
     },
 
@@ -110,23 +110,23 @@
 
       orderChoose() {
         menuModal.showModal([{
-            name: this.$t('forum.main.discussion'),
+            name: this.$t('forum.postList.discussion'),
             code: 'discussion'
           },
           {
-            name: this.$t('forum.main.experience'),
+            name: this.$t('forum.postList.experience'),
             code: 'experience'
           },
           {
-            name: this.$t('forum.main.ras'),
+            name: this.$t('forum.postList.ras'),
             code: 'ras'
           },
           {
-            name: this.$t('forum.main.original'),
+            name: this.$t('forum.postList.original'),
             code: 'original'
           },
           {
-            name: this.$t('forum.main.appeal'),
+            name: this.$t('forum.postList.appeal'),
             code: 'appeal'
           }
         ], this.onOrderTypeChoose, this.noteOrderTypeStr)

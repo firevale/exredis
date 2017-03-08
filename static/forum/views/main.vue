@@ -16,9 +16,9 @@
   <div class="scroll-box">
     <div class="tile content-item">
       <div class="tile control" style="margin-bottom: 0;">
-        <a class="button" :class="{'is-active': noteLoadType=='all'}" @click="setNoteLoadType('all')">{{ $t('forum.main.all') }}</a>
-        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': noteLoadType==section.id}"
-            @click="setNoteLoadType(section.id)">{{section.title}}</a>
+        <a class="button" :class="{'is-active': postListType == 0}" @click="setPostListType('all')">{{ $t('forum.main.all') }}</a>
+        <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': postListType==section.id}"
+            @click="setPostListType(section.id)">{{section.title}}</a>
       </div>
       <div class="pointer" @click="orderChoose">
         <span>{{ noteOrderTypeStr }}</span>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="box is-chid is-parent content-item" style="padding: 0;">
-      <note-item v-for="item in postList" :key="item.id" :item-data="item"></note-item>
+      <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
     </div>
     <div class="column is-full" v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
@@ -40,12 +40,12 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import noteItem from '../components/noteItem.vue'
+import postListItem from '../components/postListItem'
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
+import pagination from '../components/pagination'
 export default {
   components: {
-    noteItem,
+    postListItem,
     pagination,
   },
 
@@ -56,14 +56,14 @@ export default {
   },
 
   watch: {
-    'noteLoadType' (newVal, oldVal) {
+    'postListType' (newVal, oldVal) {
       this.refreshPage()
     }
   },
 
   computed: {
     ...mapGetters([
-      'noteLoadType',
+      'postListType',
       'noteOrderType',
       'noteOrderTypeStr',
       'forumInfo'
@@ -81,8 +81,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'setNoteLoadType',
-      'setNoteOrderType',
+      'setPostListType',
+      'setPostOrderType',
       'updateForum'
     ]),
 
@@ -91,7 +91,7 @@ export default {
     },
 
     onOrderTypeChoose(type) {
-      this.setNoteOrderType(type)
+      this.setPostOrderType(type)
       this.refreshPage(1)
     },
 
@@ -116,7 +116,7 @@ export default {
       if (!this.processing) {
         this.processing = true
         try {
-          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.noteOrderType)
+          let result = await this.$acs.getPagedPost(this.postListType, page, this.recordsPerPage, this.postOrderType)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total

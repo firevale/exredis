@@ -56,7 +56,7 @@ export default {
       newPost: {
         title: '发帖子',
         btnTxt: '发帖',
-        preView: '预览',
+        preview: '预览',
         editView: '编辑',
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',

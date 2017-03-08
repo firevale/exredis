@@ -4,14 +4,14 @@
     <span>{{ $t('forum.personal.reply') }}</span>
     <span>{{ itemData.content }}</span>
   </div>
-  <div class="note-info">
+  <div class="post-info">
     <span>{{ itemData.time }}</span>
   </div>
   <div class="original-note" @click="showDetail">
     <span>{{ $t('forum.personal.originalNote') }}</span>
-    <span class="note-title">{{ itemData.title }}</span>
+    <span class="post-title">{{ itemData.title }}</span>
   </div>
-  <div class="note-info">
+  <div class="post-info">
     <span class="fa fa-list-alt" style="font-size: 1rem;vertical-align: middle;"></span>
     <span>{{ itemData.noteCount }}</span>
   </div>

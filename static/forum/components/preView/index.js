@@ -1,11 +1,11 @@
 import Vue from 'vue';
-const preView = Vue.extend(require('./preView.vue'));
+const preview = Vue.extend(require('./preview.vue'));
 let instance
 
 export const preViewNote = (propsData = {
 
 }) => {
-    instance = new preView({
+    instance = new preview({
       el: document.createElement('div'),
       propsData
     });

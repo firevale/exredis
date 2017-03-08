@@ -7,11 +7,11 @@
     <div class="row-line top-title" style="font-weight: bold;">
       {{ $t('forum.detail.title') }}
     </div>
-    <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="writeComment"></input>
+    <input type="button" class="reply-btn" :value="$t('forum.detail.replyBtn')" @click="replyNote"></input>
   </div>
   <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
-    <note-item-detail v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
-      :item-index="index"></note-item-detail>
+    <post-detail-view v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
+      :item-index="index"></post-detail-view>
     <div v-if="displayList&&displayList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="searchPageCount > 1">
       <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage" @switch-page="freshListByPage"></pagination>
@@ -23,7 +23,7 @@
 </div>
 </template>
 <script>
-import noteItemDetail from '../components/noteItemDetail.vue'
+import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 
@@ -33,11 +33,11 @@ export default {
   },
 
   components: {
-    noteItemDetail,
+    postDetailView,
     pagination,
   },
   computed: {
-    noteId() {
+    postId() {
       return this.$router.currentRoute.params.id
     },
     canBackTop() {
@@ -96,7 +96,7 @@ export default {
     loadNoteDetail(page) {
       this.$http({
           method: 'post',
-          url: '/detail?id=' + this.noteId + 'page=' + page,
+          url: '/detail?id=' + this.postId + 'page=' + page,
           params: {
 
           }
@@ -113,11 +113,11 @@ export default {
         })
     },
 
-    writeComment() {
+    replyNote() {
       this.$router.push({
-        name: 'writeComment',
+        name: 'replyNote',
         params: {
-          id: this.noteId,
+          id: this.postId,
           title: this.detailList[0].title
         }
       })

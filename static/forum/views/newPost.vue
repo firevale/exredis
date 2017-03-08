@@ -42,7 +42,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import noteItemDetail from '../components/noteItemDetail.vue'
+import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'

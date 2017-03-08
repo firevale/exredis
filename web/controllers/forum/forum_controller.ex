@@ -13,8 +13,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: true, forum: forum})
     end
   end
-  def get_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,
-                                                  params) do
+  def get_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     case check_exist_by_appid(app_id) do
       {:ok, forum_id}  ->
         case get_forum_info_by_id(forum_id) do
@@ -31,23 +30,28 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  def get_paged_post(conn, %{"page" => page,
+  def get_paged_post(conn, %{"section_id" => section_id,
+                             "page" => page,
                              "records_per_page" => records_per_page,
                              "order" => order}) do
-    total = Repo.one!(from post in ForumPost, select: count(post.id))
+    total = Repo.one!(from p in ForumPost, select: count(1), where: p.active == true )
     total_page = round(Float.ceil(total / records_per_page))
     order = String.to_atom(order)
 
-    query = from post in ForumPost,
-              join: u in assoc(post, :user),
-              join: s in assoc(post, :section),
-              select: map(post, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :created_at,
+    query = from p in ForumPost,
+              join: u in assoc(p, :user),
+              join: s in assoc(p, :section),
+              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :created_at,
                         :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title]]),
              limit: ^records_per_page,
-             where: post.active == true,
+             where: p.active == true,
              offset: ^((page - 1) * records_per_page),
              preload: [user: u, section: s],
-             order_by: [{:desc, post.is_top}, {:desc, ^order}]
+             order_by: [{:desc, p.is_top}, {:desc, ^order}]
+
+    if(is_integer(section_id) and section_id>0) do
+      query = query |> where([p], p.section_id == ^section_id)
+    end
 
     posts = Repo.all(query)
 

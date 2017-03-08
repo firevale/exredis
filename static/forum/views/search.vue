@@ -17,15 +17,15 @@
   <div class="scroll-box" style="padding-top: .2rem;">
     <div class="is-chid content-item">
       <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
-      <div v-if="!noteList&&searchKeyHis.length" class="his-box">
+      <div v-if="!noteList && searchKeyHis.length" class="his-box">
         <div v-for="item in searchKeyHis" class="his-key" @click="searchByKey(item)">{{item}}</div>
       </div>
-      <p v-show="!noteList&&searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
+      <p v-show="!noteList && searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
     </div>
-    <div v-if="noteList&&noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-      <note-item v-for="item in noteList" search-model :item-data="item" :mark-key="key"></note-item>
+    <div v-if="noteList && noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
+      <post-list-item v-for="item in noteList" search-model :post-info="item" :mark-key="key"></post-list-item>
     </div>
-    <div v-if="noteList&&noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
+    <div v-if="noteList && noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
       <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
     </div>
   </div>
@@ -36,12 +36,12 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import noteItem from '../components/noteItem.vue'
+import postListItem from '../components/postListItem'
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
+import pagination from '../components/pagination'
 export default {
   components: {
-    noteItem,
+    postListItem,
     pagination,
   },
 
@@ -92,7 +92,7 @@ export default {
     },
 
     onOrderTypeChoose(type) {
-      this.setNoteOrderType(type)
+      this.setPostOrderType(type)
       this.refreshPage()
     },
 

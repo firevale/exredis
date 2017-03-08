@@ -1,28 +1,26 @@
-import * as types from '../mutation-types'
+import * as types from '../mutationTypes'
 
 const state = {
   info: {},
-  loadType: 'all',
-  orderType: 'created_at',
-  orderTypeStr: '发帖时间排序'
+  postListType: 0,
+  postOrderType: 'created_at'
 }
 
 const mutations = {
-  'NOTE_LOADTYPE_CHANGE' (state, type) {
-    state.loadType = type
+  [types.SET_POST_LIST_TYPE](state, type) {
+    state.postListType = type
   },
 
-  'NOTE_ORDERTYPE_CHANGE' (state, type) {
-    state.orderType = type.code
-    state.orderTypeStr = type.name
+  [types.SET_POST_ORDER_TYPE](state, type) {
+    state.postOrderType = type.code
   },
 
   [types.UPDATE_FORUM](state, forum) {
     state.info = forum
-  },
+  }
 }
 
 export default {
   state,
-  mutations
+  mutations,
 }

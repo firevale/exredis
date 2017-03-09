@@ -34,7 +34,11 @@ defmodule Acs.ForumController do
                              "page" => page,
                              "records_per_page" => records_per_page,
                              "order" => order}) do
-    total = Repo.one!(from p in ForumPost, select: count(1), where: p.active == true )
+    queryTotal = from p in ForumPost, select: count(1), where: p.active == true
+    if(is_integer(section_id) and section_id>0) do
+      queryTotal = queryTotal |> where([p], p.section_id == ^section_id)
+    end
+    total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
     order = String.to_atom(order)
 
@@ -52,7 +56,6 @@ defmodule Acs.ForumController do
     if(is_integer(section_id) and section_id>0) do
       query = query |> where([p], p.section_id == ^section_id)
     end
-
     posts = Repo.all(query)
 
     conn |> json(%{success: true, posts: posts, total: total_page})
@@ -84,7 +87,7 @@ defmodule Acs.ForumController do
 
   def getPostDetail(conn,%{"post_id" => post_id}) do
 
-
+    
 
   end
   def getPostDetail(conn, params) do

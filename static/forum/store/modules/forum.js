@@ -1,7 +1,6 @@
 import * as types from '../mutationTypes'
 
 const state = {
-  id: undefined,
   info: {},
   currentSection: 0,
   postsOrderByField: 'created_at',

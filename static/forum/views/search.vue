@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box" style="padding-top: .2rem;">
+<div style="padding-top: .2rem;">
   <div class="is-chid content-item">
     <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
     <div v-if="!noteList && searchKeyHis.length" class="his-box">

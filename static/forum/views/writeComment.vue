@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
     {{ replyTitle }}
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
@@ -59,6 +59,7 @@ export default {
 
   computed: {
     ...mapGetters(['userInfo']),
+
     replyTitle() {
       return this.$t('forum.writeComment.title') + ':' + this.$router.currentRoute.params.title
     },

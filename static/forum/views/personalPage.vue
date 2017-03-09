@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="row-line content-item">
     <div class="column-line" style="margin-left: 1rem;">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">

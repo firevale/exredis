@@ -1,10 +1,14 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="tile content-item">
     <div class="tile control" style="margin-bottom: 0.8rem;">
-      <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">{{ $t('forum.postList.all') }}</a>
+      <a class="button" :class="{'is-active': currentSection == 0}" @click="setCurrentSection(0)">
+        {{ $t('forum.postList.all') }}
+      </a>
       <a class="button" v-for="section in forumInfo.sections" :class="{'is-active': currentSection == section.id}"
-        @click="setCurrentSection(section.id)">{{section.title}}</a>
+        @click="setCurrentSection(section.id)">
+        {{section.title}}
+      </a>
     </div>
     <div class="pointer" @click="orderChoose">
       <span>{{ $t('forum.orderType.'+this.postsOrderByField) }}</span>

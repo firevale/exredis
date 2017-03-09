@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="is-child  row-menu">
     <div class="service-menu" :class="{'menu-selected': type=='campaign'}" @click="type='campaign'">{{ $t('forum.campaign.gameCampaign') }}</div>
     <div class="service-menu" :class="{'menu-selected': type=='notice'}" @click="type='notice'">{{ $t('forum.campaign.gameNotice') }}</div>

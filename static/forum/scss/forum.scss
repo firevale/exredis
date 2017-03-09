@@ -3,6 +3,18 @@
 @import "./transition";
 @import "~bulma";
 
+body {
+  font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+  color: $text;
+  background-color: $white;
+}
+// TODO: turn on following lines to hide elements only on in-app
+// body:not(.in-app) {
+//   .show-in-app {
+//     display: none;
+//   }
+// }
+
 #app {
   height: 100vh;
   box-sizing: border-box;
@@ -24,32 +36,38 @@
   width: 100%;
 }
 
+.has-bottom-line {
+  border-bottom: 1px solid #979797;
+
+  &.thick-line {
+    border-bottom: 0.5rem solid #f2f2f2;
+  }
+}
+
 .icon {
   &.nav-icon {
     position: absolute;
-    top: 0.75rem;
+    top: 1.1rem;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     z-index: 9999;
 
     &:not(.pull-right) {
-      left: 0.8rem;
+      left: 1.25rem;
     }
 
     &.pull-right {
-      right: 0.8rem;
+      right: 1.25rem;
     }
   }
 
-  &.icon-back {
-    &.icon-close {
-      background-image: url("~login/assets/times@1x.png");
-    }
+  &.icon-close {
+    background-image: url("~login/assets/times@1x.png");
+  }
 
-    &.icon-back {
-      background-image: url("~login/assets/back@1x.png");
-    }
+  &.icon-back {
+    background-image: url("~login/assets/back@1x.png");
   }
 }
 
@@ -154,19 +172,12 @@
   border: none;
 }
 
-.scroll-box {
+.content-container {
   overflow: auto;
   position: absolute;
   top: 4.5rem;
   bottom: 0;
   width: 100%;
-}
-
-.top-title {
-  justify-content: center;
-  font-size: 1.4rem;
-  text-align: center;
-  padding: 0;
 }
 
 .note-new {

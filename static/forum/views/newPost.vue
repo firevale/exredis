@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="column is-full">
     <div class="pointer">
       <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>

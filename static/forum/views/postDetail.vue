@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div ref="scrollBox" class="is-chid scroll-box" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
+  <div ref="scrollBox" class="is-chid content-container" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
     <post-detail-view v-for="item,index in displayList" @toggle-floorHost="toggleFloorHost" :item-data="item"
       :item-index="index"></post-detail-view>
     <div v-if="displayList&&displayList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"

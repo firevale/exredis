@@ -1,5 +1,5 @@
 <template>
-<div class="scroll-box">
+<div>
   <div class="horizontal-seperator"></div>
   <div class="is-chid  row-menu">
     <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customerService.commonIssues') }}</div>

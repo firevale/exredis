@@ -8,13 +8,13 @@
       <a v-if="postInfo.is_vote" class="header-tag excellent">{{ $t('forum.postList.vote') }}</a>
       <a v-if="postInfo.is_hot" class="header-tag">{{ $t('forum.postList.hot') }}</a>
     </div>
-    <div class="column is-2 txt-right post-info">{{postInfo.last_reply_at | formatServerDateTime}}</div>
+    <div class="column is-2 has-text-right post-info">{{postInfo.last_reply_at | formatServerDateTime}}</div>
   </div>
   <div class="columns">
     <div class="column is-10">
       <span class="author-name">{{postInfo.user.nickname}}</span>
     </div>
-    <div class="column is-2 txt-right post-info">{{postInfo.comms}}/{{postInfo.reads}}</div>
+    <div class="column is-2 has-text-right post-info">{{postInfo.comms}}/{{postInfo.reads}}</div>
   </div>
 </div>
 </template>

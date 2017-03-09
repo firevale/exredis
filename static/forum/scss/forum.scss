@@ -53,12 +53,11 @@ body:not(.in-app) {
 .content-container {
   position: absolute;
   top: 4.5rem;
-  right: -1.2rem;
+  left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
-  padding: 0 1.5rem 0 0.5rem;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  padding: 0 1.5rem;
+  overflow: hidden;
 }
 
 .icon {
@@ -161,9 +160,22 @@ body:not(.in-app) {
   }
 }
 
-.txt-right {
-  text-align: right;
-  margin-right: 0 !important;
+.is-scrollable {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: scroll;
+}
+
+.post-list {
+  z-index: 2;
+  top: 3.4rem;
+  left: 1.5rem;
+  right: -2rem;
+  padding-right: 2.5rem;
 }
 
 .content-item {

@@ -1,9 +1,9 @@
 <template>
 <div>
   <div class="main-menu">
-    <span class="icon image-icon icon-search"></span>
-    <span class="icon image-icon icon-user"></span>
-    <a class="button is-info">{{$t('forum.postList.newPost')}}</a>
+    <router-link class="icon image-icon icon-search":to="{name: 'search'}"></router-link>
+    <router-link class="icon image-icon icon-user":to="{name: 'personalPage'}"></router-link>
+    <router-link class="button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
   </div>
   <div class="tab-bar has-bottom-line">
     <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
@@ -16,9 +16,11 @@
         {{section.title}}
       </a>
   </div>
-  <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
-  <div class="column is-full" v-show="total > 1">
-    <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+  <div class="post-list is-scrollable">
+    <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
+    <div class="column is-full" v-show="total > 1">
+      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+    </div>
   </div>
 </div>
 </template>

@@ -16,7 +16,7 @@
         {{section.title}}
       </a>
   </div>
-  <div class="post-list is-scrollable">
+  <div>
     <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>
     <div class="column is-full" v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>

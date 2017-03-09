@@ -42,22 +42,33 @@ body:not(.in-app) {
   width: 100%;
 }
 
-.has-bottom-line {
-  border-bottom: 1px solid #979797;
-
-  &.thick-line {
-    border-bottom: 0.5rem solid #f2f2f2;
-  }
-}
-
 .content-container {
   position: absolute;
   top: 4.5rem;
   left: 0;
-  right: 0;
+  right: -2rem;
   bottom: 0;
-  padding: 0 1.5rem;
-  overflow: hidden;
+  padding: 0 2.5rem 0 1.5rem;
+  overflow-y: scroll;
+}
+
+.has-bottom-line {
+  position: relative;
+
+  &:after {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    content: "";
+    border-bottom: 1px solid #979797;
+    transform: scaleY(.3);
+    transform-origin: 0 0;
+  }
+}
+
+.has-bottom-thick-line {
+  border-bottom: 0.5rem solid #f2f2f2;
 }
 
 .icon {
@@ -116,7 +127,7 @@ body:not(.in-app) {
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.8rem;
 
   .button {
     font-weight: 500;
@@ -158,24 +169,6 @@ body:not(.in-app) {
   .main-menu {
     right: 1.5rem;
   }
-}
-
-.is-scrollable {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow-y: scroll;
-}
-
-.post-list {
-  z-index: 2;
-  top: 3.4rem;
-  left: 1.5rem;
-  right: -2rem;
-  padding-right: 2.5rem;
 }
 
 .content-item {
@@ -596,10 +589,6 @@ body:not(.in-app) {
 
 .excellent {
   background-color: $olive !important;
-}
-
-.post-list-item {
-  padding: 0.8rem 0.2rem;
 }
 
 .post-list-item:last-child {

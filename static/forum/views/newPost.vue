@@ -2,7 +2,7 @@
 <div>
   <div class="column is-full">
     <div class="pointer">
-      <span class="dark" @click="orderChoose">{{ selectedSection().name}}</span>
+      <span class="dark" @click="orderChoose">{{ selectedSection.name}}</span>
       <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
       <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
       <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
@@ -82,6 +82,13 @@ export default {
 
       return sections
     },
+    selectedSection() {
+      let sectionId = this.selectedSectionID | this.currentSection
+      if (!sectionId && this.sections) {
+        sectionId = this.forumInfo.sections[0].id
+      }
+      return this.sections[sectionId]
+    },
     messageTip() {
       if (!this.title) {
         return this.$t('forum.newPost.requireTitle')
@@ -102,16 +109,10 @@ export default {
   },
 
   methods: {
-    selectedSection() {
-      let sectionId = this.selectedSectionID | this.currentSection
-      if (!sectionId && this.sections) {
-        sectionId = this.forumInfo.sections[0].id
-      }
-      return this.sections[sectionId]
-    },
 
     orderChoose() {
-      let selectItem = this.selectedSection()
+      let selectItem = this.selectedSection
+      console.info(selectItem)
       menuModal.showModal(this.sections, this.onOrderTypeChoose, selectItem.code)
     },
 

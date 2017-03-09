@@ -73,8 +73,7 @@ export default {
     ]),
 
     selectOrderByField() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.$t(
-        `forum.orderType.${this.postsOrderByField}`))
+      menuModal.showModal(null, this.onOrderTypeChoose, this.postsOrderByField)
     },
 
     onOrderTypeChoose(type) {

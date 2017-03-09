@@ -35,16 +35,20 @@ export default {
   data: function() {
     return {
       list: [{
-          code: 'last_reply_at'
+          code: 'last_reply_at',
+          name: this.$t('forum.orderType.last_reply_at')
         },
         {
-          code: 'created_at'
+          code: 'created_at',
+          name: this.$t('forum.orderType.created_at')
         },
         {
-          code: 'is_hot'
+          code: 'is_hot',
+          name: this.$t('forum.orderType.is_hot')
         },
         {
-          code: 'is_vote'
+          code: 'is_vote',
+          name: this.$t('forum.orderType.is_vote')
         }
       ],
       selectedItem: this.$t('forum.orderType.last_reply_at'),

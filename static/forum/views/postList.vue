@@ -103,7 +103,7 @@ export default {
         this.processing = true
         try {
           let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
-            this.currentSection)
+            this.currentSection, this.$router.currentRoute.params.forumId)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total

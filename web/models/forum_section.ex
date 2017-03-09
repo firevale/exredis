@@ -9,7 +9,7 @@ defmodule Acs.ForumSection do
     field :created_at, :naive_datetime
     field :active, :boolean, default: true
 
-    belongs_to :forum, Acs.Forum
+    belongs_to :forum, Acs.Forum, type: :integer
 
     timestamps()
   end

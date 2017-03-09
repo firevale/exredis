@@ -18,7 +18,7 @@ export default function(VueRouter) {
             name: 'search',
             component: require('./views/search.vue'),
           }, {
-            path: 'detail',
+            path: 'detail/:postId',
             name: 'detail',
             component: require('./views/postDetail.vue'),
           }, {

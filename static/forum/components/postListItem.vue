@@ -52,7 +52,7 @@ export default {
       this.$router.push({
         name: 'detail',
         params: {
-          id: this.postInfo.id
+          postId: this.postInfo.id
         },
       })
     }

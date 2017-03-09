@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     postId() {
-      return this.$router.currentRoute.params.id
+      return this.$router.currentRoute.params.postId
     },
     canBackTop() {
       return this.scrollPosition > 0

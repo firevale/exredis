@@ -1,8 +1,14 @@
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
-      async getPagedPost(page, records_per_page, order, section_id) {
-        let response = await Vue.http.post('/forum_actions/get_paged_post', {page, records_per_page, order, section_id,})
+      async getPagedPost(page, records_per_page, order, section_id, forum_id) {
+        let response = await Vue.http.post('/forum_actions/get_paged_post', {
+          page,
+          records_per_page,
+          order,
+          section_id,
+          forum_id,
+        })
         return await response.json()
       },
 

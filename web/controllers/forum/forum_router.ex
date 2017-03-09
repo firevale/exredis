@@ -24,7 +24,8 @@ defmodule Acs.ForumRouter do
 
     post "/add_post", ForumController, :add_post
 
-    get  "/get_post_detail", ForumController, :get_post_detail
+    post  "/get_post_detail", ForumController, :get_post_detail
+    post  "/get_post_commons", ForumController, :get_post_commons
   end
 
 end

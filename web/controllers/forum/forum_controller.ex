@@ -71,8 +71,8 @@ defmodule Acs.ForumController do
                        "content" => content,
                        "section_id" => section_id} = post) do
       now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-      post = Map.put(post, "user_id", 100002)
-      post=Map.put(post,"created_at",now_time)
+      post = post |> Map.put("user_id", 100002) |> Map.put("created_at",now_time)
+
       case ForumPost.changeset(%ForumPost{},post) |>   Repo.insert do
         {:ok, post} ->
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
@@ -88,11 +88,39 @@ defmodule Acs.ForumController do
   end
 
   def get_post_detail(conn,%{"post_id" => post_id}) do
+    query = from p in ForumPost,
+            join: u in assoc(p, :user),
+            join: s in assoc(p, :section),
+            where: p.id == ^post_id,
+            select: map(p, [:id, :title, :content, :created_at, user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
+            preload: [user: u, section: s]
+    detail = Repo.one(query) |> Map.put(:rank,"楼主")
 
-
-
+    conn |> json(%{success: true, detail: detail})
   end
   def get_post_detail(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  def get_post_commons(conn,%{"post_id" => post_id,
+                             "page" => page,
+                             "records_per_page" => records_per_page}) do
+    total = Repo.one!(from c in ForumComment, select: count(1), where: c.post_id == ^post_id)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from c in ForumComment,
+            join: u in assoc(c, :user),
+            order_by: [desc: c.id],
+            where: c.post_id == ^post_id,
+            select: map(c, [:id, :content, :created_at, user: [:id, :nickname, :avatar_url]]),
+            limit: ^records_per_page,
+            offset: ^((page - 1) * records_per_page),
+            preload: [user: u]
+    commons = Repo.all(query)
+
+    conn |> json(%{success: true, commons: commons, total: total_page})
+  end
+  def get_post_commons(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 

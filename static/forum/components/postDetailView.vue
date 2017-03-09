@@ -3,9 +3,8 @@
   <div class="columns " style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
-        <img :src="itemData.portrait"></img>
+        <img :src="itemData.user.avatar_url"></img>
       </figure>
-      <div class="title is-6 has-text-centered dark" style="margin-top: 1rem; margin-bottom: 1rem;">{{itemData.level}}</div>
       <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
     </div>
     <div class="column is-10.5 ql-editor">
@@ -18,23 +17,23 @@
         </div>
       </div>
       <div class="column detail-info">
-        <span class="note-time dark" style="font-size: .8rem;">{{ itemData.time }}</span>
-        <span class="note-author" style="font-size: .9rem;">{{ itemData.author }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deleteNoteQuestion"
+        <span class="Post-time dark" style="font-size: .8rem;">{{ itemData.created_at }}</span>
+        <span class="Post-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
+        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="Post-delete" @click="deletePostQuestion"
           style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
       </div>
-      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.description">
+      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">
       </div>
       <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
         <i class="fa fa-heart" :class="{'red': itemData.collection }" style="vertical-align: middle;"></i>
-        <span class="dark" style="font-size: .9rem;" @click="noteCollection">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
+        <span class="dark" style="font-size: .9rem;" @click="PostCollection">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
       </div>
     </div>
   </div>
   <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
-    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="sealNote">{{ $t('forum.detail.closeNote') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="essenceNote">{{ $t('forum.detail.essenceNote') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="recommendNote">{{ $t('forum.detail.recommendNote') }}</i>
+    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="sealPost">{{ $t('forum.detail.closePost') }}</i>
+    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="essencePost">{{ $t('forum.detail.essencePost') }}</i>
+    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="recommendPost">{{ $t('forum.detail.recommendPost') }}</i>
   </div>
 </div>
 </template>
@@ -101,20 +100,20 @@ export default {
   },
 
   methods: {
-    deleteNoteQuestion() {
+    deletePostQuestion() {
       AlertDialog.showModal({
         message: this.$t('forum.detail.deleteTip'),
-        onOk: this.deleteFollowNote,
+        onOk: this.deleteFollowPost,
         onCancel: null,
       })
     },
 
-    deleteFollowNote() {
+    deleteFollowPost() {
       this.$http({
-          url: 'deleteFollowNote',
+          url: 'deleteFollowPost',
           method: 'POST',
           params: {
-            noteID: this.itemData.ID,
+            PostID: this.itemData.id,
           },
         })
         .then()
@@ -122,18 +121,18 @@ export default {
     },
 
     floorHost() {
-      this.$emit('toggle-floorHost', this.itemData.author)
+      this.$emit('toggle-floorHost', this.itemData.user.nickname)
       this.onlyHost = !this.onlyHost
     },
 
-    noteCollection() {
+    PostCollection() {
       this.itemData.collection = !this.itemData.collection
 
       this.$http({
           method: 'post',
-          url: '/noteCollection',
+          url: '/PostCollection',
           params: {
-            noteID: this.itemData.ID,
+            PostID: this.itemData.id,
           },
         })
         .then((response) => {
@@ -152,39 +151,39 @@ export default {
       }
     },
 
-    sealNote() {
+    sealPost() {
       this.$http({
-          url: 'sealNote',
+          url: 'sealPost',
           method: 'post',
           params: {
-            noteID: this.itemData.ID,
+            PostID: this.itemData.id,
           },
         })
         .then()
         .catch()
 
-      message.showMsg(this.$t('forum.detail.sealNote'))
+      message.showMsg(this.$t('forum.detail.sealPost'))
 
     },
 
-    essenceNote() {
+    essencePost() {
       this.$http({
-          url: 'essenceNote',
+          url: 'essencePost',
           method: 'post',
           params: {
-            noteID: this.itemData.ID,
+            PostID: this.itemData.id,
           },
         })
         .then()
         .catch()
     },
 
-    recommendNote() {
+    recommendPost() {
       this.$http({
-          url: 'recommendNote',
+          url: 'recommendPost',
           method: 'post',
           params: {
-            noteID: this.itemData.ID,
+            PostID: this.itemData.id,
           },
         })
         .then()

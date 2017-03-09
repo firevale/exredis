@@ -2,7 +2,7 @@
 <div>
   <div class="column is-full">
     <div class="pointer">
-      <span class="dark" @click="orderChoose">{{ noteOrderTypeStr }}</span>
+      <span class="dark" @click="orderChoose">{{ selectedSection().name}}</span>
       <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
       <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
       <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
@@ -61,8 +61,27 @@ export default {
 
   },
   computed: {
-    ...mapGetters(['userInfo']),
+    ...mapGetters([
+      'userInfo',
+      'forumInfo',
+      'currentSection'
+    ]),
+    sections() {
+      if (!this.forumInfo.sections) {
+        return
+      }
 
+      let sections = {};
+
+      this.forumInfo.sections.forEach(function(sec) {
+        sections[sec.id] = {
+          name: sec.title,
+          code: sec.id
+        }
+      })
+
+      return sections
+    },
     messageTip() {
       if (!this.title) {
         return this.$t('forum.newPost.requireTitle')
@@ -73,43 +92,31 @@ export default {
       }
     },
   },
-
   data() {
     return {
       editorOption: {},
       title: '',
       content: '',
-      noteOrderTypeStr: this.$t('forum.postList.discussion'),
+      selectedSectionID: 0
     }
   },
 
   methods: {
-    orderChoose() {
-      menuModal.showModal([{
-          name: this.$t('forum.postList.discussion'),
-          code: 'discussion'
-        },
-        {
-          name: this.$t('forum.postList.experience'),
-          code: 'experience'
-        },
-        {
-          name: this.$t('forum.postList.ras'),
-          code: 'ras'
-        },
-        {
-          name: this.$t('forum.postList.original'),
-          code: 'original'
-        },
-        {
-          name: this.$t('forum.postList.appeal'),
-          code: 'appeal'
-        }
-      ], this.onOrderTypeChoose, this.noteOrderTypeStr)
+    selectedSection() {
+      let sectionId = this.selectedSectionID | this.currentSection
+      if (!sectionId && this.sections) {
+        sectionId = this.forumInfo.sections[0].id
+      }
+      return this.sections[sectionId]
     },
 
-    onOrderTypeChoose(type) {
-      this.noteOrderTypeStr = type.name
+    orderChoose() {
+      let selectItem = this.selectedSection()
+      menuModal.showModal(this.sections, this.onOrderTypeChoose, selectItem.code)
+    },
+
+    onOrderTypeChoose(section) {
+      this.selectedSectionID = section.code
     },
 
     preview() {

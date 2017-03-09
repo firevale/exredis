@@ -26,6 +26,11 @@ export default {
         let response = await Vue.http.post('/forum_actions/get_post_detail', {post_id})
         return await response.json()
       },
+
+      async getPostCommons(post_id, page, records_per_page) {
+        let response = await Vue.http.post('/forum_actions/get_post_commons', {post_id, page, records_per_page,})
+        return await response.json()
+      },
     }
   }
 }

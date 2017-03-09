@@ -71,9 +71,9 @@ defmodule Acs.Web do
 
       alias  Acs.Forum
       alias  Acs.ForumSection
-      alias  Acs.ForumReply
       alias  Acs.ForumPost
       alias  Acs.ForumManager
+      alias  Acs.ForumComment
 
       alias  Acs.PaymentHelper
       alias  Acs.ChaoxinNotifier

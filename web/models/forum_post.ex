@@ -1,7 +1,7 @@
 defmodule Acs.ForumPost do
   use Acs.Web, :model
 
-  @derive {Poison.Encoder, except: [:section, :user, :__meta__]}
+  @derive {Poison.Encoder, except: [:forum, :section, :user, :comments, :__meta__]}
 
   schema "forums_posts" do
     field :title, :string

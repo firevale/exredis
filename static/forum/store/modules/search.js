@@ -1,3 +1,5 @@
+import * as types from '../mutationTypes'
+
 const state = {
   searchKeyword: '',
   historyKeywords: [

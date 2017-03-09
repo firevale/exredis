@@ -1,6 +1,7 @@
 <template>
-<div class="tile is-vertical has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id">
-  <div class="level is-mobile" @click="showPostDetail">
+<div class="tile is-vertical has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id"
+  @click="showPostDetail">
+  <div class="level is-mobile">
     <div class="level-left level-item" @click="showPostDetail">
       <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
       <div class="level-item">
@@ -42,12 +43,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['searchKey']),
+    ...mapGetters(['searchKeyword']),
 
     filterKey() {
       return this.searchModel ?
-        this.postInfo.title.replace(new RegExp(this.searchKey, 'g'),
-          `<span class="red">${this.searchKey}</span>`) :
+        this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
+          `<span class="red">${this.searchKeyword}</span>`) :
         this.postInfo.title
     },
 

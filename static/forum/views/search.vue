@@ -2,10 +2,10 @@
 <div style="padding-top: .2rem;">
   <div class="is-chid content-item">
     <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
-    <div v-if="!noteList && searchKeyHis.length" class="his-box">
-      <div v-for="item in searchKeyHis" class="his-key" @click="searchByKey(item)">{{item}}</div>
+    <div v-if="!noteList && searchKeywordHistory.length" class="his-box">
+      <div v-for="item in searchKeywordHistory" class="his-key" @click="searchByKey(item)">{{item}}</div>
     </div>
-    <p v-show="!noteList && searchKeyHis.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
+    <p v-show="!noteList && searchKeywordHistory.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
   </div>
   <div v-if="noteList && noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
     <post-list-item v-for="item in noteList" search-model :post-info="item" :mark-key="key"></post-list-item>
@@ -44,14 +44,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['searchKey', 'searchKeyHis', 'searchPageCount', 'searchCurrentPage']),
+    ...mapGetters(['searchKeyword', 'searchKeywordHistory', 'searchPageCount', 'searchCurrentPage']),
 
     searchTip() {
       if (this.noteList && this.noteList.length) {
         return ''
       } else if (this.noteList && !this.noteList.length) {
         return this.$t('forum.search.noSearchResult')
-      } else if (!(this.noteList && this.noteList.length) && this.searchKeyHis.length) {
+      } else if (!(this.noteList && this.noteList.length) && this.searchKeywordHistory.length) {
         return this.$t('forum.search.searchHis')
       } else {
         return this.$t('forum.search.noSearchRecord')
@@ -67,7 +67,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setSearchKey', 'setSearchHis', 'clearSearchHis', 'setSearchPageCount',
+    ...mapActions(['setSearchKeyword', 'clearSearchHis', 'setSearchPageCount',
       'setSearchCurrentPage'
     ]),
 
@@ -82,8 +82,7 @@ export default {
 
     searchByKey(item) {
       this.key = item
-      this.setSearchKey(item)
-      this.setSearchHis(item)
+      this.setSearchKeyword(item)
       this.$nextTick(function() {
         this.noteList = [{
           headerTag: [{
@@ -138,7 +137,7 @@ export default {
 
     clearKey() {
       this.key = ''
-      this.setSearchKey('')
+      this.setSearchKeyword('')
       this.noteList = null
     },
 

@@ -1,6 +1,6 @@
 const state = {
-  searchKey: '',
-  hisKeys: [
+  searchKeyword: '',
+  historyKeywords: [
     '攻略',
     '任务',
     '赚钱',
@@ -9,27 +9,39 @@ const state = {
     '指南',
   ],
   pageCount: 10,
-  currentPage: 1
+  currentPage: 1,
 }
 
 const mutations = {
-  'SEARCH_KEY_CHANGE' (state, key) {
-    state.searchKey = key
-  },
-
-  'SEARCH_HIS_CLEAR' (state) {
-    state.hisKeys = []
-  },
-
-  'HISTORY_KEY_ADD' (state, key) {
-    if (key) {
-      if (state.hisKeys[0] && state.hisKeys[0] != key) {
-        state.hisKeys.unshift(key)
-      } else if (state.hisKeys.length == 0) {
-        state.hisKeys.unshift(key)
+  [types.SET_SEARCH_KEYWORD](state, keyword) {
+    state.searchKeyword = keyword
+    if (keyword) {
+      if (state.historyKeywords[0] && state.historyKeywords[0] != keyword) {
+        state.historyKeywords.unshift(keyword)
+      } else if (state.historyKeywords.length == 0) {
+        state.historyKeywords.unshift(keyword)
       }
-      if (state.hisKeys.length > 6) {
-        state.hisKeys.pop()
+
+      if (state.historyKeywords.length > 6) {
+        state.historyKeywords.pop()
+      }
+    }
+  },
+
+  [types.CLEAR_SEARCH_HISTORY](state) {
+    state.historyKeywords = []
+  },
+
+  'ADD_SEARCH_HISTORY_KEYWORD' (state, key) {
+    if (key) {
+      if (state.historyKeywords[0] && state.historyKeywords[0] != key) {
+        state.historyKeywords.unshift(key)
+      } else if (state.historyKeywords.length == 0) {
+        state.historyKeywords.unshift(key)
+      }
+
+      if (state.historyKeywords.length > 6) {
+        state.historyKeywords.pop()
       }
     }
   },
@@ -40,10 +52,10 @@ const mutations = {
 
   'SEARCH_SET_CURRENTPAGE' (state, page) {
     state.currentPage = page
-  },
+  }
 }
 
 export default {
   state,
-  mutations,
+  mutations
 }

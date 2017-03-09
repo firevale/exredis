@@ -14,22 +14,16 @@ export const setPostsOrderByField = ({
   commit(types.SET_POSTS_ORDER_BY_FIELD, fieldName)
 }
 
-export const setSearchKey = ({
+export const setSearchKeyword = ({
   commit
 }, key) => {
-  commit('SEARCH_KEY_CHANGE', key)
+  commit(types.SET_SEARCH_KEYWORD, key)
 }
 
 export const clearSearchHis = ({
   commit
 }, key) => {
-  commit('SEARCH_HIS_CLEAR', key)
-}
-
-export const setSearchHis = ({
-  commit
-}, key) => {
-  commit('HISTORY_KEY_ADD', key)
+  commit(types.CLEAR_SEARCH_HISTORY, key)
 }
 
 export const setSearchPageCount = ({

@@ -48,7 +48,7 @@ now_time = :calendar.local_time |> NaiveDateTime.from_erl!
 
 User.changeset(%User{}, %{id: "100001", email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1}) |> Repo.insert
 User.changeset(%User{}, %{id: "100002", email: "zhumingzhens@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
-User.changeset(%User{}, %{id: "100003", email: "zhumingzhens@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: "100003", email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
 
 Forum.changeset(%Forum{}, %{title: "战神大陆-iOS专区", active: true, created_at: now_time, app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 

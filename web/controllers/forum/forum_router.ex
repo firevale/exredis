@@ -26,6 +26,10 @@ defmodule Acs.ForumRouter do
 
     post  "/get_post_detail", ForumController, :get_post_detail
     post  "/get_post_commons", ForumController, :get_post_commons
+
+    post "/delete_common", ForumController, :delete_common
+
+    
   end
 
 end

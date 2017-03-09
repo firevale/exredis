@@ -5,6 +5,7 @@ defmodule Acs.ForumController do
   plug :fetch_user_id
   plug :fetch_user
 
+  # get_forum_info
   def get_forum_info(conn, %{"forum_id" => forum_id} = params) do
     case get_forum_info_by_id(forum_id) do
       nil ->
@@ -30,6 +31,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  # get_paged_post
   def get_paged_post(conn, %{"forum_id" => forum_id,
                              "section_id" => section_id,
                              "page" => page,
@@ -66,6 +68,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  # add_post
   def add_post(conn,%{"forum_id" => forum_id,
                        "title" => title,
                        "content" => content,
@@ -82,11 +85,11 @@ defmodule Acs.ForumController do
           conn |> json(%{success: false, message: "forum.error.networkError"})
       end
   end
-
   def add_post(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  # get_post_detail
   def get_post_detail(conn,%{"post_id" => post_id}) do
     query = from p in ForumPost,
             join: u in assoc(p, :user),
@@ -102,6 +105,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  # get_post_commons
   def get_post_commons(conn,%{"post_id" => post_id,
                              "page" => page,
                              "records_per_page" => records_per_page}) do
@@ -123,6 +127,81 @@ defmodule Acs.ForumController do
   def get_post_commons(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
+
+  # delete_common
+  def delete_common(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+                    %{"common_id" => common_id}) do
+    #todo power check
+    case Repo.get(ForumComment, common_id) do
+      nil ->
+        conn |> json(%{success: false,
+                       i18n_message: "admin.serverError.commonNotFound"})
+
+      %ForumComment{} = common ->
+        case Repo.delete(common) do
+          {:ok, _} ->
+            conn |> json(%{success: true})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def delete_common(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  # add_favorite
+  def add_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+                  %{"post_id" => post_id} = post) do
+    favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
+    if (favorite == nil) do
+      now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+      post = post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time)
+
+      case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
+        {:ok, _} ->
+          conn |> json(%{success: true, i18n_message: "forum.favorite.addSuccess"})
+
+        {:error, %{errors: errors}} ->
+          conn |> json(%{success: false, message: translate_errors(errors)})
+      end
+    end
+    conn |> json(%{success: true, i18n_message: "forum.favorite.addSuccess"})
+  end
+  def add_favorite(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  #delete_favorite
+  def delete_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+                  %{"post_id" => post_id} = post) do
+    # todo check power
+    favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
+    case favorite do
+      nil ->
+        conn |> json(%{success: false,
+                       i18n_message: "admin.favorite.notFound"})
+
+      %UserFavoritePost{} ->
+        case Repo.delete(favorite) do
+          {:ok, _} ->
+            conn |> json(%{success: true})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def delete_favorite(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  
 
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,

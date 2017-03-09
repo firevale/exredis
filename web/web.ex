@@ -59,6 +59,7 @@ defmodule Acs.Web do
 
       alias  Acs.App
       alias  Acs.User
+      alias  Acs.UserFavoritePost
       alias  Acs.Device
       alias  Acs.AppSdkBinding
       alias  Acs.AppUser

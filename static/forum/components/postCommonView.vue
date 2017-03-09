@@ -5,11 +5,11 @@
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
         <img :src="itemData.user.avatar_url"></img>
       </figure>
-      <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
+      <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 2 }">{{itemData.rank}}</div>
     </div>
     <div class="column is-10.5 ql-editor">
       <div class="column detail-info">
-        <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at }}</span>
+        <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
         <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
         <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deleteNoteQuestion"
           style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>

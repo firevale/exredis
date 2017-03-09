@@ -5,7 +5,7 @@
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
         <img :src="itemData.user.avatar_url"></img>
       </figure>
-      <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 3 }">{{itemData.rank}}</div>
+      <div class="title is-6 has-text-centered red">{{itemData.rank}}</div>
     </div>
     <div class="column is-10.5 ql-editor">
       <div v-if="itemData.title" class="columns" style="margin: 0;">
@@ -17,12 +17,12 @@
         </div>
       </div>
       <div class="column detail-info">
-        <span class="Post-time dark" style="font-size: .8rem;">{{ itemData.created_at }}</span>
-        <span class="Post-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="Post-delete" @click="deletePostQuestion"
+        <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
+        <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
+        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deletePostQuestion"
           style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
       </div>
-      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">
+      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">[aaa]
       </div>
       <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
         <i class="fa fa-heart" :class="{'red': itemData.collection }" style="vertical-align: middle;"></i>

@@ -41,22 +41,22 @@ export default {
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
         cancelCollection: '取消收藏',
-        closeNote: '封贴',
-        essenceNote: '精品',
-        recommendNote: '置顶',
-        sealNote: '封贴生效',
-        unSealNote: '封贴取消',
-        RecommendNote: '精品生效',
-        unRecommendNote: '精品取消',
-        upNote: '置顶生效',
-        unUpNote: '置顶取消'
+        closePost: '封贴',
+        essencePost: '精品',
+        recommendPost: '置顶',
+        sealPost: '封贴生效',
+        unSealPost: '封贴取消',
+        RecommendPost: '精品生效',
+        unRecommendPost: '精品取消',
+        upPost: '置顶生效',
+        unUpPost: '置顶取消'
       },
       error: {
         networkError: '网络错误'
       },
       serverError: {
         badRequestParams: '请求参数错误',
-        forumNotExist: '论坛不存在',
+        forumPostxist: '论坛不存在',
 
       },
       newPost: {
@@ -100,7 +100,7 @@ export default {
       personal: {
         title: '个人主页',
         nickName: '昵称 : ',
-        noteCount: '发帖数 : ',
+        PostCount: '发帖数 : ',
         registerTime: '注册时间 : ',
         myPosts: '我的帖子',
         myComments: '我的回复',
@@ -109,7 +109,7 @@ export default {
         newComment: '新回复',
         deleteBtn: '删除',
         reply: '回复:',
-        originalNote: '原帖:'
+        originalPost: '原帖:'
       },
       campaign: {
         title: '活动',

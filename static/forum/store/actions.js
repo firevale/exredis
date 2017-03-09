@@ -2,10 +2,10 @@ import Vue from 'vue'
 import * as utils from 'common/utils'
 import * as types from './mutationTypes'
 
-export const setCurrentSection = ({
+export const setCurrentSectionId = ({
   commit
 }, sectionId) => {
-  commit(types.SET_CURRENT_SECTION, sectionId)
+  commit(types.SET_CURRENT_SECTION_ID, sectionId)
 }
 
 export const setPostsOrderByField = ({

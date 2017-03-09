@@ -939,6 +939,10 @@ body:not(.in-app) {
   }
 }
 
+.modal-background {
+  opacity: 0.34;
+}
+
 .modal-item {
   display: flex;
   flex-direction: row;

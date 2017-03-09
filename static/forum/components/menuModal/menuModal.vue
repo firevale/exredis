@@ -2,12 +2,12 @@
 <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
   <div class="modal-background" @click="cancel"></div>
   <div class="modal-card">
-    <section class="modal-card-body" style="border-radius: 1rem;">
+    <section class="modal-card-body" style="border-radius: 3px;">
       <article class="media">
         <div class="media-content">
-          <div v-for="item in list" class="columns modal-item pointer" @click="ok(item)">
-            <span class="column item-name" :class="{'olive': selectedItem ==item.code}"> {{ item.name }} </span>
-            <span v-show="selectedItem ==item.code" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
+          <div v-for="item in menuItems" class="columns modal-item pointer" @click="ok(item)">
+            <span class="column item-name" :class="{'olive': selectedValue == item.value}"> {{ item.title }} </span>
+            <span v-show="selectedValue == item.value" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
           </div>
         </div>
       </article>
@@ -18,41 +18,35 @@
 <script>
 export default {
   props: {
-    visible: Boolean,
+    visible: {
+      type: Boolean,
+      default: true
+    },
+
     transition: {
       type: String,
       default: 'fade'
-    }
+    },
+
+    menuItems: {
+      default: []
+    },
+
+    selectedValue: undefined,
+
+    onOk: {
+      type: Function,
+      default: undefined
+    },
   },
+
   mounted() {
     document.body.appendChild(this.$el)
   },
+
   watch: {
     visible(val) {
       this.show = val
-    }
-  },
-  data: function() {
-    return {
-      list: [{
-          code: 'last_reply_at',
-          name: this.$t('forum.orderType.last_reply_at')
-        },
-        {
-          code: 'created_at',
-          name: this.$t('forum.orderType.created_at')
-        },
-        {
-          code: 'is_hot',
-          name: this.$t('forum.orderType.is_hot')
-        },
-        {
-          code: 'is_vote',
-          name: this.$t('forum.orderType.is_vote')
-        }
-      ],
-      selectedItem: this.$t('forum.orderType.last_reply_at'),
-      onOk: undefined,
     }
   },
 
@@ -61,11 +55,11 @@ export default {
   },
 
   methods: {
-    ok(res) {
+    ok(menuItem) {
+      this.selectedValue = menuItem.value
       this.visible = false
-      this.selectedItem = res.code
       if (typeof this.onOk == 'function') {
-        this.onOk(res)
+        this.onOk(menuItem)
       }
     },
 

@@ -1,18 +1,18 @@
 <template>
 <div>
   <div class="main-menu">
-    <router-link class="icon image-icon icon-search":to="{name: 'search'}"></router-link>
-    <router-link class="icon image-icon icon-user":to="{name: 'personalPage'}"></router-link>
+    <router-link class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
+    <router-link class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
     <router-link class="button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
   </div>
   <div class="tab-bar has-bottom-line">
     <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
     <span class="seperator"></span>
-    <a class="button" :class="currentSection == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSection(0)">
+    <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
         {{ $t('forum.postList.all') }}
       </a>
-    <a class="button" v-for="section in forumInfo.sections" :class="currentSection == section.id ? 'is-primary' : 'is-grey'"
-      @click="setCurrentSection(section.id)">
+    <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
+      @click="setCurrentSectionId(section.id)">
         {{section.title}}
       </a>
   </div>
@@ -45,14 +45,14 @@ export default {
   },
 
   watch: {
-    'currentSection' (newVal, oldVal) {
+    'currentSectionId' (newVal, oldVal) {
       this.refreshPage(1)
     }
   },
 
   computed: {
     ...mapGetters([
-      'currentSection', 'postsOrderByField', 'forumInfo', 'forumId'
+      'currentSectionId', 'postsOrderByField', 'forumInfo', 'forumId'
     ]),
   },
 
@@ -67,18 +67,36 @@ export default {
 
   methods: {
     ...mapActions([
-      'setCurrentSection',
+      'setCurrentSectionId',
       'setPostsOrderByField',
       'updateForumInfo'
     ]),
 
     selectOrderByField() {
-      menuModal.showModal(null, this.onOrderTypeChoose, this.postsOrderByField)
-    },
-
-    onOrderTypeChoose(type) {
-      this.setPostsOrderByField(type)
-      this.refreshPage(1)
+      menuModal.showModal({
+        menuItems: [{
+            value: 'last_reply_at',
+            title: this.$t('forum.orderType.last_reply_at')
+          },
+          {
+            value: 'created_at',
+            title: this.$t('forum.orderType.created_at')
+          },
+          {
+            value: 'is_hot',
+            title: this.$t('forum.orderType.is_hot')
+          },
+          {
+            value: 'is_vote',
+            title: this.$t('forum.orderType.is_vote')
+          }
+        ],
+        selectedValue: this.postsOrderByField,
+        onOk: selectedItem => {
+          this.setPostsOrderByField(selectedItem.value)
+          this.refreshPage(1)
+        },
+      })
     },
 
     onPageChange: function(page) {
@@ -103,7 +121,7 @@ export default {
         this.processing = true
         try {
           let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
-            this.currentSection, this.$router.currentRoute.params.forumId)
+            this.currentSectionId, this.$router.currentRoute.params.forumId)
           if (result.success) {
             this.postList = result.posts
             this.total = result.total

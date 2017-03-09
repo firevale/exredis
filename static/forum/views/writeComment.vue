@@ -30,7 +30,7 @@ import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
 import {
-  preViewNote
+  postPreview
 } from '../components/preview'
 import message from '../components/message'
 
@@ -136,7 +136,7 @@ export default {
     },
 
     preview() {
-      preViewNote({
+      postPreview({
         visible: true,
         deleteImgFunc: this.deleteUploadImg,
         item: {

@@ -1,12 +1,10 @@
 <template>
 <div>
   <div class="column is-full">
-    <div class="pointer">
-      <span class="dark" @click="orderChoose">{{ selectedSection.name}}</span>
-      <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
-      <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-      <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
-    </div>
+    <span class="icon image-icon icon-pull-down" @click="showSelectSectionMenu">{{ selectedSectionTitle }}</span>
+    <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
+    <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
+    <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
   </div>
   <div>
     <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
@@ -37,8 +35,9 @@ import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
 import {
-  preViewNote
+  postPreview
 } from '../components/preview'
+
 import message from '../components/message'
 
 import * as utils from 'common/utils'
@@ -60,35 +59,19 @@ export default {
   components: {
 
   },
+
   computed: {
     ...mapGetters([
       'userInfo',
       'forumInfo',
-      'currentSection'
+      'currentSectionId'
     ]),
-    sections() {
-      if (!this.forumInfo.sections) {
-        return
-      }
 
-      let sections = {};
-
-      this.forumInfo.sections.forEach(function(sec) {
-        sections[sec.id] = {
-          name: sec.title,
-          code: sec.id
-        }
-      })
-
-      return sections
+    selectedSectionTitle() {
+      let item = this.sectionMenuItems[this.selectedSectionId]
+      return item ? item.title : ''
     },
-    selectedSection() {
-      let sectionId = this.selectedSectionID | this.currentSection
-      if (!sectionId && this.sections) {
-        sectionId = this.forumInfo.sections[0].id
-      }
-      return this.sections[sectionId]
-    },
+
     messageTip() {
       if (!this.title) {
         return this.$t('forum.newPost.requireTitle')
@@ -99,29 +82,38 @@ export default {
       }
     },
   },
+
   data() {
     return {
       editorOption: {},
       title: '',
       content: '',
-      selectedSectionID: 0
+      selectedSectionId: 0,
+      sectionMenuItems: {},
     }
   },
 
+  created: function() {
+    this.selectedSectionId = this.currentSectionId
+    this.forumInfo.sections.forEach(section => {
+      this.sectionMenuItems[section.id] = {
+        title: section.title,
+        value: section.id
+      }
+    })
+  },
+
   methods: {
-
-    orderChoose() {
-      let selectItem = this.selectedSection
-      console.info(selectItem)
-      menuModal.showModal(this.sections, this.onOrderTypeChoose, selectItem.code)
-    },
-
-    onOrderTypeChoose(section) {
-      this.selectedSectionID = section.code
+    showSelectSectionMenu() {
+      menuModal.showModal({
+        menuItems: this.sectionMenuItems,
+        selectedValue: this.selectedSectionId,
+        onOk: menuItem => this.selectedSectionId = menuItem.value
+      })
     },
 
     preview() {
-      preViewNote({
+      postPreview({
         visible: true,
         item: {
           level: this.userInfo.level,
@@ -152,8 +144,9 @@ export default {
         console.info("success:" + result.success)
         if (result.success) {
           message.showMsg(this.$t('forum.newPost.addSuccess'))
-          this.goForum()
-
+          this.$router.push({
+            name: 'index'
+          })
         } else {
           message.showMsg(this.$t(result.message))
         }
@@ -161,28 +154,13 @@ export default {
         console.info(e)
         message.showMsg(this.$t('forum.error.networkError'))
       }
-
     },
-    goForum: function() {
-      this.$router.push({
-        name: 'forum'
-      })
-    },
-    onEditorBlur(e) {
-
-    },
-    onEditorFocus(e) {
-
-    },
-    onEditorReady(e) {
-
-    },
+    onEditorBlur(e) {},
+    onEditorFocus(e) {},
+    onEditorReady(e) {},
     onEditorChange(e) {
       this.content = e.html
     },
-
-
-
   }
 }
 </script>

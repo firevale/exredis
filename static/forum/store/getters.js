@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 const transitionName = state => state.app.transitionName
-const currentSection = state => state.forum.currentSection
+const currentSectionId = state => state.forum.currentSectionId
 const postsOrderByField = state => state.forum.postsOrderByField
 const searchKeyword = state => state.search.searchKeyword
 const searchKeywordHistory = state => state.search.historyKeywords
@@ -13,7 +13,7 @@ const forumInfo = state => state.forum.info
 
 export {
   transitionName,
-  currentSection,
+  currentSectionId,
   postsOrderByField,
   searchKeyword,
   searchKeywordHistory,

@@ -2,7 +2,7 @@ import Vue from 'vue';
 const preview = Vue.extend(require('./preview.vue'));
 let instance
 
-export const preViewNote = (propsData = {
+export const postPreview = (propsData = {
 
 }) => {
     instance = new preview({

@@ -45,13 +45,13 @@ export default {
 
   watch: {
     'currentSection' (newVal, oldVal) {
-      this.refreshPage()
+      this.refreshPage(1)
     }
   },
 
   computed: {
     ...mapGetters([
-      'currentSection', 'postsOrderByField', 'forumInfo'
+      'currentSection', 'postsOrderByField', 'forumInfo', 'forumId'
     ]),
   },
 
@@ -81,9 +81,13 @@ export default {
       this.refreshPage(1)
     },
 
-    getForumInfo: async function(forum_id = 1) {
+    onPageChange: function(page) {
+      this.refreshPage(page)
+    },
+
+    getForumInfo: async function() {
       try {
-        let result = await this.$acs.getForumInfo(forum_id)
+        let result = await this.$acs.getForumInfo(this.$router.currentRoute.params.forumId)
         if (result.success) {
           this.updateForumInfo(result.forum)
         } else {
@@ -92,10 +96,6 @@ export default {
       } catch (e) {
         console.log(this.$t('forum.error.networkError'))
       }
-    },
-
-    onPageChange: function(page) {
-      this.refreshPage(page)
     },
 
     refreshPage: async function(page) {

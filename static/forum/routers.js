@@ -5,7 +5,7 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [
       {
-        path: '/forum/:id',
+        path: '/forum/:forumId',
         name: 'forum',
         component: require('./views/main.vue'),
         children: [

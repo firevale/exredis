@@ -8,19 +8,25 @@ body {
   color: $text;
   background-color: $white;
 }
-// TODO: turn on following lines to hide elements only on in-app
-// body:not(.in-app) {
-//   .show-in-app {
-//     display: none;
-//   }
-// }
+
+body:not(.in-app) {
+  .show-in-app {
+    display: none;
+  }
+}
 
 #app {
   height: 100vh;
+  width: 100vw;
   box-sizing: border-box;
   background-color: $white;
   padding-top: 1rem;
-  overflow: auto;
+}
+
+.root-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .stay-top {
@@ -45,7 +51,14 @@ body {
 }
 
 .content-container {
-  padding: 0 1.5rem;
+  position: absolute;
+  top: 4.5rem;
+  right: -1.2rem;
+  bottom: 0;
+  width: 100%;
+  padding: 0 1.5rem 0 0.5rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .icon {
@@ -99,15 +112,19 @@ body {
 }
 
 .tab-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 0.5rem;
 
   .button {
     font-weight: 500;
     min-width: 5rem;
-    margin-right: 0.5rem;
+    margin: 0.4rem 0.5rem 0.4rem 0;
     height: 2rem;
     font-size: 1rem;
-    padding: 0;
   }
 
   span.seperator {
@@ -118,22 +135,29 @@ body {
   }
 }
 
-.control {
-  a.button {
-    background: $grey;
-    padding: 0;
-    color: $white;
-    margin-right: 0.5rem;
-    font-weight: bold;
-    min-width: 5rem;
-    border-radius: 0.2rem;
-    font-size: 0.9rem;
-    border: none;
+.main-menu {
+  position: fixed;
+  top: 1rem;
+  right: 4rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 10rem;
 
-    &.is-active {
-      background: $primary;
-      color: $white;
-    }
+  .button {
+    font-weight: 500;
+    min-width: 4rem;
+    margin: 0;
+    height: 1.7rem;
+    font-size: 1rem;
+    border-radius: 0;
+  }
+}
+
+body:not(.in-app) {
+  .main-menu {
+    right: 1.5rem;
   }
 }
 
@@ -196,14 +220,6 @@ body {
   padding: 0.2rem 2rem;
   background: $blue;
   border: none;
-}
-
-.content-container {
-  overflow: auto;
-  position: absolute;
-  top: 4.5rem;
-  bottom: 0;
-  width: 100%;
 }
 
 .note-new {
@@ -318,57 +334,6 @@ body {
     content: '';
     display: block;
     clear: both;
-  }
-}
-
-.pointer {
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.main-menu {
-  margin-right: 0.75rem;
-  position: absolute;
-  top: 0.7rem;
-  right: 0;
-  font-size: 1rem;
-
-  span {
-    margin-top: 0.6rem;
-    font-size: 1.5rem;
-  }
-
-  .button {
-    margin-top: 0.3rem;
-    padding: 0.5rem 1.3rem;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .main-menu {
-    position: absolute;
-    margin-right: 0.75rem;
-    right: 0;
-    top: 0.75rem;
-    font-size: 0.6rem;
-
-    span {
-      margin-top: 0.6rem;
-      font-size: 1.5rem;
-    }
-
-    .button {
-      margin-top: 0.2rem;
-      padding: 0.1rem 0.5rem;
-    }
-  }
-
-  .back-top {
-    right: 1rem;
-  }
-
-  .reply-btn {
-    top: 0.65rem;
-    right: 1rem;
   }
 }
 
@@ -623,7 +588,6 @@ body {
 
 .post-list-item {
   padding: 0.8rem 0.2rem;
-  border-bottom: 1px solid $text-grey;
 }
 
 .post-list-item:last-child {

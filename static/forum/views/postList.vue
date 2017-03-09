@@ -1,6 +1,11 @@
 <template>
 <div>
-  <div class="tile tab-bar has-bottom-line" style="padding-bottom: 0.8rem;">
+  <div class="main-menu">
+    <span class="icon image-icon icon-search"></span>
+    <span class="icon image-icon icon-user"></span>
+    <a class="button is-info">{{$t('forum.postList.newPost')}}</a>
+  </div>
+  <div class="tab-bar has-bottom-line">
     <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
     <span class="seperator"></span>
     <a class="button" :class="currentSection == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSection(0)">

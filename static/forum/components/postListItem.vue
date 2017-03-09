@@ -1,5 +1,5 @@
 <template>
-<div class="post-list-item">
+<div class="post-list-item has-bottom-line">
   <div class="columns">
     <div class="column is-10" @click="showDetail">
       <a v-if="postInfo.is_top" class="header-tag">{{ $t('forum.postList.top') }}</a> [{{postInfo.section.title}}]

@@ -2,6 +2,7 @@ defmodule Acs.User do
   use   Acs.Web, :model
   # alias Acs.Repo
   alias Acs.UserSdkBinding
+  alias Acs.UserFavoritePost
 
   @email_check_regex ~r/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/iu
 
@@ -20,6 +21,7 @@ defmodule Acs.User do
     field :avatar_url, :string
 
     has_many :sdk_bindings, UserSdkBinding, references: :id
+    has_many :favorite_posts, UserFavoritePost, references: :id
 
     timestamps()
   end

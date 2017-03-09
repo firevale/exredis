@@ -12,7 +12,7 @@ export default {
         appeal: '问题求助',
         order: '{type}',
         top: '置顶',
-        vote: '精',
+        essence: '精',
         hot: 'HOT'
       },
       search: {

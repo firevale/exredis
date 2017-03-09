@@ -52,6 +52,12 @@ body:not(.in-app) {
   overflow-y: scroll;
 }
 
+body.in-app {
+  .content-container {
+    padding: 0 3.5rem 0 1.5rem;
+  }
+}
+
 .has-bottom-line {
   position: relative;
 
@@ -577,27 +583,68 @@ body:not(.in-app) {
   background-color: $red !important;
 }
 
-.author-name {
-  color: $link;
-  font-size: 0.7rem;
-}
-
-.post-info {
-  color: $dark;
-  font-size: 0.7rem;
-}
-
 .excellent {
   background-color: $olive !important;
 }
 
-.post-list-item:last-child {
-  border-bottom: none;
-}
+.post-list-item {
+  padding: 0.3rem 0;
 
-.post-list-item .column {
-  padding-top: 0;
-  padding-bottom: 0.2rem;
+  .title {
+    margin-bottom: 0;
+    font-weight: 400;
+  }
+
+  .level:first-child {
+    margin-top: 0.3rem;
+  }
+
+  .level:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  .level:last-child {
+    margin-bottom: 0.3rem;
+  }
+
+  .level-item {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .grey-text {
+    color: $text-grey;
+    font-size: 1.1rem;
+  }
+
+  span.is-primary {
+    color: $primary;
+    font-size: 1.1rem;
+  }
+
+  .tag {
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    height: 1.3rem;
+    padding: 0.3rem;
+    width: 2.4rem;
+    color: $white;
+
+    &.is-essence {
+      background: $essence;
+    }
+
+    &.image-tag {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+
+      &.has-picture {
+        background-image: url("~forum/assets/tag-picture@3x.png");
+      }
+    }
+  }
 }
 
 .original-note {

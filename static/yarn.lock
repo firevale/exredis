@@ -6273,6 +6273,10 @@ vue-template-es2015-compiler@^1.2.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.5.1.tgz#0c36cc57aa3a9ec13e846342cb14a72fcac8bd93"
 
+vue-timeago@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/vue-timeago/-/vue-timeago-3.3.0.tgz#bc71227c231eed1fdf3c2a109c47e2427febe384"
+
 vue-validator@^3.0.0-alpha.2:
   version "3.0.0-alpha.2"
   resolved "https://registry.yarnpkg.com/vue-validator/-/vue-validator-3.0.0-alpha.2.tgz#ffdb797bbe5efdfc8c3050f981983ea0db70dc1c"
@@ -6281,7 +6285,7 @@ vue@^2.0.1, vue@^2.1.4, vue@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.2.1.tgz#ddbfd2f0caf38f374f5a36eea2e1edf25225b68e"
 
-vuelidate@0.2.0:
+vuelidate@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.2.0.tgz#7c50b220ef3700b1a28900f32825c442df809337"
 

@@ -30,11 +30,12 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  def get_paged_post(conn, %{"section_id" => section_id,
+  def get_paged_post(conn, %{"forum_id" => forum_id,
+                             "section_id" => section_id,
                              "page" => page,
                              "records_per_page" => records_per_page,
                              "order" => order}) do
-    queryTotal = from p in ForumPost, select: count(1), where: p.active == true
+    queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
     if(is_integer(section_id) and section_id>0) do
       queryTotal = queryTotal |> where([p], p.section_id == ^section_id)
     end
@@ -45,12 +46,13 @@ defmodule Acs.ForumController do
     query = from p in ForumPost,
               join: u in assoc(p, :user),
               join: s in assoc(p, :section),
+              join: f in assoc(p, :forum),
               select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :created_at,
-                        :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title]]),
+                        :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title], forum: [:id]]),
              limit: ^records_per_page,
-             where: p.active == true,
+             where: p.forum_id == ^forum_id and p.active == true,
              offset: ^((page - 1) * records_per_page),
-             preload: [user: u, section: s],
+             preload: [user: u, section: s, forum: f],
              order_by: [{:desc, p.is_top}, {:desc, ^order}]
 
     if(is_integer(section_id) and section_id>0) do
@@ -85,23 +87,23 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  def getPostDetail(conn,%{"post_id" => post_id}) do
+  def get_post_detail(conn,%{"post_id" => post_id}) do
 
-    
+
 
   end
-  def getPostDetail(conn, params) do
+  def get_post_detail(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
   defp get_forum_info_by_id(forum_id) do
-    query = from forum in Forum,
-            left_join: sections in assoc(forum, :sections),
-            order_by: [desc: forum.id, desc: sections.sort],
-            where: forum.id == ^forum_id,
-            select: forum,
-            preload: [sections: sections]
-    Repo.one!(query)
+    query = from f in Forum,
+            left_join: s in assoc(f, :sections),
+            order_by: [desc: f.id, desc: s.sort],
+            where: f.id == ^forum_id,
+            select: f,
+            preload: [sections: s]
+    Repo.one(query)
   end
 
   defp check_exist_by_appid(app_id) do

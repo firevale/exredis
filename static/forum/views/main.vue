@@ -3,7 +3,7 @@
   <div class="tile is-child is-full stay-top title-bar has-text-centered has-bottom-line thick-line">
     <span v-show="canGoBack" class="icon nav-icon icon-back" @click.prevent="$router.back()"></span>
     <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose"></span>
-    <h4 class="title is-4">{{forumInfo.title}}</h4>
+    <h4 class="title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
   </div>
   <transition :name="transitionName">
     <router-view class="container is-fluid content-container"> </router-view>
@@ -22,11 +22,8 @@ import nativeApi from 'common/nativeApi'
 export default {
   data: function() {
     return {
-      canGoBack: false,
+      canGoBack: true,
     }
-  },
-
-  created: function() {
   },
 
   computed: {

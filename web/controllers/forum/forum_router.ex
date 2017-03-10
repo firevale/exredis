@@ -25,9 +25,9 @@ defmodule Acs.ForumRouter do
     post "/add_post", ForumController, :add_post
 
     post  "/get_post_detail", ForumController, :get_post_detail
-    post  "/get_post_commons", ForumController, :get_post_commons
+    post  "/get_post_comments", ForumController, :get_post_comments
 
-    post "/delete_common", ForumController, :delete_common
+    post "/delete_comment", ForumController, :delete_comment
     post "/toggle_post_favorite", ForumController, :toggle_post_favorite
     post "/set_post_status", ForumControllerm, :set_post_status
 

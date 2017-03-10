@@ -105,8 +105,8 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  # get_post_commons
-  def get_post_commons(conn,%{"post_id" => post_id,
+  # get_post_comments
+  def get_post_comments(conn,%{"post_id" => post_id,
                              "page" => page,
                              "records_per_page" => records_per_page}) do
     total = Repo.one!(from c in ForumComment, select: count(1), where: c.post_id == ^post_id)
@@ -124,12 +124,12 @@ defmodule Acs.ForumController do
 
     conn |> json(%{success: true, commons: commons, total: total_page})
   end
-  def get_post_commons(conn, params) do
+  def get_post_comments(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  # delete_common
-  def delete_common(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+  # delete_comment
+  def delete_comment(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
                     %{"common_id" => common_id}) do
     #todo power check
     case Repo.get(ForumComment, common_id) do
@@ -149,7 +149,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
     end
   end
-  def delete_common(conn, params) do
+  def delete_comment(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 

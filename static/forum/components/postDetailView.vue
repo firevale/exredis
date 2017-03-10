@@ -42,7 +42,6 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import AlertDialog from './alertDialog'
 import {
   swiperContainer,
   preViewing
@@ -120,7 +119,7 @@ export default {
           message.showMsg(this.$t('forum.error.networkError'))
         }
       } else {
-        loginAndRedirect()
+        this.loginAndRedirect()
       }
     },
 
@@ -149,7 +148,7 @@ export default {
           message.showMsg(this.$t('forum.error.networkError'))
         }
       } else {
-        loginAndRedirect()
+        this.loginAndRedirect()
       }
     },
 

@@ -3,7 +3,7 @@
   <div class="columns " style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
-        <img :src="itemData.user.avatar_url"></img>
+        <img v-if :src="itemData.user.avatar_url"></img>
       </figure>
       <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 2 }">{{itemData.rank}}</div>
     </div>
@@ -27,7 +27,6 @@ import {
 } from 'vuex'
 import AlertDialog from './alertDialog'
 import message from './message'
-import md5 from 'js-md5'
 
 export default {
   props: {
@@ -54,16 +53,16 @@ export default {
     },
 
     deleteCommon: async function(common_id) {
-        try {
-          let result = await this.$acs.deleteCommon(common_id)
-          if (result.success) {
-            message.showMsg(this.$t(result.i18n_message))
-          } else {
-            message.showMsg(this.$t(result.i18n_message))
-          }
-        } catch (e) {
-          message.showMsg(this.$t('forum.error.networkError'))
+      try {
+        let result = await this.$acs.deleteCommon(common_id)
+        if (result.success) {
+          message.showMsg(this.$t(result.i18n_message))
+        } else {
+          message.showMsg(this.$t(result.i18n_message))
         }
+      } catch (e) {
+        message.showMsg(this.$t('forum.error.networkError'))
+      }
     },
 
   }

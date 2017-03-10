@@ -153,55 +153,77 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  # add_favorite
-  def add_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+  # toggle_post_favorite
+  def toggle_post_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
                   %{"post_id" => post_id} = post) do
-    favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
-    if (favorite == nil) do
-      now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-      post = post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time)
-
-      case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
-        {:ok, _} ->
-          conn |> json(%{success: true, i18n_message: "forum.favorite.addSuccess"})
-
-        {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, message: translate_errors(errors)})
-      end
-    end
-    conn |> json(%{success: true, i18n_message: "forum.favorite.addSuccess"})
-  end
-  def add_favorite(conn, params) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
-  end
-
-  #delete_favorite
-  def delete_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
-                  %{"post_id" => post_id} = post) do
-    # todo check power
     favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
     case favorite do
       nil ->
-        conn |> json(%{success: false,
-                       i18n_message: "admin.favorite.notFound"})
+        # add favorite
+        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+        post = post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time)
 
-      %UserFavoritePost{} ->
-        case Repo.delete(favorite) do
+        case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
           {:ok, _} ->
-            conn |> json(%{success: true})
+            conn |> json(%{success: true, i18n_message: "forum.detail.collection"})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
         end
+
+      %UserFavoritePost{} ->
+        # delete favorite
+        case Repo.delete(favorite) do
+          {:ok, _} ->
+            conn |> json(%{success: true, i18n_message: "forum.detail.cancelCollection"})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+
     end
   end
-  def delete_favorite(conn, params) do
+  def toggle_post_favorite(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  
+  # set post status
+  def set_post_status(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+                  %{"post_id" => post_id,
+                    "status" => status}) do
+    # todo check power
+    case Repo.get(ForumPost, post_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
+
+      %ForumPost{} = post ->
+        case status do
+          "close" -> post = post |> Map.put("active", true)
+
+          "essence" -> post = post |> Map.put("is_vote", true)
+
+          "up" -> post = post |> Map.put("is_top", true)
+
+          _ -> conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
+        end
+        case ForumPost.changeset(%ForumPost{}, post) |> Repo.update do
+          {:ok, _} ->
+            conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+        end
+
+      _ ->
+        conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
+    end
+  end
+  def set_post_status(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
 
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,

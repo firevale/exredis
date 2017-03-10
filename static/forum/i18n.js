@@ -36,28 +36,24 @@ export default {
         author: '楼主',
         follow: '只看楼主',
         followAll: '查看全部',
-        collection: '收藏该帖',
+        collection: '收藏帖子成功',
         delete: '删除',
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
-        cancelCollection: '取消收藏',
+        cancelCollection: '取消收藏成功',
         closePost: '封贴',
         essencePost: '精品',
-        recommendPost: '置顶',
-        sealPost: '封贴生效',
-        unSealPost: '封贴取消',
-        RecommendPost: '精品生效',
-        unRecommendPost: '精品取消',
-        upPost: '置顶生效',
-        unUpPost: '置顶取消'
+        upPost: '置顶',
+        operateSuccess: '操作成功',
       },
       error: {
         networkError: '网络错误'
       },
       serverError: {
         badRequestParams: '请求参数错误',
-        forumPostxist: '论坛不存在',
-
+        forumNotExist: '论坛不存在',
+        postNotExist: '帖子不存在',
+        commonNotFound: '评论不存在',
       },
       newPost: {
         title: '发帖子',

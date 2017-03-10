@@ -27,6 +27,21 @@ export default {
         return await response.json()
       },
 
+      async deleteCommon(common_id) {
+        let response = await Vue.http.post('/forum_actions/delete_common', {common_id})
+        return await response.json()
+      },
+
+      async togglePostFavorite(post_id) {
+        let response = await Vue.http.post('/forum_actions/toggle_post_favorite', {post_id})
+        return await response.json()
+      },
+
+      async setPostStatus(post_id, status) {
+        let response = await Vue.http.post('/forum_actions/set_post_status', {post_id, status,})
+        return await response.json()
+      },
+
       async getPostCommons(post_id, page, records_per_page) {
         let response = await Vue.http.post('/forum_actions/get_post_commons', {post_id, page, records_per_page,})
         return await response.json()

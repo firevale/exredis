@@ -31,9 +31,9 @@
     </div>
   </div>
   <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
-    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="sealPost">{{ $t('forum.detail.closePost') }}</i>
+    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="closePost">{{ $t('forum.detail.closePost') }}</i>
     <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="essencePost">{{ $t('forum.detail.essencePost') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="recommendPost">{{ $t('forum.detail.recommendPost') }}</i>
+    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="upPost">{{ $t('forum.detail.upPost') }}</i>
   </div>
 </div>
 </template>
@@ -151,43 +151,31 @@ export default {
       }
     },
 
-    sealPost() {
-      this.$http({
-          url: 'sealPost',
-          method: 'post',
-          params: {
-            PostID: this.itemData.id,
-          },
-        })
-        .then()
-        .catch()
-
-      message.showMsg(this.$t('forum.detail.sealPost'))
-
+    closePost(){
+      this.setPostStatus("close")
     },
 
     essencePost() {
-      this.$http({
-          url: 'essencePost',
-          method: 'post',
-          params: {
-            PostID: this.itemData.id,
-          },
-        })
-        .then()
-        .catch()
+      this.setPostStatus("essence")
     },
 
-    recommendPost() {
-      this.$http({
-          url: 'recommendPost',
-          method: 'post',
-          params: {
-            PostID: this.itemData.id,
-          },
-        })
-        .then()
-        .catch()
+    upPost() {
+      this.setPostStatus("up")
+    },
+
+    setPostStatus: async function(status) {
+      try {
+        let result = await this.$acs.setPostStatus(this.itemData.id, status)
+        if (result.success) {
+          message.showMsg(this.$t(result.i18n_message))
+        } else {
+          console.log(this.$t(result.i18n_message))
+          message.showMsg(this.$t(result.i18n_message))
+        }
+      } catch (e) {
+        message.showMsg(this.$t('forum.error.networkError'))
+        console.log(this.$t('forum.error.networkError'))
+      }
     },
 
     checkImgClick(e) {

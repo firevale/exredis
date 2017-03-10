@@ -5,16 +5,18 @@
     <router-link class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
     <router-link class="button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
   </div>
-  <div class="tab-bar has-bottom-line">
-    <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
-    <span class="seperator"></span>
-    <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
+  <div class="has-bottom-line">
+    <div class="tab-bar">
+      <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
+      <span class="seperator"></span>
+      <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
         {{ $t('forum.postList.all') }}
       </a>
-    <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
-      @click="setCurrentSectionId(section.id)">
+      <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
+        @click="setCurrentSectionId(section.id)">
         {{section.title}}
       </a>
+    </div>
   </div>
   <div>
     <post-list-item v-for="item in postList" :key="item.id" :post-info="item"></post-list-item>

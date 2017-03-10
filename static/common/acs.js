@@ -2,7 +2,9 @@ import './date'
 import {guid} from './utils'
 
 export const getAppId = _ => {
-  return window.acsConfig.appId ? window.acsConfig.appId : 'account-center'
+  return window.acsConfig.appId
+    ? window.acsConfig.appId
+    : 'account-center'
 }
 
 export const getDeviceId = _ => {

@@ -1,50 +1,80 @@
+import message from './components/message'
+
+const processResponse = async(Vue, response) => {
+  let result = await response.json()
+
+  if (result.success) {
+    return result
+  } else {
+    if (result.i18n_message) {
+      message.showMsg(Vue.t(result.i18n_message, result.i18n_message_object))
+    } else if (result.message) {
+      message.showMsg(result.message)
+    }
+
+    switch (result.action) {
+      case 'login':
+        Vue.nextTick(_ => {
+          window.location = `/login?redirect_uri=${btoa(window.location.href)}`
+        });
+        break;
+      default:
+        break;
+    }
+
+    return {success: false}
+  }
+}
+
+const post = async(Vue, uri, params) => {
+  try {
+    let response = await Vue.http.post(uri, params)
+    return processResponse(Vue, response)
+  } catch (_) {
+    message.showMsg(Vue.t('forum.error.networkError'))
+    return {success: false}
+  }
+}
+
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
-      async getPagedPost(page, records_per_page, order, section_id, forum_id) {
-        let response = await Vue.http.post('/forum_actions/get_paged_post', {
+      getPagedPost(page, records_per_page, order, section_id, forum_id) {
+        return post(Vue, '/forum_actions/get_paged_post', {
           page,
           records_per_page,
           order,
           section_id,
           forum_id,
         })
-        return await response.json()
       },
 
-      async getForumInfo(forum_id) {
-        let response = await Vue.http.post('/forum_actions/get_forum_info', {forum_id})
-        return await response.json()
+      getForumInfo(forum_id) {
+        return post(Vue, '/forum_actions/get_forum_info', {forum_id})
       },
 
-      async addPost(forum_id, section_id, title, content) {
-        let response = await Vue.http.post('/forum_actions/add_post', {forum_id, section_id, title, content,})
-        return await response.json()
+      addPost(forum_id, section_id, title, content) {
+        return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content,})
       },
 
-      async getPostDetail(post_id) {
-        let response = await Vue.http.post('/forum_actions/get_post_detail', {post_id})
-        return await response.json()
+      getPostDetail(post_id) {
+        return post(Vue, '/forum_actions/get_post_detail', {post_id})
       },
 
-      async deleteCommon(common_id) {
-        let response = await Vue.http.post('/forum_actions/delete_comment', {common_id})
-        return await response.json()
+      deleteCommon(common_id) {
+        return post(Vue, '/forum_actions/delete_comment', {common_id})
       },
 
-      async togglePostFavorite(post_id) {
-        let response = await Vue.http.post('/forum_actions/toggle_post_favorite', {post_id})
-        return await response.json()
+      togglePostFavorite(post_id) {
+        return post(Vue, '/forum_actions/toggle_post_favorite', {post_id})
       },
 
-      async setPostStatus(post_id, status) {
-        let response = await Vue.http.post('/forum_actions/set_post_status', {post_id, status,})
-        return await response.json()
+      setPostStatus(post_id, status) {
+        return post(Vue, '/forum_actions/set_post_status', {post_id, status,})
       },
 
-      async getPostCommons(post_id, page, records_per_page) {
-        let response = await Vue.http.post('/forum_actions/get_post_comments', {post_id, page, records_per_page,})
-        return await response.json()
+      getPostCommons(post_id, page, records_per_page) {
+        return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page,})
       },
     }
   }

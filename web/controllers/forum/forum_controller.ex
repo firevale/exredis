@@ -187,7 +187,7 @@ defmodule Acs.ForumController do
     end
   end
   def toggle_post_favorite(conn, params) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
   # set post status

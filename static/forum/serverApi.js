@@ -39,8 +39,8 @@ const post = async(Vue, uri, params) => {
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
-      getPagedPost(page, records_per_page, order, section_id, forum_id) {
-        return post(Vue, '/forum_actions/get_paged_post', {
+      async getPagedPost(page, records_per_page, order, section_id, forum_id) {
+        return await post(Vue, '/forum_actions/get_paged_post', {
           page,
           records_per_page,
           order,
@@ -49,32 +49,32 @@ export default {
         })
       },
 
-      getForumInfo(forum_id) {
-        return post(Vue, '/forum_actions/get_forum_info', {forum_id})
+      async getForumInfo(forum_id) {
+        return await post(Vue, '/forum_actions/get_forum_info', {forum_id})
       },
 
-      addPost(forum_id, section_id, title, content) {
-        return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content,})
+      async addPost(forum_id, section_id, title, content) {
+        return await post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content,})
       },
 
-      getPostDetail(post_id) {
-        return post(Vue, '/forum_actions/get_post_detail', {post_id})
+      async getPostDetail(post_id) {
+        return await post(Vue, '/forum_actions/get_post_detail', {post_id})
       },
 
-      deleteCommon(common_id) {
-        return post(Vue, '/forum_actions/delete_comment', {common_id})
+      async deleteCommon(common_id) {
+        return await post(Vue, '/forum_actions/delete_comment', {common_id})
       },
 
-      togglePostFavorite(post_id) {
-        return post(Vue, '/forum_actions/toggle_post_favorite', {post_id})
+      async togglePostFavorite(post_id) {
+        return await post(Vue, '/forum_actions/toggle_post_favorite', {post_id})
       },
 
-      setPostStatus(post_id, status) {
-        return post(Vue, '/forum_actions/set_post_status', {post_id, status,})
+      async setPostStatus(post_id, status) {
+        return await post(Vue, '/forum_actions/set_post_status', {post_id, status,})
       },
 
-      getPostCommons(post_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page,})
+      async getPostCommons(post_id, page, records_per_page) {
+        return await post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page,})
       },
     }
   }

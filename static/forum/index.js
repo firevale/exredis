@@ -8,7 +8,6 @@ import store from './store'
 import routerMap from './routers'
 
 import * as filters from 'common/filters'
-import * as acs from 'common/acs'
 
 Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])

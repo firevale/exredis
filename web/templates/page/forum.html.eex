@@ -24,6 +24,7 @@
         locale: '<%= @conn.private[:acs_locale] %>',
         appId: '<%= @conn.private[:acs_app_id] %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
+        accessToken: '<%= @conn.private[:acs_access_token] %>',
       }
     </script>
     <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>

@@ -11,7 +11,7 @@
       <div class="column detail-info">
         <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
         <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deleteNoteQuestion"
+        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="confirmDeleteCommon(itemData.id)"
           style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
       </div>
       <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">
@@ -26,28 +26,10 @@ import {
   mapActions
 } from 'vuex'
 import AlertDialog from './alertDialog'
-import {
-  swiperContainer,
-  preViewing
-} from '../components/swiper'
 import message from './message'
 import md5 from 'js-md5'
 
 export default {
-  mounted() {
-    if (this.itemData.rank == '楼主') {
-      this.$refs.contentContainer.addEventListener('click', this.checkImgClick)
-      let imgs = []
-      let htmlCollection = this.$refs.contentContainer.getElementsByTagName('img')
-      for (var i = 0; i < htmlCollection.length; i++) {
-        this.imgsPreview.push({
-          url: htmlCollection[i].src,
-          id: md5(htmlCollection[i].src)
-        })
-      }
-    }
-  },
-
   props: {
     itemData: {
       type: Object,
@@ -62,61 +44,26 @@ export default {
     },
   },
 
-  data() {
-    return {
-      onlyHost: false,
-      imgsPreview: [],
-    }
-  },
-
-  computed: {
-    isManager() {
-      return true
-      //this.$http()
-    },
-  },
-
   methods: {
-    deleteNoteQuestion() {
+    confirmDeleteCommon(common_id) {
       AlertDialog.showModal({
         message: this.$t('forum.detail.deleteTip'),
-        onOk: this.deleteFollowNote,
+        onOk: this.deleteCommon(common_id),
         onCancel: null,
       })
     },
 
-    deleteFollowNote() {
-      this.$http({
-          url: 'deleteFollowNote',
-          method: 'POST',
-          params: {
-            noteID: this.itemData.id,
-          },
-        })
-        .then()
-        .catch()
-    },
-
-    floorHost() {
-      this.$emit('toggle-floorHost', this.itemData.author)
-      this.onlyHost = !this.onlyHost
-    },
-
-    showAllImgInSwiper(index) {
-      if (!this.preview && !preViewing()) {
-        swiperContainer({
-          visible: true,
-          imgs: this.imgsPreview,
-          rank: index,
-        })
-      }
-    },
-
-    checkImgClick(e) {
-      if (e.target.tagName.toLowerCase() == "img") {
-        let imgId = md5(e.target.src)
-        this.showAllImgInSwiper(this.imgsPreview.findIndex(item => item.id == imgId))
-      }
+    deleteCommon: async function(common_id) {
+        try {
+          let result = await this.$acs.deleteCommon(common_id)
+          if (result.success) {
+            message.showMsg(this.$t(result.i18n_message))
+          } else {
+            message.showMsg(this.$t(result.i18n_message))
+          }
+        } catch (e) {
+          message.showMsg(this.$t('forum.error.networkError'))
+        }
     },
 
   }

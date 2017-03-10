@@ -26,7 +26,7 @@
       </div>
       <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
         <i class="fa fa-heart" :class="{'red': itemData.collection }" style="vertical-align: middle;"></i>
-        <span class="dark" style="font-size: .9rem;" @click="PostCollection">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
+        <span class="dark" style="font-size: .9rem;" @click="ToggleFavorite">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
       </div>
     </div>
   </div>
@@ -100,55 +100,24 @@ export default {
   },
 
   methods: {
-    deletePostQuestion() {
-      AlertDialog.showModal({
-        message: this.$t('forum.detail.deleteTip'),
-        onOk: this.deleteFollowPost,
-        onCancel: null,
-      })
-    },
-
-    deleteFollowPost() {
-      this.$http({
-          url: 'deleteFollowPost',
-          method: 'POST',
-          params: {
-            PostID: this.itemData.id,
-          },
-        })
-        .then()
-        .catch()
-    },
-
+    
     floorHost() {
       this.$emit('toggle-floorHost', this.itemData.user.nickname)
       this.onlyHost = !this.onlyHost
     },
 
-    PostCollection() {
-      this.itemData.collection = !this.itemData.collection
-
-      this.$http({
-          method: 'post',
-          url: '/PostCollection',
-          params: {
-            PostID: this.itemData.id,
-          },
-        })
-        .then((response) => {
-
-        })
-        .catch()
-    },
-
-    showAllImgInSwiper(index) {
-      if (!this.preview && !preViewing()) {
-        swiperContainer({
-          visible: true,
-          imgs: this.imgsPreview,
-          rank: index,
-        })
-      }
+    ToggleFavorite: async function() {
+        try {
+          let result = await this.$acs.togglePostFavorite(this.itemData.id)
+          if (result.success) {
+            this.itemData.collection = !this.itemData.collection
+            message.showMsg(this.$t(result.i18n_message))
+          } else {
+            message.showMsg(this.$t(result.i18n_message))
+          }
+        } catch (e) {
+          message.showMsg(this.$t('forum.error.networkError'))
+        }
     },
 
     closePost(){
@@ -169,12 +138,20 @@ export default {
         if (result.success) {
           message.showMsg(this.$t(result.i18n_message))
         } else {
-          console.log(this.$t(result.i18n_message))
           message.showMsg(this.$t(result.i18n_message))
         }
       } catch (e) {
         message.showMsg(this.$t('forum.error.networkError'))
-        console.log(this.$t('forum.error.networkError'))
+      }
+    },
+
+    showAllImgInSwiper(index) {
+      if (!this.preview && !preViewing()) {
+        swiperContainer({
+          visible: true,
+          imgs: this.imgsPreview,
+          rank: index,
+        })
       }
     },
 

@@ -120,9 +120,9 @@ defmodule Acs.ForumController do
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
             preload: [user: u]
-    commons = Repo.all(query)
+    comments = Repo.all(query)
 
-    conn |> json(%{success: true, commons: commons, total: total_page})
+    conn |> json(%{success: true, comments: comments, total: total_page})
   end
   def get_post_comments(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
@@ -130,15 +130,15 @@ defmodule Acs.ForumController do
 
   # delete_comment
   def delete_comment(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
-                    %{"common_id" => common_id}) do
+                    %{"comment_id" => comment_id}) do
     #todo power check
-    case Repo.get(ForumComment, common_id) do
+    case Repo.get(ForumComment, comment_id) do
       nil ->
         conn |> json(%{success: false,
-                       i18n_message: "admin.serverError.commonNotFound"})
+                       i18n_message: "admin.serverError.commentNotFound"})
 
-      %ForumComment{} = common ->
-        case Repo.delete(common) do
+      %ForumComment{} = comment ->
+        case Repo.delete(comment) do
           {:ok, _} ->
             conn |> json(%{success: true})
 

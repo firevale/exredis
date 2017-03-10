@@ -2,8 +2,8 @@
 <div>
   <div ref="scrollBox" class="is-chid content-container" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
     <post-detail-view :item-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
-    <post-common-view v-for="item in commonList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="item.id"></post-common-view>
-    <div v-if="commonList&&commonList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
+    <post-comment-view v-for="item in commentList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="item.id"></post-comment-view>
+    <div v-if="commentList&&commentList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
     </div>
@@ -15,7 +15,7 @@
 </template>
 <script>
 import postDetailView from '../components/postDetailView.vue'
-import postCommonView from '../components/postCommonView.vue'
+import postCommentView from '../components/postCommentView.vue'
 import pagination from '../components/pagination.vue'
 
 export default {
@@ -27,7 +27,7 @@ export default {
 
   components: {
     postDetailView,
-    postCommonView,
+    postCommentView,
     pagination,
   },
   computed: {
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       postDetail: {},
-      commonList: [],
+      commentList: [],
       page: 1,
       total: 1,
       recordsPerPage: 10,
@@ -81,9 +81,9 @@ export default {
     refreshPage: async function(page) {
       if (!this.processing) {
         this.processing = true
-        let result = await this.$acs.getPostCommons(this.postId, page, this.recordsPerPage)
+        let result = await this.$acs.getPostComments(this.postId, page, this.recordsPerPage)
         if (result.success) {
-          this.commonList = result.commons
+          this.commentList = result.comments
           this.total = result.total
           this.page = page
         }

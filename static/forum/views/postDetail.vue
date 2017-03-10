@@ -6,7 +6,7 @@
       :item-index="item.id"></post-common-view>
     <div v-if="commonList&&commonList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="total > 1">
-      <pagination ref="pag" :page-count="total" :current-page="page" @switch-page="onPageChange"></pagination>
+      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
     </div>
   </div>
   <div v-show="canBackTop" class="back-top" @click="onBackTop">
@@ -20,7 +20,8 @@ import postCommonView from '../components/postCommonView.vue'
 import pagination from '../components/pagination.vue'
 
 export default {
-  mounted() {
+  mounted: function() {
+    //this.$refs.pag.$on('switch-page', this.refreshPage)
     this.getPostDetail()
     this.refreshPage(this.page)
   },
@@ -77,10 +78,10 @@ export default {
         if (result.success) {
           this.postDetail = result.detail
         } else {
-          console.log(this.$t(result.i18n_message))
+          alert(this.$t(result.i18n_message))
         }
       } catch (e) {
-        console.log(this.$t('forum.error.networkError'))
+        alert(this.$t('forum.error.networkError'))
       }
     },
 
@@ -94,10 +95,10 @@ export default {
             this.total = result.total
             this.page = page
           } else {
-            console.log(this.$t(result.i18n_message))
+            alert(this.$t(result.i18n_message))
           }
         } catch (e) {
-          console.log(this.$t('forum.error.networkError'))
+          alert(this.$t('forum.error.networkError'))
         }
         this.processing = false
       }

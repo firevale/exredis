@@ -100,13 +100,14 @@ export default {
   },
 
   methods: {
-    
+
     floorHost() {
       this.$emit('toggle-floorHost', this.itemData.user.nickname)
       this.onlyHost = !this.onlyHost
     },
 
     ToggleFavorite: async function() {
+      if (window.acsConfig.accessToken) {
         try {
           let result = await this.$acs.togglePostFavorite(this.itemData.id)
           if (result.success) {
@@ -118,9 +119,12 @@ export default {
         } catch (e) {
           message.showMsg(this.$t('forum.error.networkError'))
         }
+      } else {
+        loginAndRedirect()
+      }
     },
 
-    closePost(){
+    closePost() {
       this.setPostStatus("close")
     },
 
@@ -133,16 +137,29 @@ export default {
     },
 
     setPostStatus: async function(status) {
-      try {
-        let result = await this.$acs.setPostStatus(this.itemData.id, status)
-        if (result.success) {
-          message.showMsg(this.$t(result.i18n_message))
-        } else {
-          message.showMsg(this.$t(result.i18n_message))
+      if (window.acsConfig.accessToken) {
+        try {
+          let result = await this.$acs.setPostStatus(this.itemData.id, status)
+          if (result.success) {
+            message.showMsg(this.$t(result.i18n_message))
+          } else {
+            message.showMsg(this.$t(result.i18n_message))
+          }
+        } catch (e) {
+          message.showMsg(this.$t('forum.error.networkError'))
         }
-      } catch (e) {
-        message.showMsg(this.$t('forum.error.networkError'))
+      } else {
+        loginAndRedirect()
       }
+    },
+
+    loginAndRedirect() {
+      this.$router.push({
+        path: '/login',
+        query: {
+          redirect_uri: btoa(location.href)
+        }
+      })
     },
 
     showAllImgInSwiper(index) {

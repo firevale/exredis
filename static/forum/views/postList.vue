@@ -114,10 +114,10 @@ export default {
             this.total = result.total
             this.page = page
           } else {
-            console.log(this.$t(result.i18n_message))
+            alert(this.$t(result.i18n_message))
           }
         } catch (e) {
-          console.log(this.$t('forum.error.networkError'))
+          alert(this.$t('forum.error.networkError'))
         }
         this.processing = false
       }

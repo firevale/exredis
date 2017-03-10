@@ -107,6 +107,8 @@ export default {
         this.processing = true
         let result = this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
           this.currentSectionId, this.$router.currentRoute.params.forumId)
+
+        console.log('get paged post', result)
         if (result.success) {
           this.postList = result.posts
           this.total = result.total

@@ -52,6 +52,7 @@ export default {
         unUpPost: '置顶取消'
       },
       error: {
+        pageTitle: '糟糕，出错了',
         networkError: '网络错误'
       },
       serverError: {

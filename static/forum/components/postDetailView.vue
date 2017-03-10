@@ -26,7 +26,7 @@
       </div>
       <div v-if="itemData.rank == $t('forum.detail.author')" class="column pointer">
         <i class="fa fa-heart" :class="{'red': itemData.collection }" style="vertical-align: middle;"></i>
-        <span class="dark" style="font-size: .9rem;" @click="ToggleFavorite">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
+        <span class="dark" style="font-size: .9rem;" @click="toggleFavorite">{{ itemData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
       </div>
     </div>
   </div>
@@ -47,6 +47,7 @@ import {
   preViewing
 } from '../components/swiper'
 import md5 from 'js-md5'
+import message from './message'
 
 export default {
   mounted() {
@@ -104,9 +105,9 @@ export default {
       this.onlyHost = !this.onlyHost
     },
 
-    ToggleFavorite: async function() {
+    toggleFavorite: function() {
       if (window.acsConfig.accessToken) {
-        let result = await this.$acs.togglePostFavorite(this.itemData.id)
+        let result = this.$acs.togglePostFavorite(this.itemData.id)
         if (result.success) {
           this.itemData.collection = !this.itemData.collection
           message.showMsg(this.$t(result.i18n_message))
@@ -128,9 +129,9 @@ export default {
       this.setPostStatus("up")
     },
 
-    setPostStatus: async function(status) {
+    setPostStatus: function(status) {
       if (window.acsConfig.accessToken) {
-        let result = await this.$acs.setPostStatus(this.itemData.id, status)
+        let result = this.$acs.setPostStatus(this.itemData.id, status)
         if (result.success) {
           message.showMsg(this.$t(result.i18n_message))
         }

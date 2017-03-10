@@ -2,8 +2,7 @@
 <div>
   <div ref="scrollBox" class="is-chid content-container" @scroll="onScroll" style="padding: 0 .5rem 0 .5rem;">
     <post-detail-view :item-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
-    <post-common-view v-for="item in commonList" @toggle-floorHost="toggleFloorHost" :item-data="item"
-      :item-index="item.id"></post-common-view>
+    <post-common-view v-for="item in commonList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="item.id"></post-common-view>
     <div v-if="commonList&&commonList.length" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
@@ -18,6 +17,7 @@
 import postDetailView from '../components/postDetailView.vue'
 import postCommonView from '../components/postCommonView.vue'
 import pagination from '../components/pagination.vue'
+import message from '../components/message'
 
 export default {
   mounted: function() {
@@ -78,10 +78,11 @@ export default {
         if (result.success) {
           this.postDetail = result.detail
         } else {
+          message.showMsg(this.$t(result.i18n_message))
           alert(this.$t(result.i18n_message))
         }
       } catch (e) {
-        alert(this.$t('forum.error.networkError'))
+        message.showMsg(this.$t('forum.error.networkError'))
       }
     },
 
@@ -95,10 +96,10 @@ export default {
             this.total = result.total
             this.page = page
           } else {
-            alert(this.$t(result.i18n_message))
+            message.showMsg(this.$t(result.i18n_message))
           }
         } catch (e) {
-          alert(this.$t('forum.error.networkError'))
+          message.showMsg(this.$t('forum.error.networkError'))
         }
         this.processing = false
       }

@@ -140,7 +140,7 @@ defmodule Acs.ForumController do
       %ForumComment{} = comment ->
         case Repo.delete(comment) do
           {:ok, _} ->
-            conn |> json(%{success: true})
+            conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
@@ -200,16 +200,12 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
 
       %ForumPost{} = post ->
-        case status do
-          "close" -> post = post |> Map.put("active", true)
 
-          "essence" -> post = post |> Map.put("is_vote", true)
-
-          "up" -> post = post |> Map.put("is_top", true)
-
-          _ -> conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
-        end
-        case ForumPost.changeset(%ForumPost{}, post) |> Repo.update do
+        case ForumPost.changeset(post, %{
+          active: status == "close",
+          is_vote: status == "essence",
+          is_top: status == "up",
+          }) |> Repo.update do
           {:ok, _} ->
             conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
 

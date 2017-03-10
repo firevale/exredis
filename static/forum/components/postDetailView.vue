@@ -105,9 +105,9 @@ export default {
       this.onlyHost = !this.onlyHost
     },
 
-    toggleFavorite: function() {
+    toggleFavorite: async function() {
       if (window.acsConfig.accessToken) {
-        let result = this.$acs.togglePostFavorite(this.itemData.id)
+        let result = await this.$acs.togglePostFavorite(this.itemData.id)
         if (result.success) {
           this.itemData.collection = !this.itemData.collection
           message.showMsg(this.$t(result.i18n_message))
@@ -129,9 +129,9 @@ export default {
       this.setPostStatus("up")
     },
 
-    setPostStatus: function(status) {
+    setPostStatus: async function(status) {
       if (window.acsConfig.accessToken) {
-        let result = this.$acs.setPostStatus(this.itemData.id, status)
+        let result = await this.$acs.setPostStatus(this.itemData.id, status)
         if (result.success) {
           message.showMsg(this.$t(result.i18n_message))
         }

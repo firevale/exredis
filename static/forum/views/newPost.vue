@@ -125,7 +125,7 @@ export default {
       })
     },
 
-    sentNote: function() {
+    sentNote: async function() {
       if (!this.title) {
         message.showMsg(this.$t('forum.newPost.titlePlaceholder'))
         return;
@@ -136,7 +136,7 @@ export default {
         return;
       }
 
-      let result = this.$acs.addPost(1, 1, this.title, this.content)
+      let result = await this.$acs.addPost(1, 1, this.title, this.content)
       if (result.success) {
         message.showMsg(this.$t('forum.newPost.addSuccess'))
         this.$router.push({

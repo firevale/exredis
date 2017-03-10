@@ -47,6 +47,7 @@ export default {
         operateSuccess: '操作成功',
       },
       error: {
+        pageTitle: '糟糕，出错了',
         networkError: '网络错误'
       },
       serverError: {

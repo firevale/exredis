@@ -5,6 +5,11 @@ export default function(VueRouter) {
     mode: 'history',
     routes: [
       {
+        path: '/forum/error',
+        name: 'error',
+        component: require('./views/error.vue'),
+      },
+      {
         path: '/forum/:forumId',
         name: 'forum',
         component: require('./views/main.vue'),
@@ -43,7 +48,7 @@ export default function(VueRouter) {
             component: require('./views/campaign.vue'),
           },
         ],
-      }
+      },
     ],
   });
 }

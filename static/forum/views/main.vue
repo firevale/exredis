@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import Vue from '../vue-installed'
 import {
   mapGetters,
   mapActions
@@ -23,6 +24,9 @@ export default {
   data: function() {
     return {
       canGoBack: true,
+      loaded: false,
+      loading: false,
+      error: undefined,
     }
   },
 
@@ -32,9 +36,28 @@ export default {
     ]),
   },
 
+  beforeRouteEnter: async function(to, from, next) {
+    try {
+      let response = await Vue.http.post('/forum_actions/get_forum_info', {
+        forum_id: to.params.forumId
+      })
+      let result = await response.json()
+
+      if (result.success) {
+        next(vm => {
+          vm.updateForumInfo(result.forum)
+        })
+      } else {
+        next({name: 'error'})
+      }
+    } catch (_) {
+      next({name: 'error'})
+    }
+  },
+
   methods: {
     ...mapActions([
-      'setTransitionName'
+      'setTransitionName', 'updateForumInfo'
     ]),
 
     onClose: function() {

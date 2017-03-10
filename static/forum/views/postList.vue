@@ -40,7 +40,7 @@ export default {
 
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.refreshPage)
-    this.getForumInfo()
+    // this.getForumInfo()
     this.refreshPage(this.page)
   },
 
@@ -101,19 +101,6 @@ export default {
 
     onPageChange: function(page) {
       this.refreshPage(page)
-    },
-
-    getForumInfo: async function() {
-      try {
-        let result = await this.$acs.getForumInfo(this.$router.currentRoute.params.forumId)
-        if (result.success) {
-          this.updateForumInfo(result.forum)
-        } else {
-          console.log(this.$t(result.i18n_message))
-        }
-      } catch (e) {
-        console.log(this.$t('forum.error.networkError'))
-      }
     },
 
     refreshPage: async function(page) {

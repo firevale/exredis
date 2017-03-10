@@ -61,8 +61,8 @@ export default {
         return post(Vue, '/forum_actions/get_post_detail', {post_id})
       },
 
-      deleteCommon(common_id) {
-        return post(Vue, '/forum_actions/delete_comment', {common_id})
+      deleteComment(comment_id) {
+        return post(Vue, '/forum_actions/delete_comment', {comment_id})
       },
 
       togglePostFavorite(post_id) {
@@ -73,7 +73,7 @@ export default {
         return post(Vue, '/forum_actions/set_post_status', {post_id, status,})
       },
 
-      getPostCommons(post_id, page, records_per_page) {
+      getPostComments(post_id, page, records_per_page) {
         return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page,})
       },
     }

@@ -54,7 +54,7 @@ export default {
         badRequestParams: '请求参数错误',
         forumNotExist: '论坛不存在',
         postNotExist: '帖子不存在',
-        commonNotFound: '评论不存在',
+        commentNotFound: '评论不存在',
       },
       newPost: {
         title: '发帖子',

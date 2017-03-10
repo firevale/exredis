@@ -49,7 +49,7 @@
     <my-reply v-for="item in personal.myCommentss" :item-data="item"></my-reply>
   </div>
   <div class="content-item" v-show="type == 'myFavor'">
-    <my-favorate v-for="item in personal.myFavors" :item-data="item"></my-favorate>
+    <my-favorite v-for="item in personal.myFavors" :item-data="item"></my-favorite>
   </div>
   <div class="column is-full" v-show="notePageCount > 1">
     <pagination ref="pag" @switch-page="loadListByPage" :page-count="notePageCount" :current-page="noteCurrentPage"></pagination>

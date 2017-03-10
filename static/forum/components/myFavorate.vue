@@ -1,5 +1,5 @@
 <template>
-<div class="my-favorate-list-item row-line">
+<div class="my-favorite-list-item row-line">
   <div style="flex: 1;text-align: left;">
     <div @click="showDetail">
       <span class="post-title">{{ itemData.title }}</span>

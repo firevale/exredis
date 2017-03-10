@@ -708,7 +708,7 @@ body:not(.in-app) {
   padding-bottom: 0;
 }
 
-.my-favorate-list-item {
+.my-favorite-list-item {
   padding: 1rem;
   margin: 0 1rem;
   border: 1px solid $text-grey;
@@ -725,11 +725,11 @@ body:not(.in-app) {
   }
 }
 
-.my-favorate-list-item:last-child {
+.my-favorite-list-item:last-child {
   border-bottom: 1px solid $text-grey;
 }
 
-.my-favorate-list-item .column {
+.my-favorite-list-item .column {
   padding-top: 0;
   padding-bottom: 0;
 }

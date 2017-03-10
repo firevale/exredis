@@ -34,7 +34,7 @@ import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
-import postPreview from '../components/preview'
+import {postPreview} from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'

@@ -52,16 +52,10 @@ export default {
       })
     },
 
-    deleteCommon: async function(common_id) {
-      try {
-        let result = await this.$acs.deleteCommon(common_id)
-        if (result.success) {
-          message.showMsg(this.$t(result.i18n_message))
-        } else {
-          message.showMsg(this.$t(result.i18n_message))
-        }
-      } catch (e) {
-        message.showMsg(this.$t('forum.error.networkError'))
+    deleteCommon: function(common_id) {
+      let result = this.$acs.deleteCommon(common_id)
+      if (result.success) {
+        message.showMsg(this.$t(result.i18n_message))
       }
     },
 

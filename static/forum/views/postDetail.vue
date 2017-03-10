@@ -17,7 +17,6 @@
 import postDetailView from '../components/postDetailView.vue'
 import postCommonView from '../components/postCommonView.vue'
 import pagination from '../components/pagination.vue'
-import message from '../components/message'
 
 export default {
   mounted: function() {
@@ -72,34 +71,21 @@ export default {
       this.scrollPosition = e.target.scrollTop
     },
 
-    getPostDetail: async function() {
-      try {
-        let result = await this.$acs.getPostDetail(this.postId)
-        if (result.success) {
-          this.postDetail = result.detail
-        } else {
-          message.showMsg(this.$t(result.i18n_message))
-          alert(this.$t(result.i18n_message))
-        }
-      } catch (e) {
-        message.showMsg(this.$t('forum.error.networkError'))
+    getPostDetail: function() {
+      let result = this.$acs.getPostDetail(this.postId)
+      if (result.success) {
+        this.postDetail = result.detail
       }
     },
 
-    refreshPage: async function(page) {
+    refreshPage: function(page) {
       if (!this.processing) {
         this.processing = true
-        try {
-          let result = await this.$acs.getPostCommons(this.postId, page, this.recordsPerPage)
-          if (result.success) {
-            this.commonList = result.commons
-            this.total = result.total
-            this.page = page
-          } else {
-            message.showMsg(this.$t(result.i18n_message))
-          }
-        } catch (e) {
-          message.showMsg(this.$t('forum.error.networkError'))
+        let result = this.$acs.getPostCommons(this.postId, page, this.recordsPerPage)
+        if (result.success) {
+          this.commonList = result.commons
+          this.total = result.total
+          this.page = page
         }
         this.processing = false
       }

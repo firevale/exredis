@@ -46,7 +46,6 @@ import {
   swiperContainer,
   preViewing
 } from '../components/swiper'
-import message from './message'
 import md5 from 'js-md5'
 
 export default {
@@ -107,16 +106,10 @@ export default {
 
     ToggleFavorite: async function() {
       if (window.acsConfig.accessToken) {
-        try {
-          let result = await this.$acs.togglePostFavorite(this.itemData.id)
-          if (result.success) {
-            this.itemData.collection = !this.itemData.collection
-            message.showMsg(this.$t(result.i18n_message))
-          } else {
-            message.showMsg(this.$t(result.i18n_message))
-          }
-        } catch (e) {
-          message.showMsg(this.$t('forum.error.networkError'))
+        let result = await this.$acs.togglePostFavorite(this.itemData.id)
+        if (result.success) {
+          this.itemData.collection = !this.itemData.collection
+          message.showMsg(this.$t(result.i18n_message))
         }
       } else {
         this.loginAndRedirect()
@@ -137,15 +130,9 @@ export default {
 
     setPostStatus: async function(status) {
       if (window.acsConfig.accessToken) {
-        try {
-          let result = await this.$acs.setPostStatus(this.itemData.id, status)
-          if (result.success) {
-            message.showMsg(this.$t(result.i18n_message))
-          } else {
-            message.showMsg(this.$t(result.i18n_message))
-          }
-        } catch (e) {
-          message.showMsg(this.$t('forum.error.networkError'))
+        let result = await this.$acs.setPostStatus(this.itemData.id, status)
+        if (result.success) {
+          message.showMsg(this.$t(result.i18n_message))
         }
       } else {
         this.loginAndRedirect()

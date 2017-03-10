@@ -6,7 +6,6 @@ import VueQuillEditor from 'vue-quill-editor'
 import VueTimeago from 'vue-timeago'
 import ServerApi from './serverApi'
 
-import * as filters from 'common/filters'
 import * as acs from 'common/acs'
 
 Vue.use(VueI18n)

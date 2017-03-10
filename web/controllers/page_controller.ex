@@ -18,7 +18,7 @@ defmodule Acs.PageController do
 
   # 用户登录
   def show_login_page(conn, params) do
-    redirect_url = case params["redirect_url"] do
+    redirect_uri = case params["redirect_uri"] do
                      nil -> "/"
                      "" -> "/"
                      v -> v |> Base.url_decode64!
@@ -26,7 +26,7 @@ defmodule Acs.PageController do
 
     conn |> put_layout(false)
          |> put_session(:locale, conn.private[:acs_locale])
-         |> render("login.html", redirect_url: redirect_url,
+         |> render("login.html", redirect_uri: redirect_uri,
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
 

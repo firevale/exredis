@@ -52,8 +52,8 @@ export default {
       })
     },
 
-    deleteCommon: function(common_id) {
-      let result = this.$acs.deleteCommon(common_id)
+    deleteCommon: async function(common_id) {
+      let result = await this.$acs.deleteCommon(common_id)
       if (result.success) {
         message.showMsg(this.$t(result.i18n_message))
       }

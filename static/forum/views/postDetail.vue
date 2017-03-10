@@ -71,17 +71,17 @@ export default {
       this.scrollPosition = e.target.scrollTop
     },
 
-    getPostDetail: function() {
-      let result = this.$acs.getPostDetail(this.postId)
+    getPostDetail: async function() {
+      let result = await this.$acs.getPostDetail(this.postId)
       if (result.success) {
         this.postDetail = result.detail
       }
     },
 
-    refreshPage: function(page) {
+    refreshPage: async function(page) {
       if (!this.processing) {
         this.processing = true
-        let result = this.$acs.getPostCommons(this.postId, page, this.recordsPerPage)
+        let result = await this.$acs.getPostCommons(this.postId, page, this.recordsPerPage)
         if (result.success) {
           this.commonList = result.commons
           this.total = result.total

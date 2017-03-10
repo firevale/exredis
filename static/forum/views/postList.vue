@@ -102,10 +102,10 @@ export default {
       this.refreshPage(page)
     },
 
-    refreshPage: function(page) {
+    refreshPage: async function(page) {
       if (!this.processing) {
         this.processing = true
-        let result = this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
+        let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
           this.currentSectionId, this.$router.currentRoute.params.forumId)
 
         console.log('get paged post', result)

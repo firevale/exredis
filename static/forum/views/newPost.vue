@@ -38,8 +38,6 @@ import {
   postPreview
 } from '../components/preview'
 
-import message from '../components/message'
-
 import * as utils from 'common/utils'
 
 var marked = require('marked');
@@ -128,7 +126,7 @@ export default {
       })
     },
 
-    sentNote: async function() {
+    sentNote: function() {
       if (!this.title) {
         message.showMsg(this.$t('forum.newPost.titlePlaceholder'))
         return;
@@ -139,20 +137,12 @@ export default {
         return;
       }
 
-      try {
-        let result = await this.$acs.addPost(1, 1, this.title, this.content)
-        console.info("success:" + result.success)
-        if (result.success) {
-          message.showMsg(this.$t('forum.newPost.addSuccess'))
-          this.$router.push({
-            name: 'index'
-          })
-        } else {
-          message.showMsg(this.$t(result.message))
-        }
-      } catch (e) {
-        console.info(e)
-        message.showMsg(this.$t('forum.error.networkError'))
+      let result = this.$acs.addPost(1, 1, this.title, this.content)
+      if (result.success) {
+        message.showMsg(this.$t('forum.newPost.addSuccess'))
+        this.$router.push({
+          name: 'index'
+        })
       }
     },
     onEditorBlur(e) {},

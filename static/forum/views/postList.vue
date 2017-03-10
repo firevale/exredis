@@ -40,7 +40,6 @@ export default {
 
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.refreshPage)
-    // this.getForumInfo()
     this.refreshPage(this.page)
   },
 
@@ -103,21 +102,15 @@ export default {
       this.refreshPage(page)
     },
 
-    refreshPage: async function(page) {
+    refreshPage: function(page) {
       if (!this.processing) {
         this.processing = true
-        try {
-          let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
-            this.currentSectionId, this.$router.currentRoute.params.forumId)
-          if (result.success) {
-            this.postList = result.posts
-            this.total = result.total
-            this.page = page
-          } else {
-            alert(this.$t(result.i18n_message))
-          }
-        } catch (e) {
-          alert(this.$t('forum.error.networkError'))
+        let result = this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
+          this.currentSectionId, this.$router.currentRoute.params.forumId)
+        if (result.success) {
+          this.postList = result.posts
+          this.total = result.total
+          this.page = page
         }
         this.processing = false
       }

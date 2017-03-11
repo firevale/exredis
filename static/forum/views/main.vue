@@ -1,13 +1,12 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
-  <div class="stay-top title-bar">
+  <div class="stay-top top-bar">
+    <div class="title-bar has-text-centered">
+      <h4 class="title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
+    </div>
     <div class="level is-mobile">
       <div class="level-item level-left is-mobile has-text-left">
         <span v-show="canGoBack" class="icon image-icon icon-back" @click.prevent="$router.back()"></span>
-        <span></span>
-      </div>
-      <div class="level-item has-text-centered">
-        <h4 class="title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
       </div>
       <div class="level-item level-right is-mobile has-text-right">
         <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-search" :to="{name: 'search'}"></router-link>

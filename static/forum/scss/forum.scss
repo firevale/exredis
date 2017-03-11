@@ -37,19 +37,29 @@ body:not(.in-app) {
   z-index: 3;
 }
 
-.title-bar {
-  height: 4rem;
+.top-bar {
+  height: 5rem;
   width: 100%;
-  padding: 1.5rem 0 1rem 0;
+  padding-top: 2rem;
 
   .level-item.button,
   .level-item.image-icon {
     margin-bottom: 0;
   }
 
+  .title-bar {
+    position: absolute;
+    width: 100%;
+    z-index: 3;
+  }
+
   .level {
     margin-left: 0.75rem;
     margin-right: 0.75rem;
+  }
+
+  .level-left + .level-right {
+    margin-top: 0;
   }
 
   &:after {
@@ -59,11 +69,11 @@ body:not(.in-app) {
 
 .content-container {
   position: absolute;
-  top: 4.5rem;
+  top: 5.5rem;
   left: 0;
   right: -2rem;
   bottom: 0;
-  padding: 0 3rem 0 1.5rem;
+  padding: 0 3.5rem 0 1.5rem;
   overflow-y: scroll;
 }
 

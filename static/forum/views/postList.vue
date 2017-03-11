@@ -1,10 +1,5 @@
 <template>
 <div>
-  <div class="main-menu">
-    <router-link class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-    <router-link class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
-    <router-link class="button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
-  </div>
   <div class="has-bottom-line">
     <div class="tab-bar">
       <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>

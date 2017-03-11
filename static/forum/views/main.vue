@@ -1,9 +1,21 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
-  <div class="level is-full stay-top title-bar has-text-centered has-bottom-thick-line">
-    <span v-show="canGoBack" class="icon nav-icon icon-back" @click.prevent="$router.back()"></span>
-    <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose"></span>
-    <h4 class="level-item title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
+  <div class="stay-top title-bar">
+    <div class="level is-mobile">
+      <div class="level-item level-left is-mobile has-text-left">
+        <span v-show="canGoBack" class="icon image-icon icon-back" @click.prevent="$router.back()"></span>
+        <span></span>
+      </div>
+      <div class="level-item has-text-centered">
+        <h4 class="title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
+      </div>
+      <div class="level-item level-right is-mobile has-text-right">
+        <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-search" :to="{name: 'search'}"></router-link>
+        <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
+        <router-link v-show="$route.name == 'postList'" class="level-item button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
+        <span class="icon image-icon icon-close show-in-app" @click="onClose"></span>
+      </div>
+    </div>
   </div>
   <transition :name="transitionName">
     <router-view class="content-container"> </router-view>
@@ -45,10 +57,14 @@ export default {
           vm.updateForumInfo(result.forum)
         })
       } else {
-        next({name: 'error'})
+        next({
+          name: 'error'
+        })
       }
     } catch (_) {
-      next({name: 'error'})
+      next({
+        name: 'error'
+      })
     }
   },
 

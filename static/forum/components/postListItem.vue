@@ -13,7 +13,7 @@
       <span v-if="postInfo.is_hot" class="level-item tag is-danger">{{ $t('forum.postList.hot') }}</span>
     </div>
     <div class="level-right level-item has-text-right grey-text" style="margin-top: 0">
-      <timeago :since="(postInfo.last_reply_at || postInfo.created_at) | formatServerDateTime" :auto-update="60"></timeago>
+      <timeago :since="(postInfo.last_reply_at || postInfo.created_at) | convertServerDateTime" :auto-update="60"></timeago>
     </div>
   </div>
   <div class="level is-mobile">

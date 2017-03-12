@@ -12,7 +12,7 @@
         <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-search" :to="{name: 'search'}"></router-link>
         <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
         <router-link v-show="$route.name == 'postList'" class="level-item button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
-        <span class="icon image-icon icon-close show-in-app" @click="onClose"></span>
+        <span v-if="inApp" class="icon image-icon icon-close" @click="onClose"></span>
       </div>
     </div>
   </div>
@@ -34,6 +34,7 @@ import nativeApi from 'common/nativeApi'
 export default {
   data: function() {
     return {
+      inApp: window.acsConfig.inApp,
       canGoBack: false,
     }
   },

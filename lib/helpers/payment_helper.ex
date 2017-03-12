@@ -63,7 +63,8 @@ defmodule Acs.PaymentHelper do
                        end
 
         try do
-          response = Httpc.post_msg callback_url, params
+          # wait 3 minutes for http response
+          response = Httpc.post_msg(callback_url, params, 120_000)
 
           if Httpc.success?(response) do
             if Regex.match?(~r/ok/iu, response.body) do

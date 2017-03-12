@@ -4,13 +4,15 @@
     <div class="tab-bar">
       <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
       <span class="seperator"></span>
-      <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
+      <div class="tile">
+        <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
         {{ $t('forum.postList.all') }}
       </a>
-      <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
-        @click="setCurrentSectionId(section.id)">
+        <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
+          @click="setCurrentSectionId(section.id)">
         {{section.title}}
       </a>
+      </div>
     </div>
   </div>
   <div>

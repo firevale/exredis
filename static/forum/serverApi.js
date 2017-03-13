@@ -69,8 +69,8 @@ export default {
         return post(Vue, '/forum_actions/toggle_post_favorite', {post_id})
       },
 
-      setPostStatus(post_id, status) {
-        return post(Vue, '/forum_actions/set_post_status', {post_id, status,})
+      togglePostStatus(params) {
+        return post(Vue, '/forum_actions/toggle_post_status', params)
       },
 
       getPostComments(post_id, page, records_per_page) {

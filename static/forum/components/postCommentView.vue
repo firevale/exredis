@@ -11,8 +11,8 @@
       <div class="column detail-info">
         <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
         <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="confirmDeleteComment(itemData.id)"
-          style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
+        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="confirmDeleteComment()"
+          style="font-size: .9rem;">{{ $t('forum.detail.delete')}}</span>
       </div>
       <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">
       </div>
@@ -44,19 +44,19 @@ export default {
   },
 
   methods: {
-    confirmDeleteComment(comment_id) {
+    confirmDeleteComment() {
       AlertDialog.showModal({
         message: this.$t('forum.detail.deleteTip'),
         onOk: async _ => {
-          let result = await this.$acs.deleteComment(comment_id)
+          let result = await this.$acs.deleteComment(this.itemData.id)
           if (result.success) {
+            this.items.$remove(item)
             message.showMsg(this.$t(result.i18n_message))
           }
         },
         onCancel: null,
       })
     },
-
 
   }
 }

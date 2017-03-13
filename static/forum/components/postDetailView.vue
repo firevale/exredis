@@ -1,35 +1,35 @@
 <template>
-<div class="has-bottom-line">
-  <div class="tile is-parent">
-    <div class="tile is-child is-vertical is-1">
-      <figure class="image is-64x64 avatar-image" style="margin-top: 1rem">
+<div class="post-detail has-bottom-line">
+  <article class="media">
+    <div class="media-left" style="margin: 0 1rem">
+      <figure class="image is-64x64 avatar-image">
         <img :src="avatarUrl"></img>
       </figure>
-      <div class="has-text-centered" style="margin-top: 1rem">
+      <div class="has-text-centered" style="margin-top: 0.5rem">
         <h5 class="title is-5 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h5>
       </div>
     </div>
-    <div class="tile is-child is-vertical is-11">
-      <div class="level">
-        <div class="level-item level-left has-text-left">
-          <h5 class="title is-5" style="font-weight: 400">[{{postData.section.title}}] {{postData.title}}</h5>
+    <div class="media-content">
+      <a class="button level-button is-primary pull-right">{{$t('forum.detail.showAuthorOnly')}}</a>
+      <p>
+        <span class="title is-5" style="font-weight: 400;">[{{postData.section.title}}] {{postData.title}}</span>
+        <br/>
+        <timeago :since="(postData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
+        <span class="nickname">{{ postData.user.nickname }}</span>
+      </p>
+      <div class="content">
+        <p class="post-content" v-html="postData.content">
+        </p>
+        <div>
+          <span class="icon image-icon is-clickable" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'"
+            @click="toggleFavorite"></span>
+          <span class="is-grey is-clickable" style="font-size: .9rem;" @click="toggleFavorite">
+            {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
+          </span>
         </div>
-        <div class="level-item level-right has-text-right">
-          <a class="button is-primary"></a>
-        </div>
-      </div>
-      <div class="column detail-info">
-        <span class="note-time dark" style="font-size: .8rem;">{{ postData.created_at | formatServerDateTime }}</span>
-        <span class="note-author" style="font-size: .9rem;">{{ postData.user.nickname }}</span>
-      </div>
-      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="postData.content">[aaa]
-      </div>
-      <div v-if="postData.rank == $t('forum.detail.author')" class="column pointer">
-        <i class="fa fa-heart" :class="{'red': postData.collection }" style="vertical-align: middle;"></i>
-        <span class="dark" style="font-size: .9rem;" @click="toggleFavorite">{{ postData.collection? $t('forum.detail.cancelCollection'): $t('forum.detail.collection') }}</span>
       </div>
     </div>
-  </div>
+  </article>
   <div v-if="isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
     <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleActive">{{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}</i>
     <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleEssence">{{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}</i>
@@ -88,7 +88,6 @@ export default {
     return {
       showAuthorOnly: false,
       imgsPreview: [],
-      isManager: true,
     }
   },
 
@@ -112,7 +111,7 @@ export default {
       if (window.acsConfig.accessToken) {
         let result = await this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
-          this.postData.collection = !this.postData.collection
+          this.postData.is_favorite = !this.postData.is_favorite
           message.showMsg(this.$t(result.i18n_message))
         }
       }
@@ -157,24 +156,6 @@ export default {
         }
       }
     },
-
-    showAllImgInSwiper(index) {
-      if (!this.preview && !preViewing()) {
-        swiperContainer({
-          visible: true,
-          imgs: this.imgsPreview,
-          rank: index,
-        })
-      }
-    },
-
-    checkImgClick(e) {
-      if (e.target.tagName.toLowerCase() == "img") {
-        let imgId = md5(e.target.src)
-        this.showAllImgInSwiper(this.imgsPreview.findIndex(item => item.id == imgId))
-      }
-    },
-
   }
 }
 </script>

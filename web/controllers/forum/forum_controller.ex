@@ -4,6 +4,7 @@ defmodule Acs.ForumController do
   plug :fetch_app_id
   plug :fetch_user_id
   plug :fetch_user
+  plug :fetch_session_user_id
 
   # get_forum_info
   def get_forum_info(conn, %{"forum_id" => forum_id} = params) do
@@ -70,9 +71,9 @@ defmodule Acs.ForumController do
 
   # add_post
   def add_post(conn,%{"forum_id" => forum_id,
-                       "title" => title,
-                       "content" => content,
-                       "section_id" => section_id} = post) do
+                      "title" => title,
+                      "content" => content,
+                      "section_id" => section_id} = post) do
       now_time = :calendar.local_time |> NaiveDateTime.from_erl!
       post = post |> Map.put("user_id", 100002) |> Map.put("created_at",now_time)
 
@@ -153,8 +154,8 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
-  # toggle_post_favorite
-  def toggle_post_favorite(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+  # toggle_post_favorite (need user login)
+  def toggle_post_favorite(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                   %{"post_id" => post_id} = post) do
     favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
     case favorite do

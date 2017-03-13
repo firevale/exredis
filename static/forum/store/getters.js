@@ -10,6 +10,7 @@ const searchCurrentPage = state => state.search.currentPage
 const userInfo = state => state.user
 const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
+const currentPostTitle = state => state.forum.currentPostTitle
 
 export {
   transitionName,
@@ -22,4 +23,5 @@ export {
   userInfo,
   commonIssues,
   forumInfo,
+  currentPostTitle,
 }

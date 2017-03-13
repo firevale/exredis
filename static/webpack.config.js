@@ -68,47 +68,11 @@ var plugins = [
   }),
 
   new CommonsChunkPlugin({
-    name: "account_commons",
-    filename: 'js/account_commons.js',
-    chunks: ['account'],
+    name: "app_commons",
+    filename: 'js/app_commons.js',
+    chunks: ['account', 'payment', 'forum', 'mall'],
     minChunks: function(module, count) {
       return (
-        (module.resource &&
-          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
-      )
-    }
-  }),
-
-  new CommonsChunkPlugin({
-    name: "payment_commons",
-    filename: 'js/payment_commons.js',
-    chunks: ['payment'],
-    minChunks: function(module, count) {
-      return (
-        (module.resource &&
-          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
-      )
-    }
-  }),
-
-  new CommonsChunkPlugin({
-    name: "forum_commons",
-    filename: 'js/forum_commons.js',
-    chunks: ['forum'],
-    minChunks: function(module, count) {
-      return (
-        (module.resource &&
-          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
-      )
-    }
-  }),
-
-  new CommonsChunkPlugin({
-    name: "mall_commons",
-    filename: 'js/mall_commons.js',
-    chunks: ['mall'],
-    minChunks: function(module, count) {
-      return ( 
         (module.resource &&
           module.resource.indexOf(path.join(__dirname, './node_modules')) === 0)
       )
@@ -116,6 +80,8 @@ var plugins = [
   }),
 
   new ExtractTextPlugin('css/[name].css'),
+
+  new CopyWebpackPlugin([{from: '**/assets/*', to: 'images/', flatten: true}], {ignore: ['node_modules/']}),
 ]
 
 module.exports = {

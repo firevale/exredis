@@ -1,9 +1,9 @@
 <template>
 <div class="has-bottom-line">
   <div class="columns" style="margin: 0;">
-    <div style="padding: 1rem 0 1rem .5rem;">
+    <div>
       <figure class="image is-64x64" style="margin: auto; border-radius:50%; border: 1px solid;overflow: hidden;">
-        <img :src="itemData.user.avatar_url"></img>
+        <img :src="avatarUrl"></img>
       </figure>
       <div class="title is-6 has-text-centered red">{{itemData.rank}}</div>
     </div>
@@ -96,6 +96,10 @@ export default {
       return true
       //this.$http()
     },
+
+    avatarUrl() {
+      return this.itemData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    }
   },
 
   methods: {

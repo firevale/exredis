@@ -1,7 +1,7 @@
 <template>
 <div>
   <div style="padding: 0 .5rem 0 .5rem;">
-    <post-detail-view :item-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
+    <post-detail-view v-if="postDetail" :item-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
     <post-comment-view v-for="item in commentList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="item.id"></post-comment-view>
     <div v-if="commentList && commentList.length > 0" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="total > 1">
@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      postDetail: {},
+      postDetail: undefined,
       commentList: [],
       page: 1,
       total: 1,

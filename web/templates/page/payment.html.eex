@@ -11,6 +11,7 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
+    <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/payment.css") %>" rel="stylesheet"/>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
@@ -32,7 +33,7 @@
         currency: '<%= @currency %>',
       }
     </script>
-    <script src="<%= static_url(@conn, "/js/payment_commons.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/app_commons.js") %>"></script>
     <script src="<%= static_url(@conn, "/js/payment.js") %>"></script>
   </body>
 </html>

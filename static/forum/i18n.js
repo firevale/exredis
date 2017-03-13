@@ -38,7 +38,6 @@ export default {
         followAll: '查看全部',
         collection: '收藏帖子',
         delete: '删除',
-        deleted: '已删除',
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
         cancelCollection: '取消收藏',
@@ -60,6 +59,7 @@ export default {
         forumNotExist: '论坛不存在',
         postNotExist: '帖子不存在',
         commentNotFound: '评论不存在',
+        needLogin: '需要登录',
       },
       newPost: {
         title: '发帖子',

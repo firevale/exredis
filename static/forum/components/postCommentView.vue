@@ -1,5 +1,5 @@
 <template>
-<div class="dark-bottom">
+<div class="has-bottom-line">
   <div class="columns " style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
       <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">

@@ -1,8 +1,8 @@
 <template>
-<div class="dark-bottom">
-  <div class="columns " style="margin: 0;">
+<div class="has-bottom-line">
+  <div class="columns" style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
-      <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
+      <figure class="image is-64x64" style="margin: auto; border-radius:50%; border: 1px solid;overflow: hidden;">
         <img :src="itemData.user.avatar_url"></img>
       </figure>
       <div class="title is-6 has-text-centered red">{{itemData.rank}}</div>
@@ -112,8 +112,6 @@ export default {
           this.itemData.collection = !this.itemData.collection
           message.showMsg(this.$t(result.i18n_message))
         }
-      } else {
-        this.loginAndRedirect()
       }
     },
 
@@ -154,18 +152,7 @@ export default {
           }
           message.showMsg(this.$t(result.i18n_message))
         }
-      } else {
-        this.loginAndRedirect()
       }
-    },
-
-    loginAndRedirect() {
-      this.$router.push({
-        path: '/login',
-        query: {
-          redirect_uri: btoa(location.href)
-        }
-      })
     },
 
     showAllImgInSwiper(index) {

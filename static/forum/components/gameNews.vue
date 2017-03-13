@@ -64,7 +64,6 @@ export default {
     },
 
     loadNewsByPage(page = 1) {
-      console.log('load news in page: ' + page)
     }
   },
 

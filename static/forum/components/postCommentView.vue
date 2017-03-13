@@ -41,6 +41,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    onItemDeleted: {
+      type: Function,
+      default: undefined
+    }
   },
 
   methods: {
@@ -51,7 +55,8 @@ export default {
           let result = await this.$acs.deleteComment(this.itemData.id)
           if (result.success) {
             message.showMsg(this.$t(result.i18n_message))
-            this.commentList.splice(itemIndex, 1)
+            if(this.onItemDeleted)
+              this.onItemDeleted(this.itemIndex)
           }
         },
         onCancel: null,

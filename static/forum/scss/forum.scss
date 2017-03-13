@@ -70,6 +70,10 @@ body:not(.in-app) {
     margin-top: 0;
   }
 
+  .level-right {
+    margin-right: 1.75rem;
+  }
+
   &:after {
     @include bottom-line(.5rem, $bottom-line-light);
   }

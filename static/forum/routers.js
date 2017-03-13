@@ -26,7 +26,7 @@ export default function(VueRouter) {
             name: 'detail',
             component: require('./views/postDetail.vue'),
           }, {
-            path: 'comment',
+            path: 'comment/:postId',
             name: 'newComment',
             component: require('./views/newComment.vue')
           }, {

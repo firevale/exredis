@@ -50,8 +50,8 @@ export default {
         onOk: async _ => {
           let result = await this.$acs.deleteComment(this.itemData.id)
           if (result.success) {
-            this.items.$remove(item)
             message.showMsg(this.$t(result.i18n_message))
+            this.commentList.splice(itemIndex, 1)
           }
         },
         onCancel: null,

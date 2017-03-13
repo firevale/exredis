@@ -136,22 +136,18 @@ defmodule Acs.ForumController do
   end
 
   # delete_comment
-  def delete_comment(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+  def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                     %{"comment_id" => comment_id}) do
     #todo power check
-    case Repo.get(ForumComment, comment_id) do
+    with %ForumComment{} = comment <- Repo.get(ForumComment, comment_id),
+      :ok <- Repo.delete(comment)
+    do
+      conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
+    else
       nil ->
-        conn |> json(%{success: false,
-                       i18n_message: "admin.serverError.commentNotFound"})
-
-      %ForumComment{} = comment ->
-        case Repo.delete(comment) do
-          {:ok, _} ->
-            conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
-
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: translate_errors(errors)})
-        end
+        conn |> json(%{success: false, i18n_message: "admin.serverError.commentNotFound"})
+      {:error, %{errors: errors}} ->
+        conn |> json(%{success: false, message: translate_errors(errors)})
       _ ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
     end
@@ -198,23 +194,18 @@ defmodule Acs.ForumController do
   end
 
   # toggle post status
-  def toggle_post_status(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+  def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                   %{"post_id" => post_id} = params) do
     # todo check power
-    case Repo.get(ForumPost, post_id) do
+    with %ForumPost{} = post <- Repo.get(ForumPost, post_id),
+         :ok <- ForumPost.changeset(post, params) |> Repo.update()
+    do
+      conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
+    else
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
-
-      %ForumPost{} = post ->
-
-        case ForumPost.changeset(post, params) |> Repo.update do
-          {:ok, _} ->
-            conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
-
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
-        end
-
+      {:error, %{errors: errors}} ->
+        conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
       _ ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
     end

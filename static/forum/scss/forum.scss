@@ -92,14 +92,6 @@ body:not(.in-app) {
     @include bottom-line(1px, $bottom-line-dark);
   }
 }
-@media only screen and (-o-min-device-pixel-ratio: 5/4), only screen and (-webkit-min-device-pixel-ratio: 1.25), only screen and (min--moz-device-pixel-ratio: 1.25), only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 1.25dppx) {
-  .has-bottom-line {
-    &:after {
-      transform: scaleY(.3);
-      transform-origin: 0 0;
-    }
-  }
-}
 
 .icon {
   &.image-icon,
@@ -119,19 +111,89 @@ body:not(.in-app) {
   }
 
   &.icon-pull-down {
-    background-image: url("~forum/assets/icon-pull-down@3x.png");
+    background-image: url("~forum/assets/icon-pull-down@1x.png");
   }
 
   &.icon-search {
-    background-image: url("~forum/assets/icon-search@3x.png");
+    background-image: url("~forum/assets/icon-search@1x.png");
   }
 
   &.icon-user {
-    background-image: url("~forum/assets/icon-user@3x.png");
+    background-image: url("~forum/assets/icon-user@1x.png");
   }
 
   &.icon-check {
-    background-image: url("~forum/assets/icon-check@3x.png");
+    background-image: url("~forum/assets/icon-check@1x.png");
+  }
+}
+// @2x resources
+@media only screen and (-o-min-device-pixel-ratio: 5/4), only screen and (-webkit-min-device-pixel-ratio: 1.25), only screen and (min--moz-device-pixel-ratio: 1.25), only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 1.25dppx) {
+  .has-bottom-line {
+    &:after {
+      transform: scaleY(.3);
+      transform-origin: 0 0;
+    }
+  }
+
+  .icon {
+    &.icon-close {
+      background-image: url("~login/assets/times@2x.png");
+    }
+
+    &.icon-back {
+      background-image: url("~login/assets/back@2x.png");
+    }
+
+    &.icon-pull-down {
+      background-image: url("~forum/assets/icon-pull-down@2x.png");
+    }
+
+    &.icon-search {
+      background-image: url("~forum/assets/icon-search@2x.png");
+    }
+
+    &.icon-user {
+      background-image: url("~forum/assets/icon-user@2x.png");
+    }
+
+    &.icon-check {
+      background-image: url("~forum/assets/icon-check@2x.png");
+    }
+  }
+}
+// @3x resources
+@media only screen and (-o-min-device-pixel-ratio: 9/4), only screen and (-webkit-min-device-pixel-ratio: 2.25), only screen and (min-device-pixel-ratio: 2.25), only screen and (min-resolution: 2.25dppx) {
+  .has-bottom-line {
+    &:after {
+      transform: scaleY(.2);
+      transform-origin: 0 0;
+    }
+  }
+
+  .icon {
+    &.icon-close {
+      background-image: url("~login/assets/times@3x.png");
+    }
+
+    &.icon-back {
+      background-image: url("~login/assets/back@3x.png");
+    }
+
+    &.icon-pull-down {
+      background-image: url("~forum/assets/icon-pull-down@3x.png");
+    }
+
+    &.icon-search {
+      background-image: url("~forum/assets/icon-search@3x.png");
+    }
+
+    &.icon-user {
+      background-image: url("~forum/assets/icon-user@3x.png");
+    }
+
+    &.icon-check {
+      background-image: url("~forum/assets/icon-check@3x.png");
+    }
   }
 }
 
@@ -161,7 +223,7 @@ body:not(.in-app) {
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
 
   .icon-pull-down {
     margin-top: 0.6rem;
@@ -930,7 +992,7 @@ body:not(.in-app) {
   border-radius: 0.3rem;
 
   &.modal-menu {
-    padding: 0 0;
+    padding: 0;
     width: 20rem;
     margin: 0 auto;
   }

@@ -147,19 +147,15 @@ defmodule Acs.Plugs do
     end
   end
 
-  def fetch_session_user_id(%Plug.Conn{private: private} = conn) do
-    case Map.fetch(private, :plug_session_fetch) do
-      {:ok, :done} ->
-        case get_session(conn, :access_token) do
-          nil -> conn
-          token_id ->
-            case RedisAccessToken.find(token_id) do
-              %RedisAccessToken{user_id: user_id} ->
-                conn |> put_private(:acs_session_user_id, user_id)
-              _ -> conn
-            end
-        end
-      _ -> conn
+  def fetch_session_user_id(%Plug.Conn{private: private} = conn, _options) do
+    with {:ok, :done} <- Map.fetch(private, :plug_session_fetch),
+         token_id <- get_session(conn, :access_token),
+         %RedisAccessToken{user_id: user_id} <- RedisAccessToken.find(token_id)
+    do
+      conn |> put_private(:acs_session_user_id, user_id)
+    else
+      _ ->
+        conn
     end
   end
 

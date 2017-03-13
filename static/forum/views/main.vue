@@ -11,7 +11,7 @@
       <div class="level-item level-right has-text-right">
         <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-search" :to="{name: 'search'}"></router-link>
         <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
-        <router-link v-show="$route.name == 'postList'" class="level-item button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
+        <router-link v-show="$route.name == 'postList'" class="level-item button level-button is-info" :to="{name: 'newPost', params:{forumId: forumInfo.id}}">{{$t('forum.postList.newPost')}}</router-link>
       </div>
     </div>
   </div>

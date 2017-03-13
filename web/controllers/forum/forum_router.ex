@@ -29,7 +29,7 @@ defmodule Acs.ForumRouter do
 
     post "/delete_comment", ForumController, :delete_comment
     post "/toggle_post_favorite", ForumController, :toggle_post_favorite
-    post "/set_post_status", ForumController, :set_post_status
+    post "/toggle_post_status", ForumController, :toggle_post_status
   end
 
 end

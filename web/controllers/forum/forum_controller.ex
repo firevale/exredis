@@ -70,24 +70,30 @@ defmodule Acs.ForumController do
   end
 
   # add_post
-  def add_post(conn,%{"forum_id" => forum_id,
+  def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"forum_id" => forum_id,
                       "title" => title,
                       "content" => content,
                       "section_id" => section_id} = post) do
-      now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-      post = post |> Map.put("user_id", 100002) |> Map.put("created_at",now_time)
-
-      case ForumPost.changeset(%ForumPost{},post) |>   Repo.insert do
-        {:ok, post} ->
+      query = from f in Forum,
+              join: s in assoc(f, :sections),
+              where: f.id==^forum_id and s.id==^section_id,
+              preload: [sections: s]
+      with  %Forum{}=forum <-Repo.one(query),
+            now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
+            post <- post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time),
+            {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
+      do
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
-
+      else
+        nil ->
+            conn |> json(%{success: false, message: "forum.error.illegal"})
         {:error, %{errors: errors}} ->
           d "errs: #{inspect errors, pretty: true}"
           conn |> json(%{success: false, message: "forum.error.networkError"})
       end
   end
   def add_post(conn, params) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
   # get_post_detail
@@ -96,7 +102,7 @@ defmodule Acs.ForumController do
             join: u in assoc(p, :user),
             join: s in assoc(p, :section),
             where: p.id == ^post_id,
-            select: map(p, [:id, :title, :content, :created_at, user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
+            select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
             preload: [user: u, section: s]
     detail = Repo.one(query) |> Map.put(:rank,"楼主")
 
@@ -191,10 +197,9 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
-  # set post status
-  def set_post_status(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
-                  %{"post_id" => post_id,
-                    "status" => status}) do
+  # toggle post status
+  def toggle_post_status(%Plug.Conn{private: %{acs_user_id: user_id}} = conn,
+                  %{"post_id" => post_id} = params) do
     # todo check power
     case Repo.get(ForumPost, post_id) do
       nil ->
@@ -202,11 +207,7 @@ defmodule Acs.ForumController do
 
       %ForumPost{} = post ->
 
-        case ForumPost.changeset(post, %{
-          active: status == "close",
-          is_vote: status == "essence",
-          is_top: status == "up",
-          }) |> Repo.update do
+        case ForumPost.changeset(post, params) |> Repo.update do
           {:ok, _} ->
             conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
 
@@ -218,7 +219,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
     end
   end
-  def set_post_status(conn, params) do
+  def toggle_post_status(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 

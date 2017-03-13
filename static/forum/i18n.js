@@ -38,17 +38,22 @@ export default {
         followAll: '查看全部',
         collection: '收藏帖子',
         delete: '删除',
+        deleted: '已删除',
         goBack: '回到顶部',
         deleteTip: '确认删除此楼',
         cancelCollection: '取消收藏',
         closePost: '封贴',
+        openPost: '解封',
         essencePost: '精品',
+        unEssencePost: '取消精品',
         upPost: '置顶',
+        unUpPost: '取消置顶',
         operateSuccess: '操作成功',
       },
       error: {
         pageTitle: '糟糕，出错了',
-        networkError: '网络错误'
+        networkError: '网络错误',
+        illegal: '非法操作',
       },
       serverError: {
         badRequestParams: '请求参数错误',
@@ -65,6 +70,7 @@ export default {
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         requireTitle: '请输入标题',
         requireContent: '请输入内容',
+        requireSection: '请选择发贴版块',
         addSuccess:'发帖成功'
       },
       writeComment: {

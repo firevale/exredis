@@ -10,7 +10,7 @@
     <div class="column is-10.5 ql-editor">
       <div v-if="itemData.title" class="columns" style="margin: 0;">
         <div class="column is-10 title is-5 detail-title">
-          <p>{{itemData.title}}</p>
+          <p>[{{itemData.section.title}}] {{itemData.title}}</p>
         </div>
         <div class="column is-2" style="text-align: right;">
           <span v-if="itemData.rank == $t('forum.detail.author')" class="button follow-btn" @click="floorHost">{{ onlyHost? $t('forum.detail.followAll'): $t('forum.detail.follow') }}</span>
@@ -31,9 +31,9 @@
     </div>
   </div>
   <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
-    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="closePost">{{ $t('forum.detail.closePost') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="essencePost">{{ $t('forum.detail.essencePost') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="upPost">{{ $t('forum.detail.upPost') }}</i>
+    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleActive">{{ itemData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}</i>
+    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleEssence">{{ itemData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}</i>
+    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleUp">{{ itemData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}</i>
   </div>
 </div>
 </template>
@@ -117,22 +117,41 @@ export default {
       }
     },
 
-    closePost() {
-      this.setPostStatus("close")
+    toggleActive() {
+      this.togglePostStatus({
+        active: !this.itemData.active
+      }, "active")
     },
 
-    essencePost() {
-      this.setPostStatus("essence")
+    toggleEssence() {
+      this.togglePostStatus({
+        is_vote: !this.itemData.is_vote
+      }, "is_vote")
     },
 
-    upPost() {
-      this.setPostStatus("up")
+    toggleUp() {
+      this.togglePostStatus({
+        is_top: !this.itemData.is_top
+      }, "is_top")
     },
 
-    setPostStatus: async function(status) {
+    togglePostStatus: async function(params, pos) {
       if (window.acsConfig.accessToken) {
-        let result = await this.$acs.setPostStatus(this.itemData.id, status)
+        let result = await this.$acs.togglePostStatus({
+          post_id: this.itemData.id,
+          ...params
+        })
         if (result.success) {
+          switch (pos) {
+            case "active":
+              this.itemData.active = !this.itemData.active
+              break;
+            case "is_vote":
+              this.itemData.is_vote = !this.itemData.is_vote
+              break;
+            case "is_top":
+              this.itemData.is_top = !this.itemData.is_top
+          }
           message.showMsg(this.$t(result.i18n_message))
         }
       } else {

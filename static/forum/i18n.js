@@ -34,6 +34,8 @@ export default {
         title: '帖子详情',
         replyBtn: '回复',
         author: '楼主',
+        firstComment: '沙发',
+        secondComment: '板凳',
         follow: '只看楼主',
         followAll: '查看全部',
         collection: '收藏帖子',

@@ -8,6 +8,12 @@ export const setCurrentSectionId = ({
   commit(types.SET_CURRENT_SECTION_ID, sectionId)
 }
 
+export const setCurrentPostTitle = ({
+  commit
+}, title) => {
+  commit(types.SET_CURRENT_POST_TITLE, title)
+}
+
 export const setPostsOrderByField = ({
   commit
 }, fieldName) => {

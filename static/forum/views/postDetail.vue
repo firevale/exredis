@@ -14,6 +14,12 @@
 </div>
 </template>
 <script>
+import Vue from '../vue-installed'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
 import postDetailView from '../components/postDetailView.vue'
 import postCommentView from '../components/postCommentView.vue'
 import pagination from '../components/pagination.vue'
@@ -49,6 +55,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'setCurrentPostTitle'
+    ]),
+
     onPageChange: function(page) {
       this.refreshPage(page)
     },
@@ -68,6 +78,7 @@ export default {
     getPostDetail: async function() {
       let result = await this.$acs.getPostDetail(this.postId)
       if (result.success) {
+        this.setCurrentPostTitle(result.detail.title)
         this.postDetail = result.detail
       }
     },

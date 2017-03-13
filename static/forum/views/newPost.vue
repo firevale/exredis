@@ -4,7 +4,7 @@
     <span class="icon image-icon icon-pull-down" @click="showSelectSectionMenu">{{ selectedSectionTitle }}</span>
     <i class="fa fa-caret-down dark" style="font-size: 1.5rem;" aria-hidden="true"></i>
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-    <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preView') }}</span>
+    <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
   <div>
     <div class="column is-full" style="padding-bottom: 0;padding-top: 0;">
@@ -21,7 +21,7 @@
     </div>
   </div>
   <div class="column is-full" style="text-align: center;">
-    <a class="button new-note" @click="sentNote">{{ $t('forum.newPost.btnTxt') }}</a>
+    <a class="button new-note" @click="handleSubmit">{{ $t('forum.newPost.btnTxt') }}</a>
   </div>
 </div>
 </template>
@@ -113,19 +113,17 @@ export default {
       postPreview({
         visible: true,
         item: {
-          level: this.userInfo.level,
-          rank: '',
-          portrait: this.userInfo.portrait,
-          title: this.replyTitle,
+          user:this.userInfo,
+          rank: '楼主',
+          section:this.sectionMenuItems[this.selectedSectionId],
+          title: this.title,
           time: utils.getNowFormatDate(),
-          author: this.userInfo.userName,
-          img: this.imgs,
-          description: this.content,
+          content: this.content
         },
       })
     },
 
-    sentNote: async function() {
+    handleSubmit: async function() {
       if (!this.title) {
         message.showMsg(this.$t('forum.newPost.titlePlaceholder'))
         return;

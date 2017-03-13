@@ -140,16 +140,16 @@ defmodule Acs.ForumController do
                     %{"comment_id" => comment_id}) do
     #todo power check
     with %ForumComment{} = comment <- Repo.get(ForumComment, comment_id),
-      :ok <- Repo.delete(comment)
+      {:ok, _} <- Repo.delete(comment)
     do
       conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
     else
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.commentNotFound"})
+        conn |> json(%{success: false, i18n_message: "forum.serverError.commentNotFound"})
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
     end
   end
   def delete_comment(conn, params) do

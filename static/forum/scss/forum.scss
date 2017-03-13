@@ -40,38 +40,36 @@ body:not(.in-app) {
 .top-bar {
   height: 5rem;
   width: 100%;
-  padding-top: 2rem;
-
-  .level-item.button,
-  .level-item.image-icon {
-    margin-bottom: 0;
-  }
+  padding-top: 1rem;
 
   .title-bar {
     position: absolute;
+    top: 1.9rem;
     left: 35%;
     width: 30%;
     z-index: 3;
+    text-align: center;
 
     h4 {
-      width: 100%;
+      max-width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-weight: 400;
     }
   }
 
-  .level {
-    margin-left: 0.75rem;
-    margin-right: 0.75rem;
-  }
+  .nav {
+    align-items: center;
 
-  .level-left + .level-right {
-    margin-top: 0;
-  }
+    .nav-right {
+      padding-right: 1.5rem;
+      align-items: center;
 
-  .level-right {
-    margin-right: 1.75rem;
+      .icon {
+        margin-right: 1rem;
+      }
+    }
   }
 
   &:after {
@@ -267,11 +265,34 @@ body:not(.in-app) {
 .post-detail {
   padding: 0.5rem 0;
 
-  .button.pull-right {
-    position: absolute;
-    right: 0;
-    font-size: 0.8rem;
+  .nav {
+    min-height: 2rem;
+
+    .title {
+      font-weight: 400;
+      white-space: normal;
+    }
+
+    .nav-right {
+      flex-grow: 0;
+      .level-button {
+        min-width: 2rem;
+        padding: 0 0.2rem;
+      }
+    }
   }
+
+  .content {
+    margin-top: 1rem;
+  }
+}
+
+span.is-primary {
+  color: $primary;
+}
+
+span.is-grey {
+  color: $text-grey;
 }
 
 .back-top {
@@ -671,12 +692,7 @@ body:not(.in-app) {
   }
 
   span.is-primary {
-    color: $primary;
     font-size: 1.1rem;
-  }
-
-  span.is-grey {
-    color: $text-grey;
   }
 
   .tag {

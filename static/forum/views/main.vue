@@ -1,20 +1,22 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
   <div class="stay-top top-bar">
-    <div class="title-bar has-text-centered">
-      <h4 class="title is-4" style="font-weight: 400">{{forumInfo.title}}</h4>
+    <div class="title-bar">
+      <h4 class="title is-4">{{forumInfo.title}}</h4>
     </div>
-    <div class="level is-mobile">
-      <div class="level-item level-left has-text-left">
+    <nav class="nav">
+      <div class="nav-left has-text-left">
         <span v-show="canGoBack || inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
       </div>
-      <div class="level-item level-right has-text-right">
-        <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-        <router-link v-show="$route.name == 'postList'" class="level-item icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
-        <router-link v-show="$route.name == 'postList'" class="level-item button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
-        <router-link v-show="$route.name == 'detail'" class="level-item button level-button is-info" :to="{name: 'newComment'}">{{$t('forum.writeComment.btnTxt')}}</router-link>
+      <div class="nav-center">
       </div>
-    </div>
+      <div class="nav-right has-text-right">
+        <router-link v-show="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
+        <router-link v-show="$route.name == 'postList'" class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
+        <router-link v-show="$route.name == 'postList'" class="button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
+        <router-link v-show="$route.name == 'detail'" class="button level-button is-info" :to="{name: 'newComment'}">{{$t('forum.writeComment.btnTxt')}}</router-link>
+      </div>
+    </nav>
   </div>
   <transition :name="transitionName">
     <router-view class="content-container"> </router-view>

@@ -10,12 +10,21 @@
       </div>
     </div>
     <div class="media-content">
-      <a class="button level-button is-primary pull-right">{{$t('forum.detail.showAuthorOnly')}}</a>
+      <nav class="nav">
+        <div class="nav-left has-text-left">
+          <span class="title is-5">
+            [{{postData.section.title}}] {{postData.title}}
+          </span>
+        </div>
+        <div class="nav-right has-text-right" style="flex-glow: 0">
+          <a class="button level-button is-primary">{{$t('forum.detail.showAuthorOnly')}}</a>
+        </div>
+      </nav>
       <p>
-        <span class="title is-5" style="font-weight: 400;">[{{postData.section.title}}] {{postData.title}}</span>
-        <br/>
-        <timeago :since="(postData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
-        <span class="nickname">{{ postData.user.nickname }}</span>
+        <span class="is-grey">
+          <timeago :since="(postData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
+        </span>
+        <span class="is-primary">{{ postData.user.nickname }}</span>
       </p>
       <div class="content">
         <p class="post-content" v-html="postData.content">
@@ -23,7 +32,7 @@
         <div>
           <span class="icon image-icon is-clickable" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'"
             @click="toggleFavorite"></span>
-          <span class="is-grey is-clickable" style="font-size: .9rem;" @click="toggleFavorite">
+          <span class="is-grey is-clickable" @click="toggleFavorite">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
           </span>
         </div>

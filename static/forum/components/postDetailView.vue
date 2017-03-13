@@ -2,10 +2,12 @@
 <div class="has-bottom-line">
   <div class="columns" style="margin: 0;">
     <div>
-      <figure class="image is-64x64" style="margin: auto; border-radius:50%; border: 1px solid;overflow: hidden;">
+      <figure class="image is-64x64 avatar-image">
         <img :src="avatarUrl"></img>
       </figure>
-      <div class="title is-6 has-text-centered red">{{itemData.rank}}</div>
+      <div class="has-text-centered" style="margin-top: 1rem">
+        <h5 class="title is-5 is-danger" style="font-weight: 400">{{itemData.rank}}</h5>
+      </div>
     </div>
     <div class="column is-10.5 ql-editor">
       <div v-if="itemData.title" class="columns" style="margin: 0;">
@@ -93,7 +95,6 @@ export default {
   computed: {
     isManager() {
       return true
-      //this.$http()
     },
 
     avatarUrl() {

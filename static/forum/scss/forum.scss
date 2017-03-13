@@ -253,6 +253,23 @@ body:not(.in-app) {
   }
 }
 
+.avatar-image {
+  margin: auto;
+  border-radius: 50%;
+  border: none;
+  overflow: hidden;
+}
+
+.title {
+  &.is-primary {
+    color: $primary;
+  }
+
+  &.is-danger {
+    color: $danger;
+  }
+}
+
 .content-item {
   margin: auto 1rem !important;
   justify-content: space-around;

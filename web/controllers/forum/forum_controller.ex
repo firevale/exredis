@@ -69,17 +69,23 @@ defmodule Acs.ForumController do
   end
 
   # add_post
-  def add_post(conn,%{"forum_id" => forum_id,
+  def add_post(%Plug.Conn{private: %{acs_user_id: user_id}} = conn, %{"forum_id" => forum_id,
                        "title" => title,
                        "content" => content,
                        "section_id" => section_id} = post) do
-      now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-      post = post |> Map.put("user_id", 100002) |> Map.put("created_at",now_time)
-
-      case ForumPost.changeset(%ForumPost{},post) |>   Repo.insert do
-        {:ok, post} ->
+      query = from f in Forum,
+              join: s in assoc(f, :sections),
+              where: f.id==^forum_id and s.id==^section_id,
+              preload: [sections: s]
+      with  %Forum{}=forum <-Repo.one(query),
+            now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
+            post <- post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time),
+            {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
+      do
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
-
+      else
+        nil ->
+            conn |> json(%{success: false, message: "forum.error.illegal"})
         {:error, %{errors: errors}} ->
           d "errs: #{inspect errors, pretty: true}"
           conn |> json(%{success: false, message: "forum.error.networkError"})

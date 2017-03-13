@@ -48,7 +48,8 @@ export default {
       },
       error: {
         pageTitle: '糟糕，出错了',
-        networkError: '网络错误'
+        networkError: '网络错误',
+        illegal: '非法操作',
       },
       serverError: {
         badRequestParams: '请求参数错误',
@@ -65,6 +66,7 @@ export default {
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         requireTitle: '请输入标题',
         requireContent: '请输入内容',
+        requireSection: '请选择发贴版块',
         addSuccess:'发帖成功'
       },
       writeComment: {

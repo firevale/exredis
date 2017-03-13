@@ -2,8 +2,8 @@
 <div class="has-bottom-line">
   <div class="columns " style="margin: 0;">
     <div style="padding: 1rem 0 1rem .5rem;">
-      <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;">
-        <img v-if :src="itemData.user.avatar_url"></img>
+      <figure class="image is-64x64 avatar-image">
+        <img v-if :src="avatarUrl"></img>
       </figure>
       <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 2 }">{{itemData.rank}}</div>
     </div>
@@ -45,6 +45,12 @@ export default {
       type: Function,
       default: undefined
     }
+  },
+
+  computed: {
+      avatarUrl: function() {
+        return this.itemData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+      }
   },
 
   methods: {

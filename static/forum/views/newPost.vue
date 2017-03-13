@@ -136,7 +136,13 @@ export default {
         return;
       }
 
-      let result = await this.$acs.addPost(1, 1, this.title, this.content)
+      if(!this.selectedSectionId){
+        message.showMsg(this.$t('forum.newPost.requireSection'))
+        return
+      }
+
+      var forumId=this.$router.currentRoute.params.forumId
+      let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
       if (result.success) {
         message.showMsg(this.$t('forum.newPost.addSuccess'))
         this.$router.push({

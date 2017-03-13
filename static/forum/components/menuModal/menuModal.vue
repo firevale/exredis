@@ -2,15 +2,15 @@
 <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
   <div class="modal-background" @click="cancel"></div>
   <div class="modal-card">
-    <section class="modal-card-body" style="border-radius: 3px;">
-      <article class="media">
-        <div class="media-content">
-          <div v-for="item in menuItems" class="columns modal-item pointer" @click="ok(item)">
-            <span class="column item-name" :class="{'olive': selectedValue == item.value}"> {{ item.title }} </span>
-            <span v-show="selectedValue == item.value" class="fa fa-check item-check" aria-hidden="true" style="font-size: 2rem;color: red; vertical-align: middle;padding: 10px;"></span>
-          </div>
+    <section class="modal-card-body modal-menu">
+      <div v-for="item in menuItems" class="level is-mobile modal-menu-item has-bottom-line" @click="ok(item)">
+        <div class="level-item level-left has-text-left">
+          <h5 class="title is-4" :class="selectedValue == item.value ? 'active': ''" style="font-weight: 400; margin-left: 1rem">{{item.title}}</h5>
         </div>
-      </article>
+        <div class="level-item level-right has-text-right">
+          <span v-show="selectedValue == item.value" class="icon image-icon icon-check" style="margin-right: 1rem"></span>
+        </div>
+      </div>
     </section>
   </div>
 </div>

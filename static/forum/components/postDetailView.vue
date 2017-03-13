@@ -19,8 +19,6 @@
       <div class="column detail-info">
         <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
         <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="deletePostQuestion"
-          style="font-size: .9rem;">{{ $t('forum.detail.delete') }}</span>
       </div>
       <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">[aaa]
       </div>
@@ -30,7 +28,7 @@
       </div>
     </div>
   </div>
-  <div v-if="itemData.rank=='楼主' && isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
+  <div v-if="isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
     <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleActive">{{ itemData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}</i>
     <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleEssence">{{ itemData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}</i>
     <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleUp">{{ itemData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}</i>
@@ -88,6 +86,7 @@ export default {
     return {
       onlyHost: false,
       imgsPreview: [],
+      isManager: true,
     }
   },
 

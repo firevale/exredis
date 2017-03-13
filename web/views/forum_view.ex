@@ -1,3 +1,3 @@
-defmodule Acs.FormView do
+defmodule Acs.ForumView do
   use Acs.Web, :view
 end

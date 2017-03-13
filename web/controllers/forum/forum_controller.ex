@@ -98,15 +98,18 @@ defmodule Acs.ForumController do
 
   # get_post_detail
   def get_post_detail(conn,%{"post_id" => post_id}) do
+
     query = from p in ForumPost,
             join: u in assoc(p, :user),
             join: s in assoc(p, :section),
             where: p.id == ^post_id,
-            select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
+            select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, :reads,
+                        user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
             preload: [user: u, section: s]
-    detail = Repo.one(query) |> Map.put(:rank,"楼主")
+    post = Repo.one(query)
+    add_post_count(post_id, %{reads: post.reads+1})
 
-    conn |> json(%{success: true, detail: detail})
+    conn |> json(%{success: true, detail: post})
   end
   def get_post_detail(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
@@ -231,6 +234,11 @@ defmodule Acs.ForumController do
       %Forum{} = forum ->
         {:ok, forum.id}
     end
+  end
+
+  defp add_post_count(post_id, params) do
+    post = Repo.get(ForumPost, post_id)
+    ForumPost.changeset(post, params) |> Repo.update()
   end
 
 end

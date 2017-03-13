@@ -173,6 +173,10 @@ body:not(.in-app) {
     margin: 0.4rem 0.5rem 0.4rem 0;
     height: 2rem;
     font-size: 1rem;
+
+    &:active {
+      border-color: transparent;
+    }
   }
 
   span.seperator {
@@ -571,6 +575,7 @@ body:not(.in-app) {
 
 .post-list-item {
   padding: 0.3rem 0;
+  cursor: pointer;
 
   .title {
     margin-bottom: 0;

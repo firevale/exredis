@@ -1,6 +1,6 @@
 <template>
 <div class="post-detail has-bottom-line">
-  <article class="media">
+  <article class="media" :class="isManager ? 'has-bottom-line' : ''">
     <div class="media-left" style="margin: 0 1rem 0 0">
       <figure class="image is-64x64 avatar-image">
         <img :src="avatarUrl"></img>
@@ -13,7 +13,7 @@
       <nav class="nav">
         <div class="nav-left has-text-left">
           <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
-          <span class="title is-5">
+          <span class="post-title">
             [{{postData.section.title}}] {{postData.title}}
           </span>
           <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
@@ -32,9 +32,9 @@
       <div class="content">
         <p class="post-content" v-html="postData.content">
         </p>
-        <div class="tile">
-          <span class="icon image-icon is-clickable" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'"
-            @click="toggleFavorite"></span>
+        <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
+          <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
+            style="margin-right: 0.5rem" @click="toggleFavorite"></span>
           <span class="is-grey is-clickable" @click="toggleFavorite">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
           </span>

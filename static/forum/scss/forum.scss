@@ -6,8 +6,7 @@
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
-  background-color: $white;
-  overflow-x: hidden;
+  background-color: $bottom-line-light;
   -ms-overflow-style: none;
   // box-sizing: border-box;
   &::-webkit-scrollbar {
@@ -48,7 +47,7 @@ body:not(.in-app) {
 
   .title-bar {
     position: absolute;
-    top: 1.9rem;
+    top: 2rem;
     left: 35%;
     width: 30%;
     z-index: 3;
@@ -67,9 +66,8 @@ body:not(.in-app) {
     align-items: center;
 
     .nav-right {
-      align-items: center;
-
       .icon {
+        margin-top: 0.2rem;
         margin-right: 1rem;
       }
     }
@@ -82,14 +80,32 @@ body:not(.in-app) {
   }
 }
 
+@media only screen and (max-width: 425px) {
+  .top-bar {
+    .title-bar {
+      left: 3.5rem;
+      width: calc(100vw - 14rem);
+    }
+    .nav {
+      .nav-right {
+        .icon {
+          margin-right: 0.3rem;
+        }
+      }
+    }
+  }
+}
+
 .content-container {
   position: absolute;
-  top: 5.5rem;
-  left: 0;
-  right: 0;
+  background-color: $white;
+  top: 5rem;
+  left: 1.5rem;
+  right: 1.5rem;
   bottom: 0;
-  padding: 0 1.5rem;
+  padding: 0;
   -ms-overflow-style: none;
+  overflow-x: hidden;
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -314,9 +330,17 @@ body:not(.in-app) {
   .nav {
     min-height: 2rem;
 
-    .title {
+    .post-title {
+      min-height: 1.25rem;
+      line-height: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 400;
       white-space: normal;
+      margin-right: 0.5rem;
+    }
+
+    .tag {
+      margin-right: 0.5rem;
     }
 
     .nav-right {
@@ -325,6 +349,7 @@ body:not(.in-app) {
       .level-button {
         min-width: 2rem;
         padding: 0 0.2rem;
+        font-size: 1rem;
       }
 
       .icon {
@@ -346,22 +371,32 @@ body:not(.in-app) {
     .post-content {
       margin-top: 1rem;
     }
+
+    span.icon,
+    span.is-grey {
+      font-size: 1.25rem;
+      margin-right: 0.5rem;
+    }
     font-size: 1.25rem;
   }
 
   .post-manage-bar {
-    margin: 0.5rem 2rem;
+    padding: 0.5rem 2rem;
+    background-color: $bottom-line-light;
 
     .nav-left {
-      flex-grow: 1;
+      flex-grow: 0;
+      flex-basis: 6rem;
     }
 
     .nav-center {
       flex-grow: 1;
+      flex-basis: 6rem;
     }
 
     .nav-right {
-      flex-grow: 1;
+      flex-grow: 0;
+      flex-basis: 6rem;
     }
 
     .button {
@@ -410,195 +445,6 @@ span.is-darkred {
   i {
     color: $primary;
     font-size: 3rem;
-  }
-}
-
-.red {
-  color: $red;
-}
-
-.dark {
-  color: $dark;
-}
-
-.dark-bottom {
-  border-bottom: 1px solid $text-grey;
-}
-
-.olive {
-  color: $olive;
-}
-
-.note-new {
-  padding: 0.3rem 0.5rem;
-  width: 100%;
-}
-
-.note-content {
-  padding-left: 0.5rem;
-  width: 100%;
-  height: 50vh;
-  resize: vertical;
-  border-color: $text-grey;
-}
-
-.new-note {
-  color: $white !important;
-  background: $primary !important;
-  width: 15rem;
-}
-
-.upload-img {
-  position: absolute;
-  bottom: 1rem;
-  left: 1.5rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-
-  i {
-    cursor: pointer;
-    vertical-align: middle;
-    font-size: 1.5rem !important;
-  }
-
-  .img-count {
-    border: 1px solid;
-    border-radius: 50%;
-    width: 1.5rem;
-    height: 1.5rem;
-    cursor: pointer;
-    margin-left: 1rem;
-    text-align: center;
-    background: $primary;
-    color: white;
-  }
-}
-
-.note-count {
-  display: inline-block;
-  border: 1px solid;
-  border-radius: 50%;
-  width: 1.7rem;
-  height: 1.7rem;
-  cursor: pointer;
-  text-align: center;
-  background: $dark;
-  color: white;
-}
-
-.img-remove-icon {
-  position: absolute;
-  right: -1rem;
-  top: -1rem;
-  color: $red;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-.arrow-icon {
-  position: absolute;
-  font-size: 1rem;
-  width: 1.2rem;
-  height: 1.2rem;
-  padding: 0;
-  top: 40%;
-  color: $white;
-  background: $olive;
-  border-radius: 50%;
-}
-
-.arrow-up {
-  height: 0.4rem;
-  width: 0.4rem;
-  border: 0.5rem solid transparent;
-  border-bottom: 0.7rem solid $link;
-  margin: 0 auto;
-}
-
-.arrow-down {
-  height: 0.4rem;
-  width: 0.4rem;
-  border: 0.5rem solid transparent;
-  border-top: 0.7rem solid $link;
-  margin: 0 auto;
-}
-
-.pre-view {
-  border: 1px solid $dark;
-  margin: auto 1rem;
-
-  h1:first-child {
-    margin-left: -.5rem;
-    margin-bottom: 1rem;
-  }
-
-  img {
-    float: left;
-  }
-
-  p:after {
-    content: '';
-    display: block;
-    clear: both;
-  }
-}
-
-.create-note {
-  background-color: $primary !important;
-  color: $white !important;
-}
-
-.horizontal-seperator {
-  height: 0.3rem;
-  margin: 0.5rem 1rem;
-  background-color: $text-grey;
-
-  .move-box-left {
-    height: 100%;
-    background-color: $link;
-    width: 16.66%;
-    margin-left: 8.4%;
-    transition: margin 1s ease;
-  }
-
-  .move-box-center {
-    height: 100%;
-    background-color: $link;
-    width: 16.66%;
-    margin-left: 41.6%;
-    transition: margin 1s ease;
-  }
-
-  .move-box-right {
-    height: 100%;
-    background-color: $link;
-    width: 16.66%;
-    margin-left: 74.9%;
-    transition: margin 1s ease;
-  }
-}
-
-.row-menu {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  position: relative;
-  justify-content: space-around;
-  font-size: 1.3rem;
-  margin: 1rem;
-
-  .service-menu {
-    font-size: 1rem;
-  }
-
-  .mall-menu {
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  img {
-    margin-top: 0.5rem;
   }
 }
 
@@ -656,70 +502,6 @@ span.is-darkred {
   margin-top: 2rem;
 }
 
-.search-icon {
-  position: absolute;
-  left: 0.6rem;
-  top: 0.3rem;
-  font-size: 1.7rem !important;
-  color: $dark;
-}
-
-.times-icon {
-  position: absolute;
-  right: 1rem;
-  top: 0.3rem;
-  font-size: 1.7rem !important;
-  color: $dark;
-}
-
-.search-tip {
-  text-align: left;
-  font-size: 1.3rem;
-  color: $dark;
-  margin-bottom: 2rem;
-}
-
-.no-padding {
-  padding: 0 !important;
-}
-
-.no-border {
-  border: none !important;
-}
-
-.dark-background {
-  background: $text-grey;
-  color: $white;
-}
-
-.red-background {
-  background: $red;
-  color: $white;
-}
-
-.primary-background {
-  background: $primary;
-  color: $white;
-}
-//components scss below
-
-.follow-btn {
-  padding: 0.2rem;
-  cursor: pointer;
-  color: $white;
-  font-size: 0.6rem;
-  background-color: $link;
-}
-
-.detail-title {
-  margin: 0 !important;
-  font-weight: bold;
-}
-
-.detail-info {
-  padding-top: 0;
-}
-
 .detail-imgs::after {
   content: '';
   display: block;
@@ -743,16 +525,6 @@ span.is-darkred {
   font-size: 1.3rem;
   vertical-align: middle !important;
   color: green;
-}
-
-.post-title {
-  vertical-align: middle;
-  font-size: 1rem;
-  color: $black;
-}
-
-.post-title:hover {
-  cursor: pointer;
 }
 
 .post-list-item {

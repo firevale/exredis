@@ -12,7 +12,7 @@
       </article>
     </section>
     <footer class="modal-footer">
-      <a class="button " @click="cancel">{{ cancelText }}</a>
+      <a class="button is-info" @click="cancel">{{ cancelText }}</a>
       <a class="button is-primary" @click="ok">{{ okText }}</a>
     </footer>
   </div>

@@ -229,6 +229,27 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  # add_comment
+  def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                    %{"content" => content,
+                      "post_id" => post_id} = comment) do
+
+      with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
+            comment <- comment |> Map.put("user_id", user_id) |> Map.put("created_at", now_time),
+            {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
+      do
+          conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
+      else
+        nil ->
+          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+        {:error, %{errors: errors}} ->
+          conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+      end
+  end
+  def add_comment(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
+  end
+
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,
             left_join: s in assoc(f, :sections),

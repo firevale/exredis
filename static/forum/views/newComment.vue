@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
-    {{ this.replyTitle() }}
+    {{ this.replyTitle }}
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
     <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
@@ -15,7 +15,7 @@
     <span>{{messageTip}}</span>
   </div>
   <div class="column is-full" style="text-align: center;">
-    <a class="button new-note" @click="writeComment">{{ $t('forum.newPost.btnTxt') }}</a>
+    <a class="button new-note" @click="handleSubmit">{{ $t('forum.newPost.btnTxt') }}</a>
   </div>
 </div>
 </template>
@@ -75,89 +75,50 @@ export default {
       editorOption: {},
       title: '',
       content: '',
-      noteOrderTypeStr: this.$t('forum.postList.discussion'),
     }
   },
 
   methods: {
-    writeComment() {
-      if (!this.content) {
-        message.showMsg(this.$t('forum.newPost.textAreaPlaceHolder'))
-      } else {
-        this.$http({
-            url: '',
-            method: 'post',
-            params: {},
-          })
-          .then(_ => {
-
-          })
-          .catch(_ => {
-
-          })
-      }
-    },
-
-    orderChoose() {
-      menuModal.showModal([{
-          name: this.$t('forum.postList.discussion'),
-          code: 'discussion'
-        },
-        {
-          name: this.$t('forum.postList.experience'),
-          code: 'experience'
-        },
-        {
-          name: this.$t('forum.postList.ras'),
-          code: 'ras'
-        },
-        {
-          name: this.$t('forum.postList.original'),
-          code: 'original'
-        },
-        {
-          name: this.$t('forum.postList.appeal'),
-          code: 'appeal'
-        }
-      ], this.onOrderTypeChoose, this.noteOrderTypeStr)
-    },
-
-    onOrderTypeChoose(type) {
-      this.noteOrderTypeStr = type.name
-    },
 
     goBack() {
       this.$router.push({
-        name: 'forum'
+        name: 'detail'
       })
     },
 
     preview() {
       postPreview({
         visible: true,
-        deleteImgFunc: this.deleteUploadImg,
         item: {
-          level: this.userInfo.level,
+          user: this.userInfo,
           rank: '',
-          portrait: this.userInfo.portrait,
           title: this.replyTitle,
           time: utils.getNowFormatDate(),
-          author: this.userInfo.userName,
-          img: this.imgs,
-          description: this.content,
+          content: this.content,
         },
       })
     },
 
-    onEditorBlur(e) {
+    handleSubmit: async function() {
 
-    },
-    onEditorFocus(e) {
+      if (!this.content) {
+        message.showMsg(this.$t('forum.writeComment.textAreaPlaceHolder'))
+        return;
+      }
 
+      let postId = this.$router.currentRoute.params.postId
+      let result = await this.$acs.addComment(postId, this.content)
+      if (result.success) {
+        message.showMsg(this.$t('forum.writeComment.addSuccess'))
+        this.$router.push({
+          name: 'detail'
+        })
+      }
     },
-    onEditorReady(e) {
 
-    },
+    onEditorBlur(e) {},
+    onEditorFocus(e) {},
+    onEditorReady(e) {},
     onEditorChange(e) {
       this.content = e.html
     },

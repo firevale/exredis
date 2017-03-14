@@ -12,9 +12,12 @@
     <div class="media-content">
       <nav class="nav">
         <div class="nav-left has-text-left">
+          <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
           <span class="title is-5">
             [{{postData.section.title}}] {{postData.title}}
           </span>
+          <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
+          <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
         </div>
         <div class="nav-right has-text-right" style="flex-glow: 0">
           <a class="button level-button is-primary">{{$t('forum.detail.showAuthorOnly')}}</a>

@@ -6,7 +6,7 @@
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
-  background-color: $white;
+  background-color: $bottom-line-light;
   overflow-x: hidden;
   -ms-overflow-style: none;
   // box-sizing: border-box;
@@ -84,11 +84,12 @@ body:not(.in-app) {
 
 .content-container {
   position: absolute;
+  background-color: $white;
   top: 5.5rem;
-  left: 0;
-  right: 0;
+  left: 1.5rem;
+  right: 1.5rem;
   bottom: 0;
-  padding: 0 1.5rem;
+  padding: 0;
   -ms-overflow-style: none;
   overflow-y: scroll;
 

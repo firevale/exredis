@@ -47,7 +47,7 @@ body:not(.in-app) {
 
   .title-bar {
     position: absolute;
-    top: 1.9rem;
+    top: 2rem;
     left: 35%;
     width: 30%;
     z-index: 3;
@@ -66,9 +66,8 @@ body:not(.in-app) {
     align-items: center;
 
     .nav-right {
-      align-items: center;
-
       .icon {
+        margin-top: 0.2rem;
         margin-right: 1rem;
       }
     }
@@ -78,6 +77,22 @@ body:not(.in-app) {
     @include bottom-line(.5rem, $bottom-line-light);
     width: 100vw;
     left: 0;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .top-bar {
+    .title-bar {
+      left: 3.5rem;
+      width: calc(100vw - 14rem);
+    }
+    .nav {
+      .nav-right {
+        .icon {
+          margin-right: 0.3rem;
+        }
+      }
+    }
   }
 }
 

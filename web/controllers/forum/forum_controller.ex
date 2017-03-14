@@ -144,7 +144,7 @@ defmodule Acs.ForumController do
             preload: [user: u]
     comments = Repo.all(query)
 
-    conn |> json(%{success: true, comments: comments, total: total_page})
+    conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
   def get_post_comments(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})

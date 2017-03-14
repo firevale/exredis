@@ -51,6 +51,7 @@ export default {
       commentList: [],
       page: 1,
       total: 1,
+      totalRecords: 0,
       recordsPerPage: 10,
     }
   },
@@ -91,6 +92,7 @@ export default {
         if (result.success) {
           this.commentList = result.comments
           this.total = result.total
+          this.totalRecords = result.records
           this.page = page
         }
         this.processing = false

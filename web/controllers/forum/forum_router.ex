@@ -21,6 +21,8 @@ defmodule Acs.ForumRouter do
 
     get  "/get_paged_post", ForumController, :get_paged_post
     post "/get_paged_post", ForumController, :get_paged_post
+    post "/get_user_info", ForumController, :get_user_info
+    post "/get_user_paged_post", ForumController, :get_user_paged_post
 
     post "/add_post", ForumController, :add_post
 

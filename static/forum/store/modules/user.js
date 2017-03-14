@@ -1,19 +1,21 @@
+import * as types from '../mutationTypes'
+
 const state = {
   id: 0,
   nickName: '',
-  avatar_url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3293038046,4198898802&fm=21&gp=0.jpg',
+  avatar_url: '',
   reg_at: '',
-  posts: 0
+  post_count: 0
 }
 
 const mutations = {
 
-  'SET_USER_PROFILE' (state, info) {
+  [types.SET_USER_PROFILE] (state, info) {
     state.id = info.id
     state.nickName = info.nickname
     state.avatar_url = info.avatar_url
     state.reg_at = info.inserted_at
-    state.posts = info.posts
+    state.post_count = info.post_count
   }
 
 }

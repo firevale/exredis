@@ -40,25 +40,27 @@ export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
       getPagedPost(page, records_per_page, order, section_id, forum_id) {
-        return post(Vue, '/forum_actions/get_paged_post', {
-          page,
-          records_per_page,
-          order,
-          section_id,
-          forum_id,
-        })
+        return post(Vue, '/forum_actions/get_paged_post', {page, records_per_page, order, section_id, forum_id})
+      },
+
+      getUserPagedPost(forum_id, page, records_per_page) {
+        return post(Vue, '/forum_actions/get_user_paged_post', {forum_id, page, records_per_page})
       },
 
       getForumInfo(forum_id) {
         return post(Vue, '/forum_actions/get_forum_info', {forum_id})
       },
 
+      getUserInfo() {
+        return post(Vue, '/forum_actions/get_user_info')
+      },
+
       addPost(forum_id, section_id, title, content) {
-        return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content,})
+        return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content})
       },
 
       addComment(post_id, title, content) {
-        return post(Vue, '/forum_actions/add_comment', {post_id, title, content,})
+        return post(Vue, '/forum_actions/add_comment', {post_id, title, content})
       },
 
       getPostDetail(post_id) {
@@ -78,8 +80,8 @@ export default {
       },
 
       getPostComments(post_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page,})
-      },
+        return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page})
+      }
     }
   }
 }

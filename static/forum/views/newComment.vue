@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
-    {{ $t('forum.writeComment.title') + ": " + this.currentPostTitle }}
+    {{ this.replyTitle() }}
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
     <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
@@ -29,7 +29,9 @@ import postDetailView from '../components/postDetailView.vue'
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
-import {postPreview} from '../components/preview'
+import {
+  postPreview
+} from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'
@@ -53,10 +55,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['userInfo','currentPostTitle']),
+    ...mapGetters(['userInfo', 'currentPostTitle']),
 
     replyTitle() {
-      return this.$t('forum.writeComment.title') + ':' + this.$router.currentRoute.params.title
+      return this.$t('forum.writeComment.title') + ':' + this.currentPostTitle
     },
 
     messageTip() {

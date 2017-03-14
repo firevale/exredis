@@ -117,7 +117,7 @@ export default {
       if (!this.processing) {
         this.processing = true
 
-        let result = await this.$acs.getUserPagedPost(this.forumId, page, this.recordsPerPage)
+        let result = await this.$acs.getUserPagedPost(1, page, this.recordsPerPage)
 
         if (result.success) {
           this.postList = result.posts

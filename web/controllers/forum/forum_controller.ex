@@ -38,7 +38,7 @@ defmodule Acs.ForumController do
                              "page" => page,
                              "records_per_page" => records_per_page,
                              "order" => order}) do
-    get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, "")
+    get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, 0)
   end
   def get_user_paged_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                             %{"forum_id" => forum_id,
@@ -53,14 +53,20 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
-    d "------------------order: #{order}, author_user_id: #{author_user_id}"
+
     queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
-    if(is_integer(section_id) and section_id>0) do
-      queryTotal = queryTotal |> where([p], p.section_id == ^section_id)
+
+    queryTotal = if(is_integer(section_id) and section_id > 0) do
+      queryTotal |> where([p], p.section_id == ^section_id)
+    else
+      queryTotal
     end
-    if(author_user_id != nil and String.length(author_user_id) > 0) do
-      queryTotal = queryTotal |> where([p], p.user_id == ^author_user_id)
+    queryTotal = if(is_integer(author_user_id) and author_user_id > 0) do
+      queryTotal |> where([p], p.user_id == ^author_user_id)
+    else
+      queryTotal
     end
+
     total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
     order = String.to_atom(order)
@@ -77,11 +83,15 @@ defmodule Acs.ForumController do
              preload: [user: u, section: s, forum: f],
              order_by: [{:desc, p.is_top}, {:desc, ^order}]
 
-    if(is_integer(section_id) and section_id>0) do
-      query = query |> where([p], p.section_id == ^section_id)
+    query = if(is_integer(section_id) and section_id > 0) do
+      query |> where([p], p.section_id == ^section_id)
+    else
+      query
     end
-    if(author_user_id != nil and String.length(author_user_id) > 0) do
-      query = query |> where([p], p.user_id == ^author_user_id)
+    query = if(is_integer(author_user_id) and author_user_id > 0) do
+      query |> where([p], p.user_id == ^author_user_id)
+    else
+      query
     end
     posts = Repo.all(query)
 

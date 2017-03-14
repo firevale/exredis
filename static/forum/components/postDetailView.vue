@@ -75,7 +75,6 @@ import {
   swiperContainer,
   preViewing
 } from '../components/swiper'
-import md5 from 'js-md5'
 import message from './message'
 
 export default {

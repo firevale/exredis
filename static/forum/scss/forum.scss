@@ -314,9 +314,17 @@ body:not(.in-app) {
   .nav {
     min-height: 2rem;
 
-    .title {
+    .post-title {
+      height: 1.25rem;
+      line-height: 1.25rem;
+      font-size: 1.25rem;
       font-weight: 400;
       white-space: normal;
+      margin-right: 0.5rem;
+    }
+
+    .tag {
+      margin-right: 0.5rem;
     }
 
     .nav-right {
@@ -346,11 +354,19 @@ body:not(.in-app) {
     .post-content {
       margin-top: 1rem;
     }
+
+    span.is-grey,
+    span.icon {
+      font-size: 1.25rem;
+      margin-right: 0.5rem;
+    }
+
     font-size: 1.25rem;
   }
 
   .post-manage-bar {
-    margin: 0.5rem 2rem;
+    padding: 0.5rem 2rem;
+    background-color: $bottom-line-light;
 
     .nav-left {
       flex-grow: 1;

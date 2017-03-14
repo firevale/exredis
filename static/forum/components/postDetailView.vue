@@ -13,7 +13,7 @@
       <nav class="nav">
         <div class="nav-left has-text-left">
           <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
-          <span class="title is-5">
+          <span class="post-title">
             [{{postData.section.title}}] {{postData.title}}
           </span>
           <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
@@ -33,8 +33,8 @@
         <p class="post-content" v-html="postData.content">
         </p>
         <div class="tile">
-          <span class="icon image-icon is-clickable" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'"
-            @click="toggleFavorite"></span>
+          <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
+            style="margin-right: 0.5rem" @click="toggleFavorite"></span>
           <span class="is-grey is-clickable" @click="toggleFavorite">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
           </span>

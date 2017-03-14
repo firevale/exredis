@@ -42,7 +42,7 @@ export default {
         addToFavorite: '收藏帖子',
         delete: '删除',
         goBack: '回到顶部',
-        deleteTip: '确认删除此楼',
+        deleteTip: '确认删除{nth}楼',
         removeFromFavorites: '取消收藏',
         closePost: '封贴',
         openPost: '解封',

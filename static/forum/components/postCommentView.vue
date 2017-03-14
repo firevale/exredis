@@ -80,7 +80,7 @@ export default {
   methods: {
     confirmDeleteComment() {
       AlertDialog.showModal({
-        message: this.$t('forum.detail.deleteTip'),
+        message: this.$t('forum.detail.deleteTip', {nth: this.nth + 1}),
         onOk: async _ => {
           let result = await this.$acs.deleteComment(this.commentData.id)
           if (result.success) {

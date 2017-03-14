@@ -57,8 +57,8 @@ export default {
         return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content,})
       },
 
-      addComment(post_id, content) {
-        return post(Vue, '/forum_actions/add_comment', {post_id, content,})
+      addComment(post_id, title, content) {
+        return post(Vue, '/forum_actions/add_comment', {post_id, title, content,})
       },
 
       getPostDetail(post_id) {

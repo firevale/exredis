@@ -213,16 +213,14 @@ defmodule Acs.ForumController do
                   %{"post_id" => post_id} = params) do
     # todo check power
     with %ForumPost{} = post <- Repo.get(ForumPost, post_id),
-         :ok <- ForumPost.changeset(post, params) |> Repo.update()
+         {:ok, _} <- ForumPost.changeset(post, params) |> Repo.update()
     do
-      conn |>json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
+      conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
     else
-      nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
       _ ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.postNotExist"})
+        conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
     end
   end
   def toggle_post_status(conn, params) do

@@ -143,8 +143,8 @@ export default {
       let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
       if (result.success) {
         message.showMsg(this.$t('forum.newPost.addSuccess'))
-        this.$router.push({
-          name: 'index'
+        this.$router.replace({
+          name: 'postList'
         })
       }
     },

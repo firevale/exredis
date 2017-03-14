@@ -109,7 +109,7 @@ defmodule Acs.ForumController do
 
     post = Repo.one(query)
 
-    post = with user_id when is_integer(user_id) <- conn.private.acs_session_user_id,
+    post = with user_id when is_integer(user_id) <- conn.private[:acs_session_user_id],
                  favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
                  where: f.post_id == ^post_id and f.user_id == ^user_id)
     do
@@ -229,7 +229,8 @@ defmodule Acs.ForumController do
 
   # add_comment
   def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                    %{"content" => content,
+                    %{"title" => title,
+                      "content" => content,
                       "post_id" => post_id} = comment) do
 
       with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
@@ -247,6 +248,22 @@ defmodule Acs.ForumController do
   def add_comment(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
+
+  # get_user_info
+  # def get_user_info(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, params) do
+  #   query = from u in User,
+  #           join: u in assoc(p, :user),
+  #           join: s in assoc(p, :section),
+  #           where: p.id == ^post_id,
+  #           select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, :reads,
+  #                       user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
+  #           preload: [user: u, section: s]
+  #
+  #
+  # end
+  # def get_user_info(conn, params) do
+  #   conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  # end
 
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,

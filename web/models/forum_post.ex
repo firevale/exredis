@@ -5,7 +5,7 @@ defmodule Acs.ForumPost do
 
   schema "forums_posts" do
     field :title, :string
-    field :content, :string
+    field :content, :binary
     field :is_top, :boolean, default: false
     field :is_hot, :boolean, default: false
     field :is_vote, :boolean, default: false

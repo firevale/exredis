@@ -6,7 +6,7 @@
         <img :src="avatarUrl"></img>
       </figure>
       <div class="has-text-centered" style="margin-top: 0.5rem">
-        <h6 class="title is-6 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
+        <h6 class="title is-6 is-lightred" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
       </div>
     </div>
     <div class="media-content">

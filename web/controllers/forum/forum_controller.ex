@@ -106,7 +106,19 @@ defmodule Acs.ForumController do
             select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, :reads,
                         user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
             preload: [user: u, section: s]
+
     post = Repo.one(query)
+
+    post = with user_id when is_integer(user_id) <- conn.private.acs_session_user_id,
+                 favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
+                 where: f.post_id == ^post_id and f.user_id == ^user_id)
+    do
+      Map.put(post, :is_favorite, true)
+    else
+      _ ->
+        Map.put(post, :is_favorite, false)
+    end
+
     add_post_count(post_id, %{reads: post.reads+1})
 
     conn |> json(%{success: true, detail: post})
@@ -171,7 +183,7 @@ defmodule Acs.ForumController do
 
         case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
           {:ok, _} ->
-            conn |> json(%{success: true, i18n_message: "forum.detail.collection"})
+            conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
@@ -181,7 +193,7 @@ defmodule Acs.ForumController do
         # delete favorite
         case Repo.delete(favorite) do
           {:ok, _} ->
-            conn |> json(%{success: true, i18n_message: "forum.detail.cancelCollection"})
+            conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
@@ -215,6 +227,27 @@ defmodule Acs.ForumController do
   end
   def toggle_post_status(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  # add_comment
+  def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                    %{"content" => content,
+                      "post_id" => post_id} = comment) do
+
+      with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
+            comment <- comment |> Map.put("user_id", user_id) |> Map.put("created_at", now_time),
+            {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
+      do
+          conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
+      else
+        nil ->
+          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+        {:error, %{errors: errors}} ->
+          conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+      end
+  end
+  def add_comment(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
   defp get_forum_info_by_id(forum_id) do

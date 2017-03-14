@@ -78,7 +78,8 @@ export default {
       writeComment: {
         title: '回复',
         btnTxt: '回复',
-        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～'
+        textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
+        addSuccess:'回复成功'
       },
       customerService: {
         title: '客服',

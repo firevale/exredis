@@ -292,6 +292,10 @@ body:not(.in-app) {
   &.is-danger {
     color: $danger;
   }
+
+  &.is-lightred {
+    color: $lightred;
+  }
 }
 
 .post-detail {

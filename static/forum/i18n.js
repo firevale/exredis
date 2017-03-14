@@ -47,9 +47,9 @@ export default {
         closePost: '封贴',
         openPost: '解封',
         essencePost: '精品',
-        unEssencePost: '取消精品',
+        unEssencePost: '取消',
         upPost: '置顶',
-        unUpPost: '取消置顶',
+        unUpPost: '取消',
         operateSuccess: '操作成功',
       },
       error: {

@@ -110,7 +110,7 @@ export default {
       let result = await this.$acs.addComment(postId, this.content)
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))
-        this.$router.push({
+        this.$router.replace({
           name: 'detail'
         })
       }

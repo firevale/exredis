@@ -19,6 +19,8 @@ services:
       - cluster.name=acs
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9201:9200"
     ulimits:
       memlock:
         soft: -1

@@ -63,6 +63,7 @@ export default {
         postNotExist: '帖子不存在',
         commentNotFound: '评论不存在',
         needLogin: '需要登录',
+        userNotExist: '用户不存在',
       },
       newPost: {
         title: '发帖子',

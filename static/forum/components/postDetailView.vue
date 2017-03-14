@@ -1,12 +1,12 @@
 <template>
 <div class="post-detail has-bottom-line">
   <article class="media">
-    <div class="media-left" style="margin: 0 1rem">
+    <div class="media-left" style="margin: 0 1rem 0 0">
       <figure class="image is-64x64 avatar-image">
         <img :src="avatarUrl"></img>
       </figure>
       <div class="has-text-centered" style="margin-top: 0.5rem">
-        <h5 class="title is-5 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h5>
+        <h6 class="title is-6 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
       </div>
     </div>
     <div class="media-content">
@@ -29,7 +29,7 @@
       <div class="content">
         <p class="post-content" v-html="postData.content">
         </p>
-        <div>
+        <div class="tile">
           <span class="icon image-icon is-clickable" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'"
             @click="toggleFavorite"></span>
           <span class="is-grey is-clickable" @click="toggleFavorite">
@@ -39,11 +39,27 @@
       </div>
     </div>
   </article>
-  <div v-if="isManager" class="row-menu dark-background" style="font-size: 1rem; padding: .5rem;justify-content: space-between;">
-    <i class="fa fa-level-down red-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleActive">{{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleEssence">{{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}</i>
-    <i class="fa fa-level-up primary-background button" style="padding-top: .5rem;" aria-hidden="true" @click="toggleUp">{{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}</i>
-  </div>
+  <nav v-if="isManager" class="nav post-manage-bar">
+    <div class="nav-left has-text-left" @click="toggleActive">
+      <a class="button is-danger">
+        <span class="icon image-icon icon-times" style="">
+        </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost')
+        }}
+      </a>
+    </div>
+    <div class="nav-center has-text-center" @click="toggleEssence">
+      <a class="button is-primary">
+        <span class="icon image-icon icon-star" style="">
+        </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}
+      </a>
+    </div>
+    <div class="nav-right has-text-right" @click="toggleUp">
+      <a class="button is-info">
+        <span class="icon image-icon icon-top" style="">
+        </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}
+      </a>
+    </div>
+  </nav>
 </div>
 </template>
 <script>

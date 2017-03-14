@@ -81,7 +81,7 @@ var plugins = [
 
   new ExtractTextPlugin('css/[name].css'),
 
-  new CopyWebpackPlugin([{from: '**/assets/*', to: 'images/', flatten: true}], {ignore: ['node_modules/']}),
+  // new CopyWebpackPlugin([{from: '**/assets/*', to: 'images/', flatten: true}], {ignore: ['node_modules/']}),
 ]
 
 module.exports = {

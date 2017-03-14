@@ -81,6 +81,10 @@ export default {
 
       getPostComments(post_id, page, records_per_page) {
         return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page})
+      },
+
+      search(forumId, keyword, page, records_per_page) {
+        return post(Vue, '/forum_actions/search', {forumId,keyword, page, records_per_page,})
       }
     }
   }

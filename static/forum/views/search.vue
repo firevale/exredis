@@ -1,16 +1,20 @@
 <template>
 <div style="padding-top: .2rem;">
+  <div class="columns box">
+    <input class="search-box column is-three-quarters" maxlength="50" v-model="searchKeyword" :placeholder="$t('forum.search.placeholder')"></input>
+    <a class="search-btn is-primary column" @click.prevent="handleSubmit">{{ $t('forum.search.searchBtn') }}</a>
+  </div>
   <div class="is-chid content-item">
     <p v-show="searchTip" class="control search-tip">{{ searchTip }}</p>
-    <div v-if="!noteList && searchKeywordHistory.length" class="his-box">
+    <div v-if="!postList && searchKeywordHistory.length" class="his-box">
       <div v-for="item in searchKeywordHistory" class="his-key" @click="searchByKey(item)">{{item}}</div>
     </div>
-    <p v-show="!noteList && searchKeywordHistory.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
+    <p v-show="!postList && searchKeywordHistory.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
   </div>
-  <div v-if="noteList && noteList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-    <post-list-item v-for="item in noteList" search-model :post-info="item" :mark-key="key"></post-list-item>
+  <div v-if="postList && postList.length" class="box is-chid is-parent content-item" style="padding: 0;">
+    <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="key"></post-list-item>
   </div>
-  <div v-if="noteList && noteList.length" class="column is-full" v-show="searchPageCount > 1" style="">
+  <div v-if="postList && postList.length" class="column is-full" v-show="searchPageCount > 1" style="">
     <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
   </div>
 </div>
@@ -34,7 +38,7 @@ export default {
   },
 
   watch: {
-    'noteList' (newVal, oldVal) {
+    'postList' (newVal, oldVal) {
       if (newVal && newVal.length) {
         this.$nextTick(function() {
           this.$refs.pag.$on('switch-page', this.refreshList)
@@ -44,14 +48,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['searchKeyword', 'searchKeywordHistory', 'searchPageCount', 'searchCurrentPage']),
+    ...mapGetters(['searchKeyword', 'searchKeywordHistory']),
 
     searchTip() {
-      if (this.noteList && this.noteList.length) {
+      if (this.postList && this.postList.length) {
         return ''
-      } else if (this.noteList && !this.noteList.length) {
+      } else if (this.postList && !this.postList.length) {
         return this.$t('forum.search.noSearchResult')
-      } else if (!(this.noteList && this.noteList.length) && this.searchKeywordHistory.length) {
+      } else if (!(this.postList && this.postList.length) && this.searchKeywordHistory.length) {
         return this.$t('forum.search.searchHis')
       } else {
         return this.$t('forum.search.noSearchRecord')
@@ -61,8 +65,9 @@ export default {
 
   data() {
     return {
-      key: '',
-      noteList: null,
+      page: 0,
+      pageCount: 10,
+      postList: null,
     }
   },
 
@@ -80,11 +85,15 @@ export default {
       this.refreshPage()
     },
 
+    handleSubmit() {
+      this.searchByKey(this.searchKeyword)
+    },
+
     searchByKey(item) {
       this.key = item
       this.setSearchKeyword(item)
       this.$nextTick(function() {
-        this.noteList = [{
+        this.postList = [{
           headerTag: [{
             name: '置顶',
             bgColor: '#f00',
@@ -113,32 +122,19 @@ export default {
       this.refreshList()
     },
 
-    refreshList(page = 1) {
-      this.$http({
-          method: 'post',
-          url: '/searchNote?page=' + page + '&key=' + this.key,
-          params: {
-
-          }
+    refreshList: async function(page = 1) {
+      let result = await this.$acs.search(forumId, this.searchKeyword, page, this.pageCount)
+      if (result.success) {
+        message.showMsg(this.$t('forum.newPost.addSuccess'))
+        this.$router.push({
+          name: 'index'
         })
-        .then(response => {
-          //this.noteList = response.json()
-          //this.setSearchPageCount(this.noteList.length)
-          //this.setSearchCurrentPage(page)
-        })
-        .then(result => {
-          if (result.success) {
-            this.setSearchCurrentPage(page);
-          } else {
-
-          }
-        })
+      }
     },
 
     clearKey() {
-      this.key = ''
       this.setSearchKeyword('')
-      this.noteList = null
+      this.postList = null
     },
 
     clearHisSearch() {

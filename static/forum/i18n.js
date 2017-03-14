@@ -36,6 +36,7 @@ export default {
         author: '楼主',
         firstComment: '沙发',
         secondComment: '板凳',
+        nthComment: '{nth}楼',
         showAuthorOnly: '只看楼主',
         showAll: '查看全部',
         addToFavorite: '收藏帖子',

@@ -6,18 +6,18 @@
         <img :src="avatarUrl"></img>
       </figure>
       <div class="has-text-centered" style="margin-top: 0.5rem">
-        <h6 class="title is-6 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
+        <h6 class="title is-6 is-danger" style="font-weight: 400">{{ nthName }}</h6>
       </div>
     </div>
     <div class="media-content">
       <nav class="nav">
         <div class="nav-left has-text-left">
-          <span class="is-grey">
+          <span class="is-grey" style="margin-right: 0.5rem">
             <timeago :since="(commentData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
           <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>
-        <div class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem">
+        <div class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
           <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
         </div>
@@ -47,6 +47,9 @@ export default {
     itemIndex: {
       type: Number,
     },
+    nth: {
+      type: Number,
+    },
     preview: {
       type: Boolean,
       default: false,
@@ -60,6 +63,17 @@ export default {
   computed: {
     avatarUrl: function() {
       return this.commentData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    },
+
+    nthName: function() {
+      switch(this.nth) {
+        case 0:
+          return this.$t('forum.detail.firstComment');
+        case 1:
+          return this.$t('forum.detail.secondComment');
+        default:
+          return this.$t('forum.detail.nthComment', {nth: this.nth + 1});
+      }
     }
   },
 

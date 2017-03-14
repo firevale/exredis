@@ -12,9 +12,12 @@
     <div class="media-content">
       <nav class="nav">
         <div class="nav-left has-text-left">
+          <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
           <span class="title is-5">
             [{{postData.section.title}}] {{postData.title}}
           </span>
+          <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
+          <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
         </div>
         <div class="nav-right has-text-right" style="flex-glow: 0">
           <a class="button level-button is-primary">{{$t('forum.detail.showAuthorOnly')}}</a>
@@ -50,7 +53,8 @@
     <div class="nav-center has-text-center" @click="toggleEssence">
       <a class="button is-primary">
         <span class="icon image-icon icon-star" style="">
-        </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}
+        </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost')
+        }}
       </a>
     </div>
     <div class="nav-right has-text-right" @click="toggleUp">
@@ -76,23 +80,19 @@ import message from './message'
 
 export default {
   mounted() {
-    if (this.postData.rank == '楼主') {
-      this.$refs.contentContainer.addEventListener('click', this.checkImgClick)
-      let imgs = []
-      let htmlCollection = this.$refs.contentContainer.getElementsByTagName('img')
-      for (var i = 0; i < htmlCollection.length; i++) {
-        this.imgsPreview.push({
-          url: htmlCollection[i].src,
-          id: md5(htmlCollection[i].src)
-        })
-      }
-    }
+    // this.$refs.contentContainer.addEventListener('click', this.checkImgClick)
+    // let imgs = []
+    // let htmlCollection = this.$refs.contentContainer.getElementsByTagName('img')
+    // for (var i = 0; i < htmlCollection.length; i++) {
+    //   this.imgsPreview.push({
+    //     url: htmlCollection[i].src,
+    //     id: md5(htmlCollection[i].src)
+    //   })
+    // }
   },
 
   destroyed() {
-    if (this.postData.rank == '楼主') {
-      this.$refs.contentContainer.removeEventListener('click', this.checkImgClick)
-    }
+    // this.$refs.contentContainer.removeEventListener('click', this.checkImgClick)
   },
 
   props: {

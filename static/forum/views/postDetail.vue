@@ -3,7 +3,7 @@
   <div>
     <post-detail-view v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
     <post-comment-view v-for="(comment, index) in commentList" @toggle-floorHost="toggleFloorHost" :comment-data="comment"
-      :item-index="index" :nth="((page - 1) * recordsPerPage) + index" :on-item-deleted="onItemDelete">
+      :item-index="index" :nth="(totalRecords  - (page - 1) * recordsPerPage) - index - 1" :on-item-deleted="onItemDelete">
     </post-comment-view>
     <div v-if="commentList && commentList.length > 0" class="column is-full" v-show="total > 1">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"> </pagination>
@@ -74,6 +74,7 @@ export default {
     },
 
     onItemDelete(index) {
+      this.totalRecords --;
       this.commentList.splice(index, 1)
     },
 

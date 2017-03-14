@@ -105,21 +105,18 @@ export default {
     },
 
     getUserInfo: async function() {
-      if (!this.processing) {
-        this.processing = true
         let result = await this.$acs.getUserInfo()
 
         if (result.success) {
           console.log(result.user)
           this.serUserProfile(result.user)
         }
-        this.processing = false
-      }
     },
 
     getPostPage: async function(page) {
       if (!this.processing) {
         this.processing = true
+
         let result = await this.$acs.getUserPagedPost(this.forumId, page, this.recordsPerPage)
 
         if (result.success) {

@@ -46,10 +46,14 @@ defmodule Acs.ForumController do
                              "records_per_page" => records_per_page}) do
     get_paged_post_list(conn, forum_id, 0, page, records_per_page, "id", user_id)
   end
+  def get_user_paged_post(conn, _) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
   def get_paged_post(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
+    d "------------------order: #{order}, author_user_id: #{author_user_id}"
     queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
     if(is_integer(section_id) and section_id>0) do
       queryTotal = queryTotal |> where([p], p.section_id == ^section_id)

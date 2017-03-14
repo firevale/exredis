@@ -1,11 +1,13 @@
 <template>
 <div>
   <div>
-    <post-detail-view  v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
-    <post-comment-view v-for="(item, index) in commentList" @toggle-floorHost="toggleFloorHost" :item-data="item" :item-index="index" :on-item-deleted="onItemDelete"></post-comment-view>
+    <post-detail-view v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
+    <post-comment-view v-for="(comment, index) in commentList" @toggle-floorHost="toggleFloorHost" :comment-data="comment"
+      :item-index="index" :on-item-deleted="onItemDelete">
+    </post-comment-view>
     <div v-if="commentList && commentList.length > 0" class="column is-full" style="padding-right: 0;padding-left: 0;"
       v-show="total > 1">
-      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"> </pagination>
     </div>
   </div>
   <div v-show="canBackTop" class="back-top" @click="onBackTop">
@@ -71,7 +73,7 @@ export default {
       this.scrollPosition = e.target.scrollTop
     },
 
-    onItemDelete(index){
+    onItemDelete(index) {
       this.commentList.splice(index, 1)
     },
 

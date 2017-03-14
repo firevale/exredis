@@ -1,23 +1,33 @@
 <template>
-<div class="has-bottom-line">
-  <div class="columns " style="margin: 0;">
-    <div style="padding: 1rem 0 1rem .5rem;">
+<div class="post-detail has-bottom-line">
+  <article class="media">
+    <div class="media-left" style="margin: 0 1rem 0 0">
       <figure class="image is-64x64 avatar-image">
-        <img v-if :src="avatarUrl"></img>
+        <img :src="avatarUrl"></img>
       </figure>
-      <div class="title is-6 has-text-centered" :class="{'red': itemIndex < 2 }">{{itemData.rank}}</div>
-    </div>
-    <div class="column is-10.5 ql-editor">
-      <div class="column detail-info">
-        <span class="note-time dark" style="font-size: .8rem;">{{ itemData.created_at | formatServerDateTime }}</span>
-        <span class="note-author" style="font-size: .9rem;">{{ itemData.user.nickname }}</span>
-        <span v-if="itemData.rank != $t('forum.detail.author') && !preview" class="note-delete" @click="confirmDeleteComment()"
-          style="font-size: .9rem;">{{ $t('forum.detail.delete')}}</span>
-      </div>
-      <div ref="contentContainer" class="column" style="font-weight: bold;" v-html="itemData.content">
+      <div class="has-text-centered" style="margin-top: 0.5rem">
+        <h6 class="title is-6 is-danger" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
       </div>
     </div>
-  </div>
+    <div class="media-content">
+      <nav class="nav">
+        <div class="nav-left has-text-left">
+          <span class="is-grey">
+            <timeago :since="(commentData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
+          </span>
+          <span class="is-primary">{{ commentData.user.nickname }}</span>
+        </div>
+        <div class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem">
+          <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
+          <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
+        </div>
+      </nav>
+      <div class="content">
+        <p class="post-content" v-html="commentData.content">
+        </p>
+      </div>
+    </div>
+  </article>
 </div>
 </template>
 <script>
@@ -30,7 +40,7 @@ import message from './message'
 
 export default {
   props: {
-    itemData: {
+    commentData: {
       type: Object,
       default: null,
     },
@@ -48,9 +58,9 @@ export default {
   },
 
   computed: {
-      avatarUrl: function() {
-        return this.itemData.user.avatar_url || window.acsConfig.defaultAvatarUrl
-      }
+    avatarUrl: function() {
+      return this.commentData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    }
   },
 
   methods: {
@@ -58,10 +68,10 @@ export default {
       AlertDialog.showModal({
         message: this.$t('forum.detail.deleteTip'),
         onOk: async _ => {
-          let result = await this.$acs.deleteComment(this.itemData.id)
+          let result = await this.$acs.deleteComment(this.commentData.id)
           if (result.success) {
             message.showMsg(this.$t(result.i18n_message))
-            if(this.onItemDeleted)
+            if (this.onItemDeleted)
               this.onItemDeleted(this.itemIndex)
           }
         },

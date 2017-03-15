@@ -109,11 +109,33 @@ defmodule Acs.ForumController do
               join: s in assoc(f, :sections),
               where: f.id==^forum_id and s.id==^section_id,
               preload: [sections: s]
-      with  %Forum{}=forum <-Repo.one(query),
-            now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
+      {:ok, post} = with  %Forum{}=forum <-Repo.one(query),
             post <- post |> Map.put("user_id", user_id),
             {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
       do
+          Elasticsearch.index(%{
+            index: "forum",
+            type: "posts",
+            doc: %{
+              forum_id: forum_id,
+              section_id: section_id,
+              user_id: user_id,
+              title: title,
+              content: content,
+              is_top: false,
+              is_hot: false,
+              is_vote: false,
+              active: true,
+              has_pic: false,
+              reads: 0,
+              comms: 0,
+              inserted_at: Timex.format!(post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+              last_reply_at: Timex.format!(post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+            },
+            params: nil,
+            id: post.id
+          })
+
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
       else
         nil ->
@@ -397,6 +419,10 @@ defmodule Acs.ForumController do
 
       postList = Enum.map(hits, fn(hit) ->
          user_id = hit._source.user_id
+         userRaw = RedisUser.find(user_id)
+         user=if userRaw do
+                Map.take(userRaw, [:id, :nickname, :avatar_url, :inserted_at])
+              end
 
          forumId=hit._source.forum_id
          forum = case Process.get("forum_#{forumId}") do
@@ -419,7 +445,7 @@ defmodule Acs.ForumController do
             forum_id: forumId,
             forum:  forum,
             user_id: user_id,
-            user: RedisUser.find(user_id),
+            user: user,
             section_id: hit._source.section_id,
             section: section,
             title: hit._source.title,

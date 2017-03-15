@@ -13,7 +13,7 @@
       </div>
       <div>
         {{ $t('forum.personal.postCount') }}
-        <span>{{ this.userInfo.post_count }}</span>
+        <span>{{ this.postRecords }}</span>
       </div>
       <div>
         {{ $t('forum.personal.registerTime') }}
@@ -93,6 +93,7 @@ export default {
       page: 1,
       total: 1,
       recordsPerPage: 6,
+      postRecords: 0,
     }
   },
   methods: {
@@ -123,6 +124,7 @@ export default {
           this.postList = result.posts
           this.total = result.total
           this.page = page
+          this.postRecords = result.records
         }
         this.processing = false
       }

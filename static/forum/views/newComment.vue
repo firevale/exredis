@@ -95,7 +95,7 @@ export default {
       }
 
       let postId = this.$router.currentRoute.params.postId
-      let result = await this.$acs.addComment(postId, this.title, this.content)
+      let result = await this.$acs.addComment(postId, this.replyTitle, this.content)
       
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))

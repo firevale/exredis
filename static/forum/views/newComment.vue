@@ -11,7 +11,7 @@
       <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
     </div>
     <div class="tile is-full has-text-centered" style="justify-content: center; margin-top: 0.5rem">
-      <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" />
+      <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" :class="processing ? 'is-disabled' : ''" />
     </div>
   </form>
 </div>
@@ -41,7 +41,7 @@ export default {
     ...mapGetters(['userInfo', 'currentPostTitle']),
 
     errorHint: function() {
-      if (this.$v.content.$dirty && !this.$v.content.required) {
+      if (!this.$v.content.required) {
         return this.$t('forum.error.commentContentRequired')
       }
 
@@ -67,6 +67,7 @@ export default {
       },
       content: '',
       errorMessage: '',
+      processing: false,
     }
   },
 
@@ -76,9 +77,10 @@ export default {
         if (this.$refs.commentEditor) {
           let editor = this.$refs.commentEditor.quillEditor
           let text = editor.getText()
-
-          return !!text
+            .trim()
+          return text.length >= 5
         }
+
         return true
       }
     }
@@ -107,18 +109,17 @@ export default {
     },
 
     handleSubmit: async function() {
-      if (!this.content) {
-        message.showMsg(this.$t('forum.writeComment.textAreaPlaceHolder'))
-        return;
-      }
-
-      let postId = this.$router.currentRoute.params.postId
-      let result = await this.$acs.addComment(postId, this.content)
-      if (result.success) {
-        message.showMsg(this.$t('forum.writeComment.addSuccess'))
-        this.$router.replace({
-          name: 'detail'
-        })
+      if (!this.$v.$error && !this.processing) {
+        this.processing = true
+        let postId = this.$route.params.postId
+        let result = await this.$acs.addComment(postId, this.content)
+        if (result.success) {
+          message.showMsg(this.$t('forum.writeComment.addSuccess'))
+          this.$router.replace({
+            name: 'detail'
+          })
+        }
+        this.processing = false
       }
     },
   }

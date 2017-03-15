@@ -23,8 +23,8 @@
         </div>
       </nav>
       <div class="content">
-        <p class="post-content" v-html="commentData.content">
-        </p>
+        <div class="post-content ql-editor" v-html="commentData.content">
+        </div>
       </div>
     </div>
   </article>

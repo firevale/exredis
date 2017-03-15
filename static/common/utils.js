@@ -32,7 +32,6 @@ export const guid = _ => {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
-export const getNowFormatDate = _ => {
-  var date = new Date();
-  return date.Format('yyyy-MM-dd hh:mm:ss')
+export const nowFromServer = _ => {
+  return new Date().Format('yyyy-MM-ddThh:mm:ss.000000')
 }

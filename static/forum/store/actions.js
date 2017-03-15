@@ -32,18 +32,6 @@ export const clearSearchHis = ({
   commit(types.CLEAR_SEARCH_HISTORY, key)
 }
 
-export const setSearchPageCount = ({
-  commit
-}, count) => {
-  commit('SEARCH_SET_PAGECOUNT', count)
-}
-
-export const setSearchCurrentPage = ({
-  commit
-}, page) => {
-  commit('SEARCH_SET_CURRENTPAGE', page)
-}
-
 export const serUserProfile = ({
   commit
 }, user) => {

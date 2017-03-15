@@ -11,17 +11,27 @@
     </div>
   </div>
   <div>
-    <span class="button">{{ $t('forum.personal.cancelFavor') }}</span>
+    <span class="button" @click.prevent="confirmDeleteFavorite">{{ $t('forum.personal.cancelFavor') }}</span>
   </div>
 </div>
 </template>
 <script>
+import AlertDialog from './alertDialog'
+import message from './message'
+
 export default {
   props: {
     itemData: {
       type: Object,
       default: null,
     },
+    itemIndex: {
+      type: Number,
+    },
+    onItemDeleted: {
+      type: Function,
+      default: undefined
+    }
   },
 
   computed: {
@@ -36,7 +46,23 @@ export default {
           postId: this.itemData.post.id
         },
       })
-    }
+    },
+
+    confirmDeleteFavorite() {
+      AlertDialog.showModal({
+        message: this.$t('forum.writeComment.deleteTip'),
+        onOk: async _ => {
+          let result = await this.$acs.togglePostFavorite(this.itemData.post.id)
+          if (result.success) {
+            message.showMsg(this.$t(result.i18n_message))
+            if (this.onItemDeleted)
+              this.onItemDeleted(this.itemIndex)
+          }
+        },
+        onCancel: null,
+      })
+    },
+
   },
 }
 </script>

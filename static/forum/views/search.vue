@@ -73,9 +73,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setSearchKeyword', 'clearSearchHis', 'setSearchPageCount',
-      'setSearchCurrentPage'
-    ]),
+    ...mapActions(['setSearchKeyword', 'clearSearchHis']),
 
     orderChoose() {
       menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
@@ -91,7 +89,7 @@ export default {
     },
 
     handleSubmit() {
-      this.page=1
+      this.page = 1
       this.searchByKey(this.keyword)
     },
 

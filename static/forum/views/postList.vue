@@ -77,8 +77,8 @@ export default {
             title: this.$t('forum.orderType.last_reply_at')
           },
           {
-            value: 'created_at',
-            title: this.$t('forum.orderType.created_at')
+            value: 'inserted_at',
+            title: this.$t('forum.orderType.inserted_at')
           },
           {
             value: 'is_hot',

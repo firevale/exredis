@@ -6,7 +6,6 @@ defmodule Acs.Forum do
   schema "forums" do
     field :title, :string
     field :active, :boolean, default: true
-    field :created_at, :naive_datetime
     field :icon, :string
 
     belongs_to :app, Acs.App, type: :string
@@ -20,8 +19,8 @@ defmodule Acs.Forum do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title,:active, :created_at, :app_id, :icon])
-    |> validate_required([:title, :active, :created_at, :app_id])
+    |> cast(params, [:title,:active, :app_id, :icon])
+    |> validate_required([:title, :active, :app_id])
     |> foreign_key_constraint(:app_id)
   end
 end

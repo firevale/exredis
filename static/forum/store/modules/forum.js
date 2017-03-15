@@ -4,7 +4,7 @@ const state = {
   info: {},
   currentSectionId: 0,
   currentPostTitle: '',
-  postsOrderByField: 'created_at',
+  postsOrderByField: 'inserted_at',
 }
 
 const mutations = {

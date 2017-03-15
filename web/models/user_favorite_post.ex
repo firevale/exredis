@@ -4,7 +4,6 @@ defmodule Acs.UserFavoritePost do
   @derive {Poison.Encoder, except: [:__meta__]}
 
   schema "user_favorite_posts" do
-    field :created_at, :naive_datetime
 
     belongs_to :user, Acs.User, type: :integer
     belongs_to :post, Acs.ForumPost, type: :integer
@@ -17,8 +16,8 @@ defmodule Acs.UserFavoritePost do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:created_at, :post_id, :user_id])
-    |> validate_required([:created_at, :post_id, :user_id])
+    |> cast(params, [:post_id, :user_id])
+    |> validate_required([:post_id, :user_id])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:post_id)
   end

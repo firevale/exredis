@@ -13,7 +13,7 @@
       <nav class="nav">
         <div class="nav-left has-text-left">
           <span class="is-grey" style="margin-right: 0.5rem">
-            <timeago :since="(commentData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
+            <timeago :since="(commentData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
           <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>

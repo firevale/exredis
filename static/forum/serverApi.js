@@ -91,8 +91,8 @@ export default {
         return post(Vue, '/forum_actions/get_user_favorites', {page, records_per_page})
       },
 
-      search(forumId, keyword, page, records_per_page) {
-        return post(Vue, '/forum_actions/search', {forumId,keyword, page, records_per_page,})
+      search(forum_id, keyword, page, records_per_page) {
+        return post(Vue, '/forum_actions/search', {forum_id, keyword, page, records_per_page})
       }
     }
   }

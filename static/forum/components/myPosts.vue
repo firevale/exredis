@@ -6,7 +6,7 @@
         <a v-show="itemData.newComment" class="button excellent-btn">{{ $t('forum.personal.newComment') }}</a>
       </div>
       <div class="post-info">
-        <span>{{ itemData.created_at | formatServerDateTime }}</span>
+        <span>{{ itemData.inserted_at | formatServerDateTime }}</span>
         <span> | </span>
         <span>{{ itemData.comms + '/' + itemData.reads }}</span>
       </div>

@@ -1,7 +1,7 @@
 <template>
 <div style="padding-top: .2rem;">
   <div class="columns box">
-    <input class="search-box column is-three-quarters" maxlength="50" v-model="searchKeyword" :placeholder="$t('forum.search.placeholder')"></input>
+    <input class="search-box column is-three-quarters" maxlength="50" v-model="keyword" :placeholder="$t('forum.search.placeholder')"></input>
     <a class="search-btn is-primary column" @click.prevent="handleSubmit">{{ $t('forum.search.searchBtn') }}</a>
   </div>
   <div class="is-chid content-item">
@@ -12,10 +12,10 @@
     <p v-show="!postList && searchKeywordHistory.length" class="pointer clear-his" @click="clearHisSearch">{{ $t('forum.search.clearHisRecord') }}</p>
   </div>
   <div v-if="postList && postList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-    <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="key"></post-list-item>
+    <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="keyword"></post-list-item>
   </div>
-  <div v-if="postList && postList.length" class="column is-full" v-show="searchPageCount > 1" style="">
-    <pagination ref="pag" :page-count="searchPageCount" :current-page="searchCurrentPage"></pagination>
+  <div v-if="postList && postList.length" class="column is-full" v-show="total > 1" style="">
+    <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
   </div>
 </div>
 </template>
@@ -68,6 +68,7 @@ export default {
       page: 0,
       pageCount: 10,
       postList: null,
+      keyword: ""
     }
   },
 
@@ -85,50 +86,30 @@ export default {
       this.refreshPage()
     },
 
+    onPageChange: function(page) {
+      this.refreshList(page)
+    },
+
     handleSubmit() {
-      this.searchByKey(this.searchKeyword)
+      this.page=1
+      this.searchByKey(this.keyword)
     },
 
     searchByKey(item) {
-      this.key = item
+      if (this.keyword != item) {
+        this.keyword = item
+      }
       this.setSearchKeyword(item)
-      this.$nextTick(function() {
-        this.postList = [{
-          headerTag: [{
-            name: '置顶',
-            bgColor: '#f00',
-            color: '#fff'
-          }, ],
-          title: '【游戏攻略】指南攻略新手练级指南',
-          hasPicture: true,
-          tailTag: [{
-              name: '精',
-              bgColor: '#ff0',
-              color: '#fff',
-              isTag: true
-            },
-            {
-              name: 'HOT',
-              bgColor: '#f00',
-              color: '#fff'
-            },
-          ],
-          author: '火谷测试',
-          time: '2分钟前',
-          noteCount: '2/11',
-        }]
-      })
-
       this.refreshList()
     },
 
     refreshList: async function(page = 1) {
-      let result = await this.$acs.search(forumId, this.searchKeyword, page, this.pageCount)
+      let result = await this.$acs.search(this.$router.currentRoute.params.forumId, this.searchKeyword,
+        page, this.pageCount)
       if (result.success) {
-        message.showMsg(this.$t('forum.newPost.addSuccess'))
-        this.$router.push({
-          name: 'index'
-        })
+        this.postList = result.postList
+        this.total = result.total
+        this.page = page
       }
     },
 

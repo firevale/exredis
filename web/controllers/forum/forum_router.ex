@@ -35,6 +35,7 @@ defmodule Acs.ForumRouter do
     post  "/toggle_post_favorite", ForumController, :toggle_post_favorite
     post  "/toggle_post_status", ForumController, :toggle_post_status
     post  "/get_user_favorites", ForumController, :get_user_favorites
+    post "/search", ForumController, :search
   end
 
 end

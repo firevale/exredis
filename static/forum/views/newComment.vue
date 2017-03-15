@@ -67,7 +67,6 @@ export default {
           toolbar: acs.getQuillToolbarConfig(),
         },
       },
-      title: '',
       content: '',
     }
   },

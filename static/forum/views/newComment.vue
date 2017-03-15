@@ -73,7 +73,6 @@ export default {
   data() {
     return {
       editorOption: {},
-      title: '',
       content: '',
     }
   },
@@ -92,7 +91,6 @@ export default {
         item: {
           user: this.userInfo,
           rank: '',
-          title: this.replyTitle,
           time: utils.getNowFormatDate(),
           content: this.content,
         },
@@ -107,7 +105,7 @@ export default {
       }
 
       let postId = this.$router.currentRoute.params.postId
-      let result = await this.$acs.addComment(postId, this.replyTitle, this.content)
+      let result = await this.$acs.addComment(postId, this.content)
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))
         this.$router.replace({

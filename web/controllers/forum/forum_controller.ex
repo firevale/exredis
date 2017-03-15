@@ -157,9 +157,9 @@ defmodule Acs.ForumController do
   end
 
   # get_post_comments
-  def get_post_comments(conn,%{"post_id" => post_id,
-                             "page" => page,
-                             "records_per_page" => records_per_page}) do
+  def get_post_comments(conn, %{"post_id" => post_id,
+                              "page" => page,
+                              "records_per_page" => records_per_page}) do
     total = Repo.one!(from c in ForumComment, select: count(1), where: c.post_id == ^post_id)
     total_page = round(Float.ceil(total / records_per_page))
 
@@ -171,11 +171,37 @@ defmodule Acs.ForumController do
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
             preload: [user: u]
+
     comments = Repo.all(query)
 
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
   def get_post_comments(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  # get_user_post_comments
+  def get_user_post_comments(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                              %{"page" => page,
+                              "records_per_page" => records_per_page}) do
+    total = Repo.one!(from c in ForumComment, select: count(1), where: c.user_id == ^user_id)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from c in ForumComment,
+            join: p in assoc(c, :post),
+            join: s in assoc(p, :section),
+            order_by: [desc: c.id],
+            where: c.user_id == ^user_id,
+            select: map(c, [:id, :content, :created_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
+            limit: ^records_per_page,
+            offset: ^((page - 1) * records_per_page),
+            preload: [post: {p, section: s}]
+
+    comments = Repo.all(query)
+
+    conn |> json(%{success: true, comments: comments, total: total_page, records: total})
+  end
+  def get_user_post_comments(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -260,8 +286,7 @@ defmodule Acs.ForumController do
 
   # add_comment
   def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                    %{"title" => title,
-                      "content" => content,
+                    %{"content" => content,
                       "post_id" => post_id} = comment) do
 
       with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
@@ -296,6 +321,31 @@ defmodule Acs.ForumController do
 
   end
   def get_user_info(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  # get_user_favorites
+  def get_user_favorites(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                                    %{"page" => page,
+                                    "records_per_page" => records_per_page}) do
+    queryTotal = from f in UserFavoritePost, select: count(1), where: f.user_id == ^user_id
+    total = Repo.one!(queryTotal)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from f in UserFavoritePost,
+            join: p in assoc(f, :post),
+            join: s in assoc(p, :section),
+            select: map(f, [:id, post: [:id, :created_at, :title, :comms, :reads, section: [:id, :title]]]),
+            limit: ^records_per_page,
+            where: f.user_id == ^user_id,
+            offset: ^((page - 1) * records_per_page),
+            preload: [post: {p, section: s}],
+            order_by: [{:desc, f.id}]
+    favorites = Repo.all(query)
+
+    conn |> json(%{success: true, favorites: favorites, total: total_page, records: total})
+  end
+  def get_user_favorites(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 

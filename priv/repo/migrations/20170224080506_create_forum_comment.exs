@@ -3,7 +3,6 @@ defmodule Acs.Repo.Migrations.CreateForumComment do
 
   def change do
     create table(:forums_comments) do
-      add :title, :string
       add :content, :text
       add :created_at, :naive_datetime
 

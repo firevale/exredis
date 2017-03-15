@@ -40,7 +40,7 @@ export const getQuillToolbarConfig = _ => {
           'bold', 'italic', {'color': []}
         ], // toggled buttons
         [
-          'code-block',
+          'code-block', 'link', 'image'
         ],
         [
           {

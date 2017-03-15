@@ -75,14 +75,13 @@ defmodule Acs.AdminController do
     else
       forumRec=Repo.get_by(Forum, app_id: app_id)
       unless forumRec do
-         now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-         case Forum.changeset(%Forum{}, %{title: app_title, active: true, created_at: now_time, app_id: app_id}) |> Repo.insert do
+         case Forum.changeset(%Forum{}, %{title: app_title, active: true, app_id: app_id}) |> Repo.insert do
             {:ok, forum} ->
-              ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, created_at: now_time, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, forum_id: forum.id}) |> Repo.insert
 
               query = from f in Forum,
                       where: f.app_id == ^app_id,
@@ -396,7 +395,6 @@ defmodule Acs.AdminController do
     } = section}) do
     case Repo.get(ForumSection, id) do
       nil ->
-        section = Map.put(section, "created_at", :calendar.local_time |> NaiveDateTime.from_erl!)
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
             conn |> json(%{success: true, section: new_section })

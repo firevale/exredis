@@ -21,3 +21,41 @@ export const getDeviceId = _ => {
 
   return deviceId
 }
+
+export const getQuillToolbarConfig = _ => {
+  switch (window.acsConfig.platform) {
+    case 'ios':
+    case 'android':
+    case 'wp8':
+      return false;
+
+    default:
+      return [
+        [
+          {
+            'size': ['small', false, 'large', 'huge',]
+          }
+        ], // custom dropdown
+        [
+          'bold', 'italic', {'color': []}
+        ], // toggled buttons
+        [
+          'code-block',
+        ],
+        [
+          {
+            'list': 'ordered'
+          }, {
+            'list': 'bullet'
+          },
+        ],
+        [
+          {
+            'indent': '-1'
+          }, {
+            'indent': '+1'
+          },
+        ], // outdent/indent
+      ]
+  }
+}

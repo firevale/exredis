@@ -29,16 +29,14 @@
         </span>
         <span class="is-primary">{{ postData.user.nickname }}</span>
       </p>
-      <div class="content">
-        <p class="post-content" v-html="postData.content">
-        </p>
-        <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
-          <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
-            style="margin-right: 0.5rem" @click="toggleFavorite"></span>
-          <span class="is-grey is-clickable" @click="toggleFavorite">
-            {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
-          </span>
-        </div>
+      <div class="post-content ql-editor" v-html="postData.content">
+      </div>
+      <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
+        <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
+          style="margin-right: 0.5rem" @click="toggleFavorite"></span>
+        <span class="is-grey is-clickable" @click="toggleFavorite">
+          {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
+        </span>
       </div>
     </div>
   </article>
@@ -126,7 +124,6 @@ export default {
   },
 
   methods: {
-
     toggleShowAuthorOnly() {
       this.showAuthorOnly = !this.showAuthorOnly
     },

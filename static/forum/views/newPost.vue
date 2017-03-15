@@ -24,37 +24,26 @@
 </div>
 </template>
 <script>
+
 import {
   mapGetters,
   mapActions
 } from 'vuex'
-import postDetailView from '../components/postDetailView.vue'
+
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
+
 import {
   postPreview
 } from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'
-
-var marked = require('marked');
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-});
+import * as acs from 'common/acs'
 
 export default {
 
   components: {
-
   },
 
   computed: {
@@ -84,7 +73,7 @@ export default {
     return {
       editorOption: {
         modules: {
-          toolbar: [],
+          toolbar: acs.getQuillToolbarConfig(),
         },
       },
       title: '',
@@ -120,10 +109,9 @@ export default {
         visible: true,
         item: {
           user: this.userInfo,
-          rank: '楼主',
           section: this.sectionMenuItems[this.selectedSectionId],
           title: this.title,
-          time: utils.getNowFormatDate(),
+          time: utils.nowFromServer(),
           content: this.content
         },
       })
@@ -147,6 +135,7 @@ export default {
 
       var forumId = this.$router.currentRoute.params.forumId
       let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
+      
       if (result.success) {
         message.showMsg(this.$t('forum.newPost.addSuccess'))
         this.$router.replace({

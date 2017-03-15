@@ -1,13 +1,12 @@
 <template>
 <div>
   <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
-    {{ this.replyTitle }}
+    {{ this.commentTitle }}
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
     <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
   <div class="column is-full" style="position: relative; padding-bottom: 0;">
-    <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
+    <quill-editor ref="myTextEditor" v-model="content" :config="editorOption">
     </quill-editor>
   </div>
   <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
@@ -25,28 +24,19 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import postDetailView from '../components/postDetailView.vue'
+
 import menuModal from '../components/menuModal'
 import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
+
 import {
   postPreview
 } from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'
+import * as acs from 'common/acs'
 
-var marked = require('marked');
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-});
 
 export default {
 
@@ -57,7 +47,7 @@ export default {
   computed: {
     ...mapGetters(['userInfo', 'currentPostTitle']),
 
-    replyTitle() {
+    commentTitle() {
       return this.$t('forum.writeComment.title') + ':' + this.currentPostTitle
     },
 
@@ -72,7 +62,16 @@ export default {
 
   data() {
     return {
+<<<<<<< HEAD
       editorOption: {},
+=======
+      editorOption: {
+        modules: {
+          toolbar: acs.getQuillToolbarConfig(),
+        },
+      },
+      title: '',
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
       content: '',
     }
   },
@@ -91,21 +90,30 @@ export default {
         item: {
           user: this.userInfo,
           rank: '',
+<<<<<<< HEAD
           time: utils.getNowFormatDate(),
+=======
+          title: this.commentTitle,
+          time: utils.nowFromServer(),
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
           content: this.content,
         },
       })
     },
 
     handleSubmit: async function() {
-
       if (!this.content) {
         message.showMsg(this.$t('forum.writeComment.textAreaPlaceHolder'))
         return;
       }
 
       let postId = this.$router.currentRoute.params.postId
+<<<<<<< HEAD
       let result = await this.$acs.addComment(postId, this.content)
+=======
+      let result = await this.$acs.addComment(postId, this.commentTitle, this.content)
+
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))
         this.$router.replace({

@@ -165,7 +165,7 @@ defmodule Acs.ForumController do
 
     query = from c in ForumComment,
             join: u in assoc(c, :user),
-            order_by: [desc: c.id],
+            order_by: [asc: c.id],
             where: c.post_id == ^post_id,
             select: map(c, [:id, :content, :created_at, user: [:id, :nickname, :avatar_url]]),
             limit: ^records_per_page,
@@ -184,8 +184,10 @@ defmodule Acs.ForumController do
                     %{"comment_id" => comment_id}) do
     #todo power check
     with %ForumComment{} = comment <- Repo.get(ForumComment, comment_id),
+      post_id = comment.post_id,
       {:ok, _} <- Repo.delete(comment)
     do
+      add_post_comm_count(post_id, -1)
       conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
     else
       nil ->
@@ -266,7 +268,7 @@ defmodule Acs.ForumController do
             comment <- comment |> Map.put("user_id", user_id) |> Map.put("created_at", now_time),
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
-        add_post_comm_count(post_id)
+        add_post_comm_count(post_id, 1)
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
         nil ->
@@ -321,9 +323,9 @@ defmodule Acs.ForumController do
     ForumPost.changeset(post, params) |> Repo.update()
   end
 
-  defp add_post_comm_count(post_id) do
+  defp add_post_comm_count(post_id, count) do
     post = Repo.get(ForumPost, post_id)
-    ForumPost.changeset(post, %{comms: post.comms+1}) |> Repo.update()
+    ForumPost.changeset(post, %{comms: post.comms+count}) |> Repo.update()
   end
 
 end

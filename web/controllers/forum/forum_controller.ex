@@ -101,7 +101,8 @@ defmodule Acs.ForumController do
   end
 
   # add_post
-  def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"forum_id" => forum_id,
+  def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                      "forum_id" => forum_id,
                       "title" => title,
                       "content" => content,
                       "section_id" => section_id} = post) do
@@ -109,11 +110,33 @@ defmodule Acs.ForumController do
               join: s in assoc(f, :sections),
               where: f.id==^forum_id and s.id==^section_id,
               preload: [sections: s]
-      with  %Forum{}=forum <-Repo.one(query),
-            now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
-            post <- post |> Map.put("user_id", user_id),
-            {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
+
+      with %Forum{} = forum <- Repo.one(query),
+            {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, Map.put(post, "user_id", user_id)) |> Repo.insert
       do
+          Elasticsearch.index(%{
+            index: "forum",
+            type: "posts",
+            doc: %{
+              forum_id: forum_id,
+              section_id: section_id,
+              user_id: user_id,
+              title: title,
+              content: content,
+              is_top: false,
+              is_hot: false,
+              is_vote: false,
+              active: true,
+              has_pic: false,
+              reads: 0,
+              comms: 0,
+              inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+              last_reply_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+            },
+            params: nil,
+            id: new_post.id
+          })
+
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
       else
         nil ->
@@ -139,7 +162,6 @@ defmodule Acs.ForumController do
             preload: [user: u, section: s]
 
     post = Repo.one(query)
-
     post = with user_id when is_integer(user_id) <- conn.private[:acs_session_user_id],
                  favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
                  where: f.post_id == ^post_id and f.user_id == ^user_id)
@@ -150,7 +172,7 @@ defmodule Acs.ForumController do
         Map.put(post, :is_favorite, false)
     end
 
-    add_post_count(post_id, %{reads: post.reads+1})
+    add_post_click(post_id, 1)
 
     conn |> json(%{success: true, detail: post})
   end
@@ -211,11 +233,17 @@ defmodule Acs.ForumController do
   def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                     %{"comment_id" => comment_id}) do
     #todo power check
+
     with %ForumComment{} = comment <- Repo.get(ForumComment, comment_id),
       post_id = comment.post_id,
-      {:ok, _} <- Repo.delete(comment)
+      {:ok, _} <- ForumComment.changeset(comment,
+                                        %{active: false,
+                                        content: "回复已被删除",
+                                        editer_id: user_id }) |> Repo.update()
     do
-      add_post_comm_count(post_id, -1)
+      post = Repo.get(ForumPost, post_id)
+      ForumPost.changeset(post, %{comms: post.comms-1}) |> Repo.update()
+
       conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
     else
       nil ->
@@ -237,7 +265,6 @@ defmodule Acs.ForumController do
     case favorite do
       nil ->
         # add favorite
-        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
         post = Map.put(post, "user_id", user_id)
 
         case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
@@ -271,6 +298,7 @@ defmodule Acs.ForumController do
   def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                   %{"post_id" => post_id} = params) do
     # todo check power
+    params = Map.put(params, "editer_id", user_id)
     with %ForumPost{} = post <- Repo.get(ForumPost, post_id),
          {:ok, _} <- ForumPost.changeset(post, params) |> Repo.update()
     do
@@ -291,11 +319,13 @@ defmodule Acs.ForumController do
                     %{"content" => content,
                       "post_id" => post_id} = comment) do
 
-      with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
-            comment <- comment |> Map.put("user_id", user_id),
+      with  comment <- comment |> Map.put("user_id", user_id),
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
-        add_post_comm_count(post_id, 1)
+        post = Repo.get(ForumPost, post_id)
+        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+        ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
+
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
         nil ->
@@ -351,6 +381,11 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
+  defp add_post_click(post_id, click) do
+    post = Repo.get(ForumPost, post_id)
+    ForumPost.changeset(post, %{reads: post.reads+click}) |> Repo.update()
+  end
+
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,
             left_join: s in assoc(f, :sections),
@@ -370,16 +405,6 @@ defmodule Acs.ForumController do
     end
   end
 
-  defp add_post_count(post_id, params) do
-    post = Repo.get(ForumPost, post_id)
-    ForumPost.changeset(post, params) |> Repo.update()
-  end
-
-  defp add_post_comm_count(post_id, count) do
-    post = Repo.get(ForumPost, post_id)
-    ForumPost.changeset(post, %{comms: post.comms+count}) |> Repo.update()
-  end
-
  def search(conn, %{"forum_id" => forum_id,"keyword" => keyword,
                            "page" => page,"records_per_page" => records_per_page}) do
   query = %{
@@ -397,6 +422,10 @@ defmodule Acs.ForumController do
 
       postList = Enum.map(hits, fn(hit) ->
          user_id = hit._source.user_id
+         userRaw = RedisUser.find(user_id)
+         user=if userRaw do
+                Map.take(userRaw, [:id, :nickname, :avatar_url, :inserted_at])
+              end
 
          forumId=hit._source.forum_id
          forum = case Process.get("forum_#{forumId}") do
@@ -419,7 +448,7 @@ defmodule Acs.ForumController do
             forum_id: forumId,
             forum:  forum,
             user_id: user_id,
-            user: RedisUser.find(user_id),
+            user: user,
             section_id: hit._source.section_id,
             section: section,
             title: hit._source.title,

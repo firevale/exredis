@@ -98,7 +98,7 @@ defmodule Acs do
              is_vote: %{type: :boolean},
              reads: %{type: :integer},
              comms: %{type: :integer},
-             created_at: %{type: :date},
+             inserted_at: %{type: :date},
              last_reply_at: %{type: :date},
              active: %{type: :boolean},
              has_pic: %{type: :boolean}

@@ -209,9 +209,13 @@ defmodule Acs.ForumController do
   def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                     %{"comment_id" => comment_id}) do
     #todo power check
+
     with %ForumComment{} = comment <- Repo.get(ForumComment, comment_id),
       post_id = comment.post_id,
-      {:ok, _} <- Repo.delete(comment)
+      {:ok, _} <- ForumComment.changeset(comment,
+                                        %{active: false,
+                                        content: "回复已被删除",
+                                        editer_id: user_id }) |> Repo.update()
     do
       post = Repo.get(ForumPost, post_id)
       ForumPost.changeset(post, %{comms: post.comms-1}) |> Repo.update()
@@ -270,6 +274,7 @@ defmodule Acs.ForumController do
   def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                   %{"post_id" => post_id} = params) do
     # todo check power
+    params = Map.put(params, "editer_id", user_id)
     with %ForumPost{} = post <- Repo.get(ForumPost, post_id),
          {:ok, _} <- ForumPost.changeset(post, params) |> Repo.update()
     do

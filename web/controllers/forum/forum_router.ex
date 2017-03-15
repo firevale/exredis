@@ -33,6 +33,7 @@ defmodule Acs.ForumRouter do
     post "/add_comment", ForumController, :add_comment
     post "/toggle_post_favorite", ForumController, :toggle_post_favorite
     post "/toggle_post_status", ForumController, :toggle_post_status
+    post "/search", ForumController, :search
   end
 
 end

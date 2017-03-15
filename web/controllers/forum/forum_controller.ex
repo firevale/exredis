@@ -1,6 +1,8 @@
 defmodule Acs.ForumController do
   use Acs.Web, :controller
 
+  alias   Acs.RedisForum
+
   plug :fetch_app_id
   plug :fetch_user_id
   plug :fetch_user
@@ -311,5 +313,69 @@ defmodule Acs.ForumController do
     post = Repo.get(ForumPost, post_id)
     ForumPost.changeset(post, %{comms: post.comms+1}) |> Repo.update()
   end
+
+ def search(conn, %{"forum_id" => forum_id,"keyword" => keyword,
+                           "page" => page,"records_per_page" => records_per_page}) do
+  query = %{
+    query: %{
+      multi_match: %{
+        query: keyword,
+        fields: [:title, :content],
+      }
+    }
+  }
+
+  case Elasticsearch.search(%{index: "forum", type: "forumpost", query: query, params: %{timeout: "1m"}}) do
+    {:ok, %{hits: %{hits: hits, total: total}}} ->
+
+
+      postList = Enum.map(hits, fn(hit) ->
+         user_id = hit._source.user_id
+
+         forumId=hit._source.forum_id
+         forum = case Process.get("forum_#{forumId}") do
+                   nil ->
+                     forumNew = RedisForum.find(hit._source.forum_id)
+                     Process.put("forum_#{forumId}", forumNew)
+                     forumNew
+                   forumCache ->
+                     forumCache
+                  end
+
+          section_id=hit._source.section_id
+          section = if forum && forum.sections && section_id  do
+                      forum.sections
+                      |> Enum.find(fn(item) -> item.id==section_id  end)
+                    end
+
+           %{
+            id: hit._id,
+            forum_id: forumId,
+            forum:  forum,
+            user_id: user_id,
+            user: RedisUser.find(user_id),
+            section_id: hit._source.section_id,
+            section: section,
+            title: hit._source.title,
+            content: hit._source.content,
+            is_top: hit._source.is_top,
+            is_hot: hit._source.is_hot,
+            is_vote: hit._source.is_vote,
+            reads: hit._source.reads,
+            comms: hit._source.comms,
+            created_at: hit._source.created_at,
+            active: hit._source.active,
+            has_pic: hit._source.has_pic
+          }
+
+          end)
+      total_page=round(Float.ceil(total/records_per_page))
+      conn |> json(%{success: true, postList: postList, total: total_page})
+
+    error ->
+      error "search failed: #{inspect error, pretty: true}"
+      conn |> json(%{success: false})
+  end
+ end
 
 end

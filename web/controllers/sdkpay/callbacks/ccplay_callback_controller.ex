@@ -17,7 +17,7 @@ defmodule Acs.SdkPay.CCPlayCallbackController do
             if SDKCCPlay.validate_payment(pay_key, params) do  
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "cc." <> trade_no, 
                 fee: round(String.to_float(price) * 100)
               }) |> Repo.update

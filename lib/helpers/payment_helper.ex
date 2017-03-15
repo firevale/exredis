@@ -114,7 +114,7 @@ defmodule Acs.PaymentHelper do
   defp save_order_success(order = %AppOrder{}) do
     AppOrder.changeset(order, %{status: AppOrder.Status.delivered,
                                 cp_result: "ok",
-                                deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+                                deliver_at: DateTime.utc_now()}) |> Repo.update!
     # save to elasticsearch
     Elasticsearch.index(%{
       index: "acs",
@@ -138,7 +138,7 @@ defmodule Acs.PaymentHelper do
   defp save_order_failed(order = %AppOrder{}, result) do
     AppOrder.changeset(order, %{cp_result: result,
                                 try_deliver_counter: order.try_deliver_counter + 1,
-                                try_deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+                                try_deliver_at: DateTime.utc_now()}) |> Repo.update!
     # save to elasticsearch
     Elasticsearch.index(%{
       index: "acs",

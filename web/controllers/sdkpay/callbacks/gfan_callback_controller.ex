@@ -22,7 +22,7 @@ defmodule Acs.SdkPay.GfanCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "gfan." <> order_id, 
                 fee: round(String.to_integer(xmlresult.cost |> to_string) * 10)
               }) |> Repo.update

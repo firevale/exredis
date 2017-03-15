@@ -92,7 +92,7 @@ defmodule Acs.SdkPay.IYouxiCallbackController do
 
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "iyouxi." <> correlator, 
                 fee: round(price * 100)
               }) |> Repo.update

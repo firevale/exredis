@@ -48,7 +48,7 @@ defmodule Acs.WechatController do
     do
       AppOrder.changeset(order, %{
         status: AppOrder.Status.paid(),
-        paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+        paid_at: DateTime.utc_now(),
         transaction_id: "wechat." <> notify_params[:transaction_id],
         paid_channel: "wechat",
         fee: notify_params[:total_fee],

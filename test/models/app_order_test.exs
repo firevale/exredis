@@ -5,9 +5,9 @@ defmodule Acs.OrderTest do
 
   @valid_attrs %{id: "xxxxxxyyyy",
                  cp_order_id: "some content", 
-                 deliver_at: ~N[2001-02-13 00:00:00],
+                 deliver_at: DateTime.from_naive(~N[2001-02-13 00:00:00], "Etc/UTC")
                  id: "some content", 
-                 paid_at: ~N[2010-04-30 12:31:21],
+                 paid_at: DateTime.from_naive(~N[2010-04-30 12:31:21], "Etc/UTC"),
                  paid_channel: "alipay", 
                  platform: "android", 
                  sdk: "facebook", 

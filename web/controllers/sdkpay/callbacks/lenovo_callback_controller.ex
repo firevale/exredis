@@ -14,7 +14,7 @@ defmodule Acs.SdkPay.LenovoCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "lenovo." <> (pay_info["transid"] |> to_string), 
                 fee: String.to_integer(pay_info["money"] |> to_string)
               }) |> Repo.update

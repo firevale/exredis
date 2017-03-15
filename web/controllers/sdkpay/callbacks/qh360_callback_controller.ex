@@ -19,7 +19,7 @@ defmodule Acs.SdkPay.Qh360CallbackController do
                   if String.starts_with?(order.cp_order_id, cp_order_id) do
                     {:ok, order} = AppOrder.changeset(order, %{
                       status: AppOrder.Status.paid,
-                      paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                      paid_at: DateTime.utc_now(),
                       transaction_id: "qh360." <> trans_no, 
                       fee: String.to_integer(amount)
                     }) |> Repo.update

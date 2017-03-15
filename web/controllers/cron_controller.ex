@@ -3,7 +3,7 @@ defmodule Acs.CronController do
   alias   Acs.PaymentHelper
 
   def notify_cp(conn, params) do
-    now = :calendar.local_time |> NaiveDateTime.from_erl!
+    now = DateTime.utc_now()
     query = from order in AppOrder,
               select: order,
               where: order.status == 2 and
@@ -12,11 +12,11 @@ defmodule Acs.CronController do
 
     Repo.all(query) |> Enum.each(fn(order) ->
       elapsed = case order.try_deliver_at do
-        nil -> NaiveDateTime.diff(now, order.paid_at)
-        %NaiveDateTime{} -> NaiveDateTime.diff(now, order.try_deliver_at)
+        nil -> DateTime.diff(now, order.paid_at)
+        %DateTime{} -> DateTime.diff(now, order.try_deliver_at)
       end
 
-      if NaiveDateTime.diff(now, order.paid_at) < 604800 do
+      if DateTime.diff(now, order.paid_at) < 604800 do
         cond do
           order.try_deliver_counter < 5 and elapsed <= 80 ->
             async_notify_cp(order)

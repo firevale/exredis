@@ -9,9 +9,7 @@ const state = {
     '综合讨论',
     '副本攻略',
     '指南',
-  ],
-  pageCount: 10,
-  currentPage: 1,
+  ]
 }
 
 const mutations = {
@@ -46,14 +44,6 @@ const mutations = {
         state.historyKeywords.pop()
       }
     }
-  },
-
-  'SEARCH_SET_PAGECOUNT' (state, count) {
-    state.pageCount = count
-  },
-
-  'SEARCH_SET_CURRENTPAGE' (state, page) {
-    state.currentPage = page
   }
 }
 

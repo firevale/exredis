@@ -25,7 +25,7 @@
       </nav>
       <p>
         <span class="is-grey">
-          <timeago :since="(postData.created_at) | convertServerDateTime" :auto-update="60"></timeago>
+          <timeago :since="(postData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
         </span>
         <span class="is-primary">{{ postData.user.nickname }}</span>
       </p>

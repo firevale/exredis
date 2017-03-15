@@ -6,7 +6,6 @@ defmodule Acs.ForumSection do
   schema "forums_sections" do
     field :title, :string
     field :sort, :integer
-    field :created_at, :naive_datetime
     field :active, :boolean, default: true
 
     belongs_to :forum, Acs.Forum, type: :integer
@@ -19,8 +18,8 @@ defmodule Acs.ForumSection do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :sort, :created_at, :forum_id, :active])
-    |> validate_required([:title, :sort, :created_at, :forum_id, :active])
+    |> cast(params, [:title, :sort, :forum_id, :active])
+    |> validate_required([:title, :sort, :forum_id, :active])
     |> foreign_key_constraint(:form_id)
   end
 end

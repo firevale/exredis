@@ -26,7 +26,7 @@ export default {
       },
       orderType: {
         last_reply_at: '回复时间排序',
-        created_at: '发帖时间排序',
+        inserted_at: '发帖时间排序',
         is_hot: '热门排序',
         is_vote: '精品贴',
       },

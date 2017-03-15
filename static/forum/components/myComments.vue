@@ -5,7 +5,7 @@
     <span>{{ itemData.content }}</span>
   </div>
   <div class="post-info">
-    <span>{{ itemData.created_at | formatServerDateTime }}</span>
+    <span>{{ itemData.inserted_at | formatServerDateTime }}</span>
     <span> | </span>
     <span>{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
   </div>

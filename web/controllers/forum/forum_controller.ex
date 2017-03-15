@@ -77,7 +77,7 @@ defmodule Acs.ForumController do
               join: u in assoc(p, :user),
               join: s in assoc(p, :section),
               join: f in assoc(p, :forum),
-              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :created_at,
+              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
                         :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title], forum: [:id]]),
              limit: ^records_per_page,
              where: p.forum_id == ^forum_id and p.active == true,
@@ -111,7 +111,7 @@ defmodule Acs.ForumController do
               preload: [sections: s]
       with  %Forum{}=forum <-Repo.one(query),
             now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
-            post <- post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time),
+            post <- post |> Map.put("user_id", user_id),
             {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
       do
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
@@ -134,7 +134,7 @@ defmodule Acs.ForumController do
             join: u in assoc(p, :user),
             join: s in assoc(p, :section),
             where: p.id == ^post_id,
-            select: map(p, [:id, :title, :content, :created_at, :active, :is_top, :is_hot, :is_vote, :reads,
+            select: map(p, [:id, :title, :content, :inserted_at, :active, :is_top, :is_hot, :is_vote, :reads,
                         user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
             preload: [user: u, section: s]
 
@@ -169,7 +169,7 @@ defmodule Acs.ForumController do
             join: u in assoc(c, :user),
             order_by: [asc: c.id],
             where: c.post_id == ^post_id,
-            select: map(c, [:id, :content, :created_at, user: [:id, :nickname, :avatar_url]]),
+            select: map(c, [:id, :content, :inserted_at, user: [:id, :nickname, :avatar_url]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
             preload: [user: u]
@@ -194,7 +194,7 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
             where: c.user_id == ^user_id,
-            select: map(c, [:id, :content, :created_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
+            select: map(c, [:id, :content, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
             preload: [post: {p, section: s}]
@@ -238,7 +238,7 @@ defmodule Acs.ForumController do
       nil ->
         # add favorite
         now_time = :calendar.local_time |> NaiveDateTime.from_erl!
-        post = post |> Map.put("user_id", user_id) |> Map.put("created_at",now_time)
+        post = Map.put(post, "user_id", user_id)
 
         case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
           {:ok, _} ->
@@ -292,7 +292,7 @@ defmodule Acs.ForumController do
                       "post_id" => post_id} = comment) do
 
       with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
-            comment <- comment |> Map.put("user_id", user_id) |> Map.put("created_at", now_time),
+            comment <- comment |> Map.put("user_id", user_id),
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
         add_post_comm_count(post_id, 1)
@@ -337,7 +337,7 @@ defmodule Acs.ForumController do
     query = from f in UserFavoritePost,
             join: p in assoc(f, :post),
             join: s in assoc(p, :section),
-            select: map(f, [:id, post: [:id, :created_at, :title, :comms, :reads, section: [:id, :title]]]),
+            select: map(f, [:id, post: [:id, :inserted_at, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             where: f.user_id == ^user_id,
             offset: ^((page - 1) * records_per_page),
@@ -429,7 +429,7 @@ defmodule Acs.ForumController do
             is_vote: hit._source.is_vote,
             reads: hit._source.reads,
             comms: hit._source.comms,
-            created_at: hit._source.created_at,
+            inserted_at: hit._source.inserted_at,
             active: hit._source.active,
             has_pic: hit._source.has_pic
           }

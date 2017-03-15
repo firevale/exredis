@@ -22,9 +22,7 @@
           <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
         </div>
       </nav>
-      <div class="content">
-        <div class="post-content ql-editor" v-html="commentData.content">
-        </div>
+      <div class="post-content ql-editor" v-html="commentData.content">
       </div>
     </div>
   </article>
@@ -67,12 +65,12 @@ export default {
 
     nthName: function() {
       switch(this.nth) {
-        case 0:
-          return this.$t('forum.detail.firstComment');
         case 1:
+          return this.$t('forum.detail.firstComment');
+        case 2:
           return this.$t('forum.detail.secondComment');
         default:
-          return this.$t('forum.detail.nthComment', {nth: this.nth + 1});
+          return this.$t('forum.detail.nthComment', {nth: this.nth});
       }
     }
   },
@@ -80,7 +78,7 @@ export default {
   methods: {
     confirmDeleteComment() {
       AlertDialog.showModal({
-        message: this.$t('forum.detail.deleteTip', {nth: this.nth + 1}),
+        message: this.$t('forum.detail.deleteTip', {nth: this.nth}),
         onOk: async _ => {
           let result = await this.$acs.deleteComment(this.commentData.id)
           if (result.success) {

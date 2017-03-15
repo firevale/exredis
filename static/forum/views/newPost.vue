@@ -135,6 +135,7 @@ export default {
 
       var forumId = this.$router.currentRoute.params.forumId
       let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
+      
       if (result.success) {
         message.showMsg(this.$t('forum.newPost.addSuccess'))
         this.$router.replace({

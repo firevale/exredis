@@ -6,8 +6,7 @@
     <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
   <div class="column is-full" style="position: relative; padding-bottom: 0;">
-    <quill-editor ref="myTextEditor" v-model="content" :config="editorOption" @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)" @ready="onEditorReady($event)" @change="onEditorChange($event)">
+    <quill-editor ref="myTextEditor" v-model="content" :config="editorOption">
     </quill-editor>
   </div>
   <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
@@ -36,6 +35,8 @@ import {
 import message from '../components/message'
 
 import * as utils from 'common/utils'
+import * as acs from 'common/acs'
+
 
 export default {
 
@@ -61,7 +62,11 @@ export default {
 
   data() {
     return {
-      editorOption: {},
+      editorOption: {
+        modules: {
+          toolbar: acs.getQuillToolbarConfig(),
+        },
+      },
       title: '',
       content: '',
     }
@@ -96,7 +101,7 @@ export default {
 
       let postId = this.$router.currentRoute.params.postId
       let result = await this.$acs.addComment(postId, this.replyTitle, this.content)
-      
+
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))
         this.$router.replace({

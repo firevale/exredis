@@ -14,7 +14,7 @@ defmodule Acs.RedisForum do
   defstruct id: 0,
             title: nil,
             active: true,
-            created_at: false,
+            inserted_at: nil,
             active: nil,
             icon: "",
             sections: %{}
@@ -51,7 +51,7 @@ defmodule Acs.RedisForum do
           id: forum.id,
           title: forum.title,
           active: forum.active,
-          created_at: forum.created_at,
+          inserted_at: forum.inserted_at,
           icon: forum.icon,
           sections: forum.sections
         }

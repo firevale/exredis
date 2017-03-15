@@ -20,7 +20,7 @@ defmodule Acs.AppDevice do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:active_seconds, :pay_amount, :last_active_at, :last_paid_at, :created_at, :reg_date, :zone_id, :app_id, :device_id])
+    |> cast(params, [:active_seconds, :pay_amount, :last_active_at, :last_paid_at, :reg_date, :zone_id, :app_id, :device_id])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
     |> foreign_key_constraint(:app_id)

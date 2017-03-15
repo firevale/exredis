@@ -54,7 +54,7 @@ defmodule Acs.AppOrder do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :platform, :device_id, :sdk, :sdk_user_id, :cp_order_id, :zone_id, :market, :status, :created_at,
+    |> cast(params, [:id, :platform, :device_id, :sdk, :sdk_user_id, :cp_order_id, :zone_id, :market, :status, 
                      :paid_at, :deliver_at, :try_deliver_at, :try_deliver_counter, :price, :currency, :goods_name,
                      :debug_mode, :paid_channel, :fee, :transaction_currency, :transaction_id, :transaction_status,
                      :app_id, :user_id, :app_user_id, :goods_id, :cp_result])

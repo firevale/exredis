@@ -16,7 +16,7 @@ defmodule Acs.Device do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :model, :platform, :os, :created_at])
+    |> cast(params, [:id, :model, :platform, :os])
     |> validate_required([:model, :platform])
   end
 end

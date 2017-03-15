@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
-    {{ this.replyTitle }}
+    {{ this.commentTitle }}
     <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
     <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
   </div>
@@ -47,7 +47,7 @@ export default {
   computed: {
     ...mapGetters(['userInfo', 'currentPostTitle']),
 
-    replyTitle() {
+    commentTitle() {
       return this.$t('forum.writeComment.title') + ':' + this.currentPostTitle
     },
 
@@ -86,7 +86,7 @@ export default {
         item: {
           user: this.userInfo,
           rank: '',
-          title: this.replyTitle,
+          title: this.commentTitle,
           time: utils.nowFromServer(),
           content: this.content,
         },
@@ -100,7 +100,7 @@ export default {
       }
 
       let postId = this.$router.currentRoute.params.postId
-      let result = await this.$acs.addComment(postId, this.replyTitle, this.content)
+      let result = await this.$acs.addComment(postId, this.commentTitle, this.content)
 
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))

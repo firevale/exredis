@@ -138,8 +138,6 @@ defmodule Acs.ForumController do
             preload: [user: u, section: s]
 
     post = Repo.one(query)
-    ForumPost.changeset(post, %{reads: post.reads+1}) |> Repo.update()
-
     post = with user_id when is_integer(user_id) <- conn.private[:acs_session_user_id],
                  favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
                  where: f.post_id == ^post_id and f.user_id == ^user_id)
@@ -149,6 +147,8 @@ defmodule Acs.ForumController do
       _ ->
         Map.put(post, :is_favorite, false)
     end
+
+    add_post_click(post_id, 1)
 
     conn |> json(%{success: true, detail: post})
   end
@@ -355,6 +355,11 @@ defmodule Acs.ForumController do
   end
   def get_user_favorites(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+
+  defp add_post_click(post_id, click) do
+    post = Repo.get(ForumPost, post_id)
+    ForumPost.changeset(post, %{reads: post.reads+click}) |> Repo.update()
   end
 
   defp get_forum_info_by_id(forum_id) do

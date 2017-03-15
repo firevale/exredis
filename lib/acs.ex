@@ -105,7 +105,7 @@ defmodule Acs do
            }
          }
 
-         gfiElasticsearch.create_index("forum", settings, %{
+         Elasticsearch.create_index("forum", settings, %{
            posts: posts_mapping
          })
     end

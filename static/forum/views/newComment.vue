@@ -1,21 +1,19 @@
 <template>
 <div>
-  <div class="column is-full" style="padding-top: 0;padding-bottom: 0;">
-    {{ this.commentTitle }}
-    <i class="fa fa-search-plus dark" aria-hidden="true" style="margin: .3rem 0 0 2rem;"></i>
-    <span class="pointer dark" @click="preview()">{{ $t('forum.newPost.preview') }}</span>
+  <div class="tile is-full has-text-left" style="padding: 0.5rem 0">
+    <h5 class="title is-5" style="font-weight: 400">{{$t('forum.detail.replyBtn') + ": " + currentPostTitle}}</h5>
   </div>
-  <div class="column is-full" style="position: relative; padding-bottom: 0;">
-    <quill-editor ref="myTextEditor" v-model="content" :config="editorOption">
+  <form @submit.prevent="handleSubmit">
+    <quill-editor ref="commentEditor" v-model="content" :config="editorOption">
     </quill-editor>
-  </div>
-  <div v-show="messageTip" class="column is-full red" style="padding: 0 1rem;">
-    <i class="fa fa-exclamation-circle " style="vertical-align: middle;" aria-hidden="true"></i>
-    <span>{{messageTip}}</span>
-  </div>
-  <div class="column is-full" style="text-align: center;">
-    <a class="button new-note" @click="handleSubmit">{{ $t('forum.newPost.btnTxt') }}</a>
-  </div>
+    <p class="control is-horizontal" v-show="errorMessage">
+      <span class="help icon image-icon icon-sign"></span>
+      <span class="help is-danger">{{errorMessage}}</span>
+    </p>
+    <p class="control is-horizontal" style="justify-content: center; margin-top: 0.5rem">
+      <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" />
+    </p>
+  </form>
 </div>
 </template>
 
@@ -40,24 +38,8 @@ import * as acs from 'common/acs'
 
 export default {
 
-  components: {
-
-  },
-
   computed: {
     ...mapGetters(['userInfo', 'currentPostTitle']),
-
-    commentTitle() {
-      return this.$t('forum.writeComment.title') + ':' + this.currentPostTitle
-    },
-
-    messageTip() {
-      if (!this.content) {
-        return this.$t('forum.newPost.requireContent')
-      } else {
-        return ""
-      }
-    },
   },
 
   data() {
@@ -68,6 +50,7 @@ export default {
         },
       },
       content: '',
+      errorMessage: '',
     }
   },
 
@@ -106,14 +89,6 @@ export default {
         })
       }
     },
-
-    onEditorBlur(e) {},
-    onEditorFocus(e) {},
-    onEditorReady(e) {},
-    onEditorChange(e) {
-      this.content = e.html
-    },
-
   }
 }
 </script>

@@ -6,6 +6,10 @@
 
 <script>
 import Quill from 'quill'
+
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.core.css'
+
 if (!window.Quill) {
   window.Quill = Quill
 }
@@ -88,7 +92,7 @@ export default {
         let self = this
         self.quillEditor = new Quill(self.$el, Object.assign({
           modules: self.defaultModules,
-          placeholder: 'Insert text here ...',
+          placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
           readOnly: false,
           theme: 'snow',
           boundary: document.body
@@ -151,8 +155,3 @@ export default {
   }
 }
 </script>
-
-<style lang="styl">
-@import '~quill/assets/snow';
-@import '~quill/assets/core';
-</style>

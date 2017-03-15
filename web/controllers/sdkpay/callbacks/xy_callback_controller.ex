@@ -11,7 +11,7 @@ defmodule Acs.SdkPay.XYCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "xy." <> trans_no, 
                 fee: round(String.to_float(amount |> to_string) * 100)
               }) |> Repo.update

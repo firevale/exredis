@@ -18,7 +18,7 @@ defmodule Acs.SdkPay.HtcCallbackController do
                 order = %AppOrder{} ->
                   {:ok, order} = AppOrder.changeset(order, %{
                     status: AppOrder.Status.paid,
-                    paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                    paid_at: DateTime.utc_now(),
                     transaction_id: "htc." <> jolo_order_id, 
                     fee: total_fee
                   }) |> Repo.update

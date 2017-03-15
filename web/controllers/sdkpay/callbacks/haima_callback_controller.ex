@@ -15,7 +15,7 @@ defmodule Acs.SdkPay.HaimaCallbackController do
                 order = %AppOrder{} ->
                   {:ok, order} = AppOrder.changeset(order, %{
                     status: AppOrder.Status.paid,
-                    paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                    paid_at: DateTime.utc_now(),
                     transaction_id: "haima." <> order_id, 
                     fee: round(String.to_float(total_fee) * 100)
                   }) |> Repo.update

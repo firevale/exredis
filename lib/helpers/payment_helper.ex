@@ -114,7 +114,7 @@ defmodule Acs.PaymentHelper do
   defp save_order_success(order = %AppOrder{}) do
     AppOrder.changeset(order, %{status: AppOrder.Status.delivered,
                                 cp_result: "ok",
-                                deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+                                deliver_at: DateTime.utc_now()}) |> Repo.update!
     # save to elasticsearch
     Elasticsearch.index(%{
       index: "acs",
@@ -128,7 +128,7 @@ defmodule Acs.PaymentHelper do
         device_id: order.device_id,
         cp_order_id: order.cp_order_id,
         transaction_id: order.transaction_id,
-        created_at: Timex.format!(order.created_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+08:00"),
+        inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
       params: nil,
       id: order.id
@@ -138,7 +138,7 @@ defmodule Acs.PaymentHelper do
   defp save_order_failed(order = %AppOrder{}, result) do
     AppOrder.changeset(order, %{cp_result: result,
                                 try_deliver_counter: order.try_deliver_counter + 1,
-                                try_deliver_at: :calendar.local_time |> NaiveDateTime.from_erl!}) |> Repo.update!
+                                try_deliver_at: DateTime.utc_now()}) |> Repo.update!
     # save to elasticsearch
     Elasticsearch.index(%{
       index: "acs",
@@ -152,7 +152,7 @@ defmodule Acs.PaymentHelper do
         device_id: order.device_id,
         cp_order_id: order.cp_order_id,
         transaction_id: order.transaction_id,
-        created_at: Timex.format!(order.created_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+08:00"),
+        inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
       params: nil,
       id: order.id

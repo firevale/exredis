@@ -16,7 +16,7 @@ defmodule Acs.SdkPay.QxzCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "qxz." <> trade_no, 
                 fee: total_fee
               }) |> Repo.update

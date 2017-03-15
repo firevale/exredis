@@ -11,7 +11,7 @@ defmodule Acs.SdkPay.KYCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "ky." <> trans_no, 
                 fee: SDKKY.get_total_fee(rsa_key, params)
               }) |> Repo.update

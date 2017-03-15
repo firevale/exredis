@@ -13,7 +13,7 @@ defmodule Acs.SdkPay.CoolpadCallbackController do
             order = %AppOrder{} ->
               {:ok, order} = AppOrder.changeset(order, %{
                 status: AppOrder.Status.paid,
-                paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                paid_at: DateTime.utc_now(),
                 transaction_id: "coolpad." <> (pay_info["transid"] |> to_string),
                 fee: round(String.to_float(pay_info["money"] |> to_string) * 100)
               }) |> Repo.update

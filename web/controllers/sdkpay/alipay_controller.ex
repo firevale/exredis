@@ -27,7 +27,7 @@ defmodule Acs.AlipayController do
       total_fee = String.to_float(notify_data[:total_fee]) * 100 |> Float.to_string(decimals: 0)
       AppOrder.changeset(order, %{
         status: AppOrder.Status.paid(),
-        paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+        paid_at: DateTime.utc_now(),
         transaction_id: "alipay." <> notify_data[:trade_no],
         paid_channel: "alipay",
         fee: total_fee

@@ -55,8 +55,7 @@ defmodule Acs.AppleStoreController do
                           _ -> String.to_integer(amount)
                         end,
                   paid_channel: "applestore",
-                  created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                  paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                  paid_at: DateTime.utc_now(),
                   market: "applestore",
                   currency: app.currency,
                   goods_id: goods_id,
@@ -169,8 +168,7 @@ defmodule Acs.AppleStoreController do
                           _ -> String.to_integer(amount)
                         end,
                   paid_channel: "applestore",
-                  created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
-                  paid_at: :calendar.local_time |> NaiveDateTime.from_erl!,
+                  paid_at: DateTime.utc_now(),
                   market: "applestore",
                   currency: app.currency,
                   goods_id: goods_id,

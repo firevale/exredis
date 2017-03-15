@@ -4,9 +4,8 @@ defmodule Acs.AppDevice do
   schema "app_devices" do
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
-    field :last_active_at, :naive_datetime
-    field :last_paid_at, :naive_datetime
-    field :created_at, :naive_datetime
+    field :last_active_at, :utc_datetime
+    field :last_paid_at, :utc_datetime
     field :reg_date, :date
     field :zone_id, :string
 

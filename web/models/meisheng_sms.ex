@@ -8,12 +8,12 @@ defmodule Acs.MeishengSms do
     field :content, :string
     field :status, :integer
     field :status_code, :string
-    field :report_time, :naive_datetime
+    field :report_time, :utc_datetime
 
     timestamps()
   end
 
-  defmodule Status do 
+  defmodule Status do
     def delivered, do: 0
     def sent, do: 1
     def failed, do: 2

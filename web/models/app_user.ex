@@ -11,10 +11,9 @@ defmodule Acs.AppUser do
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
     field :reg_date, :date
-    field :created_at, :naive_datetime
-    field :last_paid_at, :naive_datetime
-    field :last_active_at, :naive_datetime
-    
+    field :last_paid_at, :utc_datetime
+    field :last_active_at, :utc_datetime
+
     belongs_to :app, Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
 

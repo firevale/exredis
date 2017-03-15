@@ -7,7 +7,6 @@ defmodule Acs.Repo.Migrations.CreateDevice do
       add :model, :string
       add :platform, :string
       add :os, :string
-      add :created_at, :naive_datetime
 
       timestamps()
     end
@@ -15,6 +14,6 @@ defmodule Acs.Repo.Migrations.CreateDevice do
     create index(:devices, [:model])
     create index(:devices, [:platform])
     create index(:devices, [:os])
-    create index(:devices, [:created_at])
+    create index(:devices, [:inserted_at])
   end
 end

@@ -26,7 +26,6 @@ defmodule Acs.SdkPay.AppOrderController do
       sdk: params["sdk"] || "firevale",
       sdk_user_id: params["sdk_user_id"],
       cp_order_id: cp_order_id,
-      created_at: :calendar.local_time |> NaiveDateTime.from_erl!,
       status: AppOrder.Status.created,
       price: params["price_in_cent"],
       debug_mode: params["debug_mode"] == "true",

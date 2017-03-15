@@ -267,7 +267,7 @@ defmodule Acs.AdminController do
               limit: ^records_per_page,
               where: order.status != 1,
               offset: ^((page - 1) * records_per_page),
-              order_by: [desc: order.created_at]
+              order_by: [desc: order.inserted_at]
 
     orders = Repo.all(query)
 
@@ -294,7 +294,7 @@ defmodule Acs.AdminController do
           boost: 1.0,
         },
       },
-      sort: %{created_at: %{order: :desc}},
+      sort: %{inserted_at: %{order: :desc}},
       from: (page - 1) * records_per_page,
       size: records_per_page,
     }
@@ -305,7 +305,7 @@ defmodule Acs.AdminController do
         query = from order in AppOrder,
                   select: order,
                   where: order.id in ^ids,
-                  order_by: [desc: order.created_at]
+                  order_by: [desc: order.inserted_at]
 
         orders = Repo.all(query)
         conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})

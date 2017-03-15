@@ -5,7 +5,7 @@ defmodule Acs.MeishengSmsMo do
     field :mobile, :string
     field :recv_code, :string
     field :content, :string
-    field :recv_time, :naive_datetime
+    field :recv_time, :utc_datetime
 
     timestamps()
   end

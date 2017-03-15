@@ -9,7 +9,7 @@ defmodule Acs.Repo.Migrations.CreateMeishengSMS do
       add :content, :string
       add :status, :integer
       add :status_code, :string
-      add :report_time, :naive_datetime
+      add :report_time, :utc_datetime
 
       timestamps()
     end

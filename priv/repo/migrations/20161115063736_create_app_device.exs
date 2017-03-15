@@ -5,9 +5,8 @@ defmodule Acs.Repo.Migrations.CreateAppDevice do
     create table(:app_devices) do
       add :active_seconds, :integer, default: 0
       add :pay_amount, :integer, default: 0
-      add :last_paid_at, :naive_datetime
-      add :last_active_at, :naive_datetime
-      add :created_at, :naive_datetime
+      add :last_paid_at, :utc_datetime
+      add :last_active_at, :utc_datetime
       add :reg_date, :date # add this field for daily report calculation
       add :zone_id, :string, default: "0"
 
@@ -20,6 +19,7 @@ defmodule Acs.Repo.Migrations.CreateAppDevice do
     create index(:app_devices, [:app_id])
     create index(:app_devices, [:device_id])
     create index(:app_devices, [:zone_id])
+    create index(:app_devices, [:inserted_at])
     create index(:app_devices, [:last_active_at])
     create index(:app_devices, [:last_paid_at])
     create index(:app_devices, [:app_id, :zone_id, :reg_date])

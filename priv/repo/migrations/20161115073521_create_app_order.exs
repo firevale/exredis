@@ -12,10 +12,9 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :zone_id, :string
       add :market, :string
       add :status, :integer
-      add :created_at, :naive_datetime
-      add :paid_at, :naive_datetime
-      add :deliver_at, :naive_datetime
-      add :try_deliver_at, :naive_datetime
+      add :paid_at, :utc_datetime
+      add :deliver_at, :utc_datetime
+      add :try_deliver_at, :utc_datetime
       add :try_deliver_counter, :integer, default: 0
       add :price, :integer, default: 0
       add :currency, :string
@@ -47,7 +46,6 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
     create index(:app_orders, [:transaction_id], unique: true)
     create index(:app_orders, [:app_id, :cp_order_id], unique: true)
     create index(:app_orders, [:try_deliver_at, :try_deliver_counter])
-    create index(:app_orders, [:created_at])
     create index(:app_orders, [:deliver_at])
   end
 end

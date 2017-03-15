@@ -6,7 +6,7 @@ defmodule Acs.Repo.Migrations.CreateMeishengSmsMo do
       add :mobile, :string
       add :recv_code, :string
       add :content, :string
-      add :recv_time, :naive_datetime
+      add :recv_time, :utc_datetime
 
       timestamps()
     end

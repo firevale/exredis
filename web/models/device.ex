@@ -7,7 +7,6 @@ defmodule Acs.Device do
     field :model, :string
     field :platform, :string
     field :os, :string
-    field :created_at, :naive_datetime
 
     timestamps()
   end

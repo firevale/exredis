@@ -59,8 +59,8 @@ export default {
         return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content})
       },
 
-      addComment(post_id, title, content) {
-        return post(Vue, '/forum_actions/add_comment', {post_id, title, content})
+      addComment(post_id, content) {
+        return post(Vue, '/forum_actions/add_comment', {post_id, content})
       },
 
       getPostDetail(post_id) {
@@ -81,6 +81,14 @@ export default {
 
       getPostComments(post_id, page, records_per_page) {
         return post(Vue, '/forum_actions/get_post_comments', {post_id, page, records_per_page})
+      },
+
+      getUserPostComments(page, records_per_page) {
+        return post(Vue, '/forum_actions/get_user_post_comments', {page, records_per_page})
+      },
+
+      getUserPostFavorites(page, records_per_page) {
+        return post(Vue, '/forum_actions/get_user_favorites', {page, records_per_page})
       },
 
       search(forum_id, keyword, page, records_per_page) {

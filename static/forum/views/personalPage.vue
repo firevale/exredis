@@ -13,7 +13,7 @@
       </div>
       <div>
         {{ $t('forum.personal.postCount') }}
-        <span>{{ this.userInfo.post_count }}</span>
+        <span>{{ this.postRecords }}</span>
       </div>
       <div>
         {{ $t('forum.personal.registerTime') }}
@@ -25,13 +25,13 @@
   </div>
   <div class="horizontal-seperator"></div>
   <div class="is-child  row-menu">
-    <div class="service-menu" :class="{'menu-selected': type=='myPosts'}" @click="type='myPosts'">
+    <div class="service-menu" :class="{'menu-selected': type=='myPosts'}" @click="switchMenu('myPosts')">
       <span>{{ $t('forum.personal.myPosts') }}</span>
     </div>
-    <div class="service-menu" :class="{'menu-selected': type=='myComments'}" @click="type='myComments'">
+    <div class="service-menu" :class="{'menu-selected': type=='myComments'}" @click="switchMenu('myComments')">
       <span>{{ $t('forum.personal.myComments') }}</span>
     </div>
-    <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="type='myFavor'">
+    <div class="service-menu" :class="{'menu-selected': type=='myFavor'}" @click="switchMenu('myFavor')">
       <span>{{ $t('forum.personal.myFavor') }}</span>
     </div>
   </div>
@@ -41,13 +41,13 @@
     </div>
   </div>
   <div class="content-item" v-show="type == 'myPosts'">
-    <my-note v-for="item in postList" :item-data="item"></my-note>
+    <my-posts v-for="item in postList" :item-data="item"></my-posts>
   </div>
   <div class="content-item" v-show="type == 'myComments'">
-    <my-reply v-for="item in commentList" :item-data="item"></my-reply>
+    <my-comments v-for="item in commentList" :item-data="item"></my-comments>
   </div>
   <div class="content-item" v-show="type == 'myFavor'">
-    <my-favorite v-for="item in favoriteList" :item-data="item"></my-favorite>
+    <my-favorate v-for="item in favoriteList" :item-data="item"></my-favorate>
   </div>
   <div class="column is-full" v-show="total > 1">
     <pagination ref="pag" :on-page-change="onPageChange" :page-count="total" :current-page="page"></pagination>
@@ -79,7 +79,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'userInfo', 'forumId'
+      'userInfo'
     ]),
 
   },
@@ -93,6 +93,7 @@ export default {
       page: 1,
       total: 1,
       recordsPerPage: 6,
+      postRecords: 0,
     }
   },
   methods: {
@@ -100,30 +101,62 @@ export default {
       'serUserProfile'
     ]),
 
+    switchMenu: function(menu) {
+      if(menu != this.type) {
+        this.page = 1
+        this.total = 1
+        this.type = menu
+        this.onPageChange(this.page)
+      }
+    },
+
     onPageChange: function(page) {
-      this.refreshPage(page)
+      switch(this.type){
+      case "myPosts":
+        this.getPostPage(page)
+        break;
+      case "myComments":
+        this.getCommentPage(page)
+        break;
+      case "myFavor":
+        this.getFavoritePage(page)
+        break;
+      }
     },
 
     getUserInfo: async function() {
-      if (!this.processing) {
-        this.processing = true
         let result = await this.$acs.getUserInfo()
 
         if (result.success) {
           console.log(result.user)
           this.serUserProfile(result.user)
         }
-        this.processing = false
-      }
     },
 
     getPostPage: async function(page) {
       if (!this.processing) {
         this.processing = true
-        let result = await this.$acs.getUserPagedPost(this.forumId, page, this.recordsPerPage)
+
+        let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId, page, this.recordsPerPage)
 
         if (result.success) {
           this.postList = result.posts
+          this.total = result.total
+          this.page = page
+          this.postRecords = result.records
+        }
+        this.processing = false
+      }
+    },
+
+    getCommentPage: async function(page) {
+      if (!this.processing) {
+        this.processing = true
+
+        let result = await this.$acs.getUserPostComments(page, this.recordsPerPage)
+
+        if (result.success) {
+          this.commentList = result.comments
           this.total = result.total
           this.page = page
         }
@@ -131,6 +164,20 @@ export default {
       }
     },
 
+    getFavoritePage: async function(page) {
+      if (!this.processing) {
+        this.processing = true
+
+        let result = await this.$acs.getUserPostFavorites(page, this.recordsPerPage)
+
+        if (result.success) {
+          this.favoriteList = result.favorites
+          this.total = result.total
+          this.page = page
+        }
+        this.processing = false
+      }
+    },
 
   },
 }

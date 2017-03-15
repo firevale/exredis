@@ -19,8 +19,9 @@ body.wp8 {
   div.row-login {
     height: 40px;
   }
+
   div.horizontal-stack-box {
-    height: 120px;    
+    height: 120px;
 
     .tile {
       height: 80%;
@@ -28,7 +29,7 @@ body.wp8 {
 
       .sdk-icon {
         &.alipay {
-          background-image: url(../assets/alipay@1x.png);
+          background-image: url("../assets/alipay@1x.png");
         }
       }
     }

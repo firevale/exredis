@@ -2,12 +2,13 @@
   <div class="my-posts-list-item row-line">
     <div style="flex: 1;text-align: left;">
       <div @click="showDetail">
-        <span class="post-title">{{ itemData.title }}</span>
+        <span class="post-title">[{{ itemData.section.title }}] {{ itemData.title }}</span>
         <a v-show="itemData.newComment" class="button excellent-btn">{{ $t('forum.personal.newComment') }}</a>
       </div>
       <div class="post-info">
-        <span>{{ itemData.time }}</span>
-        <span>{{ itemData.noteCount }}</span>
+        <span>{{ itemData.created_at | formatServerDateTime }}</span>
+        <span> | </span>
+        <span>{{ itemData.comms + '/' + itemData.reads }}</span>
       </div>
     </div>
     <div>
@@ -33,7 +34,7 @@
         this.$router.push({
           name: 'detail',
           params: {
-            id: this.itemData.noteId
+            postId: this.itemData.id
           },
         })
       }

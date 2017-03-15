@@ -4,7 +4,6 @@ defmodule Acs.ForumComment do
   @derive {Poison.Encoder, except: [:post, :user, :__meta__]}
 
   schema "forums_comments" do
-    field :title, :string
     field :content, :binary
     field :created_at, :naive_datetime
 
@@ -19,8 +18,8 @@ defmodule Acs.ForumComment do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :created_at, :post_id, :user_id])
-    |> validate_required([:title, :content, :created_at, :post_id, :user_id])
+    |> cast(params, [:content, :created_at, :post_id, :user_id])
+    |> validate_required([:content, :created_at, :post_id, :user_id])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:post_id)
   end

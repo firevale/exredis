@@ -11,10 +11,10 @@
       <div class="nav-center">
       </div>
       <div class="nav-right has-text-right">
-        <router-link v-show="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-        <router-link v-show="$route.name == 'postList'" class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
-        <router-link v-show="$route.name == 'postList'" class="button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
-        <router-link v-show="$route.name == 'detail'" class="button level-button is-info" :to="{name: 'newComment'}">{{$t('forum.writeComment.btnTxt')}}</router-link>
+        <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
+        <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
+        <router-link v-if="$route.name == 'postList'" class="button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
+        <router-link v-if="$route.name == 'detail'" class="button level-button is-info" :to="{name: 'newComment'}">{{$t('forum.writeComment.btnTxt')}}</router-link>
       </div>
     </nav>
   </div>

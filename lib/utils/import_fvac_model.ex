@@ -683,7 +683,7 @@ defmodule ImportFvacModel do
       IO.puts "saving orders, page: #{page}"
       query = from order in AppOrder,
               select: order, 
-              order_by: [asc: order.created_at],
+              order_by: [asc: order.inserted_at],
               limit: 100,
               offset: ^(page * 100)
       
@@ -700,7 +700,7 @@ defmodule ImportFvacModel do
             device_id: order.device_id,
             cp_order_id: order.cp_order_id,
             transaction_id: order.transaction_id,
-            created_at: Timex.format!(order.created_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+08:00"),
+            inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           },
           params: nil,
           id: order.id

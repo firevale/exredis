@@ -391,7 +391,7 @@ defmodule Acs.ForumController do
     }
   }
 
-  case Elasticsearch.search(%{index: "forum", type: "forumpost", query: query, params: %{timeout: "1m"}}) do
+  case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
     {:ok, %{hits: %{hits: hits, total: total}}} ->
 
 

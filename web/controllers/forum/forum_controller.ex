@@ -110,7 +110,6 @@ defmodule Acs.ForumController do
               where: f.id==^forum_id and s.id==^section_id,
               preload: [sections: s]
       with  %Forum{}=forum <-Repo.one(query),
-            now_time <-:calendar.local_time |> NaiveDateTime.from_erl!,
             post <- post |> Map.put("user_id", user_id),
             {:ok, post} <- ForumPost.changeset(%ForumPost{},post) |>   Repo.insert
       do
@@ -139,6 +138,7 @@ defmodule Acs.ForumController do
             preload: [user: u, section: s]
 
     post = Repo.one(query)
+    ForumPost.changeset(post, %{reads: post.reads+1}) |> Repo.update()
 
     post = with user_id when is_integer(user_id) <- conn.private[:acs_session_user_id],
                  favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
@@ -149,8 +149,6 @@ defmodule Acs.ForumController do
       _ ->
         Map.put(post, :is_favorite, false)
     end
-
-    add_post_count(post_id, %{reads: post.reads+1})
 
     conn |> json(%{success: true, detail: post})
   end
@@ -215,7 +213,9 @@ defmodule Acs.ForumController do
       post_id = comment.post_id,
       {:ok, _} <- Repo.delete(comment)
     do
-      add_post_comm_count(post_id, -1)
+      post = Repo.get(ForumPost, post_id)
+      ForumPost.changeset(post, %{comms: post.comms-1}) |> Repo.update()
+
       conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
     else
       nil ->
@@ -237,7 +237,6 @@ defmodule Acs.ForumController do
     case favorite do
       nil ->
         # add favorite
-        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
         post = Map.put(post, "user_id", user_id)
 
         case UserFavoritePost.changeset(%UserFavoritePost{}, post) |> Repo.insert do
@@ -291,11 +290,13 @@ defmodule Acs.ForumController do
                     %{"content" => content,
                       "post_id" => post_id} = comment) do
 
-      with  now_time <- :calendar.local_time |> NaiveDateTime.from_erl!,
-            comment <- comment |> Map.put("user_id", user_id),
+      with  comment <- comment |> Map.put("user_id", user_id),
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
-        add_post_comm_count(post_id, 1)
+        post = Repo.get(ForumPost, post_id)
+        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+        ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
+
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
         nil ->
@@ -368,16 +369,6 @@ defmodule Acs.ForumController do
       %Forum{} = forum ->
         {:ok, forum.id}
     end
-  end
-
-  defp add_post_count(post_id, params) do
-    post = Repo.get(ForumPost, post_id)
-    ForumPost.changeset(post, params) |> Repo.update()
-  end
-
-  defp add_post_comm_count(post_id, count) do
-    post = Repo.get(ForumPost, post_id)
-    ForumPost.changeset(post, %{comms: post.comms+count}) |> Repo.update()
   end
 
  def search(conn, %{"forum_id" => forum_id,"keyword" => keyword,

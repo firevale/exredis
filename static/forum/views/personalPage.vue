@@ -41,13 +41,14 @@
     </div>
   </div>
   <div class="content-item" v-show="type == 'myPosts'">
-    <my-posts v-for="item in postList" :item-data="item"></my-posts>
+    <my-posts v-for="(item, index) in postList" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
   </div>
   <div class="content-item" v-show="type == 'myComments'">
     <my-comments v-for="item in commentList" :item-data="item"></my-comments>
   </div>
   <div class="content-item" v-show="type == 'myFavor'">
-    <my-favorate v-for="item in favoriteList" :item-data="item"></my-favorate>
+    <my-favorate v-for="(item, index) in favoriteList" :item-data="item" :on-item-deleted="onItemDelete"
+      :item-index="index"></my-favorate>
   </div>
   <div class="column is-full" v-show="total > 1">
     <pagination ref="pag" :on-page-change="onPageChange" :page-count="total" :current-page="page"></pagination>
@@ -102,7 +103,7 @@ export default {
     ]),
 
     switchMenu: function(menu) {
-      if(menu != this.type) {
+      if (menu != this.type) {
         this.page = 1
         this.total = 1
         this.type = menu
@@ -111,33 +112,45 @@ export default {
     },
 
     onPageChange: function(page) {
-      switch(this.type){
-      case "myPosts":
-        this.getPostPage(page)
-        break;
-      case "myComments":
-        this.getCommentPage(page)
-        break;
-      case "myFavor":
-        this.getFavoritePage(page)
-        break;
+      switch (this.type) {
+        case "myPosts":
+          this.getPostPage(page)
+          break;
+        case "myComments":
+          this.getCommentPage(page)
+          break;
+        case "myFavor":
+          this.getFavoritePage(page)
+          break;
+      }
+    },
+
+    onItemDelete(index) {
+      switch (this.type) {
+        case "myPosts":
+          this.postRecords--;
+          this.postList.splice(index, 1)
+          break;
+        case "myFavor":
+          this.favoriteList.splice(index, 1)
+          break;
       }
     },
 
     getUserInfo: async function() {
-        let result = await this.$acs.getUserInfo()
+      let result = await this.$acs.getUserInfo()
 
-        if (result.success) {
-          console.log(result.user)
-          this.serUserProfile(result.user)
-        }
+      if (result.success) {
+        this.serUserProfile(result.user)
+      }
     },
 
     getPostPage: async function(page) {
       if (!this.processing) {
         this.processing = true
 
-        let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId, page, this.recordsPerPage)
+        let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
+          page, this.recordsPerPage)
 
         if (result.success) {
           this.postList = result.posts

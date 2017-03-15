@@ -12,17 +12,27 @@
       </div>
     </div>
     <div>
-      <span class="button">{{ $t('forum.personal.deleteBtn') }}</span>
+      <span class="button" @click.prevent="confirmDeletePost">{{ $t('forum.personal.deleteBtn') }}</span>
     </div>
   </div>
 </template>
 <script>
+import AlertDialog from './alertDialog'
+import message from './message'
+
   export default {
     props: {
       itemData: {
         type: Object,
         default: null,
       },
+      itemIndex: {
+        type: Number,
+      },
+      onItemDeleted: {
+        type: Function,
+        default: undefined
+      }
     },
 
     computed: {
@@ -37,7 +47,26 @@
             postId: this.itemData.id
           },
         })
-      }
+      },
+
+      confirmDeletePost() {
+        AlertDialog.showModal({
+          message: this.$t('forum.detail.deletePostTip'),
+          onOk: async _ => {
+            let result = await this.$acs.togglePostStatus({
+              post_id: this.itemData.id,
+              active: false
+            })
+            if (result.success) {
+              message.showMsg(this.$t(result.i18n_message))
+              if (this.onItemDeleted)
+                this.onItemDeleted(this.itemIndex)
+            }
+          },
+          onCancel: null,
+        })
+      },
+
     },
   }
 </script>

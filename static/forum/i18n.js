@@ -42,6 +42,7 @@ export default {
         addToFavorite: '收藏帖子',
         delete: '删除',
         goBack: '回到顶部',
+        deletePostTip: '确认删除帖子',
         deleteTip: '确认删除{nth}楼',
         removeFromFavorites: '取消收藏',
         closePost: '封贴',
@@ -81,7 +82,8 @@ export default {
         title: '回复',
         btnTxt: '回复',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
-        addSuccess:'回复成功'
+        addSuccess:'回复成功',
+        deleteTip: '确认取消收藏',
       },
       customerService: {
         title: '客服',

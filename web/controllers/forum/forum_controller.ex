@@ -208,14 +208,14 @@ defmodule Acs.ForumController do
   def get_user_post_comments(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                               %{"page" => page,
                               "records_per_page" => records_per_page}) do
-    total = Repo.one!(from c in ForumComment, select: count(1), where: c.user_id == ^user_id)
+    total = Repo.one!(from c in ForumComment, join: p in assoc(c, :post), select: count(1), where: c.user_id == ^user_id and c.active == true and p.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,
             join: p in assoc(c, :post),
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
-            where: c.user_id == ^user_id,
+            where: c.user_id == ^user_id and c.active == true and p.active == true,
             select: map(c, [:id, :content, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -360,7 +360,7 @@ defmodule Acs.ForumController do
   def get_user_favorites(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                                     %{"page" => page,
                                     "records_per_page" => records_per_page}) do
-    queryTotal = from f in UserFavoritePost, select: count(1), where: f.user_id == ^user_id
+    queryTotal = from f in UserFavoritePost, join: p in assoc(f, :post), select: count(1), where: f.user_id == ^user_id and p.active == true
     total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
 
@@ -369,7 +369,7 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             select: map(f, [:id, post: [:id, :inserted_at, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
-            where: f.user_id == ^user_id,
+            where: f.user_id == ^user_id and p.active == true,
             offset: ^((page - 1) * records_per_page),
             preload: [post: {p, section: s}],
             order_by: [{:desc, f.id}]

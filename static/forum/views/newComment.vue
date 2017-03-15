@@ -1,18 +1,18 @@
 <template>
 <div>
-  <div class="tile is-full has-text-left" style="padding: 0.5rem 0">
-    <h5 class="title is-5" style="font-weight: 400">{{$t('forum.detail.replyBtn') + ": " + currentPostTitle}}</h5>
+  <div class="tile is-full has-text-left" style="padding: 1rem 0">
+    <h6 class="title is-6" style="font-weight: 400">{{$t('forum.detail.replyBtn') + ": " + currentPostTitle}}</h6>
   </div>
-  <form @submit.prevent="handleSubmit">
-    <quill-editor ref="commentEditor" v-model="content" :config="editorOption">
+  <form @submit.prevent="handleSubmit" v-show="currentPostTitle">
+    <quill-editor ref="commentEditor" v-model="content" :config="editorOption" @input="handleValidation()">
     </quill-editor>
-    <p class="control is-horizontal" v-show="errorMessage">
-      <span class="help icon image-icon icon-sign"></span>
-      <span class="help is-danger">{{errorMessage}}</span>
-    </p>
-    <p class="control is-horizontal" style="justify-content: center; margin-top: 0.5rem">
+    <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
+      <span class="icon is-sign">!</span>
+      <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
+    </div>
+    <div class="tile is-full has-text-centered" style="justify-content: center; margin-top: 0.5rem">
       <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" />
-    </p>
+    </div>
   </form>
 </div>
 </template>
@@ -24,7 +24,6 @@ import {
 } from 'vuex'
 
 import menuModal from '../components/menuModal'
-import pagination from '../components/pagination.vue'
 import upload from '../components/fileUpload'
 
 import {
@@ -40,6 +39,23 @@ export default {
 
   computed: {
     ...mapGetters(['userInfo', 'currentPostTitle']),
+
+    errorHint: function() {
+      if (this.$v.content.$dirty && !this.$v.content.required) {
+        return this.$t('forum.error.commentContentRequired')
+      }
+
+      return ''
+    }
+  },
+
+  mounted: async function() {
+    if (!this.currentPostTitle) {
+      let result = await this.$acs.getPostDetail(this.$route.params.postId)
+      if (result.success) {
+        this.setCurrentPostTitle(result.detail.title)
+      }
+    }
   },
 
   data() {
@@ -54,12 +70,28 @@ export default {
     }
   },
 
-  methods: {
+  validations: {
+    content: {
+      required: function(val) {
+        if (this.$refs.commentEditor) {
+          let editor = this.$refs.commentEditor.quillEditor
+          let text = editor.getText()
 
-    goBack() {
-      this.$router.push({
-        name: 'detail'
-      })
+          return !!text
+        }
+        return true
+      }
+    }
+  },
+
+  methods: {
+    ...mapActions([
+      'setCurrentPostTitle'
+    ]),
+
+    handleValidation: function() {
+      this.$v.$touch()
+      this.errorMessage = ''
     },
 
     preview() {

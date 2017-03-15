@@ -3,12 +3,14 @@ import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import VueTimeago from 'vue-timeago'
-import ServerApi from './serverApi'
+import Vuelidate from 'vuelidate'
 
+import ServerApi from './serverApi'
 import VueQuillEditor from './components/quillEditor'
 
 import * as acs from 'common/acs'
 
+Vue.use(Vuelidate)
 Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)

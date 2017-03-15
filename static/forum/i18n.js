@@ -56,6 +56,8 @@ export default {
         pageTitle: '糟糕，出错了',
         networkError: '网络错误',
         illegal: '非法操作',
+        postContentRequired: '帖子内容不能为空',
+        commentContentRequired: '回帖内容不能为空',
       },
       serverError: {
         badRequestParams: '请求参数错误',

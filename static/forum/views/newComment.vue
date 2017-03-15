@@ -62,12 +62,16 @@ export default {
 
   data() {
     return {
+<<<<<<< HEAD
+      editorOption: {},
+=======
       editorOption: {
         modules: {
           toolbar: acs.getQuillToolbarConfig(),
         },
       },
       title: '',
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
       content: '',
     }
   },
@@ -86,8 +90,12 @@ export default {
         item: {
           user: this.userInfo,
           rank: '',
+<<<<<<< HEAD
+          time: utils.getNowFormatDate(),
+=======
           title: this.commentTitle,
           time: utils.nowFromServer(),
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
           content: this.content,
         },
       })
@@ -100,8 +108,12 @@ export default {
       }
 
       let postId = this.$router.currentRoute.params.postId
+<<<<<<< HEAD
+      let result = await this.$acs.addComment(postId, this.content)
+=======
       let result = await this.$acs.addComment(postId, this.commentTitle, this.content)
 
+>>>>>>> 3b1d058e6f24ad6ef118cfc9e2b103875df5f37d
       if (result.success) {
         message.showMsg(this.$t('forum.writeComment.addSuccess'))
         this.$router.replace({

@@ -1,6 +1,5 @@
 @import "./variables";
 @import "./common";
-@import "./transition";
 @import "~bulma";
 
 body {
@@ -20,11 +19,46 @@ body:not(.in-app) {
   }
 }
 
+.title {
+  &.is-grey {
+    color: $text-grey;
+  }
+  &.is-primary {
+    color: $primary;
+  }
+  &.is-danger {
+    color: $danger;
+  }
+  &.is-lightred {
+    color: $lightred;
+  }
+}
+
+span {
+  &.is-primary {
+    color: $primary;
+  }
+  &.is-grey {
+    color: $text-grey;
+  }
+  &.is-danger {
+    color: $danger;
+  }
+  &.is-darkred {
+    color: $darkred;
+  }
+  &.is-sign {
+    background-color: $primary;
+    color: $white;
+    border-radius: 50%;
+  }
+}
+
 #app {
   height: 100vh;
   width: 100vw;
   background-color: $white;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
 }
 
 .root-container {
@@ -44,7 +78,6 @@ body:not(.in-app) {
   height: 5rem;
   width: 100vw;
   padding: 1rem 1.5rem;
-
   .title-bar {
     position: absolute;
     top: 2rem;
@@ -52,7 +85,6 @@ body:not(.in-app) {
     width: 30%;
     z-index: 3;
     text-align: center;
-
     h4 {
       max-width: 100%;
       white-space: nowrap;
@@ -61,10 +93,8 @@ body:not(.in-app) {
       font-weight: 400;
     }
   }
-
   .nav {
     align-items: center;
-
     .nav-right {
       .icon {
         margin-top: 0.2rem;
@@ -72,20 +102,19 @@ body:not(.in-app) {
       }
     }
   }
-
   &:after {
     @include bottom-line(.5rem, $bottom-line-light);
     width: 100vw;
     left: 0;
   }
 }
+
 @media only screen and (max-width: 425px) {
   .top-bar {
     .title-bar {
       left: 3.5rem;
       width: calc(100vw - 14rem);
     }
-
     .nav {
       .nav-right {
         .icon {
@@ -107,7 +136,6 @@ body:not(.in-app) {
   -ms-overflow-style: none;
   overflow-x: hidden;
   overflow-y: scroll;
-
   &::-webkit-scrollbar {
     width: 0 !important;
   }
@@ -115,7 +143,6 @@ body:not(.in-app) {
 
 .has-bottom-line {
   position: relative;
-
   &:after {
     @include bottom-line(1px, $bottom-line-dark);
   }
@@ -129,57 +156,50 @@ body:not(.in-app) {
     background-position: center;
     background-size: contain;
   }
-
   &.icon-close {
     background-image: url("~login/assets/times@2x.png");
   }
-
   &.icon-back {
     background-image: url("~login/assets/back@2x.png");
   }
-
   &.icon-pull-down {
     background-image: url("~forum/assets/icon-pull-down@2x.png");
   }
-
   &.icon-search {
     background-image: url("~forum/assets/icon-search@2x.png");
   }
-
   &.icon-user {
     background-image: url("~forum/assets/icon-user@2x.png");
   }
-
   &.icon-check {
     background-image: url("~forum/assets/icon-check@2x.png");
   }
-
   &.icon-heart {
     background-image: url("~forum/assets/icon-heart@2x.png");
   }
-
   &.icon-heart-o {
     background-image: url("~forum/assets/icon-heart-o@2x.png");
   }
-
   &.icon-times {
     background-image: url("~forum/assets/icon-times@2x.png");
   }
-
   &.icon-star {
     background-image: url("~forum/assets/icon-star@2x.png");
   }
-
   &.icon-top {
     background-image: url("~forum/assets/icon-top@2x.png");
   }
-
   &.icon-trash {
     background-image: url("~forum/assets/icon-trash@2x.png");
   }
 }
+
 // @2x resources
-@media only screen and (-o-min-device-pixel-ratio: 5/4), only screen and (-webkit-min-device-pixel-ratio: 1.25), only screen and (min--moz-device-pixel-ratio: 1.25), only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 1.25dppx) {
+@media only screen and (-o-min-device-pixel-ratio: 5/4),
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and (min--moz-device-pixel-ratio: 1.25),
+only screen and (min-device-pixel-ratio: 1.25),
+only screen and (min-resolution: 1.25dppx) {
   .has-bottom-line {
     &:after {
       transform: scaleY(.3);
@@ -187,60 +207,52 @@ body:not(.in-app) {
     }
   }
 }
+
 // @3x resources
-@media only screen and (-o-min-device-pixel-ratio: 9/4), only screen and (-webkit-min-device-pixel-ratio: 2.25), only screen and (min-device-pixel-ratio: 2.25), only screen and (min-resolution: 2.25dppx) {
+@media only screen and (-o-min-device-pixel-ratio: 9/4),
+only screen and (-webkit-min-device-pixel-ratio: 2.25),
+only screen and (min-device-pixel-ratio: 2.25),
+only screen and (min-resolution: 2.25dppx) {
   .has-bottom-line {
     &:after {
       transform: scaleY(.2);
       transform-origin: 0 0;
     }
   }
-
   .icon {
     &.icon-close {
       background-image: url("~login/assets/times@3x.png");
     }
-
     &.icon-back {
       background-image: url("~login/assets/back@3x.png");
     }
-
     &.icon-pull-down {
       background-image: url("~forum/assets/icon-pull-down@3x.png");
     }
-
     &.icon-search {
       background-image: url("~forum/assets/icon-search@3x.png");
     }
-
     &.icon-user {
       background-image: url("~forum/assets/icon-user@3x.png");
     }
-
     &.icon-check {
       background-image: url("~forum/assets/icon-check@3x.png");
     }
-
     &.icon-heart {
       background-image: url("~forum/assets/icon-heart@3x.png");
     }
-
     &.icon-heart-o {
       background-image: url("~forum/assets/icon-heart-o@3x.png");
     }
-
     &.icon-times {
       background-image: url("~forum/assets/icon-times@3x.png");
     }
-
     &.icon-star {
       background-image: url("~forum/assets/icon-star@3x.png");
     }
-
     &.icon-top {
       background-image: url("~forum/assets/icon-top@3x.png");
     }
-
     &.icon-trash {
       background-image: url("~forum/assets/icon-trash@3x.png");
     }
@@ -265,7 +277,6 @@ body:not(.in-app) {
   height: 2rem;
   font-size: 1.25rem;
   border-radius: 0;
-
   &.tab-button {
     min-width: 5rem;
   }
@@ -278,23 +289,19 @@ body:not(.in-app) {
   align-items: flex-start;
   justify-content: flex-start;
   padding-bottom: 0.3rem;
-
   .icon-pull-down {
     margin-top: 0.6rem;
   }
-
   .button {
     font-weight: 500;
     min-width: 5rem;
     margin: 0.4rem 0.5rem 0.4rem 0;
     height: 2rem;
     font-size: 1rem;
-
     &:active {
       border-color: transparent;
     }
   }
-
   span.seperator {
     background-color: $grey;
     margin: 0.4rem 1rem 0;
@@ -310,26 +317,10 @@ body:not(.in-app) {
   overflow: hidden;
 }
 
-.title {
-  &.is-primary {
-    color: $primary;
-  }
-
-  &.is-danger {
-    color: $danger;
-  }
-
-  &.is-lightred {
-    color: $lightred;
-  }
-}
-
 .post-detail {
   padding: 0.5rem 0;
-
   .nav {
     min-height: 2rem;
-
     .post-title {
       min-height: 1.25rem;
       line-height: 1.5rem;
@@ -338,71 +329,57 @@ body:not(.in-app) {
       white-space: normal;
       margin-right: 0.5rem;
     }
-
     .tag {
       margin-right: 0.5rem;
     }
-
     .nav-right {
       flex-grow: 0;
-
       .level-button {
         min-width: 2rem;
         padding: 0 0.2rem;
         font-size: 1rem;
       }
-
       .icon {
         width: 1.25rem;
         height: 1.25rem;
       }
-
       span.is-darkred {
         font-size: 1.1rem;
       }
     }
   }
-
   h6.title {
     font-size: 1.25rem;
   }
-
   .post-content {
     margin-top: 1rem;
   }
-
   span.icon,
   span.is-grey {
     font-size: 1.25rem;
     margin-right: 0.5rem;
   }
   font-size: 1.25rem;
-
   .post-manage-bar {
     padding: 0.5rem 2rem;
     background-color: $bottom-line-light;
-
     .nav-left {
       flex-grow: 0;
       flex-basis: 6rem;
     }
-
     .nav-center {
       flex-grow: 1;
       flex-basis: 6rem;
     }
-
     .nav-right {
       flex-grow: 0;
       flex-basis: 6rem;
     }
-
     .button {
       font-size: 1.25rem;
       line-height: 2.2rem;
       height: 2.2rem;
     }
-
     .icon {
       width: 1rem;
       height: 1rem;
@@ -411,31 +388,7 @@ body:not(.in-app) {
   }
 }
 
-span {
-  &.is-primary {
-    color: $primary;
-  }
-
-  &.is-grey {
-    color: $text-grey;
-  }
-
-  &.is-danger {
-    color: $danger;
-  }
-
-  &.is-darkred {
-    color: $darkred;
-  }
-
-  &.is-sign {
-    background-color: $primary;
-    color: $white;
-    border-radius: 50%;
-  }
-}
-
-form {
+form.post {
   span.is-sign {
     font-size: 1rem;
     width: 1.2rem;
@@ -459,7 +412,6 @@ form {
   flex-direction: column;
   color: $dark;
   opacity: 0.9;
-
   i {
     color: $primary;
     font-size: 3rem;
@@ -548,34 +500,27 @@ form {
 .post-list-item {
   padding: 0.3rem 0;
   cursor: pointer;
-
   .title {
     margin-bottom: 0;
     font-weight: 400;
   }
-
   .level:first-child {
     margin-top: 0.3rem;
   }
-
   .level:not(:last-child) {
     margin-bottom: 1rem;
   }
-
   .level:last-child {
     margin-bottom: 0.3rem;
   }
-
   .level-item {
     margin-bottom: 0;
     margin-top: 0;
   }
-
   .grey-text {
     color: $text-grey;
     font-size: 1.1rem;
   }
-
   span.is-primary {
     font-size: 1.1rem;
   }
@@ -591,16 +536,13 @@ form {
     padding: 0.3rem;
     width: 2.4rem;
     color: $white;
-
     &.is-essence {
       background: $essence;
     }
-
     &.image-tag {
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
-
       &.has-picture {
         background-image: url("~forum/assets/tag-picture@3x.png");
       }
@@ -617,7 +559,6 @@ form {
   margin: 0 1rem;
   border: 1px solid $text-grey;
   border-bottom: none;
-
   span.button {
     background-color: $red;
     color: $white;
@@ -650,7 +591,6 @@ form {
   border-bottom: none;
   display: flex;
   flex-direction: row;
-
   span.button {
     background-color: $red;
     color: $white;
@@ -676,7 +616,6 @@ form {
   border-bottom: none;
   display: flex;
   flex-direction: row;
-
   span.button {
     background-color: $red;
     color: $white;
@@ -708,7 +647,6 @@ form {
   flex: 1;
   overflow-y: hidden;
   padding-bottom: 0.5rem;
-
   .menu-item {
     padding-left: 0.5rem;
     padding-top: 0.2rem;
@@ -780,7 +718,6 @@ form {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
   span {
     color: $link;
   }
@@ -792,7 +729,6 @@ form {
   text-align: center;
   cursor: pointer;
   font-weight: bold;
-
   span {
     font-size: 1.2rem;
   }
@@ -837,7 +773,6 @@ form {
   border-left: 1px solid $dark;
   margin: auto 1rem;
   flex-wrap: wrap;
-
   .issue {
     text-align: center;
     border: 1px solid $dark;
@@ -849,7 +784,6 @@ form {
     width: 33.33%;
     box-sizing: border-box;
   }
-
   .issue:nth-child(n+4) {
     border-top: none;
   }
@@ -865,7 +799,6 @@ form {
   width: 100%;
   margin-top: 5rem;
   animation: message 2s ease;
-
   .body-message {
     width: 50%;
     padding: 1rem;
@@ -878,22 +811,20 @@ form {
     transition: all 1s ease;
   }
 }
+
 @keyframes message {
   0% {
     top: 0;
     opacity: 0;
   }
-
   50% {
     top: 0;
     opacity: 0.8;
   }
-
   80% {
     top: 0;
     opacity: 0.8;
   }
-
   100% {
     top: 0;
     opacity: 0;
@@ -902,7 +833,6 @@ form {
 
 .modal-card-body {
   border-radius: 0.3rem;
-
   &.modal-menu {
     padding: 0;
     width: 20rem;
@@ -919,18 +849,14 @@ form {
     padding: 1rem 0;
     margin-bottom: 0;
   }
-
   .level:not(:last-child) {
     margin-bottom: 0;
   }
-
   .modal-menu-item {
     cursor: pointer;
-
-    .level-left + .level-right {
+    .level-left+.level-right {
       margin-top: 0;
     }
-
     .active {
       color: $primary;
     }
@@ -946,7 +872,6 @@ form {
   text-align: center;
   padding-top: 2rem;
   padding-bottom: 2rem;
-
   a {
     width: 45%;
     background-color: $dark;
@@ -971,7 +896,6 @@ form {
 .pagination {
   ul {
     margin: 0 auto;
-
     li {
       margin: 0 0.1rem;
       float: left;

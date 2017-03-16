@@ -6,9 +6,8 @@
       </span>
     </div>
     <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
-      <p class="control is-horizontal has-icon">
-        <input class="input" type="text" v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
-        <span class="icon image-icon icon-edit"></span>
+      <p class="control is-horizontal">
+        <input class="input" style="border-radius: 0" type="text" v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
       <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)">
       </quill-editor>
@@ -16,7 +15,7 @@
         <span class="icon is-sign">!</span>
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
-      <div class="tile is-full has-text-centered" style="justify-content: center; margin-top: 0.5rem">
+      <div class="tile is-full has-text-centered" >
         <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" :class="processing ? 'is-disabled' : ''" />
       </div>
     </form>
@@ -62,7 +61,13 @@
       },
 
       errorHint: function() {
-        if (!this.$v.content.required) {
+        if (!this.$v.title.required) {
+          return this.$t('forum.newPost.titlePlaceholder')
+        } else if (!this.$v.title.minLength) {
+          return this.$t('forum.error.postTitleMinLength')
+        } else if (!this.$v.title.maxLength) {
+          return this.$t('forum.error.postTitleMaxLength')
+        } else if (!this.$v.content.required) {
           return this.$t('forum.error.commentContentRequired')
         }
 
@@ -72,7 +77,9 @@
 
     validations: {
       title: {
-
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
       },
       content: {
         required: function(val) {
@@ -88,6 +95,7 @@
         selectedSectionId: 1,
         sectionMenuItems: {},
         processing: false,
+        editor: undefined,
       }
     },
 
@@ -144,29 +152,18 @@
       // },
 
       handleSubmit: async function() {
-        if (!this.title) {
-          message.showMsg(this.$t('forum.newPost.titlePlaceholder'))
-          return;
-        }
+        if (!this.$v.$error && !this.processing) {
+          this.processing = true
+          let forumId = this.$router.currentRoute.params.forumId
+          let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
 
-        if (!this.content) {
-          message.showMsg(this.$t('forum.newPost.textAreaPlaceHolder'))
-          return;
-        }
-
-        if (!this.selectedSectionId) {
-          message.showMsg(this.$t('forum.newPost.requireSection'))
-          return
-        }
-
-        var forumId = this.$router.currentRoute.params.forumId
-        let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
-
-        if (result.success) {
-          message.showMsg(this.$t('forum.newPost.addSuccess'))
-          this.$router.replace({
-            name: 'postList'
-          })
+          if (result.success) {
+            message.showMsg(this.$t('forum.newPost.addSuccess'))
+            this.$router.replace({
+              name: 'postList'
+            })
+          }
+          this.processing = false
         }
       },
     }

@@ -26,11 +26,11 @@ Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = acs.getAppId()
 Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()
 
-Object.keys(locales).forEach(function (lang) {
+Object.keys(locales).forEach(lang => {
   Vue.locale(lang, locales[lang])
 })
 
-Object.keys(filters).forEach(function(k) {
+Object.keys(filters).forEach(k => {
   Vue.filter(k, filters[k])
 })
 

@@ -6,7 +6,7 @@
     </div>
     <nav class="nav">
       <div class="nav-left has-text-left">
-        <span v-show="canGoBack || inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
+        <span v-show="canGoBack && inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
       </div>
       <div class="nav-center">
       </div>
@@ -28,7 +28,9 @@
 
 import 'quill/assets/snow.styl'
 import 'quill/assets/core.styl'
+
 import 'forum/scss/forum.scss'
+import 'forum/scss/transition.scss'
 
 import Vue from '../vue-installed'
 import {

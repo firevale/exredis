@@ -11,6 +11,7 @@
     transform: translate3d($to, -100%, 0);
   }
 }
+
 @-webkit-keyframes slideInLeft {
    @include slideIn(-100%, 0);
 }
@@ -48,6 +49,7 @@
 @keyframes slideOutRight {
    @include slideOut(0, 100%);
 }
+
 $animation-time: 0.3s;
 @mixin animation($name) {
   -webkit-animation-name: $name;

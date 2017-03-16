@@ -58,7 +58,9 @@ export default {
         networkError: '网络错误',
         illegal: '非法操作',
         postContentRequired: '帖子内容不能为空',
-        commentContentRequired: '回帖内容最少需输入5个文字',
+        postTitleMinLength: '帖子标题至少4个字',
+        postTitleMaxLength: '帖子标题不能超过30个字',
+        commentContentRequired: '回帖内容最少5个字',
       },
       serverError: {
         badRequestParams: '请求参数错误',

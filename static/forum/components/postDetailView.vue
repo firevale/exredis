@@ -29,7 +29,9 @@
         </span>
         <span class="is-primary">{{ postData.user.nickname }}</span>
       </p>
-      <div class="post-content ql-editor" v-html="postData.content">
+      <div class="post-content">
+        <div class="ql-editor" v-html="postData.content">
+        </div>
       </div>
       <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
         <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"

@@ -22,7 +22,9 @@
           <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
         </div>
       </nav>
-      <div class="post-content ql-editor" v-html="commentData.content">
+      <div class="post-content">
+        <div class="ql-editor" v-html="commentData.content">
+        </div>
       </div>
     </div>
   </article>

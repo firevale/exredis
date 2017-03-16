@@ -1,7 +1,6 @@
 @import "./variables";
 @import "./common";
 @import "~bulma";
-
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
@@ -52,6 +51,14 @@ span {
     color: $white;
     border-radius: 50%;
   }
+}
+
+input[type="submit"].button {
+  display: block;
+  min-width: 8rem;
+  border-radius: 0;
+  font-weight: 500;
+  margin: 0.5rem auto;
 }
 
 #app {
@@ -359,6 +366,11 @@ only screen and (min-resolution: 2.25dppx) {
   }
   .post-content {
     margin-top: 1rem;
+    white-space: normal !important;
+    
+    .ql-editor p {
+      word-break: break-all;
+    }
   }
   span.icon,
   span.is-grey {

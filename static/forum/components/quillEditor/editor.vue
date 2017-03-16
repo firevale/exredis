@@ -11,8 +11,7 @@
         </svg>
       </button>
     </div>
-    <div ref="quillEditor" class="quill-editor">
-    </div>
+    <div ref="quill" class="quill-editor"></div>
   </div>
 </template>
 
@@ -49,9 +48,7 @@
       }
     },
     mounted() {
-      this.$nextTick(_ => {
-        this.initialize()
-      })
+      this.initialize()
     },
     beforeDestroy() {
       // 作者说了，等垃圾回收，不必显式清理
@@ -59,9 +56,9 @@
     },
     methods: {
       initialize() {
-        if (this.$refs.quillEditor) {
+        if (this.$refs.quill) {
           let self = this
-          self.quillEditor = new Quill(self.$refs.quillEditor, Object.assign({
+          self.quillEditor = new Quill(self.$refs.quill, Object.assign({
             modules: self.defaultModules,
             placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
             readOnly: false,
@@ -85,7 +82,7 @@
 
           // update model if text changes
           self.quillEditor.on('text-change', (delta, oldDelta, source) => {
-            let html = self.$el.children[0].innerHTML
+            let html = self.$refs.quill.children[0].innerHTML
             const text = self.quillEditor.getText()
             if (html === '<p><br></p>') html = ''
             self._content = html

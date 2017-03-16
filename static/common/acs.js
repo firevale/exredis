@@ -22,6 +22,14 @@ export const getDeviceId = _ => {
   return deviceId
 }
 
+export const checkIsLogin = (callback) => {
+  if (window.acsConfig.accessToken.length < 10) {
+    window.location.href = '/login?redirectUri=' + btoa(window.location.href);
+  } else {
+    callback()
+  }
+}
+
 export const getQuillToolbarConfig = _ => {
   switch (window.acsConfig.platform) {
     case 'ios':
@@ -37,10 +45,13 @@ export const getQuillToolbarConfig = _ => {
           }
         ], // custom dropdown
         [
-          'bold', 'italic', {'color': []}
+          'bold',
+          'italic', {
+            'color': []
+          },
         ], // toggled buttons
         [
-          'code-block', 'link', 'image'
+          'code-block', 'link', 'image',
         ],
         [
           {
@@ -55,7 +66,7 @@ export const getQuillToolbarConfig = _ => {
           }, {
             'indent': '+1'
           },
-        ], // outdent/indent
-      ]
+        ],,
+      ] // outdent/indent
   }
 }

@@ -12,9 +12,9 @@
       </div>
       <div class="nav-right has-text-right">
         <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-        <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-user" :to="{name: 'personalPage'}"></router-link>
-        <router-link v-if="$route.name == 'postList'" class="button level-button is-info" :to="{name: 'newPost'}">{{$t('forum.postList.newPost')}}</router-link>
-        <router-link v-if="$route.name == 'detail'" class="button level-button is-info" :to="{name: 'newComment'}">{{$t('forum.writeComment.btnTxt')}}</router-link>
+        <a v-if="$route.name == 'postList'" class="icon image-icon icon-user" @click.prevent="showPage('personalPage')"></a>
+        <a v-if="$route.name == 'postList'" class="button level-button is-info" @click.prevent="showPage('newPost')">{{$t('forum.postList.newPost')}}</a>
+        <a v-if="$route.name == 'detail'" class="button level-button is-info" @click.prevent="showPage('newComment')">{{$t('forum.writeComment.btnTxt')}}</a>
       </div>
     </nav>
   </div>
@@ -32,6 +32,7 @@ import {
 } from 'vuex'
 
 import nativeApi from 'common/nativeApi'
+import * as acs from 'common/acs'
 
 export default {
   data: function() {
@@ -83,6 +84,14 @@ export default {
           success: false
         })
       }
+    },
+
+    showPage: function(routerName) {
+      acs.checkIsLogin(_ => {
+        this.$router.push({
+          name: routerName
+        })
+      })
     }
   },
 

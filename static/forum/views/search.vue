@@ -94,7 +94,7 @@ export default {
     },
 
     searchByKey(item) {
-      if (this.keyword != item) {
+      if (!this.keyword) {
         this.keyword = item
       }
       this.setSearchKeyword(item)

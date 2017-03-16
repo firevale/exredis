@@ -28,7 +28,9 @@
 
 import 'quill/assets/snow.styl'
 import 'quill/assets/core.styl'
+
 import 'forum/scss/forum.scss'
+import 'forum/scss/transition.scss'
 
 import Vue from '../vue-installed'
 import {

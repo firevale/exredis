@@ -74,7 +74,7 @@ export default {
     },
 
     onItemDelete(index) {
-      this.totalRecords --;
+      this.totalRecords--;
       this.commentList.splice(index, 1)
     },
 

@@ -22,3 +22,12 @@ export const getDeviceId = _ => {
   return deviceId
 }
 
+export const checkIsLogin = (callback) => {
+  if (window.acsConfig.accessToken.length < 10) {
+    window.location.href = '/login?redirect_uri=' + btoa(window.location.href);
+  } else {
+    callback()
+  }
+}
+
+

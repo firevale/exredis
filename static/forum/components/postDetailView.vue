@@ -74,6 +74,7 @@ import {
   preViewing
 } from '../components/swiper'
 import message from './message'
+import * as acs from 'common/acs'
 
 export default {
   mounted() {
@@ -129,31 +130,37 @@ export default {
     },
 
     toggleFavorite: async function() {
-      if (window.acsConfig.accessToken) {
-        let result = await this.$acs.togglePostFavorite(this.postData.id)
+      await acs.checkIsLogin(_ => {
+        let result = this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
           this.postData.is_favorite = !this.postData.is_favorite
           message.showMsg(this.$t(result.i18n_message))
         }
-      }
+      })
     },
 
     toggleActive() {
-      this.togglePostStatus({
-        active: !this.postData.active
-      }, "active")
+      acs.checkIsLogin(_ => {
+        this.togglePostStatus({
+          active: !this.postData.active
+        }, "active")
+      })
     },
 
     toggleEssence() {
-      this.togglePostStatus({
-        is_vote: !this.postData.is_vote
-      }, "is_vote")
+      acs.checkIsLogin(_ => {
+        this.togglePostStatus({
+          is_vote: !this.postData.is_vote
+        }, "is_vote")
+      })
     },
 
     toggleUp() {
-      this.togglePostStatus({
-        is_top: !this.postData.is_top
-      }, "is_top")
+      acs.checkIsLogin(_ => {
+        this.togglePostStatus({
+          is_top: !this.postData.is_top
+        }, "is_top")
+      })
     },
 
     togglePostStatus: async function(params, pos) {

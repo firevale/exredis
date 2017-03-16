@@ -64,6 +64,7 @@ import myPosts from "../components/myPosts"
 import myFavorate from "../components/myFavorate"
 import myComments from "../components/myComments"
 import pagination from "../components/pagination"
+
 export default {
   components: {
     myPosts,

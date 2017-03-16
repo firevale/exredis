@@ -192,6 +192,9 @@ span {
   &.icon-trash {
     background-image: url("~forum/assets/icon-trash@2x.png");
   }
+  &.icon-edit {
+    background-image: url("~forum/assets/icon-edit@2x.png");
+  }
 }
 
 // @2x resources
@@ -255,6 +258,9 @@ only screen and (min-resolution: 2.25dppx) {
     }
     &.icon-trash {
       background-image: url("~forum/assets/icon-trash@3x.png");
+    }
+    &.icon-edit {
+      background-image: url("~forum/assets/icon-edit@3x.png");
     }
   }
 }

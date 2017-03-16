@@ -25,6 +25,11 @@
 </template>
 
 <script>
+
+import 'quill/assets/snow.styl'
+import 'quill/assets/core.styl'
+import 'forum/scss/forum.scss'
+
 import Vue from '../vue-installed'
 import {
   mapGetters,
@@ -93,5 +98,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">@import "forum/scss/forum";</style>

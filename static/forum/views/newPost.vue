@@ -1,13 +1,14 @@
 <template>
   <div>
-    <div class="column is-full has-text-left" style="padding: 1rem 0">
+    <div class="tile is-full has-text-left" style="padding: 1rem 0">
       <span class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @click="showSelectSectionMenu">{{ selectedSectionTitle }}</span>
       <span class="icon image-icon icon-pull-down is-clickable" @click="showSelectSectionMenu"> 
       </span>
     </div>
     <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
-      <p class="control is-horizontal">
+      <p class="control is-horizontal has-icon">
         <input class="input" type="text" v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
+        <span class="icon image-icon icon-edit"></span>
       </p>
       <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)">
       </quill-editor>
@@ -26,6 +27,12 @@
     mapGetters,
     mapActions
   } from 'vuex'
+
+  import {
+    required,
+    minLength,
+    maxLength
+  } from 'vuelidate/lib/validators'
 
   import menuModal from '../components/menuModal'
   import upload from '../components/fileUpload'

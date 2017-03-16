@@ -2,6 +2,8 @@ defmodule Acs.CronController do
   use     Acs.Web, :controller
   alias   Acs.PaymentHelper
 
+  use     Timex
+
   def notify_cp(conn, params) do
     now = DateTime.utc_now()
     query = from order in AppOrder,
@@ -12,11 +14,11 @@ defmodule Acs.CronController do
 
     Repo.all(query) |> Enum.each(fn(order) ->
       elapsed = case order.try_deliver_at do
-        nil -> DateTime.diff(now, order.paid_at)
-        %DateTime{} -> DateTime.diff(now, order.try_deliver_at)
+        nil -> Timex.diff(now, order.paid_at, :seconds)
+        %DateTime{} -> Timex.diff(now, order.try_deliver_at, :seconds)
       end
 
-      if DateTime.diff(now, order.paid_at) < 604800 do
+      if Times.diff(now, order.paid_at, :seconds) < 604800 do
         cond do
           order.try_deliver_counter < 5 and elapsed <= 80 ->
             async_notify_cp(order)

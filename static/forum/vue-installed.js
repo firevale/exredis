@@ -20,7 +20,7 @@ Vue.use(VueTimeago, {
   locale: 'zh-CN',
   locales: {
     'zh-CN': require('vue-timeago/locales/zh-CN.json')
-  }
+  },
 })
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'

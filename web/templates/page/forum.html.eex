@@ -25,6 +25,7 @@
         appId: '<%= @conn.private[:acs_app_id] %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
+        isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
       }
     </script>

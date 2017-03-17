@@ -17,7 +17,7 @@
           </span>
           <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>
-        <div class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
+        <div v-if="isManager" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
           <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
         </div>
@@ -61,6 +61,10 @@ export default {
   },
 
   computed: {
+    isManager() {
+      return window.acsConfig.isAdmin == true
+    },
+
     avatarUrl: function() {
       return this.commentData.user.avatar_url || window.acsConfig.defaultAvatarUrl
     },
@@ -82,7 +86,7 @@ export default {
       AlertDialog.showModal({
         message: this.$t('forum.detail.deleteTip', {nth: this.nth}),
         onOk: async _ => {
-          let result = await this.$acs.deleteComment(this.commentData.id)
+          let result = await this.$acs.deleteComment(this.commentData.id, this.$route.params.forumId)
           if (result.success) {
             message.showMsg(this.$t(result.i18n_message))
             if (this.onItemDeleted)

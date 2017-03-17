@@ -8,6 +8,7 @@ defmodule Acs.PageController do
   plug :fetch_zone_id
   plug :fetch_body_class
   plug :check_admin_access when action == :show_admin_page
+  plug :check_forum_manager when action == :show_forum_page
 
   @sm_provider                  Application.get_env(:acs, :sm_provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)

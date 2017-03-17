@@ -67,8 +67,8 @@ export default {
         return post(Vue, '/forum_actions/get_post_detail', {post_id})
       },
 
-      deleteComment(comment_id) {
-        return post(Vue, '/forum_actions/delete_comment', {comment_id})
+      deleteComment(comment_id, forum_id) {
+        return post(Vue, '/forum_actions/delete_comment', {comment_id, forum_id})
       },
 
       togglePostFavorite(post_id) {

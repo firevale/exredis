@@ -118,7 +118,7 @@ export default {
 
   computed: {
     isManager() {
-      return true
+      return window.acsConfig.isAdmin == true
     },
 
     avatarUrl() {
@@ -131,7 +131,7 @@ export default {
       this.showAuthorOnly = !this.showAuthorOnly
     },
 
-    toggleFavorite: async function() {
+    toggleFavorite: async function () {
       await acs.checkIsLogin(_ => {
         let result = this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
@@ -142,45 +142,40 @@ export default {
     },
 
     toggleActive() {
-      acs.checkIsLogin(_ => {
-        this.togglePostStatus({
-          active: !this.postData.active
-        }, "active")
-      })
+      this.togglePostStatus({
+        active: !this.postData.active
+      }, "active")
     },
 
     toggleEssence() {
-      acs.checkIsLogin(_ => {
-        this.togglePostStatus({
-          is_vote: !this.postData.is_vote
-        }, "is_vote")
-      })
+      this.togglePostStatus({
+        is_vote: !this.postData.is_vote
+      }, "is_vote")
     },
 
     toggleUp() {
-      acs.checkIsLogin(_ => {
-        this.togglePostStatus({
-          is_top: !this.postData.is_top
-        }, "is_top")
-      })
+      this.togglePostStatus({
+        is_top: !this.postData.is_top
+      }, "is_top")
     },
 
-    togglePostStatus: async function(params, pos) {
-      if (window.acsConfig.accessToken) {
+    togglePostStatus: async function (params, pos) {
+      if (window.acsConfig.isAdmin == true) {
         let result = await this.$acs.togglePostStatus({
+          forum_id: this.$route.params.forumId,
           post_id: this.postData.id,
           ...params
         })
         if (result.success) {
           switch (pos) {
-            case "active":
-              this.postData.active = !this.postData.active
-              break;
-            case "is_vote":
-              this.postData.is_vote = !this.postData.is_vote
-              break;
-            case "is_top":
-              this.postData.is_top = !this.postData.is_top
+          case "active":
+            this.postData.active = !this.postData.active
+            break;
+          case "is_vote":
+            this.postData.is_vote = !this.postData.is_vote
+            break;
+          case "is_top":
+            this.postData.is_top = !this.postData.is_top
           }
           message.showMsg(this.$t(result.i18n_message))
         }

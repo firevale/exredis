@@ -12,6 +12,7 @@ defmodule Acs.Repo.Migrations.CreateUserFavoritePost do
 
     create index(:user_favorite_posts, [:post_id])
     create index(:user_favorite_posts, [:user_id])
+    create index(:user_favorite_posts, [:user_id, :post_id], unique: true)
 
   end
 end

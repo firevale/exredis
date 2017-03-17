@@ -47,7 +47,7 @@ AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com"}) |> 
 
 User.changeset(%User{}, %{id: "100001", email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1}) |> Repo.insert
 User.changeset(%User{}, %{id: "100002", email: "zhumingzhen@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
-User.changeset(%User{}, %{id: "100003", email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: "100003", email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$ofJOLH.3vbHuma7t/DGQmQ$0wRciGKFbmyb6U077Flruk/LStLBa167Q5ejgZNXYxeEIquCTPfYr0AkapEQNWVOjtJ5rTu9n2bWJyLKXJsnKw", nickname: "逍遥", gender: "male", age: 1}) |> Repo.insert
 
 ForumManager.changeset(%ForumManager{}, %{forum_id: 1, user_id: 100001}) |> Repo.insert
 ForumManager.changeset(%ForumManager{}, %{forum_id: 1, user_id: 100002}) |> Repo.insert

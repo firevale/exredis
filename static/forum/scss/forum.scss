@@ -417,9 +417,12 @@ only screen and (min-resolution: 2.25dppx) {
   }
   .post-content {
     margin-top: 1rem;
-    white-space: normal !important;
-    .ql-editor p {
-      word-break: break-all;
+    margin-bottom: 1rem;
+    .ql-editor {
+      padding: 0;
+      p {
+        word-break: break-all;
+      }
     }
   }
   span.icon,
@@ -497,7 +500,7 @@ form.post {
     margin-top: 0.3rem;
   }
   .level:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
   .level:last-child {
     margin-bottom: 0.3rem;

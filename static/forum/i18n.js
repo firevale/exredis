@@ -73,7 +73,7 @@ export default {
       },
       newPost: {
         title: '发帖子',
-        btnTxt: '发帖',
+        btnTitle: '发帖',
         preview: '预览',
         editView: '编辑',
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
@@ -85,7 +85,7 @@ export default {
       },
       writeComment: {
         title: '回复',
-        btnTxt: '回复',
+        btnTitle: '回复',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         addSuccess:'回复成功',
         deleteTip: '确认取消收藏',

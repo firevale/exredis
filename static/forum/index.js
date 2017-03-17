@@ -9,7 +9,10 @@ import routerMap from './routers'
 
 import * as filters from 'common/filters'
 
+Vue.config.lang = window.acsConfig.locale || 'zh-hans'
+
 Object.keys(locales).forEach(function (lang) {
+  console.log(lang, locales[lang])
   Vue.locale(lang, locales[lang])
 })
 

@@ -1,16 +1,12 @@
-import Vue from 'vue';
+import Vue from 'admin/vue-i18n'
 
-const FileUploadDialog = Vue.extend(require('./fileUploadDialog.vue'));
+const FileUploadDialog = Vue.extend(require('./dialog'));
 
-export default {
-  showModal : function(params) {
-    let instance = new FileUploadDialog({
-      el: document.createElement('div'),
-      propsData: {
-        params: params
-      },
-    });
-    instance.callback = params.callback
-    Vue.nextTick(_ => instance.visible = true)
-  }
-};
+export const showFileUploadDialog = (propsData = {
+  visible: true
+}) => {
+  let instance = new FileUploadDialog({
+    el: document.createElement('div'),
+    propsData
+  });
+}

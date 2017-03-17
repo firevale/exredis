@@ -42,13 +42,13 @@
       </div>
     </div>
     <div class="content-item" v-show="type == 'myPosts'">
-      <my-posts v-for="(item, index) in postList" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
+      <my-posts v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
     </div>
     <div class="content-item" v-show="type == 'myComments'">
-      <my-comments v-for="item in commentList" :item-data="item"></my-comments>
+      <my-comments v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
     </div>
     <div class="content-item" v-show="type == 'myFavor'">
-      <my-favorate v-for="(item, index) in favoriteList" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
+      <my-favorate v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
     </div>
     <div class="column is-full" v-show="total > 1">
       <pagination ref="pag" :on-page-change="onPageChange" :page-count="total" :current-page="page"></pagination>

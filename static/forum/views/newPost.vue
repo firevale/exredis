@@ -16,7 +16,7 @@
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
       <div class="tile is-full has-text-centered" >
-        <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" 
+        <input type="submit" :value="$t('forum.newPost.btnTitle')" class="button is-info" 
           :class="processing || $v.$invalid ? 'is-disabled' : ''" />
       </div>
     </form>

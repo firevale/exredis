@@ -48,7 +48,7 @@
       </span>
     </div>
 
-    <post-list-item v-for="item in postList" :search-keyword="keyword" :post-info="item"></post-list-item>
+    <post-list-item v-for="item in postList" :key="item.id" :search-keyword="keyword" :post-info="item"></post-list-item>
 
     <div v-if="postList && postList.length" class="column is-full" v-show="total > 1" style="">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange">

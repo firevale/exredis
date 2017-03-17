@@ -1,16 +1,10 @@
-<template>
-  <div :class="{'file-uploads': true, 'file-uploads-html5': mode == 'html5', 'file-uploads-html4': mode == 'html4'}">
-    <span>{{title}}</span>
-    <input-file></input-file>
-  </div>
-</template>
 <style>
   .file-uploads {
     overflow: hidden;
     position: relative;
     text-align: center;
   }
-
+  
   .file-uploads span {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -18,7 +12,7 @@
     -o-user-select: none;
     user-select: none;
   }
-
+  
   .file-uploads input {
     z-index: 1;
     opacity: 0;
@@ -31,21 +25,35 @@
     width: 100%;
     height: 100%;
   }
-
+  
   .file-uploads.file-uploads-html5 input {
-    /*float: left;
+    float: left;
     width: 1px !important;
     height: 1px !important;
-    top:-1px !important;
-    left:-1px !important;
-    right:auto !important;
-    bottom:auto !important;*/
+    top: -1px !important;
+    left: -1px !important;
+    right: auto !important;
+    bottom: auto !important;
   }
 </style>
-<script>
-  import Vue from 'vue'
 
+<template>
+  <label :class="{
+    'file-uploads': true,
+    'file-uploads-html5': mode == 'html5',
+    'file-uploads-html4': mode == 'html4'
+  }" >
+      <span>{{title}}</span>
+      <input-file></input-file>
+  </label>
+</template>
+
+<script>
+  import InputFile from './InputFile.vue';
   export default {
+    components: {
+      InputFile,
+    },
     props: {
       title: {
         type: String,
@@ -54,9 +62,6 @@
       name: {
         type: String,
         default: 'file',
-      },
-      drop: {
-        default: false,
       },
       extensions: {
         default: () => [],
@@ -84,39 +89,32 @@
         type: Object,
         default: () => {},
       },
-      header: {
+      headers: {
         type: Object,
         default: () => {},
       },
-    },
-
-    components: {
-      inputFile: {
-        template: `<input class="pointer" type="file" :name="$parent.name" :id="$parent.id||$parent.name" :accept="$parent.accept" @change="change" :multiple="$parent.multiple && $parent.mode == \'html5\'">`,
-        methods: {
-          change(e) {
-            this.$parent._addFileUploads(e.target);
-            this.$destroy();
-          },
-        },
+      data: {
+        type: Object,
+        default: () => {},
+      },
+      drop: {
+        type: Boolean,
+        default: false,
+      },
+      files: {
+        type: Array,
+        default: () => [],
       },
     },
-
     data() {
       return {
-        mode: 'html4',
-        files: [],
+        mode: 'html5',
         active: false,
         uploaded: true,
         dropActive: false,
-        dropElement: false,
-        request: {
-          data: {},
-          headers: this.header,
-        },
       }
     },
-
+    // 挂载后
     mounted() {
       var input = document.createElement('input');
       input.type = 'file';
@@ -126,17 +124,18 @@
         this.mode = 'html4';
       }
       this._index = 0;
+      this._files = [];
       this._dropActive = 0;
-      this._files = {};
-      this._drop(this.drop);
+      this._drop(this.drop)
+      this.$nextTick(() => {
+        this._drop(this.drop)
+      })
     },
-
-
+    // 销毁前
     beforeDestroy() {
       this.active = false;
-      this.files = [];
+      this.files.splice(0, this.files.length);
     },
-
     watch: {
       drop(value) {
         this._drop(value);
@@ -144,8 +143,8 @@
       files(files) {
         var ids = [];
         for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          if (!file.errno && !file.success) {
+          let file = files[i];
+          if (!file.error && !file.success) {
             this.uploaded = false;
           }
           ids.push(file.id);
@@ -154,60 +153,80 @@
           if (ids.indexOf(id) != -1) {
             continue;
           }
-
-
-          var file = this._files[id]._file;
-
+          let file = this._files;
+          // 已移除的记录
           file.removed = true;
-          var xhr = this._files[id].xhr;
+          // xhr abort
+          var xhr = file.xhr;
           if (xhr) {
             try {
               xhr.abort();
               xhr.timeout = 1;
-            } catch (e) {
-
-            }
+            } catch (e) {}
           }
-          var iframe = this._files[id].iframe;
-          if (iframe) {
-            iframe.onabort({
+          // iframe abort
+          if (file.iframe) {
+            file.iframe.onabort({
               type: 'abort'
             });
           }
           delete this._files[id];
-          this._uploadEvents('removeFileUpload', file);
+          this._uploadEvents('remove', file);
         }
         this._index = 0;
       },
-
       active(newValue, oldValue) {
         if (newValue && !oldValue) {
           this._fileUploads();
         }
       },
-
       uploaded(uploaded) {
         if (uploaded) {
-          //this.active = false;
+          this.active = false;
         }
       },
     },
-
     methods: {
       clear() {
         if (this.files.length) {
           this.files.splice(0, this.files.length);
         }
       },
-
-      _uploadEvents(name, file) {
-        this.$dispatch && this.$dispatch(name, file, this);
-        this[name] && this[name](file);
-        this.events && this.events[name] && this.events[name](file, this);
-        this.$emit && this.$emit(name, file, this)
+      addFileUpload(file) {
+        this.uploaded = false;
+        var defaultFile = {
+          size: -1,
+          name: 'Filename',
+          progress: '0.00',
+          speed: 0,
+          active: false,
+          error: '',
+          success: false,
+          putAction: this.putAction,
+          postAction: this.postAction,
+          timeout: this.timeout,
+          data: Object.assign({}, this.data),
+          headers: Object.assign({}, this.headers),
+          response: {},
+          xhr: false,
+          iframe: false,
+        };
+        file = Object.assign(defaultFile, file)
+        if (!file.id) {
+          file.id = Math.random().toString(36).substr(2);
+        }
+        if (!this.multiple) {
+          this.clear();
+        }
+        file = this.files[this.files.push(file) - 1];
+        this._files[file.id] = file;
+        this._uploadEvents('add', file);
       },
-
+      _uploadEvents(name, file) {
+        this.events && this.events[name] && this.events[name](file, this);
+      },
       _drop(value) {
+        // 移除挂载
         if (this.dropElement && this.mode === 'html5') {
           try {
             window.document.removeEventListener('dragenter', this._onDragenter, false);
@@ -216,12 +235,10 @@
             this.dropElement.removeEventListener('drop', this._onDrop, false);
           } catch (e) {}
         }
-
         if (!value) {
           this.dropElement = false;
           return;
         }
-
         if (typeof value == 'string') {
           this.dropElement = document.querySelector(value) || this.$root.$el.querySelector(value);
         } else if (typeof value == 'boolean') {
@@ -251,41 +268,6 @@
       _onDragover(e) {
         e.preventDefault();
       },
-
-      _addFileUpload(hiddenData, file) {
-        var defaultFile = {
-          size: -1,
-          name: 'Filename',
-          progress: '0.00',
-          speed: 0,
-          active: false,
-          error: '',
-          errno: '',
-          success: false,
-          data: {},
-          request: {
-            headers: {},
-            data: {}
-          }
-        };
-        for (let key in defaultFile) {
-          if (typeof file[key] == 'undefined') {
-            file[key] = defaultFile[key];
-          }
-        }
-        if (!file.id) {
-          file.id = Math.random().toString(36).substr(2);
-        }
-
-        if (!this.multiple) {
-          this.clear();
-        }
-
-        this._files[file.id] = hiddenData;
-        file = this.files[this.files.push(file) - 1];
-        this._files[file.id]._file = file;
-        this._uploadEvents('addFileUpload', file);
-      },
       _onDrop(e) {
         this._dropActive = 0;
         this.dropActive = false;
@@ -293,9 +275,8 @@
         if (e.dataTransfer.files.length) {
           for (let i = 0; i < e.dataTransfer.files.length; i++) {
             let file = e.dataTransfer.files[i];
-            this._addFileUpload({
-              file: file
-            }, {
+            this.addFileUpload({
+              file: file,
               size: file.size,
               name: file.name
             });
@@ -305,114 +286,102 @@
           }
         }
       },
-
-      _addFileUploads(el) {
-        var Component = this.$options.components.inputFile._Ctor[0];
-        new Component({
-          parent: this,
-          el: el,
-        });
-        this.uploaded = false;
-
-
+      _addInputFileElement(el) {
         if (el.files) {
           for (let i = 0; i < el.files.length; i++) {
             let file = el.files[i];
-            this._addFileUpload({
+            this.addFileUpload({
+              size: file.size,
+              name: file.name,
               file: file,
               el: el
-            }, {
-              size: file.size,
-              name: file.name
             });
           }
         } else {
-          this._addFileUpload({
+          this.addFileUpload({
+            name: el.value.replace(/^.*?([^\/\\\r\n]+)$/, '$1'),
             el: el
-          }, {
-            size: -1,
-            name: el.value.replace(/^.*?([^\/\\\r\n]+)$/, '$1')
           });
         }
+        var Component = this.$options.components.InputFile;
+        // vue 2.0.0  = Component
+        // vue 2.0.x  = Component._Ctor
+        // vue 2.1.x = Component._Ctor[0]
+        if (!Component._Ctor) {} else if (typeof Component._Ctor == 'function') { ///... 蠢死我 没加 typeof
+          Component = Component._Ctor
+        } else {
+          Component = Component._Ctor[0]
+        }
+        var inputFile = new Component({
+          parent: this,
+          el: el,
+        });
       },
-
       _fileUploads() {
         if (!this.active) {
           return;
         }
         for (; this._index < this.files.length; this._index++) {
           var file = this.files[this._index];
-          if (file.active || file.success || file.errno) {
+          if (file.active || file.success || file.error) {
             continue;
           }
           if (this.size && this.size > 0 && file.size >= 0 && file.size > this.size) {
-            file.error = 'Size';
-            file.errno = 'size';
+            file.error = 'size';
             continue;
           }
-
           if (this.extensions && (this.extensions.length || typeof this.extensions.length == 'undefined')) {
             var extensions = this.extensions;
-            if (typeof extensions == 'object' && extensions instanceof RegExp) {
-
-            } else {
+            if (typeof extensions == 'object' && extensions instanceof RegExp) {} else {
               if (typeof extensions == 'string') {
-                extensions = extensions.split(',').map(function (value) {
-                  return value.trim();
-                }).filter(function (value) {
-                  return value;
-                });
+                extensions = extensions.split(',').map((value) => value.trim()).filter(value => value);
               }
               extensions = new RegExp('\\.(' + extensions.join('|').replace(/\./g, '\\.') + ')$', 'i');
             }
-
             if (file.name.search(extensions) == -1) {
-              file.error = 'Extension';
-              file.errno = 'extension';
+              file.error = 'extension';
               continue;
             }
           }
-
           if (this.mode == 'html5') {
-            if (this.putAction || file.putAction) {
+            if (file.putAction) {
               this._fileUploadPut(file);
-            } else if (this.postAction || file.postAction) {
+            } else if (file.postAction) {
               this._fileUploadHtml5(file);
             } else {
-              file.error = 'Not Support';
-              file.errno = 'not_support';
+              file.error = 'not_support';
               continue;
             }
           } else {
-            if (this.postAction || file.postAction) {
+            if (file.postAction) {
               this._fileUploadHtml4(file);
             } else {
-              file.error = 'Not Support';
-              file.errno = 'not_support';
+              file.error = 'not_support';
               continue;
             }
           }
-          //return;
+          return;
         }
-        //this.active = false;
+        this.active = false;
         this.uploaded = true;
       },
-
       _fileUploadXhr(xhr, file, data) {
         var _self = this;
-        var hiddenData = this._files[file.id];
-        var fileUploads = false;
+        var complete = false;
         var speedTime = 0;
         var speedLoaded = 0;
-        xhr.upload.onprogress = function (e) {
+        xhr.upload.onprogress = function(e) {
+          // 已 移除
           if (file.removed) {
             xhr.abort();
             return;
           }
+          //  终止
           if (!_self.active || !file.active) {
             xhr.abort();
             return;
           }
+          // 进度
           if (e.lengthComputable) {
             file.progress = (e.loaded / e.total * 100).toFixed(2);
             var speedTime2 = Math.round(Date.now() / 1000);
@@ -422,192 +391,142 @@
               speedTime = speedTime2;
             }
           }
-          _self._uploadEvents('fileUploadProgress', file);
-        };
-
-        xhr.onload = xhr.onerror = xhr.onabort = xhr.ontimeout = function (e) {
+          _self._uploadEvents('progress', file);
+        }
+        var callback = function(e) {
           switch (e.type) {
             case 'timeout':
-              file.errno = 'timeout';
-              file.error = 'Timeout';
+              file.error = 'timeout';
               break;
             case 'abort':
-              file.errno = 'abort';
-              file.error = 'Abort';
+              file.error = 'abort';
               break;
             case 'error':
               if (!xhr.status) {
-                file.errno = 'network';
-                file.error = 'Network';
+                file.error = 'network';
               } else if (xhr.status >= 500) {
-                file.errno = 'server';
-                file.error = 'Server';
+                file.error = 'server';
               } else if (xhr.status >= 400) {
-                file.errno = 'denied';
-                file.error = 'Denied';
+                file.error = 'denied';
               }
               break;
             default:
               if (xhr.status >= 500) {
-                file.errno = 'server';
-                file.error = 'Server';
+                file.error = 'server';
               } else if (xhr.status >= 400) {
-                file.errno = 'denied';
-                file.error = 'Denied';
+                file.error = 'denied';
               } else {
                 file.progress = '100.00';
                 file.success = true;
               }
           }
+          file.active = false;
           if (xhr.responseText) {
             var contentType = xhr.getResponseHeader('Content-Type');
             if (contentType && contentType.indexOf('/json') != -1) {
-              file.data = JSON.parse(xhr.responseText);
+              file.response = JSON.parse(xhr.responseText);
             } else {
-              file.data = xhr.responseText;
+              file.response = xhr.responseText;
             }
           }
-          if (!fileUploads) {
-            fileUploads = true;
-            _self.files.forEach((item) => {
-              if (!item.active) {
-                fileUploads = false
-              }
-            })
+          if (!complete) {
+            complete = true;
             if (!file.removed) {
-              _self._uploadEvents('afterFileUpload', file);
-              file.active = false;
-              setTimeout(function () {
-                _self._fileUploads();
-              }, 50);
+              _self._uploadEvents('after', file);
             }
+            setTimeout(function() {
+              _self._fileUploads();
+            }, 50);
           }
         };
-
-
-        if (this.timeout) {
-          xhr.timeout = this.timeout;
+        // 事件
+        xhr.onload = callback;
+        xhr.onerror = callback;
+        xhr.onabort = callback;
+        xhr.ontimeout = callback;
+        // 超时
+        if (file.timeout) {
+          xhr.timeout = file.timeout;
         }
-
-
-        if (this.timeout) {
-          xhr.timeout = this.timeout;
+        // headers
+        // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        for (let key in file.headers) {
+          xhr.setRequestHeader(key, file.headers[key]);
         }
-
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        for (var key in this.request.headers) {
-          xhr.setRequestHeader(key, this.request.headers[key]);
-        }
-        for (var key in file.request.headers) {
-          xhr.setRequestHeader(key, file.request.headers[key]);
-        }
-
-
+        // 开始上传
         xhr.send(data);
         file.active = true;
-        hiddenData ? hiddenData.xhr = xhr : '';
-        var interval = setInterval(function () {
-          if (!_self.active || !file.active || file.success || file.errno) {
+        file.xhr = xhr
+        // 定时执行检测
+        var interval = setInterval(function() {
+          if (!_self.active || !file.active || file.success || file.error) {
             clearInterval(interval);
-            if (!file.success && !file.errno) {
+            if (!file.success && !file.error) {
               xhr.abort();
             }
           }
         }, 100);
-        this._uploadEvents('beforeFileUpload', file);
+        // 开始上传
+        this._uploadEvents('before', file);
       },
       _fileUploadPut(file) {
-        var _self = this;
-
-        var querys = {};
-        for (let key in this.request.data) {
-          querys[key] = this.request.data[key];
-        }
-        for (let key in file.request.data) {
-          querys[key] = file.request.data[key];
-        }
+        var querys = Object.assign({}, file.data)
         var queryArray = [];
         for (let key in querys) {
           if (querys[key] !== null && typeof querys[key] !== 'undefined') {
             queryArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(querys[key]));
           }
         }
-        var queryString = queryArray.length ? '?' + queryArray.join('&') : '';
-
+        var queryString = queryArray.length ? (file.putAction.indexOf('?') == -1 ? '?' : '&') + queryArray.join('&') : '';
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', (file.putAction || this.putAction) + queryString);
-        this._fileUploadXhr(xhr, file, this._files[file.id].file);
+        xhr.open('PUT', file.putAction + queryString);
+        this._fileUploadXhr(xhr, file, file.file);
       },
-
-
-
       _fileUploadHtml5(file) {
         var form = new window.FormData();
-        this._files[file.id] ? form.append(this.name, this._files[file.id].file) : '';
-        for (var key in this.request.data) {
-          form.append(key, this.request.data[key]);
+        form.append(this.name, file.file);
+        for (var key in file.data) {
+          form.append(key, file.data[key]);
         }
-
-        for (var key in file.request.data) {
-          form.append(key, file.request.data[key]);
-        }
-
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', file.postAction || this.postAction);
+        xhr.open('POST', file.postAction);
         this._fileUploadXhr(xhr, file, form);
       },
-
       _fileUploadHtml4(file) {
         var _self = this;
-
-        var hiddenData = this._files && this._files[file.id] ? this._files[file.id] : null;
-
-        var fileUploads = false;
-
-
-
-        var keydown = function (e) {
+        var complete = false;
+        var keydown = function(e) {
           if (e.keyCode == 27) {
             e.preventDefault();
           }
-        };
-
+        }
         var iframe = document.createElement('iframe');
         iframe.id = 'upload-iframe-' + file.id;
         iframe.name = 'upload-iframe-' + file.id;
         iframe.src = 'about:blank';
-        iframe.style.width = '1px';
-        iframe.style.height = '1px';
-        iframe.style.top = '-9999px';
-        iframe.style.left = '-9999px';
-        iframe.style.position = 'absolute';
-        iframe.style.marginTop = '-9999em';
-
-
+        iframe.style = {
+          width: '1px',
+          height: '1px',
+          top: '-9999px',
+          left: '-9999px',
+          position: 'absolute',
+          marginTop: '-9999em',
+        }
         var form = document.createElement('form');
-        form.action = file.postAction || this.postAction;
+        form.action = file.postAction;
         form.name = 'upload-form-' + file.id;
         form.setAttribute('method', 'POST');
         form.setAttribute('target', 'upload-iframe-' + file.id);
         form.setAttribute('enctype', 'multipart/form-data');
-        hiddenData ? form.appendChild(hiddenData.el) : '';
-        for (var key in this.request.data) {
-          var input = document.createElement('input');
+        form.appendChild(file.el);
+        for (let key in file.data) {
+          let input = document.createElement('input');
           input.type = 'hidden';
           input.name = key;
-          input.value = this.request.data[key];
+          input.value = file[key];
           form.appendChild(input);
         }
-
-        for (var key in file.request.data) {
-          var input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = file.request.data[key];
-          form.appendChild(input);
-        }
-
-        var getDocumentData = function () {
+        var getDocumentData = function() {
           var doc;
           try {
             if (iframe.contentWindow) {
@@ -626,79 +545,69 @@
           }
           return null;
         }
-
-        setTimeout(function () {
+        var callback = function(e) {
+          switch (e.type) {
+            case 'abort':
+              file.error = 'abort';
+              break;
+            case 'error':
+              var data = getDocumentData();
+              if (file.error) {} else if (data === null) {
+                file.error = 'network';
+              } else {
+                file.error = 'denied';
+              }
+              break;
+            default:
+              var data = getDocumentData();
+              if (file.error) {} else if (data === null) {
+                file.error = 'network';
+              } else {
+                file.progress = '100.00';
+                file.success = true;
+              }
+          }
+          file.active = false;
+          if (typeof data != "undefined") {
+            if (data && data.substr(0, 1) == '{' && data.substr(data.length - 1, 1) == '}') {
+              try {
+                data = JSON.parse(data);
+              } catch (err) {}
+            }
+            file.data = data;
+          }
+          if (!complete) {
+            complete = true;
+            document.body.removeEventListener('keydown', keydown);
+            document.body.removeEventListener('keydown', keydown);
+            iframe.parentNode && iframe.parentNode.removeChild(iframe);
+            if (!file.removed) {
+              _self._uploadEvents('after', file);
+            }
+            setTimeout(function() {
+              _self._fileUploads();
+            }, 50);
+          }
+        };
+        setTimeout(function() {
           document.body.appendChild(iframe).appendChild(form).submit();
-          iframe.onload = iframe.onerror = iframe.onabort = function (e) {
-            switch (e.type) {
-              case 'abort':
-                file.errno = 'abort';
-                file.error = 'Abort';
-                break;
-              case 'error':
-                var data = getDocumentData();
-                if (file.errno) {
-
-                } else if (data === null) {
-                  file.errno = 'network';
-                  file.error = 'Network';
-                } else {
-                  file.errno = 'denied';
-                  file.error = 'Denied';
-                }
-                break;
-              default:
-                var data = getDocumentData();
-                if (file.errno) {
-
-                } else if (data === null) {
-                  file.errno = 'network';
-                  file.error = 'Network';
-                } else {
-                  file.progress = '100.00';
-                  file.success = true;
-                }
-            }
-
-            file.active = false;
-            if (typeof data != "undefined") {
-              if (data && data.substr(0, 1) == '{' && data.substr(data.length - 1, 1) == '}') {
-                try {
-                  data = JSON.parse(data);
-                } catch (err) {}
-              }
-              file.data = data;
-            }
-            if (!fileUploads) {
-              document.body.removeEventListener('keydown', keydown);
-              document.body.removeEventListener('keydown', keydown);
-              fileUploads = true;
-              iframe.parentNode && iframe.parentNode.removeChild(iframe);
-              if (!file.removed) {
-                _self._uploadEvents('afterFileUpload', file);
-              }
-              setTimeout(function () {
-                _self._fileUploads();
-              }, 50);
-            }
-          };
-
+          iframe.onload = callback;
+          iframe.onerror = callback;
+          iframe.onabort = callback;
           file.active = true;
-
-          hiddenData ? hiddenData.iframe = iframe : '';
-
+          file.iframe = iframe;
           document.body.addEventListener('keydown', keydown);
-          var interval = setInterval(function () {
-            if (!_self.active || !file.active || file.success || file.errno) {
+          var interval = setInterval(function() {
+            if (!_self.active || !file.active || file.success || file.error) {
               clearInterval(interval);
-              if (!file.success && !file.errno) {
+              if (!file.success && !file.error) {
                 iframe.onabort({
                   type: 'abort'
                 });
               }
             }
           }, 50);
-          _self._uploadEvents('beforeFileUpload', file);
+          _self._uploadEvents('before', file);
         }, 10);
       },
     }

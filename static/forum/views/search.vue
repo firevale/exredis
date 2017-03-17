@@ -1,6 +1,6 @@
 <template>
   <div class="search-page">
-    <div class="search-bar is-full">
+    <div class="search-bar is-full" :class="postList && postList.length > 0 ? 'has-bottom-line' : ''">
       <div class="field is-grouped">
         <p class="control is-expanded has-icon">
           <input type="input" class="input" 
@@ -23,26 +23,29 @@
     <div v-if="!postList && searchKeywordHistory.length" style="padding: 1rem 1px">
       <div v-for="(row, i) in searchHistoryTable" class="columns is-mobile is-gapless" style="margin-bottom: 0">
         <div v-for="(keyword, j) in row" 
-             class="column is-half has-text-centered has-hairline-border" 
-             :class="{'hairline-hide-right': j < 1, 
-                       'hairline-hide-top': i > 0,
-                       'is-clickable': keyword,
-                     }"
+             class="column has-text-centered has-hairline-border" 
+             :class="{'hairline-hide-right': j < historyTableColumns - 1, 
+                      'hairline-hide-top': i > 0,
+                      'is-half': historyTableColumns == 2,
+                      'is-4': historyTableColumns == 3,
+                      'is-3': historyTableColumns == 4,
+                      'is-clickable': keyword}"
              style="padding: 0.5rem 0" @click="search(keyword)">
-          <span class="title is-5" style="font-weight: 400; font-size: 1.25rem"> {{keyword}} </span>
+          <span class="title is-5" style="font-weight: 400; font-size: 1.1rem"> {{keyword}} </span>
         </div>
       </div>
+    </div>
 
-    </div>
-  
-    <div class="is-chid content-item">
-      <p v-show="!postList && searchKeywordHistory.length" class="pointer clear-his" @click="clearSearchHistory">
+    <div class="has-text-centered" style="width: 100%">
+      <span v-show="!postList && searchKeywordHistory.length" 
+        class="is-primary is-clickable" 
+        @click="clearSearchHistory">
         {{ $t('forum.search.clearHisRecord') }}
-      </p>
+      </span>
     </div>
-    <div v-if="postList && postList.length" class="box is-chid is-parent content-item" style="padding: 0;">
-      <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="keyword"></post-list-item>
-    </div>
+
+    <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="keyword"></post-list-item>
+
     <div v-if="postList && postList.length" class="column is-full" v-show="total > 1" style="">
       <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
     </div>
@@ -66,7 +69,18 @@
     },
 
     mounted: function () {
-
+      window.addEventListener('resize', e => {
+        let width =  window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        if (width < 768) {
+          this.historyTableColumns = 2
+        }
+        else if (width > 768 && width < 1384) {
+          this.historyTableColumns = 3
+        }
+        else {
+          this.historyTableColumns = 4
+        }
+      })
     },
 
     watch: {
@@ -83,19 +97,19 @@
       ...mapGetters(['searchKeywordHistory']),
 
       searchHistoryTable: function () {
-        const column = 2
         const size = this.searchKeywordHistory.length
         let row = 0
         let result = []
 
         if (size > 0) {
-          while (row < Math.floor(size / column)) {
-            result.push(this.searchKeywordHistory.slice(row * column, (row + 1) * column))
+          while (row < Math.floor(size / this.historyTableColumns)) {
+            result.push(this.searchKeywordHistory.slice(row * this.historyTableColumns, (row + 1) *
+              this.historyTableColumns))
             row++
           }
-          let n = column - (size % column)
-          if (n < column) {
-            let last = this.searchKeywordHistory.slice(row * column)
+          let n = this.historyTableColumns - (size % this.historyTableColumns)
+          if (n < this.historyTableColumns) {
+            let last = this.searchKeywordHistory.slice(row * this.historyTableColumns)
             while (n > 0) {
               last.push('')
               n--
@@ -127,6 +141,7 @@
         postList: null,
         keyword: "",
         searching: false,
+        historyTableColumns: 2,
       }
     },
 
@@ -161,8 +176,7 @@
 
       refreshList: async function (page = 1) {
         this.searching = false
-        let result = await this.$acs.search(this.$route.params.forumId,
-          this.keyword, page, this.pageCount)
+        let result = await this.$acs.search(this.$route.params.forumId, this.keyword, page, this.pageCount)
         if (result.success) {
           this.postList = result.postList
           this.total = result.total
@@ -175,10 +189,6 @@
         this.setSearchKeyword('')
         this.postList = null
       },
-
-      clearSearchHistory() {
-        this.clearSearchHistory()
-      }
     },
   }
 </script>

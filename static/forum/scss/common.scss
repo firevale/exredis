@@ -65,14 +65,3 @@ input[type="text"]:focus {
   content: "";
   border-bottom: $height solid $color;
 }
-
-@mixin hairs-lines($color) {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid $color;
-  // box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-}

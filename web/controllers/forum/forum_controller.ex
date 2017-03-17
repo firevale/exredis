@@ -443,13 +443,19 @@ defmodule Acs.ForumController do
 
  def search(conn, %{"forum_id" => forum_id,"keyword" => keyword,
                            "page" => page,"records_per_page" => records_per_page}) do
+
   query = %{
     query: %{
-      multi_match: %{
+      bool: %{
+        must: %{multi_match: %{
         query: keyword,
         fields: [:title, :content],
+      }},
+        filter: %{ term: %{active: true} }
       }
-    }
+    },
+    from: ((page - 1) * records_per_page),
+    size: if records_per_page>30 do 30 else records_per_page end
   }
 
   case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do

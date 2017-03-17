@@ -18,7 +18,7 @@ defmodule Acs.CronController do
         %DateTime{} -> Timex.diff(now, order.try_deliver_at, :seconds)
       end
 
-      if Times.diff(now, order.paid_at, :seconds) < 604800 do
+      if Timex.diff(now, order.paid_at, :seconds) < 604800 do
         cond do
           order.try_deliver_counter < 5 and elapsed <= 80 ->
             async_notify_cp(order)

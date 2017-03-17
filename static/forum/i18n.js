@@ -13,7 +13,7 @@ export default {
         order: '{type}',
         top: '置顶',
         essence: '精',
-        hot: 'HOT'
+        hot: '火'
       },
       search: {
         placeholder: '请输入关键词',

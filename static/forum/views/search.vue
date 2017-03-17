@@ -8,10 +8,11 @@
             @keydown.enter="search"
             :placeholder="$t('forum.search.placeholder')">
           </input>
-          <span class="icon image-icon icon-search"></span>
+          <span v-if="searching" class="icon image-icon icon-circle rotating"></span>
+          <span v-else class="icon image-icon icon-search"></span>
         </p>
         <p class="control">
-          <a class="button is-info" @click.prevent="search">{{ $t('forum.search.searchBtn') }}</a>
+          <a class="button is-info" @click.prevent="search">{{ $t('forum.search.btnTitle') }}</a>
         </p>
       </div>
     </div>
@@ -162,23 +163,23 @@
       },
 
       search(keyword) {
-        if (keyword) {
+        if (keyword && typeof keyword == 'string') {
           this.keyword = keyword
         }
         this.page = 1
+        this.searching = true
         this.refreshList()
+        this.searching = false
         this.setSearchKeyword(this.keyword)
       },
 
       refreshList: async function (page = 1) {
-        this.searching = false
         let result = await this.$acs.search(this.$route.params.forumId, this.keyword, page, this.pageCount)
         if (result.success) {
           this.postList = result.postList
           this.total = result.total
           this.page = page
         }
-        this.searching = true
       },
 
       clearKey() {

@@ -17,7 +17,7 @@ export default {
       },
       search: {
         placeholder: '请输入关键词',
-        searchBtn: '搜索帖子',
+        btnTitle: '搜索帖子',
         searchHis: '历史搜索记录:',
         noSearchRecord: '暂无搜索记录',
         noSearchResult: '暂无搜索结果',

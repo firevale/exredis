@@ -6,7 +6,7 @@
           <input type="input" class="input" 
             v-model.trim="keyword" 
             @keydown.enter="search"
-            @keydown.esc="cancel" 
+            @keydown.esc="keyword = ''" 
             :placeholder="$t('forum.search.placeholder')">
           </input>
           <span class="icon image-icon" :class="{
@@ -167,11 +167,6 @@
         this.searching = false
       },
 
-      cancel: function() {
-        this.keyword = ''
-        this.postList = undefined
-      },
-
       refreshList: async function (page = 1) {
         let result = await this.$acs.search(this.$route.params.forumId, this.keyword, page, this.pageCount)
         if (result.success) {
@@ -189,5 +184,13 @@
         }
       },
     },
+
+    watch: {
+      keyword(val) {
+        if (!val) {
+          this.postList = undefined
+        }
+      }
+    }
   }
 </script>

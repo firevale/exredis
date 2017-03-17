@@ -101,6 +101,31 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
 
+  def update_user_avatar(conn, %{"user_id" => user_id, "avatar" => %{} = upload_file} = params) do
+    case Repo.get(User, user_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "forum.serverError.userNotExist"})
+      %User{} = user ->
+            case   Mogrify.open(upload_file.path) |> Mogrify.verbose do
+               %{width: 200, height: 200} = upload_image  ->
+               if upload_image.format in ["jpg","jpeg","png"] do
+                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+                  [file_md5 | _] = String.split(md5sum_result)
+                  static_path = Application.app_dir(:acs, "priv/static/")
+                  url_path = "/images/users_avatars/"
+                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+                  avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+                  d "icon_url: #{avatar_url}"
+                  User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
+                  conn |> json(%{success: true, avatar_url: avatar_url})
+              else
+                conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+              end
+            end
+    end
+  end
+
   # add_post
   def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
                       "forum_id" => forum_id,

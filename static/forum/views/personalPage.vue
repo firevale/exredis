@@ -5,7 +5,7 @@
         <figure class="image is-64x64" style="margin: auto;border-radius:50%;border: 1px solid;overflow: hidden;" @click="onShowImageUpload">
           <img :src="this.userInfo.avatar_url"></img>
         </figure>
-        <img-upload url="https://httpbin.org/post" @crop-success="cropSuccess" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" v-model="showImgUpload"></img-upload>
+        <img-upload url="/forum_actions/update_user_avatar" @crop-success="cropSuccess" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
       </div>
       <div class="column-line" style="flex: 1;text-align: left;margin: 0 3rem;">
         <div>
@@ -65,7 +65,7 @@
   import myFavorate from "../components/myFavorate"
   import myComments from "../components/myComments"
   import pagination from "../components/pagination"
-  import imgUpload from "vue-image-crop-upload"
+  import imgUpload from "vue-image-crop-upload/upload-2.vue"
 
   export default {
     components: {
@@ -76,7 +76,7 @@
       imgUpload,
     },
 
-    mounted: function() {
+    mounted: function () {
       this.$refs.pag.$on('switch-page', this.getPostPage)
       this.getUserInfo()
       this.getPostPage(this.page)
@@ -87,6 +87,11 @@
         'userInfo'
       ]),
 
+      uploadParams() {
+        return {
+          user_id: this.userInfo.id
+        }
+      }
     },
 
     data() {
@@ -107,7 +112,7 @@
         'serUserProfile'
       ]),
 
-      switchMenu: function(menu) {
+      switchMenu: function (menu) {
         if (menu != this.type) {
           this.page = 1
           this.total = 1
@@ -115,54 +120,46 @@
           this.onPageChange(this.page)
         }
       },
-      onShowImageUpload: function() {
-        console.info("image upload...")
+      onShowImageUpload: function () {
         this.showImgUpload = true
       },
       cropSuccess(data, field, key) {
-        alert('success')
+
       },
       cropUploadSuccess(data, field, key) {
-        console.log('-------- 上传成功 --------');
-        console.log(data);
-        console.log('field: ' + field);
-        console.log('key: ' + key);
+
       },
       cropUploadFail(status, field, key) {
-        console.log('-------- 上传失败 --------');
-        console.log(status);
-        console.log('field: ' + field);
-        console.log('key: ' + key);
+
       },
 
-      onPageChange: function(page) {
-        s
+      onPageChange: function (page) {
         switch (this.type) {
-          case "myPosts":
-            this.getPostPage(page)
-            break;
-          case "myComments":
-            this.getCommentPage(page)
-            break;
-          case "myFavor":
-            this.getFavoritePage(page)
-            break;
+        case "myPosts":
+          this.getPostPage(page)
+          break;
+        case "myComments":
+          this.getCommentPage(page)
+          break;
+        case "myFavor":
+          this.getFavoritePage(page)
+          break;
         }
       },
 
       onItemDelete(index) {
         switch (this.type) {
-          case "myPosts":
-            this.postRecords--;
-            this.postList.splice(index, 1)
-            break;
-          case "myFavor":
-            this.favoriteList.splice(index, 1)
-            break;
+        case "myPosts":
+          this.postRecords--;
+          this.postList.splice(index, 1)
+          break;
+        case "myFavor":
+          this.favoriteList.splice(index, 1)
+          break;
         }
       },
 
-      getUserInfo: async function() {
+      getUserInfo: async function () {
         let result = await this.$acs.getUserInfo()
 
         if (result.success) {
@@ -170,7 +167,7 @@
         }
       },
 
-      getPostPage: async function(page) {
+      getPostPage: async function (page) {
         if (!this.processing) {
           this.processing = true
 
@@ -187,7 +184,7 @@
         }
       },
 
-      getCommentPage: async function(page) {
+      getCommentPage: async function (page) {
         if (!this.processing) {
           this.processing = true
 
@@ -202,7 +199,7 @@
         }
       },
 
-      getFavoritePage: async function(page) {
+      getFavoritePage: async function (page) {
         if (!this.processing) {
           this.processing = true
 
@@ -221,7 +218,8 @@
   }
 </script>
 <style lang="css">
-  .vicp-drop-area {
+  .vue-image-crop-upload .vicp-wrap .vicp-step1 .vicp-drop-area,
+  .vue-image-crop-upload .vicp-wrap .vicp-step3 .vicp-upload {
     height: 175px;
   }
 </style>

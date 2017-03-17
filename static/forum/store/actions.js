@@ -20,10 +20,10 @@ export const setPostsOrderByField = ({
   commit(types.SET_POSTS_ORDER_BY_FIELD, fieldName)
 }
 
-export const setSearchKeyword = ({
+export const addSearchHistory = ({
   commit
 }, key) => {
-  commit(types.SET_SEARCH_KEYWORD, key)
+  commit(types.ADD_SEARCH_HISTORY, key)
 }
 
 export const clearSearchHistory = ({

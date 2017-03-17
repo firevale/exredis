@@ -6366,7 +6366,7 @@ vue-resource@^1.2.0:
   dependencies:
     got "^6.7.1"
 
-vue-router@^2.3.0:
+vue-router@^2.1.0, vue-router@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-2.3.0.tgz#a25c8359e8ca989d22ce79f64322eb0ad0c8670f"
 
@@ -6375,6 +6375,13 @@ vue-scroll@^2.0.1:
   resolved "https://registry.yarnpkg.com/vue-scroll/-/vue-scroll-2.0.1.tgz#6e2d35050c56d34b4374b4b0ac39358eb09e0d15"
   dependencies:
     vue "^2.1.4"
+
+vue-scroller@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/vue-scroller/-/vue-scroller-2.1.2.tgz#272d556c30fefb22dcc60c78f61ab6b94cb6c684"
+  dependencies:
+    vue "^2.1.0"
+    vue-router "^2.1.0"
 
 vue-style-loader@^2.0.0:
   version "2.0.4"
@@ -6402,7 +6409,7 @@ vue-validator@^3.0.0-alpha.2:
   version "3.0.0-alpha.2"
   resolved "https://registry.yarnpkg.com/vue-validator/-/vue-validator-3.0.0-alpha.2.tgz#ffdb797bbe5efdfc8c3050f981983ea0db70dc1c"
 
-vue@^2.0.1, vue@^2.1.4, vue@^2.2.2:
+vue@^2.0.1, vue@^2.1.0, vue@^2.1.4, vue@^2.2.2:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.2.4.tgz#d0a3a050a80a12356d7950ae5a7b3131048209cc"
 

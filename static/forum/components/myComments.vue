@@ -2,7 +2,7 @@
 <div class="myComments-item">
   <div>
     <span>{{ $t('forum.personal.reply') }}</span>
-    <span>{{ itemData.content }}</span>
+    <span>{{ delHtmlTag(itemData.content) }}</span>
   </div>
   <div class="post-info">
     <span>{{ itemData.inserted_at | formatServerDateTime }}</span>
@@ -36,6 +36,9 @@ export default {
           postId: this.itemData.post.id
         },
       })
+    },
+    delHtmlTag(html) {
+      return html.replace(/<[^>]+>/g,"").trim().substring(0,20)
     }
   },
 }

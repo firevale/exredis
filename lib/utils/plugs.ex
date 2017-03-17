@@ -365,23 +365,23 @@ defmodule Acs.Plugs do
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
         params: %{"forum_id" => forum_id}} = conn, _options) do
-     _check_forum_manager(conn, user_id, forum_id)
+    _check_forum_manager(conn, user_id, forum_id)
   end
   def check_forum_manager(%Plug.Conn{private: %{acs_access_token: access_token},
         params: %{"forum_id" => forum_id}} = conn, _options) do
    case RedisAccessToken.find(access_token) do
-     nil ->
-       _response_check_forum_manager_failed(conn)
-     %RedisAccessToken{user_id: user_id} = token ->
-       _check_forum_manager(conn, user_id, forum_id)
+     nil -> conn |> put_private(:acs_is_forum_admin, false)
+
+     %RedisAccessToken{user_id: user_id} ->
+        _check_forum_manager(conn, user_id, forum_id)
    end
   end
   def check_forum_manager(%Plug.Conn{} = conn, _) do
-    _response_check_forum_manager_failed(conn)
+    conn |> put_private(:acs_is_forum_admin, false)
   end
   defp _check_forum_manager(%Plug.Conn{} = conn, user_id, forum_id) do
      case RedisUser.find(user_id) do
-       nil -> _response_check_forum_manager_failed(conn)
+       nil -> conn |> put_private(:acs_is_forum_admin, false)
 
        %RedisUser{} = user ->
          # check is admin user
@@ -399,19 +399,13 @@ defmodule Acs.Plugs do
            nil ->
              # check is forum manager
             case Repo.get_by(ForumManager, forum_id: forum_id, user_id: user_id) do
-              nil ->
-                _response_check_forum_manager_failed(conn)
-              %ForumManager{} ->
-                conn |> put_private(:acs_is_forum_admin, true)
+              nil -> conn |> put_private(:acs_is_forum_admin, false)
+              %ForumManager{} -> conn |> put_private(:acs_is_forum_admin, true)
             end
 
            _ -> conn |> put_private(:acs_is_forum_admin, true)
          end
      end
-  end
-  defp _response_check_forum_manager_failed(%Plug.Conn{} = conn) do
-    d "----------------------------eeeeeeeeeeeeeeeeee, #{inspect conn.params, pretty: true}"
-    conn |> put_private(:acs_is_forum_admin, false)
   end
 
   defp _response_admin_access_failed(%Plug.Conn{private: %{phoenix_format: "json"}} = conn) do

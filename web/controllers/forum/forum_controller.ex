@@ -7,7 +7,7 @@ defmodule Acs.ForumController do
   plug :fetch_user_id
   plug :fetch_user
   plug :fetch_session_user_id
-  plug :check_forum_manager when action == {:delete_comment, :toggle_post_status}
+  plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
 
   # get_forum_info
   def get_forum_info(conn, %{"forum_id" => forum_id} = params) do
@@ -322,8 +322,6 @@ defmodule Acs.ForumController do
     end
   end
   def toggle_post_status(conn, params) do
-    d "---------------------------: #{inspect conn.private, pretty: true}"
-    d "---------------------------: #{inspect conn.params, pretty: true}"
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 

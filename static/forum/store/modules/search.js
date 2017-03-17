@@ -12,24 +12,20 @@ function restoreSearchHistorys() {
 }
 
 const state = {
-  searchKeyword: '',
   historyKeywords: restoreSearchHistorys(),
 }
 
 const mutations = {
-  [types.SET_SEARCH_KEYWORD](state, keyword) {
-    state.searchKeyword = keyword
+  [types.ADD_SEARCH_HISTORY](state, keyword) {
     if (keyword) {
-      if (state.historyKeywords[0] && state.historyKeywords[0] != keyword) {
-        state.historyKeywords.unshift(keyword)
-      } else if (state.historyKeywords.length == 0) {
-        state.historyKeywords.unshift(keyword)
+      let historyKeywords = state.historyKeywords.filter(v => v != keyword)
+      historyKeywords.unshift(keyword)
+
+      if (historyKeywords.length > 8) {
+        historyKeywords.pop()
       }
 
-      if (state.historyKeywords.length > 6) {
-        state.historyKeywords.pop()
-      }
-
+      state.historyKeywords = historyKeywords
       localStorage.setItem(storage_search_history, JSON.stringify(state.historyKeywords))
     }
   },

@@ -6,10 +6,13 @@
           <input type="input" class="input" 
             v-model.trim="keyword" 
             @keydown.enter="search"
+            @keydown.esc="cancel" 
             :placeholder="$t('forum.search.placeholder')">
           </input>
-          <span v-if="searching" class="icon image-icon icon-circle rotating"></span>
-          <span v-else class="icon image-icon icon-search"></span>
+          <span class="icon image-icon" :class="{
+            'icon-circle rotating': searching, 
+            'icon-search': !searching,
+           }"></span>
         </p>
         <p class="control">
           <a class="button is-info" @click.prevent="search">{{ $t('forum.search.btnTitle') }}</a>
@@ -138,8 +141,9 @@
     data() {
       return {
         page: 0,
+        total: 0,
         pageCount: 10,
-        postList: null,
+        postList: undefined,
         keyword: "",
         searching: false,
         historyTableColumns: 2,
@@ -147,44 +151,42 @@
     },
 
     methods: {
-      ...mapActions(['setSearchKeyword', 'clearSearchHistory']),
-
-      orderChoose() {
-        menuModal.showModal(null, this.onOrderTypeChoose, this.noteOrderTypeStr)
-      },
-
-      onOrderTypeChoose(type) {
-        this.setPostsOrderByField(type)
-        this.refreshPage()
-      },
+      ...mapActions(['addSearchHistory', 'clearSearchHistory']),
 
       onPageChange: function (page) {
         this.refreshList(page)
       },
 
-      search(keyword) {
+      search: async function(keyword) {
         if (keyword && typeof keyword == 'string') {
           this.keyword = keyword
         }
         this.page = 1
         this.searching = true
-        this.refreshList()
+        await this.refreshList()
         this.searching = false
-        this.setSearchKeyword(this.keyword)
+      },
+
+      cancel: function() {
+        this.keyword = ''
+        this.postList = undefined
       },
 
       refreshList: async function (page = 1) {
         let result = await this.$acs.search(this.$route.params.forumId, this.keyword, page, this.pageCount)
         if (result.success) {
           this.postList = result.postList
+          if (result.postList.length == 0) {
+            setTimeout(_ => {
+              this.postList = undefined
+            }, 3000)
+          }
+          else {
+            this.addSearchHistory(this.keyword)
+          }
           this.total = result.total
           this.page = page
         }
-      },
-
-      clearKey() {
-        this.setSearchKeyword('')
-        this.postList = null
       },
     },
   }

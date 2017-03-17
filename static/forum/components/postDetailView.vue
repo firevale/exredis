@@ -35,8 +35,8 @@
       </div>
       <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
         <span :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
-          style="margin-right: 0.5rem" @click="toggleFavorite"></span>
-        <span class="is-grey is-clickable" @click="toggleFavorite">
+          style="margin-right: 0.5rem" @click="toggleFavo"></span>
+        <span class="is-grey is-clickable" @click="toggleFavo">
           {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
         </span>
       </div>
@@ -131,14 +131,18 @@ export default {
       this.showAuthorOnly = !this.showAuthorOnly
     },
 
+    toggleFavo() {
+      acs.checkIsLogin(_ => {
+        this.toggleFavorite()
+      })
+    },
+
     toggleFavorite: async function () {
-      await acs.checkIsLogin(_ => {
-        let result = this.$acs.togglePostFavorite(this.postData.id)
+        let result = await this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
           this.postData.is_favorite = !this.postData.is_favorite
           message.showMsg(this.$t(result.i18n_message))
         }
-      })
     },
 
     toggleActive() {

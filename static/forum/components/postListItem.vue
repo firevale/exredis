@@ -5,8 +5,8 @@
     <div class="level-left level-item is-narrow" @click="showPostDetail">
       <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
       <div class="level-item">
-        <h5 class="title is-5" style="margin-bottom: 0"> [{{postInfo.section.title}}] </h5>
-        <h5 class="title is-5" v-html="filterKey"></h5>
+        <h5 class="title is-5" style="margin-bottom: 0; margin-right: 0.2rem"> [{{postInfo.section.title}}] </h5>
+        <h5 class="title is-5" v-html="strenghtenKeywordTitle"></h5>
       </div>
       <span v-if="postInfo.has_pic" class="level-item tag image-tag has-picture"></span>
       <span v-if="postInfo.is_vote" class="level-item tag is-essence">{{ $t('forum.postList.essence') }}</span>
@@ -33,9 +33,9 @@ import {
 
 export default {
   props: {
-    searchModel: {
-      type: Boolean,
-      default: false,
+    searchKeyword: {
+      type: String,
+      default: '',
     },
     postInfo: {
       type: Object,
@@ -43,16 +43,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['searchKeyword']),
-
-    filterKey() {
-      return this.searchModel ?
+    strenghtenKeywordTitle() {
+      return this.searchKeyword ?
         this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
           `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`) :
         this.postInfo.title
     },
-
-
   },
 
   methods: {

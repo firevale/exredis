@@ -5,13 +5,13 @@
         <p class="control is-expanded has-icon">
           <input type="input" class="input" 
             v-model.trim="keyword" 
-            @keydown.enter="doSearch" 
+            @keydown.enter="search"
             :placeholder="$t('forum.search.placeholder')">
           </input>
           <span class="icon image-icon icon-search"></span>
         </p>
         <p class="control">
-          <a class="button is-info" @click.prevent="doSearch">{{ $t('forum.search.searchBtn') }}</a>
+          <a class="button is-info" @click.prevent="search">{{ $t('forum.search.searchBtn') }}</a>
         </p>
       </div>
     </div>
@@ -44,10 +44,11 @@
       </span>
     </div>
 
-    <post-list-item v-for="item in postList" search-model :post-info="item" :mark-key="keyword"></post-list-item>
+    <post-list-item v-for="item in postList" :search-keyword="keyword" :post-info="item"></post-list-item>
 
     <div v-if="postList && postList.length" class="column is-full" v-show="total > 1" style="">
-      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      <pagination ref="pag" :page-count="total" :current-page="page" :on-page-change="onPageChange">
+      </pagination>
     </div>
   </div>
 </template>
@@ -70,14 +71,13 @@
 
     mounted: function () {
       window.addEventListener('resize', e => {
-        let width =  window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        let width = window.innerWidth || document.documentElement.clientWidth || document.body
+          .clientWidth
         if (width < 768) {
           this.historyTableColumns = 2
-        }
-        else if (width > 768 && width < 1384) {
+        } else if (width > 768 && width < 1384) {
           this.historyTableColumns = 3
-        }
-        else {
+        } else {
           this.historyTableColumns = 4
         }
       })
@@ -161,17 +161,13 @@
         this.refreshList(page)
       },
 
-      doSearch() {
-        this.page = 1
-        this.search(this.keyword)
-      },
-
       search(keyword) {
-        if (!this.keyword) {
+        if (keyword) {
           this.keyword = keyword
         }
+        this.page = 1
         this.refreshList()
-        this.setSearchKeyword(keyword)
+        this.setSearchKeyword(this.keyword)
       },
 
       refreshList: async function (page = 1) {

@@ -61,7 +61,7 @@
         return item ? item.title : ''
       },
 
-      errorHint: function() {
+      errorHint: function () {
         if (!this.$v.title.required) {
           return this.$t('forum.newPost.titlePlaceholder')
         } else if (!this.$v.title.minLength) {
@@ -83,7 +83,7 @@
         maxLength: maxLength(30),
       },
       content: {
-        required: function(val) {
+        required: function (val) {
           return this.editor && this.editor.getText().trim().length >= 5
         }
       }
@@ -100,7 +100,7 @@
       }
     },
 
-    mounted: function() {
+    mounted: function () {
       this.$nextTick(_ => {
         let menuItems = {}
         this.selectedSectionId = this.currentSectionId || 1
@@ -115,11 +115,11 @@
     },
 
     methods: {
-      setEditor: function(editor) {
+      setEditor: function (editor) {
         this.editor = editor
       },
 
-      handleValidation: function($v) {
+      handleValidation: function ($v) {
         $v.$reset()
         if (touchMap.has($v)) {
           clearTimeout(touchMap.get($v))
@@ -127,7 +127,7 @@
         touchMap.set($v, setTimeout($v.$touch(), 2000))
       },
 
-      onInsertImage: function() {
+      onInsertImage: function () {
         console.log('on insert image clicked')
       },
 
@@ -152,7 +152,7 @@
       //   })
       // },
 
-      handleSubmit: async function() {
+      handleSubmit: async function () {
         if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           let forumId = this.$router.currentRoute.params.forumId

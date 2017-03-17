@@ -79,7 +79,7 @@ defmodule Acs.ForumController do
               join: s in assoc(p, :section),
               join: f in assoc(p, :forum),
               select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
-                        :last_reply_at, :has_pic, user: [:id, :nickname], section: [:id, :title], forum: [:id]]),
+                        :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], section: [:id, :title], forum: [:id]]),
              limit: ^records_per_page,
              where: p.forum_id == ^forum_id and p.active == true,
              offset: ^((page - 1) * records_per_page),

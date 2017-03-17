@@ -9,7 +9,7 @@
           <file-upload class="file-upload" 
                        ref="upload"
                        :name="name" 
-                       :title="$t('admin.titles.upload')"
+                       :title="$t('forum.titles.upload')"
                        :drop="true" 
                        :accept="accept"
                        :multiple="false" 
@@ -25,7 +25,7 @@
         <div v-if="file" class="tile is-child is-9 is-vertical">
           <div class="columns" style="margin-bottom: 0">
             <div class="column is-3">
-              <label class="label pull-right">{{ $t('admin.upload.filename' )}}:</label>
+              <label class="label pull-right">{{ $t('forum.upload.filename' )}}:</label>
             </div>
             <div class="column is-9">
               <label class="label">{{ file.name }}</label>
@@ -34,7 +34,7 @@
 
           <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
             <div class="column is-3">
-              <label class="label pull-right">{{ $t('admin.upload.progress') }}:</label>
+              <label class="label pull-right">{{ $t('forum.upload.progress') }}:</label>
             </div>
             <div class="column is-9">
               <progress class="progress is-small is-primary" style="margin-top: 5px" :value="file.progress" max="100"> {{ file.progress }}%</progress>
@@ -43,7 +43,7 @@
 
           <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
             <div class="column is-3">
-              <label class="label pull-right">{{ $t('admin.upload.speed') }}:</label>
+              <label class="label pull-right">{{ $t('forum.upload.speed') }}:</label>
             </div>
             <div class="column is-9">
               <label class="label">{{ file.speed | humanReadableDownloadSpeed }}</label>
@@ -56,7 +56,7 @@
         <a class="button is-primary" 
           :class="{'is-disabled': file ? file.success || file.active : true, 'is-loading': upload ? upload.active : false}" @click="upload.active = true">
           <span class="icon"><i class="fa fa-upload" aria-hidden="true"> </i></span>
-          <span>{{ $t('admin.upload.title') }}</span>
+          <span>{{ $t('forum.upload.title') }}</span>
         </a>
       </div>
     </div>
@@ -129,15 +129,15 @@
                 if (file.xhr.status == 200 && file.response.success) {
                   this.callback(file.response)
                   openNotification({
-                    title: this.$t('admin.titles.uploadSuccess'),
-                    message: this.$t('admin.messages.uploadSuccess', {fileName: file.name}),
+                    title: this.$t('forum.titles.uploadSuccess'),
+                    message: this.$t('forum.messages.uploadSuccess', {fileName: file.name}),
                     type: 'success',
                     duration: 4500,
                   })
                 }
                 else if (typeof file.response == 'object' && typeof file.response.i18n_message == 'string') {
                   openNotification({
-                    title: this.$t('admin.titles.uploadFailed'),
+                    title: this.$t('forum.titles.uploadFailed'),
                     message: this.$t(file.response.i18n_message, file.response.i18n_message_object),
                     type: 'danger',
                     duration: 6000,
@@ -145,7 +145,7 @@
                 }
                 else {
                   openNotification({
-                    title: this.$t('admin.titles.uploadFailed'),
+                    title: this.$t('forum.titles.uploadFailed'),
                     message: file.error, // not tested yet
                     type: 'danger',
                     duration: 6000,

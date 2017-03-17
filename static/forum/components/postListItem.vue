@@ -2,7 +2,7 @@
 <div class="tile is-vertical has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id"
   @click="showPostDetail">
   <div class="level is-mobile">
-    <div class="level-left level-item" @click="showPostDetail">
+    <div class="level-left level-item is-narrow" @click="showPostDetail">
       <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
       <div class="level-item">
         <h5 class="title is-5" style="margin-bottom: 0"> [{{postInfo.section.title}}] </h5>
@@ -48,7 +48,7 @@ export default {
     filterKey() {
       return this.searchModel ?
         this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
-          `<span class="red">${this.searchKeyword}</span>`) :
+          `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`) :
         this.postInfo.title
     },
 

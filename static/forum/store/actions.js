@@ -26,7 +26,7 @@ export const setSearchKeyword = ({
   commit(types.SET_SEARCH_KEYWORD, key)
 }
 
-export const clearSearchHis = ({
+export const clearSearchHistory = ({
   commit
 }, key) => {
   commit(types.CLEAR_SEARCH_HISTORY, key)

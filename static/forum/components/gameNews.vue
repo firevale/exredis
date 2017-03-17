@@ -16,59 +16,61 @@
   <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
   </div>
   <div class="column is-full" v-show="newsPageCount > 1">
-    <pagination ref="pag" :page-count="newsPageCount" :current-page="newsCurrentPage" @switch-page="loadNewsByPage"></pagination>
+    <pagination ref="pag" 
+    :page-count="newsPageCount" 
+    :current-page="newsCurrentPage" @switch-page="loadNewsByPage">
+    </pagination>
   </div>
 </div>
 </template>
 <script>
-import pagination from '../components/pagination.vue'
+  import pagination from '../components/pagination.vue'
 
-var marked = require('marked')
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-});
+  var marked = require('marked')
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: true,
+    pedantic: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false
+  });
 
-export default {
-  mounted() {},
+  export default {
+    mounted() {},
 
-  props: {
-    news: {
-      type: Object,
-    },
-  },
-
-  computed: {
-
-  },
-
-  data() {
-    return {
-      detailHtml: "",
-      showDetail: false,
-      newsPageCount: 5,
-      newsCurrentPage: 1,
-    }
-  },
-
-  methods: {
-    showNewsDetail(item) {
-      this.detailHtml = marked(item.content)
-      this.showDetail = true
+    props: {
+      news: {
+        type: Object,
+      },
     },
 
-    loadNewsByPage(page = 1) {
-    }
-  },
+    computed: {
 
-  components: {
-    pagination,
+    },
+
+    data() {
+      return {
+        detailHtml: "",
+        showDetail: false,
+        newsPageCount: 5,
+        newsCurrentPage: 1,
+      }
+    },
+
+    methods: {
+      showNewsDetail(item) {
+        this.detailHtml = marked(item.content)
+        this.showDetail = true
+      },
+
+      loadNewsByPage(page = 1) {}
+    },
+
+    components: {
+      pagination,
+    }
   }
-}
 </script>

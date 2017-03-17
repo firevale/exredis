@@ -23,7 +23,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "animejs": "^2.0.1",
-    "bulma": "^0.3.2",
+    "bulma": "^0.4.0",
     "font-awesome": "4.7.0",
     "marked": "^0.3.6",
     "mdi": "^1.8.36",

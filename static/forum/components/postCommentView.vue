@@ -17,7 +17,7 @@
           </span>
           <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>
-        <div v-if="isManager" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
+        <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
           <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
         </div>

@@ -2,11 +2,11 @@
   <div class="post-detail has-bottom-line">
     <article class="media" :class="isManager ? 'has-bottom-line' : ''">
       <div class="media-left" style="margin: 0 1rem 0 0">
-        <figure class="image is-64x64 avatar-image">
+        <figure class="image is-32x32 avatar-image">
           <img :src="avatarUrl"></img>
         </figure>
         <div class="has-text-centered" style="margin-top: 0.5rem">
-          <h6 class="title is-6 is-lightred" style="font-weight: 400">{{ $t('forum.detail.author') }}</h6>
+          <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ $t('forum.detail.author') }}</h6>
         </div>
       </div>
       <div class="media-content">
@@ -34,8 +34,11 @@
           </div>
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
-          <span v-if="favoriting" class="icon image-icon" style="margin-right: 0.5rem"></span>
-          <span v-else :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable" style="margin-right: 0.5rem" @click="toggleFavo"></span>
+          <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
+          <span v-else :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" 
+                class="icon image-icon is-clickable" 
+                style="margin-right: 0.1rem" @click="toggleFavo">
+          </span>
           <span v-if="favoriting" class="is-grey">
             {{ $t('forum.detail.favoriting') }}
           </span>          
@@ -134,10 +137,10 @@
         this.showAuthorOnly = !this.showAuthorOnly
       },
   
-      toggleFavo() {
-        acs.checkIsLogin(_ => {
+      toggleFavo: function() {
+        acs.checkIsLogin(async _ => {
           this.favoriting = true
-          this.toggleFavorite()
+          await this.toggleFavorite()
           this.favoriting = false
         })
       },

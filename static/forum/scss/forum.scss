@@ -1,6 +1,10 @@
 @import "./variables";
 @import "~bulma";
 @import "./common";
+html {
+  font-size: 12px;
+}
+
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
@@ -185,10 +189,12 @@ input.input:focus {
 .icon {
   &.image-icon,
   &.nav-icon {
-    cursor: pointer;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+  &.nav-icon {
+    cursor: pointer;
   }
   &.icon-close {
     background-image: url("~login/assets/times@2x.png");
@@ -383,6 +389,7 @@ only screen and (min-resolution: 2.25dppx) {
 
 .post-detail {
   padding: 0.5rem 0;
+  font-size: 1.25rem;
   .nav {
     min-height: 2rem;
     .post-title {
@@ -404,8 +411,11 @@ only screen and (min-resolution: 2.25dppx) {
         font-size: 1rem;
       }
       .icon {
-        width: 1.25rem;
-        height: 1.25rem;
+        width: 1.2rem;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-top: 0.3rem; 
+        margin-right: 0;
       }
       span.is-darkred {
         font-size: 1.1rem;
@@ -430,7 +440,6 @@ only screen and (min-resolution: 2.25dppx) {
     font-size: 1.25rem;
     margin-right: 0.5rem;
   }
-  font-size: 1.25rem;
   .post-manage-bar {
     padding: 0.5rem 2rem;
     background-color: $bottom-line-light;

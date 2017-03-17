@@ -2,11 +2,11 @@
 <div class="post-detail has-bottom-line">
   <article class="media">
     <div class="media-left" style="margin: 0 1rem 0 0">
-      <figure class="image is-64x64 avatar-image">
+      <figure class="image is-32x32 avatar-image">
         <img :src="avatarUrl"></img>
       </figure>
       <div class="has-text-centered" style="margin-top: 0.5rem">
-        <h6 class="title is-6 is-lightred" style="font-weight: 400">{{ nthName }}</h6>
+        <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ nthName }}</h6>
       </div>
     </div>
     <div class="media-content">

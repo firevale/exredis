@@ -78,7 +78,7 @@ export default {
     ]),
 
     handleSubmit: async function() {
-      if (!this.$v.$error && this.accountId && this.verifyCode && !this.processing) {
+      if (!this.$v.$invalid && this.accountId && this.verifyCode && !this.processing) {
         this.processing = true
         try {
           let result = await this.$acs.createUser(this.accountId, this.password, this.verifyCode,

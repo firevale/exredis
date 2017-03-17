@@ -108,7 +108,7 @@
       // },
 
       handleSubmit: async function() {
-        if (!this.$v.$error && !this.processing) {
+        if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           let postId = this.$route.params.postId
           let result = await this.$acs.addComment(postId, this.content)

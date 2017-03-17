@@ -67,7 +67,7 @@ export default {
     ...mapActions(['setLoginAccountId']),
 
     handleSubmit: async function() {
-      if (!this.$v.$error && this.accountId && !this.processing) {
+      if (!this.$v.$invalid && this.accountId && !this.processing) {
         this.processing = true
         try {
           let result = await this.$acs.updatePassword(this.accountId, this.password, this.verifyCode)

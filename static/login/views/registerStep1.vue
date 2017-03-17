@@ -70,7 +70,7 @@
       ]),
 
       handleSubmit: async function() {
-        if (!this.$v.$error && !this.processing) {
+        if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           try {
             let result = await this.$acs.isAccountExists(this.accountId)

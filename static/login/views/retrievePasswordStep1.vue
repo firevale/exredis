@@ -61,7 +61,7 @@ export default {
 
   methods: {
     handleSubmit: async function(e) {
-      if (!this.$v.$error && !this.processing) {
+      if (!this.$v.$invalid && !this.processing) {
         this.processing = true
         try {
           let result = await this.$acs.sendRetrievePasswordVerifyCode(this.accountId)

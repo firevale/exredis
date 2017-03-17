@@ -25,7 +25,7 @@ export default {
 
   computed : {
     errorHint: function() {
-      if (typeof this.$v == 'object' && this.$v.$error) {
+      if (typeof this.$v == 'object' && this.$v.$invalid) {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
           return this.$t('account.error.requireUserName')
         } else if (typeof this.$v.accountId == 'object' && !this.$v.accountId.valid) {

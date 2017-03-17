@@ -16,7 +16,8 @@
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
       <div class="tile is-full has-text-centered" >
-        <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" :class="processing ? 'is-disabled' : ''" />
+        <input type="submit" :value="$t('forum.newPost.btnTxt')" class="button is-info" 
+          :class="processing || $v.$invalid ? 'is-disabled' : ''" />
       </div>
     </form>
   </div>
@@ -152,7 +153,7 @@
       // },
 
       handleSubmit: async function() {
-        if (!this.$v.$error && !this.processing) {
+        if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           let forumId = this.$router.currentRoute.params.forumId
           let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)

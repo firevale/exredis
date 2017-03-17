@@ -1080,9 +1080,9 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
 
-bulma@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.3.2.tgz#2c1fa6adaf2a31f47a142c11856f2db27bc638c9"
+bulma@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.4.0.tgz#2a0b07555d53bb4eb17861e3159e2616c21dfa6c"
 
 call-matcher@^1.0.1:
   version "1.0.1"
@@ -3769,13 +3769,13 @@ mapbox-gl-function@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/mapbox-gl-function/-/mapbox-gl-function-1.3.0.tgz#cee3d95750c189d45e83ab41a0a57fc2a8a509bc"
 
-"mapbox-gl-shaders@github:mapbox/mapbox-gl-shaders#de2ab007455aa2587c552694c68583f94c9f2747":
+mapbox-gl-shaders@mapbox/mapbox-gl-shaders#de2ab007455aa2587c552694c68583f94c9f2747:
   version "1.0.0"
   resolved "https://codeload.github.com/mapbox/mapbox-gl-shaders/tar.gz/de2ab007455aa2587c552694c68583f94c9f2747"
   dependencies:
     brfs "^1.4.0"
 
-"mapbox-gl-style-spec@github:mapbox/mapbox-gl-style-spec#83b1a3e5837d785af582efd5ed1a212f2df6a4ae":
+mapbox-gl-style-spec@mapbox/mapbox-gl-style-spec#83b1a3e5837d785af582efd5ed1a212f2df6a4ae:
   version "8.8.0"
   resolved "https://codeload.github.com/mapbox/mapbox-gl-style-spec/tar.gz/83b1a3e5837d785af582efd5ed1a212f2df6a4ae"
   dependencies:

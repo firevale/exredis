@@ -16,10 +16,10 @@ export default {
         hot: 'HOT'
       },
       search: {
-        placeholder: '搜索帖子',
+        placeholder: '请输入关键词',
         searchBtn: '搜索帖子',
-        searchHis: '搜索历史记录',
-        noSearchRecord: '暂无搜索历史',
+        searchHis: '历史搜索记录:',
+        noSearchRecord: '暂无搜索记录',
         noSearchResult: '暂无搜索结果',
         followSearchResult: '搜索结果如下:',
         clearHisRecord: '清空历史搜索记录'

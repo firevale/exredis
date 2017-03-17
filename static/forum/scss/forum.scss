@@ -1,6 +1,6 @@
 @import "./variables";
-@import "./common";
 @import "~bulma";
+@import "./common";
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
@@ -59,6 +59,10 @@ input[type="submit"].button {
   border-radius: 0;
   font-weight: 500;
   margin: 0.5rem auto;
+}
+
+input.input:focus {
+  border-color: $blue;
 }
 
 #app {
@@ -155,6 +159,13 @@ input[type="submit"].button {
   }
 }
 
+.has-hairline-border {
+  position: relative;
+  &:after {
+    @include hairs-lines($bottom-line-dark);
+  }
+}
+
 .icon {
   &.image-icon,
   &.nav-icon {
@@ -216,6 +227,24 @@ only screen and (min-resolution: 1.25dppx) {
       transform-origin: 0 0;
     }
   }
+  .has-hairline-border {
+    &:after {
+      width: 200%;
+      height: 200%;
+      transform: scale(.5);
+      transform-origin: left top;
+    }
+    &.hairline-hide-right {
+      &:after {
+        border-right: none;
+      }
+    }
+    &.hairline-hide-top {
+      &:after {
+        border-top: none;
+      }
+    }
+  }
 }
 
 // @3x resources
@@ -227,6 +256,14 @@ only screen and (min-resolution: 2.25dppx) {
     &:after {
       transform: scaleY(.2);
       transform-origin: 0 0;
+    }
+  }
+  .has-hairline-border {
+    &:after {
+      width: 400%;
+      height: 400%;
+      transform: scale(.25);
+      transform-origin: left top;
     }
   }
   .icon {
@@ -269,6 +306,15 @@ only screen and (min-resolution: 2.25dppx) {
     &.icon-edit {
       background-image: url("~forum/assets/icon-edit@3x.png");
     }
+  }
+}
+
+.control.has-icon {
+  span.icon.image-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    top: 0.5rem;
+    left: 0.5rem;
   }
 }
 
@@ -367,7 +413,6 @@ only screen and (min-resolution: 2.25dppx) {
   .post-content {
     margin-top: 1rem;
     white-space: normal !important;
-    
     .ql-editor p {
       word-break: break-all;
     }
@@ -436,85 +481,6 @@ form.post {
   }
 }
 
-.search-box {
-  width: 100%;
-  font-size: 1rem;
-  padding: 0.5rem 4rem 0.5rem 3rem;
-  border: 0.1rem solid $dark;
-}
-
-.search-btn {
-  width: 100%;
-  color: $white;
-  font-size: 1.1rem;
-  padding: 0.5rem;
-  background: $primary;
-}
-
-.his-key {
-  width: 50%;
-  padding: 0.5rem;
-  float: left;
-  border-top: 1px solid $dark;
-  border-bottom: 1px solid $dark;
-  border-right: 1px solid $dark;
-  box-sizing: border-box;
-  text-align: center;
-  color: $black;
-  font-size: 1.2rem;
-}
-
-.his-key:nth-child(n+3) {
-  border-top: none;
-}
-
-.his-key:hover {
-  color: $primary;
-  cursor: pointer;
-}
-
-.his-box {
-  border-left: 1px solid $dark;
-}
-
-.his-box:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-
-.clear-his {
-  text-align: center;
-  color: $primary;
-  font-size: 1rem;
-  margin-top: 2rem;
-}
-
-.detail-imgs::after {
-  content: '';
-  display: block;
-  clear: both;
-}
-
-.is-256x256 {
-  width: 256px;
-  height: 256px;
-  float: left;
-  margin-left: 1.5rem;
-}
-
-.note-delete {
-  color: $red;
-  margin-left: 2rem;
-  cursor: pointer;
-}
-
-.note-picture {
-  font-size: 1.3rem;
-  vertical-align: middle !important;
-  color: green;
-}
-
 .post-list-item {
   padding: 0.3rem 0;
   cursor: pointer;
@@ -568,31 +534,15 @@ form.post {
   }
 }
 
-.original-note {
-  background-color: $text-grey;
-}
-
-.myComments-item {
-  padding: 1rem;
-  margin: 0 1rem;
-  border: 1px solid $text-grey;
-  border-bottom: none;
-  span.button {
-    background-color: $red;
-    color: $white;
-    font-size: 0.5rem;
-    height: 2rem;
-    width: 4rem;
+.search-page {
+  .search-bar {
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    .input,
+    .button {
+      border-radius: 0;
+    }
   }
-}
-
-.myComments-item:last-child {
-  border-bottom: 1px solid $text-grey;
-}
-
-.myComments-item .column {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .excellent-btn {

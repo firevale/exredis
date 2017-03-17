@@ -2,8 +2,8 @@
 <div class="tile is-vertical has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id"
   @click="showPostDetail">
   <article class="media">
-    <div class="media-left" style="margin: 0.4rem 0.8rem 0 0">
-      <figure class="image is-48x48 avatar-image">
+    <div class="media-left" style="margin: 0.3rem 0.8rem 0 0">
+      <figure class="image is-32x32 avatar-image">
         <img :src="avatarUrl"></img>
       </figure>
     </div>

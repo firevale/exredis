@@ -61,6 +61,7 @@ input[type="submit"].button {
   display: block;
   min-width: 8rem;
   border-radius: 0;
+  font-weight: 1.25rem;
   font-weight: 500;
   margin: 0.5rem auto;
 }
@@ -414,7 +415,7 @@ only screen and (min-resolution: 2.25dppx) {
         width: 1.2rem;
         height: 1.2rem;
         line-height: 1.2rem;
-        margin-top: 0.3rem; 
+        margin-top: 0.3rem;
         margin-right: 0;
       }
       span.is-darkred {
@@ -571,218 +572,6 @@ form.post {
   }
 }
 
-.excellent-btn {
-  border-color: $olive !important;
-  color: $olive;
-  font-size: 0.5rem;
-  height: 1.6rem !important;
-}
-
-.my-posts-list-item {
-  padding: 1rem;
-  margin: 0 1rem;
-  border: 1px solid $text-grey;
-  border-bottom: none;
-  display: flex;
-  flex-direction: row;
-  span.button {
-    background-color: $red;
-    color: $white;
-    font-size: 0.5rem;
-    height: 2rem;
-    width: 4rem;
-  }
-}
-
-.my-posts-list-item:last-child {
-  border-bottom: 1px solid $text-grey;
-}
-
-.my-posts-list-item .column {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.my-favorite-list-item {
-  padding: 1rem;
-  margin: 0 1rem;
-  border: 1px solid $text-grey;
-  border-bottom: none;
-  display: flex;
-  flex-direction: row;
-  span.button {
-    background-color: $red;
-    color: $white;
-    font-size: 0.5rem;
-    height: 2rem;
-    width: 4rem;
-  }
-}
-
-.my-favorite-list-item:last-child {
-  border-bottom: 1px solid $text-grey;
-}
-
-.my-favorite-list-item .column {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.menu-left {
-  flex: 1.2;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  margin-right: 1rem;
-  overflow-x: hidden;
-}
-
-.menu-tree {
-  flex: 1;
-  overflow-y: hidden;
-  padding-bottom: 0.5rem;
-  .menu-item {
-    padding-left: 0.5rem;
-    padding-top: 0.2rem;
-    border: 1px solid $dark;
-    min-height: 3rem;
-    font-size: 0.9rem;
-    margin-top: 0.8rem;
-    cursor: pointer;
-  }
-}
-
-.row-news {
-  font-size: 0.9rem;
-  margin: 3rem;
-  cursor: pointer;
-}
-
-.news-box {
-  border: 1px solid $text-grey;
-}
-
-.detail-html {
-  flex: 3;
-  font-size: 1rem;
-  padding: 0.5rem;
-  border: 1px solid $text-grey;
-}
-
-.top-img {
-  font-size: 0.9rem;
-}
-
-.issue-content {
-  resize: vertical;
-  flex: 1;
-  height: 18rem;
-  padding: 1rem;
-  font-size: 1.2rem;
-}
-
-.write-icon {
-  padding: 1rem 4rem;
-}
-
-.pencil-icon {
-  display: block !important;
-  position: absolute;
-  top: 3rem;
-  left: 1rem;
-  font-size: 2rem !important;
-  color: $dark;
-}
-
-.submit-btn {
-  background: $primary;
-  color: $white;
-  font-size: 1.3rem;
-  padding: 1rem 12rem;
-}
-
-.bottom-box {
-  background: $text-grey;
-  margin: 3rem 0.1rem 0.1rem;
-  height: 10rem;
-}
-
-.bottom-contact {
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  span {
-    color: $link;
-  }
-}
-
-.service-menu {
-  flex: 1;
-  border-right: 1px solid $dark;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-  span {
-    font-size: 1.2rem;
-  }
-}
-
-.service-menu:last-child {
-  border-right: none;
-}
-
-.menu-selected {
-  color: $link;
-}
-
-.search-input {
-  flex: 3;
-  font-size: 1.2rem;
-  padding: 0.6rem 0.6rem 0.6rem 3rem;
-  margin: 0.1rem auto;
-}
-
-.search-button {
-  flex: 1;
-  background-color: $primary;
-  color: $white;
-  font-size: 1.2rem;
-  margin: 0.1rem auto;
-}
-
-.search-result {
-  margin-left: 1rem;
-  font-size: 1.2rem;
-  padding: 1rem;
-  border-bottom: 1px solid $dark;
-  position: relative;
-  cursor: pointer;
-}
-
-.float-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  border-left: 1px solid $dark;
-  margin: auto 1rem;
-  flex-wrap: wrap;
-  .issue {
-    text-align: center;
-    border: 1px solid $dark;
-    border-left: none;
-    padding: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    float: left;
-    width: 33.33%;
-    box-sizing: border-box;
-  }
-  .issue:nth-child(n+4) {
-    border-top: none;
-  }
-}
-
 .tip-message {
   position: absolute;
   z-index: 3;
@@ -857,10 +646,6 @@ form.post {
   }
 }
 
-.warning-sign {
-  color: $olive;
-}
-
 .modal-footer {
   background: #fff;
   text-align: center;
@@ -872,19 +657,6 @@ form.post {
     border-radius: 5px;
     font-size: 1.2rem;
   }
-}
-
-.reply-box {
-  border: 1px solid $dark;
-  height: 5rem;
-}
-
-.link {
-  color: $link;
-}
-
-.border-link {
-  border: 1px solid $link;
 }
 
 .pagination {

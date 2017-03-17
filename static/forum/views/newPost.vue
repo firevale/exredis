@@ -6,7 +6,7 @@
       </span>
     </div>
     <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
-      <p class="control is-horizontal">
+      <p class="control is-horizontal" style="margin-bottom: 1.5rem">
         <input class="input" style="border-radius: 0" type="text" v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
       <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)">

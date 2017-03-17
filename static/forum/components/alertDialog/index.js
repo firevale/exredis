@@ -1,4 +1,4 @@
-import Vue from 'forum/vue-installed'
+import Vue from 'vue'
 
 const Dialog = Vue.extend(require('./alertDialog.vue'));
 

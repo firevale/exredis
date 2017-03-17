@@ -24,7 +24,7 @@
   } from 'vuex'
 
   import menuModal from '../components/menuModal'
-  import upload from '../components/fileUpload'
+  import {showFileUploadDialog} from '../components/fileUpload'
 
   import {
     postPreview

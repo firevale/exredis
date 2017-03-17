@@ -68,10 +68,6 @@
     Modal
   } from 'vue-bulma-modal'
 
-  import {
-    openNotification
-  } from 'admin/miscellaneous'
-
   export default {
     props: {
       visible: {
@@ -128,28 +124,12 @@
               if (typeof this.callback == 'function') {
                 if (file.xhr.status == 200 && file.response.success) {
                   this.callback(file.response)
-                  openNotification({
-                    title: this.$t('forum.titles.uploadSuccess'),
-                    message: this.$t('forum.messages.uploadSuccess', {fileName: file.name}),
-                    type: 'success',
-                    duration: 4500,
-                  })
                 }
                 else if (typeof file.response == 'object' && typeof file.response.i18n_message == 'string') {
-                  openNotification({
-                    title: this.$t('forum.titles.uploadFailed'),
-                    message: this.$t(file.response.i18n_message, file.response.i18n_message_object),
-                    type: 'danger',
-                    duration: 6000,
-                  })
+
                 }
                 else {
-                  openNotification({
-                    title: this.$t('forum.titles.uploadFailed'),
-                    message: file.error, // not tested yet
-                    type: 'danger',
-                    duration: 6000,
-                  })
+
                 }
               }
             })

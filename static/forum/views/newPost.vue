@@ -35,7 +35,7 @@
   } from 'vuelidate/lib/validators'
 
   import menuModal from '../components/menuModal'
-  import upload from '../components/fileUpload'
+  // import upload from '../components/fileUpload'
 
   import {
     postPreview

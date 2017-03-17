@@ -56,9 +56,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
-
     queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
-
     queryTotal = if(is_integer(section_id) and section_id > 0) do
       queryTotal |> where([p], p.section_id == ^section_id)
     else
@@ -79,14 +77,15 @@ defmodule Acs.ForumController do
               join: s in assoc(p, :section),
               join: f in assoc(p, :forum),
               select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
-                        :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], section: [:id, :title], forum: [:id]]),
-             limit: ^records_per_page,
-             where: p.forum_id == ^forum_id and p.active == true,
-             offset: ^((page - 1) * records_per_page),
-             preload: [user: u, section: s, forum: f],
-             order_by: [{:desc, p.is_top}, {:desc, ^order}]
+                              :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], 
+                              section: [:id, :title], forum: [:id]]),
+              limit: ^records_per_page,
+              where: p.forum_id == ^forum_id and p.active == true,
+              offset: ^((page - 1) * records_per_page),
+              preload: [user: u, section: s, forum: f],
+              order_by: [{:desc, p.is_top}, {:desc, ^order}]
 
-    query = if(is_integer(section_id) and section_id > 0) do
+    query = if (is_integer(section_id) and section_id > 0) do
       query |> where([p], p.section_id == ^section_id)
     else
       query
@@ -106,35 +105,37 @@ defmodule Acs.ForumController do
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.userNotExist"})
       %User{} = user ->
-            case   Mogrify.open(upload_file.path) |> Mogrify.verbose do
-               %{width: 200, height: 200} = upload_image  ->
-               if upload_image.format in ["jpg","jpeg","png"] do
-                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-                  [file_md5 | _] = String.split(md5sum_result)
-                  static_path = Application.app_dir(:acs, "priv/static/")
-                  url_path = "/images/users_avatars/"
-                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-                  avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
-                  d "icon_url: #{avatar_url}"
-                  User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
-                  conn |> json(%{success: true, avatar_url: avatar_url})
-              else
-                conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
-              end
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 200, height: 200} = upload_image  ->
+            if upload_image.format in ["jpg","jpeg","png"] do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/users_avatars/"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+              avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+              d "icon_url: #{avatar_url}"
+              User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
+              conn |> json(%{success: true, avatar_url: avatar_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"}           
+        end
     end
   end
 
   # add_post
   def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
-                      "forum_id" => forum_id,
-                      "title" => title,
-                      "content" => content,
-                      "section_id" => section_id} = post) do
+                "forum_id" => forum_id,
+                "title" => title,
+                "content" => content,
+                "section_id" => section_id} = post) do
       query = from f in Forum,
               join: s in assoc(f, :sections),
-              where: f.id==^forum_id and s.id==^section_id,
+              where: f.id == ^forum_id and s.id == ^section_id,
               preload: [sections: s]
 
       with %Forum{} = forum <- Repo.one(query),
@@ -178,7 +179,6 @@ defmodule Acs.ForumController do
 
   # get_post_detail
   def get_post_detail(conn,%{"post_id" => post_id}) do
-
     query = from p in ForumPost,
             join: u in assoc(p, :user),
             join: s in assoc(p, :section),
@@ -441,53 +441,56 @@ defmodule Acs.ForumController do
     end
   end
 
- def search(conn, %{"forum_id" => forum_id,"keyword" => keyword,
-                           "page" => page,"records_per_page" => records_per_page}) do
+  def search(conn, %{"forum_id" => forum_id,
+                     "keyword" => keyword,
+                     "page" => page,
+                     "records_per_page" => records_per_page}) do
+    query = %{
+      query: %{
+        bool: %{
+          must: %{multi_match: %{
+          query: keyword,
+          fields: [:title, :content],
+        }},
+          filter: %{ term: %{active: true} }
+        }
+      },
+      from: ((page - 1) * records_per_page),
+      size: if records_per_page>30 do 30 else records_per_page end
+    }
 
-  query = %{
-    query: %{
-      bool: %{
-        must: %{multi_match: %{
-        query: keyword,
-        fields: [:title, :content],
-      }},
-        filter: %{ term: %{active: true} }
-      }
-    },
-    from: ((page - 1) * records_per_page),
-    size: if records_per_page>30 do 30 else records_per_page end
-  }
-
-  case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
-    {:ok, %{hits: %{hits: hits, total: total}}} ->
-
-
-      postList = Enum.map(hits, fn(hit) ->
-         user_id = hit._source.user_id
-         userRaw = RedisUser.find(user_id)
-         user=if userRaw do
-                Map.take(userRaw, [:id, :nickname, :avatar_url, :inserted_at])
-              end
-
-         forumId=hit._source.forum_id
-         forum = case Process.get("forum_#{forumId}") do
-                   nil ->
-                     forumNew = RedisForum.find(hit._source.forum_id)
-                     Process.put("forum_#{forumId}", forumNew)
-                     forumNew
-                   forumCache ->
-                     forumCache
+    case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        postList = Enum.map(hits, fn(%{
+          user_id: user_id,
+          forum_id: forum_id,
+          section_id: section_id,
+          _id: id,
+        }) ->
+          user = case Process.get("user_#{user_id}") do 
+                  nil -> 
+                    user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
+                    Process.put("user_#{user_id}", user_db)
+                    user_db
+                  user_cache ->
+                    user_cache
+                end
+                  
+          forum = case Process.get("forum_#{forum_id}") do
+                    nil ->
+                      forum_new = RedisForum.find(forum_id)
+                      Process.put("forum_#{forum_id}", forum_new)
+                      forum_new 
+                    forum_cache ->
+                      forum_cache
                   end
 
-          section_id=hit._source.section_id
           section = if forum && forum.sections && section_id  do
-                      forum.sections
-                      |> Enum.find(fn(item) -> item.id==section_id  end)
+                      forum.sections |> Enum.find(&(&1.id == section_id))
                     end
-
-           %{
+          %{
             id: hit._id,
-            forum_id: forumId,
+            forum_id: forum_id,
             forum:  forum,
             user_id: user_id,
             user: user,
@@ -505,14 +508,13 @@ defmodule Acs.ForumController do
             has_pic: hit._source.has_pic
           }
 
-          end)
-      total_page=round(Float.ceil(total/records_per_page))
-      conn |> json(%{success: true, postList: postList, total: total_page})
-
-    error ->
-      error "search failed: #{inspect error, pretty: true}"
-      conn |> json(%{success: false})
+        end)
+        total_page = round(Float.ceil(total/records_per_page))
+        conn |> json(%{success: true, postList: postList, total: total_page})
+      error ->
+        error "search failed: #{inspect error, pretty: true}"
+        conn |> json(%{success: false})
+    end
   end
- end
 
 end

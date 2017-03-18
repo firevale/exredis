@@ -122,7 +122,7 @@ defmodule Acs.ForumController do
               conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"}           
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})           
         end
     end
   end
@@ -462,11 +462,11 @@ defmodule Acs.ForumController do
     case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         postList = Enum.map(hits, fn(%{
+          _id: id,
           user_id: user_id,
           forum_id: forum_id,
           section_id: section_id,
-          _id: id,
-        }) ->
+        } = hit) ->
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
                     user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
@@ -494,7 +494,7 @@ defmodule Acs.ForumController do
             forum:  forum,
             user_id: user_id,
             user: user,
-            section_id: hit._source.section_id,
+            section_id: section_id,
             section: section,
             title: hit._source.title,
             content: hit._source.content,

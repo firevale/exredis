@@ -58,10 +58,10 @@
     "vue-peity": "^0.5.0",
     "vue-resource": "^1.2.0",
     "vue-router": "^2.3.0",
-    "vue-scroll": "^2.0.1",
-    "vue-validator": "^3.0.0-alpha.2",
-    "vue-timeago": "^3.3.0",
     "vue-scroller": "^2.1.2",
+    "vue-timeago": "^3.3.0",
+    "vue-upload-component": "v2.2.0-beta.1",
+    "vue-validator": "^3.0.0-alpha.2",
     "vuelidate": "^0.3.1",
     "vuex": "^2.2.1",
     "vuex-router-sync": "^4.1.2"

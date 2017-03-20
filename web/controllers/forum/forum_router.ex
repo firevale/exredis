@@ -17,9 +17,9 @@ defmodule Acs.ForumRouter do
     pipe_through :forum
 
     get  "/get_forum_info", ForumController, :get_forum_info
-    post  "/get_forum_info", ForumController, :get_forum_info
+    post "/get_forum_info", ForumController, :get_forum_info
 
-    get  "/get_paged_post", ForumController, :get_paged_post
+    get   "/get_paged_post", ForumController, :get_paged_post
     post  "/get_paged_post", ForumController, :get_paged_post
     post  "/get_user_info", ForumController, :get_user_info
     post  "/get_user_paged_post", ForumController, :get_user_paged_post
@@ -36,7 +36,9 @@ defmodule Acs.ForumRouter do
     post  "/toggle_post_favorite", ForumController, :toggle_post_favorite
     post  "/toggle_post_status", ForumController, :toggle_post_status
     post  "/get_user_favorites", ForumController, :get_user_favorites
-    post "/search", ForumController, :search
+    post  "/search", ForumController, :search
+
+    post  "/upload_post_image", ForumController, :upload_post_image
   end
 
 end

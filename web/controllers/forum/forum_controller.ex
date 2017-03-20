@@ -517,4 +517,18 @@ defmodule Acs.ForumController do
     end
   end
 
+  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
+    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
+    if upload_image.format in ["jpg", "jpeg", "png"] do
+      {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+      [file_md5 | _] = String.split(md5sum_result)
+      static_path = Application.app_dir(:acs, "priv/static/")
+      url_path = "/images/forum_#{forum_id}/posts"
+      {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+      {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+      conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
+    else
+      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+    end
+  end
 end

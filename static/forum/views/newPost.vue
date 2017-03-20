@@ -136,9 +136,14 @@
           data: {
             forum_id: this.$route.params.forumId
           },
-          extensions: ['png'],
+          extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
-
+            console.log(response)
+            if (response.success) {
+              editor.focus()
+              let range = editor.getSelection()
+              editor.insertEmbed(range.index, 'image', response.link)
+            }
           },
         })
       },

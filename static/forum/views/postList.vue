@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div style="position:static; height: 100%">
+    <div style="position: static; height: 100%">
       <div style="position: relative; height: 100%">
         <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
           <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item"></post-list-item>

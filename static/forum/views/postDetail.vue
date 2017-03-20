@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div style="overflow-y: hidden">
     <div>
-      <post-detail-view v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
-      <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller" style="top:125px">
+      <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
+        <post-detail-view v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
         <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" @toggle-floorHost="toggleFloorHost" :comment-data="comment" :item-index="index" :nth="(page - 2) * recordsPerPage + index + 1" :on-item-deleted="onItemDelete">
         </post-comment-view>
       </scroller>

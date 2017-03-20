@@ -18,10 +18,6 @@ export default function(VueRouter) {
             name: 'postList',
             component: require('./views/postList.vue')
           }, {
-            path: 'test',
-            name: 'test',
-            component: require('./views/RefreshAndInfinite.vue')
-          }, {
             path: 'search',
             name: 'search',
             component: require('./views/search.vue')

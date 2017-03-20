@@ -144,12 +144,10 @@
         let result = await this.$acs.getPagedPost(page, this.recordsPerPage, this.postsOrderByField,
           this.currentSectionId, this.$router.currentRoute.params.forumId)
   
-        if (result.success) {
-          if (result.posts.length > 0) {
+        if (result.success && result.posts.length > 0) {
             this.postList = this.postList.concat(result.posts)
             this.total = result.total
             this.page = page
-          }
         }
       }
   

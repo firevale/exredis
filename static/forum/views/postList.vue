@@ -107,6 +107,9 @@
       },
   
       refresh() {
+        if (this.$refs.my_scroller)
+          this.$refs.my_scroller.finishInfinite()
+
         this.page = 1
         this.total = 1
         this.postList = []
@@ -120,19 +123,21 @@
       },
   
       infinite() {
-        this.refreshPage(this.page + 1).then(
-          () => {
-            this.bottom = this.bottom + this.recordsPerPage;
-  
-            if (this.$refs.my_scroller)
-              this.$refs.my_scroller.finishInfinite()
-  
-            if (this.page >= this.total) {
+        setTimeout(() => {
+          this.refreshPage(this.page + 1).then(
+            () => {
+              this.bottom = this.bottom + this.recordsPerPage;
+    
               if (this.$refs.my_scroller)
-                this.$refs.my_scroller.finishInfinite(true)
+                this.$refs.my_scroller.finishInfinite()
+    
+              if (this.page >= this.total) {
+                if (this.$refs.my_scroller)
+                  this.$refs.my_scroller.finishInfinite(true)
+              }
             }
-          }
-        )
+          )          
+        }, 800)
       },
   
       refreshPage: async function(page) {

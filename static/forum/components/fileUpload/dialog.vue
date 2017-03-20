@@ -1,61 +1,93 @@
 <template>
 	<modal :visible="visible">
-    <div class="tile box is-ancestor is-vertical" style="padding: 10px; margin: 0">
-      <div class="has-text-centered" style="width: 100%; margin: 10px 0 20px 0">
-        <h4 class="title">{{ title }}</h4>
-      </div>
-      <div class="tile is-parent border-horizontal" style="padding: 0 0 10px 0">
-        <div class="tile is-child is-3">
+    <div class="tile box is-ancestor is-vertical file-upload-modal has-text-centered" style="padding: 10px; margin: 0">
+      <div class="tile is-parent is-full is-vertical">
+        <article class="tile is-child file-upload-container">
           <file-upload class="file-upload" 
+                       :class="file ? 'file-selected' : ''"
                        ref="upload"
                        :name="name" 
-                       :title="$t('forum.titles.upload')"
+                       :title="$t('forum.upload.hint')"
                        :drop="true" 
                        :accept="accept"
                        :multiple="false" 
                        :headers="headers"
                        :data="data"
-                       :size="20971520"
+                       :size="maxFileSize"
                        :timeout="60000"
                        :postAction="postAction"
                        :extensions="extensions"
                        :events="uploadEvents">
           </file-upload>
+        </article>
+      </div>
+
+      <div v-if="file" class="tile is-parent is-full is-vertical">
+        <div class="field is-horizontal is-mobile">
+          <div class="field-label is-small">
+            <label class="label">{{ $t('forum.upload.filename' )}}:</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-small">
+              <div class="control" style="padding-top: 0.375em">
+                <label class="field-label is-small">{{ file.name }}</label>
+              </div>
+            </div>
+          </div>
         </div>
-        <div v-if="file" class="tile is-child is-9 is-vertical">
-          <div class="columns" style="margin-bottom: 0">
-            <div class="column is-3">
-              <label class="label pull-right">{{ $t('forum.upload.filename' )}}:</label>
-            </div>
-            <div class="column is-9">
-              <label class="label">{{ file.name }}</label>
+
+        <div class="field is-horizontal is-mobile">
+          <div class="field-label is-small">
+            <label class="label">{{ $t('forum.upload.filesize' )}}:</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-small">
+              <div class="control" style="padding-top: 0.375em">
+                <label class="field-label is-small">{{ file.size | humanReadableSize }}</label>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
-            <div class="column is-3">
-              <label class="label pull-right">{{ $t('forum.upload.progress') }}:</label>
-            </div>
-            <div class="column is-9">
-              <progress class="progress is-small is-primary" style="margin-top: 5px" :value="file.progress" max="100"> {{ file.progress }}%</progress>
+        <div v-if="file && file.active" class="field is-horizontal is-mobile">
+          <div class="field-label is-small">
+            <label class="label">{{ $t('forum.upload.progress' )}}:</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-small">
+              <div class="control" style="padding-top: 0.375em">
+                <progress class="progress is-small is-info" 
+                          style="margin-top: 0.375em" 
+                          :value="file.progress" 
+                          max="100"> {{ file.progress }}%
+                </progress>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="columns" v-if="file && file.active" style="margin-bottom: 0">
-            <div class="column is-3">
-              <label class="label pull-right">{{ $t('forum.upload.speed') }}:</label>
+        <div v-if="file && file.active" class="field is-horizontal is-mobile">
+          <div class="field-label is-small">
+            <label class="label">{{ $t('forum.upload.speed' )}}:</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-small">
+              <div class="control" style="padding-top: 0.375em">
+                <label class="field-label is-small">{{ file.speed | humanReadableSize }}</label>
+              </div>
             </div>
-            <div class="column is-9">
-              <label class="label">{{ file.speed | humanReadableDownloadSpeed }}</label>
-            </div>
-          </div>						
+          </div>
         </div>
       </div>
 
-      <div class="container" style="margin-top: 5px">
-        <a class="button is-primary" 
-          :class="{'is-disabled': file ? file.success || file.active : true, 'is-loading': upload ? upload.active : false}" @click="upload.active = true">
-          <span class="icon"><i class="fa fa-upload" aria-hidden="true"> </i></span>
+      <p class="is-danger">{{this.errorMessage}}</p>
+
+      <div class="tile is-child is-full has-text-centered">
+        <a class="button is-info" 
+          :class="{'is-disabled': !file || file.success || file.active, 
+                   'is-loading': upload && upload.active}"
+                   @click="upload.active = true">
+          <span class="icon image-icon icon-upload"></span>
           <span>{{ $t('forum.upload.title') }}</span>
         </a>
       </div>
@@ -68,6 +100,12 @@
     Modal
   } from 'vue-bulma-modal'
 
+  import FileUpload from 'vue-upload-component'
+
+  import {
+    humanReadableSize
+  } from 'common/filters'
+
   export default {
     props: {
       visible: {
@@ -77,10 +115,6 @@
       callback: {
         type: Function,
         default: undefined,
-      },
-      title: {
-        type: String,
-        default: '',
       },
       name: {
         type: String,
@@ -103,15 +137,36 @@
         type: Object,
         default: () => {},
       },
+      maxFileSize: {
+        type: Number,
+        default: 512 * 1024,
+      }
     },
 
-    data: function() {
+    data: function () {
       return {
         file: undefined,
         upload: undefined,
         active: false,
+        errorMessage: '',
         uploadEvents: {
-          add: file => this.file = file,
+          add: file => {
+            if (file.size > this.maxFileSize) {
+              this.errorMessage = this.$t('forum.upload.fileIsTooLarge', {maxFileSize: humanReadableSize('' +
+                this.maxFileSize)})
+              this.upload.clear()
+            } else {
+              this.errorMessage = ''
+              this.file = file
+              if (/^image\/(.*)/.test(file.file.type)) {
+                let reader = new FileReader()
+                reader.onloadend = _ => {
+                  this.upload.$el.style.backgroundImage = `url(${reader.result})`
+                }
+                reader.readAsDataURL(file.file)
+              }
+            }
+          },
           before: _ => {
             this.active = true
           },
@@ -124,11 +179,10 @@
               if (typeof this.callback == 'function') {
                 if (file.xhr.status == 200 && file.response.success) {
                   this.callback(file.response)
-                }
-                else if (typeof file.response == 'object' && typeof file.response.i18n_message == 'string') {
+                } else if (typeof file.response == 'object' && typeof file.response.i18n_message ==
+                  'string') {
 
-                }
-                else {
+                } else {
 
                 }
               }
@@ -138,13 +192,83 @@
       }
     },
 
-    mounted: function() {
+    mounted: function () {
       this.upload = this.$refs.upload
     },
 
     components: {
-      fileUpload: require('./FileUpload'),
+      FileUpload,
       Modal
     }
   }
 </script>
+
+<style lang="scss">
+  @import 'forum/scss/variables';
+  label.file-upload {
+    width: 100%;
+    min-height: 8rem;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #666;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px dashed rgba(0, 0, 0, 0.08);
+    span {
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+    &:before {
+      content: url('~forum/assets/tag-picture@2x.png');
+      margin-bottom: 1rem;
+    }
+    &.file-selected {
+      background-color: $white;
+      span {
+        display: none;
+      }
+      &:before {
+        content: '';
+      }
+    }
+  }
+  
+  @media only screen and (max-width: 768px) {
+    label.file-upload {
+      min-width: 60vw;
+      min-height: 30vw;
+    }
+  }
+  
+  @media only screen and (min-width: 769px) {
+    label.file-upload {
+      min-height: 300px;
+    }
+  }
+  
+  .file-upload-modal {
+    p.is-danger {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: $danger;
+    }
+    .button {
+      font-size: 1.2rem;
+      font-weight: 400;
+      .icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem !important;
+      }
+      &.is-loading {
+        .icon {
+          display: none;
+        }
+      }
+    }
+  }
+</style>

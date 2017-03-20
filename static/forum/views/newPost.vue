@@ -9,7 +9,7 @@
       <p class="control is-horizontal" style="margin-bottom: 1.5rem">
         <input class="input" style="border-radius: 0" type="text" v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
-      <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)">
+      <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)" @image="onInsertImage">
       </quill-editor>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
@@ -35,7 +35,9 @@
   } from 'vuelidate/lib/validators'
 
   import menuModal from '../components/menuModal'
-  // import upload from '../components/fileUpload'
+  import {
+    showFileUploadDialog
+  } from '../components/fileUpload'
 
   import {
     postPreview
@@ -127,8 +129,18 @@
         touchMap.set($v, setTimeout($v.$touch(), 2000))
       },
 
-      onInsertImage: function () {
-        console.log('on insert image clicked')
+      onInsertImage: function (editor) {
+        showFileUploadDialog({
+          postAction: '/forum_actions/upload_post_image',
+          accept: 'image/jpeg, image/png',
+          data: {
+            forum_id: this.$route.params.forumId
+          },
+          extensions: ['png'],
+          callback: response => {
+
+          },
+        })
       },
 
       showSelectSectionMenu() {

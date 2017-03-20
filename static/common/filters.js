@@ -2,19 +2,36 @@ import './date'
 
 export const humanReadableDownloadSpeed = val => {
   let resStr = ''
-  let bytCount = parseInt(val);
-  if (!isNaN(bytCount)) {
-    if (bytCount > 1024 * 1024 * 1024) {
-      resStr = (bytCount /= 1024 * 1024 * 1024).toFixed(2) + 'G'
-    } else if (bytCount > 1024 * 1024) {
-      resStr = (bytCount /= 1024 * 1024).toFixed(2) + 'M'
-    } else if (bytCount > 1024) {
-      resStr = (bytCount /= 1024).toFixed(2) + 'KB'
+  let bytes = parseInt(val)
+  if (!isNaN(bytes)) {
+    if (bytes > 1024 * 1024 * 1024) {
+      resStr = (bytes /= 1024 * 1024 * 1024).toFixed(2) + 'G'
+    } else if (bytes > 1024 * 1024) {
+      resStr = (bytes /= 1024 * 1024).toFixed(2) + 'M'
+    } else if (bytes > 1024) {
+      resStr = (bytes /= 1024).toFixed(2) + 'KB'
     } else {
-      resStr = bytCount + 'B'
+      resStr = bytes + 'B'
     }
   }
   return resStr + '/S';
+}
+
+export const humanReadableSize = val => {
+  let resStr = ''
+  let bytes = parseInt(val)
+  if (!isNaN(bytes)) {
+    if (bytes > 1024 * 1024 * 1024) {
+      resStr = (bytes /= 1024 * 1024 * 1024).toFixed(0) + 'G'
+    } else if (bytes > 1024 * 1024) {
+      resStr = (bytes /= 1024 * 1024).toFixed(0) + 'M'
+    } else if (bytes > 1024) {
+      resStr = (bytes /= 1024).toFixed(0) + 'KB'
+    } else {
+      resStr = bytes + 'B'
+    }
+  }
+  return resStr;
 }
 
 export const formatServerDateTime = val => {

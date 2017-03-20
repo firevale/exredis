@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="overflow-y: hidden">
     <div class="has-bottom-line">
       <div class="tab-bar">
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
@@ -14,10 +14,12 @@
         </div>
       </div>
     </div>
-    <div>
-      <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller" style="top:55px">
-        <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item"></post-list-item>
-      </scroller>
+    <div style="position:static; height: 100%">
+      <div style="position: relative; height: 100%">
+        <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
+          <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item"></post-list-item>
+        </scroller>
+      </div>
     </div>
   </div>
 </template>

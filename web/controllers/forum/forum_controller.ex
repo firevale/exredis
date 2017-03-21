@@ -9,6 +9,7 @@ defmodule Acs.ForumController do
   plug :fetch_user
   plug :fetch_session_user_id
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
+  plug :cache_page, cache_seconds: 10
 
   # get_forum_info
   def get_forum_info(conn, %{"forum_id" => forum_id} = params) do

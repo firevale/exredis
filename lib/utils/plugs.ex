@@ -9,6 +9,7 @@ defmodule Acs.Plugs do
   alias   Acs.AdminUser
   alias   Acs.ForumManager
   require Gettext
+  require Redis
 
   def no_cache(%Plug.Conn{} = conn, _options) do
     conn |> delete_resp_header("cache-control")
@@ -406,6 +407,23 @@ defmodule Acs.Plugs do
            _ -> conn |> put_private(:acs_is_forum_admin, true)
          end
      end
+  end
+
+  def cache_page(%Plug.Conn{request_path: request_path, query_string: query_string} = conn, opts) do 
+    key = "#{request_path}?#{query_string}"
+    case Redis.get(key) do 
+      :undefined ->
+        do_cache = fn(%Plug.Conn{resp_headers: resp_headers, 
+                                 resp_body: resp_body} = conn) ->
+                     Redis.setex(key, Keyword.get(opts, :cache_seconds, 60), :erlang.term_to_binary({resp_headers, resp_body})) 
+                     conn
+                   end
+        %{conn | before_send: [do_cache | conn.before_send]}
+      raw -> 
+        d "use cached page for #{key}"
+        {resp_headers, resp_body} = :erlang.binary_to_term(raw)
+        %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
+    end
   end
 
   defp _response_admin_access_failed(%Plug.Conn{private: %{phoenix_format: "json"}} = conn) do

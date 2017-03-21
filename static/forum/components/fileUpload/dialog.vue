@@ -22,62 +22,44 @@
         </article>
       </div>
 
-      <div v-if="file" class="tile is-parent is-full is-vertical">
-        <div class="field is-horizontal is-mobile">
-          <div class="field-label is-small">
-            <label class="label">{{ $t('forum.upload.filename' )}}:</label>
-          </div>
-          <div class="field-body">
-            <div class="field is-small">
-              <div class="control" style="padding-top: 0.375em">
-                <label class="field-label is-small">{{ file.name }}</label>
-              </div>
-            </div>
-          </div>
+      <div v-if="file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
+        <div class="column has-text-right is-2" style="margin-right: 0.5rem">
+          <label class="label">{{ $t('forum.upload.filename' )}}:</label>
+        </div>
+        <div class="column has-text-left is-9">
+          <label class="field-label is-small">{{ file.name }}</label>
         </div>
 
-        <div class="field is-horizontal is-mobile">
-          <div class="field-label is-small">
-            <label class="label">{{ $t('forum.upload.filesize' )}}:</label>
-          </div>
-          <div class="field-body">
-            <div class="field is-small">
-              <div class="control" style="padding-top: 0.375em">
-                <label class="field-label is-small">{{ file.size | humanReadableSize }}</label>
-              </div>
-            </div>
-          </div>
+        <div class="column has-text-right is-2" style="margin-right: 0.5rem">
+          <label class="label">{{ $t('forum.upload.filesize' )}}:</label>
+        </div>
+        <div class="column has-text-left is-9">
+          <label class="field-label is-small">{{  file.size | humanReadableSize }}</label>
         </div>
 
-        <div v-if="file && file.active" class="field is-horizontal is-mobile">
-          <div class="field-label is-small">
+        <template v-if="file.active">
+          <div class="column has-text-right is-2" style="margin-right: 0.5rem">
             <label class="label">{{ $t('forum.upload.progress' )}}:</label>
           </div>
-          <div class="field-body">
-            <div class="field is-small">
-              <div class="control" style="padding-top: 0.375em">
-                <progress class="progress is-small is-info" 
-                          style="margin-top: 0.375em" 
-                          :value="file.progress" 
-                          max="100"> {{ file.progress }}%
-                </progress>
-              </div>
+          <div class="column has-text-left is-9">
+            <div class="control" style="padding-top: 0.375em">
+              <progress class="progress is-small is-info" 
+                        style="margin-top: 0.375em" 
+                        :value="file.progress" 
+                        max="100"> {{ file.progress }}%
+              </progress>
             </div>
           </div>
-        </div>
+        </template>
 
-        <div v-if="file && file.active" class="field is-horizontal is-mobile">
-          <div class="field-label is-small">
+        <template v-if="file.active">
+          <div class="column has-text-right is-2" style="margin-right: 0.5rem">
             <label class="label">{{ $t('forum.upload.speed' )}}:</label>
           </div>
-          <div class="field-body">
-            <div class="field is-small">
-              <div class="control" style="padding-top: 0.375em">
-                <label class="field-label is-small">{{ file.speed | humanReadableSize }}</label>
-              </div>
-            </div>
+          <div class="column has-text-left is-9">
+            <label class="field-label is-small">{{ file.speed | humanReadableSize }}</label>
           </div>
-        </div>
+        </template>
       </div>
 
       <p class="is-danger">{{this.errorMessage}}</p>

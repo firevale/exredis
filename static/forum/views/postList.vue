@@ -37,17 +37,6 @@ export default {
     postListItem,
   },
 
-  mounted: function() {
-    this.refreshPage(this.page)
-
-    this.top = 1
-    this.bottom = this.recordsPerPage
-
-    setTimeout(() => {
-      this.$refs.my_scroller.resize()
-    })
-  },
-
   watch: {
     'currentSectionId' (newVal, oldVal) {
       this.refresh()
@@ -63,7 +52,7 @@ export default {
   data() {
     return {
       postList: [],
-      page: 1,
+      page: 0,
       total: 1,
       recordsPerPage: 10,
     }
@@ -106,16 +95,9 @@ export default {
       if (this.$refs.my_scroller)
         this.$refs.my_scroller.finishInfinite()
 
-      this.page = 1
+      this.page = 0
       this.total = 1
       this.postList = []
-      this.refreshPage(this.page).then(
-        () => {
-          this.top = this.recordsPerPage;
-          if (this.$refs.my_scroller)
-            this.$refs.my_scroller.finishPullToRefresh()
-        }
-      )
     },
 
     infinite() {
@@ -127,7 +109,6 @@ export default {
             if (this.$refs.my_scroller)
               this.$refs.my_scroller.finishInfinite()
 
-            console.log("-------------page:" + this.page + ",total:" + this.total)
             if (this.page >= this.total && this.$refs.my_scroller) {
               this.$refs.my_scroller.finishInfinite(true)
             }

@@ -3,7 +3,7 @@
     <div>
       <scroller :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
         <post-detail-view v-if="postDetail" :post-data="postDetail" @toggle-floorHost="toggleFloorHost"></post-detail-view>
-        <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" @toggle-floorHost="toggleFloorHost" :comment-data="comment" :item-index="index" :nth="(page - 2) * recordsPerPage + index + 1" :on-item-deleted="onItemDelete">
+        <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" @toggle-floorHost="toggleFloorHost" :comment-data="comment" :item-index="index" :nth="(page - 1) * recordsPerPage + index + 1" :on-item-deleted="onItemDelete">
         </post-comment-view>
       </scroller>
     </div>
@@ -26,13 +26,6 @@
   export default {
     mounted: function() {
       this.getPostDetail()
-      this.refreshPage(this.page)
-      this.top = 1
-      this.bottom = this.recordsPerPage
-  
-      setTimeout(() => {
-        this.$refs.my_scroller.resize()
-      })
     },
   
     components: {
@@ -52,7 +45,7 @@
       return {
         postDetail: undefined,
         commentList: [],
-        page: 1,
+        page: 0,
         total: 1,
         totalRecords: 0,
         recordsPerPage: 10,
@@ -89,16 +82,9 @@
         if (this.$refs.my_scroller)
           this.$refs.my_scroller.finishInfinite()
   
-        this.page = 1
+        this.page = 0
         this.total = 1
         this.commentList = []
-        this.refreshPage(this.page).then(
-          () => {
-            this.top = this.recordsPerPage;
-            if (this.$refs.my_scroller)
-              this.$refs.my_scroller.finishPullToRefresh()
-          }
-        )
       },
   
       infinite() {
@@ -110,9 +96,8 @@
               if (this.$refs.my_scroller)
                 this.$refs.my_scroller.finishInfinite()
   
-              if (this.page >= this.total) {
-                if (this.$refs.my_scroller)
-                  this.$refs.my_scroller.finishInfinite(true)
+              if (this.page >= this.total && this.$refs.my_scroller) {
+                this.$refs.my_scroller.finishInfinite(true)
               }
             }
           )
@@ -126,6 +111,8 @@
           this.total = result.total
           this.totalRecords = result.records
           this.page = page
+        } else {
+          this.total = result.total
         }
       },
   

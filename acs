@@ -106,7 +106,7 @@ mix() {
 yarn() {
 	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
 	if [ $? -eq 0 ]; then
-		docker exec acs /bin/zsh -c "cd /code/static/ && yarn --no-bin-links $@"
+		docker exec acs /bin/zsh -c "cd /code/static/ && yarn $@ --no-bin-links"
 	else
 		echo "acs container is not started yet, run ./acs shell or ./acs console to start it first!"
 	fi

@@ -2,6 +2,7 @@ defmodule Acs.ForumController do
   use Acs.Web, :controller
 
   alias   Acs.RedisForum
+  require Floki
 
   plug :fetch_app_id
   plug :fetch_user_id
@@ -133,13 +134,19 @@ defmodule Acs.ForumController do
                 "title" => title,
                 "content" => content,
                 "section_id" => section_id} = post) do
+
+      post = case Floki.find(content, "img") do
+               [] -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
+               _ -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
+             end
+      
       query = from f in Forum,
               join: s in assoc(f, :sections),
               where: f.id == ^forum_id and s.id == ^section_id,
               preload: [sections: s]
 
       with %Forum{} = forum <- Repo.one(query),
-            {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, Map.put(post, "user_id", user_id)) |> Repo.insert
+            {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
       do
           Elasticsearch.index(%{
             index: "forum",
@@ -154,7 +161,7 @@ defmodule Acs.ForumController do
               is_hot: false,
               is_vote: false,
               active: true,
-              has_pic: false,
+              has_pic: post["has_pic"],
               reads: 0,
               comms: 0,
               inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
@@ -184,7 +191,8 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             where: p.id == ^post_id,
             select: map(p, [:id, :title, :content, :inserted_at, :active, :is_top, :is_hot, :is_vote, :reads,
-                        user: [:id, :nickname, :avatar_url], section: [:id, :title]]),
+                            user: [:id, :nickname, :avatar_url], 
+                            section: [:id, :title]]),
             preload: [user: u, section: s]
 
     post = Repo.one(query)
@@ -208,9 +216,11 @@ defmodule Acs.ForumController do
 
   # get_post_comments
   def get_post_comments(conn, %{"post_id" => post_id,
-                              "page" => page,
-                              "records_per_page" => records_per_page}) do
-    total = Repo.one!(from c in ForumComment, select: count(1), where: c.post_id == ^post_id)
+                                "page" => page,
+                                "records_per_page" => records_per_page}) do
+    total = Repo.one!(from c in ForumComment, 
+                      select: count(1), 
+                      where: c.post_id == ^post_id)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,
@@ -233,8 +243,11 @@ defmodule Acs.ForumController do
   # get_user_post_comments
   def get_user_post_comments(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                               %{"page" => page,
-                              "records_per_page" => records_per_page}) do
-    total = Repo.one!(from c in ForumComment, join: p in assoc(c, :post), select: count(1), where: c.user_id == ^user_id and c.active == true and p.active == true)
+                                "records_per_page" => records_per_page}) do
+    total = Repo.one!(from c in ForumComment, 
+                      join: p in assoc(c, :post), 
+                      select: count(1), 
+                      where: c.user_id == ^user_id and c.active == true and p.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,

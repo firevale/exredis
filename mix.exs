@@ -53,6 +53,7 @@ defmodule Acs.Mixfile do
         :bamboo,
         :bamboo_smtp,
         :plugsnag,
+        :floki,
         :mix,
     ]]
   end
@@ -92,6 +93,7 @@ defmodule Acs.Mixfile do
      {:timex, "~> 3.1", override: true},
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
+     {:floki, "~> 0.15.0"},
      {:exrm, "~> 1.0"},
     ]
   end

@@ -5,7 +5,7 @@
         <label class="label"> {{ $t('admin.label.forumId')}}: {{forum.id}} </label>
       </div>
       <div class="column is-4">
-        <label class="label"> {{ $t('admin.label.forumCreatedAt')}}: {{forum.created_at | formatServerDateTime}} </label>
+        <label class="label"> {{ $t('admin.label.forumCreatedAt')}}: {{forum.inserted_at | formatServerDateTime}} </label>
       </div>
       <div class="column is-8" >
         <label class="label"> {{ $t('admin.label.forumAppId')}}: </label>

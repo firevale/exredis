@@ -51,7 +51,6 @@
             </div>
           </div>
         </template>
-
         <template v-if="file.active">
           <div class="column has-text-right is-2" style="margin-right: 0.5rem">
             <label class="label">{{ $t('forum.upload.speed' )}}:</label>
@@ -61,196 +60,192 @@
           </div>
         </template>
       </div>
-
       <p class="is-danger">{{this.errorMessage}}</p>
-
       <div class="tile is-child is-full has-text-centered">
-        <a class="button is-info" 
-          :class="{'is-disabled': !file || file.success || file.active, 
-                   'is-loading': upload && upload.active}"
-                   @click="upload.active = true">
+        <a class="button is-info" :class="{'is-disabled': !file || file.success || file.active, 
+                              'is-loading': upload && upload.active}" @click="upload.active = true">
           <span class="icon image-icon icon-upload"></span>
           <span>{{ $t('forum.upload.title') }}</span>
         </a>
       </div>
     </div>
-	</modal>
+  </modal>
 </template>
-
 <script>
-  import {
-    Modal
-  } from 'vue-bulma-modal'
+import {
+  Modal
+} from 'vue-bulma-modal'
 
-  import FileUpload from 'vue-upload-component'
+import FileUpload from 'vue-upload-component'
 
-  import {
-    humanReadableSize
-  } from 'common/filters'
+import {
+  humanReadableSize
+} from 'common/filters'
 
-  export default {
-    props: {
-      visible: {
-        type: Boolean,
-        default: true
-      },
-      callback: {
-        type: Function,
-        default: undefined,
-      },
-      name: {
-        type: String,
-        default: 'file',
-      },
-      extensions: {
-        default: () => [],
-      },
-      postAction: {
-        type: String,
-      },
-      accept: {
-        type: String,
-      },
-      headers: {
-        type: Object,
-        default: () => {},
-      },
-      data: {
-        type: Object,
-        default: () => {},
-      },
-      maxFileSize: {
-        type: Number,
-        default: 512 * 1024,
-      }
+export default {
+  props: {
+    visible: {
+      type: Boolean,
+      default: true
     },
+    callback: {
+      type: Function,
+      default: undefined,
+    },
+    name: {
+      type: String,
+      default: 'file',
+    },
+    extensions: {
+      default: () => [],
+    },
+    postAction: {
+      type: String,
+    },
+    accept: {
+      type: String,
+    },
+    headers: {
+      type: Object,
+      default: () => {},
+    },
+    data: {
+      type: Object,
+      default: () => {},
+    },
+    maxFileSize: {
+      type: Number,
+      default: 512 * 1024,
+    }
+  },
 
-    data: function () {
-      return {
-        file: undefined,
-        upload: undefined,
-        active: false,
-        errorMessage: '',
-        uploadEvents: {
-          add: file => {
-            if (file.size > this.maxFileSize) {
-              this.errorMessage = this.$t('forum.upload.fileIsTooLarge', {maxFileSize: humanReadableSize('' +
-                this.maxFileSize)})
-              this.upload.clear()
-            } else {
-              this.errorMessage = ''
-              this.file = file
-              if (/^image\/(.*)/.test(file.file.type)) {
-                let reader = new FileReader()
-                reader.onloadend = _ => {
-                  this.upload.$el.style.backgroundImage = `url(${reader.result})`
-                }
-                reader.readAsDataURL(file.file)
+  data: function() {
+    return {
+      file: undefined,
+      upload: undefined,
+      active: false,
+      errorMessage: '',
+      uploadEvents: {
+        add: file => {
+          if (file.size > this.maxFileSize) {
+            this.errorMessage = this.$t('forum.upload.fileIsTooLarge', {
+              maxFileSize: humanReadableSize('' +
+                this.maxFileSize)
+            })
+            this.upload.clear()
+          } else {
+            this.errorMessage = ''
+            this.file = file
+            if (/^image\/(.*)/.test(file.file.type)) {
+              let reader = new FileReader()
+              reader.onloadend = _ => {
+                this.upload.$el.style.backgroundImage = `url(${reader.result})`
+              }
+              reader.readAsDataURL(file.file)
+            }
+          }
+        },
+        before: _ => {
+          this.active = true
+        },
+        after: (file, component) => {
+          this.active = false
+          this.file = undefined
+          this.visible = false
+
+          this.$nextTick(_ => {
+            if (typeof this.callback == 'function') {
+              if (file.xhr.status == 200) {
+                this.callback(file.response)
+              } else {
+                this.callback({
+                  success: false,
+                  i18n_message: 'forum.error.networkError'
+                })
               }
             }
-          },
-          before: _ => {
-            this.active = true
-          },
-          after: (file, component) => {
-            this.active = false
-            this.file = undefined
-            this.visible = false
-
-            this.$nextTick(_ => {
-              if (typeof this.callback == 'function') {
-                if (file.xhr.status == 200 && file.response.success) {
-                  this.callback(file.response)
-                } else if (typeof file.response == 'object' && typeof file.response.i18n_message ==
-                  'string') {
-
-                } else {
-
-                }
-              }
-            })
-          }
+          })
         }
       }
-    },
-
-    mounted: function () {
-      this.upload = this.$refs.upload
-    },
-
-    components: {
-      FileUpload,
-      Modal
     }
-  }
-</script>
+  },
 
+  mounted: function() {
+    this.upload = this.$refs.upload
+  },
+
+  components: {
+    FileUpload,
+    Modal
+  }
+}
+</script>
 <style lang="scss">
-  @import 'forum/scss/variables';
-  label.file-upload {
-    width: 100%;
-    min-height: 8rem;
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.03);
-    color: #666;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    border: 1px dashed rgba(0, 0, 0, 0.08);
+@import 'forum/scss/variables';
+label.file-upload {
+  width: 100%;
+  min-height: 8rem;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.03);
+  color: #666;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px dashed rgba(0, 0, 0, 0.08);
+  span {
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+  &:before {
+    content: url('~forum/assets/tag-picture@2x.png');
+    margin-bottom: 1rem;
+  }
+  &.file-selected {
+    background-color: $white;
     span {
-      font-size: 1.5rem;
-      font-weight: 400;
+      display: none;
     }
     &:before {
-      content: url('~forum/assets/tag-picture@2x.png');
-      margin-bottom: 1rem;
+      content: '';
     }
-    &.file-selected {
-      background-color: $white;
-      span {
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  label.file-upload {
+    min-width: 60vw;
+    min-height: 30vw;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  label.file-upload {
+    min-height: 300px;
+  }
+}
+
+.file-upload-modal {
+  p.is-danger {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: $danger;
+  }
+  .button {
+    font-size: 1.2rem;
+    font-weight: 400;
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: 0.5rem !important;
+    }
+    &.is-loading {
+      .icon {
         display: none;
       }
-      &:before {
-        content: '';
-      }
     }
   }
-  
-  @media only screen and (max-width: 768px) {
-    label.file-upload {
-      min-width: 60vw;
-      min-height: 30vw;
-    }
-  }
-  
-  @media only screen and (min-width: 769px) {
-    label.file-upload {
-      min-height: 300px;
-    }
-  }
-  
-  .file-upload-modal {
-    p.is-danger {
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      color: $danger;
-    }
-    .button {
-      font-size: 1.2rem;
-      font-weight: 400;
-      .icon {
-        width: 1.25rem;
-        height: 1.25rem;
-        margin-right: 0.5rem !important;
-      }
-      &.is-loading {
-        .icon {
-          display: none;
-        }
-      }
-    }
-  }
+}
 </style>

@@ -142,7 +142,6 @@ export default {
         },
         extensions: ['png', 'jpg', 'jpeg'],
         callback: response => {
-          console.log(response)
           if (response.success) {
             editor.focus()
             let range = editor.getSelection()

@@ -28,7 +28,7 @@
                 <td> {{ section.id }} </td>
                 <td> {{ section.title }} </td>
                 <td> {{ section.sort }} </td>
-                <td> {{ section.created_at | formatServerDateTime }} </td>
+                <td> {{ section.inserted_at | formatServerDateTime }} </td>
                 <td v-if="section.active">正常</td><td v-else>禁用</td>
                 <td class="is-icon">
                   <a @click.prevent="editSectionInfo(section, index)">

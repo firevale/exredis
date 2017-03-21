@@ -58,6 +58,16 @@ export default {
         }
       },
 
+      setting: {
+        basicInfo: '基本信息',
+        keywordInfo: '关键词配置',
+
+        keyword: {
+          edit: '修改',
+          tip: '请输入关键词',
+        }
+      },
+
       app: {
         basicInfo: '基本信息',
         sdkInfo: 'SDK配置',
@@ -113,6 +123,7 @@ export default {
         forumTitle: '论坛名称',
         forumActive: '是否启用',
         forumCreatedAt: '创建时间',
+        keyword: '关键词',
       },
 
       currency: {

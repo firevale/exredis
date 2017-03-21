@@ -55,3 +55,12 @@ export const convertServerDateTime = val => {
     return ''
   }
 }
+
+export const filterKeyword = val => {
+  if (val) {
+    let filter = require('./keywordFilter');
+    return filter.replaceKeyword(val, '*')
+  } else {
+    return ''
+  }
+}

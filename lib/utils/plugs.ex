@@ -409,8 +409,10 @@ defmodule Acs.Plugs do
      end
   end
 
-  def cache_page(%Plug.Conn{request_path: request_path, query_string: query_string} = conn, opts) do 
-    key = "#{request_path}?#{query_string}"
+  def cache_page(%Plug.Conn{request_path: request_path, 
+                            query_string: query_string,
+                            body_params: body_params} = conn, opts) do 
+    key = "#{request_path}?#{query_string}!#{URI.encode_query(body_params)}"
     case Redis.get(key) do 
       :undefined ->
         do_cache = fn(%Plug.Conn{resp_headers: resp_headers, 

@@ -36,6 +36,13 @@ defmodule Acs.AdminRouter do
     post "/update_forum_icon", AdminController, :update_forum_icon
     post "/update_forum_info", AdminController, :update_forum_info
     post "/update_section_info", AdminController, :update_section_info  
+
+    post "/get_setting", AdminSettingController, :get_setting
+    post "/get_settings_by_group", AdminSettingController, :get_settings_by_group
+    post "/delete_setting", AdminSettingController, :delete_setting
+    post "/add_setting", AdminSettingController, :add_setting
+    post "/update_setting", AdminSettingController, :update_setting
+    post "/update_setting_by_name", AdminSettingController, :update_setting_by_name
   end
 
 end

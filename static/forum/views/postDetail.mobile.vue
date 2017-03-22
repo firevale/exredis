@@ -75,6 +75,8 @@
         if (result.success) {
           this.setCurrentPostTitle(result.detail.title)
           this.postDetail = result.detail
+          if (this.$refs.my_scroller) 
+            this.$nextTick(this.$refs.my_scroller.resize)
         }
       },
   

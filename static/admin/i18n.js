@@ -61,6 +61,10 @@ export default {
       setting: {
         basicInfo: '基本信息',
         keywordInfo: '关键词配置',
+        notFound: '配置项没有找到',
+        deleteOk: '删除成功',
+        addOk: '添加成功',
+        updateOk: '修改成功',
 
         keyword: {
           edit: '修改',
@@ -184,6 +188,8 @@ export default {
         imageSize128x128: '图片的尺寸必须为128x128',
         imageFormatPNG: '图片格式必须为PNG文件',
         badRequestParams: '请求参数错误',
+        networkError: '网络错误',
+        illegal: '没有权限',
         goodsNotFound: '未找到商品',
         appNameExists: '应用名称【{app_name}】已被其他应用使用',
         emptyGoodsId: '商品ID不能为空',

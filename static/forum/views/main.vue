@@ -57,13 +57,14 @@ export default {
 
   beforeRouteEnter: async function(to, from, next) {
     try {
-      let response = await Vue.http.post('/forum_actions/get_forum_info', {
+      let response = await Vue.http.post('/forum_actions/get_forum_info_with_keyword', {
         forum_id: to.params.forumId
       })
       let result = await response.json()
 
       if (result.success) {
         next(vm => {
+          vm.updateKeyword(result.keyword)
           vm.updateForumInfo(result.forum)
         })
       } else {
@@ -80,7 +81,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName', 'updateForumInfo'
+      'setTransitionName', 'updateForumInfo', 'updateKeyword'
     ]),
 
     onBtnBackClicked: function() {

@@ -7,7 +7,6 @@ defmodule Acs.RedisForum do
   alias   Acs.Forum
   alias   Acs.ForumSection
 
-
   require Logger
 
   ########################################

@@ -5,6 +5,7 @@ const state = {
   currentSectionId: 0,
   currentPostTitle: '',
   postsOrderByField: 'inserted_at',
+  keyword: '',
 }
 
 const mutations = {
@@ -22,6 +23,10 @@ const mutations = {
 
   [types.UPDATE_FORUM_INFO](state, forum) {
     state.info = forum
+  },
+
+  [types.UPDATE_KEYWORD](state, keyword) {
+    state.keyword = keyword
   }
 }
 

@@ -4,7 +4,7 @@ defmodule Acs.Repo.Migrations.CreateForumPost do
   def change do
     create table(:forums_posts) do
       add :title, :string
-      add :content, :text
+      add :content, :binary
       add :is_top, :boolean, default: false, null: false
       add :is_hot, :boolean, default: false, null: false
       add :is_vote, :boolean, default: false, null: false

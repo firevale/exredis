@@ -1,6 +1,6 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
-  <div class="stay-top top-bar">
+  <div class="top-bar">
     <div class="title-bar">
       <h4 class="title is-4">{{forumInfo.title}}</h4>
     </div>

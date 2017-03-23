@@ -42,7 +42,9 @@ export default {
   watch: {
     'currentSectionId' (newVal, oldVal) {
       this.refresh()
-      this.$refs.scroller.$emit('reset')
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
     }
   },
 

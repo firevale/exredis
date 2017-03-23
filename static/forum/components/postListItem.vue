@@ -1,6 +1,6 @@
 <template>
 <div class="tile is-vertical has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id"
-  @click="showPostDetail" @touchend="showPostDetail">
+   v-touch:tap="showPostDetail">
   <article class="media">
     <div class="media-left" style="margin: 0.3rem 0.8rem 0 0">
       <figure class="image is-32x32 avatar-image">
@@ -33,46 +33,45 @@
   </article>
 </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  export default {
-    props: {
-      searchKeyword: {
-        type: String,
-        default: '',
-      },
-      postInfo: {
-        type: Object,
-        default: null,
-      },
+export default {
+  props: {
+    searchKeyword: {
+      type: String,
+      default: '',
     },
-    computed: {
-      avatarUrl: function () {
-        return this.postInfo.user.avatar_url || window.acsConfig.defaultAvatarUrl
-      },
-      strenghtenKeywordTitle() {
-        return this.searchKeyword ?
-          this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
-            `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`
-          ) :
-          this.postInfo.title
-      },
+    postInfo: {
+      type: Object,
+      default: null,
     },
+  },
+  computed: {
+    avatarUrl: function() {
+      return this.postInfo.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    },
+    strenghtenKeywordTitle() {
+      return this.searchKeyword ?
+        this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
+          `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`
+        ) :
+        this.postInfo.title
+    },
+  },
 
-    methods: {
-      showPostDetail() {
-        this.$router.push({
-          name: 'detail',
-          params: {
-            postId: this.postInfo.id
-          },
-        })
-      }
-    },
-  }
+  methods: {
+    showPostDetail() {
+      this.$router.push({
+        name: 'detail',
+        params: {
+          postId: this.postInfo.id
+        },
+      })
+    }
+  },
+}
 </script>

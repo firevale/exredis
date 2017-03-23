@@ -11,6 +11,8 @@
           <span v-show="allLoaded"> No more data. </span>      
           <span v-show="loading" class="icon image-icon icon-spinner rotating"></span> 
         </div>
+        <div style="width: 100%; height: 30vh">
+        </div>
       </div>
     </div>
   </div>
@@ -48,10 +50,13 @@ export default {
       checkInterval: null,
       loading: false,
       allLoaded: false,
+      counter: 0,
     }
   },
 
   beforeDestroy: function() {
+    this.checkInterval && clearInterval(this.checkInterval)
+    this.checkInterval = null
     this.iscroll && this.iscroll.destroy()
     this.iscroll = null
   },
@@ -71,7 +76,9 @@ export default {
       this.resetScrollTop()
       this.$nextTick(_ => this.checkLoadMore())
       this.sensor = new ResizeSensor(this.$refs.scroller_content, _ => {
-        this.iscroll.refresh()
+        this.$nextTick(_ => {
+          this.iscroll.refresh()
+        })
       })
     })
   },
@@ -88,11 +95,14 @@ export default {
     },
 
     scrollStart: function() {
+      this.counter = 0
       this.checkInterval = setInterval(_ => this.checkScroll(), 100)
     },
 
     scrollEnd: async function() {
       clearInterval(this.checkInterval)
+      this.checkInterval = null
+
       if (this.onRefresh && this.refreshState == RELEASE_TO_REFRESH) {
         this.refreshState = REFRESHING
         this.allLoaded = false
@@ -105,12 +115,18 @@ export default {
     },
 
     checkScroll: function() {
-      if (this.onRefresh && !this.loading) {
-        if (this.iscroll.y >= REM_SIZE * 4) {
-          this.refreshState = RELEASE_TO_REFRESH
-        } else if (this.iscroll.y >= 5) {
+      if (this.iscroll && this.onRefresh && !this.loading) {
+        if (this.iscroll.y >= REM_SIZE * 3 && this.iscroll.directionY <= 0) {
+          if (this.counter++ >= 5) {
+            this.refreshState = RELEASE_TO_REFRESH
+          }
+        } else if (this.iscroll.y >= 10 && this.iscroll.directionY >= 0) {
+          this.counter = 0
           this.refreshState = PULL_TO_REFRESH
         }
+      }
+      else {
+        this.checkInterval && clearInterval(this.checkInterval)
       }
     },
 
@@ -148,7 +164,7 @@ export default {
         width: 100%;
         height: 3rem;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
 

@@ -19,6 +19,10 @@ var isProduction = function() {
   return process.env.NODE_ENV === 'production'
 }
 
+var isDev = function() {
+  return process.env.NODE_ENV === 'dev'
+}
+
 var outputPath = function() {
   return path.resolve(__dirname, '../priv/static/')
 }
@@ -27,19 +31,20 @@ var plugins = [
   new webpack.LoaderOptionsPlugin({
     vue: {
       loaders: utils.cssLoaders({
-        sourceMap: !isProduction(),
+        sourceMap: isDev(),
         extract: isProduction()
       }),
-      postcss: [require('autoprefixer')({browsers: ['last 3 versions']})],
+      postcss: [require('autoprefixer')({ browsers: ['last 3 versions'] })],
     }
   }),
-  new webpack.DefinePlugin(consts.defines({isProduction: isProduction()})),
+  new webpack.DefinePlugin(consts.defines({ isProduction: isProduction() })),
   new CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',
     chunks: ['admin'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -47,7 +52,8 @@ var plugins = [
     filename: 'js/login_commons.js',
     chunks: ['login'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -57,27 +63,17 @@ var plugins = [
       'account', 'payment', 'forum', 'mall',
     ],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
   new ExtractTextPlugin('css/[name].css'),
-  new OptimizeCssAssetsPlugin({
-    assetNameRegExp: /\.optimize\.css$/g,
-    cssProcessor: require('cssnano'),
-    cssProcessorOptions: {
-      discardComments: {
-        removeAll: true
-      }
-    },
-    canPrint: true
-  }),
-  new CopyWebpackPlugin([
-    {
-      from: '**/assets/*',
-      to: 'images/',
-      flatten: true
-    }
-  ], {ignore: ['node_modules/']}),
+
+  new CopyWebpackPlugin([{
+    from: '**/assets/*',
+    to: 'images/',
+    flatten: true
+  }], { ignore: ['node_modules/'] }),
 ];
 
 module.exports = {
@@ -111,30 +107,28 @@ module.exports = {
     }
   },
 
-  cache: !isProduction(),
+  cache: isDev(),
 
   module: {
-    loaders: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: require('./vue-loader.conf'),
-      }, {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: projectRoot,
-        exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
-      }, {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        loader: "url-loader?limit=4096&name=/images/[name].[ext]"
-      }, {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
-      }, {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader?name=/fonts/[name].[ext]"
-      },
-    ].concat(utils.styleLoaders({sourceMap: false, extract: true,}))
+    loaders: [{
+      test: /\.vue$/,
+      loader: 'vue-loader',
+      options: require('./vue-loader.conf'),
+    }, {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      include: projectRoot,
+      exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
+    }, {
+      test: /\.(jpe?g|png|gif|svg)$/,
+      loader: "url-loader?limit=4096&name=/images/[name].[ext]"
+    }, {
+      test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
+    }, {
+      test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: "file-loader?name=/fonts/[name].[ext]"
+    }, ].concat(utils.styleLoaders({ sourceMap: isDev(), extract: isProduction(), }))
   },
 
   plugins: plugins,
@@ -145,16 +139,27 @@ module.exports = {
 };
 
 if (isProduction()) {
-  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    'screw-ie8': true,
-    sourceMap: false,
-    compress: {
-      warnings: false
-    },
-    output: {
-      comments: false
-    }
-  }), new webpack.optimize.OccurrenceOrderPlugin())
+  module.exports.plugins.push(
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\.optimize\.css$/g,
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: {
+        discardComments: {
+          removeAll: true
+        }
+      },
+      canPrint: true
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      'screw-ie8': true,
+      sourceMap: false,
+      compress: {
+        warnings: false
+      },
+      output: {
+        comments: false
+      }
+    }), new webpack.optimize.OccurrenceOrderPlugin())
 } else {
   module.exports.devtool = '#eval-source-map'
 }

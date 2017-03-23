@@ -14,7 +14,16 @@ defmodule Acs.AdminSettingController do
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
     end
   end
-  def get_setting(conn, params) do
+  def get_setting(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
+  # get setting from redis
+  def get_setting_from_redis(conn, %{"setting_name" => setting_name}) do
+    setting = RedisSetting.find(setting_name)
+    conn |> json(%{success: true, setting: setting})
+  end
+  def get_setting_from_redis(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -27,7 +36,7 @@ defmodule Acs.AdminSettingController do
 
       conn |> json(%{success: true, settings: settings})
   end
-  def get_settings_by_group(conn, params) do
+  def get_settings_by_group(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -41,7 +50,7 @@ defmodule Acs.AdminSettingController do
         conn |> json(%{success: false, message: translate_errors(errors)})
     end
   end
-  def delete_setting(conn, params) do
+  def delete_setting(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -63,7 +72,7 @@ defmodule Acs.AdminSettingController do
         conn |> json(%{success: false, i18n_message: translate_errors(errors)})
     end
   end
-  def add_setting(conn, params) do
+  def add_setting(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -76,7 +85,8 @@ defmodule Acs.AdminSettingController do
         # add new
         setting = setting |> Map.put("name", setting_name) |> Map.put("value", setting_value)
         case AdminSetting.changeset(%AdminSetting{}, setting) |> Repo.insert do
-          {:ok, setting} ->
+          {:ok, _} ->
+            RedisSetting.refresh(setting_name)
             conn |> json(%{success: true, i18n_message: "admin.setting.addOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
@@ -87,14 +97,15 @@ defmodule Acs.AdminSettingController do
       %AdminSetting{} = setting ->
         # update
         case AdminSetting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update() do
-          {:ok, _} -> 
+          {:ok, _} ->
+            RedisSetting.refresh(setting_name) 
             conn |> json(%{success: true, i18n_message: "admin.setting.updateOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
         end
     end
   end
-  def update_setting_by_name(conn, params) do
+  def update_setting_by_name(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
   def update_setting(conn, %{"setting_id" => setting_id,
@@ -111,11 +122,11 @@ defmodule Acs.AdminSettingController do
     else
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
-      {:error, %{errors: errors}} ->
+      {:error, _} ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
     end
   end
-  def update_setting(conn, params) do
+  def update_setting(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 

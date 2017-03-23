@@ -38,6 +38,7 @@ defmodule Acs.AdminRouter do
     post "/update_section_info", AdminController, :update_section_info  
 
     post "/get_setting", AdminSettingController, :get_setting
+    post "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
     post "/get_settings_by_group", AdminSettingController, :get_settings_by_group
     post "/delete_setting", AdminSettingController, :delete_setting
     post "/add_setting", AdminSettingController, :add_setting

@@ -44,7 +44,7 @@ export default {
   methods: {
     getKeyword: function() {
       this.processing = true
-      this.$http.post('/admin_actions/get_setting', {
+      this.$http.post('/admin_actions/get_setting_from_redis', {
           setting_name: "keyword"
         }).then(res => res.json())
         .then(result => {

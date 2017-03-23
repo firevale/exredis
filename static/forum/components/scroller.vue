@@ -58,6 +58,12 @@ export default {
 
   mounted: function() {
     this.$on('all-loaded', _ => this.allLoaded = true)
+    this.$on('reset', _ => {
+      this.$nextTick(_ => {
+        this.allLoaded = false
+        this.checkLoadMore()
+      })
+    })
     this.$nextTick(_ => {
       this.iscroll = new IScroll(this.$refs.scroller, this.options)
       this.iscroll.on('scrollStart', this.scrollStart)

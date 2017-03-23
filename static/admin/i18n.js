@@ -65,6 +65,19 @@ export default {
         deleteOk: '删除成功',
         addOk: '添加成功',
         updateOk: '修改成功',
+        id: '配置编号',
+        configName: '配置名',
+        configValue: '配置值',
+        configGroup: '分组',
+        active: '是否启用',
+        add: '添加新配置',
+        edit: '修改',
+        delete: '删除',
+
+        groups: {
+          basicInfo: '基本信息',
+          keyword: '关键词',
+        },
 
         keyword: {
           edit: '修改',
@@ -148,7 +161,9 @@ export default {
         editSdkInfo: '编辑{sdk}接入参数',
         editGoodsInfo: '编辑应用『{appName}』商品信息',
         editSectionInfo: '编辑论坛版块信息',
+        editSettingInfo: '编辑配置信息',
         updateSuccess: '保存成功',
+        deleteSuccess: '删除成功',
         uploadSuccess: '文件上传成功',
         uploadFailed: '文件上传失败',
         updateFailed: '保存失败',
@@ -177,6 +192,7 @@ export default {
         confirmDeleteSection: '您确定要禁用该论坛版块么?',
         sectionInfoUpdated: '论坛版块信息已成功更新',
         forumInfoUpdated: '论坛信息已成功更新',
+        confirmDeleteSetting: '您确定要该配置项么?',
       },
 
       serverSuccess: {

@@ -51,10 +51,6 @@
   } from 'vuex'
 
   import {
-    showMessageBox
-  } from '../dialog/messageBox'
-
-  import {
     openNotification,
     processAjaxError
   } from 'admin/miscellaneous'

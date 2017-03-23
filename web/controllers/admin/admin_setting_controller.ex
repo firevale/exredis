@@ -79,6 +79,7 @@ defmodule Acs.AdminSettingController do
   # update setting
   def update_setting_by_name(conn, %{"setting_name" => setting_name,
                             "setting_value" => setting_value,
+                            "group" => group,
                             "active" => active} = setting) do
     case Repo.get_by(AdminSetting, name: setting_name) do
       nil ->
@@ -87,7 +88,7 @@ defmodule Acs.AdminSettingController do
         case AdminSetting.changeset(%AdminSetting{}, setting) |> Repo.insert do
           {:ok, _} ->
             RedisSetting.refresh(setting_name)
-            conn |> json(%{success: true, i18n_message: "admin.setting.addOk"})
+            conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.addOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
           _ -> 
@@ -99,7 +100,7 @@ defmodule Acs.AdminSettingController do
         case AdminSetting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update() do
           {:ok, _} ->
             RedisSetting.refresh(setting_name) 
-            conn |> json(%{success: true, i18n_message: "admin.setting.updateOk"})
+            conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.updateOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
         end

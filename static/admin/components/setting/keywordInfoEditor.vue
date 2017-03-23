@@ -44,7 +44,7 @@ export default {
   methods: {
     getKeyword: function() {
       this.processing = true
-      this.$http.post('/admin_actions/get_setting_from_redis', {
+      this.$http.post('/admin_actions/get_setting', {
           setting_name: "keyword"
         }).then(res => res.json())
         .then(result => {
@@ -69,6 +69,7 @@ export default {
       this.$http.post('/admin_actions/update_setting_by_name', {
         setting_name: "keyword",
         setting_value: this.keyword.trim(),
+        group: "keyword",
         active: true
       }).then(res => res.json())
       .then(result => {

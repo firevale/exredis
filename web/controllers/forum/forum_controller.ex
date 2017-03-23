@@ -2,6 +2,7 @@ defmodule Acs.ForumController do
   use Acs.Web, :controller
 
   alias   Acs.RedisForum
+  alias   Acs.RedisSetting
   require Floki
 
   plug :fetch_app_id
@@ -35,6 +36,28 @@ defmodule Acs.ForumController do
     end
   end
   def get_forum_info(conn, params) do
+    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+  end
+  defp get_forum_info_by_id(forum_id) do
+    query = from f in Forum,
+            left_join: s in assoc(f, :sections),
+            order_by: [desc: f.id, desc: s.sort],
+            where: f.id == ^forum_id,
+            select: f,
+            preload: [sections: s]
+    Repo.one(query)
+  end
+
+  def get_forum_info_with_keyword(conn, %{"forum_id" => forum_id}) do
+    case get_forum_info_by_id(forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
+      %Forum{} = forum ->
+        setting = RedisSetting.find("keyword")
+        conn |> json(%{success: true, forum: forum, keyword: setting.value})
+    end
+  end
+  def get_forum_info_with_keyword(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -435,16 +458,6 @@ defmodule Acs.ForumController do
   defp add_post_click(post_id, click) do
     post = Repo.get(ForumPost, post_id)
     ForumPost.changeset(post, %{reads: post.reads+click}) |> Repo.update()
-  end
-
-  defp get_forum_info_by_id(forum_id) do
-    query = from f in Forum,
-            left_join: s in assoc(f, :sections),
-            order_by: [desc: f.id, desc: s.sort],
-            where: f.id == ^forum_id,
-            select: f,
-            preload: [sections: s]
-    Repo.one(query)
   end
 
   defp check_exist_by_appid(app_id) do

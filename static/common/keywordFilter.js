@@ -1,6 +1,5 @@
 
-// let HashMap = require('hashmap').HashMap;
-
+import HashMap from 'hashmap'
 let filterMap = new HashMap();
 let endTag = '\0'; // 关键词结束符
 

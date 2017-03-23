@@ -1,4 +1,5 @@
 import './date'
+import * as filter from './keywordFilter'
 
 export const humanReadableDownloadSpeed = val => {
   let resStr = ''
@@ -58,7 +59,6 @@ export const convertServerDateTime = val => {
 
 export const filterKeyword = val => {
   if (val) {
-    let filter = require('./keywordFilter');
     return filter.replaceKeyword(val, '*')
   } else {
     return ''

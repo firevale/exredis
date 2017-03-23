@@ -40,6 +40,7 @@ import {
 
 import nativeApi from 'common/nativeApi'
 import * as acs from 'common/acs'
+import * as filter from 'common/keywordFilter'
 
 export default {
   data: function() {
@@ -64,8 +65,9 @@ export default {
 
       if (result.success) {
         next(vm => {
-          vm.updateKeyword(result.keyword)
+          // vm.updateKeyword(result.keyword)
           vm.updateForumInfo(result.forum)
+          filter.init(result.keyword)
         })
       } else {
         next({

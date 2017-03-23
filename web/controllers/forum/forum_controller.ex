@@ -53,8 +53,12 @@ defmodule Acs.ForumController do
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
       %Forum{} = forum ->
-        setting = RedisSetting.find("keyword")
-        conn |> json(%{success: true, forum: forum, keyword: setting.value})
+        case RedisSetting.find("keyword")  do
+          nil -> 
+            conn |> json(%{success: true, forum: forum, keyword: ""})
+          %{value: keyword} ->
+            conn |> json(%{success: true, forum: forum, keyword: keyword})
+        end        
     end
   end
   def get_forum_info_with_keyword(conn, _) do

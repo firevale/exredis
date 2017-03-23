@@ -29,6 +29,7 @@
     "mdi": "^1.8.36",
     "plotly.js": "^1.24.2",
     "quill": "^1.2.2",
+    "hashmap": "^2.0.0",
     "vue": "^2.2.2",
     "vue-awesome": "^2.1.0",
     "vue-awesome-swiper": "^2.3.2",

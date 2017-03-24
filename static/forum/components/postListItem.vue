@@ -39,8 +39,6 @@ import {
   mapActions
 } from 'vuex'
 
-// import * as filter from '../common/keywordFilter'
-
 export default {
   props: {
     searchKeyword: {
@@ -60,20 +58,20 @@ export default {
       return this.searchKeyword ?
         this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
           `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`
-        ) : this.postInfo.title
-      // filter.filterKeyword(this.postInfo.title)
+        ) :
+        this.postInfo.title
     },
+  },
 
-    methods: {
-      showPostDetail() {
-        this.$router.push({
-          name: 'detail',
-          params: {
-            postId: this.postInfo.id
-          },
-        })
-      }
-    },
-  }
+  methods: {
+    showPostDetail() {
+      this.$router.push({
+        name: 'detail',
+        params: {
+          postId: this.postInfo.id
+        },
+      })
+    }
+  },
 }
 </script>

@@ -103,7 +103,7 @@ export default {
     scrollCancel: function() {
       this.counter = 0
       clearInterval(this.checkInterval)
-      this.checkInterval = nul
+      this.checkInterval = null
     },
 
     scrollEnd: async function() {

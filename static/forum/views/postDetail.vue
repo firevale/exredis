@@ -77,7 +77,7 @@ export default {
         this.total = result.total
         this.totalRecords = result.records
         this.page = this.page + 1
-        if (this.page >= this.total) {
+        if (this.$refs.scroller && this.page >= this.total) {
           this.$refs.scroller.$emit('all-loaded')
         }
       }

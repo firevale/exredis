@@ -17,7 +17,8 @@
     <div style="position: static; height: 100%">
       <div style="position: relative; height: 100%">
         <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-          <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item"></post-list-item>
+          <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item">
+          </post-list-item>
         </scroller>
       </div>
     </div>
@@ -41,10 +42,7 @@ export default {
 
   watch: {
     'currentSectionId' (newVal, oldVal) {
-      this.refresh()
-      if (this.$refs.scroller) {
-        this.$refs.scroller.$emit('reset')
-      }
+      this.resetScroller()
     }
   },
 
@@ -90,16 +88,27 @@ export default {
         ],
         selectedValue: this.postsOrderByField,
         onOk: selectedItem => {
-          this.setPostsOrderByField(selectedItem.value)
-          this.refresh()
+          if (selectedItem.value != this.postsOrderByField) {
+            this.setPostsOrderByField(selectedItem.value)
+            this.resetScroller()
+          }
         },
       })
     },
 
-    refresh() {
+    resetScroller: function() {
       this.page = 0
       this.total = 1
       this.postList = []
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
+    },
+
+    refresh: async function() {
+      this.page = 0
+      this.total = 1
+      await this.loadmore()
     },
 
     loadmore: async function() {
@@ -107,11 +116,11 @@ export default {
         this.currentSectionId, this.$router.currentRoute.params.forumId)
 
       if (result.success) {
-        this.postList = this.postList.concat(result.posts)
+        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
         this.total = result.total
         this.page = this.page + 1
 
-        if (this.page >= this.total) {
+        if (this.$refs.scroller && this.page >= this.total) {
           this.$refs.scroller.$emit('all-loaded')
         }
       }

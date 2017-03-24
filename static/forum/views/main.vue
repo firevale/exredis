@@ -23,9 +23,7 @@
   </transition>
 </div>
 </template>
-
 <script>
-
 import 'quill/assets/snow.styl'
 import 'quill/assets/core.styl'
 

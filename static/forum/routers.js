@@ -33,6 +33,10 @@ export default function(VueRouter) {
             path: 'newPost',
             name: 'newPost',
             component: require('./views/newPost.vue')
+          },{
+            path: 'preview',
+            name: 'preview',
+            component: require('./views/postPreview.vue')
           }, {
             path: 'customerService',
             name: 'customerService',

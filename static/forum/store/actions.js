@@ -49,9 +49,3 @@ export const updateForumInfo = ({
 }, forum) => {
   commit(types.UPDATE_FORUM_INFO, forum)
 }
-
-export const updateKeyword = ({
-  commit
-}, keyword) => {
-  commit(types.UPDATE_KEYWORD, keyword)
-}

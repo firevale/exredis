@@ -11,15 +11,17 @@
     <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
       <p class="control is-horizontal" style="margin-bottom: 1.5rem">
         <input class="input" style="border-radius: 0" type="text" 
-          v-model.trim="title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
+          v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
-      <quill-editor v-model="content" @ready="setEditor" @input="handleValidation($v.content)" @image="onInsertImage">
+      <quill-editor v-model.trim="editingPostData.content" @ready="setEditor" @input="handleValidation($v.editingPostData.content)" @image="onInsertImage">
       </quill-editor>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
       <div class="tile is-full has-text-centered" >
+        <input type="button" @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" 
+          :class="processing || $v.$invalid ? 'is-disabled' : ''" />        
         <input type="submit" :value="$t('forum.newPost.btnTitle')" class="button is-info" 
           :class="processing || $v.$invalid ? 'is-disabled' : ''" />
       </div>
@@ -43,9 +45,6 @@ import {
   showFileUploadDialog
 } from '../components/fileUpload'
 
-import {
-  postPreview
-} from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'
@@ -59,22 +58,23 @@ export default {
     ...mapGetters([
       'userInfo',
       'forumInfo',
-      'currentSectionId'
+      'currentSectionId',
+      'editingPostData',
     ]),
 
     selectedSectionTitle() {
-      let item = this.sectionMenuItems[this.selectedSectionId]
+      let item = this.sectionMenuItems[this.editingPostData.selectedSectionId]
       return item ? item.title : ''
     },
 
     errorHint: function() {
-      if (!this.$v.title.required) {
+      if (!this.$v.editingPostData.title.required) {
         return this.$t('forum.newPost.titlePlaceholder')
-      } else if (!this.$v.title.minLength) {
+      } else if (!this.$v.editingPostData.title.minLength) {
         return this.$t('forum.error.postTitleMinLength')
-      } else if (!this.$v.title.maxLength) {
+      } else if (!this.$v.editingPostData.title.maxLength) {
         return this.$t('forum.error.postTitleMaxLength')
-      } else if (!this.$v.content.required) {
+      } else if (!this.$v.editingPostData.content.required) {
         return this.$t('forum.error.commentContentRequired')
       }
 
@@ -83,23 +83,22 @@ export default {
   },
 
   validations: {
-    title: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(30),
-    },
-    content: {
-      required: function(val) {
-        return this.editor && this.editor.getText().trim().length >= 5
+    editingPostData: {
+      title: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
+      },
+      content: {
+        required: function(val) {
+          return this.editor && this.editor.getText().trim().length >= 5
+        }
       }
     }
   },
 
   data() {
     return {
-      title: '',
-      content: '',
-      selectedSectionId: 1,
       sectionMenuItems: {},
       processing: false,
       editor: undefined,
@@ -109,7 +108,7 @@ export default {
   mounted: function() {
     this.$nextTick(_ => {
       let menuItems = {}
-      this.selectedSectionId = this.currentSectionId || 1
+      this.editingPostData.selectedSectionId = this.currentSectionId || 1
       this.forumInfo.sections.forEach(section => {
         menuItems[section.id] = {
           title: section.title,
@@ -133,6 +132,19 @@ export default {
       touchMap.set($v, setTimeout($v.$touch(), 2000))
     },
 
+    preview: function() {
+      this.$router.push({
+        name: 'preview',
+        params: {
+          avatarUrl: this.userInfo.avatar_url,
+          content: this.editingPostData.content,
+          nickname: this.userInfo.nickName,
+          section: "测试版块",
+          title: this.editingPostData.title
+        },
+      })
+    },
+
     onInsertImage: function(editor) {
       showFileUploadDialog({
         postAction: '/forum_actions/upload_post_image',
@@ -148,11 +160,9 @@ export default {
             editor.insertEmbed(range.index, 'image', response.link)
           } else if (response.i18n_message) {
             message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
-          }
-          else if (response.message) {
+          } else if (response.message) {
             message.showMsg(response.message)
-          }
-          else {
+          } else {
             message.showMsg(this.$t('forum.error.networkError'))
           }
         },
@@ -162,29 +172,17 @@ export default {
     showSelectSectionMenu() {
       menuModal.showModal({
         menuItems: this.sectionMenuItems,
-        selectedValue: this.selectedSectionId,
-        onOk: menuItem => this.selectedSectionId = menuItem.value
+        selectedValue: this.editingPostData.selectedSectionId,
+        onOk: menuItem => this.editingPostData.selectedSectionId = menuItem.value
       })
     },
-
-    // preview() {
-    //   postPreview({
-    //     visible: true,
-    //     item: {
-    //       user: this.userInfo,
-    //       section: this.sectionMenuItems[this.selectedSectionId],
-    //       title: this.title,
-    //       time: utils.nowFromServer(),
-    //       content: this.content
-    //     },
-    //   })
-    // },
 
     handleSubmit: async function() {
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true
         let forumId = this.$router.currentRoute.params.forumId
-        let result = await this.$acs.addPost(forumId, this.selectedSectionId, this.title, this.content)
+        let result = await this.$acs.addPost(forumId, this.editingPostData.selectedSectionId,
+          this.editingPostData.title, this.editingPostData.content)
 
         if (result.success) {
           message.showMsg(this.$t('forum.newPost.addSuccess'))

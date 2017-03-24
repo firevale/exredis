@@ -2,7 +2,7 @@
   <div class="my-posts-list-item row-line">
     <div style="flex: 1;text-align: left;">
       <div @click="showDetail">
-        <span class="post-title">[{{ itemData.section.title }}] {{ itemData.title }}</span>
+        <span class="post-title">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</span>
         <a v-show="itemData.newComment" class="button excellent-btn">{{ $t('forum.personal.newComment') }}</a>
       </div>
       <div class="post-info">

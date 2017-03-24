@@ -23,7 +23,7 @@
         </div>
       </nav>
       <div class="post-content">
-        <div class="ql-editor" v-html="commentData.content">
+        <div class="ql-editor" v-html="filterContent">
         </div>
       </div>
     </div>
@@ -37,6 +37,7 @@ import {
 } from 'vuex'
 import AlertDialog from './alertDialog'
 import message from './message'
+import * as filter from 'common/filters'
 
 export default {
   props: {
@@ -69,14 +70,20 @@ export default {
       return this.commentData.user.avatar_url || window.acsConfig.defaultAvatarUrl
     },
 
+    filterContent() {
+      return filter.filterKeyword(this.commentData.content)
+    },
+
     nthName: function() {
-      switch(this.nth) {
+      switch (this.nth) {
         case 1:
           return this.$t('forum.detail.firstComment');
         case 2:
           return this.$t('forum.detail.secondComment');
         default:
-          return this.$t('forum.detail.nthComment', {nth: this.nth});
+          return this.$t('forum.detail.nthComment', {
+            nth: this.nth
+          });
       }
     }
   },
@@ -84,7 +91,9 @@ export default {
   methods: {
     confirmDeleteComment() {
       AlertDialog.showModal({
-        message: this.$t('forum.detail.deleteTip', {nth: this.nth}),
+        message: this.$t('forum.detail.deleteTip', {
+          nth: this.nth
+        }),
         onOk: async _ => {
           let result = await this.$acs.deleteComment(this.commentData.id, this.$route.params.forumId)
           if (result.success) {

@@ -11,11 +11,13 @@
   </div>
   <div class="original-note" @click="showDetail">
     <span>{{ $t('forum.personal.originalPost') }}</span>
-    <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title }}</span>
+    <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</span>
   </div>
 </div>
 </template>
 <script>
+import * as filter from 'common/filters'
+
 export default {
   props: {
     itemData: {
@@ -38,7 +40,7 @@ export default {
       })
     },
     delHtmlTag(html) {
-      return html.replace(/<[^>]+>/g,"").trim().substring(0,20)
+      return filter.filterKeyword(html.replace(/<[^>]+>/g,"").trim().substring(0,20))
     }
   },
 }

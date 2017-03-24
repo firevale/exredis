@@ -8,7 +8,7 @@ const userInfo = state => state.user
 const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
 const currentPostTitle = state => state.forum.currentPostTitle
-const keyword = state => state.keyword
+const editingPostData = state => state.forum.editingPostData
 
 export {
   transitionName,
@@ -19,5 +19,5 @@ export {
   commonIssues,
   forumInfo,
   currentPostTitle,
-  keyword,
+  editingPostData,
 }

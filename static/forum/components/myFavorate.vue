@@ -2,7 +2,7 @@
 <div class="my-favorite-list-item row-line">
   <div style="flex: 1;text-align: left;">
     <div @click="showDetail">
-      <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title }}</span>
+      <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</span>
     </div>
     <div class="post-info">
       <span>{{ itemData.post.inserted_at | formatServerDateTime }}</span>

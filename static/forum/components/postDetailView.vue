@@ -14,7 +14,7 @@
           <div class="nav-left has-text-left">
             <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
             <span class="post-title">
-              [{{postData.section.title}}] {{postData.title}}
+              [{{postData.section.title}}] {{postData.title | filterKeyword}}
             </span>
             <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
@@ -30,7 +30,7 @@
           <span class="is-primary">{{ postData.user.nickname }}</span>
         </p>
         <div class="post-content">
-          <div class="ql-editor" v-html="postData.content">
+          <div class="ql-editor" v-html="filterContent">
           </div>
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
@@ -82,6 +82,7 @@
   } from '../components/swiper'
   import message from './message'
   import * as acs from 'common/acs'
+  import * as filter from 'common/filters'
   
   export default {
     mounted() {
@@ -129,6 +130,10 @@
   
       avatarUrl() {
         return this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+      },
+
+      filterContent() {
+        return filter.filterKeyword(this.postData.content)
       }
     },
   

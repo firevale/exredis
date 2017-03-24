@@ -1,6 +1,6 @@
 <template>
   <div class="scroller-container">
-    <div ref="scroller" class="scroller">       
+    <div ref="scroller" class="scroller" v-touch:pan-y="panEnd">       
       <div ref="scroller_content" class="scroller-content">
         <div v-if="onRefresh" class="pull-to-refresh-layer">
           <span v-show="refreshState == 0"> pull to refresh </span>      
@@ -72,6 +72,7 @@ export default {
     this.$nextTick(_ => {
       this.iscroll = new IScroll(this.$refs.scroller, this.options)
       this.iscroll.on('scrollStart', this.scrollStart)
+      this.iscroll.on('scrollCancel', this.scrollCancel)
       this.iscroll.on('scrollEnd', this.scrollEnd)
       this.resetScrollTop()
       this.$nextTick(_ => this.checkLoadMore())
@@ -99,6 +100,12 @@ export default {
       this.checkInterval = setInterval(_ => this.checkScroll(), 100)
     },
 
+    scrollCancel: function() {
+      this.counter = 0
+      clearInterval(this.checkInterval)
+      this.checkInterval = nul
+    },
+
     scrollEnd: async function() {
       clearInterval(this.checkInterval)
       this.checkInterval = null
@@ -114,6 +121,10 @@ export default {
       }
     },
 
+    panEnd: function() {
+      console.log('pan end recognized')
+    },
+
     checkScroll: function() {
       if (this.iscroll && this.onRefresh && !this.loading) {
         if (this.iscroll.y >= REM_SIZE * 3 && this.iscroll.directionY <= 0) {
@@ -124,8 +135,7 @@ export default {
           this.counter = 0
           this.refreshState = PULL_TO_REFRESH
         }
-      }
-      else {
+      } else {
         this.checkInterval && clearInterval(this.checkInterval)
       }
     },
@@ -173,7 +183,6 @@ export default {
           height: 2.5rem;
         }
       }
-
       .pull-to-refresh-layer {
         margin-top: -3rem;
       }

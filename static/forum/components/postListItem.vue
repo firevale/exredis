@@ -39,32 +39,8 @@ import {
   mapActions
 } from 'vuex'
 
-<<<<<<< HEAD
-  // import * as filter from '../common/keywordFilter'
+// import * as filter from '../common/keywordFilter'
 
-  export default {
-    props: {
-      searchKeyword: {
-        type: String,
-        default: '',
-      },
-      postInfo: {
-        type: Object,
-        default: null,
-      },
-    },
-    computed: {
-      avatarUrl: function () {
-        return this.postInfo.user.avatar_url || window.acsConfig.defaultAvatarUrl
-      },
-      strenghtenKeywordTitle() {
-        return this.searchKeyword ?
-          this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
-            `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`
-          ) : this.postInfo.title
-          // filter.filterKeyword(this.postInfo.title)
-      },
-=======
 export default {
   props: {
     searchKeyword: {
@@ -74,7 +50,6 @@ export default {
     postInfo: {
       type: Object,
       default: null,
->>>>>>> 6a16731496092c72db2974af31b6b799d2785868
     },
   },
   computed: {
@@ -85,20 +60,19 @@ export default {
       return this.searchKeyword ?
         this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
           `<span class="is-danger" style="font-weight: 400; font-style: italic;">${this.searchKeyword}</span>`
-        ) :
-        this.postInfo.title
+        ) : this.postInfo.title
+      // filter.filterKeyword(this.postInfo.title)
     },
-  },
 
-  methods: {
-    showPostDetail() {
-      this.$router.push({
-        name: 'detail',
-        params: {
-          postId: this.postInfo.id
-        },
-      })
-    }
-  },
-}
+    methods: {
+      showPostDetail() {
+        this.$router.push({
+          name: 'detail',
+          params: {
+            postId: this.postInfo.id
+          },
+        })
+      }
+    },
+  }
 </script>

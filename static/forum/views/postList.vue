@@ -42,6 +42,9 @@ export default {
   watch: {
     'currentSectionId' (newVal, oldVal) {
       this.refresh()
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
     }
   },
 
@@ -104,14 +107,12 @@ export default {
         this.currentSectionId, this.$router.currentRoute.params.forumId)
 
       if (result.success) {
-        if (result.posts.length > 0) {
-          this.postList = this.postList.concat(result.posts)
-          this.total = result.total
-          this.page = this.page + 1
+        this.postList = this.postList.concat(result.posts)
+        this.total = result.total
+        this.page = this.page + 1
 
-          if (this.page >= this.total) {
-            this.$refs.scroller.$emit('all-loaded')
-          }
+        if (this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
         }
       }
     }

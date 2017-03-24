@@ -234,6 +234,11 @@ export default {
     height: 100%;
 
     &-content {
+      -webkit-transform-style: preserve-3d;
+      transform-style: preserve-3d;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      
       min-height: 100vh;
 
       .pull-to-refresh-layer,

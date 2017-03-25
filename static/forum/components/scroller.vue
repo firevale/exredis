@@ -11,10 +11,11 @@
         <div ref="loading_layer" class="loading-layer">
           <slot name="all-loaded" v-if="allLoaded"> {{ this.i18n.noMoreData }} </slot>
           <slot name="loading" v-if="loading">
+            <p>
             <span class="icon image-icon icon-spinner rotating"> </span> 
+            <span> {{ this.i18n.refreshing }} </span>
+            </p>
           </slot>
-        </div>
-        <div style="width: 100%; height: 10rem;">
         </div>
       </div>
     </div>
@@ -61,7 +62,6 @@ export default {
     return {
       refreshState: PULL_TO_REFRESH,
       iscroll: null,
-      checkInterval: null,
       loading: false,
       allLoaded: false,
       counter: 0,
@@ -71,8 +71,6 @@ export default {
   },
 
   beforeDestroy: function() {
-    this.checkInterval && clearInterval(this.checkInterval)
-    this.checkInterval = null
     this.iscroll && this.iscroll.destroy()
     this.iscroll = null
   },
@@ -91,19 +89,19 @@ export default {
         mouseWheel: true,
         scrollX: false,
         scrollY: true,
+        probeType: 2,
       })
       this.iscroll.on('scrollStart', this.scrollStart)
       this.iscroll.on('scrollCancel', this.scrollCancel)
+      this.iscroll.on('scroll', this.scroll)
       this.iscroll.on('scrollEnd', this.scrollEnd)
       this.iscroll.on('bounceStart', this.bounceStart)
       this.resetScrollTop()
       this.$nextTick(_ => this.checkLoadMore())
       this.sensor = new ResizeSensor(this.$refs.scroller_content, _ => {
-        if (!this.isScrolling) {
+        if (!(this.isScrolling || this.loading)) {
           if (this.iscroll.isInTransition) {
-            setTimeout(_ => {
-              this.iscroll.refresh()
-            }, 600)
+            this.needRefresh = true
           } else {
             this.$nextTick(_ => {
               this.iscroll.refresh()
@@ -130,9 +128,6 @@ export default {
     scrollStart: function() {
       this.counter = 0
       this.isScrolling = true
-      if (!this.loading) {
-        this.checkInterval = setInterval(_ => this.checkScroll(), 100)
-      }
     },
 
     scrollCancel: function() {
@@ -142,46 +137,39 @@ export default {
         this.iscroll.refresh()
         this.needRefresh = false
       }
-
-      clearInterval(this.checkInterval)
-      this.checkInterval = null
     },
 
-    scrollEnd: async function() {
-      clearInterval(this.checkInterval)
-      this.checkInterval = null
+    scrollEnd: function() {
       this.isScrolling = false
 
       if (this.needRefresh) {
         this.iscroll.refresh()
         this.needRefresh = false
-      }
-
-      this.checkLoadMore()
-    },
-
-    bounceStart: async function() {
-      if (this.onRefresh && this.refreshState == RELEASE_TO_REFRESH) {
-        this.refreshState = REFRESHING
-        this.allLoaded = false
-        await this.onRefresh()
-        if (this.iscroll) {
-          this.iscroll.tempY = null
-          if (!this.isScrolling) {
-            this.iscroll.resetPosition(600)
-          } else {
-            this.needRefresh = true
-          }
-        }
-        this.refreshState = PULL_TO_REFRESH
+        setTimeout(this.checkLoadMore, 600)
+      } else {
         this.checkLoadMore()
       }
     },
 
-    checkScroll: function() {
+    bounceStart: function() {
+      if (this.onRefresh && this.refreshState == RELEASE_TO_REFRESH) {
+        setTimeout(async _ => {
+          this.refreshState = REFRESHING
+          this.allLoaded = false
+          await this.onRefresh()
+          if (this.iscroll) {
+            this.iscroll.tempY = null
+            this.needRefresh = true
+            this.refreshState = PULL_TO_REFRESH
+          }
+        }, 0)
+      }
+    },
+
+    scroll: function() {
       if (this.iscroll && this.onRefresh && !this.loading && !this.iscroll.isInTransition) {
         if (this.iscroll.y >= REM_SIZE * 4 && this.iscroll.directionY <= 0) {
-          if (this.counter++ >= 4) {
+          if (this.counter++ >= 6) {
             this.refreshState = RELEASE_TO_REFRESH
             this.iscroll.tempY = 4 * REM_SIZE
           }
@@ -200,6 +188,10 @@ export default {
         this.loading = true
         await this.onLoadMore()
         this.loading = false
+        if (this.needRefresh && this.iscroll) {
+          this.iscroll.refresh()
+          this.needRefresh = false
+        }
         this.$nextTick(_ => this.checkLoadMore())
       }
     },
@@ -238,11 +230,14 @@ export default {
       transform-style: preserve-3d;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
-      
+
       min-height: 100vh;
 
       .pull-to-refresh-layer,
       .loading-layer {
+        color: #cacaca;
+        position: relative;
+        font-size: 1.25rem;
         width: 100%;
         height: 4rem;
         display: flex;
@@ -251,19 +246,19 @@ export default {
         align-items: center;
 
         span.icon {
-          width: 2.5rem;
-          height: 2.5rem;
+          margin-top: 0.125rem;
+          width: 1.5rem;
+          height: 1.5rem;
         }
       }
+
       .pull-to-refresh-layer {
         margin-top: -4rem;
 
         .pull-to-refresh,
         .release-to-refresh,
         .refreshing {
-          color: #cacaca;
           position: relative;
-          font-size: 1.25rem;
 
           &:before {
             content: "";

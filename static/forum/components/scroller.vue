@@ -189,8 +189,10 @@ export default {
         await this.onLoadMore()
         this.loading = false
         if (this.needRefresh && this.iscroll) {
-          this.iscroll.refresh()
-          this.needRefresh = false
+          setTimeout(_ => {
+            this.iscroll.refresh()
+            this.needRefresh = false
+          }, 100)
         }
         this.$nextTick(_ => this.checkLoadMore())
       }

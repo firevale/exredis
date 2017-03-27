@@ -1,7 +1,7 @@
 FROM docker-registry.firevale.com/ass_base
 MAINTAINER xiaobin@firevale.com
 
-COPY _build/$MIX_ENV/rel /rel
+COPY _build/${MIX_ENV}/rel /rel
 
 VOLUME ["/rel/acs/lib/acs-0.0.1/priv/static", "/var/log/acs"]
 

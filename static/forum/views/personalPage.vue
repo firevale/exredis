@@ -78,7 +78,6 @@
 
     mounted: function () {
       this.$refs.pag.$on('switch-page', this.getPostPage)
-      this.getUserInfo()
       this.getPostPage(this.page)
     },
 
@@ -156,14 +155,6 @@
         case "myFavor":
           this.favoriteList.splice(index, 1)
           break;
-        }
-      },
-
-      getUserInfo: async function () {
-        let result = await this.$acs.getUserInfo()
-
-        if (result.success) {
-          this.serUserProfile(result.user)
         }
       },
 

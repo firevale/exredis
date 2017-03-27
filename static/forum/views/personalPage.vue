@@ -63,7 +63,6 @@ export default {
 
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.getPostPage)
-    this.getUserInfo()
     this.getPostPage(this.page)
   },
 

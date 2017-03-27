@@ -6,9 +6,8 @@ defmodule Acs.ForumController do
   require Floki
 
   plug :fetch_app_id
-  plug :fetch_user_id
-  plug :fetch_user
-  plug :fetch_session_user_id
+  plug :fetch_session_user_id  
+  plug :fetch_session_user
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_post_detail]
@@ -414,24 +413,6 @@ defmodule Acs.ForumController do
   end
   def add_comment(conn, params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
-  end
-
-  # get_user_info
-  def get_user_info(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, params) do
-    query = from u in User,
-            where: u.id == ^user_id,
-            select: map(u, [:id, :nickname, :avatar_url, :inserted_at])
-
-    case Repo.one(query) do
-      nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.userNotExist"})
-      _ = user ->
-        conn |> json(%{success: true, user: user})
-    end
-
-  end
-  def get_user_info(conn, params) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
   # get_user_favorites

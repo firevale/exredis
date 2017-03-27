@@ -51,10 +51,6 @@ export default {
         return post(Vue, '/forum_actions/get_forum_info', {forum_id})
       },
 
-      getUserInfo() {
-        return post(Vue, '/forum_actions/get_user_info')
-      },
-
       addPost(forum_id, section_id, title, content) {
         return post(Vue, '/forum_actions/add_post', {forum_id, section_id, title, content})
       },

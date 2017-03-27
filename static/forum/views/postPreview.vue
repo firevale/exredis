@@ -21,7 +21,7 @@
           <span class="is-grey">
             <timeago :since="nowdate" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ nickname }}</span>
+          <span class="is-primary">{{ userInfo.nickName }}</span>
         </p>
         <div class="post-content">
           <div class="ql-editor" v-html="filterContent">
@@ -29,6 +29,10 @@
         </div>
       </div>
     </article>
+    <div class="tile is-full has-text-centered" >
+        <input type="button" @click="close" :value="$t('forum.newPost.backAndEdit')" class="button is-info" />        
+        <input type="submit" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')" class="button is-info" />
+      </div>
   </div>
 </template>
 <script>
@@ -37,32 +41,36 @@ import {
   mapActions
 } from 'vuex'
 
+import message from '../components/message'
 import * as utils from 'common/utils'
 import * as filter from 'common/filters'
 
 export default {
   mounted: function() {
-    this.avatarUrl = this.$route.params.avatarUrl
     this.content = this.$route.params.content
-    this.nickname = this.$route.params.nickname
     this.section = this.$route.params.section
     this.title = this.$route.params.title
+    this.selectedSectionId = this.$route.params.selectedSectionId
   },
 
   data() {
     return {
-      avatarUrl: "",
       content: "",
-      nickname: "",
       nowdate: utils.nowFromServer(),
       section: "",
       title: "",
+      selectedSectionId: 0,
+      processing: false,
     }
   },
 
   computed: {
+    ...mapGetters([
+      'userInfo',
+    ]),
+
     avatarUrl() {
-      return this.avatarUrl || window.acsConfig.defaultAvatarUrl
+      return this.userInfo.avatar_url || window.acsConfig.defaultAvatarUrl
     },
 
     filterContent() {
@@ -70,5 +78,27 @@ export default {
     }
   },
 
+  methods: {
+    close: function() {
+      window.history.go(-1)
+    },
+
+    handleSubmit: async function() {
+      if (!this.processing) {
+        this.processing = true
+        let forumId = this.$router.currentRoute.params.forumId
+        let result = await this.$acs.addPost(forumId, this.selectedSectionId,
+          this.title, this.content)
+
+        if (result.success) {
+          message.showMsg(this.$t('forum.newPost.addSuccess'))
+          this.$router.replace({
+            name: 'postList'
+          })
+        }
+        this.processing = false
+      }
+    },
+  }
 }
 </script>

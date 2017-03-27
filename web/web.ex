@@ -97,6 +97,8 @@ defmodule Acs.Web do
       import Acs.Gettext
 
       require Logger
+
+      alias   Utils.JSON
     end
   end
 

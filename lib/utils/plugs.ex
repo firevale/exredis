@@ -1,5 +1,6 @@
 defmodule Acs.Plugs do
   import Plug.Conn
+  import Ecto.Query
   use    LogAlias
 
   alias   Acs.RedisApp
@@ -8,6 +9,7 @@ defmodule Acs.Plugs do
   alias   Acs.Repo
   alias   Acs.AdminUser
   alias   Acs.ForumManager
+  alias   Acs.User
   require Gettext
   require Redis
 
@@ -160,6 +162,17 @@ defmodule Acs.Plugs do
         conn
     end
   end
+  def fetch_session_user(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _options) do
+    query = from u in User,
+        where: u.id == ^user_id,
+        select: map(u, [:id, :nickname, :avatar_url, :inserted_at])
+    case Repo.one(query) do
+      nil -> conn
+      _ = user ->
+        conn |> put_private(:acs_session_user, user)
+    end
+  end
+  def fetch_session_user(%Plug.Conn{} = conn, _options), do: conn
 
   def fetch_user_id(%Plug.Conn{} = conn, _options) do
     case _fetch_header_user_id(conn) || _fetch_params_user_id(conn) do

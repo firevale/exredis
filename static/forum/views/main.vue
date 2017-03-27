@@ -63,9 +63,12 @@ export default {
 
       if (result.success) {
         next(vm => {
-          // vm.updateKeyword(result.keyword)
           vm.updateForumInfo(result.forum)
           filter.init(result.keyword)
+
+          if(window.acsConfig.acsUser){
+            vm.serUserProfile(window.acsConfig.acsUser)
+          }
         })
       } else {
         next({
@@ -81,7 +84,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName', 'updateForumInfo', 'updateKeyword'
+      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'serUserProfile'
     ]),
 
     onBtnBackClicked: function() {

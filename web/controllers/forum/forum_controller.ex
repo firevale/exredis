@@ -12,6 +12,29 @@ defmodule Acs.ForumController do
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_post_detail]
 
+  # get_paged_forums
+  def get_paged_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
+    fetch_forums(conn, page, records_per_page)
+  end
+  def get_paged_forums(conn, _params) do
+    fetch_forums(conn, 1, 100)
+  end
+  defp fetch_forums(conn, page, records_per_page) do
+    total = Repo.one!(from forum in Forum, select: count(forum.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from forum in Forum,
+              left_join: sections in assoc(forum, :sections),
+              order_by: [desc: forum.id, desc: sections.sort],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: forum,
+              preload: [sections: sections]
+
+    forums = Repo.all(query)
+    conn |> json(%{success: true, forums: forums, total: total_page})
+  end  
+
   # get_forum_info
   def get_forum_info(conn, %{"forum_id" => forum_id} = params) do
     case get_forum_info_by_id(forum_id) do

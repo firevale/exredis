@@ -39,6 +39,10 @@ const post = async(Vue, uri, params) => {
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
+      getPagedForums() {
+        return post(Vue, '/forum_actions/get_paged_forums', {})
+      },
+
       getPagedPost(page, records_per_page, order, section_id, forum_id) {
         return post(Vue, '/forum_actions/get_paged_post', {page, records_per_page, order, section_id, forum_id})
       },

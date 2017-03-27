@@ -18,6 +18,7 @@ defmodule Acs.ForumRouter do
 
     get  "/get_forum_info", ForumController, :get_forum_info
     post "/get_forum_info", ForumController, :get_forum_info
+    post "/get_paged_forums", ForumController, :get_paged_forums
     post "/get_forum_info_with_keyword", ForumController, :get_forum_info_with_keyword
 
     get   "/get_paged_post", ForumController, :get_paged_post

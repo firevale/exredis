@@ -76,6 +76,7 @@ export default {
         btnTitle: '发帖',
         preview: '预览',
         editView: '编辑',
+        backAndEdit: '返回编辑',
         titlePlaceholder: '输入一个闪亮亮的钛合金标题吧 ！',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
         requireTitle: '请输入标题',

@@ -56,7 +56,6 @@ export default {
 
   computed: {
     ...mapGetters([
-      'userInfo',
       'forumInfo',
       'currentSectionId',
       'editingPostData',
@@ -136,11 +135,10 @@ export default {
       this.$router.push({
         name: 'preview',
         params: {
-          avatarUrl: this.userInfo.avatar_url,
           content: this.editingPostData.content,
-          nickname: this.userInfo.nickName,
-          section: "测试版块",
-          title: this.editingPostData.title
+          section: this.sectionMenuItems[this.editingPostData.selectedSectionId].title,
+          title: this.editingPostData.title,
+          selectedSectionId: this.editingPostData.selectedSectionId
         },
       })
     },

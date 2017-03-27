@@ -9,6 +9,10 @@ export default function(VueRouter) {
         name: 'error',
         component: require('./views/error.vue')
       }, {
+        path: '/forum/index',
+        name: 'forumList',
+        component: require('./views/forum.vue')
+      }, {
         path: '/forum/:forumId',
         name: 'forum',
         component: require('./views/main.vue'),

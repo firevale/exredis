@@ -96,6 +96,7 @@ defmodule Acs.Mixfile do
      {:floki, "~> 0.15.0"},
      {:exrm, "~> 1.0"},
      {:erlware_commons, "~> 1.0", override: true},
+     {:providers, "~> 1.6", override: true},
     ]
   end
 

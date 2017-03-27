@@ -55,11 +55,6 @@ defmodule Acs.Mixfile do
         :plugsnag,
         :floki,
         :mix,
-        :cf,
-        :relx,
-        :providers,
-        :erlware_commons,
-        :bbmustache,
     ]]
   end
 
@@ -99,12 +94,7 @@ defmodule Acs.Mixfile do
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
      {:floki, "~> 0.15.0"},
-     {:exrm, "~> 1.0"},
-     {:cf, "~> 0.2.2", override: true},
-     {:relx, "~> 3.22.2", override: true},
-     {:erlware_commons, "~> 0.22.0", override: true},
-     {:providers, "~> 1.6", override: true},
-     {:bbmustache, "~> 1.0.4", override: true},
+     {:distillery, "~> 1.3"},
     ]
   end
 

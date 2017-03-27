@@ -5,6 +5,8 @@ defmodule Acs.PageController do
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_access_token
+  plug :fetch_session_user_id
+  plug :fetch_session_user
   plug :fetch_zone_id
   plug :fetch_body_class
   plug :check_admin_access when action == :show_admin_page

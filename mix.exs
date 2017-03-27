@@ -55,6 +55,8 @@ defmodule Acs.Mixfile do
         :plugsnag,
         :floki,
         :mix,
+        :providers,
+        :erlware_commons,
     ]]
   end
 

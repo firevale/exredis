@@ -95,7 +95,7 @@ defmodule Acs.Mixfile do
      {:bamboo_smtp, "~> 1.3"},
      {:floki, "~> 0.15.0"},
      {:exrm, "~> 1.0"},
-     {:relx, "~> 3.22.2", override: true},
+     {:erlware_commons, "~> 1.0", override: true},
     ]
   end
 

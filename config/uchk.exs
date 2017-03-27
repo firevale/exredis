@@ -14,9 +14,9 @@ config :acs, email_service_provider: Acs.MandrillMailer
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "acs",
-  password: "A2m#x@8#Y%jVPv7*",
+  password: "*0!pAPjFkXeMSd3r",
   database: "acs",
-  hostname: "10.10.235.15",
+  hostname: "10.8.21.135",
   pool_size: 10
 
 config :acs, :elasticsearch, 
@@ -24,8 +24,8 @@ config :acs, :elasticsearch,
   connection: [host: {:system, "ACS_ELASTICSEARCH_HOSTNAME"}, port: {:system, "ACS_ELASTICSEARCH_PORT"}]
 
 config :redis_poolex,
-  host: "10.10.241.252",
-  port: 6380,
+  host: "10.8.21.135",
+  port: 6379,
   password: "",
   db: 0,
   reconnect: :no_reconnect,

@@ -1,8 +1,8 @@
 ## Name of the node
--name acs@127.0.0.1
+-name <%= release_name %>@127.0.0.1
 
 ## Cookie for distributed erlang
--setcookie acs 
+-setcookie <%= release_name %>
 
 ## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
 ## (Disabled by default..use with caution!)

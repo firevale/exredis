@@ -1,17 +1,20 @@
 use Mix.Releases.Config,
   default_release: :acs,
-  default_environment: Mix.env,
+  default_environment: Mix.env
 
 environment :dev do
-  set dev_mode: true set include_erts: false
+  set dev_mode: true 
+  set include_erts: false
   set include_system_libs: false
   set cookie: :dev
 end
+
 environment :ucbj do
   set include_erts: true
   set include_system_libs: true
   set cookie: :acs
 end
+
 environment :uchk do
   set include_erts: true
   set include_system_libs: true
@@ -55,5 +58,6 @@ release :acs do
     :floki,
     :mix,
   ]
-  set vm_args: "./vm.args"
+
+  set vm_args: "rel/vm.args"
 end

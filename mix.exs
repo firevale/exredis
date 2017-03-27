@@ -59,6 +59,7 @@ defmodule Acs.Mixfile do
         :relx,
         :providers,
         :erlware_commons,
+        :bbmustache,
     ]]
   end
 
@@ -103,6 +104,7 @@ defmodule Acs.Mixfile do
      {:relx, "~> 3.22.2", override: true},
      {:erlware_commons, "~> 0.22.0", override: true},
      {:providers, "~> 1.6", override: true},
+     {:bbmustache, "~> 1.0.4", override: true},
     ]
   end
 

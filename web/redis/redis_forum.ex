@@ -1,5 +1,6 @@
 defmodule Acs.RedisForum do
   require Redis
+  use     LogAlias
 
   alias   Acs.Repo
   import  Ecto.Query
@@ -73,6 +74,7 @@ defmodule Acs.RedisForum do
         limit = String.to_integer(setting)
         if(limit >0 and comments >= limit) do
           redis_key = "#{@forum_post_hot_key}.#{post_id}"
+          d "-------------set hot: post_id=#{post_id}, comments=#{comments}"
           case Redis.get(redis_key) do
             :undefined -> Redis.setex(redis_key, 12*3600, 1)
             _ -> :do_nothing

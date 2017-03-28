@@ -148,7 +148,7 @@ defmodule Acs.ForumController do
     else
       query
     end
-    posts = Repo.all(query) |> RedisForum.filterHotList |> Enum.reverse
+    posts = Repo.all(query) |> RedisForum.filterHotList
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end

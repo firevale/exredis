@@ -5,7 +5,7 @@
       <div class="column is-8">
         <label class="label"> {{ $t('admin.label.keyword')}}: </label>
         <p class="control">
-          <textarea class="textarea" style="height:500px" placeholder="请输入关键词，以小写“,”分隔" v-model="keyword"></textarea>
+          <textarea class="textarea" style="height:500px" placeholder="请输入敏感词，以小写“,”分隔" v-model="keyword"></textarea>
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export default {
         setting_name: "keyword",
         setting_value: this.keyword.trim(),
         group: "keyword",
-        memo: '网站关键词过滤',
+        memo: '网站敏感词过滤',
         active: true
       }).then(res => res.json())
       .then(result => {

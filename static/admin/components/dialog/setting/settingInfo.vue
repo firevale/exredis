@@ -12,8 +12,13 @@
 
         <label class="label"> {{ $t('admin.setting.configValue') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="setting.value">
+          <textarea class="textarea" style="height:200px" v-v-model.trim="setting.value"></textarea>
         </p>
+
+        <label class="label"> {{ $t('admin.setting.memo') }}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="setting.memo">
+        </p>        
 
         <label class="label"> {{ $t('admin.setting.configGroup') }}: </label>
         <p class="control">
@@ -66,6 +71,7 @@
             setting_name: this.setting.name,
             setting_value: this.setting.value,
             group: this.setting.group,
+            memo: this.setting.memo,
             active: true
           })
           .then(response => response.json())

@@ -21,6 +21,7 @@ defmodule Acs.RedisForum do
   use     Utils.Jsonable
 
   @forum_cache_key     "fvac.forum_cache"
+  @forum_post_hot_key  "fvac.forum_post_hot"
 
   def find(id)  do
     redis_key = "#{@forum_cache_key}.#{id}"
@@ -59,6 +60,33 @@ defmodule Acs.RedisForum do
 
         cache
     end
+  end
+
+  def sethot(post_id) do
+    redis_key = "#{@forum_post_hot_key}.#{post_id}"
+
+    case Redis.get(redis_key) do
+      nil ->
+        Redis.setex(redis_key, 12*3600, 1)
+      
+      _ -> # do nothing
+    end
+  end
+
+  def filterHotList(posts) do
+    redis_keys = for n <- posts, do: @forum_post_hot_key <> "." <> Integer.to_string(n.id)
+    exids = Redis.mget(redis_keys)
+
+    {[], ps} = Enum.reduce(posts, {exids, []}, fn(post, {[x | exids], newPosts}) ->
+        case x do
+          "1" ->
+            {exids, [%{post | is_hot: true} | newPosts]}
+          _ ->
+            {exids, [post | newPosts]}
+        end
+    end)  
+    
+    posts = Enum.reverse(ps)
   end
 
 end

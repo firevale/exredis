@@ -8,6 +8,7 @@
               <tr>
                 <th>{{ $t('admin.setting.configName') }}</th>
                 <th>{{ $t('admin.setting.configValue')}}</th>
+                <th>{{ $t('admin.setting.memo')}}</th>
                 <th>{{ $t('admin.setting.active')}}</th>
                 <th>{{ $t('admin.setting.edit')}}</th>
                 <th>{{ $t('admin.setting.delete')}}</th>
@@ -15,7 +16,7 @@
             </thead>
             <tfoot>
               <tr>
-                <th :colspan="5" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
+                <th :colspan="6" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
                   <a class="button is-primary" style="min-width: 100px" @click="addNewSetting">
                     <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.setting.add') }}
                   </a>
@@ -26,6 +27,7 @@
               <tr v-for="(setting, index) in settings">
                 <td> {{ setting.name }} </td>
                 <td> {{ setting.value }} </td>
+                <td> {{ setting.memo }} </td>
                 <td v-if="setting.active">正常</td><td v-else>禁用</td>
                 <td class="is-icon">
                   <a @click.prevent="editSettingInfo(setting, index)">

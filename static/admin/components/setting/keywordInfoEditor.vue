@@ -51,9 +51,7 @@ export default {
           this.processing = false
           if (result.success) {
             this.keyword = result.setting.value
-          } else {
-            return Promise.reject(result)
-          }
+          } 
         }).catch(e => {
           this.processing = false
           processAjaxError(e)

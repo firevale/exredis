@@ -12,10 +12,10 @@
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
          <p>
-           {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.postCount }}</span>
+           {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
          </p>
          <p>
-            {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.registerTime }}</span>
+            {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
          </p>
       </div>
       </article>
@@ -64,7 +64,6 @@ export default {
 
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.getPostPage)
-    this.getUserInfo()
     this.getPostPage(this.page)
   },
 
@@ -153,14 +152,6 @@ export default {
         case "myFavor":
           this.favoriteList.splice(index, 1)
           break;
-      }
-    },
-
-    getUserInfo: async function() {
-      let result = await this.$acs.getUserInfo()
-
-      if (result.success) {
-        this.serUserProfile(result.user)
       }
     },
 

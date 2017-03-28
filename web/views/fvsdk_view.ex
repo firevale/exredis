@@ -37,6 +37,11 @@ defmodule Acs.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum,
       has_mall: app.has_mall,
+      fb_app_id: case app.sdk_bindings[:facebook] do 
+                   nil -> ""
+                   %{app_id: app_id} -> app_id
+                   _ -> "" 
+                 end,
       goods: goods
      }
   end
@@ -48,6 +53,11 @@ defmodule Acs.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum, 
       has_mall: app.has_mall,
+      fb_app_id: case app.sdk_bindings[:facebook] do 
+                   nil -> ""
+                   %{app_id: app_id} -> app_id
+                   _ -> "" 
+                 end,
       wechat_pay_info: case app.sdk_bindings[:wechat] do 
                          nil -> %{}
                          wechat_info = %{} -> 

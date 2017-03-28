@@ -108,7 +108,7 @@
         </p>
       </div>
     </div>
-    <div class="container has-text-centered" style="margin-top: 15px">
+    <div class="has-text-centered" style="margin-top: 15px">
       <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
     </div>
   </validation>

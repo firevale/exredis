@@ -45,6 +45,12 @@ export default {
             name: 'login'
           })
           break;
+        case 'facebook': 
+          nativeApi.closeWebviewWithResult({
+            success: false,
+            action: 'facebook',
+          })
+          break;     
         case 'anonymous':
           this.anonymousLogin()
           break;

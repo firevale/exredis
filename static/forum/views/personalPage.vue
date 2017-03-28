@@ -24,6 +24,7 @@
           <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
           <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
           <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
+          <div class="slider" :style="{'background-position':sliderPosition}"/>
         </div>
       </nav>
     <div class="content" v-show="type == 'myPosts'">
@@ -63,6 +64,7 @@ export default {
 
   mounted: function() {
     this.$refs.pag.$on('switch-page', this.getPostPage)
+    this.getUserInfo()
     this.getPostPage(this.page)
   },
 
@@ -74,6 +76,16 @@ export default {
     uploadParams() {
       return {
         user_id: this.userInfo.id
+      }
+    },
+    sliderPosition() {
+      switch (this.type) {
+        case "myPosts":
+          return "10% bottom"
+        case "myComments":
+          return "50% bottom"
+        case "myFavor":
+          return "90% bottom"
       }
     }
   },
@@ -106,6 +118,7 @@ export default {
     },
     onShowImageUpload: function() {
       this.showImgUpload = true
+
     },
     cropSuccess(data, field, key) {
 

@@ -68,6 +68,7 @@ export default {
         setting_name: "keyword",
         setting_value: this.keyword.trim(),
         group: "keyword",
+        memo: '网站关键词过滤',
         active: true
       }).then(res => res.json())
       .then(result => {

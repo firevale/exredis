@@ -12,7 +12,7 @@
 
         <label class="label"> {{ $t('admin.setting.configValue') }}: </label>
         <p class="control">
-          <textarea class="textarea" style="height:200px" v-v-model.trim="setting.value"></textarea>
+          <textarea class="textarea" style="height:120px" v-model.trim="setting.value"></textarea>
         </p>
 
         <label class="label"> {{ $t('admin.setting.memo') }}: </label>
@@ -29,7 +29,7 @@
           </span>
         </p>
 
-        <div class="container has-text-centered" style="margin-top: 15px">
+        <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>
       </validation>

@@ -79,7 +79,7 @@ defmodule Acs.ForumController do
         case RedisSetting.find("keyword")  do
           nil -> 
             conn |> json(%{success: true, forum: forum, keyword: ""})
-          %{value: keyword} ->
+          keyword ->
             conn |> json(%{success: true, forum: forum, keyword: keyword})
         end        
     end
@@ -424,8 +424,14 @@ defmodule Acs.ForumController do
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
         post = Repo.get(ForumPost, post_id)
-        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+        now_time = DateTime.utc_now()
         ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
+
+        # check is hot
+        before_time = Timex.shift(now_time, hours: -12)
+        query = from c in ForumComment, select: count(1), where: c.post_id == ^post_id and c.active == true and c.inserted_at >= ^before_time
+        total = Repo.one!(query)
+        RedisForum.checkIsHot(post_id, total)
 
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else

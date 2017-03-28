@@ -163,6 +163,7 @@ export default {
           name: '',
           value: '',
           group: '',
+          memo: '',
           active: true,
         },
         visible: true,

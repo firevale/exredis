@@ -11,7 +11,7 @@ defmodule Acs.ForumPost do
     field :is_vote, :boolean, default: false
     field :reads, :integer, default: 0
     field :comms, :integer, default: 0   #回复数
-    field :last_reply_at, :naive_datetime
+    field :last_reply_at, :utc_datetime
     field :active, :boolean, default: true
     field :has_pic, :boolean, default: false
 

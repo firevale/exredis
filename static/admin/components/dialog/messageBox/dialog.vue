@@ -16,7 +16,7 @@
           </div>
         </div>
       </article>
-      <div class="container has-text-centered">
+      <div class="has-text-centered">
         <a class="button is-danger" @click.prevent="onBtnOKClicked">
           {{okTitle}}
         </a>

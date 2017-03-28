@@ -6,6 +6,8 @@ defmodule Acs.RedisForum do
 
   alias   Acs.Forum
   alias   Acs.ForumSection
+  alias   Acs.RedisSetting
+  alias   Acs.AdminSetting
 
   require Logger
 
@@ -20,8 +22,8 @@ defmodule Acs.RedisForum do
 
   use     Utils.Jsonable
 
-  @forum_cache_key     "fvac.forum_cache"
-  @forum_post_hot_key  "fvac.forum_post_hot"
+  @forum_cache_key      "fvac.forum_cache"
+  @forum_post_hot_key   "fvac.forum_post_hot"
 
   def find(id)  do
     redis_key = "#{@forum_cache_key}.#{id}"
@@ -62,14 +64,20 @@ defmodule Acs.RedisForum do
     end
   end
 
-  def sethot(post_id) do
-    redis_key = "#{@forum_post_hot_key}.#{post_id}"
+  def checkIsHot(post_id, comments) do
+    setting_key = "forum_post_hot_limit"
+    case RedisSetting.find(setting_key) do
+      nil -> :do_nothing
 
-    case Redis.get(redis_key) do
-      nil ->
-        Redis.setex(redis_key, 12*3600, 1)
-      
-      _ -> # do nothing
+      setting ->
+        limit = String.to_integer(setting)
+        if(limit >0 and comments >= limit) do
+          redis_key = "#{@forum_post_hot_key}.#{post_id}"
+          case Redis.get(redis_key) do
+            :undefined -> Redis.setex(redis_key, 12*3600, 1)
+            _ -> :do_nothing
+          end
+        end
     end
   end
 

@@ -22,6 +22,7 @@ alias Acs.ForumPost
 alias Acs.ForumComment
 alias Acs.User
 alias Acs.ForumManager
+alias Acs.AdminSetting
 
 require Logger
 
@@ -88,3 +89,7 @@ ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content
 ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content: "回复内容12", post_id: 1, user_id: "100001"}) |> Repo.insert
 ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content: "回复内容13", post_id: 1, user_id: "100001"}) |> Repo.insert
 ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content: "回复内容14", post_id: 1, user_id: "100001"}) |> Repo.insert
+
+
+AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_limit", value: "5", memo: "论坛帖子时段内回复数(热帖阀值)", group: "basicInfo", active: true}) |> Repo.insert
+

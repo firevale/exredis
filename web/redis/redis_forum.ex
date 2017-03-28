@@ -84,19 +84,21 @@ defmodule Acs.RedisForum do
   end
 
   def filterHotList(posts) do
-    redis_keys = for n <- posts, do: @forum_post_hot_key <> "." <> Integer.to_string(n.id)
-    exids = Redis.mget(redis_keys)
+    if(posts != nil and length(posts)>0) do
+      redis_keys = for n <- posts, do: @forum_post_hot_key <> "." <> Integer.to_string(n.id)
+      exids = Redis.mget(redis_keys)
 
-    {[], ps} = Enum.reduce(posts, {exids, []}, fn(post, {[x | exids], newPosts}) ->
-        case x do
-          "1" ->
-            {exids, [%{post | is_hot: true} | newPosts]}
-          _ ->
-            {exids, [post | newPosts]}
-        end
-    end)  
-    
-    posts = Enum.reverse(ps)
+      {[], ps} = Enum.reduce(posts, {exids, []}, fn(post, {[x | exids], newPosts}) ->
+          case x do
+            "1" ->
+              {exids, [%{post | is_hot: true} | newPosts]}
+            _ ->
+              {exids, [post | newPosts]}
+          end
+      end)
+      
+      posts = Enum.reverse(ps)
+    end
   end
 
 end

@@ -3,6 +3,7 @@ defmodule Acs.ForumController do
 
   alias   Acs.RedisForum
   alias   Acs.RedisSetting
+  alias   Acs.RedisForum
   require Floki
 
   plug :fetch_app_id
@@ -10,7 +11,7 @@ defmodule Acs.ForumController do
   plug :fetch_session_user
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments]
-  plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_post_detail]
+  plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_post_detail, :get_paged_forums]
 
   # get_paged_forums
   def get_paged_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -36,7 +37,7 @@ defmodule Acs.ForumController do
   end  
 
   # get_forum_info
-  def get_forum_info(conn, %{"forum_id" => forum_id} = params) do
+  def get_forum_info(conn, %{"forum_id" => forum_id}) do
     case get_forum_info_by_id(forum_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
@@ -44,7 +45,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: true, forum: forum})
     end
   end
-  def get_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+  def get_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     case check_exist_by_appid(app_id) do
       {:ok, forum_id}  ->
         case get_forum_info_by_id(forum_id) do
@@ -57,7 +58,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
     end
   end
-  def get_forum_info(conn, params) do
+  def get_forum_info(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
   defp get_forum_info_by_id(forum_id) do
@@ -78,7 +79,7 @@ defmodule Acs.ForumController do
         case RedisSetting.find("keyword")  do
           nil -> 
             conn |> json(%{success: true, forum: forum, keyword: ""})
-          %{value: keyword} ->
+          keyword ->
             conn |> json(%{success: true, forum: forum, keyword: keyword})
         end        
     end
@@ -104,7 +105,7 @@ defmodule Acs.ForumController do
   def get_user_paged_post(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
-  def get_paged_post(conn, params) do
+  def get_paged_post(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
@@ -147,12 +148,12 @@ defmodule Acs.ForumController do
     else
       query
     end
-    posts = Repo.all(query)
-
+    posts = Repo.all(query) |> RedisForum.filterHotList |> Enum.reverse
+    
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
 
-  def update_user_avatar(conn, %{"user_id" => user_id, "avatar" => %{} = upload_file} = params) do
+  def update_user_avatar(conn, %{"user_id" => user_id, "avatar" => %{} = upload_file}) do
     case Repo.get(User, user_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "forum.serverError.userNotExist"})
@@ -196,7 +197,7 @@ defmodule Acs.ForumController do
               where: f.id == ^forum_id and s.id == ^section_id,
               preload: [sections: s]
 
-      with %Forum{} = forum <- Repo.one(query),
+      with %Forum{} <- Repo.one(query),
             {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
       do
           Elasticsearch.index(%{
@@ -231,7 +232,7 @@ defmodule Acs.ForumController do
           conn |> json(%{success: false, message: "forum.error.networkError"})
       end
   end
-  def add_post(conn, params) do
+  def add_post(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
@@ -248,7 +249,7 @@ defmodule Acs.ForumController do
 
     post = Repo.one(query)
     post = with user_id when is_integer(user_id) <- conn.private[:acs_session_user_id],
-                 favorite = %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
+                 %UserFavoritePost{} <- Repo.one(from f in UserFavoritePost, select: f,
                  where: f.post_id == ^post_id and f.user_id == ^user_id)
     do
       Map.put(post, :is_favorite, true)
@@ -261,7 +262,7 @@ defmodule Acs.ForumController do
 
     conn |> json(%{success: true, detail: post})
   end
-  def get_post_detail(conn, params) do
+  def get_post_detail(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -287,7 +288,7 @@ defmodule Acs.ForumController do
 
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
-  def get_post_comments(conn, params) do
+  def get_post_comments(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -315,7 +316,7 @@ defmodule Acs.ForumController do
 
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
-  def get_user_post_comments(conn, params) do
+  def get_user_post_comments(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -349,7 +350,7 @@ defmodule Acs.ForumController do
         end
     end
   end
-  def delete_comment(conn, params) do
+  def delete_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -385,7 +386,7 @@ defmodule Acs.ForumController do
 
     end
   end
-  def toggle_post_favorite(conn, params) do
+  def toggle_post_favorite(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
@@ -410,7 +411,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
     end
   end
-  def toggle_post_status(conn, params) do
+  def toggle_post_status(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -423,8 +424,14 @@ defmodule Acs.ForumController do
             {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
       do
         post = Repo.get(ForumPost, post_id)
-        now_time = :calendar.local_time |> NaiveDateTime.from_erl!
+        now_time = DateTime.utc_now()
         ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
+
+        # check is hot
+        before_time = Timex.shift(now_time, hours: -12)
+        query = from c in ForumComment, select: count(1), where: c.post_id == ^post_id and c.active == true and c.inserted_at >= ^before_time
+        total = Repo.one!(query)
+        RedisForum.checkIsHot(post_id, total)
 
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
@@ -434,7 +441,7 @@ defmodule Acs.ForumController do
           conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
       end
   end
-  def add_comment(conn, params) do
+  def add_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
   end
 
@@ -459,7 +466,7 @@ defmodule Acs.ForumController do
 
     conn |> json(%{success: true, favorites: favorites, total: total_page, records: total})
   end
-  def get_user_favorites(conn, params) do
+  def get_user_favorites(conn, _params) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
 
@@ -553,7 +560,7 @@ defmodule Acs.ForumController do
     end
   end
 
-  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
+  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
     if upload_image.format in ["jpg", "jpeg", "png"] do
       {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])

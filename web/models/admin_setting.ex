@@ -7,6 +7,7 @@ defmodule Acs.AdminSetting do
     field :name, :string
     field :value, :binary
     field :group, :string
+    field :memo,  :string
     field :active, :boolean, default: true
 
     timestamps()
@@ -17,7 +18,7 @@ defmodule Acs.AdminSetting do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :value, :active, :group])
-    |> validate_required([:name, :value, :active, :group])
+    |> cast(params, [:name, :value, :memo, :active, :group])
+    |> validate_required([:name, :value, :active, :memo, :group])
   end
 end

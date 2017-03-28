@@ -73,6 +73,7 @@ export default {
         add: '添加新配置',
         edit: '修改',
         delete: '删除',
+        memo: '备注',
 
         groups: {
           basicInfo: '基本信息',

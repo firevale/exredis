@@ -51,9 +51,7 @@ export default {
           this.processing = false
           if (result.success) {
             this.keyword = result.setting.value
-          } else {
-            return Promise.reject(result)
-          }
+          } 
         }).catch(e => {
           this.processing = false
           processAjaxError(e)
@@ -70,6 +68,7 @@ export default {
         setting_name: "keyword",
         setting_value: this.keyword.trim(),
         group: "keyword",
+        memo: '网站关键词过滤',
         active: true
       }).then(res => res.json())
       .then(result => {

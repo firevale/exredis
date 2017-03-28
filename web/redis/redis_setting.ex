@@ -11,9 +11,8 @@ defmodule Acs.RedisSetting do
   defstruct name: "",
             value: "",
             group: "",
+            memo: "",
             active: true
-
-  use  Utils.Jsonable
 
   @setting_cache_key  "fvac.setting_cache"
 
@@ -23,8 +22,8 @@ defmodule Acs.RedisSetting do
     case Redis.get(redis_key) do
       :undefined ->
         refresh(name)
-      raw ->
-        raw |> from_json
+      str ->
+        str
     end
   end
 
@@ -37,14 +36,8 @@ defmodule Acs.RedisSetting do
       nil -> nil
 
       %AdminSetting{} = setting ->
-        cache = %__MODULE__{
-          name: setting.name,
-          value: setting.value,
-          group: setting.group,
-          active: setting.active
-        }
-        Redis.set(redis_key, to_json(cache))
-        cache
+        Redis.set(redis_key, setting.value)
+        setting.value
     end
   end
 

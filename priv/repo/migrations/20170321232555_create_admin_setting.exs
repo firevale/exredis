@@ -6,6 +6,7 @@ defmodule Acs.Repo.Migrations.CreateAdminSetting do
       add :name, :string
       add :value, :binary
       add :group, :string
+      add :memo,  :string
       add :active, :boolean, default: true
 
       timestamps()

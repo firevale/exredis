@@ -1,7 +1,7 @@
 
 import HashMap from 'hashmap'
 let filterMap = new HashMap();
-let endTag = '\0'; // 关键词结束符
+let endTag = '\0'; // 敏感词结束符
 
 export const init = data => { 
     let filterWordList = data.split(/,/);

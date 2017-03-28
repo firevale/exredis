@@ -60,7 +60,7 @@ export default {
 
       setting: {
         basicInfo: '基本信息',
-        keywordInfo: '关键词配置',
+        keywordInfo: '敏感词配置',
         notFound: '配置项没有找到',
         deleteOk: '删除成功',
         addOk: '添加成功',
@@ -77,12 +77,12 @@ export default {
 
         groups: {
           basicInfo: '基本信息',
-          keyword: '关键词',
+          keyword: '敏感词',
         },
 
         keyword: {
           edit: '修改',
-          tip: '请输入关键词',
+          tip: '请输入敏感词',
         }
       },
 
@@ -141,7 +141,7 @@ export default {
         forumTitle: '论坛名称',
         forumActive: '是否启用',
         forumCreatedAt: '创建时间',
-        keyword: '关键词',
+        keyword: '敏感词',
       },
 
       currency: {

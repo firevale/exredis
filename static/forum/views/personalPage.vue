@@ -12,10 +12,10 @@
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
          <p>
-           {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.postCount }}</span>
+           {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
          </p>
          <p>
-            {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.registerTime }}</span>
+            {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
          </p>
       </div>
       </article>
@@ -24,6 +24,7 @@
           <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
           <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
           <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
+          <div class="slider" :style="{'background-position':sliderPosition}"/>
         </div>
       </nav>
     <div class="content" v-show="type == 'myPosts'">
@@ -75,6 +76,16 @@ export default {
       return {
         user_id: this.userInfo.id
       }
+    },
+    sliderPosition() {
+      switch (this.type) {
+        case "myPosts":
+          return "10% bottom"
+        case "myComments":
+          return "50% bottom"
+        case "myFavor":
+          return "90% bottom"
+      }
     }
   },
 
@@ -106,6 +117,7 @@ export default {
     },
     onShowImageUpload: function() {
       this.showImgUpload = true
+
     },
     cropSuccess(data, field, key) {
 
@@ -140,14 +152,6 @@ export default {
         case "myFavor":
           this.favoriteList.splice(index, 1)
           break;
-      }
-    },
-
-    getUserInfo: async function() {
-      let result = await this.$acs.getUserInfo()
-
-      if (result.success) {
-        this.serUserProfile(result.user)
       }
     },
 

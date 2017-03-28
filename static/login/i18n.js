@@ -95,6 +95,7 @@ export default {
         qq: 'qq',
         wechat: '微信',
         weibo: '微博',
+        facebook: 'Facebook',
       },
 
       alert: {

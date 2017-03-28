@@ -1,3 +1,11 @@
+<% isFbLoginSupported = case @conn.private[:acs_app] do 
+                          %{sdk_bindings: %{facebook: %{app_id: _ }}} -> true
+                          _ -> false 
+                        end %>
+<% isWechatLoginSupported = case @conn.private[:acs_app] do 
+                          %{sdk_bindings: %{wechat: %{app_id: _ }}} -> true
+                          _ -> false 
+                        end %>
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -25,6 +33,8 @@
       locale: '<%= @conn.private[:acs_locale] %>',
       appId: '<%= @conn.private[:acs_app_id] %>',
       deviceId: '<%= @conn.private[:acs_device_id] %>',
+      isFbLoginSupported: <%= isFbLoginSupported %>,
+      isWechatLoginSupported: <%= isWechatLoginSupported %>,
     }
   </script>
   <script src="<%= static_url(@conn, "/js/login_commons.js") %>"></script>

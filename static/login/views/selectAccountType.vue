@@ -23,8 +23,12 @@ import {
 
 export default {
   data: function() {
+    let accountTypes = ['anonymous', 'firevale']
+    if (window.acsConfig.isFbLoginSupported) {
+      accountTypes.push('facebook')
+    }
     return {
-      accountTypes: ['anonymous', 'firevale'],
+      accountTypes: accountTypes,
       processing: false,
     }
   },

@@ -1,18 +1,18 @@
 <template>
-<div class="myComments-item">
-  <div>
-    <span>{{ $t('forum.personal.reply') }}</span>
-    <span>{{ delHtmlTag(itemData.content) }}</span>
-  </div>
-  <div class="post-info">
-    <span>{{ itemData.inserted_at | formatServerDateTime }}</span>
-    <span> | </span>
-    <span>{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
-  </div>
-  <div class="original-note" @click="showDetail">
-    <span>{{ $t('forum.personal.originalPost') }}</span>
-    <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</span>
-  </div>
+<div class="content-item">
+  <div class="title-line">
+     <h5 class="title is-5">{{ $t('forum.personal.reply') }}{{delHtmlTag(itemData.content)}}</h5>
+  </div> 
+  <div class="level">
+     <div class="level-left level-item">
+      <span class="subtitle">{{ itemData.inserted_at | formatServerDateTime }}</span>
+       <span class="subtitle" style="margin:0 1em">|</span>
+        <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
+     </div> 
+   </div>
+   <div class="title-line has-background">
+     <h5 class="title is-5">{{ $t('forum.personal.originalPost') }}[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
+  </div>   
 </div>
 </template>
 <script>
@@ -40,7 +40,7 @@ export default {
       })
     },
     delHtmlTag(html) {
-      return filter.filterKeyword(html.replace(/<[^>]+>/g,"").trim().substring(0,20))
+      return filter.filterKeyword(html.replace(/<[^>]+>/g, "").trim().substring(0, 20))
     }
   },
 }

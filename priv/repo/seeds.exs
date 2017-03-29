@@ -91,5 +91,5 @@ ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content
 ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content: "回复内容14", post_id: 1, user_id: "100001"}) |> Repo.insert
 
 
-AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_limit", value: "5", memo: "论坛帖子时段内回复数(热帖阀值)", group: "basicInfo", active: true}) |> Repo.insert
-
+AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_limit", value: "5", memo: "论坛热帖时段内回复数(热帖阀值)", group: "basicInfo", active: true}) |> Repo.insert
+AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_hours", value: "12", memo: "论坛热帖检查时间(小时)", group: "basicInfo", active: true}) |> Repo.insert

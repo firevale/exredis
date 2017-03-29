@@ -43,9 +43,9 @@ defmodule SDKFacebook do
                     |> Map.put(:access_token, access_token) 
     try do 
       response = Graph.get_url("/me", fields)
-
+      
       if response.status_code in 200..299 do 
-        Logger.info "facebook validate access_token success"
+        Logger.info "facebook validate access_token success, #{inspect response.body}"
         Map.put(response.body, :success, true)
       else 
         Logger.error "facebook validate access_token failed"
@@ -53,7 +53,7 @@ defmodule SDKFacebook do
       end
     catch
       :error, e ->
-        Logger.error "facebook validate access_token exception encountered, #{e}"
+        Logger.error "facebook validate access_token exception encountered, #{inspect e}"
         %{success: false, message: "exception"}
     end
   end

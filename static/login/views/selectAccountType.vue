@@ -48,7 +48,7 @@ export default {
         case 'facebook': 
           nativeApi.closeWebviewWithResult({
             success: false,
-            action: 'facebook',
+            native: 'facebook',
           })
           break;     
         case 'anonymous':

@@ -46,6 +46,9 @@ export default {
         enterForum: '论坛配置',
         basicInfo: '基本信息',
         sectionInfo: '版块配置',
+        activityInfo: '活动管理',
+        noticeInfo: '公告管理',
+        newsInfo: '新闻管理',
 
         section: {
           id: '版块编号',
@@ -55,6 +58,22 @@ export default {
           active: '是否启用',
           add: '添加新版块',
           edit: '修改',
+        },
+
+        title: '标题',
+        content: '内容',
+        pic: '题图',
+        
+        activity: {
+          
+        },
+
+        notice: {
+
+        },
+
+        news: {
+
         }
       },
 

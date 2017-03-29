@@ -5,7 +5,7 @@
         <p class="image is-64x64 avatar-image">
           <img :src="this.userInfo.avatar_url"></img>
          </p>
-         <img-upload url="/forum_actions/update_user_avatar" @crop-success="cropSuccess" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
+         <img-upload url="/forum_actions/update_user_avatar"  @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
        </figure>
       <div class="media-content">
         <p>
@@ -114,14 +114,12 @@ export default {
 
     onShowImageUpload: function() {
       this.showImgUpload = true
-    },
+    },    
 
-    cropSuccess(data, field, key) {
-
-    },
-
-    cropUploadSuccess(data, field, key) {
-
+    cropUploadSuccess(result, field, key) {
+      if (result.success) {
+        this.serUserProfile(result.user)
+      }
     },
 
     cropUploadFail(status, field, key) {},

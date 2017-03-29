@@ -26,10 +26,6 @@ import menuModal from '../components/menuModal'
 import {
   showFileUploadDialog
 } from '../components/fileUpload'
-
-import {
-  postPreview
-} from '../components/preview'
 import message from '../components/message'
 
 import * as utils from 'common/utils'

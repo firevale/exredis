@@ -85,22 +85,6 @@
   import * as filter from 'common/filters'
   
   export default {
-    mounted() {
-      // this.$refs.contentContainer.addEventListener('click', this.checkImgClick)
-      // let imgs = []
-      // let htmlCollection = this.$refs.contentContainer.getElementsByTagName('img')
-      // for (var i = 0; i < htmlCollection.length; i++) {
-      //   this.imgsPreview.push({
-      //     url: htmlCollection[i].src,
-      //     id: md5(htmlCollection[i].src)
-      //   })
-      // }
-    },
-  
-    destroyed() {
-      // this.$refs.contentContainer.removeEventListener('click', this.checkImgClick)
-    },
-  
     props: {
       postData: {
         type: Object,

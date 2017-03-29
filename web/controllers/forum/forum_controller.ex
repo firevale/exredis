@@ -10,8 +10,8 @@ defmodule Acs.ForumController do
   plug :fetch_session_user_id  
   plug :fetch_session_user
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
-  plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments]
-  plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_post_detail, :get_paged_forums]
+  plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
+  plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
 
   # get_paged_forums
   def get_paged_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -258,6 +258,8 @@ defmodule Acs.ForumController do
         Map.put(post, :is_favorite, false)
     end
 
+    Map.put(post, :is_hot, RedisForum.checkIsHot(post_id))
+
     add_post_click(post_id, 1)
 
     conn |> json(%{success: true, detail: post})
@@ -428,10 +430,16 @@ defmodule Acs.ForumController do
         ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
 
         # check is hot
-        before_time = Timex.shift(now_time, hours: -12)
-        query = from c in ForumComment, select: count(1), where: c.post_id == ^post_id and c.active == true and c.inserted_at >= ^before_time
-        total = Repo.one!(query)
-        RedisForum.checkIsHot(post_id, total)
+        hot_hours = RedisSetting.find("forum_post_hot_hours")
+        if(hot_hours != nil) do
+          hot_hours = String.to_integer(hot_hours)
+          if(hot_hours > 0) do
+            before_time = Timex.shift(now_time, hours: -hot_hours)
+            query = from c in ForumComment, select: count(1), where: c.post_id == ^post_id and c.active == true and c.inserted_at >= ^before_time
+            total = Repo.one!(query)
+            RedisForum.checkIsHot(post_id, total)
+          end
+        end
 
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else

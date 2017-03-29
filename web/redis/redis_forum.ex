@@ -65,21 +65,31 @@ defmodule Acs.RedisForum do
     end
   end
 
-  def checkIsHot(post_id, comments) do
-    setting_key = "forum_post_hot_limit"
-    case RedisSetting.find(setting_key) do
-      nil -> :do_nothing
+  def checkIsHot(post_id) do
+    redis_key = "#{@forum_post_hot_key}.#{post_id}"
+    case Redis.get(redis_key) do
+      :undefined -> false
+      _ -> true
+    end
+  end
 
-      setting ->
-        limit = String.to_integer(setting)
-        if(limit >0 and comments >= limit) do
+  def checkIsHot(post_id, comments) do
+    hot_limit = RedisSetting.find("forum_post_hot_limit")
+    hot_hours = RedisSetting.find("forum_post_hot_hours")
+
+    if(hot_limit != nil and hot_hours != nil) do
+      hot_limit = String.to_integer(hot_limit)
+      hot_hours = String.to_integer(hot_hours)
+      if(hot_limit > 0 and hot_hours > 0) do
+        if(comments >= hot_limit) do
           redis_key = "#{@forum_post_hot_key}.#{post_id}"
           d "-------------set hot: post_id=#{post_id}, comments=#{comments}"
           case Redis.get(redis_key) do
-            :undefined -> Redis.setex(redis_key, 12*3600, 1)
+            :undefined -> Redis.setex(redis_key, hot_hours*3600, 1)
             _ -> :do_nothing
           end
         end
+      end
     end
   end
 

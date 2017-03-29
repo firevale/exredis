@@ -1,18 +1,20 @@
 <template>
-<div class="my-favorite-list-item row-line">
-  <div style="flex: 1;text-align: left;">
-    <div @click="showDetail">
-      <span class="post-title">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</span>
-    </div>
-    <div class="post-info">
-      <span>{{ itemData.post.inserted_at | formatServerDateTime }}</span>
-      <span> | </span>
-      <span>{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
-    </div>
+<div class="content-item">
+  <div  class="title-line" @click="showDetail">
+      <h5 class="title is-5">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
   </div>
-  <div>
-    <span class="button" @click.prevent="confirmDeleteFavorite">{{ $t('forum.personal.cancelFavor') }}</span>
-  </div>
+      <div class="level is-mobile">
+         <div class="level-left level-item">
+           <span class="subtitle">{{ itemData.post.inserted_at | formatServerDateTime }}</span>
+           <span class="subtitle" style="margin:0 1em">|</span>
+           <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
+         </div>
+         <div class="level-right level-item">
+            <span class="icon image-icon icon-trash is-small" @click.prevent="confirmDeletePost"></span>
+            <span class="is-danger" @click.prevent="confirmDeleteFavorite"> {{ $t('forum.personal.cancelFavor') }}</span>
+         </div>
+      </div>
+       <div/>
 </div>
 </template>
 <script>

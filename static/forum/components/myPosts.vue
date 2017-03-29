@@ -1,10 +1,10 @@
 <template>
   <article class="content-item">
-      <div  style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;margin-bottom:.8em;" @click="showDetail">
+      <div  class="title-line" @click="showDetail">
         <h5 class="title is-5">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
         <a v-show="!itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
       </div>
-      <div class="level">
+      <div class="level is-mobile">
          <div class="level-left level-item">
            <span class="subtitle">{{ itemData.inserted_at | formatServerDateTime }}</span>
            <span class="subtitle" style="margin:0 1em">|</span>
@@ -15,6 +15,7 @@
             <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
          </div>
       </div>
+      <div/>
   </article>
 </template>
 <script>

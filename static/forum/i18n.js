@@ -127,8 +127,8 @@ export default {
         cancelFavor: '取消收藏',
         newComment: '新回复',
         deleteBtn: '删除',
-        reply: '回复:',
-        originalPost: '原帖:'
+        reply: '回复：',
+        originalPost: '原帖：'
       },
       campaign: {
         title: '活动',

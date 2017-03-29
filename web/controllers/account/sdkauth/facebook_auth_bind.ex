@@ -2,10 +2,11 @@ defmodule Acs.FacebookAuthBind do
   use     Acs.Web, :controller
   require Logger
   require SDKFacebook
+  use     LogAlias
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{facebook: %{"app_secret" => facebook_app_secret}}} = app,
+                acs_app: %RedisApp{sdk_bindings: %{facebook: %{app_secret: facebook_app_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"fb_access_token" => facebook_access_token} = _params) do
@@ -20,7 +21,7 @@ defmodule Acs.FacebookAuthBind do
                                        device_id: device_id,
                                        mobile: nil,
                                        avatar_url: nil}) do 
-          {:ok, user} -> 
+          {:ok, user} ->
             access_token = RedisAccessToken.create(%{
               app_id: app.id,
               user_id: user.id,

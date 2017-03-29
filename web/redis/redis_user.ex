@@ -2,7 +2,7 @@ defmodule Acs.RedisUser do
 
   require Redis
   require Utils
-  require Logger
+  use     LogAlias
 
   alias   Acs.Repo
   import  Ecto.Query
@@ -125,6 +125,8 @@ defmodule Acs.RedisUser do
         {:ok, user}
 
       user ->
+        user = %{user | email: email}
+        user = %{user | mobile: mobile}
         user = %{user | nickname: nickname}
         user = %{user | avatar_url: avatar_url}
         user = %{user | bindings: Map.put(user.bindings, bkey, sdk_user_id)}
@@ -181,13 +183,14 @@ defmodule Acs.RedisUser do
                              nil -> nil
                              v when is_bitstring(v) -> String.downcase(user.email)
                            end}
-
+    
     Repo.transaction(fn ->
       # ecto's upset is not stable for now
       case Repo.get(User, user.id) do
         nil ->
           User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert!
           "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
+
         %User{} = old_user ->
           User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
           "ok" = Scripts.save_user([], [to_json(user),

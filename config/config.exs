@@ -42,7 +42,7 @@ config :acs, :pbkdf2,
 config :acs, Acs.LocalMailer, adapter: Bamboo.LocalAdapter
 config :acs, email_service_provider: Acs.LocalMailer
 
-config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.1"
+config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.8"
 
 
 # Import environment specific config. This must remain at the bottom

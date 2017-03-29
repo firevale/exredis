@@ -49,6 +49,40 @@ defmodule Acs.AuthApiRouter do
     get "/bind/youku", YoukuAuthBind, :bind
     get "/bind/yyh", YYHAuthBind, :bind
 
+    post "/bind/anzhi", AnzhiAuthBind, :bind
+    post "/bind/baidu", BaiduAuthBind, :bind
+    post "/bind/cc", CCPlayAuthBind, :bind
+    post "/bind/coolpad", CoolpadAuthBind, :bind
+    post "/bind/downjoy", DownjoyAuthBind, :bind
+    post "/bind/facebook", FacebookAuthBind, :bind
+    post "/bind/firevale", FacebookAuthBind, :bind # bind facebook
+    post "/bind/gfan", GFanAuthBind, :bind
+    post "/bind/haima", HaimaAuthBind, :bind
+    post "/bind/htc", HtcAuthBind, :bind
+    post "/bind/huawei", HtcAuthBind, :bind
+    post "/bind/i4", I4AuthBind, :bind
+    post "/bind/iiapple", IIAppleAuthBind, :bind
+    post "/bind/itools", ItoolsAuthBind, :bind
+    post "/bind/iyouxi", IYouxiAuthBind, :bind
+    post "/bind/ky", KYAuthBind, :bind
+    post "/bind/lenovo", LenovoAuthBind, :bind
+    post "/bind/meizu", MeizuAuthBind, :bind
+    post "/bind/mumayi", MumayiAuthBind, :bind
+    post "/bind/ndcom", NdcomAuthBind, :bind
+    post "/bind/oppo", OppoAuthBind, :bind
+    post "/bind/pp", PPAuthBind, :bind
+    post "/bind/qh360", Qh360AuthBind, :bind
+    post "/bind/qxz", QxzAuthBind, :bind
+    post "/bind/sogou", SogouAuthBind, :bind
+    post "/bind/tbt", TBTAuthBind, :bind
+    post "/bind/uc", UCAuthBind, :bind
+    post "/bind/vivo", VivoAuthBind, :bind
+    post "/bind/wdj", WandoujiaAuthBind, :bind
+    post "/bind/xiaomi", XiaomiAuthBind, :bind
+    post "/bind/xy", XYAuthBind, :bind
+    post "/bind/youku", YoukuAuthBind, :bind
+    post "/bind/yyh", YYHAuthBind, :bind
+
     get  "/authorization_token", PageController, :show_login_page
     post "/gen_token", UserController, :create_token
     get  "/create_token", UserController, :create_token

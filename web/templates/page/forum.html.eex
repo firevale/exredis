@@ -9,9 +9,7 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <%= if Mix.env != :dev do %>
-      <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
-    <% end %>
+    <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/forum.css") %>" rel="stylesheet"/>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">

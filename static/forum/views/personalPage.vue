@@ -1,13 +1,13 @@
 <template>
   <div class="person">
-     <article class="media info">
+    <article class="media info">
       <figure class="media-left" @click="onShowImageUpload">
         <p class="image is-64x64 avatar-image">
           <img :src="this.userInfo.avatar_url"></img>
          </p>
          <img-upload url="/forum_actions/update_user_avatar" @crop-success="cropSuccess" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
        </figure>
-      <div class="media-content">   
+      <div class="media-content">
         <p>
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
@@ -18,26 +18,23 @@
             {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
          </p>
       </div>
-      </article>
-      <nav class="nav">
-        <div class="nav-center">
-          <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
-          <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
-          <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
-          <div class="slider" :style="{'background-position':sliderPosition}"/>
-        </div>
-      </nav>
-    <div class="content" v-show="type == 'myPosts'">
-      <my-posts v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
-    </div>
-    <div class="content" v-show="type == 'myComments'">
-      <my-comments v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
-    </div>
-    <div class="content" v-show="type == 'myFavor'">
-      <my-favorate v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
-    </div>
-    <div class="column is-full" v-show="total > 1">
-      <pagination ref="pag" :on-page-change="onPageChange" :page-count="total" :current-page="page"></pagination>
+    </article>
+    <nav class="nav">
+      <div class="nav-center">
+        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
+        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
+        <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
+        <div class="slider" :style="{'background-position':sliderPosition}"/>
+      </div>
+    </nav>
+    <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
+      <div style="position: relative; height: 100%">
+        <scroller :on-load-more="loadmore" ref="scroller">
+          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
+          <my-comments v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
+          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
+       </scroller>
+      </div>
     </div>
   </div>
 </template>
@@ -47,25 +44,26 @@ import {
   mapActions
 } from 'vuex'
 
+import imgUpload from "vue-image-crop-upload/upload-2.vue"
+import scroller from '../components/scroller'
 import myPosts from "../components/myPosts"
 import myFavorate from "../components/myFavorate"
 import myComments from "../components/myComments"
-import pagination from "../components/pagination"
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
+
 
 export default {
   components: {
+    scroller,
     myPosts,
     myFavorate,
-    pagination,
     myComments,
     imgUpload,
   },
 
-  mounted: function() {
-    this.$refs.pag.$on('switch-page', this.getPostPage)
-    this.getPostPage(this.page)
-  },
+  // mounted: function() {
+  //   this.$refs.pag.$on('switch-page', this.getPostPage)
+  //   this.getPostPage(this.page)
+  // }, 
 
   computed: {
     ...mapGetters([
@@ -95,9 +93,9 @@ export default {
       postList: [],
       commentList: [],
       favoriteList: [],
-      page: 1,
+      page: 0,
       total: 1,
-      recordsPerPage: 6,
+      recordsPerPage: 10,
       postRecords: 0,
       showImgUpload: false
     }
@@ -109,36 +107,48 @@ export default {
 
     switchMenu: function(menu) {
       if (menu != this.type) {
-        this.page = 1
-        this.total = 1
         this.type = menu
-        this.onPageChange(this.page)
+        this.resetScroller();
       }
     },
+
     onShowImageUpload: function() {
       this.showImgUpload = true
-
     },
+
     cropSuccess(data, field, key) {
 
     },
+
     cropUploadSuccess(data, field, key) {
 
     },
-    cropUploadFail(status, field, key) {
 
+    cropUploadFail(status, field, key) {},
+
+    onPageChange: function(page) {},
+
+    resetScroller: function() {
+      this.page = 0
+      this.total = 1
+      this.postList = []
+      this.commentList = []
+      this.favoriteList = []
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
     },
 
-    onPageChange: function(page) {
+    loadmore: async function() {
       switch (this.type) {
         case "myPosts":
-          this.getPostPage(page)
+          await this.getPostPage()
           break;
         case "myComments":
-          this.getCommentPage(page)
+          await this.getCommentPage()
           break;
         case "myFavor":
-          this.getFavoritePage(page)
+          await this.getFavoritePage()
           break;
       }
     },
@@ -155,50 +165,46 @@ export default {
       }
     },
 
-    getPostPage: async function(page) {
-      if (!this.processing) {
-        this.processing = true
+    getPostPage: async function() {
+      let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
+        this.page + 1, this.recordsPerPage)
 
-        let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
-          page, this.recordsPerPage)
+      if (result.success) {
+        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
+        this.total = result.total
+        this.page = this.page + 1
 
-        if (result.success) {
-          this.postList = result.posts
-          this.total = result.total
-          this.page = page
-          this.postRecords = result.records
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
         }
-        this.processing = false
       }
     },
 
-    getCommentPage: async function(page) {
-      if (!this.processing) {
-        this.processing = true
+    getCommentPage: async function() {
+      let result = await this.$acs.getUserPostComments(this.page + 1, this.recordsPerPage)
 
-        let result = await this.$acs.getUserPostComments(page, this.recordsPerPage)
+      if (result.success) {
+        this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
+        this.total = result.total
+        this.page = this.page + 1
 
-        if (result.success) {
-          this.commentList = result.comments
-          this.total = result.total
-          this.page = page
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
         }
-        this.processing = false
       }
     },
 
-    getFavoritePage: async function(page) {
-      if (!this.processing) {
-        this.processing = true
+    getFavoritePage: async function() {
+      let result = await this.$acs.getUserPostFavorites(this.page + 1, this.recordsPerPage)
 
-        let result = await this.$acs.getUserPostFavorites(page, this.recordsPerPage)
+      if (result.success) {
+        this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)
+        this.total = result.total
+        this.page = this.page + 1
 
-        if (result.success) {
-          this.favoriteList = result.favorites
-          this.total = result.total
-          this.page = page
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
         }
-        this.processing = false
       }
     },
 

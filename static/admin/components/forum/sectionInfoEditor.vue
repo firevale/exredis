@@ -6,12 +6,12 @@
           <table class="table is-bordered is-striped is-narrow goods-table">
             <thead v-show="forum.sections && forum.sections.length > 0">
               <tr>
-                <th>{{ $t('admin.forum.section.id') }}</th>
+                <th>{{ $t('admin.forum.id') }}</th>
                 <th>{{ $t('admin.forum.section.title') }}</th>
                 <th>{{ $t('admin.forum.section.sort')}}</th>
-                <th>{{ $t('admin.forum.section.created_at')}}</th>
-                <th>{{ $t('admin.forum.section.active')}}</th>
-                <th>{{ $t('admin.forum.section.edit')}}</th>
+                <th>{{ $t('admin.forum.created_at')}}</th>
+                <th>{{ $t('admin.forum.active')}}</th>
+                <th>{{ $t('admin.forum.edit')}}</th>
               </tr>
             </thead>
             <tfoot>

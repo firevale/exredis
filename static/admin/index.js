@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import Vue from 'admin/vue-i18n'
 import Resource from 'vue-resource'
 import NProgress from 'vue-nprogress'

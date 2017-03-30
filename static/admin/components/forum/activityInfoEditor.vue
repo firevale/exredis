@@ -1,38 +1,38 @@
 <template>
-  <div class="tile is-ancestor">
+  <div class="tile is-ancestor">  
     <div class="tile is-parent">
+      <div class="column is-12">
+        <a class="button is-primary" style="min-width: 100px" @click="addNewNews">
+          <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.forum.activity.add') }}
+        </a>
+      </div>        
       <article class="tile is-child">
-        <div class="table-responsive" v-if="forum">
+        <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead v-show="forum.sections && forum.sections.length > 0">
+            <thead v-show="newses && newses.length > 0">
               <tr>
-                <th>{{ $t('admin.forum.section.id') }}</th>
-                <th>{{ $t('admin.forum.section.title') }}</th>
-                <th>{{ $t('admin.forum.section.sort')}}</th>
-                <th>{{ $t('admin.forum.section.created_at')}}</th>
-                <th>{{ $t('admin.forum.section.active')}}</th>
-                <th>{{ $t('admin.forum.section.edit')}}</th>
+                <th>{{ $t('admin.forum.id') }}</th>
+                <th>{{ $t('admin.forum.title') }}</th>
+                <th>{{ $t('admin.forum.pic')}}</th>
+                <th>{{ $t('admin.forum.created_at')}}</th>
+                <th>{{ $t('admin.forum.edit')}}</th>
+                <th>{{ $t('admin.forum.delete')}}</th>
               </tr>
             </thead>
-            <tfoot>
-              <tr>
-                <th :colspan="6" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
-                  <a class="button is-primary" style="min-width: 100px" @click="addNewSection">
-                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.forum.section.add') }}
-                  </a>
-                </th>
-              </tr>
-            </tfoot>
-            <tbody v-show="forum.sections && forum.sections.length > 0">
-              <tr v-for="(section, index) in forum.sections">
-                <td> {{ section.id }} </td>
-                <td> {{ section.title }} </td>
-                <td> {{ section.sort }} </td>
-                <td> {{ section.inserted_at | formatServerDateTime }} </td>
-                <td v-if="section.active">正常</td><td v-else>禁用</td>
+            <tbody v-show="newses && newses.length > 0">
+              <tr v-for="(news, index) in newses">
+                <td> {{ news.id }} </td>
+                <td> {{ news.title }} </td>
+                <td> {{ news.pic }} </td>
+                <td> {{ news.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
-                  <a @click.prevent="editSectionInfo(section, index)">
+                  <a @click.prevent="editActivityInfo(news, index)">
                     <i class="fa fa-pencil"></i>
+                  </a>
+                </td>
+                <td class="is-icon">
+                  <a @click.prevent="deleteActivity(news, index)">
+                    <i class="fa fa-trash-o"></i>
                   </a>
                 </td>
               </tr>
@@ -43,73 +43,102 @@
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import {
-    openNotification,
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  import Vue from 'admin/vue-i18n'
+import Vue from 'admin/vue-i18n'
 
-  import sectionInfoDialog from 'admin/components/dialog/forum/sectionInfo'
-  const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
+import activityInfoDialog from 'admin/components/dialog/forum/activityInfo'
+const activityInfoDialogComponent = Vue.extend(activityInfoDialog)
 
-  const openSectionInfoDialog = (propsData = {
-    visible: true
-  }) => {
-    return new sectionInfoDialogComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
+const openActivityInfoDialog = (propsData = {
+  visible: true
+}) => {
+  return new activityInfoDialogComponent({
+    el: document.createElement('div'),
+    propsData
+  })
+}
+import Pagination from 'admin/components/Pagination'
+import Tooltip from 'vue-bulma-tooltip'
 
-  import Tooltip from 'vue-bulma-tooltip'
-
-  export default {
-    props: {
-      forum: Object,
-    },
-
-    methods: {
-
-      editSectionInfo: function(section, index) {
-        openSectionInfoDialog({
-          section: section,
-          visible: true,
-          callback: new_section => {
-            this.forum.sections[index] = new_section
-          },
-        })
-      },
-
-      addNewSection: function() {
-        openSectionInfoDialog({
-          section: {
-            id: '',
-            sort: 0,
-            title: '',
-            active: true,
-            forum_id: this.forum.id,
-          },
-          visible: true,
-          callback: section => {
-            this.forum.sections.push(section)
-          },
-        })
-      },
-
-
-    },
-
-    components: {
-      Tooltip
+export default {
+  data() {
+    return {
+      newses: [],
+      forumId: 1,
+      page: 1,
+      total: 1,
+      recordsPerPage: 10,
+      loading: true,
     }
+  },
 
+  mounted: function() {
+    this.getActivityInfo(this.page, this.recordsPerPage)
+    this.loading = true
+  },
+
+  methods: {
+    getActivityInfo: async function(page, recordsPerPage) {
+      let result = await this.$acs.getPagedNews(this.forumId, "activity", page, recordsPerPage)
+
+      if (result.success) {
+        this.total = result.total
+        this.newses = result.news
+        this.page = page
+      }
+    },
+
+    onPageChange: function(page) {
+      this.getActivityInfo(page, this.recordsPerPage)
+    },
+
+    editActivityInfo: function(news, index) {
+      openActivityInfoDialog({
+        news: news,
+        visible: true,
+        callback: new_news => {
+          this.newses[index] = new_news
+        },
+      })
+    },
+
+    deleteActivity: function(news, index) {
+
+    },
+
+    addNewNews: function() {
+      openActivityInfoDialog({
+        news: {
+          id: '',
+          title: '',
+          content: '',
+          pic: '',
+          forum_id: this.forumId,
+        },
+        visible: true,
+        callback: news => {
+          this.newses.push(news)
+        },
+      })
+    },
+
+
+  },
+
+  components: {
+    Pagination,
+    Tooltip,
   }
+
+}
 </script>

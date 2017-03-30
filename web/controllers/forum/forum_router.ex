@@ -40,6 +40,8 @@ defmodule Acs.ForumRouter do
     post  "/search", ForumController, :search
 
     post  "/upload_post_image", ForumController, :upload_post_image
+    
+    post  "/get_paged_news", ForumController, :get_paged_news
   end
 
 end

@@ -18,7 +18,11 @@
       </tab-pane>
       <tab-pane icon="fa fa-newspaper-o" :label="$t('admin.news.newsInfo')">
         <news-info-editor v-if="app" :app="app"></news-info-editor>
-      </tab-pane>        
+      </tab-pane>
+      <tab-pane icon="fa fa-comments" :label="$t('admin.question.questionInfo')">
+        <news-info-editor v-if="app" :app="app"></news-info-editor>
+      </tab-pane>
+
     </tabs>
   </div>
 </template>
@@ -39,7 +43,7 @@
   import goodsInfoEditor from 'admin/components/app/goodsInfoEditor'
   import activityInfoEditor from 'admin/components/news/activityInfoEditor'
   import noticeInfoEditor from 'admin/components/news/noticeInfoEditor'
-  import newsInfoEditor from 'admin/components/news/newsInfoEditor'  
+  import newsInfoEditor from 'admin/components/news/newsInfoEditor'
 
   export default {
     mounted() {
@@ -80,7 +84,7 @@
       goodsInfoEditor,
       activityInfoEditor,
       noticeInfoEditor,
-      newsInfoEditor,      
+      newsInfoEditor,
     }
   }
 </script>

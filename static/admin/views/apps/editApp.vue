@@ -10,14 +10,14 @@
       <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.app.goodsInfo')">
         <goods-info-editor v-if="app" :app="app"></goods-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-joomla" :label="$t('admin.news.activityInfo')">
-        <activity-info-editor v-if="app" :app="app"></activity-info-editor>
+      <tab-pane icon="fa fa-joomla" :label="$t('admin.news.activityInfo')">
+        <activity-info-editor v-if="app" :app="app"></activity-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-bullhorn" :label="$t('admin.news.noticeInfo')">
-        <notice-info-editor v-if="app" :app="app"></notice-info-editor>
+      <tab-pane icon="fa fa-bullhorn" :label="$t('admin.news.noticeInfo')">
+        <notice-info-editor v-if="app" :app="app"></notice-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-newspaper-o" :label="$t('admin.news.newsInfo')">
-        <news-info-editor v-if="app" :app="app"></news-info-editor>
+      <tab-pane icon="fa fa-newspaper-o" :label="$t('admin.news.newsInfo')">
+        <news-info-editor v-if="app" :app="app"></news-info-editor>
       </tab-pane>        
     </tabs>
   </div>

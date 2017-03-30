@@ -1,8 +1,8 @@
-defmodule Acs.Repo.Migrations.CreateForumNews do
+defmodule Acs.Repo.Migrations.CreateAppNews do
   use Ecto.Migration
 
   def change do
-    create table(:forums_news) do
+    create table(:app_news) do
       add :title, :string
       add :content, :binary
       add :group, :string
@@ -10,13 +10,13 @@ defmodule Acs.Repo.Migrations.CreateForumNews do
       add :pic, :string
       add :reads, :integer, default: 0
 
-      add :forum_id, references(:forums, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:forums_news, [:forum_id, :group])
+    create index(:app_news, [:app_id, :group])
 
   end
 end

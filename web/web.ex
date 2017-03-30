@@ -69,13 +69,13 @@ defmodule Acs.Web do
       alias  Acs.AppUserDailyActivity
       alias  Acs.AppDevice
       alias  Acs.AppDeviceDailyActivity
+      alias  Acs.AppNews
 
       alias  Acs.Forum
       alias  Acs.ForumSection
       alias  Acs.ForumPost
       alias  Acs.ForumManager
       alias  Acs.ForumComment
-      alias  Acs.ForumNews
 
       alias  Acs.PaymentHelper
       alias  Acs.ChaoxinNotifier

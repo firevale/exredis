@@ -6,7 +6,7 @@
       </tab-pane>
       <tab-pane icon="fa fa-support" :label="$t('admin.forum.sectionInfo')">
         <section-info-editor v-if="forum" :forum="forum"></section-info-editor>
-      </tab-pane>          
+      </tab-pane>              
     </tabs>
   </div>
 </template>

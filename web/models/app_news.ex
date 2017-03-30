@@ -1,9 +1,9 @@
-defmodule Acs.ForumNews do
+defmodule Acs.AppNews do
   use Acs.Web, :model
 
   @derive {Poison.Encoder, except: [:forum, :user, :__meta__]}
 
-  schema "forums_news" do
+  schema "app_news" do
     field :title, :string
     field :content, :binary
     field :group, :string
@@ -11,7 +11,7 @@ defmodule Acs.ForumNews do
     field :pic, :string
     field :reads, :integer, default: 0
 
-    belongs_to :forum, Acs.Forum, type: :integer
+    belongs_to :app, Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
 
     timestamps()
@@ -22,9 +22,9 @@ defmodule Acs.ForumNews do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :content, :group, :is_top, :pic, :reads, :forum_id, :user_id])
-    |> validate_required([:title, :content, :group, :forum_id, :user_id])
-    |> foreign_key_constraint(:forum_id)
+    |> cast(params, [:title, :content, :group, :is_top, :pic, :reads, :app_id, :user_id])
+    |> validate_required([:title, :content, :group, :app_id, :user_id])
+    |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
   end
 end

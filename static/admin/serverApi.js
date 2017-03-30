@@ -1,3 +1,4 @@
+import message from './components/message'
 
 const processResponse = async(Vue, response) => {
   let result = await response.json()
@@ -27,8 +28,8 @@ const post = async(Vue, uri, params) => {
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {
-      getPagedNews(forum_id, group, page, records_per_page) {
-        return post(Vue, '/admin_actions/get_paged_news', {forum_id, group, page, records_per_page})
+      getPagedNews(app_id, group, page, records_per_page) {
+        return post(Vue, '/admin_actions/get_paged_news', {app_id, group, page, records_per_page})
       },
 
     }

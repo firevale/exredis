@@ -1,12 +1,12 @@
 <template>
   <div class="tile is-ancestor">  
     <div class="tile is-parent">
-      <div class="column is-12">
-        <a class="button is-primary" style="min-width: 100px" @click="addNewNews">
-          <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.forum.activity.add') }}
-        </a>
-      </div>        
       <article class="tile is-child">
+        <div class="column">
+          <a class="button is-primary" style="min-width: 100px" @click="addNewNews">
+            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.news.activity.add') }}
+          </a>
+        </div>
         <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
             <thead v-show="newses && newses.length > 0">
@@ -23,7 +23,11 @@
               <tr v-for="(news, index) in newses">
                 <td> {{ news.id }} </td>
                 <td> {{ news.title }} </td>
-                <td> {{ news.pic }} </td>
+                <td class="is-icon">
+                  <figure class="image is-86x35 news-pic">
+                    <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'"></img>
+                  </figure>
+                </td>
                 <td> {{ news.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
                   <a @click.prevent="editActivityInfo(news, index)">
@@ -74,7 +78,6 @@ export default {
   data() {
     return {
       newses: [],
-      forumId: 1,
       page: 1,
       total: 1,
       recordsPerPage: 10,
@@ -89,7 +92,8 @@ export default {
 
   methods: {
     getActivityInfo: async function(page, recordsPerPage) {
-      let result = await this.$acs.getPagedNews(this.forumId, "activity", page, recordsPerPage)
+      let app_id = this.$route.params.appId
+      let result = await this.$acs.getPagedNews(app_id, "activity", page, recordsPerPage)
 
       if (result.success) {
         this.total = result.total

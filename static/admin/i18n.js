@@ -70,8 +70,8 @@ export default {
 
         }
       },
-      qeustion: {
-
+      question: {
+        questionInfo:'问题反馈'
       },
 
       forum: {

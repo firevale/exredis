@@ -170,7 +170,8 @@ defmodule Acs.ForumController do
               avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
               d "icon_url: #{avatar_url}"
               User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
-              conn |> json(%{success: true, avatar_url: avatar_url})
+              update_user = RedisUser.refresh(String.to_integer(user_id))
+              conn |> json(%{success: true, user: update_user})
             else
               conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end

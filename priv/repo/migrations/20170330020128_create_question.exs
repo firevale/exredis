@@ -8,7 +8,8 @@ defmodule Acs.Repo.Migrations.CreateQuestion do
       add :is_hot, :string
       add :active, :boolean, default: true
       add :sort_index, :integer, default: 0
-      add :reply_at, :utc_datetime
+      add :reply_at, :utc_datetime 
+      add :platform, :integer, default: 0
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)

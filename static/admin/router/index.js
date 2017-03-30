@@ -48,6 +48,10 @@ export default new Router({
       path: 'forums/edit/:forumId',
       component: require('../views/forums/editForum')
     }, {
+      name: 'Questions',
+      path: 'questions',
+      component: require('../views/questions')
+    }, {
       name: 'Settings',
       path: 'settings',
       component: require('../views/Settings')

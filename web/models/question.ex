@@ -8,7 +8,7 @@ defmodule Acs.Question do
     field :active, :boolean, default: true
     field :sort_index, :integer, default: 0
     field :reply_at, :utc_datetime
-    field :platform, :integer, default: 0
+    field :platform, :string
 
     belongs_to :user, Acs.User, type: :integer
     belongs_to :app, Acs.App, type: :string

@@ -32,6 +32,18 @@ export default {
         return post(Vue, '/admin_actions/get_paged_news', {app_id, group, page, records_per_page})
       },
 
+      getNewsDetail(news_id) {
+        return post(Vue, '/admin_actions/get_news_detail', {news_id})
+      },
+
+      addNews(app_id, title, content, group, is_top, pic) {
+        return post(Vue, '/admin_actions/add_news', {app_id, title, content, group, is_top, pic})
+      },
+
+      deleteNews(news_id) {
+        return post(Vue, '/admin_actions/delete_news', {news_id})
+      },
+
     }
   }
 }

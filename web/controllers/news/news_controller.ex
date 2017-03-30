@@ -1,9 +1,9 @@
 defmodule Acs.NewsController do
   use Acs.Web, :controller
 
-  require Floki
-
+  plug :fetch_session_user_id
   plug :cache_page, [cache_seconds: 600] when action in [:get_paged_news]
+  plug :check_forum_manager when action in [:add_news, :delete_news]
 
   # get_paged_news
   def get_paged_news(conn, %{"app_id" => app_id,
@@ -51,94 +51,86 @@ defmodule Acs.NewsController do
     AppNews.changeset(news, %{reads: news.reads+click}) |> Repo.update()
   end
 
-  # # add_post
-  # def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
-  #               "forum_id" => forum_id,
-  #               "title" => title,
-  #               "content" => content,
-  #               "section_id" => section_id} = post) do
+  # add_news
+  def add_news(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                "app_id" => app_id,
+                "title" => title,
+                "content" => content,
+                "group" => group,
+                "is_top" => is_top,
+                "pic" => pic} = news) do
 
-  #     post = case Floki.find(content, "img") do
-  #              [] -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
-  #              _ -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
-  #            end
-      
-  #     query = from f in Forum,
-  #             join: s in assoc(f, :sections),
-  #             where: f.id == ^forum_id and s.id == ^section_id,
-  #             preload: [sections: s]
+      with news = news |> Map.put("user_id", user_id),
+        {:ok, new_news} <- AppNews.changeset(%AppNews{}, news) |> Repo.insert
+      do
+        conn |> json(%{success: true, message: "admin.news.activity.addSuccess"})
+      else
+        {:error, %{errors: errors}} ->
+          conn |> json(%{success: false, message: "admin.error.networkError"})
+      end
+  end
+  def add_news(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
 
-  #     with %Forum{} <- Repo.one(query),
-  #           {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
-  #     do
-  #         Elasticsearch.index(%{
-  #           index: "forum",
-  #           type: "posts",
-  #           doc: %{
-  #             forum_id: forum_id,
-  #             section_id: section_id,
-  #             user_id: user_id,
-  #             title: title,
-  #             content: content,
-  #             is_top: false,
-  #             is_hot: false,
-  #             is_vote: false,
-  #             active: true,
-  #             has_pic: post["has_pic"],
-  #             reads: 0,
-  #             comms: 0,
-  #             inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-  #             last_reply_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-  #           },
-  #           params: nil,
-  #           id: new_post.id
-  #         })
+  # delete_news
+  def delete_news(%Plug.Conn{private: %{acs_session_user_id: user_id,
+                                      acs_is_forum_admin: is_admin}} = conn,
+                  %{"news_id" => news_id}) do
+    case Repo.get(AppNews, news_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound"})
+      %AppNews{} = news ->
+        if(!is_admin) do
+          conn |> json(%{success: false, i18n_message: "admin.serverError.illegal"})
+        else
+          case Repo.delete(news) do
+            {:ok, _} ->
+              conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
-  #         conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
-  #     else
-  #       nil ->
-  #           conn |> json(%{success: false, message: "forum.error.illegal"})
-  #       {:error, %{errors: errors}} ->
-  #         d "errs: #{inspect errors, pretty: true}"
-  #         conn |> json(%{success: false, message: "forum.error.networkError"})
-  #     end
-  # end
-  # def add_post(conn, _) do
-  #   conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
-  # end
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
+        end
+    end
+  end
+  def delete_news(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
 
-  # # delete_comment
-  # def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id,
-  #                                         acs_is_forum_admin: is_admin}} = conn,
-  #                    %{"comment_id" => comment_id}) do
-  #   case Repo.get(ForumComment, comment_id) do
-  #     nil ->
-  #       conn |> json(%{success: false, i18n_message: "forum.serverError.commentNotFound"})
-  #     %ForumComment{} = comment ->
-  #       if(!is_admin and comment.user_id != user_id) do
-  #         conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
-  #       else
-  #         with post_id = comment.post_id,
-  #           {:ok, _} <- ForumComment.changeset(comment,
-  #                                             %{active: false,
-  #                                             content: "回复已被删除",
-  #                                             editer_id: user_id }) |> Repo.update()
-  #         do
-  #           post = Repo.get(ForumPost, post_id)
-  #           ForumPost.changeset(post, %{comms: post.comms-1}) |> Repo.update()
+  # update_news_pic
+  def update_news_pic(conn, %{"news_id" => news_id, "file" => %{} = upload_file}) do
+    case Repo.get(AppNews, news_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound", i18n_message_object: %{news_id: news_id}})
 
-  #           conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
-  #         else
-  #           {:error, %{errors: errors}} ->
-  #             conn |> json(%{success: false, message: translate_errors(errors)})
-  #           _ ->
-  #             conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
-  #         end
-  #       end
-  #   end
-  # end
-  # def delete_comment(conn, _) do
-  #   conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
-  # end
+      %AppNews{} = news ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 860, height: 350} = upload_image ->
+            if upload_image.format == "png" do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/news_pics/"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
+              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
+              d "pic_url: #{pic_url}"
+              AppNews.changeset(news, %{pic: pic_url}) |> Repo.update!
+              #RedisApp.refresh(app_id)
+              conn |> json(%{success: true, pic: pic_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize860x350"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def update_news_pic(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
 
 end

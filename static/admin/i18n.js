@@ -10,6 +10,7 @@ export default {
       cancel: '取消',
       next: '下一页',
       previous: '上一页',
+      operateSuccess: '操作成功',
 
       menu: {
         dashboard: '概况',
@@ -53,11 +54,14 @@ export default {
         pic: '题图',
         edit: '修改',
         delete: '删除',
+        deleteOk: '删除成功',
         created_at: '创建时间',
         active: '是否启用',
 
         activity: {
           add: '添加新活动',
+          addSuccess: '添加成功',
+          
         },
 
         notice: {
@@ -212,6 +216,10 @@ export default {
         oops: '哦噢。。。',
         noOrderToDisplay: '当前没有任何可以显示的订单',
         loading: '正在加载数据...',
+        editActivityInfo: '编辑活动信息',
+        editNoticeInfo: '编辑公告信息',
+        editNewsInfo: '编辑新闻信息',
+        uploadNewsPic: '修改题图',
       },
 
       messages: {
@@ -225,7 +233,8 @@ export default {
         confirmDeleteSection: '您确定要禁用该论坛版块么?',
         sectionInfoUpdated: '论坛版块信息已成功更新',
         forumInfoUpdated: '论坛信息已成功更新',
-        confirmDeleteSetting: '您确定要该配置项么?',
+        confirmDeleteSetting: '您确定要删除该配置项么?',
+        confirmDeleteNews: '您确定要删除该内容么?',
       },
 
       serverSuccess: {
@@ -235,6 +244,7 @@ export default {
 
       serverError: {
         imageSize128x128: '图片的尺寸必须为128x128',
+        imageSize860x350: '图片的尺寸必须为860x350',
         imageFormatPNG: '图片格式必须为PNG文件',
         badRequestParams: '请求参数错误',
         networkError: '网络错误',
@@ -248,6 +258,7 @@ export default {
         emptySectionTitle: '版块标题不能为空',
         emptyForumId: '版块所属论坛编号不能为空',
         forumNotFound: '未找到论坛',
+        newsNotFound: '未找到该内容',
       },
 
       sdks: {

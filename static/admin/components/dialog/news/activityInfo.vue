@@ -2,17 +2,24 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.titles.editSectionInfo') }}</h5>
+        <h5 class="title is-5">{{ $t('admin.titles.editActivityInfo') }}</h5>
       </div>
-      <validation name="section" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.forum.section.title') }}: </label>
+      <validation name="news" @submit.prevent="handleSubmit">
+        <label class="label"> {{ $t('admin.news.title') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="section.title">
+          <input class="input" type="text" v-model.trim="news.title">
         </p>
 
-        <label class="label"> {{ $t('admin.forum.section.sort') }}: </label>
+        <label class="label"> {{ $t('admin.news.pic') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="section.sort">
+          <figure class="image is-172x70 news-pic" @click="updateNewsPic(news)">
+            <img :src="news.pic ? news.pic: 'https://placehold.it/172x70?text=860X350'"></img>
+          </figure>
+        </p>        
+
+        <label class="label"> {{ $t('admin.news.content') }}: </label>
+        <p class="control">
+          <textarea class="textarea" style="height:120px" v-model.trim="news.content"></textarea>
         </p>
 
         <p class="control">
@@ -36,6 +43,14 @@
   } from 'vue-bulma-modal'
 
   import {
+    showFileUploadDialog
+  } from '../fileUpload'
+
+  import {
+    showMessageBox
+  } from '../messageBox'
+
+  import {
     openNotification,
     processAjaxError
   } from 'admin/miscellaneous'
@@ -57,6 +72,19 @@
     },
 
     methods: {
+      updateNewsPic: function(news) {
+        showFileUploadDialog({
+          postAction: '/admin_actions/update_news_pic',
+          accept: 'image/png',
+          data: {
+            news_id: this.news.id
+          },
+          extensions: ['png'],
+          title: this.$t('admin.titles.uploadNewsPic'),
+          callback: response => news.pic = response.pic,
+        })
+      },
+
       handleSubmit() {
         this.processing = true
         if(!this.section.id) this.section.id=0

@@ -30,12 +30,12 @@
                 </td>
                 <td> {{ news.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
-                  <a @click.prevent="editActivityInfo(news, index)">
+                  <a @click.prevent="editNewsInfo(news, index)">
                     <i class="fa fa-pencil"></i>
                   </a>
                 </td>
                 <td class="is-icon">
-                  <a @click.prevent="deleteActivity(news, index)">
+                  <a @click.prevent="deleteNews(news, index)">
                     <i class="fa fa-trash-o"></i>
                   </a>
                 </td>
@@ -60,13 +60,17 @@ import {
 
 import Vue from 'admin/vue-i18n'
 
-import activityInfoDialog from 'admin/components/dialog/forum/activityInfo'
-const activityInfoDialogComponent = Vue.extend(activityInfoDialog)
+import {
+  showMessageBox
+} from '../dialog/messageBox'
 
-const openActivityInfoDialog = (propsData = {
+import newsInfoDialog from 'admin/components/dialog/news/activityInfo'
+const newsInfoDialogComponent = Vue.extend(newsInfoDialog)
+
+const openNewsInfoDialog = (propsData = {
   visible: true
 }) => {
-  return new activityInfoDialogComponent({
+  return new newsInfoDialogComponent({
     el: document.createElement('div'),
     propsData
   })
@@ -81,19 +85,18 @@ export default {
       page: 1,
       total: 1,
       recordsPerPage: 10,
-      loading: true,
+      loading: true
     }
   },
 
   mounted: function() {
-    this.getActivityInfo(this.page, this.recordsPerPage)
+    this.getNewsInfo(this.page, this.recordsPerPage)
     this.loading = true
   },
 
   methods: {
-    getActivityInfo: async function(page, recordsPerPage) {
-      let app_id = this.$route.params.appId
-      let result = await this.$acs.getPagedNews(app_id, "activity", page, recordsPerPage)
+    getNewsInfo: async function(page, recordsPerPage) {
+      let result = await this.$acs.getPagedNews(this.$route.params.appId, "activity", page, recordsPerPage)
 
       if (result.success) {
         this.total = result.total
@@ -103,11 +106,11 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getActivityInfo(page, this.recordsPerPage)
+      this.getNewsInfo(page, this.recordsPerPage)
     },
 
-    editActivityInfo: function(news, index) {
-      openActivityInfoDialog({
+    editNewsInfo: function(news, index) {
+      openNewsInfoDialog({
         news: news,
         visible: true,
         callback: new_news => {
@@ -116,18 +119,40 @@ export default {
       })
     },
 
-    deleteActivity: function(news, index) {
+    deleteNews:  function(news, index) {
+       showMessageBox({
+        visible: true,
+        title: this.$t('admin.titles.warning'),
+        message: this.$t('admin.messages.confirmDeleteNews'),
+        type: 'danger',
+        onOK: _ => {
+          this.loading = true
+
+          let result = this.$acs.deleteNews(news.id)
+
+          if (result.success) {
+            this.newses.splice(index, 1)
+            openNotification({
+              title: this.$t('admin.titles.deleteSuccess'),
+              message: this.$t('admin.news.deleteOk'),
+              type: 'success',
+              duration: 4500,
+              container: '.notifications',
+            })
+          }
+        },
+      })
 
     },
 
     addNewNews: function() {
-      openActivityInfoDialog({
+      openNewsInfoDialog({
         news: {
           id: '',
           title: '',
           content: '',
           pic: '',
-          forum_id: this.forumId,
+          app_id: this.$route.params.appId,
         },
         visible: true,
         callback: news => {
@@ -135,7 +160,6 @@ export default {
         },
       })
     },
-
 
   },
 

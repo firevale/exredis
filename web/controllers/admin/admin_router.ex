@@ -45,7 +45,7 @@ defmodule Acs.AdminRouter do
     post "/update_setting", AdminSettingController, :update_setting
     post "/update_setting_by_name", AdminSettingController, :update_setting_by_name
 
-    post  "/get_paged_news", ForumController, :get_paged_news
+    post  "/get_paged_news", NewsController, :get_paged_news
   end
 
 end

@@ -583,27 +583,5 @@ defmodule Acs.ForumController do
       conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
     end
   end
-
-  # get_paged_news
-  def get_paged_news(conn, %{"forum_id" => forum_id,
-                              "group" => group, 
-                              "page" => page, 
-                              "records_per_page" => records_per_page}) do
-    total = Repo.one!(from n in ForumNews, select: count(1), where: n.forum_id == ^forum_id and n.group == ^group)
-    total_page = round(Float.ceil(total / records_per_page))
-
-    query = from n in ForumNews,
-              where: n.forum_id == ^forum_id and n.group == ^group,
-              order_by: [desc: n.id],
-              limit: ^records_per_page,
-              offset: ^((page - 1) * records_per_page),
-              select: n
-
-    news = Repo.all(query)
-    conn |> json(%{success: true, news: news, total: total_page, records: total})
-  end
-  def get_paged_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
-  end    
-
+ 
 end

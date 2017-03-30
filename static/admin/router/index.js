@@ -56,6 +56,10 @@ export default new Router({
       path: 'apps/news/edit/:newsId',
       component: require('../views/news/editNews')
     }, {
+      name: 'Questions',
+      path: 'questions',
+      component: require('../views/questions')
+    }, {
       name: 'Settings',
       path: 'settings',
       component: require('../views/Settings')

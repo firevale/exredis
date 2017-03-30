@@ -59,6 +59,12 @@ defmodule Acs.PageController do
          |> render("forum.html")
   end
 
+   # 问题反馈
+  def show_question_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("question.html")
+  end
+
   # 商城
   def show_mall_page(conn, _params) do
     conn |> put_layout(false)

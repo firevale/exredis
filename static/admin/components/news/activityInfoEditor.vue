@@ -24,7 +24,7 @@
                 <td> {{ news.id }} </td>
                 <td> {{ news.title }} </td>
                 <td class="is-icon">
-                  <figure class="image is-86x35 news-pic">
+                  <figure class="image is-86x35 news-pic" @click="updateNewsPic(news)">
                     <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'"></img>
                   </figure>
                 </td>
@@ -59,6 +59,10 @@ import {
 } from 'admin/miscellaneous'
 
 import Vue from 'admin/vue-i18n'
+
+import {
+  showFileUploadDialog
+} from '../dialog/fileUpload'
 
 import {
   showMessageBox
@@ -96,7 +100,8 @@ export default {
 
   methods: {
     getNewsInfo: async function(page, recordsPerPage) {
-      let result = await this.$acs.getPagedNews(this.$route.params.appId, "activity", page, recordsPerPage)
+      let result = await this.$acs.getPagedNews(this.$route.params.appId, "activity", page,
+        recordsPerPage)
 
       if (result.success) {
         this.total = result.total
@@ -119,17 +124,16 @@ export default {
       })
     },
 
-    deleteNews:  function(news, index) {
-       showMessageBox({
+    deleteNews: function(news, index) {
+      showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
         message: this.$t('admin.messages.confirmDeleteNews'),
         type: 'danger',
         onOK: _ => {
           this.loading = true
-
           let result = this.$acs.deleteNews(news.id)
-
+          this.loading = false
           if (result.success) {
             this.newses.splice(index, 1)
             openNotification({
@@ -143,6 +147,19 @@ export default {
         },
       })
 
+    },
+
+    updateNewsPic: function(news) {
+      showFileUploadDialog({
+        postAction: '/admin_actions/update_news_pic',
+        accept: 'image/png',
+        data: {
+          news_id: news.id
+        },
+        extensions: ['png'],
+        title: this.$t('admin.titles.uploadNewsPic'),
+        callback: response => news.pic = response.pic,
+      })
     },
 
     addNewNews: function() {

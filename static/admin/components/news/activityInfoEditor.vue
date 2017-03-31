@@ -1,22 +1,25 @@
 <template>
-  <div class="tile is-ancestor">  
-    <div class="tile is-parent">
-      <article class="tile is-child">
+  <div class="tile is-ancestor"> 
+    <div class="tile is-parent is-vertical">
+      <article class="tile is-child is-12">
         <div class="column">
           <a class="button is-primary" style="min-width: 100px" @click="addNewNews">
             <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.news.activity.add') }}
           </a>
-        </div>
+        </div> 
+      </article>       
+      <article class="tile is-child is-12">
         <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
             <thead v-show="newses && newses.length > 0">
               <tr>
-                <th>{{ $t('admin.forum.id') }}</th>
-                <th>{{ $t('admin.forum.title') }}</th>
-                <th>{{ $t('admin.forum.pic')}}</th>
-                <th>{{ $t('admin.forum.created_at')}}</th>
-                <th>{{ $t('admin.forum.edit')}}</th>
-                <th>{{ $t('admin.forum.delete')}}</th>
+                <th>{{ $t('admin.news.id') }}</th>
+                <th>{{ $t('admin.news.title') }}</th>
+                <th>{{ $t('admin.news.pic')}}</th>
+                <th>{{ $t('admin.news.created_at')}}</th>
+                <th>{{ $t('admin.news.active')}}</th>
+                <th>{{ $t('admin.news.edit')}}</th>
+                <th>{{ $t('admin.news.operate')}}</th>
               </tr>
             </thead>
             <tbody v-show="newses && newses.length > 0">
@@ -24,19 +27,20 @@
                 <td> {{ news.id }} </td>
                 <td> {{ news.title }} </td>
                 <td class="is-icon">
-                  <figure class="image is-86x35 news-pic" @click="updateNewsPic(news)">
-                    <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'"></img>
+                  <figure class="image news-pic" @click="updateNewsPic(news)">
+                    <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'" style="width:172px; height:70px;"></img>
                   </figure>
                 </td>
                 <td> {{ news.inserted_at | formatServerDateTime }} </td>
+                <td> {{ news.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
                 <td class="is-icon">
                   <a @click.prevent="editNewsInfo(news, index)">
                     <i class="fa fa-pencil"></i>
                   </a>
                 </td>
                 <td class="is-icon">
-                  <a @click.prevent="deleteNews(news, index)">
-                    <i class="fa fa-trash-o"></i>
+                  <a @click.prevent="toggleStatus(news)">
+                    <i class="fa" :class="news.active ? 'fa-trash-o' : 'fa-check'" ></i>
                   </a>
                 </td>
               </tr>
@@ -44,6 +48,9 @@
           </table>
         </div>
       </article>
+      <article class="tile is-child is-12">
+        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      </article>      
     </div>
   </div>
 </template>
@@ -88,7 +95,7 @@ export default {
       newses: [],
       page: 1,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 5,
       loading: true
     }
   },
@@ -119,34 +126,39 @@ export default {
         news: news,
         visible: true,
         callback: new_news => {
-          this.newses[index] = new_news
+          this.getNewsInfo(this.page, this.recordsPerPage)
         },
       })
     },
 
-    deleteNews: function(news, index) {
+    toggleStatus: function(news) {
       showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.messages.confirmDeleteNews'),
+        message: news.active ? this.$t('admin.messages.confirmUnPublishNews') : this.$t(
+          'admin.messages.confirmPublishNews'),
         type: 'danger',
         onOK: _ => {
-          this.loading = true
-          let result = this.$acs.deleteNews(news.id)
-          this.loading = false
-          if (result.success) {
-            this.newses.splice(index, 1)
-            openNotification({
-              title: this.$t('admin.titles.deleteSuccess'),
-              message: this.$t('admin.news.deleteOk'),
-              type: 'success',
-              duration: 4500,
-              container: '.notifications',
-            })
-          }
+          this._toggleStatus(news)
         },
       })
+    },
 
+    _toggleStatus: async function(news) {
+      this.loading = true
+      let result = await this.$acs.toggleStatus(news.id)
+      this.loading = false
+      if (result.success) {
+        news.active = !news.active
+        openNotification({
+          title: this.$t('admin.operateSuccess'),
+          message: news.active ? this.$t('admin.news.publishOk') : this.$t(
+            'admin.news.unPublishOK'),
+          type: 'success',
+          duration: 4500,
+          container: '.notifications',
+        })
+      }
     },
 
     updateNewsPic: function(news) {
@@ -168,12 +180,12 @@ export default {
           id: '',
           title: '',
           content: '',
-          pic: '',
           app_id: this.$route.params.appId,
         },
         visible: true,
         callback: news => {
-          this.newses.push(news)
+          // this.newses.unshift(news)
+          this.getNewsInfo(this.page, this.recordsPerPage)
         },
       })
     },

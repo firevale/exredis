@@ -377,6 +377,42 @@ defmodule Acs.Plugs do
     _response_admin_access_failed(conn)
   end
 
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: nil}} = conn, _options) do
+    conn
+  end
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do
+    conn
+  end
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do
+    case RedisAccessToken.find(access_token) do
+      nil -> conn
+
+      %RedisAccessToken{user_id: user_id, app_id: app_id, device_id: device_id} = token ->
+        case RedisUser.find(user_id) do
+          nil -> conn
+
+          %RedisUser{} = user ->
+            admin_user = unless is_nil(user.email) do
+                           Repo.get_by(AdminUser, account_id: user.email)
+                         end
+
+            admin_user = if is_nil(admin_user) and !is_nil(user.mobile) do
+              Repo.get_by(AdminUser, account_id: user.mobile)
+            else
+              admin_user
+            end
+
+            case admin_user do
+              nil -> conn
+              _ -> conn |> put_private(:acs_admin_id, user_id)
+            end
+        end
+    end
+  end
+  def check_is_admin(%Plug.Conn{} = conn, _options) do
+    conn
+  end
+
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
         params: %{"forum_id" => forum_id}} = conn, _options) do
     _check_forum_manager(conn, user_id, forum_id)

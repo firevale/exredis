@@ -55,15 +55,22 @@ export default {
         content: '内容',
         pic: '题图',
         edit: '修改',
+        publishEd: '已发布',
+        unPublish: '未发布',
+        publishOk: '发布成功',
+        unPublishOK: '取消发布成功',
         delete: '删除',
         deleteOk: '删除成功',
         created_at: '创建时间',
         active: '是否启用',
+        operate: '操作',
+        active: '状态',
+        addSuccess: '添加成功',
+        updateSuccess: '修改成功',
 
         activity: {
           add: '添加新活动',
-          addSuccess: '添加成功',
-          
+
         },
 
         notice: {
@@ -240,6 +247,8 @@ export default {
         forumInfoUpdated: '论坛信息已成功更新',
         confirmDeleteSetting: '您确定要删除该配置项么?',
         confirmDeleteNews: '您确定要删除该内容么?',
+        confirmPublishNews: '您确定要发布该内容么?',
+        confirmUnPublishNews: '您确定要取消发布该内容么?',
       },
 
       serverSuccess: {

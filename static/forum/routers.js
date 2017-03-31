@@ -15,6 +15,10 @@ export default function(VueRouter) {
           path: 'index',
           name: 'questionList',
           component: require('./views/question/questionList.vue')
+        },{
+          path: 'contactService',
+          name: 'contactservice',
+          component: require('./views/question/contactService.vue')
         }]
       },
       {

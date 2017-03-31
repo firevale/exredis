@@ -133,7 +133,7 @@ export default {
       contactService: {
         title: '联系客服'
       },
-      serviceRecord: {
+      myService: {
         title: '服务记录'
       },
       searchBtn: '搜索问题',

@@ -10,17 +10,8 @@
       </div>
     </nav>
   </div>
-  <div class="slider-nav">
-    <div class="nav">
-      <div class="nav-center">
-        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('customerService.commonIssues.title') }}</a>
-        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('customerService.contactService.title') }}</a>
-        <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('customerService.serviceRecord.title') }}</a>
-        <div class="slider" :style="{'background-position':sliderPosition}"></div>
-      </div>
-    </div>
-  </div>
-  <transition :name="transitionName">
+  <slider-nav :menus="menus" :onSelect="switchMenu"></slider-nav>
+  <transition >
     <router-view class="content-container"> </router-view>
   </transition>
 </div>
@@ -38,22 +29,39 @@ import {
   mapActions
 } from 'vuex'
 
+import sliderNav from '../../components/sliderNav'
 import nativeApi from 'common/nativeApi'
 import * as acs from 'common/acs'
 import * as filter from 'common/keywordFilter'
 
 export default {
+  components: {
+    sliderNav
+  },
   data: function() {
     return {
       inApp: window.acsConfig.inApp,
       canGoBack: false,
+      menus: [{
+          text: this.$t('customerService.commonIssues.title'),
+          value: 'commonIssues'
+        }, {
+          text: this.$t('customerService.contactService.title'),
+          value: 'contactService'
+        },
+        {
+          text: this.$t('customerService.myService.title'),
+          value: 'myService'
+        }
+      ]
     }
+
   },
 
   computed: {
     ...mapGetters([
-      'transitionName', 'forumInfo'
-    ]),
+      'transitionName',
+    ])
   },
 
   methods: {
@@ -71,11 +79,9 @@ export default {
       }
     },
 
-    showPage: function(routerName) {
-      acs.checkIsLogin(_ => {
-        this.$router.push({
-          name: routerName
-        })
+    switchMenu: function(item, index) {
+      this.$router.push({
+        name: item.value
       })
     }
   },

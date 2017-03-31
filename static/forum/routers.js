@@ -15,10 +15,14 @@ export default function(VueRouter) {
           path: 'index',
           name: 'commonIssues',
           component: require('./views/customerService/commonIssues.vue')
-        },{
+        }, {
           path: 'contactService',
-          name: 'contactservice',
+          name: 'contactService',
           component: require('./views/customerService/contactService.vue')
+        }, {
+          path: 'myService',
+          name: 'myService',
+          component: require('./views/customerService/myService.vue')
         }]
       },
       {
@@ -53,10 +57,6 @@ export default function(VueRouter) {
           path: 'preview',
           name: 'preview',
           component: require('./views/postPreview.vue')
-        }, {
-          path: 'customerService',
-          name: 'customerService',
-          component: require('./views/customerService.vue')
         }, {
           path: 'personalPage',
           name: 'personalPage',

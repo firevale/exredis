@@ -2,11 +2,32 @@ defmodule Acs.NewsController do
   use Acs.Web, :controller
 
   plug :fetch_session_user_id
-  plug :cache_page, [cache_seconds: 600] when action in [:get_paged_news]
-  plug :check_forum_manager when action in [:add_news, :delete_news]
+  # plug :cache_page, [cache_seconds: 600] when action in [:get_paged_news]
+  plug :check_is_admin when action in [:update_news, :toggle_news_status, :get_paged_news_admin, :update_news_pic]
 
   # get_paged_news
   def get_paged_news(conn, %{"app_id" => app_id,
+                          "group" => group,
+                          "page" => page, 
+                          "records_per_page" => records_per_page}) do
+    total = Repo.one!(from n in AppNews, select: count(1), where: n.app_id == ^app_id and n.group == ^group and n.active == true)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from n in AppNews,
+              where: n.app_id == ^app_id and n.group == ^group and n.active == true,
+              order_by: [desc: n.id],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(n, [:id, :title, :is_top, :active, :pic, :reads, :inserted_at])
+
+    news = Repo.all(query)
+    conn |> json(%{success: true, news: news, total: total_page, records: total})
+  end
+  def get_paged_news(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  def get_paged_news_admin(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, 
+                          %{"app_id" => app_id,
                           "group" => group,
                           "page" => page, 
                           "records_per_page" => records_per_page}) do
@@ -18,14 +39,14 @@ defmodule Acs.NewsController do
               order_by: [desc: n.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(n, [:id, :title, :is_top, :pic, :reads, :inserted_at])
+              select: map(n, [:id, :app_id, :title, :content, :is_top, :active, :pic, :reads, :inserted_at])
 
     news = Repo.all(query)
     conn |> json(%{success: true, news: news, total: total_page, records: total})
   end
-  def get_paged_news(conn, _) do
+  def get_paged_news_admin(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
-  end  
+  end    
   
   # get_news_detail
   def get_news_detail(conn,%{"news_id" => news_id}) do
@@ -33,7 +54,7 @@ defmodule Acs.NewsController do
           join: u in assoc(n, :user),
           where: n.id == ^news_id,
           order_by: [desc: n.id],
-          select: map(n, [:id, :title, :content, :is_top, :pic, :reads, :inserted_at,
+          select: map(n, [:id, :title, :content, :is_top, :active, :pic, :reads, :inserted_at,
                           user: [:id, :nickname, :avatar_url]]),
           preload: [user: u]
 
@@ -51,55 +72,56 @@ defmodule Acs.NewsController do
     AppNews.changeset(news, %{reads: news.reads+click}) |> Repo.update()
   end
 
-  # add_news
-  def add_news(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+  # update_news
+  def update_news(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
+                "news_id" => news_id,
                 "app_id" => app_id,
                 "title" => title,
                 "content" => content,
                 "group" => group,
-                "is_top" => is_top,
-                "pic" => pic} = news) do
+                "is_top" => is_top} = news) do
+    case Repo.get(AppNews, news_id) do
+      nil ->
+        # add new
+        news = news |> Map.put("user_id", user_id)
+        case AppNews.changeset(%AppNews{}, news) |> Repo.insert do
+          {:ok, new_news} ->
+            news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
+            conn |> json(%{success: true, news: news, i18n_message: "admin.news.addSuccess"})
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: "admin.error.networkError"})
+        end
+        
+      %AppNews{} = ns ->
+        # update
+        AppNews.changeset(ns, %{title: title, content: content, is_top: is_top}) |> Repo.update!
+        news = news |> Map.put("id", ns.id) |> Map.put("created_at", ns.inserted_at)
+        conn |> json(%{success: true, news: news, i18n_message: "admin.news.updateSuccess"})
+    end
 
-      with news = news |> Map.put("user_id", user_id),
-        {:ok, new_news} <- AppNews.changeset(%AppNews{}, news) |> Repo.insert
-      do
-        conn |> json(%{success: true, message: "admin.news.activity.addSuccess"})
-      else
-        {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, message: "admin.error.networkError"})
-      end
   end
-  def add_news(conn, _) do
+  def update_news(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
-  # delete_news
-  def delete_news(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                      acs_is_forum_admin: is_admin}} = conn,
+  # toggle_news_status
+  def toggle_news_status(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
                   %{"news_id" => news_id}) do
     case Repo.get(AppNews, news_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound"})
       %AppNews{} = news ->
-        if(!is_admin) do
-          conn |> json(%{success: false, i18n_message: "admin.serverError.illegal"})
-        else
-          case Repo.delete(news) do
-            {:ok, _} ->
-              conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
-
-            {:error, %{errors: errors}} ->
-              conn |> json(%{success: false, message: translate_errors(errors)})
-          end
-        end
+        AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end
-  def delete_news(conn, _) do
+  def toggle_news_status(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
   # update_news_pic
-  def update_news_pic(conn, %{"news_id" => news_id, "file" => %{} = upload_file}) do
+  def update_news_pic(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn, 
+                      %{"news_id" => news_id, "file" => %{} = upload_file}) do
     case Repo.get(AppNews, news_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound", i18n_message_object: %{news_id: news_id}})

@@ -22,57 +22,58 @@
     </div>
   </modal>
 </template>
-
 <script>
-  import {
-    Modal
-  } from 'vue-bulma-modal'
+import {
+  Modal
+} from 'vue-bulma-modal'
 
-  import {
-    openNotification,
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  export default {
-    props: {
-      visible: {
-        type: Boolean,
-        default: true
-      },
-      news: Object,
-      callback: Function,
+export default {
+  props: {
+    visible: {
+      type: Boolean,
+      default: true
     },
+    news: Object,
+    callback: Function,
+  },
 
-    data() {
-      return {
-        processing: false,
+  data() {
+    return {
+      processing: false,
+    }
+  },
+
+  methods: {
+    handleSubmit: async function() {
+      this.processing = true
+      if (!this.news.id) this.news.id = 0
+      let result = await this.$acs.updateNews(this.news.id, this.news.app_id, this.news.title,
+        this.news.content, "activity", false)
+      this.processing = false
+      if (result.success) {
+        openNotification({
+          title: this.$t('admin.titles.updateSuccess'),
+          message: this.$t(result.i18n_message),
+          type: 'success',
+          duration: 4500,
+          container: '.notifications',
+        })
+
+        if (this.callback) {
+          this.callback(result.news)
+        }
+        this.visible = false
       }
-    },
+    }
+  },
 
-    methods: {
-      handleSubmit: async function() {
-        this.processing = true
-        if(!this.news.id) this.news.id=0
-          let result = this.$acs.addNews(this.news.app_id, this.news.title, this.news.content, "activity", false, "")
-          this.processing = false
-          if (result.success) {
-              openNotification({
-                title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.sectionInfoUpdated'),
-                type: 'success',
-                duration: 4500,
-                container: '.notifications',
-              })
-
-              if (this.callback) {
-                this.callback(result.news)
-              }
-          }
-      }
-    },
-
-    components: {
-      Modal,
-    },
-  }
+  components: {
+    Modal,
+  },
+}
 </script>

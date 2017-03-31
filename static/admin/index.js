@@ -9,15 +9,19 @@ import VueValidator from 'vue-validator'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import ServerApi from './serverApi'
 
 import 'common/date'
 
 import * as filters from 'common/filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
+import VueQuillEditor from './components/quillEditor'
 
 Vue.use(VueValidator)
 Vue.use(Resource)
 Vue.use(NProgress)
+Vue.use(ServerApi)
+Vue.use(VueQuillEditor)
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 

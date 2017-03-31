@@ -1,5 +1,5 @@
 export default {
-  'zh-hans' : {
+  'zh-hans': {
     forum: {
       postList: {
         title: '游戏论坛',
@@ -82,26 +82,14 @@ export default {
         requireTitle: '请输入标题',
         requireContent: '请输入内容',
         requireSection: '请选择发贴版块',
-        addSuccess:'发帖成功'
+        addSuccess: '发帖成功'
       },
       writeComment: {
         title: '回复',
         btnTitle: '回复',
         textAreaPlaceHolder: '赶紧写帖子吐槽吧～～',
-        addSuccess:'回复成功',
+        addSuccess: '回复成功',
         deleteTip: '确认取消收藏',
-      },
-      customerService: {
-        title: '客服',
-        commonIssues: '常见问题',
-        contactService: '联系客服',
-        serviceRecord: '服务记录',
-        searchBtn: '搜索问题',
-        searchPlaceHolder: '请输入问题关键词',
-        issueTitle: '问题：{title}',
-        reply: '回复 :',
-        contactPlaceHolder: '请输入您的问题或建议',
-        submitBtn: '提交'
       },
       pagination: {
         previous: '上一页',
@@ -136,6 +124,24 @@ export default {
         gameNotice: '游戏公告',
         gameNews: '官方新闻'
       }
-    }
+    },
+    customerService: {
+      title: '客服',
+      commonIssues: {
+        title: '常见问题'
+      },
+      contactService: {
+        title: '联系客服'
+      },
+      serviceRecord: {
+        title: '服务记录'
+      },
+      searchBtn: '搜索问题',
+      searchPlaceHolder: '请输入问题关键词',
+      issueTitle: '问题：{title}',
+      reply: '回复 :',
+      contactPlaceHolder: '请输入您的问题或建议',
+      submitBtn: '提交'
+    },
   }
 }

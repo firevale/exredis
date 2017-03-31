@@ -8,13 +8,17 @@ export default function(VueRouter) {
         name: 'error',
         component: require('./views/error.vue')
       }, {
-        path: '/question/:forumId',
-        name: 'question',
-        component: require('./views/question/index.vue'),
+        path: '/customerService/:appId',
+        name: 'customerService',
+        component: require('./views/customerService/index.vue'),
         children: [{
           path: 'index',
-          name: 'questionList',
-          component: require('./views/question/questionList.vue')
+          name: 'commonIssues',
+          component: require('./views/customerService/commonIssues.vue')
+        },{
+          path: 'contactService',
+          name: 'contactservice',
+          component: require('./views/customerService/contactService.vue')
         }]
       },
       {

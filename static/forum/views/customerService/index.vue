@@ -2,21 +2,23 @@
 <div class="tile is-ancestor is-vertical root-container">
   <div class="top-bar">
     <div class="title-bar">
-      <h4 class="title is-4">客服</h4>
+      <h4 class="title is-4">{{$t('customerService.title')}}</h4>
     </div>
     <nav class="nav">
       <div class="nav-left has-text-left">
         <span v-show="canGoBack && inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
       </div>
-      <div class="nav-center">
-      </div>
-      <div class="nav-right has-text-right">
-        <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-        <a v-if="$route.name == 'postList'" class="icon image-icon icon-user" @click.prevent="showPage('personalPage')"></a>
-        <a v-if="$route.name == 'postList'" class="button level-button is-info" @click.prevent="showPage('newPost')">{{$t('forum.postList.newPost')}}</a>
-        <a v-if="$route.name == 'detail'" class="button level-button is-info" @click.prevent="showPage('newComment')">{{$t('forum.writeComment.btnTitle')}}</a>
-      </div>
     </nav>
+  </div>
+  <div class="slider-nav">
+    <div class="nav">
+      <div class="nav-center">
+        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('customerService.commonIssues.title') }}</a>
+        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('customerService.contactService.title') }}</a>
+        <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('customerService.serviceRecord.title') }}</a>
+        <div class="slider" :style="{'background-position':sliderPosition}"></div>
+      </div>
+    </div>
   </div>
   <transition :name="transitionName">
     <router-view class="content-container"> </router-view>
@@ -52,34 +54,6 @@ export default {
     ...mapGetters([
       'transitionName', 'forumInfo'
     ]),
-  },
-
-  beforeRouteEnter: async function(to, from, next) {
-    try {
-      let response = await Vue.http.post('/forum_actions/get_forum_info_with_keyword', {
-        forum_id: to.params.forumId
-      })
-      let result = await response.json()
-
-      if (result.success) {
-        next(vm => {
-          vm.updateForumInfo(result.forum)
-          filter.init(result.keyword)
-
-          if(window.acsConfig.acsUser){
-            vm.serUserProfile(window.acsConfig.acsUser)
-          }
-        })
-      } else {
-        next({
-          name: 'error'
-        })
-      }
-    } catch (_) {
-      next({
-        name: 'error'
-      })
-    }
   },
 
   methods: {

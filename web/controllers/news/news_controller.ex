@@ -133,7 +133,7 @@ defmodule Acs.NewsController do
               {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
               [file_md5 | _] = String.split(md5sum_result)
               static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/news_pics/"
+              url_path = "/images/news_pics/#{news_id}"
               {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
               {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
               pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
@@ -149,6 +149,20 @@ defmodule Acs.NewsController do
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def update_news_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
+    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
+    if upload_image.format in ["jpg", "jpeg", "png"] do
+      {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+      [file_md5 | _] = String.split(md5sum_result)
+      static_path = Application.app_dir(:acs, "priv/static/")
+      url_path = "/images/news_pics/#{app_id}"
+      {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+      {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+      conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
+    else
+      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
     end
   end
   def update_news_pic(conn, _) do

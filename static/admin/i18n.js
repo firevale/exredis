@@ -85,6 +85,16 @@ export default {
         questionInfo:'问题反馈'
       },
 
+      upload: {
+        filename: '文件名',
+        filesize: '文件大小',
+        progress: '上传进度',
+        speed: '上传速率',
+        title: '上传',
+        hint: '点击, 或拖动图片至此处',
+        fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
+      },
+
       forum: {
         enterForum: '论坛配置',
         basicInfo: '基本信息',

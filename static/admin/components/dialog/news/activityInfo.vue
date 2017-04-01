@@ -12,7 +12,8 @@
 
         <label class="label"> {{ $t('admin.news.content') }}: </label>
         <p class="control">
-          <textarea class="textarea" style="height:120px" v-model.trim="news.content"></textarea>
+          <quill-editor v-model.trim="news.content" @ready="setEditor" @input="handleValidation($v.news.content)" @image="onInsertImage">
+          </quill-editor> 
         </p>
 
         <div class="has-text-centered" style="margin-top: 15px">
@@ -28,11 +29,54 @@ import {
 } from 'vue-bulma-modal'
 
 import {
+  required,
+  minLength,
+  maxLength
+} from 'vuelidate/lib/validators'
+
+import {
   openNotification,
   processAjaxError
 } from 'admin/miscellaneous'
 
+import {
+  showFileUploadDialog
+} from '../fileUpload'
+
+const touchMap = new WeakMap()
+
 export default {
+  computed: {
+    errorHint: function() {
+      if (!this.$v.news.title.required) {
+        return this.$t('forum.newPost.titlePlaceholder')
+      } else if (!this.$v.news.title.minLength) {
+        return this.$t('forum.error.postTitleMinLength')
+      } else if (!this.$v.news.title.maxLength) {
+        return this.$t('forum.error.postTitleMaxLength')
+      } else if (!this.$v.news.content.required) {
+        return this.$t('forum.error.commentContentRequired')
+      }
+
+      return ''
+    },
+  },
+
+  validations: {
+    news: {
+      title: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30),
+      },
+      content: {
+        required: function(val) {
+          return this.editor && this.editor.getText().trim().length >= 5
+        }
+      }
+    }
+  },
+
   props: {
     visible: {
       type: Boolean,
@@ -45,10 +89,47 @@ export default {
   data() {
     return {
       processing: false,
+      editor: undefined,
     }
   },
 
   methods: {
+    setEditor: function(editor) {
+      this.editor = editor
+    },
+
+    handleValidation: function($v) {
+      $v.$reset()
+      if (touchMap.has($v)) {
+        clearTimeout(touchMap.get($v))
+      }
+      touchMap.set($v, setTimeout($v.$touch(), 2000))
+    },
+
+    onInsertImage: function(editor) {
+      showFileUploadDialog({
+        postAction: '/admin_actions/update_news_pic',
+        accept: 'image/jpeg, image/png',
+        data: {
+          app_id: this.news.app_id
+        },
+        extensions: ['png', 'jpg', 'jpeg'],
+        callback: response => {
+          if (response.success) {
+            editor.focus()
+            let range = editor.getSelection()
+            editor.insertEmbed(range.index, 'image', response.link)
+          } else if (response.i18n_message) {
+            message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
+          } else if (response.message) {
+            message.showMsg(response.message)
+          } else {
+            message.showMsg(this.$t('admin.error.networkError'))
+          }
+        },
+      })
+    },
+
     handleSubmit: async function() {
       this.processing = true
       if (!this.news.id) this.news.id = 0

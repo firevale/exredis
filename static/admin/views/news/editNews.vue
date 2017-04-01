@@ -10,6 +10,10 @@
         <quill-editor style="min-height: 200px" v-model.trim="news.content" @ready="setEditor" @input="handleValidation($v.news.content)"
           @image="onInsertImage">
         </quill-editor>
+        <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
+          <span class="icon is-sign">!</span>
+          <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
+        </div>
       </p>
       <div class="has-text-centered" style="margin-top: 15px">
         <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>

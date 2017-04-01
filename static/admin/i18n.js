@@ -71,8 +71,7 @@ export default {
         updateSuccess: '修改成功',
         titlePlaceholder: '请填写标题～～',
         textAreaPlaceHolder: '请填写内容～～',
-        requireTitle: '请输入标题',
-        requireContent: '请输入内容',
+        requireTitleContent: '请输入标题和内容',
 
         activity: {
           add: '添加新活动',
@@ -99,6 +98,8 @@ export default {
         title: '上传',
         hint: '点击, 或拖动图片至此处',
         fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
+        dropToUpload: '拖拽文件以上传',
+        uploadImage: '上传图片',
       },
 
       forum: {
@@ -166,15 +167,6 @@ export default {
           productId: '产品ID',
           add: '添加新商品',
         }
-      },
-
-      upload: {
-        title: '上传',
-        dropToUpload: '拖拽文件以上传',
-        progress: '上传进度',
-        filename: '文件名',
-        speed: '上传速度',
-        uploadImage: '上传图片',
       },
 
       label: {

@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <validation name="news" @submit.prevent="handleSubmit">
+    <validation name="news" @submit.prevent="handleSubmit" v-if="news">
       <label class="label"> {{ $t('admin.news.title') }}: </label>
       <p class="control">
         <input class="input" type="text" v-model.trim="news.title">
@@ -10,13 +10,9 @@
         <quill-editor style="min-height: 200px" v-model.trim="news.content" @ready="setEditor" @input="handleValidation($v.news.content)"
           @image="onInsertImage">
         </quill-editor>
-        <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
-          <span class="icon is-sign">!</span>
-          <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
-        </div>
       </p>
       <div class="has-text-centered" style="margin-top: 15px">
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
+        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
       </div>
     </validation>
   </div>
@@ -49,37 +45,6 @@ export default {
       news: undefined,
       processing: false,
       editor: undefined,
-    }
-  },
-
-  computed: {
-    errorHint: function() {
-      if (!this.$v.news.title.required) {
-        return this.$t('admin.news.titlePlaceholder')
-      } else if (!this.$v.news.title.minLength) {
-        return this.$t('admin.serverError.newsTitleMinLength')
-      } else if (!this.$v.news.title.maxLength) {
-        return this.$t('admin.serverError.newsTitleMaxLength')
-      } else if (!this.$v.news.content.required) {
-        return this.$t('admin.serverError.newsContentRequired')
-      }
-
-      return ''
-    },
-  },
-
-  validations: {
-    news: {
-      title: {
-        required,
-        minLength: minLength(4),
-        maxLength: maxLength(30),
-      },
-      content: {
-        required: function(val) {
-          return this.editor && this.editor.getText().trim().length >= 5
-        }
-      }
     }
   },
 
@@ -120,6 +85,21 @@ export default {
       })
     },
 
+    onSubmit: function() {
+      if (this.news.title.length == 0 || this.news.content.length == 0) {
+        openNotification({
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.news.requireTitleContent'),
+          type: 'danger',
+          duration: 4500,
+          container: '.notifications',
+        })
+        return;
+      }
+
+      this.handleSubmit()
+    },
+
     handleSubmit: async function() {
       this.processing = true
       if (!this.news.id) this.news.id = 0
@@ -136,13 +116,8 @@ export default {
         })
 
         this.$router.go(-1)
-
-        // if (this.callback) {
-        //   this.callback(result.news)
-        // }
       }
-    }
-  },
-
+    },
+  }
 }
 </script>

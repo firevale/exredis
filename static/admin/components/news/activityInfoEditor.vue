@@ -3,11 +3,12 @@
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
-          <router-link class="button is-primary pull-right" :to="{name: 'EditNews', params: {
+          <router-link class="button is-primary pull-left" :to="{name: 'EditNews', params: {
           news: {
           id: '',
           title: '',
           content: '',
+          group: 'activity',
           app_id: this.$route.params.appId,
         }}}">
             <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{

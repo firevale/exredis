@@ -363,6 +363,15 @@
     &.is-danger {
       color: $danger;
     }
+    &.is-primary {
+      color: $primary;
+    }
+  }
+
+  span.is-sign {
+    background-color: #ff6600;
+    color: #ffffff;
+    border-radius: 50%;
   }
 
   i.is-success {
@@ -395,7 +404,7 @@
     }
   }
 
-  form.post {
+  form {
     span.is-sign {
       font-size: 1rem;
       width: 1.2rem;

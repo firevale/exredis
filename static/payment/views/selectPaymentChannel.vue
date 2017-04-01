@@ -22,8 +22,17 @@ import {
 
 export default {
   data: function() {
+    let channels = []
+
+    if (nativeApi.isGGPlayPaySupported()) {
+      channels.push('ggplay')
+    }
+    else {
+      channels = nativeApi.isWechatPaySupport() ? ['alipay', 'wechat'] : ['alipay']
+    }
+
     return {
-      channels: nativeApi.isWechatPaySupport() ? ['alipay', 'wechat'] : ['alipay'],
+      channels: channels,
       activeChannel: null,
     }
   },
@@ -49,6 +58,15 @@ export default {
 
         case 'wechat':
           this.wechatPay()
+          break;
+
+        case 'ggplay':
+          nativeApi.closeWebviewWithResult({
+            success: false,
+            channel: 'ggplay',
+            order_id: window.acsConfig.order_id,
+            goods_id: window.acsConfig.goodsId,
+          })          
           break;
       }
     },

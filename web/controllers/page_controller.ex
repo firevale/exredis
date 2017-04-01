@@ -155,6 +155,7 @@ defmodule Acs.PageController do
                                        app_id: app_order.app_id,
                                        order_id: app_order.id,
                                        goods_name: app_order.goods_name,
+                                       goods_id: app_order.goods_id,
                                        price: app_order.price,
                                        currency: app_order.currency)
     end

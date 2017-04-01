@@ -111,4 +111,8 @@ defmodule Acs.Router do
   scope path: "/forum_actions", alias: Acs do
     forward "/", ForumRouter
   end
+
+   scope path: "/customer_service_actions", alias: Acs do
+    forward "/", CustomerServiceRouter
+  end
 end

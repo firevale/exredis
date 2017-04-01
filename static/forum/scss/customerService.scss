@@ -1,18 +1,45 @@
 @import "~bulma/sass/utilities/variables.sass";
 @import "./variables";
-
 .content-container {
-  position: absolute;
-  background-color: $white;
-  top: 11rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  bottom: 0;
-  padding: 0;
-  -ms-overflow-style: none;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    width: 0 !important;
-  }
+    position: absolute;
+    background-color: $white;
+    top: 11rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 0;
+    padding: 0;
+    -ms-overflow-style: none;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        width: 0 !important;
+    }
+}
+
+.contact-service {
+    .contact-center {
+        margin: 0.5em;
+    }
+    .bottom-left {
+        flex-direction: column;
+        align-content: flex-start;
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
+        text-align: left;
+    }
+    .bottom-left span {
+        color: $primary;
+    }
+    .bottom-right {
+        flex-direction: column;
+        align-content: flex-start;
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
+        text-align: left;
+    }
+    .bottom-right span {
+        color: $primary;
+    }
 }

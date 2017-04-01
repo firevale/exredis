@@ -28,7 +28,7 @@ import {
 } from '../components/fileUpload'
 import message from '../components/message'
 
-import * as utils from 'common/utils'
+import * as utils from 'common/js/utils'
 
 const touchMap = new WeakMap()
 

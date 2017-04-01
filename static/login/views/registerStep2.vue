@@ -33,7 +33,7 @@
 </div>
 </template>
 <script>
-import * as utils from 'common/utils'
+import * as utils from 'common/js/utils'
 import msg from '../components/message'
 
 import {

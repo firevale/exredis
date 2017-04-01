@@ -22,7 +22,7 @@ import {
   mapActions
 } from 'vuex'
 
-import * as utils from 'common/utils'
+import * as utils from 'common/js/utils'
 
 export default {
   components: {},

@@ -22,8 +22,8 @@
   </div>
 </template>
 <script>
-import IScroll from 'common/iscroll-infinite.js'
-import ResizeSensor from 'common/resizeSensor'
+import IScroll from 'common/js/iscroll-infinite.js'
+import ResizeSensor from 'common/js/resizeSensor'
 
 const PULL_TO_REFRESH = 0
 const RELEASE_TO_REFRESH = 1

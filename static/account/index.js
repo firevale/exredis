@@ -8,8 +8,8 @@ import routerMap from './routers'
 import locales from './i18n'
 import store from './store'
 
-import * as filters from 'common/filters'
-import * as acs from 'common/acs'
+import * as filters from 'common/js/filters'
+import * as acs from 'common/js/acs'
 
 Vue.use(VueI18n)
 Vue.use(VueResource)

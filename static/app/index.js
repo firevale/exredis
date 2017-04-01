@@ -7,7 +7,7 @@ import locales from './i18n'
 import store from './store'
 import routerMap from './routers'
 
-import * as filters from 'common/filters'
+import * as filters from 'common/js/filters'
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

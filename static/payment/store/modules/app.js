@@ -1,4 +1,4 @@
-import * as acs from 'common/acs'
+import * as acs from 'common/js/acs'
 
 const state = {
   appId: acs.getAppId(), 

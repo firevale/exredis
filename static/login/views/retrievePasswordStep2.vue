@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import * as utils from 'common/utils'
+import * as utils from 'common/js/utils'
 
 import {
   mapGetters,

@@ -42,8 +42,8 @@ import {
 } from 'vuex'
 
 import message from '../components/message'
-import * as utils from 'common/utils'
-import * as filter from 'common/filters'
+import * as utils from 'common/js/utils'
+import * as filter from 'common/js/filters'
 
 export default {
   mounted: function() {

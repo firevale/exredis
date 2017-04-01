@@ -47,8 +47,8 @@ import {
 
 import message from '../components/message'
 
-import * as utils from 'common/utils'
-import * as acs from 'common/acs'
+import * as utils from 'common/js/utils'
+import * as acs from 'common/js/acs'
 
 const touchMap = new WeakMap()
 

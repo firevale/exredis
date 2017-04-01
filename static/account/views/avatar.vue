@@ -27,7 +27,7 @@
     mapActions
   } from 'vuex'
 
-  import native from 'common/nativeApi'
+  import native from 'common/js/nativeApi'
 
   export default {
     data: function() {

@@ -81,8 +81,8 @@
     preViewing
   } from '../components/swiper'
   import message from './message'
-  import * as acs from 'common/acs'
-  import * as filter from 'common/filters'
+  import * as acs from 'common/js/acs'
+  import * as filter from 'common/js/filters'
   
   export default {
     props: {

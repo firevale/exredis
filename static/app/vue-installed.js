@@ -8,7 +8,7 @@ import VueTouch from 'vue-touch-easyhi'
 import ServerApi from './serverApi'
 import VueQuillEditor from './components/quillEditor'
 
-import * as acs from 'common/acs'
+import * as acs from 'common/js/acs'
 
 Vue.use(Vuelidate)
 Vue.use(VueI18n)

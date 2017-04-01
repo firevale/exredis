@@ -1,4 +1,4 @@
-import * as acs from 'common/acs'
+import * as acs from 'common/js/acs'
 
 function restoreHistoryAccounts() {
   let jsonAccounts = localStorage.getItem('_acs_history_accounts2_')

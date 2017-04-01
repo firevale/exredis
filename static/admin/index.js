@@ -11,9 +11,9 @@ import router from './router'
 import store from './store'
 import ServerApi from './serverApi'
 
-import 'common/date'
+import 'common/js/date'
 
-import * as filters from 'common/filters'
+import * as filters from 'common/js/filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
 import VueQuillEditor from './components/quillEditor'
 

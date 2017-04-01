@@ -39,7 +39,7 @@ import {
   mapActions
 } from 'vuex'
 
-import * as filter from 'common/filters'
+import * as filter from 'common/js/filters'
 
 export default {
   props: {

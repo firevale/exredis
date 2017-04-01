@@ -25,9 +25,9 @@ import {
 } from 'vuex'
 
 import sliderNav from '../../components/sliderNav'
-import nativeApi from 'common/nativeApi'
-import * as acs from 'common/acs'
-import * as filter from 'common/keywordFilter'
+import nativeApi from 'common/js/nativeApi'
+import * as acs from 'common/js/acs'
+import * as filter from 'common/js/keywordFilter'
 import message from '../../components/message'
 
 export default {

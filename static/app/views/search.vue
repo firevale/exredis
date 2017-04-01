@@ -65,7 +65,7 @@
   import postListItem from '../components/postListItem'
   import menuModal from '../components/menuModal'
   import pagination from '../components/pagination'
-  import * as utils from 'common/utils'
+  import * as utils from 'common/js/utils'
 
   export default {
     components: {

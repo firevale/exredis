@@ -22,7 +22,7 @@ import {
   mapActions
 } from 'vuex'
 
-import nativeApi from 'common/nativeApi'
+import nativeApi from 'common/js/nativeApi'
 
 export default {
   data: function() {

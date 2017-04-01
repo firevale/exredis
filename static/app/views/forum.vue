@@ -19,7 +19,7 @@ import {
   mapActions
 } from 'vuex'
 
-import * as acs from 'common/acs'
+import * as acs from 'common/js/acs'
 
 export default {
   mounted: async function() {

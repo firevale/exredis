@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import * as utils from 'common/utils'
+import * as utils from 'common/js/utils'
 import * as types from './mutationTypes'
 
 export const setCurrentSectionId = ({

@@ -37,7 +37,7 @@ import {
 } from 'vuex'
 import AlertDialog from './alertDialog'
 import message from './message'
-import * as filter from 'common/filters'
+import * as filter from 'common/js/filters'
 
 export default {
   props: {

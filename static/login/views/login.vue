@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import nativeApi from 'common/nativeApi'
+  import nativeApi from 'common/js/nativeApi'
 
   import {
     mapGetters,

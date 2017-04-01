@@ -80,7 +80,7 @@ import FileUpload from 'vue-upload-component'
 
 import {
   humanReadableSize
-} from 'common/filters'
+} from 'common/js/filters'
 
 export default {
   props: {

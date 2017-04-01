@@ -16,7 +16,7 @@
 </div>
 </template>
 <script>
-import * as filter from 'common/filters'
+import * as filter from 'common/js/filters'
 
 export default {
   props: {

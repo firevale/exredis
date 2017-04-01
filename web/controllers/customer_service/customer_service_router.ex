@@ -16,7 +16,7 @@ defmodule Acs.CustomerServiceRouter do
   scope "/", Acs do
     pipe_through :forum
 
-    get  "/get_forum_info", ForumController, :get_forum_info
+    get  "/test", CustomerServiceController, :test
 
   end
 

@@ -186,9 +186,12 @@
           product_id: '',
         }
 
+        console.log('openGoodsProductIdDialog', this.app)
+
         openGoodsProductIdDialog({
           goodsName: goods.name,
           productIdInfo: productIdInfo,
+          appId: this.app.id,
           callback: newProductIdInfo => {
             if (index == -1) {
               goods.product_ids.push(newProductIdInfo)

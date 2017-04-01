@@ -44,6 +44,16 @@ export default {
     }
   },
 
+  isGGPlayPaySupported : function() {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isGGPlayPaySupported === 'function') {
+      return AndroidNativeAPI.isGGPlayPaySupported()
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
+      return false
+    } else {
+      return false
+    }
+  },
+
   openWechatPay : function(payinfo) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
       return AndroidNativeAPI.openWechatPay(payinfo)

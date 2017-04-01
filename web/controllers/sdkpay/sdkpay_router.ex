@@ -23,7 +23,9 @@ defmodule Acs.SdkPayRouter do
     get  "/add_channel_order", AppOrderController, :add_order
     post "/add_channel_order", AppOrderController, :add_order
     get  "/add_meizu_order",   AppOrderController, :add_meizu_order
+    post "/add_meizu_order",   AppOrderController, :add_meizu_order
     get  "/add_vivo_order",    AppOrderController, :add_vivo_order
+    post "/add_vivo_order",    AppOrderController, :add_vivo_order
 
     get  "/anzhi/:client_id", AnzhiCallbackController, :purchase_callback
     post "/anzhi/:client_id", AnzhiCallbackController, :purchase_callback

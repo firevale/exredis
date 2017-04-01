@@ -34,6 +34,7 @@
         type: Boolean,
         default: true
       },
+      appId: String,
       goodsName: String,
       productIdInfo: Object, 
       callback: Function,
@@ -48,8 +49,10 @@
     methods: {
       handleSubmit() {
         this.processing = true
+        console.log('update_app_goods_product_id, app_id = ', this.appId)
         this.$http.post('/admin_actions/update_app_goods_product_id', {
             product_id_info: this.productIdInfo,
+            app_id: this.appId,
           })
           .then(response => response.json())
           .then(result => {

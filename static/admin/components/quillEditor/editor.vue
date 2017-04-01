@@ -48,7 +48,9 @@
       }
     },
     mounted() {
-      this.initialize()
+      this.$nextTick(_ => {
+        this.initialize()
+      })
     },
     beforeDestroy() {
       // 作者说了，等垃圾回收，不必显式清理

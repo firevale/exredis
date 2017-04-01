@@ -68,7 +68,7 @@ input[type="text"]:focus {
 
 @mixin nav-bar($color) {
   color: $color;
-  background-image: url("~forum/assets/nav-narrow@3x.png");
+  background-image: url("~app/assets/nav-narrow@3x.png");
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: contain;

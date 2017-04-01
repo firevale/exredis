@@ -181,7 +181,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@import 'forum/scss/variables';
+@import 'app/scss/variables';
+
 label.file-upload {
   width: 100%;
   min-height: 8rem;
@@ -200,7 +201,7 @@ label.file-upload {
     font-weight: 400;
   }
   &:before {
-    content: url('~forum/assets/tag-picture@2x.png');
+    content: url('~app/assets/tag-picture@2x.png');
     margin-bottom: 1rem;
   }
   &.file-selected {

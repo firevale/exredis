@@ -201,37 +201,37 @@ input.input:focus {
     background-image: url("~login/assets/back@2x.png");
   }
   &.icon-pull-down {
-    background-image: url("~forum/assets/icon-pull-down@2x.png");
+    background-image: url("~app/assets/icon-pull-down@2x.png");
   }
   &.icon-search {
-    background-image: url("~forum/assets/icon-search@2x.png");
+    background-image: url("~app/assets/icon-search@2x.png");
   }
   &.icon-user {
-    background-image: url("~forum/assets/icon-user@2x.png");
+    background-image: url("~app/assets/icon-user@2x.png");
   }
   &.icon-check {
-    background-image: url("~forum/assets/icon-check@2x.png");
+    background-image: url("~app/assets/icon-check@2x.png");
   }
   &.icon-heart {
-    background-image: url("~forum/assets/icon-heart@2x.png");
+    background-image: url("~app/assets/icon-heart@2x.png");
   }
   &.icon-heart-o {
-    background-image: url("~forum/assets/icon-heart-o@2x.png");
+    background-image: url("~app/assets/icon-heart-o@2x.png");
   }
   &.icon-times {
-    background-image: url("~forum/assets/icon-times@2x.png");
+    background-image: url("~app/assets/icon-times@2x.png");
   }
   &.icon-star {
-    background-image: url("~forum/assets/icon-star@2x.png");
+    background-image: url("~app/assets/icon-star@2x.png");
   }
   &.icon-top {
-    background-image: url("~forum/assets/icon-top@2x.png");
+    background-image: url("~app/assets/icon-top@2x.png");
   }
   &.icon-trash {
-    background-image: url("~forum/assets/icon-trash@2x.png");
+    background-image: url("~app/assets/icon-trash@2x.png");
   }
   &.icon-edit {
-    background-image: url("~forum/assets/icon-edit@2x.png");
+    background-image: url("~app/assets/icon-edit@2x.png");
   }
   &.icon-circle {
     background-image: url("data:image/svg+xml;utf8,<svg width=\"1792\" height=\"1792\" viewBox=\"0 0 1792 1792\" \
@@ -339,37 +339,37 @@ only screen and (min-resolution: 2.25dppx) {
       background-image: url("~login/assets/back@3x.png");
     }
     &.icon-pull-down {
-      background-image: url("~forum/assets/icon-pull-down@3x.png");
+      background-image: url("~app/assets/icon-pull-down@3x.png");
     }
     &.icon-search {
-      background-image: url("~forum/assets/icon-search@3x.png");
+      background-image: url("~app/assets/icon-search@3x.png");
     }
     &.icon-user {
-      background-image: url("~forum/assets/icon-user@3x.png");
+      background-image: url("~app/assets/icon-user@3x.png");
     }
     &.icon-check {
-      background-image: url("~forum/assets/icon-check@3x.png");
+      background-image: url("~app/assets/icon-check@3x.png");
     }
     &.icon-heart {
-      background-image: url("~forum/assets/icon-heart@3x.png");
+      background-image: url("~app/assets/icon-heart@3x.png");
     }
     &.icon-heart-o {
-      background-image: url("~forum/assets/icon-heart-o@3x.png");
+      background-image: url("~app/assets/icon-heart-o@3x.png");
     }
     &.icon-times {
-      background-image: url("~forum/assets/icon-times@3x.png");
+      background-image: url("~app/assets/icon-times@3x.png");
     }
     &.icon-star {
-      background-image: url("~forum/assets/icon-star@3x.png");
+      background-image: url("~app/assets/icon-star@3x.png");
     }
     &.icon-top {
-      background-image: url("~forum/assets/icon-top@3x.png");
+      background-image: url("~app/assets/icon-top@3x.png");
     }
     &.icon-trash {
-      background-image: url("~forum/assets/icon-trash@3x.png");
+      background-image: url("~app/assets/icon-trash@3x.png");
     }
     &.icon-edit {
-      background-image: url("~forum/assets/icon-edit@3x.png");
+      background-image: url("~app/assets/icon-edit@3x.png");
     }
   }
 }
@@ -590,7 +590,7 @@ form.post {
       background-position: center;
       background-size: contain;
       &.has-picture {
-        background-image: url("~forum/assets/tag-picture@3x.png");
+        background-image: url("~app/assets/tag-picture@3x.png");
       }
     }
   }
@@ -622,7 +622,7 @@ form.post {
         content: "";
         width: 100%;
         height: 1em;
-        background-image: url("~forum/assets/nav-narrow@3x.png");
+        background-image: url("~app/assets/nav-narrow@3x.png");
         background-repeat: no-repeat;
         background-size: 100px 0.7em;
         transition: background-position 0.3s;

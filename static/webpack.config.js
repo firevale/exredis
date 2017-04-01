@@ -43,8 +43,7 @@ var plugins = [
     filename: 'js/admin_commons.js',
     chunks: ['admin'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname,
-        './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -52,8 +51,7 @@ var plugins = [
     filename: 'js/login_commons.js',
     chunks: ['login'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname,
-        './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -63,8 +61,7 @@ var plugins = [
       'account', 'payment', 'forum', 'mall',
     ],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname,
-        './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
     }
   }),
   new ExtractTextPlugin('css/[name].css'),
@@ -79,11 +76,8 @@ var plugins = [
 module.exports = {
   entry: {
     login: ['./login'],
-    account: ['./account'],
-    forum: ['./forum'],
+    app: ['./app'],
     admin: ['./admin'],
-    payment: ['./payment'],
-    mall: ['./mall'],
   },
 
   output: {
@@ -95,15 +89,13 @@ module.exports = {
     extensions: [
       '.js', '.vue', '.css', '.json',
     ],
+    unsafeCache: isDev(),
     alias: {
       vue: 'vue/dist/vue.common.js',
       common: path.join(__dirname, './common'),
       login: path.join(__dirname, './login'),
-      account: path.join(__dirname, './account'),
       admin: path.join(__dirname, './admin'),
-      forum: path.join(__dirname, './forum'),
-      mall: path.join(__dirname, './mall'),
-      payment: path.join(__dirname, './payment'),
+      app: path.join(__dirname, './app'),
     }
   },
 

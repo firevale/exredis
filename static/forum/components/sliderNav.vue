@@ -1,26 +1,30 @@
 <template>
-<div class="slider-nav">
+  <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <a  class="nav-item is-tab has-right-line"  v-for="(item, index) in menus" :class="{'is-active': index == selectedIndex}" @click.prevent="switchMenu(item,index)">{{item.text}}</a>
+        <a class="nav-item is-tab has-right-line" v-for="(item, index) in menus" :class="{'is-active': index == selectedIndex}"
+          @click.prevent="switchMenu(item,index)">{{item.text}}</a>
         <div class="slider-bar" :style="{'background-position':sliderPosition}"></div>
       </div>
     </div>
-  </div> 
+  </div>
 </template>
 <script>
 export default {
   props: {
     menus: {
       type: Array,
-      default: () => {[]}
+      default: () => {
+        []
+      }
     },
-    selectedIndex: {
-      type: Number,
-      default: 0
-    },
-
     onSelect: Function
+  },
+
+  data() {
+    return {
+      selectedIndex: 0
+    }
   },
   computed: {
     sliderPosition() {
@@ -34,7 +38,7 @@ export default {
       if (this.selectedIndex == index) {
         return
       }
-      
+
       this.selectedIndex = index
       if (this.onSelect) {
         this.onSelect(item, index)

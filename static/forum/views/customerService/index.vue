@@ -33,7 +33,7 @@ import sliderNav from '../../components/sliderNav'
 import nativeApi from 'common/nativeApi'
 import * as acs from 'common/acs'
 import * as filter from 'common/keywordFilter'
-import message from '../components/message'
+import message from '../../components/message'
 
 export default {
   components: {

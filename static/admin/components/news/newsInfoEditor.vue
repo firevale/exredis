@@ -1,38 +1,54 @@
 <template>
   <div class="tile is-ancestor">
-    <div class="tile is-parent">
-      <article class="tile is-child">
-        <div class="table-responsive" v-if="forum">
+    <div class="tile is-parent is-vertical">
+      <article class="tile is-child is-12">
+        <div class="column">
+          <router-link class="button is-primary pull-right" :to="{name: 'EditNews', params: {
+          news: {
+          id: '',
+          title: '',
+          content: '',
+          group: 'news',
+          app_id: this.$route.params.appId,
+        }}}">
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
+            $t('admin.news.news.add') }}
+          </router-link>
+        </div>
+      </article>
+      <article class="tile is-child is-12">
+        <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead v-show="forum.sections && forum.sections.length > 0">
+            <thead v-show="newses && newses.length > 0">
               <tr>
-                <th>{{ $t('admin.forum.section.id') }}</th>
-                <th>{{ $t('admin.forum.section.title') }}</th>
-                <th>{{ $t('admin.forum.section.sort')}}</th>
-                <th>{{ $t('admin.forum.section.created_at')}}</th>
-                <th>{{ $t('admin.forum.section.active')}}</th>
-                <th>{{ $t('admin.forum.section.edit')}}</th>
+                <th>{{ $t('admin.news.id') }}</th>
+                <th>{{ $t('admin.news.pic')}}</th>
+                <th>{{ $t('admin.news.title') }}</th>
+                <th>{{ $t('admin.news.created_at')}}</th>
+                <th>{{ $t('admin.news.active')}}</th>
+                <th>{{ $t('admin.news.edit')}}</th>
+                <th>{{ $t('admin.news.operate')}}</th>
               </tr>
             </thead>
-            <tfoot>
-              <tr>
-                <th :colspan="6" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
-                  <a class="button is-primary" style="min-width: 100px" @click="addNewSection">
-                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.forum.section.add') }}
-                  </a>
-                </th>
-              </tr>
-            </tfoot>
-            <tbody v-show="forum.sections && forum.sections.length > 0">
-              <tr v-for="(section, index) in forum.sections">
-                <td> {{ section.id }} </td>
-                <td> {{ section.title }} </td>
-                <td> {{ section.sort }} </td>
-                <td> {{ section.inserted_at | formatServerDateTime }} </td>
-                <td v-if="section.active">正常</td><td v-else>禁用</td>
+            <tbody v-show="newses && newses.length > 0">
+              <tr v-for="(news, index) in newses">
+                <td> {{ news.id }} </td>
                 <td class="is-icon">
-                  <a @click.prevent="editSectionInfo(section, index)">
+                  <figure class="image news-pic" @click="updateNewsPic(news)">
+                    <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'" style="width:172px; height:70px;"></img>
+                  </figure>
+                </td>
+                <td> {{ news.title }} </td>
+                <td> {{ news.inserted_at | formatServerDateTime }} </td>
+                <td> {{ news.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
+                <td class="is-icon">
+                  <a @click.prevent="editNewsInfo(news, index)">
                     <i class="fa fa-pencil"></i>
+                  </a>
+                </td>
+                <td class="is-icon">
+                  <a @click.prevent="toggleStatus(news)">
+                    <i class="fa" :class="news.active ? 'fa-trash-o' : 'fa-check'"></i>
                   </a>
                 </td>
               </tr>
@@ -40,76 +56,127 @@
           </table>
         </div>
       </article>
+      <article class="tile is-child is-12">
+        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      </article>
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import {
-    openNotification,
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  import Vue from 'admin/vue-i18n'
+import Vue from 'admin/vue-i18n'
 
-  import sectionInfoDialog from 'admin/components/dialog/forum/sectionInfo'
-  const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
+import {
+  showFileUploadDialog
+} from '../dialog/fileUpload'
 
-  const openSectionInfoDialog = (propsData = {
-    visible: true
-  }) => {
-    return new sectionInfoDialogComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
+import {
+  showMessageBox
+} from '../dialog/messageBox'
 
-  import Tooltip from 'vue-bulma-tooltip'
+import Pagination from 'admin/components/Pagination'
+import Tooltip from 'vue-bulma-tooltip'
 
-  export default {
-    props: {
-      forum: Object,
-    },
-
-    methods: {
-
-      editSectionInfo: function(section, index) {
-        openSectionInfoDialog({
-          section: section,
-          visible: true,
-          callback: new_section => {
-            this.forum.sections[index] = new_section
-          },
-        })
-      },
-
-      addNewSection: function() {
-        openSectionInfoDialog({
-          section: {
-            id: '',
-            sort: 0,
-            title: '',
-            active: true,
-            forum_id: this.forum.id,
-          },
-          visible: true,
-          callback: section => {
-            this.forum.sections.push(section)
-          },
-        })
-      },
-
-
-    },
-
-    components: {
-      Tooltip
+export default {
+  data() {
+    return {
+      newses: [],
+      page: 1,
+      total: 1,
+      recordsPerPage: 5,
+      loading: true
     }
+  },
 
+  mounted: function() {
+    this.getNewsInfo(this.page, this.recordsPerPage)
+    this.loading = true
+  },
+
+  methods: {
+    getNewsInfo: async function(page, recordsPerPage) {
+      let result = await this.$acs.getPagedNews(this.$route.params.appId, "news", page,
+        recordsPerPage)
+
+      if (result.success) {
+        this.total = result.total
+        this.newses = result.news
+        this.page = page
+      }
+    },
+
+    onPageChange: function(page) {
+      this.getNewsInfo(page, this.recordsPerPage)
+    },
+
+    editNewsInfo: function(news, index) {
+      this.$router.push({
+        name: 'EditNews',
+        params: {
+          news: news,
+          index: index
+        },
+      })
+    },
+
+    toggleStatus: function(news) {
+      showMessageBox({
+        visible: true,
+        title: this.$t('admin.titles.warning'),
+        message: news.active ? this.$t('admin.messages.confirmUnPublishNews') : this.$t(
+          'admin.messages.confirmPublishNews'),
+        type: 'danger',
+        onOK: _ => {
+          this._toggleStatus(news)
+        },
+      })
+    },
+
+    _toggleStatus: async function(news) {
+      this.loading = true
+      let result = await this.$acs.toggleStatus(news.id)
+      this.loading = false
+      if (result.success) {
+        news.active = !news.active
+        openNotification({
+          title: this.$t('admin.operateSuccess'),
+          message: news.active ? this.$t('admin.news.publishOk') : this.$t(
+            'admin.news.unPublishOK'),
+          type: 'success',
+          duration: 4500,
+          container: '.notifications',
+        })
+      }
+    },
+
+    updateNewsPic: function(news) {
+      showFileUploadDialog({
+        postAction: '/admin_actions/update_news_pic',
+        accept: 'image/png',
+        data: {
+          news_id: news.id
+        },
+        extensions: ['png'],
+        title: this.$t('admin.titles.uploadNewsPic'),
+        callback: response => news.pic = response.pic,
+      })
+    },
+
+  },
+
+  components: {
+    Pagination,
+    Tooltip,
   }
+
+}
 </script>

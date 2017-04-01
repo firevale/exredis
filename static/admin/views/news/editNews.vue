@@ -104,7 +104,7 @@ export default {
       this.processing = true
       if (!this.news.id) this.news.id = 0
       let result = await this.$acs.updateNews(this.news.id, this.news.app_id, this.news.title,
-        this.news.content, "activity", false)
+        this.news.content, this.news.group, false)
       this.processing = false
       if (result.success) {
         openNotification({

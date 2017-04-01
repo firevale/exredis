@@ -36,6 +36,7 @@
 </template>
 
 <script>
+  import message from '../../components/message'
   import {
     mapGetters,
     mapActions

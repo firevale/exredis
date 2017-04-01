@@ -3,7 +3,7 @@
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
-          <router-link class="button is-primary pull-right" :to="{name: 'EditNews', params: {
+          <router-link class="button is-primary pull-left" :to="{name: 'EditNews', params: {
           news: {
           id: '',
           title: '',

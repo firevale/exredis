@@ -27,6 +27,7 @@
         locale: '<%= @conn.private[:acs_locale] %>',
         appId: '<%= @app_id %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
+        goodsId: '<%= @goods_id %>',
         order_id: '<%= @order_id %>',
         goods_name: '<%= @goods_name %>',
         price: <%= @price %>,

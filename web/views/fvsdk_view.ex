@@ -92,6 +92,7 @@ defmodule Acs.FVSdkView do
                description: g.description || "",
                price: g.price,
                icon: g.icon || "",
+               product_ids: g.product_ids,
                product_id: g.product_ids[sdk |> String.to_atom] || ""}}
     end) |> Enum.into(%{})
   end

@@ -79,11 +79,11 @@ export default {
         },
 
         notice: {
-
+          add: '添加新公告',
         },
 
         news: {
-
+          add: '添加新闻',
         }
       },
       customerService: {

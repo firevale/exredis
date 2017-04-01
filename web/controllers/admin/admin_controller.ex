@@ -235,11 +235,12 @@ defmodule Acs.AdminController do
   def update_app_goods_product_id(conn, %{"product_id_info" => %{"product_id" => ""}}) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
-  def update_app_goods_product_id(conn, %{"product_id_info" => %{} = product_id_info}) do
+  def update_app_goods_product_id(conn, %{"product_id_info" => %{} = product_id_info, "app_id" => app_id}) do
     case Repo.get_by(AppGoodsProductId, app_goods_id: product_id_info["app_goods_id"], sdk: product_id_info["sdk"]) do
       nil ->
         case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do
           {:ok, new_product_id_info} ->
+             RedisApp.refresh(app_id)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -249,6 +250,7 @@ defmodule Acs.AdminController do
       %AppGoodsProductId{} = product_id_record ->
         case AppGoodsProductId.changeset(product_id_record, product_id_info) |> Repo.update do
           {:ok, new_product_id_info} ->
+             RedisApp.refresh(app_id)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->

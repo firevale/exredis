@@ -39,7 +39,7 @@ defmodule Acs.NewsController do
               order_by: [desc: n.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(n, [:id, :app_id, :title, :content, :is_top, :active, :pic, :reads, :inserted_at])
+              select: map(n, [:id, :app_id, :title, :content, :group, :is_top, :active, :pic, :reads, :inserted_at])
 
     news = Repo.all(query)
     conn |> json(%{success: true, news: news, total: total_page, records: total})

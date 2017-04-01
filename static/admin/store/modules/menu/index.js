@@ -39,14 +39,7 @@ const state = {
       meta: {
         icon: 'fa-user-circle'
       },
-    },
-    {
-      name: Vue.t('admin.menu.questionManage'),
-      path: '/admin/questions',
-      meta: {
-        icon: 'fa fa-comments'
-      },
-    },
+    },    
     {
       name: Vue.t('admin.menu.settings'),
       path: '/admin/settings',

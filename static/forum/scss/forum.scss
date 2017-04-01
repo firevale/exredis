@@ -722,6 +722,11 @@ form.post {
     height: 1.1rem;
     top: 0.65rem;
     left: 0.65rem;
+
+    &.is-medium{
+      height: 2.25em;
+      top:0;
+    }
   }
 }
 

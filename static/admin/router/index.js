@@ -47,18 +47,10 @@ export default new Router({
       name: 'EditForum',
       path: 'forums/edit/:forumId',
       component: require('../views/forums/editForum')
-    },{
-      name: 'NewNews',
-      path: 'apps/news/new',
-      component: require('../views/news/newNews')
-    },{
-      name: 'EditNews',
-      path: 'apps/news/edit/:newsId',
-      component: require('../views/news/editNews')
     }, {
-      name: 'Questions',
-      path: 'questions',
-      component: require('../views/questions')
+      name: 'EditNews',
+      path: 'apps/news/edit',
+      component: require('../views/news/editNews')
     }, {
       name: 'Settings',
       path: 'settings',

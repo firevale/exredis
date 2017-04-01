@@ -18,7 +18,6 @@ export default {
         userManage: '账号管理',
         orderManage: '订单管理',
         forumManage: '论坛管理',
-        questionManage: '问题反馈',
         adminUsers: '管理员账户管理',
         appGoods: '商品管理',
         appEdit: '修改配置',
@@ -34,7 +33,6 @@ export default {
         Users: '账号管理',
         Orders: '订单管理',
         Forums: '论坛管理',
-        Questions: '问题反馈',
         Settings: '系统设置',
         AppInfo: '应用基本信息',
         NewApp: '添加新应用',
@@ -43,6 +41,8 @@ export default {
         AppOrders: '应用订单管理',
         AppStats: '应用统计数据',
         EditForum: '修改论坛配置',
+        NewNews: '添加新内容',
+        EditNews: '修改内容',
       },
 
       news: {
@@ -67,6 +67,9 @@ export default {
         active: '状态',
         addSuccess: '添加成功',
         updateSuccess: '修改成功',
+        titlePlaceholder: '请填写标题～～',
+        textAreaPlaceHolder: '请填写内容～～',
+        requireTitleContent: '请输入标题和内容',
 
         activity: {
           add: '添加新活动',
@@ -74,14 +77,14 @@ export default {
         },
 
         notice: {
-
+          add: '添加新公告',
         },
 
         news: {
-
+          add: '添加新闻',
         }
       },
-      question: {
+      customerService: {
         questionInfo:'问题反馈'
       },
 
@@ -93,6 +96,8 @@ export default {
         title: '上传',
         hint: '点击, 或拖动图片至此处',
         fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
+        dropToUpload: '拖拽文件以上传',
+        uploadImage: '上传图片',
       },
 
       forum: {
@@ -160,15 +165,6 @@ export default {
           productId: '产品ID',
           add: '添加新商品',
         }
-      },
-
-      upload: {
-        title: '上传',
-        dropToUpload: '拖拽文件以上传',
-        progress: '上传进度',
-        filename: '文件名',
-        speed: '上传速度',
-        uploadImage: '上传图片',
       },
 
       label: {
@@ -283,6 +279,9 @@ export default {
         emptyForumId: '版块所属论坛编号不能为空',
         forumNotFound: '未找到论坛',
         newsNotFound: '未找到该内容',
+        newsContentRequired: '内容不能为空',
+        newsTitleMinLength: '标题至少4个字',
+        newsTitleMaxLength: '标题不能超过30个字',   
       },
 
       sdks: {

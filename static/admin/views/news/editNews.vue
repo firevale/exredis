@@ -40,18 +40,13 @@ import {
 const touchMap = new WeakMap()
 
 export default {
-  props: {
-    title: "",
-  },
-
   mounted: function() {
     this.news = this.$route.params.news
   },
 
   data() {
     return {
-      news: Object,
-      callback: Function,
+      news: undefined,
       processing: false,
       editor: undefined,
     }

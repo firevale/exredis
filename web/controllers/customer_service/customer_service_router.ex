@@ -17,6 +17,7 @@ defmodule Acs.CustomerServiceRouter do
     pipe_through :forum
 
     get  "/test", CustomerServiceController, :test
+    post "/get_paged_questions", CustomerServiceController, :get_paged_questions
 
   end
 

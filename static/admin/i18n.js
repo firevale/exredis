@@ -18,6 +18,7 @@ export default {
         userManage: '账号管理',
         orderManage: '订单管理',
         forumManage: '论坛管理',
+        customerServiceManage: '客服管理',
         adminUsers: '管理员账户管理',
         appGoods: '商品管理',
         appEdit: '修改配置',
@@ -33,6 +34,7 @@ export default {
         Users: '账号管理',
         Orders: '订单管理',
         Forums: '论坛管理',
+        CustomerService: '客服管理',
         Settings: '系统设置',
         AppInfo: '应用基本信息',
         NewApp: '添加新应用',
@@ -85,7 +87,16 @@ export default {
         }
       },
       customerService: {
-        questionInfo:'问题反馈'
+        tabTitle: '问题反馈',
+        questionField: {
+          id: '编号',
+          title: '反馈问题',
+          answer: '回答',
+          isHot: '是否热门',
+          active: '是否显示',
+          insertedAt: '添加时间',
+          replyAt: '回复时间',
+        }
       },
 
       upload: {
@@ -281,7 +292,7 @@ export default {
         newsNotFound: '未找到该内容',
         newsContentRequired: '内容不能为空',
         newsTitleMinLength: '标题至少4个字',
-        newsTitleMaxLength: '标题不能超过30个字',   
+        newsTitleMaxLength: '标题不能超过30个字',
       },
 
       sdks: {

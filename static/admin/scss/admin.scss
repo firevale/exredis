@@ -2,7 +2,7 @@
   .animated {
     animation-duration: .377s;
   }
-  
+
   $primary: #4e9ed8;
   @import '~bulma';
   $fa-font-path: '~font-awesome/fonts/';
@@ -15,7 +15,7 @@
     -moz-background-clip: padding;
     background-clip: padding-box;
   }
-  
+
   .nprogress-container {
     position: fixed !important;
     width: 100%;
@@ -36,7 +36,7 @@
       }
     }
   }
-  
+
   .app-main {
     padding-top: 50px;
     margin-left: 180px;
@@ -45,11 +45,11 @@
       margin-left: 0;
     }
   }
-  
+
   .app-content {
     padding: 20px;
   }
-  
+
   .footer {
     margin-left: 180px;
     @include mobile() {
@@ -62,7 +62,7 @@
       color: red;
     }
   }
-  
+
   .app-navbar {
     position: fixed;
     min-width: 100%;
@@ -81,7 +81,7 @@
       white-space: nowrap;
     }
   }
-  
+
   .hero-brand {
     .vue {
       margin-left: 10px;
@@ -91,7 +91,7 @@
       color: #28374B;
     }
   }
-  
+
   .app-sidebar {
     position: fixed;
     top: 50px;
@@ -133,9 +133,7 @@
         margin: 0 10px 0 15px;
       }
     }
-  }
-  
-  // tabs
+  } // tabs
   div.tab-content {
     overflow: hidden;
     div.tab-pane {
@@ -146,15 +144,15 @@
     }
   }
 
-  .app-icon, .goods-icon {
+  .app-icon,
+  .goods-icon {
     cursor: pointer;
-
     &:hover {
       -webkit-filter: brightness(70%);
       filter: brightness(70%);
-    }    
+    }
   }
-  
+
   div.sdk-icon,
   span.sdk-icon {
     width: 48px;
@@ -281,7 +279,7 @@
       background-image: url(~admin/assets/wechat.png);
     }
   }
-  
+
   div.add-sdk {
     width: 48px;
     height: 48px;
@@ -299,8 +297,8 @@
       background: darken($primary, 10%);
     }
   }
-  
- .goods-table {
+
+  .goods-table {
     thead,
     tfoot,
     tbody {
@@ -308,41 +306,38 @@
         th {
           text-align: center;
         }
-        th,td {
+        th,
+        td {
           vertical-align: middle;
-
           &.is-icon {
             text-align: center;
-
             figure.is-32x32 {
               display: inline-block;
               width: 25px;
               height: 25px;
             }
-
             span.sdk-icon {
               margin: 0;
               width: 25px;
               height: 25px;
               display: inline-block;
             }
-
             a {
               margin-right: 10px;
               i.fa {
                 font-size: 20px;
               }
             }
-          } 
+          }
         }
       }
     }
   }
-  
+
   .file-upload {
     display: block;
   }
-  
+
   .file-upload span {
     display: block;
     font-size: 18px;
@@ -350,7 +345,7 @@
     font-weight: bold;
     border: 1px solid #888;
   }
-  
+
   .drop-active {
     top: 0;
     bottom: 0;
@@ -386,7 +381,8 @@
     color: $primary;
   }
 
-  div.modal-container, div.modal-content {
+  div.modal-container,
+  div.modal-content {
     overflow-x: hidden;
   }
 
@@ -397,4 +393,8 @@
         display: inline-block;
       }
     }
+  }
+
+  .ql-container {
+    min-height: 15rem;
   }

@@ -62,7 +62,7 @@
           let self = this
           self.quillEditor = new Quill(self.$refs.quill, Object.assign({
             modules: self.defaultModules,
-            placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
+            placeholder: this.$t('admin.news.textAreaPlaceHolder'),
             readOnly: false,
             theme: 'snow',
             boundary: document.body

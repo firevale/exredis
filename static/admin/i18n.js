@@ -43,6 +43,8 @@ export default {
         AppOrders: '应用订单管理',
         AppStats: '应用统计数据',
         EditForum: '修改论坛配置',
+        NewNews: '添加新内容',
+        EditNews: '修改内容',
       },
 
       news: {
@@ -67,6 +69,10 @@ export default {
         active: '状态',
         addSuccess: '添加成功',
         updateSuccess: '修改成功',
+        titlePlaceholder: '请填写标题～～',
+        textAreaPlaceHolder: '请填写内容～～',
+        requireTitle: '请输入标题',
+        requireContent: '请输入内容',
 
         activity: {
           add: '添加新活动',
@@ -83,6 +89,16 @@ export default {
       },
       question: {
         questionInfo:'问题反馈'
+      },
+
+      upload: {
+        filename: '文件名',
+        filesize: '文件大小',
+        progress: '上传进度',
+        speed: '上传速率',
+        title: '上传',
+        hint: '点击, 或拖动图片至此处',
+        fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
       },
 
       forum: {
@@ -273,6 +289,9 @@ export default {
         emptyForumId: '版块所属论坛编号不能为空',
         forumNotFound: '未找到论坛',
         newsNotFound: '未找到该内容',
+        newsContentRequired: '内容不能为空',
+        newsTitleMinLength: '标题至少4个字',
+        newsTitleMaxLength: '标题不能超过30个字',   
       },
 
       sdks: {

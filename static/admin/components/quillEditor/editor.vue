@@ -48,7 +48,9 @@
       }
     },
     mounted() {
-      this.initialize()
+      this.$nextTick(_ => {
+        this.initialize()
+      })
     },
     beforeDestroy() {
       // 作者说了，等垃圾回收，不必显式清理
@@ -60,7 +62,7 @@
           let self = this
           self.quillEditor = new Quill(self.$refs.quill, Object.assign({
             modules: self.defaultModules,
-            placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
+            placeholder: this.$t('admin.news.textAreaPlaceHolder'),
             readOnly: false,
             theme: 'snow',
             boundary: document.body

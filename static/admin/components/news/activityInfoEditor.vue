@@ -1,13 +1,20 @@
 <template>
-  <div class="tile is-ancestor"> 
+  <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addNewNews">
-            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.news.activity.add') }}
-          </a>
-        </div> 
-      </article>       
+          <router-link class="button is-primary pull-right" :to="{name: 'EditNews', params: {
+          news: {
+          id: '',
+          title: '',
+          content: '',
+          app_id: this.$route.params.appId,
+        }}}">
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
+            $t('admin.news.activity.add') }}
+          </router-link>
+        </div>
+      </article>
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
@@ -40,7 +47,7 @@
                 </td>
                 <td class="is-icon">
                   <a @click.prevent="toggleStatus(news)">
-                    <i class="fa" :class="news.active ? 'fa-trash-o' : 'fa-check'" ></i>
+                    <i class="fa" :class="news.active ? 'fa-trash-o' : 'fa-check'"></i>
                   </a>
                 </td>
               </tr>
@@ -50,7 +57,7 @@
       </article>
       <article class="tile is-child is-12">
         <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-      </article>      
+      </article>
     </div>
   </div>
 </template>
@@ -75,17 +82,6 @@ import {
   showMessageBox
 } from '../dialog/messageBox'
 
-import newsInfoDialog from 'admin/components/dialog/news/activityInfo'
-const newsInfoDialogComponent = Vue.extend(newsInfoDialog)
-
-const openNewsInfoDialog = (propsData = {
-  visible: true
-}) => {
-  return new newsInfoDialogComponent({
-    el: document.createElement('div'),
-    propsData
-  })
-}
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
 
@@ -122,11 +118,11 @@ export default {
     },
 
     editNewsInfo: function(news, index) {
-      openNewsInfoDialog({
-        news: news,
-        visible: true,
-        callback: new_news => {
-          this.getNewsInfo(this.page, this.recordsPerPage)
+      this.$router.push({
+        name: 'EditNews',
+        params: {
+          news: news,
+          index: index
         },
       })
     },
@@ -171,22 +167,6 @@ export default {
         extensions: ['png'],
         title: this.$t('admin.titles.uploadNewsPic'),
         callback: response => news.pic = response.pic,
-      })
-    },
-
-    addNewNews: function() {
-      openNewsInfoDialog({
-        news: {
-          id: '',
-          title: '',
-          content: '',
-          app_id: this.$route.params.appId,
-        },
-        visible: true,
-        callback: news => {
-          // this.newses.unshift(news)
-          this.getNewsInfo(this.page, this.recordsPerPage)
-        },
       })
     },
 

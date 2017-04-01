@@ -128,7 +128,9 @@ export default {
     customerService: {
       title: '客服',
       commonIssues: {
-        title: '常见问题'
+        title: '常见问题',
+        searchPlaceHolder: '请输入问题关键词',
+        btnTitle: '搜索问题',
       },
       contactService: {
         title: '联系客服'

@@ -1,6 +1,8 @@
 defmodule Acs.Question do
   use Acs.Web, :model
 
+  @derive {Poison.Encoder, except: [:app, :user,  :__meta__]}
+  
   schema "questions" do
     field :title, :string
     field :answer, :string

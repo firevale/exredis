@@ -71,6 +71,7 @@ defmodule Acs.Web do
       alias  Acs.AppDeviceDailyActivity
       alias  Acs.AppNews
 
+      alias  Acs.Question
       alias  Acs.Forum
       alias  Acs.ForumSection
       alias  Acs.ForumPost

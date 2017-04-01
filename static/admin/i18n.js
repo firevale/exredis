@@ -87,7 +87,7 @@ export default {
 
         }
       },
-      question: {
+      customerService: {
         questionInfo:'问题反馈'
       },
 

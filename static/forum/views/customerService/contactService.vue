@@ -2,12 +2,12 @@
   <div class="contact-service">
     <form class="post" @submit.prevent="handleSubmit">
       <div class="contact-top">
-        <textarea class="textarea is-large" v-model="content" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
+        <textarea class="textarea is-large" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>
       <div class="contact-center">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <input class="button is-info" :class="processing ? '' : 'is-disabled'" type="button" :value="$t('customerService.submitBtn')"></input>
+            <input class="button is-info" :class="processing ? '' : 'is-disabled'" type="submit" :value="$t('customerService.submitBtn')"></input>
           </div>
         </nav>
       </div>
@@ -50,12 +50,12 @@
   export default {
     data() {
       return {
-        content:'',
+        title:'',
         processing: false
       }
     },
     validations: {
-      content: {
+      title: {
         required,
         minLength: minLength(5),
         maxLength: maxLength(300)
@@ -66,7 +66,7 @@
         if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           let appId = this.$router.currentRoute.params.appId
-          let result = await this.$acs.addContact(appId, this.content)
+          let result = await this.$acs.addContact(appId, this.title)
 
           if (result.success) {
             message.showMsg(this.$t('customerService.contactService.addSuccess'))

@@ -93,6 +93,10 @@ export default {
 
       search(forum_id, keyword, page, records_per_page) {
         return post(Vue, '/forum_actions/search', {forum_id, keyword, page, records_per_page})
+      },
+      
+      addContact(app_id, title) {
+        return post(Vue, '/customer_service_actions/add_contact', {app_id, title})
       }
     }
   }

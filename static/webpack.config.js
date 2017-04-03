@@ -28,22 +28,14 @@ var outputPath = function() {
 }
 
 var plugins = [
-  new webpack.LoaderOptionsPlugin({
-    vue: {
-      loaders: utils.cssLoaders({
-        sourceMap: isDev(),
-        extract: isProduction()
-      }),
-      postcss: [require('autoprefixer')({ browsers: ['last 3 versions'] })],
-    }
-  }),
   new webpack.DefinePlugin(consts.defines({ isProduction: isProduction() })),
   new CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',
     chunks: ['admin'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -51,7 +43,8 @@ var plugins = [
     filename: 'js/login_commons.js',
     chunks: ['login'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
   new CommonsChunkPlugin({
@@ -59,16 +52,21 @@ var plugins = [
     filename: 'js/app_commons.js',
     chunks: ['app'],
     minChunks: function(module, count) {
-      return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
     }
   }),
-  new ExtractTextPlugin('css/[name].css'),
 
   new CopyWebpackPlugin([{
-    from: '**/assets/*',
+    from: 'login/assets/*',
+    to: 'images/'
+  }, {
+    from: 'admin/assets/*',
     to: 'images/',
-    flatten: true
-  }], { ignore: ['node_modules/'] }),
+  }, {
+    from: 'app/assets/*',
+    to: 'images/',
+  }] ),
 ];
 
 module.exports = {
@@ -130,6 +128,7 @@ module.exports = {
 
 if (isProduction()) {
   module.exports.plugins.push(
+    new ExtractTextPlugin('css/[name].css'),
     new OptimizeCssAssetsPlugin({
       assetNameRegExp: /\.optimize\.css$/g,
       cssProcessor: require('cssnano'),

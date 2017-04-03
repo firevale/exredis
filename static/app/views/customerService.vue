@@ -2,9 +2,9 @@
 <div>
   <div class="horizontal-seperator"></div>
   <div class="is-chid  row-menu">
-    <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('forum.customerService.commonIssues') }}</div>
-    <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('forum.customerService.contactService') }}</div>
-    <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('forum.customerService.serviceRecord') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='issue'}" @click="type='issue'">{{ $t('customerService.commonIssues') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='contact'}" @click="type='contact'">{{ $t('customerService.contactService') }}</div>
+    <div class="service-menu" :class="{'menu-selected': type=='record'}" @click="type='record'">{{ $t('customerService.serviceRecord') }}</div>
   </div>
   <div class="horizontal-seperator">
     <div :class="{'move-box-left': type=='issue','move-box-center': type=='contact','move-box-right': type=='record'}">

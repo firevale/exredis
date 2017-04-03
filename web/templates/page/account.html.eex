@@ -10,7 +10,7 @@
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
     <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
-    <link href="<%= static_url(@conn, "/css/account.css") %>" rel="stylesheet"/>
+    <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">
@@ -39,6 +39,6 @@
       }
     </script>
     <script src="<%= static_url(@conn, "/js/app_commons.js") %>"></script>
-    <script src="<%= static_url(@conn, "/js/account.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

@@ -1,7 +1,8 @@
 @import "./variables";
 @import "common/scss/mixins";
-@import "~bulma";
 @import "common/scss/reset";
+
+@import "~bulma";
 
 @import "./forum";
 @import "./customerService";

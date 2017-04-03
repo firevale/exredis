@@ -11,6 +11,8 @@ import * as filters from 'common/js/filters'
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
+console.log('locales', locales)
+
 Object.keys(locales).forEach(function (lang) {
   Vue.locale(lang, locales[lang])
 })
@@ -18,6 +20,7 @@ Object.keys(locales).forEach(function (lang) {
 Object.keys(filters).forEach(function (k) {
   Vue.filter(k, filters[k])
 })
+
 
 const transitionSlideLeftToRight = 'slide-right'
 const transitionSlideRightToLeft = 'slide-left'

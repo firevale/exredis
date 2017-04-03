@@ -57,9 +57,7 @@ var plugins = [
   new CommonsChunkPlugin({
     name: "app_commons",
     filename: 'js/app_commons.js',
-    chunks: [
-      'account', 'payment', 'forum', 'mall',
-    ],
+    chunks: ['app'],
     minChunks: function(module, count) {
       return ((module.resource && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0))
     }

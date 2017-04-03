@@ -45,10 +45,10 @@ import {
 } from 'vuex'
 
 import imgUpload from "vue-image-crop-upload/upload-2.vue"
-import scroller from '../components/scroller'
-import myPosts from "../components/myPosts"
-import myFavorate from "../components/myFavorate"
-import myComments from "../components/myComments"
+import scroller from '../../components/scroller'
+import myPosts from "../../components/myPosts"
+import myFavorate from "../../components/myFavorate"
+import myComments from "../../components/myComments"
 
 
 export default {

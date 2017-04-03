@@ -19,7 +19,7 @@
     </nav>
   </div>
   <transition :name="transitionName">
-    <router-view class="content-container"> </router-view>
+    <router-view class="content-container forum"> </router-view>
   </transition>
 </div>
 </template>
@@ -30,7 +30,7 @@ import 'quill/assets/core.styl'
 import 'app/scss/app.scss'
 import 'app/scss/transition.scss'
 
-import Vue from '../vue-installed'
+import Vue from '../../vue-installed'
 import {
   mapGetters,
   mapActions

@@ -4,8 +4,8 @@ const utils = require('./webpack.utils')
 
 module.exports = {
   loaders: utils.cssLoaders({
-    sourceMap: process.env.NODE_ENV !== 'production',
-    extract: true
+    sourceMap: false,
+    extract: process.env.env == 'production',
   }),
   postcss: [
     require('autoprefixer')({

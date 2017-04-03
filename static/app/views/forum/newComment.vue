@@ -22,11 +22,11 @@ import {
   mapActions
 } from 'vuex'
 
-import menuModal from '../components/menuModal'
+import menuModal from '../../components/menuModal'
 import {
   showFileUploadDialog
-} from '../components/fileUpload'
-import message from '../components/message'
+} from '../../components/fileUpload'
+import message from '../../components/message'
 
 import * as utils from 'common/js/utils'
 

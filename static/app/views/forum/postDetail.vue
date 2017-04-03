@@ -11,14 +11,14 @@
   </div>
 </template>
 <script>
-import Vue from '../vue-installed'
+import Vue from '../../vue-installed'
 import {
   mapGetters,
   mapActions
 } from 'vuex'
-import scroller from '../components/scroller'
-import postDetailView from '../components/postDetailView.vue'
-import postCommentView from '../components/postCommentView.vue'
+import scroller from '../../components/scroller'
+import postDetailView from '../../components/postDetailView.vue'
+import postCommentView from '../../components/postCommentView.vue'
 
 export default {
   mounted: async function() {

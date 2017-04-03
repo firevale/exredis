@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Vue from '../vue-installed'
+import Vue from '../../vue-installed'
 import {
   mapGetters,
   mapActions

@@ -30,9 +30,9 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from '../components/scroller'
-import postListItem from '../components/postListItem'
-import menuModal from '../components/menuModal'
+import scroller from '../../components/scroller'
+import postListItem from '../../components/postListItem'
+import menuModal from '../../components/menuModal'
 
 export default {
   components: {

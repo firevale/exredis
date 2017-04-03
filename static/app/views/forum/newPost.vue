@@ -40,12 +40,12 @@ import {
   maxLength
 } from 'vuelidate/lib/validators'
 
-import menuModal from '../components/menuModal'
+import menuModal from '../../components/menuModal'
 import {
   showFileUploadDialog
-} from '../components/fileUpload'
+} from '../../components/fileUpload'
 
-import message from '../components/message'
+import message from '../../components/message'
 
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'

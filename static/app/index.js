@@ -5,7 +5,7 @@ import Vue from './vue-installed'
 
 import locales from './i18n'
 import store from './store'
-import routerMap from './routers'
+import routerMap from './routes'
 
 import * as filters from 'common/js/filters'
 

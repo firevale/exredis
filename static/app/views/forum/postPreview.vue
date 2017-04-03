@@ -41,7 +41,7 @@ import {
   mapActions
 } from 'vuex'
 
-import message from '../components/message'
+import message from '../../components/message'
 import * as utils from 'common/js/utils'
 import * as filter from 'common/js/filters'
 

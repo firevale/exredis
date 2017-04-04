@@ -59,13 +59,16 @@ var plugins = [
 
   new CopyWebpackPlugin([{
     from: 'login/assets/*',
-    to: 'images/'
+    to: 'images/',
+    flat: true,
   }, {
     from: 'admin/assets/*',
     to: 'images/',
+    flat: true,
   }, {
     from: 'app/assets/*',
     to: 'images/',
+    flat: true,
   }] ),
 ];
 
@@ -130,7 +133,7 @@ if (isProduction()) {
   module.exports.plugins.push(
     new ExtractTextPlugin('css/[name].css'),
     new OptimizeCssAssetsPlugin({
-      assetNameRegExp: /\.optimize\.css$/g,
+      assetNameRegExp: /\.css$/g,
       cssProcessor: require('cssnano'),
       cssProcessorOptions: {
         discardComments: {
@@ -150,5 +153,5 @@ if (isProduction()) {
       }
     }), new webpack.optimize.OccurrenceOrderPlugin())
 } else {
-  module.exports.devtool = '#eval-source-map'
+  module.exports.devtool = '#cheap-source-map'
 }

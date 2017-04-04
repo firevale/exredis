@@ -9,6 +9,12 @@ import routerMap from './routes'
 
 import * as filters from 'common/js/filters'
 
+require('quill/assets/snow.styl')
+require('quill/assets/core.styl')
+
+require('app/scss/app.scss')
+require('app/scss/transition.scss')
+
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
 Object.keys(locales).forEach(function (lang) {

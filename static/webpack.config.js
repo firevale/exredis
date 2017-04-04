@@ -58,18 +58,9 @@ var plugins = [
   }),
 
   new CopyWebpackPlugin([{
-    from: 'login/assets/*',
+    from: 'assets/*',
     to: 'images/',
-    flat: true,
-  }, {
-    from: 'admin/assets/*',
-    to: 'images/',
-    flat: true,
-  }, {
-    from: 'app/assets/*',
-    to: 'images/',
-    flat: true,
-  }] ),
+  }]),
 ];
 
 module.exports = {
@@ -92,6 +83,7 @@ module.exports = {
     alias: {
       vue: 'vue/dist/vue.common.js',
       common: path.join(__dirname, './common'),
+      assets: path.join(__dirname, './assets'),
       login: path.join(__dirname, './login'),
       admin: path.join(__dirname, './admin'),
       app: path.join(__dirname, './app'),

@@ -200,7 +200,7 @@ label.file-upload {
     font-weight: 400;
   }
   &:before {
-    content: url('~admin/assets/tag-picture@2x.png');
+    content: url('~assets/tag-picture@2x.png');
     margin-bottom: 1rem;
   }
   &.file-selected {

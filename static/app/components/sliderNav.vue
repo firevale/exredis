@@ -63,7 +63,7 @@ export default {
         content: "";
         width: 100%;
         height: 1em;
-        background-image: url("~app/assets/nav-narrow@3x.png");
+        background-image: url("~assets/nav-narrow@3x.png");
         background-repeat: no-repeat;
         background-size: 9em 0.8em;
         transition: background-position 0.3s;

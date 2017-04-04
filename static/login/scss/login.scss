@@ -251,10 +251,10 @@ span.nav-icon {
   width: 1rem;
   height: 1rem;
   &.icon-close {
-    background-image: url(~login/assets/times@1x.png)
+    background-image: url(~assets/times@1x.png)
   }
   &.icon-back {
-    background-image: url(~login/assets/back@1x.png)
+    background-image: url(~assets/back@1x.png)
   }
   &:not(.pull-right) {
     left: .8rem;
@@ -303,7 +303,7 @@ span.progress-icon {
   height: 100%;
   right: 0.8rem;
   z-index: 2;
-  background-image: url(~login/assets/circle-o-notch@1x.png);
+  background-image: url(~assets/circle-o-notch@1x.png);
 }
 
 span.addon-icon {
@@ -321,25 +321,25 @@ span.addon-icon {
     right: .65rem;
   }
   &.icon-user {
-    background-image: url(~login/assets/user@1x.png)
+    background-image: url(~assets/user@1x.png)
   }
   &.icon-lock {
-    background-image: url(~login/assets/lock@1x.png)
+    background-image: url(~assets/lock@1x.png)
   }
   &.icon-eye {
-    background-image: url(~login/assets/eye@1x.png)
+    background-image: url(~assets/eye@1x.png)
   }
   &.icon-eye-slash {
-    background-image: url(~login/assets/eye-slash@1x.png)
+    background-image: url(~assets/eye-slash@1x.png)
   }
   &.icon-check {
-    background-image: url(~login/assets/check@1x.png)
+    background-image: url(~assets/check@1x.png)
   }
   &.icon-down {
-    background-image: url(~login/assets/down@1x.png)
+    background-image: url(~assets/down@1x.png)
   }
   &.icon-times {
-    background-image: url(~login/assets/times@1x.png)
+    background-image: url(~assets/times@1x.png)
   }
   &.flip-vertical {
     -ms-transform: rotate(180deg);
@@ -362,7 +362,7 @@ p.errors {
     &.error-sign {
       width: .9rem;
       height: .9rem;
-      background-image: url(~login/assets/error-sign@1x.png);
+      background-image: url(~assets/error-sign@1x.png);
     }
   }
 }
@@ -385,22 +385,22 @@ div.horizontal-stack-box {
       background-position: center;
       background-size: contain;
       &.anonymous {
-        background-image: url(~login/assets/anonymous@1x.png);
+        background-image: url(~assets/anonymous@1x.png);
       }
       &.firevale {
-        background-image: url(~login/assets/firevale@1x.png);
+        background-image: url(~assets/firevale@1x.png);
       }
       &.wechat {
-        background-image: url(~login/assets/wechat@1x.png);
+        background-image: url(~assets/wechat@1x.png);
       }
       &.qq {
-        background-image: url(~login/assets/qq@1x.png);
+        background-image: url(~assets/qq@1x.png);
       }
       &.weibo {
-        background-image: url(~login/assets/weibo@1x.png);
+        background-image: url(~assets/weibo@1x.png);
       }
       &.facebook {
-        background-image: url(~login/assets/facebook@1x.png);
+        background-image: url(~assets/facebook@1x.png);
       }
     }
     p {
@@ -419,63 +419,63 @@ only screen and (min--moz-device-pixel-ratio: 1.25),
 only screen and (min-device-pixel-ratio: 1.25),
 only screen and (min-resolution: 1.25dppx) {
   span.nav-icon.icon-close {
-    background-image: url(~login/assets/times@2x.png)
+    background-image: url(~assets/times@2x.png)
   }
   span.nav-icon.icon-back {
-    background-image: url(~login/assets/back@2x.png)
+    background-image: url(~assets/back@2x.png)
   }
   div.horizontal-stack-box {
     .tile {
       .sdk-icon {
         &.anonymous {
-          background-image: url(~login/assets/anonymous@2x.png);
+          background-image: url(~assets/anonymous@2x.png);
         }
         &.firevale {
-          background-image: url(~login/assets/firevale@2x.png);
+          background-image: url(~assets/firevale@2x.png);
         }
         &.wechat {
-          background-image: url(~login/assets/wechat@2x.png);
+          background-image: url(~assets/wechat@2x.png);
         }
         &.ggplay {
-          background-image: url(~login/assets/ggplay@2x.png);
+          background-image: url(~assets/ggplay@2x.png);
         }
         &.qq {
-          background-image: url(~login/assets/qq@2x.png);
+          background-image: url(~assets/qq@2x.png);
         }
         &.weibo {
-          background-image: url(~login/assets/weibo@2x.png);
+          background-image: url(~assets/weibo@2x.png);
         }
         &.facebook {
-          background-image: url(~login/assets/facebook@2x.png);
+          background-image: url(~assets/facebook@2x.png);
         }
       }
     }
   }
   span.addon-icon {
     &.icon-user {
-      background-image: url(~login/assets/user@2x.png)
+      background-image: url(~assets/user@2x.png)
     }
     &.icon-lock {
-      background-image: url(~login/assets/lock@2x.png)
+      background-image: url(~assets/lock@2x.png)
     }
     &.icon-eye {
-      background-image: url(~login/assets/eye@2x.png)
+      background-image: url(~assets/eye@2x.png)
     }
     &.icon-eye-slash {
-      background-image: url(~login/assets/eye-slash@2x.png)
+      background-image: url(~assets/eye-slash@2x.png)
     }
     &.icon-check {
-      background-image: url(~login/assets/check@2x.png)
+      background-image: url(~assets/check@2x.png)
     }
     &.icon-down {
-      background-image: url(~login/assets/down@2x.png)
+      background-image: url(~assets/down@2x.png)
     }
     &.icon-times {
-      background-image: url(~login/assets/times@2x.png)
+      background-image: url(~assets/times@2x.png)
     }
   }
   span.progress-icon {
-    background-image: url(~login/assets/circle-o-notch@2x.png);
+    background-image: url(~assets/circle-o-notch@2x.png);
   }
 }
 
@@ -486,57 +486,57 @@ only screen and (min--moz-device-pixel-ratio: 2.25),
 only screen and (min-device-pixel-ratio: 2.25),
 only screen and (min-resolution: 2.25dppx) {
   span.nav-icon.icon-close {
-    background-image: url(~login/assets/times@3x.png)
+    background-image: url(~assets/times@3x.png)
   }
   span.nav-icon.icon-back {
-    background-image: url(~login/assets/back@3x.png)
+    background-image: url(~assets/back@3x.png)
   }
   div.horizontal-stack-box {
     .tile {
       .sdk-icon {
         &.anonymous {
-          background-image: url(~login/assets/anonymous@3x.png);
+          background-image: url(~assets/anonymous@3x.png);
         }
         &.firevale {
-          background-image: url(~login/assets/firevale@3x.png);
+          background-image: url(~assets/firevale@3x.png);
         }
         &.wechat {
-          background-image: url(~login/assets/wechat@3x.png);
+          background-image: url(~assets/wechat@3x.png);
         }
         &.qq {
-          background-image: url(~login/assets/qq@3x.png);
+          background-image: url(~assets/qq@3x.png);
         }
         &.weibo {
-          background-image: url(~login/assets/weibo@3x.png);
+          background-image: url(~assets/weibo@3x.png);
         }
       }
     }
   }
   span.addon-icon {
     &.icon-user {
-      background-image: url(~login/assets/user@3x.png)
+      background-image: url(~assets/user@3x.png)
     }
     &.icon-lock {
-      background-image: url(~login/assets/lock@3x.png)
+      background-image: url(~assets/lock@3x.png)
     }
     &.icon-eye {
-      background-image: url(~login/assets/eye@3x.png)
+      background-image: url(~assets/eye@3x.png)
     }
     &.icon-eye-slash {
-      background-image: url(~login/assets/eye-slash@3x.png)
+      background-image: url(~assets/eye-slash@3x.png)
     }
     &.icon-check {
-      background-image: url(~login/assets/check@3x.png)
+      background-image: url(~assets/check@3x.png)
     }
     &.icon-down {
-      background-image: url(~login/assets/down@3x.png)
+      background-image: url(~assets/down@3x.png)
     }
     &.icon-times {
-      background-image: url(~login/assets/times@3x.png)
+      background-image: url(~assets/times@3x.png)
     }
   }
   span.progress-icon {
-    background-image: url(~login/assets/circle-o-notch@3x.png);
+    background-image: url(~assets/circle-o-notch@3x.png);
   }
 }
 
@@ -615,7 +615,7 @@ only screen and (min-resolution: 2.25dppx) {
 .error-sign {
   width: .9rem;
   height: .9rem;
-  background-image: url(~login/assets/error-sign@1x.png);
+  background-image: url(~assets/error-sign@1x.png);
 }
 
 .submit-button {
@@ -628,7 +628,7 @@ only screen and (min-resolution: 2.25dppx) {
   height: .9rem;
   display: inline-block;
   margin-left: 1rem;
-  background-image: url(~login/assets/edit@1x.png);
+  background-image: url(~assets/edit@1x.png);
   cursor: pointer;
 }
 

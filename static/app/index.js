@@ -13,7 +13,6 @@ require('quill/assets/snow.styl')
 require('quill/assets/core.styl')
 
 require('app/scss/app.scss')
-require('app/scss/transition.scss')
 
 Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 

@@ -24,7 +24,7 @@
                 <td> {{ item.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
                 <td> {{ item.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
-                  <a @click.prevent="edititemInfo(item, index)">
+                  <a @click.prevent="replyQuestion(item, index)">
                     <i class="fa fa-pencil"></i>
                   </a>
                   <a @click.prevent="toggleStatus(item)">
@@ -55,9 +55,17 @@ import {
 
 import Vue from 'admin/vue-i18n'
 
-import {
-  showFileUploadDialog
-} from '../dialog/fileUpload'
+import replyQuestion from 'admin/components/dialog/customerService/replyQuestion'
+const replyQuestionDialog = Vue.extend(replyQuestion)
+
+const openDialog = (propsData = {
+  visible: true
+}) => {
+  return new replyQuestionDialog({
+    el: document.createElement('div'),
+    propsData
+  })
+}
 
 import {
   showMessageBox
@@ -83,6 +91,16 @@ export default {
   },
 
   methods: {
+    replyQuestion: function(question, index) {
+      openDialog({
+        question: question,
+        visible: true,
+        callback: question => {
+          this.questions[index] = question
+        },
+      })
+    },
+
     getPagedQuestions: async function(page, recordsPerPage) {
       let result = await this.$acs.getPagedQuestions(0, page, recordsPerPage)
 
@@ -97,45 +115,6 @@ export default {
       this.getQuestions(page, this.recordsPerPage)
     },
 
-    edititemInfo: function(item, index) {
-      this.$router.push({
-        name: 'Edititem',
-        params: {
-          item: item,
-          index: index
-        },
-      })
-    },
-
-    toggleStatus: function(item) {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: item.active ? this.$t('admin.messages.confirmUnPublishitem') : this.$t(
-          'admin.messages.confirmPublishitem'),
-        type: 'danger',
-        onOK: _ => {
-          this._toggleStatus(item)
-        },
-      })
-    },
-
-    _toggleStatus: async function(item) {
-      this.loading = true
-      let result = await this.$acs.toggleStatus(item.id)
-      this.loading = false
-      if (result.success) {
-        item.active = !item.active
-        openNotification({
-          title: this.$t('admin.operateSuccess'),
-          message: item.active ? this.$t('admin.item.publishOk') : this.$t(
-            'admin.item.unPublishOK'),
-          type: 'success',
-          duration: 4500,
-          container: '.notifications',
-        })
-      }
-    },
 
     updateitemPic: function(item) {
       showFileUploadDialog({

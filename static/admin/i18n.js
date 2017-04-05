@@ -91,11 +91,15 @@ export default {
         questionField: {
           id: '编号',
           title: '反馈问题',
-          answer: '回答',
+          answer: '回复',
           isHot: '是否热门',
           active: '是否显示',
           insertedAt: '添加时间',
           replyAt: '回复时间',
+        },
+        replyForm:{
+          name:'编辑回复',
+          replyPlaceholder:'请输入回复内容',
         }
       },
 
@@ -269,6 +273,7 @@ export default {
       },
 
       serverSuccess: {
+        updated: '更新成功',
         appUpdated: '应用更新成功',
         forumUpdated: '论坛更新成功',
       },

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>
-      Login
+      Firevale Payment Page
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -32,6 +32,11 @@
         goodsId: '<%= @goods_id %>',
         order_id: '<%= @order_id %>',
         goods_name: '<%= @goods_name %>',
+        goods_icon: <%= if is_nil(@goods_icon) do %>
+                    null
+                    <% else %>
+                    '<% @goods_icon %>'
+                    <% end %>,
         price: <%= @price %>,
         currency: '<%= @currency %>',
       }

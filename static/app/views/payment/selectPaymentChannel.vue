@@ -1,9 +1,9 @@
 <template>
   <div>
     <article class="media" style="margin-top: 1rem; margin-bottom: 1rem;">
-      <figure class="media-left">
+      <figure class="media-left" v-if="icon">
         <p class="image is-48x48">
-          <img src="http://bulma.io/images/placeholders/128x128.png">
+          <img :src="icon">
         </p>
       </figure>
       <div class="media-content">
@@ -39,8 +39,8 @@
         </div>
       </v-touch>
     </div>
-    <div class="has-text-centered" style="position: absolute; width: 100%; height: 3rem; bottom: 1rem;">
-      <v-touch @tap="onPurchaseByChannel" class="button is-primary is-medium" style="min-width: 60%" tag="a">
+    <div class="has-text-centered" style="width: 100%; height: 3rem; margin-top: 2rem;">
+      <v-touch @tap="onPurchaseByChannel" class="button is-primary is-medium" style="min-width: 10rem;" tag="a">
         {{ $t('payment.buyNow') }}
       </v-touch>
     </div>
@@ -66,6 +66,7 @@ export default {
     }
 
     return {
+      icon: window.acsConfig.goods_icon,
       channels: channels,
       activeChannel: channels[0],
       goodsName: window.acsConfig.goods_name,
@@ -115,12 +116,16 @@ export default {
         `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?merchant_order_id=${window.acsConfig.order_id}`,
         `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`
       )
-      window.location = result.redirect_uri
+      if (result.success) {
+        window.location = result.redirect_uri
+      }
     },
 
     wechatPay: async function() {
       let result = await this.$acs.wechatPrepay(window.acsConfig.order_id)
-      nativeApi.openWechatPay(JSON.stringify(result))
+      if (result.success) {
+        nativeApi.openWechatPay(JSON.stringify(result))
+      }
     }
   },
 }

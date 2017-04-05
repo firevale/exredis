@@ -156,12 +156,19 @@ defmodule Acs.PageController do
              |> halt()
 
       %AppOrder{} = app_order ->
+        goods_icon = case Repo.get(AppGoods, app_order.goods_id) do 
+                       nil -> nil
+                       %{icon: ""} -> nil
+                       %{icon: nil} -> nil
+                       %{icon: v} -> v
+                     end
         conn |> put_layout(false)
              |> render("payment.html", platform: app_order.platform,
                                        app_id: app_order.app_id,
                                        order_id: app_order.id,
                                        goods_name: app_order.goods_name,
                                        goods_id: app_order.goods_id,
+                                       goods_icon: goods_icon,
                                        price: app_order.price,
                                        currency: app_order.currency)
     end

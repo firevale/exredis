@@ -128,6 +128,15 @@ export default {
       getApps() {
         return post(Vue, '/games_actions/fetch_apps', { })
       },
+      
+      getServicePagedPost(app_id, page, records_per_page) {
+        return post(Vue, '/customer_service_actions/get_paged_services', {
+          app_id: app_id,
+          page,
+          records_per_page
+        })
+      },
+
 
     }
   }

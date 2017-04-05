@@ -24,7 +24,7 @@
     <p class="is-seperator">{{ $t('payment.selectPaymentChannel') }}
     </p>
     <div class="tile is-vertical" <div class="tile is-payment-channel has-bottom-line" v-for="channel in channels">
-      <div class="level is-mobile" style="padding: 0.5rem 0; width: 100%; cursor: pointer" @click="setActiveChannel(channel)">
+      <v-touch v-on:tap="setActiveChannel(channel)" class="level is-mobile" style="padding: 0.5rem 0; width: 100%; cursor: pointer">
         <div class="level-left">
           <a class="sdk-icon" :class="channel">
           </a>
@@ -37,7 +37,7 @@
           <span class="icon image-icon circle-icon" :class="activeChannel == channel ? 'active' : ''">
             </span>
         </div>
-      </div>
+      </v-touch>
     </div>
     <div class="has-text-centered" style="position: absolute; width: 100%; height: 3rem; bottom: 1rem;">
       <a class="button is-primary is-medium" style="min-width: 60%" @click="onPurchaseByChannel">
@@ -53,6 +53,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+
 
 export default {
   data: function() {

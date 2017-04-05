@@ -39,12 +39,9 @@ defmodule Acs.Router do
     get  "/", PageController, :index
     get  "/login/*path", PageController, :show_login_page
     get  "/admin/*path", PageController, :show_admin_page
-    get  "/forum/", PageController, :show_forum_page
-    get  "/forum/:forum_id/*path", PageController, :show_forum_page
-    get  "/customerService/", PageController, :show_customer_service_page
-    get  "/games/", PageController, :show_games_page
-    get  "/games/:app_id/*path", PageController, :show_games_page
-    get  "/customerService/:app_id/*path", PageController, :show_customer_service_page
+    get  "/forum/*path", PageController, :show_forum_page
+    get  "/customerService/*path", PageController, :show_customer_service_page
+    get  "/games/*path", PageController, :show_games_page
     get  "/mall/*path",  PageController, :show_mall_page
     get  "/account/*path", PageController, :show_account_page
     get  "/payment/*path", PageController, :show_payment_page

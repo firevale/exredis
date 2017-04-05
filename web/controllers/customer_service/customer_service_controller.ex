@@ -9,8 +9,8 @@ defmodule Acs.CustomerServiceController do
   require Floki
 
   plug :fetch_app_id
-  plug :fetch_session_user_id  
-  plug :fetch_session_user  
+  plug :fetch_session_user_id
+  plug :fetch_session_user
 
   def add_contact(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                     %{"title" => title,
@@ -29,7 +29,7 @@ defmodule Acs.CustomerServiceController do
   def add_contact(conn, _) do
     conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
   end
-  
+
   def get_paged_questions(conn, %{"app_id" =>app_id, "page" => page, "records_per_page" => records_per_page}) do
     get_paged_questions(conn, page, records_per_page)
   end
@@ -51,7 +51,23 @@ defmodule Acs.CustomerServiceController do
     questions = Repo.all(query)
     IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
-  end  
+  end
+
+  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active})  do
+    with %Question{} = question  <- Repo.get(Question,id),
+         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active}) |>Repo.update
+    do
+        conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
+    else
+      nil -> conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+      {:error, %{errors: errors}} -> conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+    end
+
+  end
+  def update_question(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
   def get_paged_services(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page})do
     total = Repo.one!(from q in Question, select: count(q.id), where: q.user_id == ^user_id and q.app_id == ^app_id)
     total_page = round(Float.ceil(total / records_per_page))

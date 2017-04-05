@@ -1,5 +1,4 @@
 <template>
-aaaaaaaa
   <div class="tile is-ancestor is-vertical root-container">
     <div class="columns is-multiline">
       <article class="tile is-child notification" v-for="app in appList" @click.prevent="showForum(app.id)">
@@ -29,6 +28,7 @@ export default {
 
   methods: {
     mounted: async function() {
+      console.log("---------------------")
       await this.loadData()
     },
 

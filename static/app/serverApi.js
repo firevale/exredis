@@ -110,7 +110,7 @@ export default {
       },
 
       alipayRedirect(payment_order_id, merchant_url, callback_url) {
-        return post(Vue, 'api/pay/alipay/redirect', {payment_order_id, merchat_url, callback_url})
+        return post(Vue, '/api/pay/alipay/redirect', {payment_order_id, merchant_url, callback_url})
       },
 
       wechatPrepay(payment_order_id) {

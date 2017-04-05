@@ -6,7 +6,7 @@ body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
   background-color: $bottom-line-light;
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
   }
@@ -151,10 +151,6 @@ input.input:focus {
   }
 }
 
-.forum.content-container {
-  top: 5rem;
-}
-
 .has-bottom-line {
   position: relative;
   &:after {
@@ -191,6 +187,15 @@ input.input:focus {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+  &.circle-icon {
+    @include border-radius(50%);
+    border: 1px solid $grey;
+
+    &.active {
+      background-color: $primary;
+      border: none;
+    }
   }
   &.nav-icon {
     cursor: pointer;
@@ -696,7 +701,7 @@ form.post {
       }
       .level:not(:last-child) {
         margin-bottom: 0;
-        padding:0 1em 1em;
+        padding: 0 1em 1em;
       }
       .subtitle {
         font-size: 1.2em;
@@ -723,10 +728,9 @@ form.post {
     height: 1.1rem;
     top: 0.65rem;
     left: 0.65rem;
-
-    &.is-medium{
+    &.is-medium {
       height: 2.25em;
-      top:0;
+      top: 0;
     }
   }
 }

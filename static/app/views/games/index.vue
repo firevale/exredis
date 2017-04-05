@@ -1,5 +1,8 @@
 <template>
   <div class="person">
+    <div class="title-bar">
+      <h4 class="title is-4">{{ $t('games.title') }}</h4>
+    </div>
     <nav class="nav">
       <div class="nav-center">
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
@@ -11,9 +14,9 @@
     <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
       <div style="position: relative; height: 100%">
         <scroller :on-load-more="loadmore" ref="scroller">
-          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
-          <my-comments v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
-          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
+          <game-activity v-if="type == 'activity'" v-for="(item, index) in activityList" :key="item.id" :item-data="item" :item-index="index"></game-activity>
+          <game-notice v-if="type == 'notice'" v-for="item in noticeList" :key="item.id" :item-data="item"></game-notice>
+          <game-news v-if="type == 'news'" v-for="(item, index) in newsList" :key="item.id" :item-data="item" :item-index="index"></game-news>
        </scroller>
       </div>
     </div>
@@ -25,44 +28,27 @@ import {
   mapActions
 } from 'vuex'
 
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
 import scroller from '../../components/scroller'
-import myPosts from "../../components/myPosts"
-import myFavorate from "../../components/myFavorate"
-import myComments from "../../components/myComments"
-
+import gameActivity from "../../components/gameActivity"
+import gameNotice from "../../components/gameNotice"
+import gameNews from "../../components/gameNews"
 
 export default {
   components: {
     scroller,
-    myPosts,
-    myFavorate,
-    myComments,
-    imgUpload,
+    gameActivity,
+    gameNotice,
+    gameNews,
   },
 
-  // mounted: function() {
-  //   this.$refs.pag.$on('switch-page', this.getPostPage)
-  //   this.getPostPage(this.page)
-  // }, 
-
   computed: {
-    ...mapGetters([
-      'userInfo'
-    ]),
-
-    uploadParams() {
-      return {
-        user_id: this.userInfo.id
-      }
-    },
     sliderPosition() {
       switch (this.type) {
-        case "myPosts":
+        case "activity":
           return "10% bottom"
-        case "myComments":
+        case "notice":
           return "50% bottom"
-        case "myFavor":
+        case "news":
           return "90% bottom"
       }
     }
@@ -70,42 +56,23 @@ export default {
 
   data() {
     return {
-      type: 'myPosts',
-      postList: [],
-      commentList: [],
-      favoriteList: [],
+      type: 'activity',
+      activityList: [],
+      noticeList: [],
+      newsList: [],
       page: 0,
       total: 1,
       recordsPerPage: 10,
-      postRecords: 0,
-      showImgUpload: false
+      postRecords: 0
     }
   },
   methods: {
-    ...mapActions([
-      'serUserProfile'
-    ]),
-
     switchMenu: function(menu) {
       if (menu != this.type) {
         this.type = menu
         this.resetScroller();
       }
     },
-
-    onShowImageUpload: function() {
-      this.showImgUpload = true
-    },    
-
-    cropUploadSuccess(result, field, key) {
-      if (result.success) {
-        this.serUserProfile(result.user)
-      }
-    },
-
-    cropUploadFail(status, field, key) {},
-
-    onPageChange: function(page) {},
 
     resetScroller: function() {
       this.page = 0
@@ -119,65 +86,18 @@ export default {
     },
 
     loadmore: async function() {
-      switch (this.type) {
-        case "myPosts":
-          await this.getPostPage()
-          break;
-        case "myComments":
-          await this.getCommentPage()
-          break;
-        case "myFavor":
-          await this.getFavoritePage()
-          break;
-      }
-    },
-
-    onItemDelete(index) {
-      switch (this.type) {
-        case "myPosts":
-          this.postRecords--;
-          this.postList.splice(index, 1)
-          break;
-        case "myFavor":
-          this.favoriteList.splice(index, 1)
-          break;
-      }
-    },
-
-    getPostPage: async function() {
-      let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
-        this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getPagedNews(app_id, this.type, this.page + 1, this.recordsPerPage)
 
       if (result.success) {
-        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
+        switch (this.type) {
+          case "activity":
+            this.activityList = this.page == 0 ? result.news : this.activityList.concat(result.news)
+          case "notice":
+            this.noticeList = this.page == 0 ? result.news : this.noticeList.concat(result.news)
+          case "news":
+            this.newsList = this.page == 0 ? result.news : this.newsList.concat(result.news)
         }
-      }
-    },
-
-    getCommentPage: async function() {
-      let result = await this.$acs.getUserPostComments(this.page + 1, this.recordsPerPage)
-
-      if (result.success) {
-        this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
-      }
-    },
-
-    getFavoritePage: async function() {
-      let result = await this.$acs.getUserPostFavorites(this.page + 1, this.recordsPerPage)
-
-      if (result.success) {
-        this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)
+        
         this.total = result.total
         this.page = this.page + 1
 
@@ -190,9 +110,3 @@ export default {
   },
 }
 </script>
-<style lang="css">
-.vue-image-crop-upload .vicp-wrap .vicp-step1 .vicp-drop-area,
-.vue-image-crop-upload .vicp-wrap .vicp-step3 .vicp-upload {
-  height: 175px;
-}
-</style>

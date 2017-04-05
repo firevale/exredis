@@ -1,9 +1,9 @@
 <template>
-<div v-if="visible" class="tip-message">
-  <div class="body-message">
-    {{message}}
+  <div v-if="visible" class="tip-message">
+    <div class="body-message">
+      {{message}}
+    </div>
   </div>
-</div>
 </template>
 <script>
 export default {

@@ -16,7 +16,8 @@ defmodule Acs.GamesRouter do
   scope "/", Acs do
     pipe_through :games
 
-    post  "/get_paged_news", GamesController, :get_paged_news_admin
+    post  "/fetch_apps", GamesController, :fetch_apps
+    post  "/get_paged_news", GamesController, :get_paged_news
     post  "/get_news_detail", GamesController, :get_news_detail
 
   end

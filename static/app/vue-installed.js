@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
-import VueTouch from 'vue-touch-easyhi'
+import VueTouch from 'vue-touch'
 import ServerApi from './serverApi'
 import VueQuillEditor from './components/quillEditor'
 
@@ -15,7 +15,7 @@ Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.use(VueQuillEditor)
-Vue.use(VueTouch)
+Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(ServerApi)
 Vue.use(VueTimeago, {
   locale: 'zh-CN',

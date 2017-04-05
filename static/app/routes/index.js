@@ -1,6 +1,7 @@
 import forumsRoutes from './forum'
 import payment from './payment'
 import customerServiceRoutes from './customerService'
+import gamesRoutes from './games'
 
 export default function(VueRouter) {
   return new VueRouter({
@@ -8,6 +9,7 @@ export default function(VueRouter) {
     routes: [
       ...forumsRoutes,
       ...customerServiceRoutes,
+      ...gamesRoutes,
       ...payment,
     ],
   });

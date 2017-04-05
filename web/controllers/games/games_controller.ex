@@ -1,9 +1,24 @@
-defmodule Acs.NewsController do
+defmodule Acs.GamesController do
   use Acs.Web, :controller
 
   plug :fetch_session_user_id
   # plug :cache_page, [cache_seconds: 600] when action in [:get_paged_news]
   plug :check_is_admin when action in [:update_news, :toggle_news_status, :get_paged_news_admin, :update_news_pic]
+
+  # fetch_apps
+  def fetch_apps(conn, params) do
+    query = from app in App,
+            order_by: [desc: app.inserted_at],
+            where: app.active == true,
+            select: app
+
+    apps = Repo.all(query)
+
+    conn |> json(%{success: true, apps: apps})
+  end
+  def fetch_apps(conn, _) do
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
+  end
 
   # get_paged_news
   def get_paged_news(conn, %{"app_id" => app_id,
@@ -24,7 +39,7 @@ defmodule Acs.NewsController do
     conn |> json(%{success: true, news: news, total: total_page, records: total})
   end
   def get_paged_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end
   def get_paged_news_admin(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, 
                           %{"app_id" => app_id,
@@ -45,7 +60,7 @@ defmodule Acs.NewsController do
     conn |> json(%{success: true, news: news, total: total_page, records: total})
   end
   def get_paged_news_admin(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end    
   
   # get_news_detail
@@ -65,7 +80,7 @@ defmodule Acs.NewsController do
     conn |> json(%{success: true, news: news})
   end
   def get_news_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end
   defp add_news_click(news_id, click) do
     news = Repo.get(AppNews, news_id)
@@ -89,7 +104,7 @@ defmodule Acs.NewsController do
             news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
             conn |> json(%{success: true, news: news, i18n_message: "admin.news.addSuccess"})
           {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: "admin.error.networkError"})
+            conn |> json(%{success: false, message: "games.error.networkError"})
         end
         
       %AppNews{} = ns ->
@@ -101,7 +116,7 @@ defmodule Acs.NewsController do
 
   end
   def update_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end
 
   # toggle_news_status
@@ -116,7 +131,7 @@ defmodule Acs.NewsController do
     end
   end
   def toggle_news_status(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end
 
   # update_news_pic
@@ -124,7 +139,7 @@ defmodule Acs.NewsController do
                       %{"news_id" => news_id, "file" => %{} = upload_file}) do
     case Repo.get(AppNews, news_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound", i18n_message_object: %{news_id: news_id}})
+        conn |> json(%{success: false, i18n_message: "games.serverError.newsNotFound", i18n_message_object: %{news_id: news_id}})
 
       %AppNews{} = news ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do

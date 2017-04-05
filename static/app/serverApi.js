@@ -117,6 +117,18 @@ export default {
         return post(Vue, '/api/pay/wechat/prepay', {payment_order_id})
       },
 
+      getPagedNews(app_id, group, page, records_per_page) {
+        return post(Vue, '/games_actions/get_paged_news', { app_id, group, page, records_per_page })
+      },
+
+      getNewsDetail(news_id) {
+        return post(Vue, '/games_actions/get_news_detail', { news_id })
+      },
+
+      getApps() {
+        return post(Vue, '/games_actions/fetch_apps', { })
+      },
+
     }
   }
 }

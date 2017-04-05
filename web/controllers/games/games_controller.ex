@@ -1,4 +1,4 @@
-defmodule Acs.NewsController do
+defmodule Acs.GamesController do
   use Acs.Web, :controller
 
   plug :fetch_session_user_id

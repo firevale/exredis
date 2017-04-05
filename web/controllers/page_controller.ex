@@ -65,6 +65,12 @@ defmodule Acs.PageController do
          |> render("customer_service.html")
   end
 
+  # 活动
+  def show_games_page(conn, _params) do
+    conn |> put_layout(false)
+         |> render("games.html")
+  end
+
   # 商城
   def show_mall_page(conn, _params) do
     conn |> put_layout(false)

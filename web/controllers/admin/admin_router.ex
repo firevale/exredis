@@ -45,11 +45,11 @@ defmodule Acs.AdminRouter do
     post "/update_setting", AdminSettingController, :update_setting
     post "/update_setting_by_name", AdminSettingController, :update_setting_by_name
 
-    post  "/update_news", NewsController, :update_news
-    post  "/get_paged_news_admin", NewsController, :get_paged_news_admin
-    post  "/get_news_detail", NewsController, :get_news_detail
-    post  "/toggle_news_status", NewsController, :toggle_news_status
-    post  "/update_news_pic", NewsController, :update_news_pic
+    post  "/update_news", GamesController, :update_news
+    post  "/get_paged_news_admin", GamesController, :get_paged_news_admin
+    post  "/get_news_detail", GamesController, :get_news_detail
+    post  "/toggle_news_status", GamesController, :toggle_news_status
+    post  "/update_news_pic", GamesController, :update_news_pic
     
   end
 

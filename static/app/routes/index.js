@@ -1,4 +1,5 @@
 import forumsRoutes from './forum'
+import payment from './payment'
 import customerServiceRoutes from './customerService'
 
 export default function(VueRouter) {
@@ -7,6 +8,7 @@ export default function(VueRouter) {
     routes: [
       ...forumsRoutes,
       ...customerServiceRoutes,
+      ...payment,
     ],
   });
 }

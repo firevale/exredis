@@ -3,13 +3,13 @@ export default [{
   name: 'gamesError',
   component: require('../views/games/error.vue')
 }, {
-  path: '/games/index',
+  path: '/games/list',
   name: 'gamesList',
   component: require('../views/games/list.vue')
 }, {
   path: '/games/:app_id',
   name: 'games',
-  component: require('../views/games/index.vue'),
+  component: require('../views/games/main.vue'),
   children: [{
     path: 'index',
     name: 'gamesIndex',

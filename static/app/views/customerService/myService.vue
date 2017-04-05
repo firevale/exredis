@@ -1,17 +1,32 @@
 <template>
-  <div class="content-item">
+  <div class="my-service">
     <div v-for="item in questionList" class="content-item" @click="selectedId==item.id?selectedId='':selectedId=item.id">
       <div class="row-menu">
-        <span style="flex: 1;">{{item.time}}</span>
-        <span :class="{'link': item.state=='已回复'}">{{item.state}}</span>
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <span style="flex: 1;">{{item.inserted_at | formatServerDateTime}}</span>
+          </div>
+          <div class="level-right">
+            <!--<span :class="{'link': item.state=='已回复'}">{{item.state}}</span>-->
+            <span v-if="item.answer === null">未回复</span>
+            <span v-else class="service-reply">已回复</span>
+          </div>
+        </nav>
       </div>
       <div class="row-menu">
-        <span style="flex: 1;">{{item.title}}</span>
-        <i v-show="selectedId!=item.id" class="fa fa-angle-right title is-3 dark" aria-hidden="true"></i>
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <span style="flex: 1;">{{item.title}}</span>
+            <i v-show="selectedId!=item.id" class="fa fa-angle-right title is-3 dark" aria-hidden="true"></i>
+          </div>
+          <div class="level-right">
+           <a class="button is-white">></a>
+          </div>
+        </nav>
       </div>
-      <div v-show="selectedId==item.id" class="reply-box">
+      <!--<div v-show="selectedId==item.id" class="reply-box">
         {{item.answer}}
-      </div>
+      </div>-->
       <hr>
     </div>
     <div class="column is-full" v-show="total > 1">
@@ -50,7 +65,7 @@
         }
       }
     },
-    created: function(){
+    created: function () {
       this.getServicePage()
     }
   }

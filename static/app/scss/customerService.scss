@@ -29,3 +29,23 @@
         color: $primary;
     }
 }
+.my-service{
+    .level-left span{
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
+    }
+    .level-right span{
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
+    }
+    .level-right a{
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
+    }
+    .level-right .service-reply{
+        color: $primary;
+    }
+}

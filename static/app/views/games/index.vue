@@ -1,8 +1,5 @@
 <template>
   <div class="person">
-    <div class="title-bar">
-      <h4 class="title is-4">{{ $t('games.title') }}</h4>
-    </div>
     <nav class="nav">
       <div class="nav-center">
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>

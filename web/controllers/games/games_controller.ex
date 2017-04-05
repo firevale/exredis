@@ -10,7 +10,7 @@ defmodule Acs.GamesController do
     query = from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
-            select: app
+            select: map(app, [:id, :name, :icon])
 
     apps = Repo.all(query)
 

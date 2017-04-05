@@ -52,4 +52,21 @@ defmodule Acs.CustomerServiceController do
     IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
   end  
+  def get_paged_services(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page})do
+    total = Repo.one!(from q in Question, select: count(q.id), where: q.user_id == ^user_id and q.app_id == ^app_id)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from question in Question,
+              left_join: user in assoc(question, :user),
+              left_join: app in assoc(question, :app),
+              limit: ^records_per_page,
+              where: question.user_id == ^user_id and question.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              select: question,
+              preload: [user: user]
+
+    questions = Repo.all(query)
+    IO.inspect(questions, pretty: true)
+    conn |> json(%{success: true, questions: questions, total: total_page})
+  end
 end

@@ -18,6 +18,7 @@ defmodule Acs.CustomerServiceRouter do
 
     post  "/add_contact", CustomerServiceController, :add_contact
     post  "/get_paged_questions", CustomerServiceController, :get_paged_questions
+    post  "/get_paged_services", CustomerServiceController, :get_paged_services
 
   end
 

@@ -117,6 +117,13 @@ export default {
         return post(Vue, '/api/pay/wechat/prepay', {payment_order_id})
       },
 
+      getServicePagedPost(app_id, page, records_per_page) {
+        return post(Vue, '/customer_service_actions/get_paged_services', {
+          app_id: app_id,
+          page,
+          records_per_page
+        })
+      },
     }
   }
 }

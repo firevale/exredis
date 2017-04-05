@@ -12,7 +12,7 @@
   </div>
   <slider-nav :menus="menus" :onSelect="switchMenu"></slider-nav>
   <transition >
-    <router-view class="content-container"> </router-view>
+    <router-view class="content-container customer-service"> </router-view>
   </transition>
 </div>
 </template>

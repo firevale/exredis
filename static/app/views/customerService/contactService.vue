@@ -7,7 +7,7 @@
       <div class="contact-center">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <input class="button is-info" :class="processing ? '' : 'is-disabled'" type="submit" :value="$t('customerService.submitBtn')"></input>
+            <input class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit" :value="$t('customerService.submitBtn')"></input>
           </div>
         </nav>
       </div>
@@ -16,7 +16,7 @@
           <!-- Left side -->
           <div class="level-item has-text-centered">
             <div class="bottom-left">
-              <div>官方热线 : <span>010-23456789</span></div>
+              <div>客服热线 : <span>010-23456789</span></div>
               <div>官方主页 : <span>firevale.qs.com</span></div>
               <div>微信公众号 : <span>firevale</span></div>
             </div>
@@ -24,7 +24,7 @@
           <!-- Right side -->
           <div class="level-item has-text-centered">
             <div class="bottom-right">
-              <div>官方论坛 : <span>firevale.qs.it.com</span></div>
+              <div>官方论坛 : <span>irevale.qs.lt.com</span></div>
               <div>官方贴吧 : <span>枪神默示录</span></div>
               <div>官方微博 : <span>枪神默示录</span></div>
             </div>
@@ -51,7 +51,7 @@
   export default {
     data() {
       return {
-        title:'',
+        title: '',
         processing: false
       }
     },
@@ -71,9 +71,7 @@
 
           if (result.success) {
             message.showMsg(this.$t('customerService.contactService.addSuccess'))
-            this.$router.replace({
-              name: 'contactService'
-            })
+            this.$router.go(0)
           }
           this.processing = false
         }

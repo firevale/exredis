@@ -5,23 +5,27 @@
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
         <span class="seperator"></span>
         <div class="tile">
-          <a class="button" :class="{'is-primary': currentSectionId == 0,
-                                     'is-grey': currentSectionId != 0,
-                                     'is-disabled': loading}" @click="setCurrentSectionId(0)">
+          <v-touch @tap="loading || setCurrentSectionId(0)" 
+                   class="button"
+                   :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" 
+                   tag="a">
             {{ $t('forum.postList.all') }}
-          </a>
-          <a class="button" v-for="section in forumInfo.sections" :class="{'is-primary': currentSectionId == section.id,
-                                     'is-grey': currentSectionId != section.id,
-                                     'is-disabled': loading}" @click="setCurrentSectionId(section.id)">
-            {{section.title}}
-          </a>
+          </v-touch>
+          <v-touch v-for="section in forumInfo.sections"
+                   @tap="loading || setCurrentSectionId(section.id)" 
+                   class="button"
+                   :key="section.id"
+                   :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" 
+                   tag="a">
+            {{ section.title }}
+          </v-touch>
         </div>
       </div>
     </div>
     <div style="position: static; height: 100%">
       <div style="position: relative; height: 100%">
         <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-          <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item">
+          <post-list-item class="row" v-for="item in postList" :key="item.id" :post-info="item">
           </post-list-item>
         </scroller>
       </div>

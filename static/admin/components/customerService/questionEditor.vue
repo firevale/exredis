@@ -6,7 +6,7 @@
           <table class="table is-bordered is-striped is-narrow goods-table">
             <thead v-show="questions && questions.length > 0">
               <tr>
-                <th>{{ $t('admin.customerService.questionField.id') }}</th>
+                <th>{{ $t('admin.customerService.questionField.avatar') }}</th>
                 <th>{{ $t('admin.customerService.questionField.nickname') }}</th>
                 <th>{{ $t('admin.customerService.questionField.title') }}</th>
                 <th>{{ $t('admin.customerService.questionField.answer')}}</th>
@@ -18,15 +18,17 @@
             </thead>
             <tbody v-show="questions && questions.length > 0">
               <tr v-for="(item, index) in questions">
-                <td> {{ item.id }} </td>
-                <td> {{ item.user.nickname }} </td>
-                <td> {{ item.title }} </td>
+                <td class="is-icon">
+                  <figure class="image is-48x48">
+                    <img :src="item.user.avatar_url ? item.user.avatar_url: 'https://placehold.it/48x48'"></img>
+                  </figure>
+                </td>
+                <td> {{ item.user.nickname }}</td>
+                <td style="width:450px;overflow: visible; text-overflow: ellipsis; white-space: nowrap;"> {{ item.title }} </td>
                 <td>
                   <span :class="{tag:true,'is-danger':!item.answer }">
                     {{ item.answer ? $t('admin.titles.yes') : $t('admin.titles.no') }}
                   </span>
-                  <tooltip label="This is title" placement="top-right">
-                  </tooltip>
                 </td>
                 <td>
                   <span :class="{tag:true,'is-success':item.is_hot}">
@@ -40,7 +42,7 @@
                     <i class="fa fa-pencil"></i>
                   </a>
                   <a @click.prevent="toggleStatus(item)">
-                    <i class="fa" :class="item.active ? 'fa-trash-o' : 'fa-check'"></i>
+                    <i class="fa fa-trash-o"></i>
                   </a>
                 </td>
               </tr>

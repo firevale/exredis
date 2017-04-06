@@ -90,6 +90,7 @@ export default {
         tabTitle: '问题反馈',
         questionField: {
           id: '编号',
+          avatar: '头像',
           nickname: '用户昵称',
           title: '反馈问题',
           answer: '是否回复',

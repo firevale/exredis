@@ -16,7 +16,7 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from './scroller'
+import scroller from 'common/components/scroller'
 
 export default {
   components: {

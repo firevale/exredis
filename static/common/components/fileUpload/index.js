@@ -1,4 +1,4 @@
-import Vue from 'app/vue-installed'
+import Vue from 'vue'
 
 const FileUploadDialog = Vue.extend(require('./dialog'));
 

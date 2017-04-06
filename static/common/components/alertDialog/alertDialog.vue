@@ -1,22 +1,22 @@
 <template>
-<div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
-  <div class="modal-background" @click="cancel"></div>
-  <div class="modal-card" style="border-radius: 5px; width: 30%;min-width: 220px;">
-    <section class="modal-card-body">
-      <article class="media">
-        <div class="media-content">
-          <div class="content is-warning">
-            <p style="text-align: center;font-size: 1.3rem;"> {{ message }}? </p>
+  <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
+    <div class="modal-background" @click="cancel"></div>
+    <div class="modal-card" style="border-radius: 5px; width: 30%;min-width: 220px;">
+      <section class="modal-card-body">
+        <article class="media">
+          <div class="media-content">
+            <div class="content is-warning">
+              <p style="text-align: center; font-size: 1.3rem;"> {{ message }}? </p>
+            </div>
           </div>
-        </div>
-      </article>
-    </section>
-    <footer class="modal-footer">
-      <a class="button is-info" @click="cancel">{{ cancelText }}</a>
-      <a class="button is-primary" @click="ok">{{ okText }}</a>
-    </footer>
+        </article>
+      </section>
+      <footer class="modal-footer">
+        <a class="button is-info" @click="cancel">{{ cancelText }}</a>
+        <a class="button is-primary" @click="ok">{{ okText }}</a>
+      </footer>
+    </div>
   </div>
-</div>
 </template>
 <script>
 export default {

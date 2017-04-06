@@ -72,6 +72,7 @@
   </modal>
 </template>
 <script>
+
 import {
   Modal
 } from 'vue-bulma-modal'
@@ -181,7 +182,6 @@ export default {
 }
 </script>
 <style lang="scss">
-@import 'app/scss/variables';
 
 label.file-upload {
   width: 100%;
@@ -205,7 +205,7 @@ label.file-upload {
     margin-bottom: 1rem;
   }
   &.file-selected {
-    background-color: $white;
+    background-color: #fff;
     span {
       display: none;
     }
@@ -232,7 +232,7 @@ label.file-upload {
   p.is-danger {
     margin-bottom: 1rem;
     font-size: 1rem;
-    color: $danger;
+    color: #e8021e;
   }
   .button {
     font-size: 1.2rem;

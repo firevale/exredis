@@ -35,8 +35,8 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import AlertDialog from './alertDialog'
-import message from './message'
+import AlertDialog from 'common/components/alertDialog'
+import Toast from 'common/components/toast'
 import * as filter from 'common/js/filters'
 
 export default {
@@ -90,14 +90,14 @@ export default {
 
   methods: {
     confirmDeleteComment() {
-      AlertDialog.showModal({
+      AlertDialog.show({
         message: this.$t('forum.detail.deleteTip', {
           nth: this.nth
         }),
         onOk: async _ => {
           let result = await this.$acs.deleteComment(this.commentData.id, this.$route.params.forumId)
           if (result.success) {
-            message.showMsg(this.$t(result.i18n_message))
+            Toast.show(this.$t(result.i18n_message))
             if (this.onItemDeleted)
               this.onItemDeleted(this.itemIndex)
           }

@@ -41,7 +41,7 @@ import {
   mapActions
 } from 'vuex'
 
-import message from '../../components/message'
+import Toast from 'common/components/toast'
 import * as utils from 'common/js/utils'
 import * as filter from 'common/js/filters'
 
@@ -91,7 +91,7 @@ export default {
           this.title, this.content)
 
         if (result.success) {
-          message.showMsg(this.$t('forum.newPost.addSuccess'))
+          Toast.show(this.$t('forum.newPost.addSuccess'))
           this.$router.replace({
             name: 'postList'
           })

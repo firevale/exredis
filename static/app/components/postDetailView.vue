@@ -77,7 +77,7 @@
     mapActions
   } from 'vuex'
   
-  import message from './message'
+  import Toast from 'common/components/toast'
   import * as acs from 'common/js/acs'
   import * as filter from 'common/js/filters'
   
@@ -135,7 +135,7 @@
         let result = await this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
           this.postData.is_favorite = !this.postData.is_favorite
-          message.showMsg(this.$t(result.i18n_message))
+          Toast.show(this.$t(result.i18n_message))
         }
       },
   
@@ -175,7 +175,7 @@
               case "is_top":
                 this.postData.is_top = !this.postData.is_top
             }
-            message.showMsg(this.$t(result.i18n_message))
+            Toast.show(this.$t(result.i18n_message))
           }
         }
       },

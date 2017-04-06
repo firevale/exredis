@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import message from '../../components/message'
+  import Toast from 'common/components/toast'
   import {
     mapGetters,
     mapActions
@@ -70,7 +70,7 @@
           let result = await this.$acs.addContact(appId, this.title)
 
           if (result.success) {
-            message.showMsg(this.$t('customerService.contactService.addSuccess'))
+            Toast.show(this.$t('customerService.contactService.addSuccess'))
             this.$router.go(0)
           }
           this.processing = false

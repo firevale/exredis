@@ -19,8 +19,7 @@
 </template>
 <script>
 import AlertDialog from './alertDialog'
-import message from './message'
-
+import Toast from 'common/components/toast'
 export default {
   props: {
     itemData: {
@@ -56,9 +55,10 @@ export default {
         onOk: async _ => {
           let result = await this.$acs.togglePostFavorite(this.itemData.post.id)
           if (result.success) {
-            message.showMsg(this.$t(result.i18n_message))
-            if (this.onItemDeleted)
+            Toast.show(this.$t(result.i18n_message))
+            if (this.onItemDeleted) {
               this.onItemDeleted(this.itemIndex)
+            }
           }
         },
         onCancel: null,

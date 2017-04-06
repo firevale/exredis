@@ -1,4 +1,4 @@
-import message from './components/message'
+import Toast from 'common/components/toast'
 
 const processResponse = async(Vue, response) => {
   let result = await response.json()
@@ -7,9 +7,9 @@ const processResponse = async(Vue, response) => {
     return result
   } else {
     if (result.i18n_message) {
-      message.showMsg(Vue.t(result.i18n_message, result.i18n_message_object))
+      Toast.show(Vue.t(result.i18n_message, result.i18n_message_object))
     } else if (result.message) {
-      message.showMsg(result.message)
+      Toast.show(result.message)
     }
 
     switch (result.action) {
@@ -31,7 +31,7 @@ const post = async(Vue, uri, params) => {
     let response = await Vue.http.post(uri, params)
     return processResponse(Vue, response)
   } catch (_) {
-    message.showMsg(Vue.t('forum.error.networkError'))
+    Toast.show(Vue.t('forum.error.networkError'))
     return { success: false }
   }
 }

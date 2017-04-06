@@ -28,7 +28,7 @@ import sliderNav from '../../components/sliderNav'
 import nativeApi from 'common/js/nativeApi'
 import * as acs from 'common/js/acs'
 import * as filter from 'common/js/keywordFilter'
-import message from '../../components/message'
+import Toast from 'common/components/toast'
 
 export default {
   components: {

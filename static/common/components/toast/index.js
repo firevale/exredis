@@ -1,10 +1,10 @@
 import Vue from 'vue';
-const message = Vue.extend(require('./message.vue'));
+const toast = Vue.extend(require('./toast.vue'));
 let instance
 export default {
-  showMsg: function(msg) {
+  show: function(msg) {
     if (!instance) {
-      instance = new message({
+      instance = new toast({
         el: document.createElement('div'),
         propsData: {
           message: msg

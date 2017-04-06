@@ -45,7 +45,7 @@ import {
   showFileUploadDialog
 } from '../../components/fileUpload'
 
-import message from '../../components/message'
+import Toast from 'common/components/toast'
 
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'
@@ -157,11 +157,11 @@ export default {
             let range = editor.getSelection()
             editor.insertEmbed(range.index, 'image', response.link)
           } else if (response.i18n_message) {
-            message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
+            Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
           } else if (response.message) {
-            message.showMsg(response.message)
+            Toast.show(response.message)
           } else {
-            message.showMsg(this.$t('forum.error.networkError'))
+            Toast.show(this.$t('forum.error.networkError'))
           }
         },
       })
@@ -183,7 +183,7 @@ export default {
           this.editingPostData.title, this.editingPostData.content)
 
         if (result.success) {
-          message.showMsg(this.$t('forum.newPost.addSuccess'))
+          Toast.show(this.$t('forum.newPost.addSuccess'))
           this.$router.replace({
             name: 'postList'
           })

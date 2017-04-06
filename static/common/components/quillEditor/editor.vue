@@ -14,112 +14,114 @@
     <div ref="quill" class="quill-editor"></div>
   </div>
 </template>
-
 <script>
-  import Quill from 'quill'
+import Quill from 'quill'
 
-  if (!window.Quill) {
-    window.Quill = Quill
-  }
-  export default {
-    name: 'quill-editor',
-    data() {
-      return {
-        _content: '',
-        defaultModules: {
-          toolbar: '#toolbar',
-          history: {
-            delay: 2000,
-            maxStack: 100,
-            userOnly: true
-          }
+require('quill/assets/snow.styl')
+require('quill/assets/core.styl')
+
+if (!window.Quill) {
+  window.Quill = Quill
+}
+export default {
+  name: 'quill-editor',
+  data() {
+    return {
+      _content: '',
+      defaultModules: {
+        toolbar: '#toolbar',
+        history: {
+          delay: 2000,
+          maxStack: 100,
+          userOnly: true
         }
       }
-    },
-    props: {
-      content: String,
-      value: String,
-      config: {
-        type: Object,
-        required: false,
-        default () {
-          return {}
-        }
+    }
+  },
+  props: {
+    content: String,
+    value: String,
+    config: {
+      type: Object,
+      required: false,
+      default () {
+        return {}
       }
-    },
-    mounted() {
-      this.initialize()
-    },
-    beforeDestroy() {
-      // 作者说了，等垃圾回收，不必显式清理
-      this.quillEditor = null
-    },
-    methods: {
-      initialize() {
-        if (this.$refs.quill) {
-          let self = this
-          self.quillEditor = new Quill(self.$refs.quill, Object.assign({
-            modules: self.defaultModules,
-            placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
-            readOnly: false,
-            theme: 'snow',
-            boundary: document.body
-          }, self.config || {}))
+    }
+  },
+  mounted() {
+    this.initialize()
+  },
+  beforeDestroy() {
+    // 作者说了，等垃圾回收，不必显式清理
+    this.quillEditor = null
+  },
+  methods: {
+    initialize() {
+      if (this.$refs.quill) {
+        let self = this
+        self.quillEditor = new Quill(self.$refs.quill, Object.assign({
+          modules: self.defaultModules,
+          placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
+          readOnly: false,
+          theme: 'snow',
+          boundary: document.body
+        }, self.config || {}))
 
-          // set editor content
-          if (self.value || self.content) {
-            self.quillEditor.pasteHTML(self.value || self.content)
+        // set editor content
+        if (self.value || self.content) {
+          self.quillEditor.pasteHTML(self.value || self.content)
+        }
+
+        // mark model as touched if editor lost focus
+        self.quillEditor.on('selection-change', (range) => {
+          if (!range) {
+            self.$emit('blur', self.quillEditor)
+          } else {
+            self.$emit('focus', self.quillEditor)
           }
+        })
 
-          // mark model as touched if editor lost focus
-          self.quillEditor.on('selection-change', (range) => {
-            if (!range) {
-              self.$emit('blur', self.quillEditor)
-            } else {
-              self.$emit('focus', self.quillEditor)
-            }
+        // update model if text changes
+        self.quillEditor.on('text-change', (delta, oldDelta, source) => {
+          let html = self.$refs.quill.children[0].innerHTML
+          const text = self.quillEditor.getText()
+          if (html === '<p><br></p>') html = ''
+          self._content = html
+          self.$emit('input', self._content)
+          self.$emit('change', {
+            editor: self.quillEditor,
+            html: html,
+            text: text
           })
+        })
 
-          // update model if text changes
-          self.quillEditor.on('text-change', (delta, oldDelta, source) => {
-            let html = self.$refs.quill.children[0].innerHTML
-            const text = self.quillEditor.getText()
-            if (html === '<p><br></p>') html = ''
-            self._content = html
-            self.$emit('input', self._content)
-            self.$emit('change', {
-              editor: self.quillEditor,
-              html: html,
-              text: text
-            })
-          })
-
-          // 广播事件
-          self.$emit('ready', self.quillEditor)
+        // 广播事件
+        self.$emit('ready', self.quillEditor)
+      }
+    }
+  },
+  watch: {
+    'content' (newVal, oldVal) {
+      if (this.quillEditor) {
+        if (!!newVal && newVal !== this._content) {
+          this._content = newVal
+          this.quillEditor.pasteHTML(newVal)
+        } else if (!newVal) {
+          this.quillEditor.setText('')
         }
       }
     },
-    watch: {
-      'content' (newVal, oldVal) {
-        if (this.quillEditor) {
-          if (!!newVal && newVal !== this._content) {
-            this._content = newVal
-            this.quillEditor.pasteHTML(newVal)
-          } else if (!newVal) {
-            this.quillEditor.setText('')
-          }
-        }
-      },
-      'value' (newVal, oldVal) {
-        if (this.quillEditor) {
-          if (newVal !== this._content) {
-            this._content = newVal
-            this.quillEditor.pasteHTML(newVal)
-          } else if (!newVal) {
-            this.quillEditor.setText('')
-          }
+    'value' (newVal, oldVal) {
+      if (this.quillEditor) {
+        if (newVal !== this._content) {
+          this._content = newVal
+          this.quillEditor.pasteHTML(newVal)
+        } else if (!newVal) {
+          this.quillEditor.setText('')
         }
       }
     }
   }
+}
 </script>

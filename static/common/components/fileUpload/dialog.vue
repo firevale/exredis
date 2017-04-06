@@ -7,7 +7,7 @@
                        :class="file ? 'file-selected' : ''"
                        ref="upload"
                        :name="name" 
-                       :title="$t('forum.upload.hint')"
+                       :title="$t('upload.hint')"
                        :drop="true" 
                        :accept="accept"
                        :multiple="false" 
@@ -24,14 +24,14 @@
 
       <div v-if="file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
-          <label class="label">{{ $t('forum.upload.filename' )}}:</label>
+          <label class="label">{{ $t('upload.filename' )}}:</label>
         </div>
         <div class="column has-text-left is-9">
           <label class="field-label is-small">{{ file.name }}</label>
         </div>
 
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
-          <label class="label">{{ $t('forum.upload.filesize' )}}:</label>
+          <label class="label">{{ $t('upload.filesize' )}}:</label>
         </div>
         <div class="column has-text-left is-9">
           <label class="field-label is-small">{{  file.size | humanReadableSize }}</label>
@@ -39,7 +39,7 @@
 
         <template v-if="file.active">
           <div class="column has-text-right is-2" style="margin-right: 0.5rem">
-            <label class="label">{{ $t('forum.upload.progress' )}}:</label>
+            <label class="label">{{ $t('upload.progress' )}}:</label>
           </div>
           <div class="column has-text-left is-9">
             <div class="control" style="padding-top: 0.375em">
@@ -53,7 +53,7 @@
         </template>
         <template v-if="file.active">
           <div class="column has-text-right is-2" style="margin-right: 0.5rem">
-            <label class="label">{{ $t('forum.upload.speed' )}}:</label>
+            <label class="label">{{ $t('upload.speed' )}}:</label>
           </div>
           <div class="column has-text-left is-9">
             <label class="field-label is-small">{{ file.speed | humanReadableSize }}</label>
@@ -65,7 +65,7 @@
         <a class="button is-info" :class="{'is-disabled': !file || file.success || file.active, 
                               'is-loading': upload && upload.active}" @click="upload.active = true">
           <span class="icon image-icon icon-upload"></span>
-          <span>{{ $t('forum.upload.title') }}</span>
+          <span>{{ $t('upload.title') }}</span>
         </a>
       </div>
     </div>
@@ -129,7 +129,7 @@ export default {
       uploadEvents: {
         add: file => {
           if (file.size > this.maxFileSize) {
-            this.errorMessage = this.$t('forum.upload.fileIsTooLarge', {
+            this.errorMessage = this.$t('upload.fileIsTooLarge', {
               maxFileSize: humanReadableSize('' +
                 this.maxFileSize)
             })

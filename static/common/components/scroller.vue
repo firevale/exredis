@@ -1,6 +1,6 @@
 <template>
   <div class="scroller-container">
-    <div ref="scroller" class="scroller">       
+    <div ref="scroller" class="scroller">
       <div ref="scroller_content" class="scroller-content">
         <div v-if="onRefresh" class="pull-to-refresh-layer">
           <div class="pull-to-refresh" v-if="refreshState == 0 && !loading">{{ this.i18n.pullToRefresh }}</div>
@@ -9,11 +9,11 @@
         </div>
         <slot></slot>
         <div ref="loading_layer" class="loading-layer">
-          <slot name="all-loaded" v-if="allLoaded"> {{ this.i18n.noMoreData }} </slot>
+          <slot name="all-loaded" v-if="allLoaded && !loading"> {{ this.i18n.noMoreData }} </slot>
           <slot name="loading" v-if="loading">
             <p>
-            <span class="icon image-icon icon-spinner rotating"> </span> 
-            <span> {{ this.i18n.refreshing }} </span>
+              <span class="icon image-icon icon-spinner rotating"> </span>
+              <span> {{ this.i18n.loading }} </span>
             </p>
           </slot>
         </div>
@@ -41,8 +41,9 @@ export default {
         return {
           pullToRefresh: '下拉刷新',
           releaseToRefresh: '释放加载',
-          refreshing: '加载中, 请稍候',
+          refreshing: '刷新中, 请稍候',
           noMoreData: '没有更多数据啦',
+          loading: '加载中，请稍候',
         }
       }
     },
@@ -76,7 +77,9 @@ export default {
   },
 
   mounted: function() {
-    this.$on('all-loaded', _ => this.allLoaded = true)
+    this.$on('all-loaded', _ => {
+      this.allLoaded = true
+    })
     this.$on('reset', _ => {
       this.$nextTick(_ => {
         this.allLoaded = false
@@ -147,7 +150,10 @@ export default {
         this.needRefresh = false
         setTimeout(this.checkLoadMore, 600)
       } else {
-        this.checkLoadMore()
+        // if 
+        if (this.refreshState != REFRESHING) {
+          this.checkLoadMore()
+        }
       }
     },
 
@@ -157,11 +163,11 @@ export default {
           this.refreshState = REFRESHING
           this.allLoaded = false
           await this.onRefresh()
-          if (this.iscroll) {
+          setTimeout(_ => {
             this.iscroll.tempY = null
-            this.needRefresh = true
             this.refreshState = PULL_TO_REFRESH
-          }
+            this.iscroll.resetPosition(600)
+          }, 10)
         }, 0)
       }
     },
@@ -194,7 +200,9 @@ export default {
             this.needRefresh = false
           }, 100)
         }
-        this.$nextTick(_ => this.checkLoadMore())
+        this.$nextTick(_ => {
+          if (!this.allLoaded) this.checkLoadMore()
+        })
       }
     },
   },

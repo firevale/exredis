@@ -7,6 +7,10 @@ export default {
     news: '官方新闻',
   },
 
+  buttons: {
+    back: '返回',
+  },
+
   error: {
     pageTitle: '糟糕，出错了',
     networkError: '网络错误',

@@ -5,19 +5,27 @@
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
         <span class="seperator"></span>
         <div class="tile">
-          <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
+          <v-touch @tap="loading || setCurrentSectionId(0)" 
+                   class="button"
+                   :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" 
+                   tag="a">
             {{ $t('forum.postList.all') }}
-          </a>
-          <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(section.id)">
-            {{section.title}}
-          </a>
+          </v-touch>
+          <v-touch v-for="section in forumInfo.sections"
+                   @tap="loading || setCurrentSectionId(section.id)" 
+                   class="button"
+                   :key="section.id"
+                   :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" 
+                   tag="a">
+            {{ section.title }}
+          </v-touch>
         </div>
       </div>
     </div>
     <div style="position: static; height: 100%">
       <div style="position: relative; height: 100%">
         <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-          <post-list-item class="row" v-for="(item, index) in postList" :key="item.id" :post-info="item">
+          <post-list-item class="row" v-for="item in postList" :key="item.id" :post-info="item">
           </post-list-item>
         </scroller>
       </div>
@@ -57,7 +65,8 @@ export default {
       postList: [],
       page: 0,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 20,
+      loading: false,
     }
   },
 
@@ -112,11 +121,13 @@ export default {
     },
 
     loadmore: async function() {
+      this.loading = true
+
       let result = await this.$acs.getPagedPost(this.page + 1, this.recordsPerPage, this.postsOrderByField,
         this.currentSectionId, this.$router.currentRoute.params.forumId)
 
       if (result.success) {
-        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
+        this.postList = (this.page == 0 ? (result.posts || []) : this.postList.concat(result.posts))
         this.total = result.total
         this.page = this.page + 1
 
@@ -124,6 +135,8 @@ export default {
           this.$refs.scroller.$emit('all-loaded')
         }
       }
+
+      this.loading = false
     }
 
   },

@@ -35,7 +35,7 @@
                 <td> {{ news.id }} </td>
                 <td class="is-icon">
                   <figure class="image news-pic" @click="updateNewsPic(news)">
-                    <img :src="news.pic ? news.pic: 'https://placehold.it/86x35?text=860X350'" style="width:172px; height:70px;"></img>
+                    <img :src="news.pic ? news.pic: 'https://placehold.it/172x70?text=640X260'" style="width:172px; height:70px;"></img>
                   </figure>
                 </td>
                 <td> {{ news.title }} </td>

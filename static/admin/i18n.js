@@ -90,16 +90,17 @@ export default {
         tabTitle: '问题反馈',
         questionField: {
           id: '编号',
+          nickname: '用户昵称',
           title: '反馈问题',
-          answer: '回复',
+          answer: '是否回复',
           isHot: '是否热门',
           active: '是否显示',
           insertedAt: '添加时间',
           replyAt: '回复时间',
         },
-        replyForm:{
-          name:'编辑回复',
-          replyPlaceholder:'请输入回复内容',
+        replyForm: {
+          name: '编辑回复',
+          replyPlaceholder: '请输入回复内容',
         }
       },
 
@@ -253,6 +254,8 @@ export default {
         editNoticeInfo: '编辑公告信息',
         editNewsInfo: '编辑新闻信息',
         uploadNewsPic: '修改题图',
+        yes: '是',
+        no: '否',
       },
 
       messages: {

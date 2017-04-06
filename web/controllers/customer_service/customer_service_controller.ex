@@ -45,7 +45,7 @@ defmodule Acs.CustomerServiceController do
               left_join: app in assoc(question, :app),
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: question,
+              select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
               preload: [user: user]
 
     questions = Repo.all(query)
@@ -53,9 +53,9 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 
-  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active})  do
+  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active,"is_hot" => is_hot})  do
     with %Question{} = question  <- Repo.get(Question,id),
-         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active}) |>Repo.update
+         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active, is_hot: is_hot}) |>Repo.update
     do
         conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
     else
@@ -78,10 +78,9 @@ defmodule Acs.CustomerServiceController do
               limit: ^records_per_page,
               where: question.user_id == ^user_id and question.app_id == ^app_id,
               offset: ^((page - 1) * records_per_page),
-              select: question,
-              preload: [user: user]
-
+              select: map(question, [:id, :title, :answer, :inserted_at])
     questions = Repo.all(query)
+    
     IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
   end

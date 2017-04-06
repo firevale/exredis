@@ -15,7 +15,12 @@
         </p>
         <p class="control">
           <label class="checkbox">
-            <input class="checkbox" type="checkbox" v-model.trim="question.active"> {{ $t('admin.customerService.questionField.active') }}
+            <input class="checkbox" type="checkbox" v-model="question.active" :true-value="true"> {{ $t('admin.customerService.questionField.active') }}
+          </label>
+        </p>
+        <p class="control">
+          <label class="checkbox">
+            <input class="checkbox" type="checkbox" v-model="question.is_hot" :true-value="true"> {{ $t('admin.customerService.questionField.isHot') }}
           </label>
         </p>
         <div class="has-text-centered" style="margin-top: 15px">
@@ -57,7 +62,7 @@ export default {
       this.processing = false
 
       let result = await this.$acs.updateQuestion(this.question.id, this.question.answer, this.question
-        .active)
+        .active, this.question.is_hot)
       if (result.success) {
         openNotification({
           title: this.$t('admin.titles.updateSuccess'),

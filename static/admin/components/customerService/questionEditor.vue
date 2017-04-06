@@ -7,6 +7,7 @@
             <thead v-show="questions && questions.length > 0">
               <tr>
                 <th>{{ $t('admin.customerService.questionField.id') }}</th>
+                <th>{{ $t('admin.customerService.questionField.nickname') }}</th>
                 <th>{{ $t('admin.customerService.questionField.title') }}</th>
                 <th>{{ $t('admin.customerService.questionField.answer')}}</th>
                 <th>{{ $t('admin.customerService.questionField.isHot')}}</th>
@@ -18,10 +19,18 @@
             <tbody v-show="questions && questions.length > 0">
               <tr v-for="(item, index) in questions">
                 <td> {{ item.id }} </td>
+                <td> {{ item.user.nickname }} </td>
                 <td> {{ item.title }} </td>
-                <td> {{ item.answer }} </td>
-                <td> {{ item.isHot ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
-                <td> {{ item.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
+                <td> {{ item.answer }}
+                  <tooltip label="This is title" placement="top-right">
+                  </tooltip>
+                </td>
+                <td>
+                  <span :class="{tag:true,'is-success':item.is_hot}">
+                    {{ item.is_hot ? $t('admin.titles.yes') : $t('admin.titles.no') }}
+                  </span>
+                </td>
+                <td> {{ item.active ? $t('admin.titles.yes') : $t('admin.titles.no') }} </td>
                 <td> {{ item.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
                   <a @click.prevent="replyQuestion(item, index)">
@@ -91,6 +100,11 @@ export default {
   },
 
   methods: {
+
+    showTag: function(value) {
+
+    },
+
     replyQuestion: function(question, index) {
       openDialog({
         question: question,
@@ -112,23 +126,8 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getQuestions(page, this.recordsPerPage)
+      this.getPagedQuestions(page, this.recordsPerPage)
     },
-
-
-    updateitemPic: function(item) {
-      showFileUploadDialog({
-        postAction: '/admin_actions/update_item_pic',
-        accept: 'image/png',
-        data: {
-          item_id: item.id
-        },
-        extensions: ['png'],
-        title: this.$t('admin.titles.uploaditemPic'),
-        callback: response => item.pic = response.pic,
-      })
-    },
-
   },
 
   components: {

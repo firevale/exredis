@@ -44,11 +44,12 @@ export default {
           records_per_page
         })
       },
-      updateQuestion(id, answer, active) {
+      updateQuestion(id, answer, active, is_hot) {
         return post(Vue, '/customer_service_actions/update_question', {
           id,
           answer,
-          active
+          active,
+          is_hot
         })
       },
 

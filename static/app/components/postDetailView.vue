@@ -76,10 +76,7 @@
     mapGetters,
     mapActions
   } from 'vuex'
-  import {
-    swiperContainer,
-    preViewing
-  } from '../components/swiper'
+  
   import message from './message'
   import * as acs from 'common/js/acs'
   import * as filter from 'common/js/filters'

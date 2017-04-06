@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreateQuestion do
     create table(:questions) do
       add :title, :string
       add :answer, :string
-      add :is_hot, :string
+      add :is_hot, :boolean, default: false
       add :active, :boolean, default: true
       add :sort_index, :integer, default: 0
       add :reply_at, :utc_datetime 

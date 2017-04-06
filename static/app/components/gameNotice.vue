@@ -16,35 +16,16 @@
 </div>
 </template>
 <script>
-var marked = require('marked')
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-});
 
 export default {
   mounted() {
+    this.loadmore()
     this.notices && this.notices.length ? this.showNoticeDetail(this.notices[0]) : ''
-  },
-
-  props: {
-    notices: {
-      type: Array,
-    },
-  },
-
-  computed: {
-
   },
 
   data() {
     return {
+      notices: [],
       downIcon: false,
       detailHtml: "",
       selectedTitle: '',
@@ -56,7 +37,7 @@ export default {
   methods: {
     showNoticeDetail(item) {
       this.selectedTitle = item.title
-      this.detailHtml = marked(item.content)
+      this.detailHtml = item.content
     },
 
     changScroll(e) {
@@ -69,6 +50,15 @@ export default {
 
     scrollDown() {
       this.$refs.menuBox.scrollTop += 30
+    },
+
+    loadmore: async function() {
+      let app_id = this.$router.currentRoute.params.app_id
+      let result = await this.$acs.getPagedNews(app_id, "notice", 1, 30)
+
+      if (result.success) {
+        this.notices = result.news
+      }
     },
 
   }

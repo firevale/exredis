@@ -25,7 +25,7 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from '../../components/scroller'
+import scroller from 'common/components/scroller'
 import gameActivity from "../../components/gameActivity"
 import gameNotice from "../../components/gameNotice"
 import gameNews from "../../components/gameNews"

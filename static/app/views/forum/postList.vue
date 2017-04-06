@@ -30,7 +30,7 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from '../../components/scroller'
+import scroller from 'common/components/scroller'
 import postListItem from '../../components/postListItem'
 import menuModal from '../../components/menuModal'
 

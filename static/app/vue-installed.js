@@ -6,7 +6,7 @@ import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
 import VueTouch from 'vue-touch'
 import ServerApi from './serverApi'
-import VueQuillEditor from './components/quillEditor'
+import VueQuillEditor from 'common/components/quillEditor'
 
 import * as acs from 'common/js/acs'
 

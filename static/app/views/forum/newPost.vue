@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="tile is-full has-text-left" style="padding: 1rem 0">
-      <span class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" 
-            @click="showSelectSectionMenu">
+      <span class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @click="showSelectSectionMenu">
          {{ selectedSectionTitle }}
       </span>
       <span class="icon image-icon icon-pull-down is-clickable" @click="showSelectSectionMenu"> 
@@ -10,23 +9,26 @@
     </div>
     <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
       <p class="control is-horizontal" style="margin-bottom: 1.5rem">
-        <input class="input" style="border-radius: 0" type="text" 
-          v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
+        <input class="input" style="border-radius: 0" type="text" v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
-      <quill-editor v-model.trim="editingPostData.content" @ready="setEditor" @input="handleValidation($v.editingPostData.content)" @image="onInsertImage">
+      <quill-editor v-model.trim="editingPostData.content" @ready="setEditor" @input="handleValidation($v.editingPostData.content)"
+        @image="onInsertImage">
       </quill-editor>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
-      <div class="tile is-full has-text-centered" >
-        <input type="button" @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" 
-          :class="processing || $v.$invalid ? 'is-disabled' : ''" />        
-        <input type="submit" :value="$t('forum.newPost.btnTitle')" class="button is-info" 
-          :class="processing || $v.$invalid ? 'is-disabled' : ''" />
+      <div class="tile is-full has-text-centered">
+        <p style="margin: 0 auto">
+          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0;" @click="preview"
+            :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          />
+          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          />
+        </p>
       </div>
     </form>
-</div>
+  </div>
 </template>
 <script>
 import {
@@ -89,9 +91,8 @@ export default {
         maxLength: maxLength(30),
       },
       content: {
-        required: function(val) {
-          return this.editor && this.editor.getText().trim().length >= 5
-        }
+        required,
+        minLength: minLength(5),
       }
     }
   },

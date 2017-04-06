@@ -1,6 +1,6 @@
 <template>
-  <div class="post-detail has-bottom-line">
-    <article class="media">
+  <div class="post-detail">
+    <article class="media has-bottom-line">
       <div class="media-left" style="margin: 0 1rem 0 0">
         <figure class="image is-32x32 avatar-image">
           <img :src="avatarUrl"></img>
@@ -29,11 +29,13 @@
         </div>
       </div>
     </article>
-    <div class="tile is-full has-text-centered" >
-        <input type="button" @click="close" :value="$t('forum.newPost.backAndEdit')" class="button is-info" />        
-        <input type="submit" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')" class="button is-info" />
-      </div>
-  </div>
+    <div class="tile is-full has-text-centered">
+      <p style="margin: 1rem auto;">
+        <input type="button" style="margin: 0.5rem; border-radius: 0; min-width: 8rem; font-weight: 500; font-size: 1rem; padding-bottom: 0.4em; padding-top: 0.35em; " @click="close" :value="$t('forum.newPost.backAndEdit')" class="button is-info" />
+        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')" class="button is-primary" />
+      </p>
+    </div>
+</div>
 </template>
 <script>
 import {

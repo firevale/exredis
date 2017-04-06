@@ -19,10 +19,13 @@
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
       <div class="tile is-full has-text-centered">
-        <input type="button" @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
-        />
-        <input type="submit" :value="$t('forum.newPost.btnTitle')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
-        />
+        <p style="margin: 0 auto">
+          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0;" @click="preview"
+            :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          />
+          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          />
+        </p>
       </div>
     </form>
   </div>
@@ -88,9 +91,8 @@ export default {
         maxLength: maxLength(30),
       },
       content: {
-        required: function(val) {
-          return this.editor && this.editor.getText().trim().length >= 5
-        }
+        required,
+        minLength: minLength(5),
       }
     }
   },

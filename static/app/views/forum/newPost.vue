@@ -23,7 +23,7 @@
           <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0;" @click="preview"
             :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           />
-          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           />
         </p>
       </div>

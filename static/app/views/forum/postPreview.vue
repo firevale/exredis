@@ -32,10 +32,10 @@
     <div class="tile is-full has-text-centered">
       <p style="margin: 1rem auto;">
         <input type="button" style="margin: 0.5rem; border-radius: 0; min-width: 8rem; font-weight: 500; font-size: 1rem; padding-bottom: 0.4em; padding-top: 0.35em; " @click="close" :value="$t('forum.newPost.backAndEdit')" class="button is-info" />
-        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')" class="button is-info" />
+        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')" class="button is-primary" />
       </p>
     </div>
-  </div>
+</div>
 </template>
 <script>
 import {

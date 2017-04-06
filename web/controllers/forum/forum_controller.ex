@@ -189,7 +189,7 @@ defmodule Acs.ForumController do
                 "section_id" => section_id} = post) do
 
       post = case Floki.find(content, "img") do
-               [] -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
+               [] -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", false)
                _ -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
              end
       

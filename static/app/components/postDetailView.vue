@@ -135,7 +135,6 @@
         let result = await this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
           this.postData.is_favorite = !this.postData.is_favorite
-          Toast.show(this.$t(result.i18n_message))
         }
       },
   

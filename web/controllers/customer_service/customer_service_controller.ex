@@ -78,10 +78,9 @@ defmodule Acs.CustomerServiceController do
               limit: ^records_per_page,
               where: question.user_id == ^user_id and question.app_id == ^app_id,
               offset: ^((page - 1) * records_per_page),
-              select: question,
-              preload: [user: user]
-
+              select: map(question, [:id, :title, :answer, :inserted_at])
     questions = Repo.all(query)
+    
     IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
   end

@@ -1,7 +1,8 @@
 defmodule Acs.CronController do
   use     Acs.Web, :controller
   alias   Acs.PaymentHelper
-
+  alias   Acs.MeishengSmsSender
+  alias   Acs.ChaoxinNotifier
   use     Timex
 
   def notify_cp(conn, params) do
@@ -42,5 +43,12 @@ defmodule Acs.CronController do
     Task.Supervisor.async(Acs.TaskSupervisor, fn ->
       PaymentHelper.notify_cp(order)
     end)
+  end
+
+  def report_sms_amount(conn, params) do 
+    {:ok, amount} = MeishengSmsSender.get_amount()
+    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
+    ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    conn |> text("ok")
   end
 end

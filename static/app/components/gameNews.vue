@@ -1,76 +1,85 @@
 <template>
-<div class="news-box">
-  <div v-show="!showDetail" class="row-menu" style="justify-content: space-around;">
-    <div v-for="item in news.topImgs" class="top-img">
-      <figure>
-        <img :src="item.url" style="height: 8rem; border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></img>
-      </figure>
-      <figcaption style="text-align: center;">{{ item.title }}</figcaption>
+  <div class="news-box">
+    <div class="row-menu" style="justify-content: space-around;">
+      <div v-for="item in topNews" class="top-img">
+        <figure>
+          <img :src="item.pic" style="height: 8rem; border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></img>
+        </figure>
+        <figcaption style="text-align: center;">{{ item.title }}</figcaption>
+      </div>
+    </div>
+    <scroller :on-load-more="loadmore" ref="scroller">
+      <div v-show="!showDetail" v-for="item in news" class="row-menu row-news" @click="showNewsDetail(item)">
+        <i class="fa fa-circle" style="margin: .2rem .2rem 0 0;" aria-hidden="true"></i>
+        <span style="flex: 1;">{{ item.title }}</span>
+        <span>{{ item.inserted_at | convertServerDateTime }}</span>
+      </div>
+    </scroller>
+    <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
     </div>
   </div>
-  <div v-show="!showDetail" v-for="item in news.list" class="row-menu row-news" @click="showNewsDetail(item)">
-    <i class="fa fa-circle" style="margin: .2rem .2rem 0 0;" aria-hidden="true"></i>
-    <span style="flex: 1;">{{ item.title }}</span>
-    <span>{{ item.time }}</span>
-  </div>
-  <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
-  </div>
-  <div class="column is-full" v-show="newsPageCount > 1">
-    <pagination ref="pag" 
-    :page-count="newsPageCount" 
-    :current-page="newsCurrentPage" @switch-page="loadNewsByPage">
-    </pagination>
-  </div>
-</div>
 </template>
 <script>
-  import pagination from '../components/pagination.vue'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  var marked = require('marked')
-  marked.setOptions({
-    renderer: new marked.Renderer(),
-    gfm: true,
-    tables: true,
-    breaks: true,
-    pedantic: false,
-    sanitize: false,
-    smartLists: true,
-    smartypants: false
-  });
+import scroller from './scroller'
 
-  export default {
-    mounted() {},
+export default {
+  mounted: async function() {
+    await this.loadtop()
+  },
 
-    props: {
-      news: {
-        type: Object,
-      },
-    },
+  components: {
+    scroller,
+  },
 
-    computed: {
+  data() {
+    return {
+      topNews: [],
+      news: [],
+      detailHtml: "",
+      showDetail: false,
+      page: 0,
+      total: 1,
+      recordsPerPage: 5,
+    }
+  },
 
-    },
+  methods: {
+    loadtop: async function() {
+      let app_id = this.$router.currentRoute.params.app_id
+      let result = await this.$acs.getTopNews(app_id, 3)
 
-    data() {
-      return {
-        detailHtml: "",
-        showDetail: false,
-        newsPageCount: 5,
-        newsCurrentPage: 1,
+      if (result.success) {
+        this.topNews = result.news
       }
     },
 
-    methods: {
-      showNewsDetail(item) {
-        this.detailHtml = marked(item.content)
-        this.showDetail = true
-      },
+    loadmore: async function() {
+      let app_id = this.$router.currentRoute.params.app_id
+      let result = await this.$acs.getPagedNews(app_id, "news", this.page + 1, this.recordsPerPage)
 
-      loadNewsByPage(page = 1) {}
+      if (result.success) {
+        this.news = this.page == 0 ? result.news : this.news.concat(result.news)
+
+        this.total = result.total
+        this.page = this.page + 1
+
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
+        }
+      }
     },
 
-    components: {
-      pagination,
-    }
-  }
+    showNewsDetail(item) {
+      this.detailHtml = item.content
+      this.showDetail = true
+    },
+
+  },
+
+}
 </script>

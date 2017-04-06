@@ -30,6 +30,9 @@
     }
 }
 .my-service{
+    .level-content{
+        padding: 0em 1.5em;
+    }
     .level-left span{
         color: $text-grey;
         letter-spacing: 0.12em;

@@ -20,6 +20,22 @@ defmodule Acs.GamesController do
     conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
   end
 
+  # get_top_news
+  def get_top_news(conn, %{"app_id" => app_id,
+                          "limit" => limit}) do
+    query = from n in AppNews,
+              where: n.app_id == ^app_id and n.group == "news" and n.active == true and n.is_top == true,
+              order_by: [desc: n.id],
+              limit: ^limit,
+              select: map(n, [:id, :title, :content, :pic, :reads, :inserted_at])
+
+    news = Repo.all(query)
+    conn |> json(%{success: true, news: news})
+  end
+  def get_top_news(conn, _) do
+    conn |> json(%{success: false, i18n_message: "games.serverError.badRequestParams"})
+  end
+
   # get_paged_news
   def get_paged_news(conn, %{"app_id" => app_id,
                           "group" => group,
@@ -33,7 +49,7 @@ defmodule Acs.GamesController do
               order_by: [desc: n.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(n, [:id, :title, :is_top, :active, :pic, :reads, :inserted_at])
+              select: map(n, [:id, :title, :content, :is_top, :active, :pic, :reads, :inserted_at])
 
     news = Repo.all(query)
     conn |> json(%{success: true, news: news, total: total_page, records: total})

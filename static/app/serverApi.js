@@ -125,6 +125,10 @@ export default {
         return post(Vue, '/games_actions/get_news_detail', { news_id })
       },
 
+      getTopNews(app_id, limit) {
+        return post(Vue, '/games_actions/get_top_news', { app_id, limit })
+      },
+
       getApps() {
         return post(Vue, '/games_actions/fetch_apps', { })
       },

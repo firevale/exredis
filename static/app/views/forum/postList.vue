@@ -5,10 +5,14 @@
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
         <span class="seperator"></span>
         <div class="tile">
-          <a class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(0)">
+          <a class="button" :class="{'is-primary': currentSectionId == 0,
+                                     'is-grey': currentSectionId != 0,
+                                     'is-disabled': loading}" @click="setCurrentSectionId(0)">
             {{ $t('forum.postList.all') }}
           </a>
-          <a class="button" v-for="section in forumInfo.sections" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" @click="setCurrentSectionId(section.id)">
+          <a class="button" v-for="section in forumInfo.sections" :class="{'is-primary': currentSectionId == section.id,
+                                     'is-grey': currentSectionId != section.id,
+                                     'is-disabled': loading}" @click="setCurrentSectionId(section.id)">
             {{section.title}}
           </a>
         </div>
@@ -57,7 +61,8 @@ export default {
       postList: [],
       page: 0,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 20,
+      loading: false,
     }
   },
 
@@ -112,11 +117,13 @@ export default {
     },
 
     loadmore: async function() {
+      this.loading = true
+
       let result = await this.$acs.getPagedPost(this.page + 1, this.recordsPerPage, this.postsOrderByField,
         this.currentSectionId, this.$router.currentRoute.params.forumId)
 
       if (result.success) {
-        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
+        this.postList = (this.page == 0 ? (result.posts || []) : this.postList.concat(result.posts))
         this.total = result.total
         this.page = this.page + 1
 
@@ -124,6 +131,8 @@ export default {
           this.$refs.scroller.$emit('all-loaded')
         }
       }
+
+      this.loading = false
     }
 
   },

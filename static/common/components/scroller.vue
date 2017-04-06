@@ -159,8 +159,8 @@ export default {
           await this.onRefresh()
           if (this.iscroll) {
             this.iscroll.tempY = null
-            this.needRefresh = true
             this.refreshState = PULL_TO_REFRESH
+            this.iscroll.resetPosition(600)
           }
         }, 0)
       }

@@ -1,14 +1,16 @@
 <template>
   <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-    <div class="news-box">
-      <div class="row-menu" style="justify-content: space-around;">
-        <div v-for="item in topNews" class="top-img">
+    <nav class="level">
+      <div v-for="item in topNews" class="level-item has-text-centered">
+        <div>
           <figure>
-            <img :src="item.pic" style="height: 8rem; border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></img>
+            <img :src="item.pic" style="height: 14rem; border-radius: .5rem;"></img>
           </figure>
           <figcaption style="text-align: center;">{{ item.title }}</figcaption>
         </div>
       </div>
+    </nav>
+    <div class="news-box">
       <div v-for="item in news" class="row-menu row-news" @click="showNewsDetail(item)">
         <i class="fa fa-circle" style="margin: .2rem .2rem 0 0;" aria-hidden="true"></i>
         <span style="flex: 1;">{{ item.title }}</span>

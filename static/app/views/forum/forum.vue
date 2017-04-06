@@ -1,8 +1,8 @@
 <template>
-<div class="tile is-ancestor is-vertical root-container">
+  <div class="tile is-ancestor is-vertical root-container">
     <div class="columns is-multiline">
       <article class="tile is-child notification" v-for="forum in forumList" @click.prevent="showForum(forum.id)">
-        <div class="tile is-parent" >
+        <div class="tile is-parent">
           <div class="tile is-vertical is-child">
             <img :src="forum.icon ? forum.icon : 'https://placehold.it/64x64?text=128x128'"></img>
             <h2 style="font-weight: bold"> {{forum.title}} </h2>
@@ -10,7 +10,7 @@
         </div>
       </article>
     </div>
-</div>
+  </div>
 </template>
 <script>
 import Vue from '../../vue-installed'

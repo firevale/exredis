@@ -1,5 +1,5 @@
 <template>
-  <scroller :on-load-more="loadmore" ref="scroller">
+  <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
     <div v-for="item in activityList" class="detail-html">
       <div v-show="!showDetail" class="row-menu" style="justify-content: space-around; margin: 0;">
         <img v-if="item.pic" :src="item.pic" @click="showActivityDetail(item)"></img>
@@ -16,7 +16,7 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from './scroller'
+import scroller from 'common/components/scroller'
 
 export default {
   components: {
@@ -49,6 +49,12 @@ export default {
           this.$refs.scroller.$emit('all-loaded')
         }
       }
+    },
+
+    refresh: async function() {
+      this.page = 0
+      this.total = 1
+      await this.loadmore()
     },
 
     showActivityDetail(item) {

@@ -1,23 +1,23 @@
 <template>
-  <div class="news-box">
-    <div class="row-menu" style="justify-content: space-around;">
-      <div v-for="item in topNews" class="top-img">
-        <figure>
-          <img :src="item.pic" style="height: 8rem; border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></img>
-        </figure>
-        <figcaption style="text-align: center;">{{ item.title }}</figcaption>
+  <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
+    <div class="news-box">
+      <div class="row-menu" style="justify-content: space-around;">
+        <div v-for="item in topNews" class="top-img">
+          <figure>
+            <img :src="item.pic" style="height: 8rem; border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></img>
+          </figure>
+          <figcaption style="text-align: center;">{{ item.title }}</figcaption>
+        </div>
       </div>
-    </div>
-    <scroller :on-load-more="loadmore" ref="scroller">
-      <div v-show="!showDetail" v-for="item in news" class="row-menu row-news" @click="showNewsDetail(item)">
+      <div v-for="item in news" class="row-menu row-news" @click="showNewsDetail(item)">
         <i class="fa fa-circle" style="margin: .2rem .2rem 0 0;" aria-hidden="true"></i>
         <span style="flex: 1;">{{ item.title }}</span>
         <span>{{ item.inserted_at | convertServerDateTime }}</span>
       </div>
-    </scroller>
-    <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
+      <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
+      </div>
     </div>
-  </div>
+  </scroller>
 </template>
 <script>
 import {
@@ -25,7 +25,7 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from './scroller'
+import scroller from 'common/components/scroller'
 
 export default {
   mounted: async function() {
@@ -72,6 +72,12 @@ export default {
           this.$refs.scroller.$emit('all-loaded')
         }
       }
+    },
+
+    refresh: async function() {
+      this.page = 0
+      this.total = 1
+      await this.loadmore()
     },
 
     showNewsDetail(item) {

@@ -1,7 +1,7 @@
 <template>
   <div class="my-service">
     <scroller :on-load-more="loadmore" ref="scroller">
-      <div v-for="item in questionList">
+      <div v-for="item in questionList" @click="selectedId==item.id?selectedId='':selectedId=item.id">
         <div class="level-content">
           <nav class="level is-mobile">
             <div class="level-left">
@@ -25,6 +25,9 @@
             </div>
           </nav>
         </div>
+        <div v-show="selectedId==item.id && item.answer!==null" class="level-content reply-content">
+          {{$t('customerService.reply') }}<br> {{item.answer}}
+        </div>
         <hr>
       </div>
     </scroller>
@@ -40,6 +43,7 @@
     data() {
       return {
         questionList: [],
+        selectedId: '',
         page: 0,
         total: 1,
         recordsPerPage: 12,

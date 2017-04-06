@@ -29,26 +29,34 @@
         color: $primary;
     }
 }
-.my-service{
-    .level-content{
+
+.my-service {
+    .level-content {
         padding: 0em 1.5em;
     }
-    .level-left span{
+    .level-left span {
         color: $text-grey;
         letter-spacing: 0.12em;
         font-family: MicrosoftYaHei;
     }
-    .level-right span{
+    .level-right span {
         color: $text-grey;
         letter-spacing: 0.12em;
         font-family: MicrosoftYaHei;
     }
-    .level-right a{
+    .level-right a {
         color: $text-grey;
         letter-spacing: 0.12em;
         font-family: MicrosoftYaHei;
     }
-    .level-right .service-reply{
+    .level-right .service-reply {
         color: $primary;
+    }
+    .reply-content {
+        border: 1px $grey solid;
+        padding: 1.5em;
+        color: $text-grey;
+        letter-spacing: 0.12em;
+        font-family: MicrosoftYaHei;
     }
 }

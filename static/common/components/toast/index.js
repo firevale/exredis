@@ -1,6 +1,8 @@
 import Vue from 'vue';
 const toast = Vue.extend(require('./toast.vue'));
+
 let instance
+
 export default {
   show: function(msg) {
     if (!instance) {

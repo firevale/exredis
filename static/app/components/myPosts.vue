@@ -19,7 +19,7 @@
   </article>
 </template>
 <script>
-import AlertDialog from './alertDialog'
+import AlertDialog from 'common/components/alertDialog'
 import Toast from 'common/components/toast'
 
 export default {
@@ -52,7 +52,7 @@ export default {
     },
 
     confirmDeletePost() {
-      AlertDialog.showModal({
+      AlertDialog.show({
         message: this.$t('forum.detail.deletePostTip'),
         onOk: async _ => {
           let result = await this.$acs.togglePostStatus({

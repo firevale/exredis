@@ -23,14 +23,22 @@ import {
 } from 'vuex'
 
 import menuModal from '../../components/menuModal'
+
 import {
   showFileUploadDialog
-} from '../../components/fileUpload'
+} from 'common/components/fileUpload'
+
 import Toast from 'common/components/toast'
 
 import * as utils from 'common/js/utils'
 
 const touchMap = new WeakMap()
+
+import {
+  required,
+  minLength,
+  maxLength
+} from 'vuelidate/lib/validators'
 
 export default {
   computed: {
@@ -38,6 +46,9 @@ export default {
 
     errorHint: function() {
       if (!this.$v.content.required) {
+        return this.$t('forum.error.commentContentRequired')
+      }
+      else if(!this.$v.content.minLength) {
         return this.$t('forum.error.commentContentRequired')
       }
 
@@ -65,9 +76,8 @@ export default {
 
   validations: {
     content: {
-      required: function(val) {
-        return this.editor && this.editor.getText().trim().length >= 5
-      }
+      required: required,
+      minLength: minLength(5),
     }
   },
 

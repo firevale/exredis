@@ -43,7 +43,7 @@ import {
 import menuModal from '../../components/menuModal'
 import {
   showFileUploadDialog
-} from '../../components/fileUpload'
+} from 'common/components/fileUpload'
 
 import Toast from 'common/components/toast'
 

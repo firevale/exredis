@@ -16,17 +16,17 @@
           <!-- Left side -->
           <div class="level-item has-text-centered">
             <div class="bottom-left">
-              <div>客服热线 : <span>010-23456789</span></div>
-              <div>官方主页 : <span>firevale.qs.com</span></div>
-              <div>微信公众号 : <span>firevaleqs</span></div>
+              <div>{{$t('customerService.contactService.hotline') }} : <span>010-23456789</span></div>
+              <div>{{$t('customerService.contactService.officialHomePage') }} : <span>firevale.qs.com</span></div>
+              <div>{{$t('customerService.contactService.weChat') }} : <span>firevaleqs</span></div>
             </div>
           </div>
           <!-- Right side -->
           <div class="level-item has-text-centered">
             <div class="bottom-right">
-              <div>官方论坛 : <span>firevale.qs.lt.com</span></div>
-              <div>官方贴吧 : <span>枪神默示录</span></div>
-              <div>官方微博 : <span>枪神默示录</span></div>
+              <div>{{$t('customerService.contactService.officialForum') }}  : <span>firevale.qs.lt.com</span></div>
+              <div>{{$t('customerService.contactService.officialPostBar') }}  : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
+              <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
             </div>
           </div>
         </nav>
@@ -37,11 +37,7 @@
 
 <script>
   import Toast from 'common/components/toast'
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
-
+  
   import {
     required,
     minLength,

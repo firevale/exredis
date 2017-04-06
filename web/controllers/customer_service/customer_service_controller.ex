@@ -53,9 +53,9 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 
-  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active})  do
+  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active,"is_hot" => is_hot})  do
     with %Question{} = question  <- Repo.get(Question,id),
-         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active}) |>Repo.update
+         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active, is_hot: is_hot}) |>Repo.update
     do
         conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
     else

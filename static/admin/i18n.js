@@ -97,9 +97,9 @@ export default {
           insertedAt: '添加时间',
           replyAt: '回复时间',
         },
-        replyForm:{
-          name:'编辑回复',
-          replyPlaceholder:'请输入回复内容',
+        replyForm: {
+          name: '编辑回复',
+          replyPlaceholder: '请输入回复内容',
         }
       },
 
@@ -253,6 +253,8 @@ export default {
         editNoticeInfo: '编辑公告信息',
         editNewsInfo: '编辑新闻信息',
         uploadNewsPic: '修改题图',
+        yes: '是',
+        no: '否',
       },
 
       messages: {

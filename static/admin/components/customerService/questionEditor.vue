@@ -20,7 +20,11 @@
                 <td> {{ item.id }} </td>
                 <td> {{ item.title }} </td>
                 <td> {{ item.answer }} </td>
-                <td> {{ item.isHot ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
+                <td>
+                  <span :class="{tag:true,'is-success':item.isHot}">
+                    {{ item.isHot ? $t('admin.titles.yes') : $t('admin.titles.no') }}
+                  </span>
+                </td>
                 <td> {{ item.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
                 <td> {{ item.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
@@ -91,6 +95,11 @@ export default {
   },
 
   methods: {
+
+    showTag: function(value) {
+
+    },
+
     replyQuestion: function(question, index) {
       openDialog({
         question: question,
@@ -112,23 +121,8 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getQuestions(page, this.recordsPerPage)
+      this.getPagedQuestions(page, this.recordsPerPage)
     },
-
-
-    updateitemPic: function(item) {
-      showFileUploadDialog({
-        postAction: '/admin_actions/update_item_pic',
-        accept: 'image/png',
-        data: {
-          item_id: item.id
-        },
-        extensions: ['png'],
-        title: this.$t('admin.titles.uploaditemPic'),
-        callback: response => item.pic = response.pic,
-      })
-    },
-
   },
 
   components: {

@@ -6,7 +6,7 @@ defmodule Acs.Question do
   schema "questions" do
     field :title, :string
     field :answer, :string
-    field :is_hot, :string
+    field :is_hot, :boolean, default: false
     field :active, :boolean, default: true
     field :sort_index, :integer, default: 0
     field :reply_at, :utc_datetime

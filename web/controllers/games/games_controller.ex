@@ -159,7 +159,7 @@ defmodule Acs.GamesController do
 
       %AppNews{} = news ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 860, height: 350} = upload_image ->
+          %{width: 640, height: 260} = upload_image ->
             if upload_image.format == "png" do
               {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
               [file_md5 | _] = String.split(md5sum_result)

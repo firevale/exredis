@@ -1,11 +1,13 @@
 <template>
   <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-    <div v-for="item in activityList" class="detail-html">
-      <div v-show="!showDetail" class="row-menu" style="justify-content: space-around; margin: 0;">
-        <img v-if="item.pic" :src="item.pic" @click="showActivityDetail(item)"></img>
-        <img v-else src="https://placehold.it/860x350?text=860x350" @click="showActivityDetail(item)"></img>
+    <div v-show="!showDetail" class="columns is-multiline">
+      <div v-for="item in activityList" class="column is-half">
+        <center>
+          <img v-if="item.pic" :src="item.pic" style="border-radius: .5rem;" @click="showActivityDetail(item)"></img>
+          <img v-else src="https://placehold.it/640x260?text=640x260" style="border-radius: .5rem;" @click="showActivityDetail(item)"></img>
+        </center>
       </div>
-      <div v-show="showDetail" v-html="detailHtml">
+      <div v-show="showDetail" v-html="detailHtml" class="columns">
       </div>
     </div>
   </scroller>

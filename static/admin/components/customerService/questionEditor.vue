@@ -21,7 +21,10 @@
                 <td> {{ item.id }} </td>
                 <td> {{ item.user.nickname }} </td>
                 <td> {{ item.title }} </td>
-                <td> {{ item.answer }}
+                <td>
+                  <span :class="{tag:true,'is-danger':!item.answer }">
+                    {{ item.answer ? $t('admin.titles.yes') : $t('admin.titles.no') }}
+                  </span>
                   <tooltip label="This is title" placement="top-right">
                   </tooltip>
                 </td>

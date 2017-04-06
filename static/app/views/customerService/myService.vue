@@ -1,60 +1,68 @@
 <template>
   <div class="my-service">
-    <div v-for="item in questionList" class="content-item" @click="selectedId==item.id?selectedId='':selectedId=item.id">
-      <div class="row-menu">
-        <nav class="level is-mobile">
-          <div class="level-left">
-            <span style="flex: 1;">{{item.inserted_at | formatServerDateTime}}</span>
-          </div>
-          <div class="level-right">
-            <!--<span :class="{'link': item.state=='已回复'}">{{item.state}}</span>-->
-            <span v-if="item.answer === null">未回复</span>
-            <span v-else class="service-reply">已回复</span>
-          </div>
-        </nav>
+    <scroller :on-load-more="loadmore" ref="scroller">
+      <div v-for="item in questionList" @click="selectedId==item.id?selectedId='':selectedId=item.id">
+        <div class="level-content">
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <span style="flex: 1;">{{item.inserted_at | formatServerDateTime}}</span>
+            </div>
+            <div class="level-right">
+              <span v-if="item.answer === null">未回复</span>
+              <span v-else class="service-reply">已回复</span>
+            </div>
+          </nav>
+        </div>
+        <div class="level-content">
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <span style="flex: 1;">{{item.title}}</span>
+            </div>
+            <div class="level-right">
+              <a class="button is-white is-medium">></a>
+            </div>
+          </nav>
+        </div>
+        <hr>
       </div>
-      <div class="row-menu">
-        <nav class="level is-mobile">
-          <div class="level-left">
-            <span style="flex: 1;">{{item.title}}</span>
-            <i v-show="selectedId!=item.id" class="fa fa-angle-right title is-3 dark" aria-hidden="true"></i>
-          </div>
-          <div class="level-right">
-           <a class="button is-white">></a>
-          </div>
-        </nav>
-      </div>
-      <!--<div v-show="selectedId==item.id" class="reply-box">
-        {{item.answer}}
-      </div>-->
-      <hr>
-    </div>
-    <div class="column is-full" v-show="total > 1">
-      <pagination ref="pag" :page-count="total" :current-page="page"></pagination>
-    </div>
+    </scroller>
   </div>
 </template>
 <script>
-  import pagination from '../../components/pagination.vue'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
+
+  import scroller from '../../components/scroller'
 
   export default {
     components: {
-      pagination,
+      scroller
     },
     data() {
       return {
+        questionList: [],
         selectedId: '',
         page: 0,
-        total: 0,
-        questionList: [],
-        recordsPerPage: 10
+        total: 1,
+        recordsPerPage: 12,
+        postRecords: 0
       }
     },
     computed: {
 
     },
     methods: {
-      getServicePage: async function () {
+      resetScroller: function () {
+        this.page = 0
+        this.total = 1
+        this.questionList = []
+        if (this.$refs.scroller) {
+          this.$refs.scroller.$emit('reset')
+        }
+      },
+      loadmore: async function () {
         let appId = this.$router.currentRoute.params.appId
         let result = await this.$acs.getServicePagedPost(appId, this.page + 1, this.recordsPerPage)
 
@@ -62,11 +70,12 @@
           this.questionList = this.page == 0 ? result.questions : this.questionList.concat(result.questions)
           this.total = result.total
           this.page = this.page + 1
+
+          if (this.$refs.scroller && this.page >= this.total) {
+            this.$refs.scroller.$emit('all-loaded')
+          }
         }
       }
-    },
-    created: function () {
-      this.getServicePage()
     }
   }
 </script>

@@ -45,7 +45,7 @@ defmodule Acs.CustomerServiceController do
               left_join: app in assoc(question, :app),
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: question,
+              select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
               preload: [user: user]
 
     questions = Repo.all(query)

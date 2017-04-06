@@ -18,16 +18,16 @@ defmodule Acs.CustomerServiceController do
       with  contact <- contact |> Map.put("user_id", user_id) |> Map.put("app_id", app_id),
             {:ok, contact} <- Question.changeset(%Question{}, contact) |> Repo.insert
       do
-       conn |>json(%{success: true, i18n_message: "forum.writeContact.addSuccess"})
+       conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "customer.error.illegal"})
         {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+          conn |> json(%{success: false, i18n_message: "customer.error.networkError"})
       end
   end
   def add_contact(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "customer.serverError.badRequestParams"})
   end
 
   def get_paged_questions(conn, %{"app_id" =>app_id, "page" => page, "records_per_page" => records_per_page}) do
@@ -76,6 +76,7 @@ defmodule Acs.CustomerServiceController do
               left_join: user in assoc(question, :user),
               left_join: app in assoc(question, :app),
               limit: ^records_per_page,
+              order_by: [desc: question.inserted_at],
               where: question.user_id == ^user_id and question.app_id == ^app_id,
               offset: ^((page - 1) * records_per_page),
               select: map(question, [:id, :title, :answer, :inserted_at])

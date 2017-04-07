@@ -3,7 +3,7 @@
     <div class="column is-one-third">
       <scroller>
         <v-touch v-for="item in notices" :key="item.id" v-on:tap="showNoticeDetail(item)">
-          <div class="column" style="border: 1px solid #ccc; padding: 1rem; margin: .5rem;">
+          <div class="column" style="border: 1px solid #ccc; padding: .8rem; margin: .5rem;">
             <h5 class="title is-5" :class="{'is-primary' : selectedId == item.id}">{{ item.title }}</h5>
           </div>
         </v-touch>

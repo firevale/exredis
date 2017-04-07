@@ -255,6 +255,8 @@ export default {
     uploadNewsPic: '修改题图',
     yes: '是',
     no: '否',
+    noData:'暂无数据',
+    noMoreData:'没有更多数据啦'
   },
 
   messages: {

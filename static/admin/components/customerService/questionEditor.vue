@@ -47,6 +47,7 @@
                 </td>
               </tr>
             </tbody>
+            <tfoot v-show="!questions || questions.length== 0">{{ $t('admin.titles.noData')}}</tfoot>
           </table>
         </div>
       </article>
@@ -121,7 +122,8 @@ export default {
     },
 
     getPagedQuestions: async function(page, recordsPerPage) {
-      let result = await this.$acs.getPagedQuestions(0, page, recordsPerPage)
+      let result = await this.$acs.getPagedQuestions(this.$route.params.appId, page,
+        recordsPerPage)
 
       if (result.success) {
         this.total = result.total

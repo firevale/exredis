@@ -93,7 +93,7 @@ export default {
         visible: true,
         appName: this.app.name,
         callback: async sdk => {
-          let result = await this.$acs.generateDummySdkInfo(sdk)
+          let result = await this.$acs.generateDummySdkInfo({sdk})
           if (result.success) {
             openSdkInfoDialog({
               sdk,

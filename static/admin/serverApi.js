@@ -51,8 +51,8 @@ export default {
         return post(Vue, '/admin_actions/delete_app_goods', params, successMessage)
       },
 
-      generateDummySdkInfo(sdk) {
-        return post(Vue, '/admin_actions/generate_dummy_sdk_info', {sdk})
+      generateDummySdkInfo(params) {
+        return post(Vue, '/admin_actions/generate_dummy_sdk_info', params)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {

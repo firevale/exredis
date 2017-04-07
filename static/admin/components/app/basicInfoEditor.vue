@@ -146,6 +146,7 @@ export default {
 
     handleSubmit: async function() {
       this.processing = true
+
       let result = await this.$acs.updateAppInfo(this.app)
 
       if (result.success) {

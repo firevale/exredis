@@ -167,7 +167,13 @@ export default {
       productIds: '产品ID',
       productId: '产品ID',
       add: '添加新商品',
+    },
+
+    message: {
+      appIconUpdated: '应用『{appName}』图标更新成功',
+      goodsIconUpdated: '商品『{goodsName}』图标更新成功',
     }
+
   },
 
   label: {
@@ -226,8 +232,8 @@ export default {
     uploadFailed: '文件上传失败',
     updateFailed: '保存失败',
     requestFailed: '请求失败',
-    uploadGoodsIcon: '拖动 边长>=128 的正方形PNG图片到此',
-    uploadAppIcon: '拖动 边长>=128 的正方形PNG图片到此',
+    uploadGoodsIcon: '拖动正方形PNG图片到此(边长 >= 128)',
+    uploadAppIcon: '拖动正方形PNG图片到此(边长 >= 128)',
     uploadForumIcon: '修改论坛『{forumName}』的图标',
     editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
     ok: '确认',

@@ -11,7 +11,7 @@ const processResponse = async(Vue, response, successMessage) => {
   }
   else if (result.success && successMessage) {
     openNotification({
-      title: Vue.t('admin.titles.updateSuccess'),
+      title: Vue.t('admin.notification.title.success'),
       message: successMessage,
       type: 'success',
       duration: 4500,

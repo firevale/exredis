@@ -68,7 +68,7 @@
             this.processing = false
             if (result.success) {
               openNotification({
-                title: this.$t('admin.titles.updateSuccess'),
+                title: this.$t('admin.notification.title.success'),
                 message: this.$t('admin.messages.sectionInfoUpdated', {
                   sectionTitle: result.section.title
                 }),

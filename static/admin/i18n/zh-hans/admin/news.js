@@ -19,7 +19,6 @@ export default {
   operate: '操作',
   active: '状态',
   addSuccess: '添加成功',
-  updateSuccess: '修改成功',
   titlePlaceholder: '请填写标题～～',
   textAreaPlaceHolder: '请填写内容～～',
   requireTitleContent: '请输入标题和内容',

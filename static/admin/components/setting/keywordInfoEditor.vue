@@ -75,7 +75,7 @@ export default {
         this.processing = false
         if (result.success) {
           openNotification({
-            title: this.$t('admin.titles.updateSuccess'),
+            title: this.$t('admin.notification.title.success'),
             message: this.$t(result.i18n_message),
             type: 'success',
             duration: 4500,

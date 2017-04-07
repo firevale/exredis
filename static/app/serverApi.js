@@ -147,7 +147,11 @@ export default {
           app_id: app_id
         })
       },
-
+      getAppDetail(app_id) {
+        return post(Vue, '/customer_service_actions/get_app_detail', {
+          app_id: app_id
+        })
+      },
 
     }
   }

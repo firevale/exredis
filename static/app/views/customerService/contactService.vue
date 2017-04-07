@@ -24,8 +24,8 @@
           <!-- Right side -->
           <div class="level-item has-text-centered">
             <div class="bottom-right">
-              <div>{{$t('customerService.contactService.officialForum') }}  : <span>firevale.qs.lt.com</span></div>
-              <div>{{$t('customerService.contactService.officialPostBar') }}  : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
+              <div>{{$t('customerService.contactService.officialForum') }} : <span>firevale.qs.lt.com</span></div>
+              <div>{{$t('customerService.contactService.officialPostBar') }} : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
               <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
             </div>
           </div>
@@ -37,7 +37,7 @@
 
 <script>
   import Toast from 'common/components/toast'
-  
+
   import {
     required,
     minLength,
@@ -67,7 +67,9 @@
 
           if (result.success) {
             Toast.show(this.$t('customerService.contactService.addSuccess'))
-            this.$router.go(0)
+            this.$router.replace({
+              name: 'myService'
+            })
           }
           this.processing = false
         }

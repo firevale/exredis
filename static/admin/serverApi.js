@@ -119,32 +119,20 @@ export default {
         })
       },
 
-      updateQuestion(id, answer, active, is_hot) {
-        return post(Vue, '/customer_service_actions/update_question', {
-          id,
-          answer,
-          active,
-          is_hot
-        })
+      updateQuestion(params, successMessage) {
+        return post(Vue, '/customer_service_actions/update_question', params, successMessage)
       },
 
       getNewsDetail(news_id) {
         return post(Vue, '/admin_actions/get_news_detail', { news_id })
       },
 
-      updateNews(news_id, app_id, title, content, group, is_top) {
-        return post(Vue, '/admin_actions/update_news', {
-          news_id,
-          app_id,
-          title,
-          content,
-          group,
-          is_top
-        })
+      updateNews(params) {
+        return post(Vue, '/admin_actions/update_news', params)
       },
 
-      toggleStatus(news_id) {
-        return post(Vue, '/admin_actions/toggle_news_status', { news_id })
+      toggleStatus(params, successMessage) {
+        return post(Vue, '/admin_actions/toggle_news_status', params, successMessage)
       },
 
     }

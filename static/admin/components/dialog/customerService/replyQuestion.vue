@@ -59,29 +59,23 @@ export default {
   methods: {
     handleSubmit: async function() {
       this.processing = true
-      this.processing = false
-
-      let result = await this.$acs.updateQuestion(this.question.id, this.question.answer, this.question
-        .active, this.question.is_hot)
+      let result = await this.$acs.updateQuestion({
+          id: this.question.id,
+          answer: this.question.answer,
+          active: this.question.active,
+          is_hot: this.question.is_hot
+        },
+        this.$t('admin.messages.questionInfoUpdated', {
+          questionTitle: result.question.title
+        }))
       if (result.success) {
-        openNotification({
-          title: this.$t('admin.notification.title.success'),
-          message: this.$t('admin.messages.questionInfoUpdated', {
-            questionTitle: result.question.title
-          }),
-          type: 'success',
-          duration: 4500,
-          container: '.notifications',
-        })
-
         if (this.callback) {
           this.callback(result.question)
         }
         this.visible = false
-      } else {
-        return Promise.reject(result)
       }
-    }
+      this.processing = false
+    },
   },
 
   components: {

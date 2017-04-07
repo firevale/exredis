@@ -25,7 +25,6 @@ export default {
 
   activity: {
     add: '添加新活动',
-
   },
 
   notice: {

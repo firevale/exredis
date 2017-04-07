@@ -11,8 +11,8 @@
           group: 'news',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
-            $t('admin.news.news.add') }}
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.news.add')
+            }}
           </router-link>
         </div>
       </article>
@@ -143,18 +143,13 @@ export default {
 
     _toggleStatus: async function(news) {
       this.loading = true
-      let result = await this.$acs.toggleStatus(news.id)
+      let result = await this.$acs.toggleStatus({
+          news_id: news.id
+        },
+        news.active ? this.$t('admin.news.publishOk') : this.$t('admin.news.unPublishOK'))
       this.loading = false
       if (result.success) {
         news.active = !news.active
-        openNotification({
-          title: this.$t('admin.operateSuccess'),
-          message: news.active ? this.$t('admin.news.publishOk') : this.$t(
-            'admin.news.unPublishOK'),
-          type: 'success',
-          duration: 4500,
-          container: '.notifications',
-        })
       }
     },
 

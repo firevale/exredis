@@ -103,20 +103,18 @@ export default {
     handleSubmit: async function() {
       this.processing = true
       if (!this.news.id) this.news.id = 0
-      let result = await this.$acs.updateNews(this.news.id, this.news.app_id, this.news.title,
-        this.news.content, this.news.group, false)
-      this.processing = false
+      let result = await this.$acs.updateNews({
+        news_id: this.news.id,
+        app_id: this.news.app_id,
+        title: this.news.title,
+        content: this.news.content,
+        group: this.news.group,
+        is_top: false
+      })
       if (result.success) {
-        openNotification({
-          title: this.$t('admin.notification.title.success'),
-          message: this.$t(result.i18n_message),
-          type: 'success',
-          duration: 4500,
-          container: '.notifications',
-        })
-
         this.$router.go(-1)
       }
+      this.processing = false
     },
   }
 }

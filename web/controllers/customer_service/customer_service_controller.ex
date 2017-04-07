@@ -31,13 +31,10 @@ defmodule Acs.CustomerServiceController do
   end
 
   def get_paged_questions(conn, %{"app_id" =>app_id, "page" => page, "records_per_page" => records_per_page}) do
-    get_paged_questions(conn, page, records_per_page)
+    get_paged_questions(conn, app_id,page, records_per_page)
   end
-  def get_paged_questions(conn, _params) do
-    get_paged_questions(conn, 1, 100)
-  end
-  def get_paged_questions(conn, page, records_per_page) do
-    total = Repo.one!(from q in Acs.Question, select: count(q.id))
+  def get_paged_questions(conn,app_id, page, records_per_page) do
+    total = Repo.one!(from q in Acs.Question, select: count(q.id),where: q.app_id == ^app_id)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from question in Acs.Question,
@@ -46,10 +43,10 @@ defmodule Acs.CustomerServiceController do
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
+              where: question.app_id == ^app_id,
               preload: [user: user]
 
     questions = Repo.all(query)
-    IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 

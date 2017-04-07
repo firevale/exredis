@@ -28,9 +28,9 @@ export default {
   },
   computed: {
     sliderPosition() {
-      let itemWidth = 15.58
-      let barOffset = 0.2
-      return this.selectedIndex * itemWidth + itemWidth * barOffset + "em bottom"
+      let itemWidth = 13.2
+      let barOffset = 0.175
+      return this.selectedIndex * itemWidth + itemWidth * barOffset + "rem bottom"
     },
   },
   methods: {
@@ -52,28 +52,28 @@ export default {
 @import "../scss/variables";
 .slider-nav {
   .nav {
-    margin-bottom: .5em;
-    border-bottom: .5em solid $bottom-line-light;
-    height: 4.8em;
+    margin-bottom: .5rem;
+    border-bottom: .5rem solid $bottom-line-light;
+    height: 4.8rem;
     .nav-center {
       position: relative;
       .slider-bar {
         position: absolute;
-        bottom: -.8em;
+        bottom: -.8rem;
         content: "";
         width: 100%;
-        height: 1em;
+        height: 1rem;
         left: 0;
         background-image: url("~assets/nav-narrow@3x.png");
         background-repeat: no-repeat;
-        background-size: 9em 0.8em;
+        background-size: 9rem 0.8rem;
         transition: background-position 0.3s;
         transition-timing-function: ease;
       }
       .nav-item {
         color: $black;
-        padding: 1em 2em;
-        margin: auto 2em;
+        padding: 1rem 2rem;
+        margin: auto 2rem;
         font-size: 1.3rem;
         &.is-tab {
           border-bottom-width: 0;
@@ -83,17 +83,17 @@ export default {
           &.is-active {
             color: $primary;
           }
-          &.has-right-line {
+          &:not(:nth-last-child(2)).has-right-line {
             position: relative;
             &:after {
               display: block;
               position: absolute;
               width: 0;
-              height: 1.5em;
-              top: 1em;
-              right: -2em;
+              height: 1.5rem;
+              top: 1rem;
+              right: -2rem;
               content: "";
-              border-right: 0.12em solid $bottom-line-light;
+              border-right: 0.12rem solid $bottom-line-light;
             }
           }
         }

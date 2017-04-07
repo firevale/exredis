@@ -341,6 +341,7 @@ export default {
     add: '添加',
 
     keys: {
+      key: 'Key',
       app_id: 'App Id',
       app_uid: '应用ID（APP UID)',
       app_key: 'App Key',

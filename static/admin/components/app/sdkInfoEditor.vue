@@ -13,107 +13,99 @@
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import Vue from 'admin/vue-i18n'
+import Vue from 'vue'
 
-  import sdkInfoDialog from 'admin/components/dialog/app/sdkInfo'
-  const sdkInfoDialogComponent = Vue.extend(sdkInfoDialog)
+import sdkInfoDialog from 'admin/components/dialog/app/sdkInfo'
+const sdkInfoDialogComponent = Vue.extend(sdkInfoDialog)
 
-  const openSdkInfoDialog = (propsData = {
-    visible: true
-  }) => {
-    return new sdkInfoDialogComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
+const openSdkInfoDialog = (propsData = {
+  visible: true
+}) => {
+  return new sdkInfoDialogComponent({
+    el: document.createElement('div'),
+    propsData
+  })
+}
 
-  import sdkListDialog from 'admin/components/dialog/app/sdkList'
-  const sdkListDialogComponent = Vue.extend(sdkListDialog)
+import sdkListDialog from 'admin/components/dialog/app/sdkList'
+const sdkListDialogComponent = Vue.extend(sdkListDialog)
 
-  const openSdkListDialog = (propsData = {
-    visible: true
-  }) => {
-    return new sdkListDialogComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
+const openSdkListDialog = (propsData = {
+  visible: true
+}) => {
+  return new sdkListDialogComponent({
+    el: document.createElement('div'),
+    propsData
+  })
+}
 
-  import {
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  export default {
-    props: {
-      app: Object,
+export default {
+  props: {
+    app: Object,
+  },
+
+  computed: {
+    ...mapGetters([
+      'sdks'
+    ]),
+  },
+
+  methods: {
+    editSdkInfo: function(sdkInfo) {
+      openSdkInfoDialog({
+        ...sdkInfo,
+        app: this.app,
+        visible: true,
+      })
     },
 
-    computed: {
-      ...mapGetters([
-        'sdks'
-      ]),
-    },
+    selectSdkToAdd: function() {
+      let sdks = []
+      let added = []
 
-    methods: {
-      editSdkInfo: function(sdkInfo) {
-        openSdkInfoDialog({
-          ...sdkInfo,
-          app: this.app,
-          visible: true,
-        })
-      },
+      this.app.sdk_bindings.forEach(x => {
+        added.push(x.sdk)
+      })
 
-      selectSdkToAdd: function() {
-        let sdks = []
-        let added = []
+      added.push('alipay') // alipay and wechat are payment sdks
+      added.push('applestore')
+      added.push('appstore')
+      added.push('firevale')
+      added.push('qq')
 
-        this.app.sdk_bindings.forEach(x => {
-          added.push(x.sdk)
-        })
+      this.sdks.forEach(sdk => {
+        if (added.indexOf(sdk) < 0) {
+          sdks.push(sdk)
+        }
+      })
 
-        added.push('alipay') // alipay and wechat are payment sdks
-        added.push('applestore')
-        added.push('appstore')
-        added.push('firevale')
-        added.push('qq')
-
-        this.sdks.forEach(sdk => {
-          if (added.indexOf(sdk) < 0) {
-            sdks.push(sdk)
+      openSdkListDialog({
+        visible: true,
+        appName: this.app.name,
+        callback: async sdk => {
+          let result = await this.$acs.generateDummySdkInfo(sdk)
+          if (result.success) {
+            openSdkInfoDialog({
+              sdk,
+              binding: result.binding,
+              app: this.app,
+              visible: true
+            })
           }
-        })
-
-        openSdkListDialog({
-          visible: true,
-          appName: this.app.name,
-          callback: sdk => {
-            this.$http.post('/admin_actions/generate_dummy_sdk_info', {
-                sdk
-              })
-              .then(response => response.json())
-              .then(result => {
-                if (result.success) {
-                  openSdkInfoDialog({
-                    sdk,
-                    binding: result.binding,
-                    app: this.app,
-                    visible: true
-                  })
-                } else {
-                  return Promise.reject(result)
-                }
-              }).catch(e => processAjaxError(e))
-          },
-          sdks,
-        })
-      }
-    },
-  }
+        },
+        sdks,
+      })
+    }
+  },
+}
 </script>

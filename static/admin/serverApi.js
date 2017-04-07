@@ -29,6 +29,14 @@ export default {
         return post(Vue, '/admin_actions/update_app_info', {app})
       },
 
+      deleteAppGoods(app_id, goods_id) {
+        return post(Vue, '/admin_actions/delete_app_goods', {app_id, goods_id})
+      },
+
+      generateDummySdkInfo(sdk) {
+        return post(Vue, '/admin_actions/generate_dummy_sdk_info', {sdk})
+      },
+
       getPagedNews(app_id, group, page, records_per_page) {
         return post(Vue, '/admin_actions/get_paged_news_admin', {
           app_id,

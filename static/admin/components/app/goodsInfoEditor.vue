@@ -221,20 +221,11 @@ export default {
           goodsName: goods.name
         }),
         type: 'danger',
-        onOK: _ => {
-          this.$http.post('/admin_actions/delete_app_goods', {
-              goods_id: goods.id,
-              app_id: goods.app_id,
-            })
-            .then(res => res.json())
-            .then(json => {
-              if (json.success) {
-                this.app.goods.splice(index, 1)
-              } else {
-                return Promise.reject(result)
-              }
-            })
-            .catch(e => processAjaxError(e))
+        onOK: async _ => {
+          let result = await this.$acs.deleteAppGoods(goods.app_id, goods.id)
+          if (result.success) {
+            this.app.goods.splice(index, 1)
+          }
         },
       })
     },

@@ -77,7 +77,7 @@ import Vue from 'admin/vue-i18n'
 
 import {
   showFileUploadDialog
-} from '../dialog/fileUpload'
+} from 'common/components/fileUpload'
 
 import {
   showMessageBox

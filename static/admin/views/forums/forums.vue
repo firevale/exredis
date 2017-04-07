@@ -30,7 +30,7 @@
 
   import {
     showFileUploadDialog
-  } from 'admin/components/dialog/fileUpload'
+  } from 'common/components/fileUpload'
 
   export default {
     computed: {

@@ -67,7 +67,7 @@
 
   import {
     showFileUploadDialog
-  } from '../dialog/fileUpload'
+  } from 'common/components/fileUpload'
 
   import {
     showMessageBox

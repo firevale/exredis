@@ -31,7 +31,7 @@ import {
 
 import {
   showFileUploadDialog
-} from 'admin/components/fileUpload'
+} from 'common/components/fileUpload'
 
 const touchMap = new WeakMap()
 

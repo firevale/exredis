@@ -1,16 +1,15 @@
 <template>
-  <div class="person">
+  <div class="tile is-vertical root-container">
     <slider-nav :menus="menus" :onSelect="switchMenu"></slider-nav>
-    <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
-      <div style="position: relative; height: 100%">
-        <game-activity v-if="type == 'activity'"></game-activity>
-        <game-notice v-if="type == 'notice'"></game-notice>
-        <game-news v-if="type == 'news'"></game-news>
-      </div>
+    <div style="height: calc(100vh - 8rem)">
+      <game-activity v-if="type == 'activity'"></game-activity>
+      <game-notice v-if="type == 'notice'"></game-notice>
+      <game-news v-if="type == 'news'"></game-news>
     </div>
   </div>
 </template>
 <script>
+import Vue from '../../vue-installed'
 import {
   mapGetters,
   mapActions

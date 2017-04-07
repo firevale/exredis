@@ -10,11 +10,9 @@
         <div class="nav-center">
           <a class="nav-item hero-brand">
             <img src="/images/logo.png" >
-            <tooltip label="v 0.1.0" placement="right" type="success" size="small" :no-animate="true" :always="true" :rounded="true">
-              <div class="is-hidden-mobile">
-                <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin">{{ $t('admin.admin') }}</strong>
-              </div>
-            </tooltip>
+            <div class="is-hidden-mobile">
+              <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin">{{ $t('admin.admin') }}</strong>
+            </div>
           </a>
         </div>
         <div class="nav-right is-flex"></div>

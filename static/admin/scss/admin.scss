@@ -2,14 +2,16 @@
 @import "common/scss/mixins";
 @import "common/scss/reset";
 @import '~animate.css';
+
 .animated {
   animation-duration: .377s;
 }
 
-$primary: #4e9ed8;
 @import '~bulma';
+
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
+
 .nprogress-container {
   position: fixed !important;
   width: 100%;

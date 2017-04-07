@@ -1,7 +1,7 @@
 <template>
   <div class="tile is-vertical root-container">
     <slider-nav :menus="menus" :onSelect="switchMenu"></slider-nav>
-    <div style="height: calc(100vh - 8rem)">
+    <div style="height: calc(100vh - 6rem)">
       <game-activity v-if="type == 'activity'"></game-activity>
       <game-notice v-if="type == 'notice'"></game-notice>
       <game-news v-if="type == 'news'"></game-news>

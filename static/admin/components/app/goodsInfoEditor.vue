@@ -164,8 +164,10 @@ export default {
           if (response.success) {
             goods.icon = response.icon_url
             openNotification({
-              title: this.$t('admin.titles.updateSuccess'),
-              message: this.$t('admin.app.message.goodsIconUpdated', {goodsName: goods.name}),
+              title: this.$t('admin.notification.title.success'),
+              message: this.$t('admin.app.message.goodsIconUpdated', {
+                goodsName: goods.name
+              }),
               type: 'success',
               duration: 4500,
               container: '.notifications',
@@ -222,7 +224,12 @@ export default {
         }),
         type: 'danger',
         onOK: async _ => {
-          let result = await this.$acs.deleteAppGoods(goods.app_id, goods.id)
+          let result = await this.$acs.deleteAppGoods({
+            app_id: goods.app_id,
+            goods_id: goods.id
+          }, this.$t('admin.notification.message.goodsDeleted', {
+            goodsName: goods.name
+          }))
           if (result.success) {
             this.app.goods.splice(index, 1)
           }

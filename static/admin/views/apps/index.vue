@@ -63,7 +63,7 @@ export default {
           if (response.success) {
             app.icon = response.icon_url
             openNotification({
-              title: this.$t('admin.titles.updateSuccess'),
+              title: this.$t('admin.notification.title.success'),
               message: this.$t('admin.app.message.appIconUpdated', {
                 appName: app.name
               }),

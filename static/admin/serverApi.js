@@ -1,23 +1,37 @@
 import {
+  openNotification,
   processAjaxError
 } from 'admin/miscellaneous'
 
-const processResponse = async(Vue, response) => {
+const processResponse = async(Vue, response, successMessage) => {
   let result = await response.json()
 
   if (!result.success) {
     processAjaxError(result)
   }
+  else if (result.success && successMessage) {
+    openNotification({
+      title: Vue.t('admin.notification.title.success'),
+      message: successMessage,
+      type: 'success',
+      duration: 4500,
+    })
+  }
 
   return result
 }
 
-const post = async(Vue, uri, params) => {
+const post = async(Vue, uri, params, successMessage) => {
   try {
     let response = await Vue.http.post(uri, params)
-    return processResponse(Vue, response)
+    return processResponse(Vue, response, successMessage)
   } catch (_) {
-    message.showMsg(Vue.t('admin.error.networkError'))
+    openNotification({
+      title: Vue.t('admin.notification.title.failed'),
+      message: Vue.t('admin.notification.message.unknownError'),
+      type: 'danger',
+      duration: 4500,
+    })
     return { success: false }
   }
 }
@@ -25,20 +39,20 @@ const post = async(Vue, uri, params) => {
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
-      updateAppInfo(app) {
-        return post(Vue, '/admin_actions/update_app_info', {app})
+      updateAppInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_info', params, successMessage)
       },
 
-      updateAppGoodsInfo(app_id, goods) {
-        return post(Vue, '/admin_actions/update_app_goods_info', {app_id, goods})
+      updateAppGoodsInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_goods_info', params, successMessage)
       },
 
-      deleteAppGoods(app_id, goods_id) {
-        return post(Vue, '/admin_actions/delete_app_goods', {app_id, goods_id})
+      deleteAppGoods(params, successMessage) {
+        return post(Vue, '/admin_actions/delete_app_goods', params, successMessage)
       },
 
-      generateDummySdkInfo(sdk) {
-        return post(Vue, '/admin_actions/generate_dummy_sdk_info', {sdk})
+      generateDummySdkInfo(params) {
+        return post(Vue, '/admin_actions/generate_dummy_sdk_info', params)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {

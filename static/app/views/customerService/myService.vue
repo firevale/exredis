@@ -61,7 +61,7 @@
       },
       loadmore: async function () {
         let appId = this.$router.currentRoute.params.appId
-        let result = await this.$acs.getServicePagedPost(appId, this.page + 1, this.recordsPerPage)
+        let result = await this.$acs.getServicePaged(appId, this.page + 1, this.recordsPerPage)
 
         if (result.success) {
           this.questionList = this.page == 0 ? result.questions : this.questionList.concat(result.questions)

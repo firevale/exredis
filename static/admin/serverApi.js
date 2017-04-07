@@ -29,6 +29,10 @@ export default {
         return post(Vue, '/admin_actions/update_app_info', {app})
       },
 
+      updateAppGoodsInfo(app_id, goods) {
+        return post(Vue, '/admin_actions/update_app_goods_info', {app_id, goods})
+      },
+
       deleteAppGoods(app_id, goods_id) {
         return post(Vue, '/admin_actions/delete_app_goods', {app_id, goods_id})
       },

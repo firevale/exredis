@@ -7,13 +7,22 @@
   </div>
 </template>
 <script>
-import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue'
-import { Navbar, Sidebar, AppMain, FooterBar} from './components/layout'
-import { mapGetters, mapActions } from 'vuex'
 
-import 'quill/assets/snow.styl'
-import 'quill/assets/core.styl'
-import 'admin/scss/admin.scss'
+import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue'
+
+import {
+  Navbar,
+  Sidebar,
+  AppMain,
+  FooterBar
+} from './components/layout'
+
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+require('admin/scss/admin.scss')
 
 export default {
   components: {
@@ -25,7 +34,9 @@ export default {
   },
 
   beforeMount: function() {
-    const { body } = document
+    const {
+      body
+    } = document
     const WIDTH = 768
     const RATIO = 3
 
@@ -62,4 +73,3 @@ export default {
   ])
 }
 </script>
-

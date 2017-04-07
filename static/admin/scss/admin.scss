@@ -1,421 +1,418 @@
-  @import '~animate.css';
-  .animated {
-    animation-duration: .377s;
-  }
+@import "./variables";
+@import "common/scss/mixins";
+@import "common/scss/reset";
+@import '~animate.css';
 
-  $primary: #4e9ed8;
-  @import '~bulma';
-  $fa-font-path: '~font-awesome/fonts/';
-  @import '~font-awesome/scss/font-awesome';
-  @mixin border-radius($val) {
-    -webkit-border-radius: $val;
-    -moz-border-radius: $val;
-    border-radius: $val;
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding;
-    background-clip: padding-box;
-  }
+.animated {
+  animation-duration: .377s;
+}
 
-  .nprogress-container {
-    position: fixed !important;
-    width: 100%;
-    height: 50px;
-    z-index: 2048;
-    pointer-events: none;
-    #nprogress {
-      $color: #48e79a;
-      .bar {
-        background: $color;
-      }
-      .peg {
-        box-shadow: 0 0 10px $color, 0 0 5px $color;
-      }
-      .spinner-icon {
-        border-top-color: $color;
-        border-left-color: $color;
-      }
+$primary: #4e9ed8;
+
+@import '~bulma';
+$fa-font-path: '~font-awesome/fonts/';
+@import '~font-awesome/scss/font-awesome';
+
+.nprogress-container {
+  position: fixed !important;
+  width: 100%;
+  height: 50px;
+  z-index: 2048;
+  pointer-events: none;
+  #nprogress {
+    $color: #48e79a;
+    .bar {
+      background: $color;
+    }
+    .peg {
+      box-shadow: 0 0 10px $color, 0 0 5px $color;
+    }
+    .spinner-icon {
+      border-top-color: $color;
+      border-left-color: $color;
     }
   }
+}
 
-  .app-main {
-    padding-top: 50px;
-    margin-left: 180px;
-    transform: translate3d(0, 0, 0);
-    @include mobile() {
-      margin-left: 0;
-    }
+.app-main {
+  padding-top: 50px;
+  margin-left: 180px;
+  transform: translate3d(0, 0, 0);
+  @include mobile() {
+    margin-left: 0;
   }
+}
 
-  .app-content {
-    padding: 20px;
+.app-content {
+  padding: 20px;
+}
+
+.footer {
+  margin-left: 180px;
+  @include mobile() {
+    margin-left: 0;
   }
-
-  .footer {
-    margin-left: 180px;
-    @include mobile() {
-      margin-left: 0;
-    }
-    .social a {
-      border-bottom: none !important;
-    }
-    .fa.fa-heart {
-      color: red;
-    }
+  .social a {
+    border-bottom: none !important;
   }
-
-  .app-navbar {
-    position: fixed;
-    min-width: 100%;
-    z-index: 1024;
-    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
-    .container {
-      margin: auto 10px;
-    }
-    .nav-right {
-      align-items: stretch;
-      align-items: stretch;
-      flex: 1;
-      justify-content: flex-end;
-      overflow: hidden;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
+  .fa.fa-heart {
+    color: red;
   }
+}
 
-  .hero-brand {
-    .vue {
-      margin-left: 10px;
-      color: $primary;
-    }
-    .admin {
-      color: #28374B;
-    }
+.app-navbar {
+  position: fixed;
+  min-width: 100%;
+  z-index: 1024;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+  .container {
+    margin: auto 10px;
   }
-
-  .app-sidebar {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    bottom: 0;
-    padding: 20px 0 50px;
-    width: 180px;
-    min-width: 45px;
-    max-height: 100vh;
-    height: calc(100% - 50px);
-    z-index: 1024 - 1;
-    background: #FFF;
-    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
-    overflow-y: auto;
-    overflow-x: hidden;
-    @include mobile() {
-      transform: translate3d(-180px, 0, 0);
-    }
-    .icon {
-      vertical-align: baseline;
-      &.is-angle {
-        position: absolute;
-        right: 10px;
-        transition: transform .377s ease;
-      }
-    }
-    .menu-label {
-      padding-left: 5px;
-    }
-    .menu-list {
-      li a {
-        &[aria-expanded="true"] {
-          .is-angle {
-            transform: rotate(180deg);
-          }
-        }
-      }
-      li a+ul {
-        margin: 0 10px 0 15px;
-      }
-    }
-  } // tabs
-  div.tab-content {
+  .nav-right {
+    align-items: stretch;
+    align-items: stretch;
+    flex: 1;
+    justify-content: flex-end;
     overflow: hidden;
-    div.tab-pane {
-      width: 100%;
-      &.div {
-        width: 100%;
-      }
-    }
+    overflow-x: auto;
+    white-space: nowrap;
   }
+}
 
-  .app-icon,
-  .goods-icon {
-    cursor: pointer;
-    &:hover {
-      -webkit-filter: brightness(70%);
-      filter: brightness(70%);
-    }
-  }
-
-  div.sdk-icon,
-  span.sdk-icon {
-    width: 48px;
-    height: 48px;
-    cursor: pointer;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    margin: 0 auto 5px auto;
-    display: block;
-    @include border-radius(5px);
-    &:hover {
-      -webkit-filter: brightness(70%);
-      filter: brightness(70%);
-    }
-    &.need-configured {
-      -webkit-filter: opacity(50%) grayscale(100%);
-      /* Safari */
-      filter: opacity(50%) grayscale(100%);
-    }
-    &.anzhi {
-      background-image: url(~assets/anzhi.png);
-    }
-    &.applestore {
-      background-image: url(~assets/apple.png);
-    }
-    &.baidu {
-      background-image: url(~assets/baidu.png);
-    }
-    &.cc {
-      background-image: url(~assets/cc.png);
-    }
-    &.coolpad {
-      background-image: url(~assets/coolpad.png);
-    }
-    &.downjoy {
-      background-image: url(~assets/downjoy.png);
-    }
-    &.gfan {
-      background-image: url(~assets/gfan.png);
-    }
-    &.htc {
-      background-image: url(~assets/htc.png);
-    }
-    &.lenovo {
-      background-image: url(~assets/lenovo.png);
-    }
-    &.iyouxi {
-      background-image: url(~assets/iyouxi.png);
-    }
-    &.huawei {
-      background-image: url(~assets/huawei.jpg);
-    }
-    &.mumayi {
-      background-image: url(~assets/mumayi.png);
-    }
-    &.oppo {
-      background-image: url(~assets/oppo.jpg);
-    }
-    &.qh360 {
-      background-image: url(~assets/qh360.png);
-    }
-    &.qxz {
-      background-image: url(~assets/qxz.png);
-    }
-    &.sogou {
-      background-image: url(~assets/sogou.png);
-    }
-    &.uc {
-      background-image: url(~assets/uc.png);
-    }
-    &.vivo {
-      background-image: url(~assets/vivo.png);
-    }
-    &.wdj {
-      background-image: url(~assets/wdj.png);
-    }
-    &.xiaomi {
-      background-image: url(~assets/xiaomi.png);
-    }
-    &.youku {
-      background-image: url(~assets/youku.png);
-    }
-    &.yyh {
-      background-image: url(~assets/yyh.png);
-    }
-    &.ggplay {
-      background-image: url(~assets/ggplay.png);
-    }
-    &.facebook {
-      background-image: url(~assets/facebook.png);
-    }
-    &.haima {
-      background-image: url(~assets/haima.png);
-    }
-    &.i4 {
-      background-image: url(~assets/i4.png);
-    }
-    &.iiapple {
-      background-image: url(~assets/iiapple.png);
-    }
-    &.itools {
-      background-image: url(~assets/itools.png);
-    }
-    &.ky {
-      background-image: url(~assets/ky.png);
-    }
-    &.meizu {
-      background-image: url(~assets/meizu.png);
-    }
-    &.ndcom {
-      background-image: url(~assets/ndcom.png);
-    }
-    &.pp {
-      background-image: url(~assets/pp.png);
-    }
-    &.tbt {
-      background-image: url(~assets/tbt.png);
-    }
-    &.xy {
-      background-image: url(~assets/xy.png);
-    }
-    &.wechat {
-      background-image: url(~assets/wechat@2x.png);
-    }
-  }
-
-  div.add-sdk {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 5px auto;
-    display: flex;
-    @include border-radius(5px);
-    align-items: center;
-    justify-content: center;
-    &:active,
-    &:hover {
-      background: $primary;
-      color: #fff;
-    }
-    &:active {
-      background: darken($primary, 10%);
-    }
-  }
-
-  .goods-table {
-    thead,
-    tfoot,
-    tbody {
-      tr {
-        th {
-          text-align: center;
-        }
-        th,
-        td {
-          vertical-align: middle;
-          &.is-icon {
-            text-align: center;
-            figure.is-32x32 {
-              display: inline-block;
-              width: 25px;
-              height: 25px;
-            }
-            span.sdk-icon {
-              margin: 0;
-              width: 25px;
-              height: 25px;
-              display: inline-block;
-            }
-            a {
-              margin-right: 10px;
-              i.fa {
-                font-size: 20px;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .file-upload {
-    display: block;
-  }
-
-  .file-upload span {
-    display: block;
-    font-size: 18px;
-    padding: 1em;
-    font-weight: bold;
-    border: 1px solid #888;
-  }
-
-  .drop-active {
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    position: absolute;
-    opacity: .4;
-    background: #000;
-  }
-
-  span {
-    &.is-warning {
-      color: $warning;
-    }
-    &.is-danger {
-      color: $danger;
-    }
-    &.is-primary {
-      color: $primary;
-    }
-  }
-
-  span.is-sign {
-    background-color: #ff6600;
-    color: #ffffff;
-    border-radius: 50%;
-  }
-
-  i.is-success {
-    color: $success;
-  }
-
-  i.is-danger {
-    color: $danger;
-  }
-
-  i.is-info {
-    color: $info;
-  }
-
-  i.is-primary {
+.hero-brand {
+  .vue {
+    margin-left: 10px;
     color: $primary;
   }
-
-  div.modal-container,
-  div.modal-content {
-    overflow-x: hidden;
+  .admin {
+    color: #28374B;
   }
+}
 
-  nav.pagination {
-    ul {
+.app-sidebar {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  padding: 20px 0 50px;
+  width: 180px;
+  min-width: 45px;
+  max-height: 100vh;
+  height: calc(100% - 50px);
+  z-index: 1024 - 1;
+  background: #FFF;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  @include mobile() {
+    transform: translate3d(-180px, 0, 0);
+  }
+  .icon {
+    vertical-align: baseline;
+    &.is-angle {
+      position: absolute;
+      right: 10px;
+      transition: transform .377s ease;
+    }
+  }
+  .menu-label {
+    padding-left: 5px;
+  }
+  .menu-list {
+    li a {
+      &[aria-expanded="true"] {
+        .is-angle {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    li a+ul {
+      margin: 0 10px 0 15px;
+    }
+  }
+} // tabs
+div.tab-content {
+  overflow: hidden;
+  div.tab-pane {
+    width: 100%;
+    &.div {
       width: 100%;
-      li {
-        display: inline-block;
+    }
+  }
+}
+
+.app-icon,
+.goods-icon {
+  cursor: pointer;
+  &:hover {
+    -webkit-filter: brightness(70%);
+    filter: brightness(70%);
+  }
+}
+
+div.sdk-icon,
+span.sdk-icon {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 auto 5px auto;
+  display: block;
+  @include border-radius(5px);
+  &:hover {
+    -webkit-filter: brightness(70%);
+    filter: brightness(70%);
+  }
+  &.need-configured {
+    -webkit-filter: opacity(50%) grayscale(100%);
+    /* Safari */
+    filter: opacity(50%) grayscale(100%);
+  }
+  &.anzhi {
+    background-image: url(~assets/anzhi.png);
+  }
+  &.applestore {
+    background-image: url(~assets/apple.png);
+  }
+  &.baidu {
+    background-image: url(~assets/baidu.png);
+  }
+  &.cc {
+    background-image: url(~assets/cc.png);
+  }
+  &.coolpad {
+    background-image: url(~assets/coolpad.png);
+  }
+  &.downjoy {
+    background-image: url(~assets/downjoy.png);
+  }
+  &.gfan {
+    background-image: url(~assets/gfan.png);
+  }
+  &.htc {
+    background-image: url(~assets/htc.png);
+  }
+  &.lenovo {
+    background-image: url(~assets/lenovo.png);
+  }
+  &.iyouxi {
+    background-image: url(~assets/iyouxi.png);
+  }
+  &.huawei {
+    background-image: url(~assets/huawei.jpg);
+  }
+  &.mumayi {
+    background-image: url(~assets/mumayi.png);
+  }
+  &.oppo {
+    background-image: url(~assets/oppo.jpg);
+  }
+  &.qh360 {
+    background-image: url(~assets/qh360.png);
+  }
+  &.qxz {
+    background-image: url(~assets/qxz.png);
+  }
+  &.sogou {
+    background-image: url(~assets/sogou.png);
+  }
+  &.uc {
+    background-image: url(~assets/uc.png);
+  }
+  &.vivo {
+    background-image: url(~assets/vivo.png);
+  }
+  &.wdj {
+    background-image: url(~assets/wdj.png);
+  }
+  &.xiaomi {
+    background-image: url(~assets/xiaomi.png);
+  }
+  &.youku {
+    background-image: url(~assets/youku.png);
+  }
+  &.yyh {
+    background-image: url(~assets/yyh.png);
+  }
+  &.ggplay {
+    background-image: url(~assets/ggplay.png);
+  }
+  &.facebook {
+    background-image: url(~assets/facebook.png);
+  }
+  &.haima {
+    background-image: url(~assets/haima.png);
+  }
+  &.i4 {
+    background-image: url(~assets/i4.png);
+  }
+  &.iiapple {
+    background-image: url(~assets/iiapple.png);
+  }
+  &.itools {
+    background-image: url(~assets/itools.png);
+  }
+  &.ky {
+    background-image: url(~assets/ky.png);
+  }
+  &.meizu {
+    background-image: url(~assets/meizu.png);
+  }
+  &.ndcom {
+    background-image: url(~assets/ndcom.png);
+  }
+  &.pp {
+    background-image: url(~assets/pp.png);
+  }
+  &.tbt {
+    background-image: url(~assets/tbt.png);
+  }
+  &.xy {
+    background-image: url(~assets/xy.png);
+  }
+  &.wechat {
+    background-image: url(~assets/wechat@2x.png);
+  }
+}
+
+div.add-sdk {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 5px auto;
+  display: flex;
+  @include border-radius(5px);
+  align-items: center;
+  justify-content: center;
+  &:active,
+  &:hover {
+    background: $primary;
+    color: #fff;
+  }
+  &:active {
+    background: darken($primary, 10%);
+  }
+}
+
+.goods-table {
+  thead,
+  tfoot,
+  tbody {
+    tr {
+      th {
+        text-align: center;
+      }
+      th,
+      td {
+        vertical-align: middle;
+        &.is-icon {
+          text-align: center;
+          figure.is-32x32 {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+          }
+          span.sdk-icon {
+            margin: 0;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+          }
+          a {
+            margin-right: 10px;
+            i.fa {
+              font-size: 20px;
+            }
+          }
+        }
       }
     }
   }
+}
 
-  form {
-    span.is-sign {
-      font-size: 1rem;
-      width: 1.2rem;
-      height: 1.2rem;
-      line-height: 1.2rem;
-      padding: 0;
-      margin-right: 0.5rem;
-      margin-top: 0.2rem;
+.drop-active {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: absolute;
+  opacity: .4;
+  background: #000;
+}
+
+span {
+  &.is-warning {
+    color: $warning;
+  }
+  &.is-danger {
+    color: $danger;
+  }
+  &.is-primary {
+    color: $primary;
+  }
+}
+
+span.is-sign {
+  background-color: #ff6600;
+  color: #ffffff;
+  border-radius: 50%;
+}
+
+i.is-success {
+  color: $success;
+}
+
+i.is-danger {
+  color: $danger;
+}
+
+i.is-info {
+  color: $info;
+}
+
+i.is-primary {
+  color: $primary;
+}
+
+div.modal-container,
+div.modal-content {
+  overflow-x: hidden;
+}
+
+nav.pagination {
+  ul {
+    width: 100%;
+    li {
+      display: inline-block;
     }
   }
+}
 
-  .ql-container {
-    min-height: 15rem;
+form {
+  span.is-sign {
+    font-size: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    padding: 0;
+    margin-right: 0.5rem;
+    margin-top: 0.2rem;
   }
+}
+
+.ql-container {
+  min-height: 15rem;
+}
+
+label.file-upload {
+  span {
+    border: none !important;
+    font-size: 1rem !important;
+  }
+
+  &:before {
+    margin-bottom: 0 !important;
+    content: url('~assets/tag-picture@3x.png') !important;
+  }
+}

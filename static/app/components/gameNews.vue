@@ -1,22 +1,36 @@
 <template>
-  <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-    <nav class="level">
-      <div v-for="item in topNews" class="level-item has-text-centered">
-        <div>
-          <figure>
-            <img :src="item.pic" style="height: 14rem; border-radius: .5rem;"></img>
-          </figure>
-          <figcaption style="text-align: center;">{{ item.title }}</figcaption>
-        </div>
-      </div>
-    </nav>
-    <div class="news-box">
-      <div v-for="item in news" class="row-menu row-news" @click="showNewsDetail(item)">
-        <i class="fa fa-circle" style="margin: .2rem .2rem 0 0;" aria-hidden="true"></i>
-        <span style="flex: 1;">{{ item.title }}</span>
-        <span>{{ item.inserted_at | convertServerDateTime }}</span>
-      </div>
-      <div v-show="showDetail" ref="detailBox" v-html="detailHtml" class="detail-html">
+  <scroller v-if="showDetail">
+    <news-detail-view :item-data="detail" @goBack="goBack"></news-detail-view>
+  </scroller>
+  <scroller v-else :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
+    <div style="margin:0 2rem">
+      <nav class="level is-mobile">
+        <v-touch v-for="item in topNews" :key="item.id" v-on:tap="showNewsDetail(item)">
+          <div class="has-text-centered">
+            <div>
+              <figure>
+                <img :src="item.pic" style="padding: .5rem; border-radius: .5rem;"></img>
+              </figure>
+              <h4 class="title is-4">{{ item.title }}</h4>
+            </div>
+          </div>
+        </v-touch>
+      </nav>
+      <div class="content" style="margin: 1rem;">
+        <v-touch v-for="item in news" :key="item.id" class="tile is-vertical has-bottom-line post-list-item" v-on:tap="showNewsDetail(item)">
+          <article class="media">
+            <div class="media-content">
+              <div class="level is-mobile">
+                <div class="level-left level-item is-narrow" @click="showNewsDetail(item)">
+                  <h4 class="title is-4" v-html="item.title"></h4>
+                </div>
+                <div class="level-right level-item has-text-right grey-text" style="margin-top: 0">
+                  <span>{{ item.inserted_at | formatServerDate }}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </v-touch>
       </div>
     </div>
   </scroller>
@@ -28,6 +42,7 @@ import {
 } from 'vuex'
 
 import scroller from 'common/components/scroller'
+import newsDetailView from './newsDetailView'
 
 export default {
   mounted: async function() {
@@ -36,13 +51,14 @@ export default {
 
   components: {
     scroller,
+    newsDetailView,
   },
 
   data() {
     return {
       topNews: [],
       news: [],
-      detailHtml: "",
+      detail: Object,
       showDetail: false,
       page: 0,
       total: 1,
@@ -83,8 +99,12 @@ export default {
     },
 
     showNewsDetail(item) {
-      this.detailHtml = item.content
+      this.detail = item
       this.showDetail = true
+    },
+
+    goBack() {
+      this.showDetail = false
     },
 
   },

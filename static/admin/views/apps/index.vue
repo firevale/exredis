@@ -49,7 +49,14 @@
           },
           extensions: ['png'],
           title: this.$t('admin.titles.uploadAppIcon', {appName: app.name}),
-          callback: response => app.icon = response.icon_url,
+          imageValidator: {
+            square: true,
+            minWidth: 128,
+          },
+          callback: response => {
+            console.log(response)
+            app.icon = response.icon_url
+          },
         })        
       },
     }

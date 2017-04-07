@@ -6,4 +6,6 @@
    title: '上传',
    hint: '点击, 或拖动图片至此处',
    fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
+   imgShouldBeSquare: '图片必须为正方形',
+   imgWidthShouldGreaterThan: '图片的宽度不得小于{minWidth}',
  }

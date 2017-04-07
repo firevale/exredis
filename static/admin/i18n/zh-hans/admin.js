@@ -103,18 +103,6 @@ export default {
     }
   },
 
-  upload: {
-    filename: '文件名',
-    filesize: '文件大小',
-    progress: '上传进度',
-    speed: '上传速率',
-    title: '上传',
-    hint: '点击, 或拖动图片至此处',
-    fileIsTooLarge: '文件太大了，图片文件不能超过{maxFileSize}',
-    dropToUpload: '拖拽文件以上传',
-    uploadImage: '上传图片',
-  },
-
   forum: {
     enterForum: '论坛配置',
     basicInfo: '基本信息',
@@ -239,7 +227,7 @@ export default {
     updateFailed: '保存失败',
     requestFailed: '请求失败',
     uploadGoodsIcon: '修改商品『{goodsName}』的图标',
-    uploadAppIcon: '修改应用『{appName}』的图标',
+    uploadAppIcon: '拖动 边长>=128 的正方形PNG图片到此',
     uploadForumIcon: '修改论坛『{forumName}』的图标',
     editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
     ok: '确认',

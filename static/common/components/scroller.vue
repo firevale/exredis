@@ -9,7 +9,7 @@
         </div>
         <slot></slot>
         <div ref="loading_layer" class="loading-layer">
-          <slot name="all-loaded" v-if="allLoaded && !loading"> {{ this.i18n.noMoreData }} </slot>
+          <slot name="all-loaded" v-if="onLoadMore && allLoaded && !loading"> {{ this.i18n.noMoreData }} </slot>
           <slot name="loading" v-if="loading">
             <p>
               <span class="icon image-icon icon-spinner rotating"> </span>
@@ -241,7 +241,7 @@ export default {
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
 
-      min-height: 100vh;
+      min-height: 101%;
 
       .pull-to-refresh-layer,
       .loading-layer {

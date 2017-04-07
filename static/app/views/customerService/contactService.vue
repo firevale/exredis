@@ -16,17 +16,17 @@
           <!-- Left side -->
           <div class="level-item has-text-centered">
             <div class="bottom-left">
-              <div>{{$t('customerService.contactService.hotline') }} : <span>010-23456789</span></div>
-              <div>{{$t('customerService.contactService.officialHomePage') }} : <span>firevale.qs.com</span></div>
-              <div>{{$t('customerService.contactService.weChat') }} : <span>firevaleqs</span></div>
+              <div>{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></div>
+              <div>{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></div>
+              <div>{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></div>
             </div>
           </div>
           <!-- Right side -->
           <div class="level-item has-text-centered">
             <div class="bottom-right">
-              <div>{{$t('customerService.contactService.officialForum') }}  : <span>firevale.qs.lt.com</span></div>
-              <div>{{$t('customerService.contactService.officialPostBar') }}  : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
-              <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{$t('customerService.contactService.sharpshooterRevelation') }}</span></div>
+              <div>{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></div>
+              <div>{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></div>
+              <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name }}</span></div>
             </div>
           </div>
         </nav>
@@ -37,7 +37,7 @@
 
 <script>
   import Toast from 'common/components/toast'
-  
+
   import {
     required,
     minLength,
@@ -45,10 +45,14 @@
   } from 'vuelidate/lib/validators'
 
   export default {
+    mounted: async function () {
+      await this.getAppDetail()
+    },
     data() {
       return {
         title: '',
-        processing: false
+        processing: false,
+        appDetail: {}
       }
     },
     validations: {
@@ -67,9 +71,18 @@
 
           if (result.success) {
             Toast.show(this.$t('customerService.contactService.addSuccess'))
-            this.$router.go(0)
+            this.$router.replace({
+              name: 'myService'
+            })
           }
           this.processing = false
+        }
+      },
+      getAppDetail: async function () {
+        let appId = this.$router.currentRoute.params.appId
+        let result = await this.$acs.getAppDetail(appId)
+        if (result.success) {
+          this.appDetail = result.app
         }
       }
     }

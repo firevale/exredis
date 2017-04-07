@@ -20,7 +20,7 @@ export const processAjaxError = e => {
   if (e.need_authentication) {
     window.location = `/login?redirect_uri=${btoa(window.location.href)}`
   } else {
-    let message = Vue.t('admin.messages.unknownError')
+    let message = Vue.t('admin.notification.message.unknownError')
 
     if (e.message) {
       message = e.message
@@ -29,7 +29,7 @@ export const processAjaxError = e => {
     }
 
     openNotification({
-      title: Vue.t('admin.titles.requestFailed'),
+      title: Vue.t('admin.notification.title.failed'),
       message: message,
       type: 'danger',
       duration: 6000,

@@ -65,7 +65,7 @@ export default {
         .active, this.question.is_hot)
       if (result.success) {
         openNotification({
-          title: this.$t('admin.titles.updateSuccess'),
+          title: this.$t('admin.notification.title.success'),
           message: this.$t('admin.messages.questionInfoUpdated', {
             questionTitle: result.question.title
           }),

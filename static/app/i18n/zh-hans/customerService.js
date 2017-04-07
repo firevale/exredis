@@ -12,8 +12,7 @@ export default {
     officialHomePage: '官方主页',
     officialForum: '官方论坛',
     officialPostBar: '官方贴吧',
-    officialMicroBlog: '官方微博',
-    sharpshooterRevelation: '枪神默示录'
+    officialMicroBlog: '官方微博'
   },
   myService: {
     title: '服务记录',

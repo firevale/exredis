@@ -32,6 +32,7 @@ import {
 } from 'common/components/fileUpload'
 
 import {
+  openNotification,
   processAjaxError,
 } from 'admin/miscellaneous'
 
@@ -61,6 +62,15 @@ export default {
         callback: response => {
           if (response.success) {
             app.icon = response.icon_url
+            openNotification({
+              title: this.$t('admin.notification.title.success'),
+              message: this.$t('admin.app.message.appIconUpdated', {
+                appName: app.name
+              }),
+              type: 'success',
+              duration: 4500,
+              container: '.notifications',
+            })
           } else {
             processAjaxError(response)
           }

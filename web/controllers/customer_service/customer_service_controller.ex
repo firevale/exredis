@@ -93,7 +93,15 @@ defmodule Acs.CustomerServiceController do
               select: map(question, [:id, :title, :answer, :inserted_at])
     questions = Repo.all(query)
     
-    IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
+  end
+
+  def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+     app = RedisApp.find(app_id) |> Map.take([:id, :cs_phone_number, :baidu_tieba_name, :weibo_name, :website_url, :public_weixin_name, :forum_url])
+
+     conn |> json(%{success: true, app: app})
+  end
+   def get_app_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "customer.serverError.badRequestParams"})
   end
 end

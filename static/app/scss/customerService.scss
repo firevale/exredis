@@ -4,13 +4,13 @@
 
 .contact-service {
     .contact-center {
-        margin: 0.5em;
+        margin: 0.5rem;
     }
     .bottom-left {
         flex-direction: column;
         align-content: flex-start;
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.12rem;
         font-family: MicrosoftYaHei;
         text-align: left;
     }
@@ -21,7 +21,7 @@
         flex-direction: column;
         align-content: flex-start;
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.12rem;
         font-family: MicrosoftYaHei;
         text-align: left;
     }
@@ -32,21 +32,21 @@
 
 .my-service {
     .level-content {
-        padding: 0em 1.5em;
+        padding: 0rem 1.5rem;
     }
     .level-left span {
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.12rem;
         font-family: MicrosoftYaHei;
     }
     .level-right span {
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.12rem;
         font-family: MicrosoftYaHei;
     }
     .level-right a {
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.12rem;
         font-family: MicrosoftYaHei;
     }
     .level-right .service-reply {
@@ -54,9 +54,9 @@
     }
     .reply-content {
         border: 1px $grey solid;
-        padding: 1.5em;
+        padding: 1.0rem;
         color: $text-grey;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.05rem;
         font-family: MicrosoftYaHei;
     }
 }

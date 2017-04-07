@@ -11,7 +11,7 @@ const processResponse = async(Vue, response, successMessage) => {
   }
   else if (result.success && successMessage) {
     openNotification({
-      title: Vue.t('admin.titles.updateSuccess'),
+      title: Vue.t('admin.notification.title.success'),
       message: successMessage,
       type: 'success',
       duration: 4500,
@@ -38,8 +38,8 @@ export default {
         return post(Vue, '/admin_actions/update_app_info', params, successMessage)
       },
 
-      updateAppGoodsInfo(app_id, goods) {
-        return post(Vue, '/admin_actions/update_app_goods_info', {app_id, goods})
+      updateAppGoodsInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_goods_info', params, successMessage)
       },
 
       deleteAppGoods(app_id, goods_id) {

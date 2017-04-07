@@ -164,7 +164,7 @@ export default {
           if (response.success) {
             goods.icon = response.icon_url
             openNotification({
-              title: this.$t('admin.titles.updateSuccess'),
+              title: this.$t('admin.notification.title.success'),
               message: this.$t('admin.app.message.goodsIconUpdated', {goodsName: goods.name}),
               type: 'success',
               duration: 4500,

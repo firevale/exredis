@@ -59,8 +59,8 @@
             this.processing = false
             if (result.success) {
               openNotification({
-                title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.goodsProductIdUpdated', {
+                title: this.$t('admin.notification.title.success'),
+                message: this.$t('admin.notification.message.goodsProductIdUpdated', {
                   goodsName: this.goodsName, 
                   sdk: this.$t('admin.sdks.' + result.product_id_info.sdk)
                 }),

@@ -149,7 +149,7 @@ export default {
 
       let result = await this.$acs.updateAppInfo({
         app: this.app
-      }, this.$t('admin.messages.appInfoUpdated', {
+      }, this.$t('admin.notification.message.appInfoUpdated', {
         appName: this.app.name
       }))
 

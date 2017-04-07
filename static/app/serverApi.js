@@ -110,15 +110,17 @@ export default {
       },
 
       alipayRedirect(payment_order_id, merchant_url, callback_url) {
-        return post(Vue, '/api/pay/alipay/redirect', {payment_order_id, merchant_url, callback_url})
+        return post(Vue, '/api/pay/alipay/redirect', { payment_order_id, merchant_url,
+          callback_url })
       },
 
       wechatPrepay(payment_order_id) {
-        return post(Vue, '/api/pay/wechat/prepay', {payment_order_id})
+        return post(Vue, '/api/pay/wechat/prepay', { payment_order_id })
       },
 
       getPagedNews(app_id, group, page, records_per_page) {
-        return post(Vue, '/games_actions/get_paged_news', { app_id, group, page, records_per_page })
+        return post(Vue, '/games_actions/get_paged_news', { app_id, group, page,
+          records_per_page })
       },
 
       getNewsDetail(news_id) {
@@ -130,14 +132,19 @@ export default {
       },
 
       getApps() {
-        return post(Vue, '/games_actions/fetch_apps', { })
+        return post(Vue, '/games_actions/fetch_apps', {})
       },
-      
-      getServicePagedPost(app_id, page, records_per_page) {
+
+      getServicePaged(app_id, page, records_per_page) {
         return post(Vue, '/customer_service_actions/get_paged_services', {
           app_id: app_id,
           page,
           records_per_page
+        })
+      },
+      getCommonIssues(app_id) {
+        return post(Vue, '/customer_service_actions/get_common_issues', {
+          app_id: app_id
         })
       },
 

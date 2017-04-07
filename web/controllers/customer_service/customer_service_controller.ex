@@ -50,6 +50,19 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 
+  def get_common_issues(conn,app_id) do
+    query = from question in Acs.Question,
+              left_join: user in assoc(question, :user),
+              left_join: app in assoc(question, :app),
+              select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
+              # where: question.app_id == ^app_id and question.is_hot== true,
+              where: question.app_id == ^app_id,
+              preload: [user: user]
+
+    questions = Repo.all(query)
+    conn |> json(%{success: true, issues: questions})
+  end
+
   def update_question(conn,%{"id" => id, "answer" => answer, "active" => active,"is_hot" => is_hot})  do
     with %Question{} = question  <- Repo.get(Question,id),
          {:ok, question} <- Question.changeset(question,%{answer: answer,active: active, is_hot: is_hot}) |>Repo.update

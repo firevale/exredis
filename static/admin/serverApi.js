@@ -1,21 +1,30 @@
 import {
+  openNotification,
   processAjaxError
 } from 'admin/miscellaneous'
 
-const processResponse = async(Vue, response) => {
+const processResponse = async(Vue, response, successMessage) => {
   let result = await response.json()
 
   if (!result.success) {
     processAjaxError(result)
   }
+  else if (result.success && successMessage) {
+    openNotification({
+      title: Vue.t('admin.titles.updateSuccess'),
+      message: successMessage,
+      type: 'success',
+      duration: 4500,
+    })
+  }
 
   return result
 }
 
-const post = async(Vue, uri, params) => {
+const post = async(Vue, uri, params, successMessage) => {
   try {
     let response = await Vue.http.post(uri, params)
-    return processResponse(Vue, response)
+    return processResponse(Vue, response, successMessage)
   } catch (_) {
     message.showMsg(Vue.t('admin.error.networkError'))
     return { success: false }
@@ -25,8 +34,8 @@ const post = async(Vue, uri, params) => {
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
-      updateAppInfo(app) {
-        return post(Vue, '/admin_actions/update_app_info', {app})
+      updateAppInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_info', params, successMessage)
       },
 
       updateAppGoodsInfo(app_id, goods) {

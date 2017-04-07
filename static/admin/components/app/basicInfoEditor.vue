@@ -147,19 +147,13 @@ export default {
     handleSubmit: async function() {
       this.processing = true
 
-      let result = await this.$acs.updateAppInfo(this.app)
+      let result = await this.$acs.updateAppInfo({
+        app: this.app
+      }, this.$t('admin.messages.appInfoUpdated', {
+        appName: this.app.name
+      }))
 
       if (result.success) {
-        openNotification({
-          title: this.$t('admin.titles.updateSuccess'),
-          message: this.$t('admin.messages.appInfoUpdated', {
-            appName: this.app.name
-          }),
-          type: 'success',
-          duration: 4500,
-          container: '.notifications',
-        })
-
         if (result.forum) {
           this.addForum(result.forum)
         }

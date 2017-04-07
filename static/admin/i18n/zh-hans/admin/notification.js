@@ -12,5 +12,6 @@ export default {
     goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
     sectionInfoUpdated: '论坛版块信息已成功更新',
     forumInfoUpdated: '论坛信息已成功更新',
+    configUpdated: '系统设置{configName}已成功更新',
   }
 }

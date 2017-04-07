@@ -70,6 +70,14 @@ export default {
         return post(Vue, '/admin_actions/search_orders', params)
       },
 
+      updateForumSectionInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_section_info', params, successMessage)
+      },
+
+      updateSettingByName(params, successMessage) {
+        return post(Vue, '/admin_actions/update_setting_by_name', params, successMessage)
+      },
+
       getPagedNews(app_id, group, page, records_per_page) {
         return post(Vue, '/admin_actions/get_paged_news_admin', {
           app_id,

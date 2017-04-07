@@ -1,27 +1,14 @@
 <template>
-	<modal :visible="visible">
+  <modal :visible="visible">
     <div class="tile box is-ancestor is-vertical file-upload-modal has-text-centered" style="padding: 10px; margin: 0">
       <div class="tile is-parent is-full is-vertical">
         <article class="tile is-child file-upload-container">
-          <file-upload class="file-upload" 
-                       :class="file ? 'file-selected' : ''"
-                       ref="upload"
-                       :name="name" 
-                       :title="$t('upload.hint')"
-                       :drop="true" 
-                       :accept="accept"
-                       :multiple="false" 
-                       :headers="headers"
-                       :data="data"
-                       :size="maxFileSize"
-                       :timeout="60000"
-                       :postAction="postAction"
-                       :extensions="extensions"
-                       :events="uploadEvents">
+          <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title"
+            :drop="true" :accept="accept" :multiple="false" :headers="headers" :data="data" :size="maxFileSize" :timeout="60000"
+            :postAction="postAction" :extensions="extensions" :events="uploadEvents">
           </file-upload>
         </article>
       </div>
-
       <div v-if="file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
           <label class="label">{{ $t('upload.filename' )}}:</label>
@@ -29,24 +16,19 @@
         <div class="column has-text-left is-9">
           <label class="field-label is-small">{{ file.name }}</label>
         </div>
-
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
           <label class="label">{{ $t('upload.filesize' )}}:</label>
         </div>
         <div class="column has-text-left is-9">
-          <label class="field-label is-small">{{  file.size | humanReadableSize }}</label>
+          <label class="field-label is-small">{{ file.size | humanReadableSize }}</label>
         </div>
-
         <template v-if="file.active">
           <div class="column has-text-right is-2" style="margin-right: 0.5rem">
             <label class="label">{{ $t('upload.progress' )}}:</label>
           </div>
           <div class="column has-text-left is-9">
             <div class="control" style="padding-top: 0.375em">
-              <progress class="progress is-small is-info" 
-                        style="margin-top: 0.375em" 
-                        :value="file.progress" 
-                        max="100"> {{ file.progress }}%
+              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="file.progress" max="100"> {{ file.progress }}%
               </progress>
             </div>
           </div>
@@ -72,6 +54,7 @@
   </modal>
 </template>
 <script>
+import Vue from 'vue'
 
 import {
   Modal
@@ -97,6 +80,10 @@ export default {
       type: String,
       default: 'file',
     },
+    title: {
+      type: String,
+      default: Vue.t('upload.hint'),
+    },
     extensions: {
       default: () => [],
     },
@@ -117,6 +104,10 @@ export default {
     maxFileSize: {
       type: Number,
       default: 512 * 1024,
+    },
+    imageValidator: {
+      type: Object,
+      default: null,
     }
   },
 
@@ -141,6 +132,27 @@ export default {
               let reader = new FileReader()
               reader.onloadend = _ => {
                 this.upload.$el.style.backgroundImage = `url(${reader.result})`
+                if (this.imageValidator) {
+                  let img = new Image()
+                  img.onload = _ => {
+                    console.log(img.width, img.height)
+                    if (this.imageValidator.square) {
+                      if (img.width != img.height) {
+                        this.errorMessage = this.$t('upload.imgShouldBeSquare')
+                        this.upload.clear()
+                        return
+                      }
+                    }
+                    if (this.imageValidator.minWidth) {
+                      if (img.width < this.imageValidator.minWidth) {
+                        this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {minWidth: this.imageValidator.minWidth})
+                        this.upload.clear()
+                        return
+                      }
+                    }
+                  }
+                  img.src = reader.result
+                }
               }
               reader.readAsDataURL(file.file)
             }
@@ -182,7 +194,6 @@ export default {
 }
 </script>
 <style lang="scss">
-
 label.file-upload {
   width: 100%;
   min-height: 8rem;

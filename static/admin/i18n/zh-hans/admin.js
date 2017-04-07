@@ -226,7 +226,7 @@ export default {
     uploadFailed: '文件上传失败',
     updateFailed: '保存失败',
     requestFailed: '请求失败',
-    uploadGoodsIcon: '修改商品『{goodsName}』的图标',
+    uploadGoodsIcon: '拖动 边长>=128 的正方形PNG图片到此',
     uploadAppIcon: '拖动 边长>=128 的正方形PNG图片到此',
     uploadForumIcon: '修改论坛『{forumName}』的图标',
     editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',

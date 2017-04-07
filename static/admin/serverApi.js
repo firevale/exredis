@@ -1,19 +1,15 @@
-import message from './components/message'
+import {
+  processAjaxError
+} from 'admin/miscellaneous'
 
 const processResponse = async(Vue, response) => {
   let result = await response.json()
 
-  if (result.success) {
-    return result
-  } else {
-    console.log("-------------------error")
-    if (result.i18n_message) {
-      message.showMsg(Vue.t(result.i18n_message, result.i18n_message_object))
-    } else if (result.message) {
-      message.showMsg(result.message)
-    }
-    return { success: false }
+  if (!result.success) {
+    processAjaxError(result)
   }
+
+  return result
 }
 
 const post = async(Vue, uri, params) => {

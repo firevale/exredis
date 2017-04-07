@@ -21,44 +21,52 @@
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import {
-    showFileUploadDialog
-  } from 'common/components/fileUpload'
+import {
+  showFileUploadDialog
+} from 'common/components/fileUpload'
 
-  export default {
-    computed: {
-      ...mapGetters([
-        'appList'
-      ]),
-    },
+import {
+  processAjaxError,
+} from 'admin/miscellaneous'
 
-    methods: {
-      updateAppIcon: function(app) {
-        showFileUploadDialog({
-          postAction: '/admin_actions/update_app_icon',
-          accept: 'image/png',
-          data: {
-            app_id: app.id,
-          },
-          extensions: ['png'],
-          title: this.$t('admin.titles.uploadAppIcon', {appName: app.name}),
-          imageValidator: {
-            square: true,
-            minWidth: 128,
-          },
-          callback: response => {
-            console.log(response)
+export default {
+  computed: {
+    ...mapGetters([
+      'appList'
+    ]),
+  },
+
+  methods: {
+    updateAppIcon: function(app) {
+      showFileUploadDialog({
+        postAction: '/admin_actions/update_app_icon',
+        accept: 'image/png',
+        data: {
+          app_id: app.id,
+        },
+        extensions: ['png'],
+        title: this.$t('admin.titles.uploadAppIcon', {
+          appName: app.name
+        }),
+        imageValidator: {
+          square: true,
+          minWidth: 128,
+        },
+        callback: response => {
+          if (response.success) {
             app.icon = response.icon_url
-          },
-        })        
-      },
-    }
+          } else {
+            processAjaxError(response)
+          }
+        },
+      })
+    },
   }
+}
 </script>

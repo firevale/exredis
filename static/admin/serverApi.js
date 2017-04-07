@@ -8,8 +8,7 @@ const processResponse = async(Vue, response, successMessage) => {
 
   if (!result.success) {
     processAjaxError(result)
-  }
-  else if (result.success && successMessage) {
+  } else if (result.success && successMessage) {
     openNotification({
       title: Vue.t('admin.notification.title.success'),
       message: successMessage,
@@ -61,6 +60,14 @@ export default {
 
       generateDummySdkInfo(params) {
         return post(Vue, '/admin_actions/generate_dummy_sdk_info', params)
+      },
+
+      fetchOrders(params) {
+        return post(Vue, '/admin_actions/fetch_orders', params)
+      },
+
+      searchOrders(params) {
+        return post(Vue, '/admin_actions/search_orders', params)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {

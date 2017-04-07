@@ -4,7 +4,7 @@
   </scroller>
   <scroller v-else :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
     <div class="columns is-multiline is-mobile" style="margin:0 2rem">
-      <v-touch v-for="item in activityList" class="column is-half" v-on:tap="showActivityDetail(item)">
+      <v-touch v-for="item in activityList" :key="item.id" class="column is-half" v-on:tap="showActivityDetail(item)">
         <center>
           <img v-if="item.pic" :src="item.pic" style="border-radius: .5rem;"></img>
           <img v-else src="https://placehold.it/640x260?text=640x260" style="border-radius: .5rem;"></img>

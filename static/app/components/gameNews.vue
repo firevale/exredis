@@ -5,7 +5,7 @@
   <scroller v-else :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
     <div style="margin:0 2rem">
       <nav class="level is-mobile">
-        <v-touch v-for="item in topNews" v-on:tap="showNewsDetail(item)">
+        <v-touch v-for="item in topNews" :key="item.id" v-on:tap="showNewsDetail(item)">
           <div class="has-text-centered">
             <div>
               <figure>
@@ -17,7 +17,7 @@
         </v-touch>
       </nav>
       <div class="content" style="margin: 1rem;">
-        <v-touch v-for="item in news" class="tile is-vertical has-bottom-line post-list-item" v-on:tap="showNewsDetail(item)">
+        <v-touch v-for="item in news" :key="item.id" class="tile is-vertical has-bottom-line post-list-item" v-on:tap="showNewsDetail(item)">
           <article class="media">
             <div class="media-content">
               <div class="level is-mobile">

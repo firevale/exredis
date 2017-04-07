@@ -4,7 +4,7 @@
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
         <h5 class="title is-5">{{ `${app.name} - ` + $t('admin.titles.editSdkInfo', {sdk: $t(`admin.sdks.${sdk}`)})}}</h5>
       </div>
-      <validation name="sdkInfo" @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit">
         <template v-for="key in Object.keys(binding).reverse()">
           <label class="label"> {{ $t(`admin.sdks.${sdk}`) + $t('admin.sdks.assigned') + $t(`admin.sdks.keys.${key}`)}}: </label>
           <p class="control">
@@ -14,7 +14,7 @@
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>
-      </validation>
+      </form>
     </div>
   </modal>
 </template>
@@ -22,11 +22,6 @@
 import {
   Modal
 } from 'vue-bulma-modal'
-
-import {
-  openNotification,
-  processAjaxError
-} from 'admin/miscellaneous'
 
 export default {
   props: {
@@ -43,41 +38,24 @@ export default {
   },
 
   methods: {
-    handleSubmit() {
+    handleSubmit: async function() {
       this.processing = true
-      this.$http.post('/admin_actions/update_app_sdk_info', {
+      let result = await this.$acs.updateAppSdkInfo({
           app_id: this.app.id,
           sdk: this.sdk,
-          binding: this.binding,
-        })
-        .then(response => response.json())
-        .then(result => {
-          this.processing = false
-          if (result.success) {
-            openNotification({
-              title: this.$t('admin.notification.title.success'),
-              message: this.$t('admin.notification.message.sdkInfoUpdated', {
-                sdk: this.$t(`admin.sdks.${this.sdk}`)
-              }),
-              type: 'success',
-              duration: 4500,
-              container: '.notifications',
-            })
-            let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
-            if (filtered.length <= 0) {
-              this.app.sdk_bindings.push(result.binding)
-            }
-            this.visible = false
-          } else {
-            return Promise.reject(result)
-          }
-        })
-        .catch(e => {
-          this.processing = false
-          this.visible = false
-
-          processAjaxError(e)
-        })
+          binding: this.binding
+        },
+        this.$t('admin.notification.message.sdkInfoUpdated', {
+          sdk: this.$t(`admin.sdks.${this.sdk}`)
+        }))
+      if (result.success) {
+        let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
+        if (filtered.length <= 0) {
+          this.app.sdk_bindings.push(result.binding)
+        }
+        this.visible = false
+      }
+      this.processing = false
     }
   },
 

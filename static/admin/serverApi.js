@@ -43,8 +43,16 @@ export default {
         return post(Vue, '/admin_actions/update_app_info', params, successMessage)
       },
 
+      updateAppSdkInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_sdk_info', params, successMessage)
+      },
+
       updateAppGoodsInfo(params, successMessage) {
         return post(Vue, '/admin_actions/update_app_goods_info', params, successMessage)
+      },
+
+      updateAppGoodsProductId(params, successMessage) {
+        return post(Vue, '/admin_actions/update_app_goods_product_id', params, successMessage)
       },
 
       deleteAppGoods(params, successMessage) {

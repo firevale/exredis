@@ -135,7 +135,6 @@ export default {
                 if (this.imageValidator) {
                   let img = new Image()
                   img.onload = _ => {
-                    console.log(img.width, img.height)
                     if (this.imageValidator.square) {
                       if (img.width != img.height) {
                         this.errorMessage = this.$t('upload.imgShouldBeSquare')

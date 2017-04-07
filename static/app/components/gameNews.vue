@@ -21,7 +21,7 @@
           <article class="media">
             <div class="media-content">
               <div class="level is-mobile">
-                <div class="level-left level-item is-narrow" @click="showNewsDetail(item)">
+                <div class="level-left level-item" @click="showNewsDetail(item)">
                   <h5 class="title is-5" v-html="item.title"></h5>
                 </div>
                 <div class="level-right level-item has-text-right grey-text" style="margin-top: 0">

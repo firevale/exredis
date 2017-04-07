@@ -22,7 +22,7 @@ const processResponse = async(Vue, response, successMessage) => {
       message: Vue.t(result.i18n_message, result.i18n_message_object),
       type: 'success',
       duration: 4500,
-    }    
+    })    
   }
 
   return result

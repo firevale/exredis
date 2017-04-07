@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <validation name="news" @submit.prevent="handleSubmit" v-if="news">
+    <form name="news" @submit.prevent="handleSubmit" v-if="news">
       <label class="label"> {{ $t('admin.news.title') }}: </label>
       <p class="control">
         <input class="input" type="text" v-model.trim="news.title">
@@ -14,7 +14,7 @@
       <div class="has-text-centered" style="margin-top: 15px">
         <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
       </div>
-    </validation>
+    </form>
   </div>
 </template>
 <script>

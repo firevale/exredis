@@ -46,6 +46,17 @@ export const formatServerDateTime = val => {
   }
 }
 
+export const formatServerDate = val => {
+  if (val) {
+    let a = val.split(/[^0-9]/)
+    let m = parseInt(a[1]) - 1
+    let date = new Date(Date.UTC(a[0], m, a[2], a[3], a[4], a[5]))
+    return date.Format('yyyy-MM-dd')
+  } else {
+    return ''
+  }
+}
+
 export const convertServerDateTime = val => {
   if (val) {
     let a = val.split(/[^0-9]/)

@@ -28,7 +28,8 @@
                 <td> {{ setting.name }} </td>
                 <td> {{ setting.value }} </td>
                 <td> {{ setting.memo }} </td>
-                <td v-if="setting.active">正常</td><td v-else>禁用</td>
+                <td v-if="setting.active">正常</td>
+                <td v-else>禁用</td>
                 <td class="is-icon">
                   <a @click.prevent="editSettingInfo(setting, index)">
                     <i class="fa fa-pencil"></i>
@@ -38,7 +39,7 @@
                   <a @click.prevent="delSetting(setting.name, index)">
                     <i class="fa fa-trash-o"></i>
                   </a>
-                </td>                
+                </td>
               </tr>
             </tbody>
           </table>
@@ -58,11 +59,6 @@ import Vue from 'admin/vue-i18n'
 import {
   showMessageBox
 } from '../dialog/messageBox'
-
-import {
-  openNotification,
-  processAjaxError,
-} from 'admin/miscellaneous'
 
 import settingInfoDialog from 'admin/components/dialog/setting/settingInfo'
 const settingInfoDialogComponent = Vue.extend(settingInfoDialog)
@@ -90,25 +86,15 @@ export default {
   },
 
   methods: {
-
-    getBasicSettings: function() {
+    getBasicSettings: async function() {
       this.processing = true
-      this.$http.post('/admin_actions/get_settings_by_group', {
-          group: "basicInfo",
-        })
-        .then(response => response.json())
-        .then(result => {
-          this.processing = false
-          if (result.success) {
-            this.settings = result.settings
-          } else {
-            return Promise.reject(result)
-          }
-        })
-        .catch(e => {
-          this.processing = false
-          processAjaxError(e)
-        })
+      let result = await this.$acs.getSettingsByGroup({
+        group: "basicInfo",
+      })
+      if (result.success) {
+        this.settings = result.settings
+      }
+      this.processing = false
     },
 
     editSettingInfo: function(setting, index) {
@@ -127,31 +113,17 @@ export default {
         title: this.$t('admin.titles.warning'),
         message: this.$t('admin.messages.confirmDeleteSetting'),
         type: 'danger',
-        onOK: _ => {
+        onOK: async _ => {
           this.processing = true
-          this.$http.post('/admin_actions/delete_setting', {
-              setting_name: setting_name,
-            })
-            .then(response => response.json())
-            .then(result => {
-              this.processing = false
-              if (result.success) {
-                this.settings.splice(index, 1)
-                openNotification({
-                  title: this.$t('admin.titles.deleteSuccess'),
-                  message: this.$t('admin.setting.deleteOk'),
-                  type: 'success',
-                  duration: 4500,
-                  container: '.notifications',
-                })
-              } else {
-                return Promise.reject(result)
-              }
-            })
-            .catch(e => {
-              this.processing = false
-              processAjaxError(e)
-            })
+          let result = await this.$acs.deleteSettingByName({
+            setting_name: setting_name,
+          }, this.$t('admin.notification.message.configDeleted', {
+            configName: setting_name
+          }))
+          if (result.success) {
+            this.settings.splice(index, 1)
+          }
+          this.processing = false
         },
       })
     },

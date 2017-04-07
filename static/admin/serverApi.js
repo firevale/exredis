@@ -70,12 +70,28 @@ export default {
         return post(Vue, '/admin_actions/search_orders', params)
       },
 
+      updateForumInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_forum_info', params, successMessage)
+      },
+
       updateForumSectionInfo(params, successMessage) {
         return post(Vue, '/admin_actions/update_section_info', params, successMessage)
       },
 
+      getSetting(params) {
+        return post(Vue, '/admin_actions/get_setting', params)
+      },
+
+      getSettingsByGroup(params) {
+        return post(Vue, '/admin_actions/get_settings_by_group', params)
+      },
+
       updateSettingByName(params, successMessage) {
         return post(Vue, '/admin_actions/update_setting_by_name', params, successMessage)
+      },
+
+      deleteSettingByName(params, successMessage) {
+        return post(Vue, '/admin_actions/delete_setting', params, successMessage)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {

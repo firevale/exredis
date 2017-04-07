@@ -25,6 +25,10 @@ const post = async(Vue, uri, params) => {
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
+      updateAppInfo(app) {
+        return post(Vue, '/admin_actions/update_app_info', {app})
+      },
+
       getPagedNews(app_id, group, page, records_per_page) {
         return post(Vue, '/admin_actions/get_paged_news_admin', {
           app_id,
@@ -33,6 +37,7 @@ export default {
           records_per_page
         })
       },
+
       getPagedQuestions(app_id, page, records_per_page) {
         return post(Vue, '/customer_service_actions/get_paged_questions', {
           app_id,
@@ -40,6 +45,7 @@ export default {
           records_per_page
         })
       },
+
       updateQuestion(id, answer, active, is_hot) {
         return post(Vue, '/customer_service_actions/update_question', {
           id,

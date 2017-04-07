@@ -13,7 +13,6 @@
           <input class="input is-disabled" type="text" v-model.trim="app.secret">
         </p>
       </div>
-
       <div class="column is-4">
         <label class="label"> {{ $t('admin.label.appName')}}: </label>
         <p class="control">
@@ -42,14 +41,12 @@
           <input class="input" type="text" v-model.trim="app.cs_phone_number">
         </p>
       </div>
-
       <div class="column is-12">
         <label class="label"> {{ $t('admin.label.paymentCallbackUrl')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.payment_callback">
         </p>
       </div>
-
       <div class="column is-4">
         <label class="label"> {{ $t('admin.label.publicWeixinName')}}: </label>
         <p class="control">
@@ -62,7 +59,6 @@
           <input class="input" type="text" v-model.trim="app.public_weixin_url">
         </p>
       </div>
-
       <div class="column is-4">
         <label class="label"> {{ $t('admin.label.weiboName')}}: </label>
         <p class="control">
@@ -75,7 +71,6 @@
           <input class="input" type="text" v-model.trim="app.weibo_url">
         </p>
       </div>
-
       <div class="column is-4">
         <label class="label"> {{ $t('admin.label.baiduTiebaName')}}: </label>
         <p class="control">
@@ -88,7 +83,6 @@
           <input class="input" type="text" v-model.trim="app.baidu_tieba_url">
         </p>
       </div>
-
       <div class="column is-4">
         <label class="label"> {{ $t('admin.label.forumName')}}: </label>
         <p class="control">
@@ -104,7 +98,7 @@
       <div class="column">
         <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
         <p class="control">
-          <input  type="checkbox" v-model.trim="app.has_forum">
+          <input type="checkbox" v-model.trim="app.has_forum">
         </p>
       </div>
     </div>
@@ -113,85 +107,74 @@
     </div>
   </validation>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import Vue from 'admin/vue-i18n'
+import Vue from 'admin/vue-i18n'
 
-  import {
-    openNotification,
-    processAjaxError,
-  } from 'admin/miscellaneous'
+import {
+  openNotification,
+  processAjaxError,
+} from 'admin/miscellaneous'
 
-  export default {
-    props: {
-      app: Object,
-    },
+export default {
+  props: {
+    app: Object,
+  },
 
-    data() {
-      return {
-        processing: false,
-        currencies: ['CNY', 'HKD', 'USD']
+  data() {
+    return {
+      processing: false,
+      currencies: ['CNY', 'HKD', 'USD']
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'sdks'
+    ]),
+  },
+
+  methods: {
+    ...mapActions([
+      'addApp',
+      'addForum'
+    ]),
+
+    handleSubmit: async function() {
+      this.processing = true
+      let result = await this.$acs.updateAppInfo(this.app)
+
+      if (result.success) {
+        openNotification({
+          title: this.$t('admin.titles.updateSuccess'),
+          message: this.$t('admin.messages.appInfoUpdated', {
+            appName: this.app.name
+          }),
+          type: 'success',
+          duration: 4500,
+          container: '.notifications',
+        })
+
+        if (result.forum) {
+          this.addForum(result.forum)
+        }
+
+        if (result.app) {
+          this.addApp(result.app)
+          this.$nextTick(_ => {
+            this.$router.replace({
+              path: `/admin/apps/edit/${result.app.id}`
+            })
+          })
+        }
       }
+      this.processing = false
     },
+  },
 
-    computed: {
-      ...mapGetters([
-        'sdks'
-      ]),
-    },
-
-    methods: {
-      ...mapActions([
-        'addApp',
-        'addForum'
-      ]),
-
-      handleSubmit: function() {
-        this.processing = true
-        this.$http.post('/admin_actions/update_app_info', {
-            app: this.app
-          })
-          .then(response => response.json())
-          .then(result => {
-            this.processing = false
-            if (result.success) {
-              openNotification({
-                title: this.$t('admin.titles.updateSuccess'),
-                message: this.$t('admin.messages.appInfoUpdated', {
-                  appName: this.app.name
-                }),
-                type: 'success',
-                duration: 4500,
-                container: '.notifications',
-              })
-
-              if(result.forum){
-                this.addForum(result.forum)
-              }
-
-              if (result.app) {
-                this.addApp(result.app)
-                this.$nextTick(_ => {
-                  this.$router.replace({
-                    path: `/admin/apps/edit/${result.app.id}`
-                  })
-                })
-              }
-            } else {
-              return Promise.reject(result.message)
-            }
-          })
-          .catch(e => {
-            this.processing = false
-            processAjaxError(e)
-          })
-      },
-    },
-
-  }
+}
 </script>

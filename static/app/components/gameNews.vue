@@ -11,7 +11,7 @@
               <figure>
                 <img :src="item.pic" style="padding: .5rem; border-radius: .5rem;"></img>
               </figure>
-              <h4 class="title is-4">{{ item.title }}</h4>
+              <h5 class="title is-5" style="padding:0 .5rem;">{{ item.title }}</h5>
             </div>
           </div>
         </v-touch>
@@ -22,7 +22,7 @@
             <div class="media-content">
               <div class="level is-mobile">
                 <div class="level-left level-item is-narrow" @click="showNewsDetail(item)">
-                  <h4 class="title is-4" v-html="item.title"></h4>
+                  <h5 class="title is-5" v-html="item.title"></h5>
                 </div>
                 <div class="level-right level-item has-text-right grey-text" style="margin-top: 0">
                   <span>{{ item.inserted_at | formatServerDate }}</span>
@@ -36,11 +36,6 @@
   </scroller>
 </template>
 <script>
-import {
-  mapGetters,
-  mapActions
-} from 'vuex'
-
 import scroller from 'common/components/scroller'
 import newsDetailView from './newsDetailView'
 

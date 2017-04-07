@@ -26,7 +26,12 @@ const post = async(Vue, uri, params, successMessage) => {
     let response = await Vue.http.post(uri, params)
     return processResponse(Vue, response, successMessage)
   } catch (_) {
-    message.showMsg(Vue.t('admin.error.networkError'))
+    openNotification({
+      title: Vue.t('admin.notification.title.failed'),
+      message: Vue.t('admin.notification.message.unknownError'),
+      type: 'danger',
+      duration: 4500,
+    })
     return { success: false }
   }
 }
@@ -42,12 +47,12 @@ export default {
         return post(Vue, '/admin_actions/update_app_goods_info', params, successMessage)
       },
 
-      deleteAppGoods(app_id, goods_id) {
-        return post(Vue, '/admin_actions/delete_app_goods', {app_id, goods_id})
+      deleteAppGoods(params, successMessage) {
+        return post(Vue, '/admin_actions/delete_app_goods', params, successMessage)
       },
 
-      generateDummySdkInfo(sdk) {
-        return post(Vue, '/admin_actions/generate_dummy_sdk_info', {sdk})
+      generateDummySdkInfo(params) {
+        return post(Vue, '/admin_actions/generate_dummy_sdk_info', params)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {

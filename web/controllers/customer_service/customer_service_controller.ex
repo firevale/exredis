@@ -50,13 +50,14 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 
-  def get_common_issues(conn,app_id) do
+  def get_common_issues(conn, %{"app_id" =>app_id}) do
     query = from question in Acs.Question,
               left_join: user in assoc(question, :user),
               left_join: app in assoc(question, :app),
-              select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
+              select: map(question, [:id, :title]),
               # where: question.app_id == ^app_id and question.is_hot== true,
-              where: question.app_id == ^app_id,
+              # where: question.app_id == ^app_id,
+              # limit: 9,
               preload: [user: user]
 
     questions = Repo.all(query)
@@ -92,7 +93,15 @@ defmodule Acs.CustomerServiceController do
               select: map(question, [:id, :title, :answer, :inserted_at])
     questions = Repo.all(query)
     
-    IO.inspect(questions, pretty: true)
     conn |> json(%{success: true, questions: questions, total: total_page})
+  end
+
+  def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+     app = RedisApp.find(app_id) |> Map.take([:id, :cs_phone_number, :baidu_tieba_name, :weibo_name, :website_url, :public_weixin_name, :forum_url])
+
+     conn |> json(%{success: true, app: app})
+  end
+   def get_app_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "customer.serverError.badRequestParams"})
   end
 end

@@ -41,7 +41,7 @@ export const serUserProfile = ({
 export const setCommonIssues = ({
   commit
 }, issues) => {
-  commit('COMMON_ISSUES_SET', issues)
+  commit(types.SET_COMMON_ISSUES, issues)
 }
 
 export const updateForumInfo = ({

@@ -86,7 +86,7 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.notification.title.success'),
-                message: this.$t('admin.messages.goodsInfoUpdated', {
+                message: this.$t('admin.notification.message.goodsInfoUpdated', {
                   goodsName: result.goods.name
                 }),
                 type: 'success',

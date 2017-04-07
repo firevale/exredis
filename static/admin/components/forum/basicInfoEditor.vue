@@ -75,7 +75,7 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.notification.title.success'),
-                message: this.$t('admin.messages.forumInfoUpdated', {
+                message: this.$t('admin.notification.message.forumInfoUpdated', {
                   forumName: this.forum.title
                 }),
                 type: 'success',

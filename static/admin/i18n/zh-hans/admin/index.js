@@ -93,15 +93,8 @@ export default {
   },
 
   messages: {
-    sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
-    unknownError: '未知错误，请联系管理员',
-    appInfoUpdated: '{appName}配置已成功更新',
-    goodsInfoUpdated: '商品{goodsName}信息已成功更新',
     confirmDeleteGoods: '您确定要删除商品『{goodsName}』么?',
-    goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
     confirmDeleteSection: '您确定要禁用该论坛版块么?',
-    sectionInfoUpdated: '论坛版块信息已成功更新',
-    forumInfoUpdated: '论坛信息已成功更新',
     confirmDeleteSetting: '您确定要删除该配置项么?',
     confirmDeleteNews: '您确定要删除该内容么?',
     confirmPublishNews: '您确定要发布该内容么?',

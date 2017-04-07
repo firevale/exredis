@@ -60,7 +60,7 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.notification.title.success'),
-                message: this.$t('admin.messages.goodsProductIdUpdated', {
+                message: this.$t('admin.notification.message.goodsProductIdUpdated', {
                   goodsName: this.goodsName, 
                   sdk: this.$t('admin.sdks.' + result.product_id_info.sdk)
                 }),

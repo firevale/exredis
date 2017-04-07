@@ -20,7 +20,7 @@ export const processAjaxError = e => {
   if (e.need_authentication) {
     window.location = `/login?redirect_uri=${btoa(window.location.href)}`
   } else {
-    let message = Vue.t('admin.messages.unknownError')
+    let message = Vue.t('admin.notification.message.unknownError')
 
     if (e.message) {
       message = e.message

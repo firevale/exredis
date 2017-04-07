@@ -69,7 +69,7 @@
             if (result.success) {
               openNotification({
                 title: this.$t('admin.notification.title.success'),
-                message: this.$t('admin.messages.sectionInfoUpdated', {
+                message: this.$t('admin.notification.message.sectionInfoUpdated', {
                   sectionTitle: result.section.title
                 }),
                 type: 'success',

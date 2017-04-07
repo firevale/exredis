@@ -18,70 +18,71 @@
     </div>
   </modal>
 </template>
-
 <script>
-  import {
-    Modal
-  } from 'vue-bulma-modal'
+import {
+  Modal
+} from 'vue-bulma-modal'
 
-  import {
-    openNotification,
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  export default {
-    props: {
-      visible: Boolean,
-      sdk: String,
-      app: Object,
-      binding: Object,
-    },
+export default {
+  props: {
+    visible: Boolean,
+    sdk: String,
+    app: Object,
+    binding: Object,
+  },
 
-    data() {
-      return {
-        processing: false
-      }
-    },
+  data() {
+    return {
+      processing: false
+    }
+  },
 
-    methods: {
-      handleSubmit() {
-        this.processing = true
-        this.$http.post('/admin_actions/update_app_sdk_info', {
-            app_id: this.app.id,
-            sdk: this.sdk,
-            binding: this.binding,
-          })
-          .then(response => response.json())
-          .then(result => {
-            this.processing = false
-            if (result.success) {
-              openNotification({
-                title: this.$t('admin.notification.title.success'),
-                message: this.$t('admin.messages.sdkInfoUpdated', {sdk: this.$t(`admin.sdks.${this.sdk}`)}),
-                type: 'success',
-                duration: 4500,
-                container: '.notifications',
-              })
-              let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
-              if (filtered.length <= 0) {
-                this.app.sdk_bindings.push(result.binding)
-              }
-              this.visible = false
-            } else {
-              return Promise.reject(result)
+  methods: {
+    handleSubmit() {
+      this.processing = true
+      this.$http.post('/admin_actions/update_app_sdk_info', {
+          app_id: this.app.id,
+          sdk: this.sdk,
+          binding: this.binding,
+        })
+        .then(response => response.json())
+        .then(result => {
+          this.processing = false
+          if (result.success) {
+            openNotification({
+              title: this.$t('admin.notification.title.success'),
+              message: this.$t('admin.notification.message.sdkInfoUpdated', {
+                sdk: this.$t(`admin.sdks.${this.sdk}`)
+              }),
+              type: 'success',
+              duration: 4500,
+              container: '.notifications',
+            })
+            let filtered = this.app.sdk_bindings.filter(x => x.sdk == this.sdk)
+            if (filtered.length <= 0) {
+              this.app.sdk_bindings.push(result.binding)
             }
-          })
-          .catch(e => {
-            this.processing = false
             this.visible = false
+          } else {
+            return Promise.reject(result)
+          }
+        })
+        .catch(e => {
+          this.processing = false
+          this.visible = false
 
-            processAjaxError(e)
-          })
-      }
-    },
+          processAjaxError(e)
+        })
+    }
+  },
 
-    components: {
-      Modal,
-    },
-  }
+  components: {
+    Modal,
+  },
+}
 </script>

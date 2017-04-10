@@ -48,6 +48,18 @@
         </p>
       </div>
       <div class="column is-4">
+        <label class="label"> {{ $t('admin.label.websiteName')}}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="app.website_name">
+        </p>
+      </div>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.label.websiteUrl')}}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="app.website_url">
+        </p>
+      </div>
+      <div class="column is-4">
         <label class="label"> {{ $t('admin.label.publicWeixinName')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.public_weixin_name">

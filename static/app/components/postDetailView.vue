@@ -35,14 +35,13 @@
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
           <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
-          <span v-else :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" 
-                class="icon image-icon is-clickable" 
-                style="margin-right: 0.1rem" @click="toggleFavo">
+          <span v-else :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable" style="margin-right: 0.1rem"
+            @click="toggleFavorite">
           </span>
           <span v-if="favoriting" class="is-grey">
             {{ $t('forum.detail.favoriting') }}
-          </span>          
-          <span v-else class="is-grey is-clickable" @click="toggleFavo">
+          </span>
+          <span v-else class="is-grey is-clickable" @click="toggleFavorite">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
           </span>
         </div>
@@ -70,114 +69,109 @@
     </nav>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
-  
-  import Toast from 'common/components/toast'
-  import * as acs from 'common/js/acs'
-  import * as filter from 'common/js/filters'
-  
-  export default {
-    props: {
-      postData: {
-        type: Object,
-        default: null,
-      },
-      itemIndex: {
-        type: Number,
-      },
-      preview: {
-        type: Boolean,
-        default: false,
-      },
-    },
-  
-    data() {
-      return {
-        showAuthorOnly: false,
-        imgsPreview: [],
-        favoriting: false,
-      }
-    },
-  
-    computed: {
-      isManager() {
-        return window.acsConfig.isAdmin == true
-      },
-  
-      avatarUrl() {
-        return this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl
-      },
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-      filterContent() {
-        return filter.filterKeyword(this.postData.content)
-      }
+import Toast from 'common/components/toast'
+import * as acs from 'common/js/acs'
+import * as filter from 'common/js/filters'
+
+export default {
+  props: {
+    postData: {
+      type: Object,
+      default: null,
     },
-  
-    methods: {
-      toggleShowAuthorOnly() {
-        this.showAuthorOnly = !this.showAuthorOnly
-      },
-  
-      toggleFavo: function() {
-        acs.checkIsLogin(async _ => {
-          this.favoriting = true
-          await this.toggleFavorite()
-          this.favoriting = false
-        })
-      },
-  
-      toggleFavorite: async function() {
+    itemIndex: {
+      type: Number,
+    },
+    preview: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      showAuthorOnly: false,
+      imgsPreview: [],
+      favoriting: false,
+    }
+  },
+
+  computed: {
+    isManager() {
+      return window.acsConfig.isAdmin == true
+    },
+
+    avatarUrl() {
+      return this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    },
+
+    filterContent() {
+      return filter.filterKeyword(this.postData.content)
+    }
+  },
+
+  methods: {
+    toggleShowAuthorOnly() {
+      this.showAuthorOnly = !this.showAuthorOnly
+    },
+
+    toggleFavorite: function() {
+      acs.checkIsLogin(async _ => {
+        this.favoriting = true
         let result = await this.$acs.togglePostFavorite(this.postData.id)
         if (result.success) {
           this.postData.is_favorite = !this.postData.is_favorite
         }
-      },
-  
-      toggleActive() {
-        this.togglePostStatus({
-          active: !this.postData.active
-        }, "active")
-      },
-  
-      toggleEssence() {
-        this.togglePostStatus({
-          is_vote: !this.postData.is_vote
-        }, "is_vote")
-      },
-  
-      toggleUp() {
-        this.togglePostStatus({
-          is_top: !this.postData.is_top
-        }, "is_top")
-      },
-  
-      togglePostStatus: async function(params, pos) {
-        if (window.acsConfig.isAdmin == true) {
-          let result = await this.$acs.togglePostStatus({
-            forum_id: this.$route.params.forumId,
-            post_id: this.postData.id,
-            ...params
-          })
-          if (result.success) {
-            switch (pos) {
-              case "active":
-                this.postData.active = !this.postData.active
-                break;
-              case "is_vote":
-                this.postData.is_vote = !this.postData.is_vote
-                break;
-              case "is_top":
-                this.postData.is_top = !this.postData.is_top
-            }
-            Toast.show(this.$t(result.i18n_message))
+        this.favoriting = false
+      })
+    },
+
+    toggleActive() {
+      this.togglePostStatus({
+        active: !this.postData.active
+      }, "active")
+    },
+
+    toggleEssence() {
+      this.togglePostStatus({
+        is_vote: !this.postData.is_vote
+      }, "is_vote")
+    },
+
+    toggleUp() {
+      this.togglePostStatus({
+        is_top: !this.postData.is_top
+      }, "is_top")
+    },
+
+    togglePostStatus: async function(params, pos) {
+      if (window.acsConfig.isAdmin == true) {
+        let result = await this.$acs.togglePostStatus({
+          forum_id: this.$route.params.forumId,
+          post_id: this.postData.id,
+          ...params
+        })
+        if (result.success) {
+          switch (pos) {
+            case "active":
+              this.postData.active = !this.postData.active
+              break;
+            case "is_vote":
+              this.postData.is_vote = !this.postData.is_vote
+              break;
+            case "is_top":
+              this.postData.is_top = !this.postData.is_top
           }
+          Toast.show(this.$t(result.i18n_message))
         }
-      },
-    }
+      }
+    },
   }
+}
 </script>

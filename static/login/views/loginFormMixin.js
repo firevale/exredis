@@ -20,15 +20,25 @@ export default {
         this.passwordIcon = 'eye'
         this.$refs.password.type = 'text'
       }
-    }
+    },
+
+
   },
 
   computed: {
     errorHint: function() {
       if (typeof this.$v == 'object' && this.$v.$invalid) {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
-          return window.acsConfig.isMobileAccountSupported ? this.$t(
-            'account.error.requireMobile') : this.$t('account.error.requireEmail')
+          console.log(this.$route)
+          if (window.acsConfig.isMobileAccountSupported) {
+            if (this.$route.name == 'registerStep1') {
+              return this.$t('account.error.requireMobile')
+            } else {
+              return this.$t('account.error.requireAccountId')
+            }
+          } else {
+            return this.$t('account.error.requireEmail')
+          }
         } else if (typeof this.$v.accountId == 'object' && !this.$v.accountId.valid) {
           return this.invalidAccountIdErrorMessage
         } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
@@ -49,9 +59,17 @@ export default {
       }
     },
 
-    accountIdPlaceholder: function() {
+    registerAccountIdPlaceholder: function() {
       if (window.acsConfig.isMobileAccountSupported) {
         return this.$t('account.loginPage.userMobilePlaceholder')
+      } else {
+        return this.$t('account.loginPage.userEmailPlaceholder')
+      }
+    },
+
+    accountIdPlaceholder: function() {
+      if (window.acsConfig.isMobileAccountSupported) {
+        return this.$t('account.loginPage.accountIdPlaceholder')
       } else {
         return this.$t('account.loginPage.userEmailPlaceholder')
       }

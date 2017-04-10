@@ -4,9 +4,9 @@
       <div class="row-login">
         <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
-      <p class="code-tip"> {{ accountIdPlaceholder }}: </p>
+      <p class="code-tip"> {{ registerAccountIdPlaceholder }}: </p>
       <div class="row-login">
-        <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user" @input="handleValidation" />
+        <input type="text" maxlength="50" :placeholder="registerAccountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user" @input="handleValidation" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <p class="errors">

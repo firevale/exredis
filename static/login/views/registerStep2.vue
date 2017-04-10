@@ -76,7 +76,6 @@ export default {
       this.isMobileAccount = false
     } else {
       this.isMobileAccount = true
-      this.sendMobileVerifyCode()
     }
   },
 
@@ -122,15 +121,19 @@ export default {
         try {
           let result = await this.$acs.sendMobileVerifyCode(this.accountId)
           if (result.success) {
-            Toast.show(this.$t('account.registerPage.messageTip'))
+            Toast.show(this.$t('account.registerPage.mobileVerifyCodeSent'))
             this.hasSentCode = true
             this.cooldownCounter = 60
             setTimeout(this.cooldownTimer, 1000)
           } else {
             this.setErrorMessage(this.$t(result.message))
           }
+          return result
         } catch (_) {
           this.setErrorMessage(this.$t('account.error.networkError'))
+          return {
+            success: false
+          }
         }
       }
     },

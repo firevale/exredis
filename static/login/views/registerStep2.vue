@@ -1,40 +1,39 @@
 <template>
-<div class="login-box">
-  <form @submit.prevent="handleSubmit">
-    <div class="row-login">
-      <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
-    </div>
-    <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
-    <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
-    <div class="row-login">
-      <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
-          autocomplete="off" maxlength="10" class="outsideText" name="verifyCode" @input="handleValidation" />
-      <div v-if="!isMobileAccount" class="captchaBox">
-        <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
+  <div class="login-box">
+    <form @submit.prevent="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
-      <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input"
-          :value="sendCodeTitle" @click.prevent="sendMobileVerifyCode">
-      </input>
-      <span class="icon addon-icon icon-check"></span>
-    </div>
-    <p class="errors">
-      <span v-if="errorHint" class="icon error-sign"></span>
-      <span>{{ errorHint }}</span>
-    </p>
-    <div class="row-login">
-      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')"
-          :disabled="processing" />
-      <span v-show="processing" class="icon progress-icon rotating"></span>
-    </div>
-    <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-      <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
-    </div>
-  </form>
-</div>
+      <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
+      <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
+      <div class="row-login">
+        <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
+          maxlength="10" class="outsideText" name="verifyCode" @input="handleValidation" />
+        <div v-if="!isMobileAccount" class="captchaBox">
+          <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
+        </div>
+        <input v-if="isMobileAccount" type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTitle"
+          @click.prevent="sendMobileVerifyCode">
+        </input>
+        <span class="icon addon-icon icon-check"></span>
+      </div>
+      <p class="errors">
+        <span v-if="errorHint" class="icon error-sign"></span>
+        <span>{{ errorHint }}</span>
+      </p>
+      <div class="row-login">
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"
+        />
+        <span v-show="processing" class="icon progress-icon rotating"></span>
+      </div>
+      <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
+        <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+      </div>
+    </form>
+  </div>
 </template>
 <script>
 import * as utils from 'common/js/utils'
-import msg from '../components/message'
 
 import {
   mapGetters,
@@ -42,7 +41,9 @@ import {
 } from 'vuex'
 
 import loginFormMixin from './loginFormMixin'
-import {verifyCode} from './loginValidation'
+import {
+  verifyCode
+} from './loginValidation'
 
 export default {
   mixins: [loginFormMixin],
@@ -68,18 +69,21 @@ export default {
   created: function() {
     this.bindUserId = this.$route.query.bindUserId
     this.accountId = atob(this.$route.query.accountId)
+
     if (utils.isValidEmail(this.accountId)) {
       this.updateCaptcha()
       this.isMobileAccount = false
     } else {
       this.isMobileAccount = true
-      this.sendMobileVerifyCode()
+      this.hasSentCode = true
+      this.cooldownCounter = 60
+      setTimeout(this.cooldownTimer, 1000)
     }
   },
 
   computed: {
     ...mapGetters([
-      'registerAccount', 'captchaUrl', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+      'registerAccount', 'captchaUrl'
     ]),
 
     sendCodeTitle: function() {
@@ -115,23 +119,22 @@ export default {
     },
 
     sendMobileVerifyCode: async function() {
-      if (window.acsConfig.isMobileAccountSupported &&
-        utils.isValidMobileNumber(this.accountId)) {
+      if (window.acsConfig.isMobileAccountSupported && utils.isValidMobileNumber(this.accountId)) {
         try {
           let result = await this.$acs.sendMobileVerifyCode(this.accountId)
           if (result.success) {
-            msg.showMsg({
-              msg: this.$t('account.registerPage.messageTip'),
-              target: this.$parent.$refs.msg
-            })
             this.hasSentCode = true
             this.cooldownCounter = 60
             setTimeout(this.cooldownTimer, 1000)
           } else {
             this.setErrorMessage(this.$t(result.message))
           }
+          return result
         } catch (_) {
           this.setErrorMessage(this.$t('account.error.networkError'))
+          return {
+            success: false
+          }
         }
       }
     },

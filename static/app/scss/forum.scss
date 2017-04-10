@@ -6,6 +6,9 @@ body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
   background-color: $bottom-line-light;
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;

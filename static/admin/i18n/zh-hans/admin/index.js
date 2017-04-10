@@ -35,6 +35,8 @@ export default {
     baiduTiebaUrl: '百度贴吧链接',
     forumName: '论坛名称',
     forumUrl: '论坛链接',
+    websiteName: '主页名称',
+    websiteUrl: '主页链接',
     appHasForum: '是否启用论坛',
     csPhoneNumber: '客服电话',
     cpOrderId: 'CP订单号',

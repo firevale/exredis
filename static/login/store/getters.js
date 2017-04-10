@@ -11,21 +11,6 @@ const captchaUrl = state => state.app.captchaUrl
 const transitionName = state => state.app.transitionName
 const historyAccounts = state => state.app.historyAccounts
 
-const invalidAccountIdErrorMessage = state => {
-  if (window.acsConfig.isMobileAccountSupported) {
-    return Vue.t('account.error.invalidAccountName')
-  } else {
-    return Vue.t('account.error.invalidEmailAddress')
-  }
-}
-
-const accountIdPlaceholder = state => {
-  if (window.acsConfig.isMobileAccountSupported) {
-    return Vue.t('account.loginPage.userPlaceHolder')
-  } else {
-    return Vue.t('account.loginPage.userOnlyEmailPlaceHolder')
-  }
-}
 
 const colors = state => {
   return {
@@ -46,8 +31,6 @@ export {
   loginAccount,
   registerAccount,
   captchaUrl,
-  invalidAccountIdErrorMessage,
-  accountIdPlaceholder,
   colors,
   transitionName,
   historyAccounts,

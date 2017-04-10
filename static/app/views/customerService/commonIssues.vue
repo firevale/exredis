@@ -14,10 +14,10 @@
         <a class="button is-info is-medium" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
-    <div class="my-service">
+    <!--<div class="my-service">
       <question-item class="row" v-for="item in issues" :question="item">
       </question-item>
-    </div>
+    </div>-->
     <div class="columns is-mobile is-multiline is-gapless">
       <div v-for="item in issues" class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop has-text-centered">
         <h5 class="title is-5">{{item.title}}</h5>

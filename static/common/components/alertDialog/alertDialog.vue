@@ -25,23 +25,42 @@ export default {
     transition: {
       type: String,
       default: 'fade'
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    message: {
+      type: String,
+      default: ''
+    },
+    okText: {
+      type: String,
+      default: '',
+    },
+    cancelText: {
+      type: String,
+      default: '',
+    },
+    onOk: {
+      type: Function,
+      default: null,
     }
   },
-  mounted() {
+
+  mounted: function() {
     document.body.appendChild(this.$el)
+    if (!this.okText) {
+      this.okText = this.$t('common.ok') 
+    }
+    if (!this.cancelText) {
+      this.cancelText = this.$t('common.cancel')
+    }
   },
+
   watch: {
     visible(val) {
       this.show = val
-    }
-  },
-  data: function() {
-    return {
-      title: "this is a card modal",
-      message: "message",
-      okText: "确认",
-      cancelText: '取消',
-      onOk: undefined,
     }
   },
 

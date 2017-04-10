@@ -91,6 +91,7 @@ export default {
   methods: {
     confirmDeleteComment() {
       AlertDialog.show({
+        visible: true,
         message: this.$t('forum.detail.deleteTip', {
           nth: this.nth
         }),
@@ -102,7 +103,6 @@ export default {
               this.onItemDeleted(this.itemIndex)
           }
         },
-        onCancel: null,
       })
     },
 

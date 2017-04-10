@@ -67,7 +67,7 @@
 
     computed: {
       ...mapGetters([
-        'loginAccount', 'invalidAccountIdErrorMessage', 'redirectUri'
+        'loginAccount', 'redirectUri'
       ]),
     },
 

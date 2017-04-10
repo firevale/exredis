@@ -36,14 +36,14 @@ import {
 
 import loginFormMixin from './loginFormMixin'
 import {
-  accountId
+  registerAccountId
 } from './loginValidation'
 
 export default {
   mixins: [loginFormMixin],
 
   validations: {
-    accountId,
+    accountId: registerAccountId,
   },
 
   data: function() {

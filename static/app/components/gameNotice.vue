@@ -1,7 +1,7 @@
 <template>
-  <div class="columns is-mobile" style="margin:0 2rem; height: calc(100vh - 8rem)">
+  <div class="columns is-mobile" style="margin:0 2rem; height: calc(100vh - 10rem)">
     <div class="column is-one-third">
-      <scroller>
+      <scroller style="height: calc(100vh - 10rem)">
         <v-touch v-for="item in notices" :key="item.id" v-on:tap="showNoticeDetail(item)">
           <div class="column" style="border: 1px solid #ccc; padding: .8rem; margin: .5rem;">
             <h5 class="title is-5" :class="{'is-primary' : selectedId == item.id}">{{ item.title }}</h5>
@@ -9,12 +9,12 @@
         </v-touch>
       </scroller>
     </div>
-    <div class="column" style="border: 1px solid #ccc; padding: 1rem; margin:1.2rem .5rem .5rem .5rem;">
-      <scroller>
+    <div class="column">
+      <scroller style="margin:.5rem; border:1px solid #ccc; height: calc(100vh - 10rem);">
         <div class="has-text-centered" style="padding: 1rem;">
           <h4 class="title is-4">{{ itemData.title }}</h4>
         </div>
-        <div class="subtitle is-5" style='line-height:150%;' v-html="itemData.content">
+        <div class="subtitle is-5" style='padding: 1rem; line-height:150%;' v-html="itemData.content">
         </div>
       </scroller>
     </div>
@@ -26,6 +26,7 @@ import scroller from 'common/components/scroller'
 export default {
   mounted: function() {
     this.loaddata()
+    console.log("---------------------")
   },
 
   components: {

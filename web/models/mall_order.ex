@@ -58,7 +58,15 @@ defmodule Acs.MallOrder do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name])
-    |> validate_required([:name])
+    |> cast(params, [:id, :platform, :device_id, :user_ip, :zone_id, :goods_name, :price, :amount,
+                    :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
+                    :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :admin_name, 
+                    :debug_mode, :transaction_currency, :transaction_id, :transaction_status, :app_id, 
+                    :user_id, :goods_id, :user_address_id])
+    |> validate_required([:id, :platform, :app_id, :user_id, :goods_id])
+    |> foreign_key_constraint(:app_id)
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:goods_id)
+    |> foreign_key_constraint(:user_address_id)
   end
 end

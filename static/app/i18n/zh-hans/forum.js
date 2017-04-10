@@ -38,7 +38,7 @@ export default {
     showAuthorOnly: '只看楼主',
     showAll: '查看全部',
     addToFavorite: '收藏帖子',
-    favoriting: '收藏中...',
+    favoriting: '处理中...',
     delete: '删除',
     goBack: '回到顶部',
     deletePostTip: '确认删除帖子',

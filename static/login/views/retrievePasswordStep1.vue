@@ -4,9 +4,7 @@
     <div class="row-login">
       <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
     </div>
-    <p class="code-tip">
-      {{ $t('account.retrievePasswordPage.pleaseInputAccountName') }}:
-    </p>
+    <p class="code-tip"> </p>
     <div class="row-login">
       <input type="text" class="outsideText" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
           name="user" @input="handleValidation" />
@@ -55,7 +53,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'loginAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+      'loginAccount', 'invalidAccountIdErrorMessage' 
     ]),
   },
 

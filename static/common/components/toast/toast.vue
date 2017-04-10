@@ -1,7 +1,7 @@
 <template>
   <div v-if="visible" class="fv-toast-wrapper">
     <div class="fv-toast-body">
-      {{message}}
+      <span>{{message}}</span>
     </div>
   </div>
 </template>
@@ -22,47 +22,54 @@ export default {
   },
 }
 </script>
-
 <style lang="scss">
 .fv-toast-wrapper {
   position: absolute;
-  z-index: 3;
+  z-index: 999;
   background: transparent;
   top: 0;
   left: 0;
   right: 0;
   opacity: 0;
   width: 100%;
-  margin-top: 5rem;
   animation: message 2s ease;
 
   .fv-toast-body {
-    width: 50%;
-    padding: 1rem;
     margin: 0 auto;
-    font-weight: bold;
-    color: #fff;
     text-align: center;
-    background: #000;
-    border-radius: 1rem;
+    background: transparent;
     transition: all 1s ease;
+
+    span {
+      padding: 0.5rem 1rem;
+      background: #000;
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: #fff;
+      border-radius: 2px;
+    }
   }
 }
+
 @keyframes message {
   0% {
-    top: 0;
+    top: 30%;
     opacity: 0;
   }
+  20% {
+    top: 50%;
+    opacity: 0.6;
+  }
   50% {
-    top: 0;
+    top: 50%;
     opacity: 0.8;
   }
   80% {
-    top: 0;
+    top: 50%;
     opacity: 0.8;
   }
   100% {
-    top: 0;
+    top: 70%;
     opacity: 0;
   }
 }

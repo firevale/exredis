@@ -11,7 +11,18 @@ export const accountId = {
   required,
   valid: function(val) {
     if (window.acsConfig.isMobileAccountSupported) {
-      return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
+      return utils.isValidMobileNumber(val) || utils.isValidEmail(val)
+    } else {
+      return utils.isValidEmail(val)
+    }
+  }
+}
+
+export const registerAccountId = {
+  required,
+  valid: function(val) {
+    if (window.acsConfig.isMobileAccountSupported) {
+      return utils.isValidMobileNumber(val) || utils.isValidFirevaleEmail(val)
     } else {
       return utils.isValidEmail(val)
     }

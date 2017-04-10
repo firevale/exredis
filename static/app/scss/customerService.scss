@@ -1,62 +1,82 @@
 .customer-service.content-container {
-    top: 11rem;
+  top: 11rem;
 }
 
 .contact-service {
-    .contact-center {
-        margin: 0.5rem;
-    }
-    .bottom-left {
-        flex-direction: column;
-        align-content: flex-start;
-        color: $text-grey;
-        letter-spacing: 0.12rem;
-        font-family: MicrosoftYaHei;
-        text-align: left;
-    }
-    .bottom-left span {
-        color: $primary;
-    }
-    .bottom-right {
-        flex-direction: column;
-        align-content: flex-start;
-        color: $text-grey;
-        letter-spacing: 0.12rem;
-        font-family: MicrosoftYaHei;
-        text-align: left;
-    }
-    .bottom-right span {
-        color: $primary;
-    }
+  .contact-center {
+    margin: 0.5rem;
+  }
+  .bottom-left {
+    flex-direction: column;
+    align-content: flex-start;
+    color: $text-grey;
+    letter-spacing: 0.12rem;
+    font-family: MicrosoftYaHei;
+    text-align: left;
+  }
+  .bottom-left span {
+    color: $primary;
+  }
+  .bottom-right {
+    flex-direction: column;
+    align-content: flex-start;
+    color: $text-grey;
+    letter-spacing: 0.12rem;
+    font-family: MicrosoftYaHei;
+    text-align: left;
+  }
+  .bottom-right span {
+    color: $primary;
+  }
 }
 
 .my-service {
-    .level-content {
-        padding: 0rem 1.5rem;
+  .level-content {
+    padding: 0rem 1.5rem;
+  }
+  .level-left span {
+    color: $text-grey;
+    letter-spacing: 0.12rem;
+    font-family: MicrosoftYaHei;
+  }
+  .level-right span {
+    color: $text-grey;
+    letter-spacing: 0.12rem;
+    font-family: MicrosoftYaHei;
+  }
+  .level-right a {
+    color: $text-grey;
+    letter-spacing: 0.12rem;
+    font-family: MicrosoftYaHei;
+  }
+  .level-right .service-reply {
+    color: $primary;
+  }
+  .reply-content {
+    border: 1px $grey solid;
+    padding: 1.0rem;
+    color: $text-grey;
+    letter-spacing: 0.05rem;
+    font-family: MicrosoftYaHei;
+  }
+}
+
+.common-issues {
+  .columns {
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid $grey;
+    border-bottom: 1px solid $grey;
+    .column {
+      .title {
+        font-weight: 400;
+        height: 3rem;
+        line-height: 3rem;
+      }
+      white-space: nowrap;
+      text-overflow: clip;
+      border-left: 1px solid $grey;
+      border-top: 1px solid $grey;
     }
-    .level-left span {
-        color: $text-grey;
-        letter-spacing: 0.12rem;
-        font-family: MicrosoftYaHei;
-    }
-    .level-right span {
-        color: $text-grey;
-        letter-spacing: 0.12rem;
-        font-family: MicrosoftYaHei;
-    }
-    .level-right a {
-        color: $text-grey;
-        letter-spacing: 0.12rem;
-        font-family: MicrosoftYaHei;
-    }
-    .level-right .service-reply {
-        color: $primary;
-    }
-    .reply-content {
-        border: 1px $grey solid;
-        padding: 1.0rem;
-        color: $text-grey;
-        letter-spacing: 0.05rem;
-        font-family: MicrosoftYaHei;
-    }
+  }
 }

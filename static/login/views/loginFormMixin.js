@@ -29,7 +29,6 @@ export default {
     errorHint: function() {
       if (typeof this.$v == 'object' && this.$v.$invalid) {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
-          console.log(this.$route)
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {
               return this.$t('account.error.requireMobile')

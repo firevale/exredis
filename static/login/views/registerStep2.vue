@@ -34,7 +34,6 @@
 </template>
 <script>
 import * as utils from 'common/js/utils'
-import Toast from 'common/components/toast'
 
 import {
   mapGetters,
@@ -76,6 +75,9 @@ export default {
       this.isMobileAccount = false
     } else {
       this.isMobileAccount = true
+      this.hasSentCode = true
+      this.cooldownCounter = 60
+      setTimeout(this.cooldownTimer, 1000)
     }
   },
 
@@ -121,7 +123,6 @@ export default {
         try {
           let result = await this.$acs.sendMobileVerifyCode(this.accountId)
           if (result.success) {
-            Toast.show(this.$t('account.registerPage.mobileVerifyCodeSent'))
             this.hasSentCode = true
             this.cooldownCounter = 60
             setTimeout(this.cooldownTimer, 1000)

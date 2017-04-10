@@ -82,7 +82,7 @@ export default {
     },
     title: {
       type: String,
-      default: Vue.t('upload.hint'),
+      default: '',
     },
     extensions: {
       default: () => [],
@@ -184,6 +184,9 @@ export default {
 
   mounted: function() {
     this.upload = this.$refs.upload
+    if (!this.title) {
+      this.title = this.$t('upload.hint')
+    }
   },
 
   components: {

@@ -51,7 +51,6 @@ export default {
   }
 }
 
-
 @keyframes message {
   0% {
     top: 30%;

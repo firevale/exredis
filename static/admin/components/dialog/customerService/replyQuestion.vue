@@ -18,11 +18,13 @@
             <input class="checkbox" type="checkbox" v-model="question.active" :true-value="true"> {{ $t('admin.customerService.questionField.active') }}
           </label>
         </p>
-        <p class="control">
-          <label class="checkbox">
-            <input class="checkbox" type="checkbox" v-model="question.is_hot" :true-value="true"> {{ $t('admin.customerService.questionField.isHot') }}
-          </label>
-        </p>
+        <div class="field">
+          <p class="control">
+            <label class="checkbox">
+              <input class="checkbox" type="checkbox" v-model="question.is_hot" :true-value="true"> {{ $t('admin.customerService.questionField.isHot') }}
+            </label>
+          </p>
+        </div>
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>

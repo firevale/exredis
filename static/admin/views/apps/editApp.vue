@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false" :selectedIndex="2">
+    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
       <tab-pane icon="fa fa-clone" :label="$t('admin.app.basicInfo')">
         <basic-info-editor v-if="app" :app="app"></basic-info-editor>
       </tab-pane>

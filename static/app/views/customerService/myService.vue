@@ -1,49 +1,23 @@
 <template>
   <div class="my-service">
     <scroller :on-load-more="loadmore" ref="scroller">
-      <div v-for="item in questionList" @click="selectedId==item.id?selectedId='':selectedId=item.id">
-        <div class="level-content">
-          <nav class="level is-mobile">
-            <div class="level-left">
-              <span style="flex: 1;">{{item.inserted_at | formatServerDateTime}}</span>
-            </div>
-            <div class="level-right">
-              <span v-if="item.answer === null">{{$t('customerService.myService.noReply') }}</span>
-              <span v-else class="service-reply">{{$t('customerService.myService.alreadyReply') }}</span>
-            </div>
-          </nav>
-        </div>
-        <div class="level-content">
-          <nav class="level is-mobile">
-            <div class="level-left">
-              <span style="flex: 1;">{{item.title}}</span>
-            </div>
-            <div class="level-right">
-              <router-link class="button is-white is-medium" to="">
-                >
-              </router-link>
-            </div>
-          </nav>
-        </div>
-        <div v-show="selectedId==item.id && item.answer!==null" class="level-content reply-content">
-          {{$t('customerService.reply') }}<br> {{item.answer}}
-        </div>
-        <hr>
-      </div>
+      <question-item class="row" v-for="item in questionList" :question="item">
+      </question-item>
     </scroller>
   </div>
 </template>
 <script>
   import scroller from 'common/components/scroller'
+  import questionItem from '../../components/questionItem'
 
   export default {
     components: {
-      scroller
+      scroller,
+      questionItem
     },
     data() {
       return {
         questionList: [],
-        selectedId: '',
         page: 0,
         total: 1,
         recordsPerPage: 12,

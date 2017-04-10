@@ -31,8 +31,10 @@ export default {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {
+              console.log('require mobile number')
               return this.$t('account.error.requireMobile')
             } else {
+              console.log('require account id')
               return this.$t('account.error.requireAccountId')
             }
           } else {
@@ -76,9 +78,13 @@ export default {
 
     invalidAccountIdErrorMessage: function() {
       if (window.acsConfig.isMobileAccountSupported) {
-        return this.$t('account.error.invalidMobileNumber')
+        if (this.$route.name == 'registerStep1') {
+          return this.$t('account.error.invalidMobileNumber')
+        } else {
+          return this.$t('account.error.invalidAccountId')
+        }
       } else {
-        return this.$t('account.error.invalidEmailAddress')
+        return this.$t('account.error.invalidEmailAddres')
       }
     }
 

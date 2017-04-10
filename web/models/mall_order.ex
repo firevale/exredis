@@ -39,7 +39,6 @@ defmodule Acs.MallOrder do
     field :snapshots, :binary     #订单快照
     field :paid_result, :binary   #支付结果
     field :memo, :string   #备注
-    field :admin_name, :string   #管理员名称
     field :debug_mode, :boolean, default: false
     field :transaction_currency, :string
     field :transaction_id, :string
@@ -60,8 +59,8 @@ defmodule Acs.MallOrder do
     struct
     |> cast(params, [:id, :platform, :device_id, :user_ip, :zone_id, :goods_name, :price, :amount,
                     :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
-                    :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :admin_name, 
-                    :debug_mode, :transaction_currency, :transaction_id, :transaction_status, :app_id, 
+                    :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
+                    :transaction_currency, :transaction_id, :transaction_status, :app_id, 
                     :user_id, :goods_id, :user_address_id])
     |> validate_required([:id, :platform, :app_id, :user_id, :goods_id])
     |> foreign_key_constraint(:app_id)

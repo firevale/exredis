@@ -25,7 +25,6 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :snapshots, :binary     #订单快照
       add :paid_result, :binary   #支付结果
       add :memo, :string   #备注
-      add :admin_name, :string   #管理员名称
       add :debug_mode, :boolean, default: false
       add :transaction_currency, :string
       add :transaction_id, :string

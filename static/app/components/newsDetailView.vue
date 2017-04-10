@@ -6,7 +6,7 @@
     <div class="subtitle is-5" style='line-height:150%;' v-html="itemData.content">
     </div>
     <div class="has-text-centered" style="padding: 2rem;">
-      <a class="button is-primary is-large" @click="goBack()">{{ $t('games.buttons.back') }}</a>
+      <a class="button is-primary is-large" @click.prevent="goBack()">{{ $t('games.buttons.back') }}</a>
     </div>
   </div>
 </template>
@@ -21,6 +21,7 @@ export default {
 
   methods: {
     goBack() {
+      console.log("---------------------------")
       this.$emit('goBack')
     },
   }

@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
       </div>
-      <p class="code-tip"> {{ $t('account.registerPage.pleaseInputAccountName') }}: </p>
+      <p class="code-tip"> {{ accountIdPlaceholder }}: </p>
       <div class="row-login">
         <input type="text" maxlength="50" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user" @input="handleValidation" />
         <span class="icon addon-icon icon-user"></span>
@@ -24,8 +24,6 @@
   </div>
 </template>
 <script>
-  import msg from '../components/message'
-
   import {
     mapGetters,
     mapActions
@@ -45,7 +43,6 @@
 
     data: function() {
       return {
-        isMobileAccountSupported: window.acsConfig.isMobileAccountSupported,
         accountId: '',
         errorMessage: '',
         processing: false,
@@ -60,7 +57,7 @@
 
     computed: {
       ...mapGetters([
-        'registerAccount', 'invalidAccountIdErrorMessage', 'accountIdPlaceholder'
+        'registerAccount'  
       ]),
     },
 

@@ -11,7 +11,7 @@ export const accountId = {
   required,
   valid: function(val) {
     if (window.acsConfig.isMobileAccountSupported) {
-      return utils.isValidEmail(val) || utils.isValidMobileNumber(val)
+      return utils.isValidMobileNumber(val)
     } else {
       return utils.isValidEmail(val)
     }

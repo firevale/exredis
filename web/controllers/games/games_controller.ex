@@ -2,7 +2,7 @@ defmodule Acs.GamesController do
   use Acs.Web, :controller
 
   plug :fetch_session_user_id
-  # plug :cache_page, [cache_seconds: 600] when action in [:get_paged_news]
+  plug :cache_page, [cache_seconds: 600] when action in [:fetch_apps, :get_top_news, :get_paged_news, :get_news_detail]
   plug :check_is_admin when action in [:update_news, :toggle_news_status, :get_paged_news_admin, :update_news_pic]
 
   # fetch_apps

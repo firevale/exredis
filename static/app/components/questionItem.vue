@@ -17,43 +17,44 @@
           <span style="flex: 1;">{{question.title}}</span>
         </div>
         <div class="level-right">
-          <router-link class="button is-white is-medium" to="">
-            >
-          </router-link>
+          >
         </div>
       </nav>
     </div>
     <div v-show="selectedId==question.id && question.answer!==null" class="level-content reply-content">
       {{$t('customerService.reply') }}
-      <br> {{question.answer}}
+      <article class="message">
+        <div class="message-body">{{question.answer}}
+        </div>
+      </article>
     </div>
     <hr>
   </div>
 </template>
 <script>
-import {
-  mapGetters,
-  mapActions
-} from 'vuex'
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
 
-import * as filter from 'common/js/filters'
+  import * as filter from 'common/js/filters'
 
-export default {
-  props: {
-    searchKeyword: {
-      type: String,
-      default: '',
+  export default {
+    props: {
+      searchKeyword: {
+        type: String,
+        default: '',
+      },
+      question: {
+        type: Object,
+        default: null,
+      },
     },
-    question: {
-      type: Object,
-      default: null,
-    },
-  },
-  data() {
-    return {
-      selectedId: '',
+    data() {
+      return {
+        selectedId: '',
+      }
     }
-  }
 
-}
+  }
 </script>

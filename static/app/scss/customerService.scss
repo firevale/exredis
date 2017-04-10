@@ -11,7 +11,6 @@
     align-content: flex-start;
     color: $text-grey;
     letter-spacing: 0.12rem;
-    font-family: MicrosoftYaHei;
     text-align: left;
   }
   .bottom-left span {
@@ -22,7 +21,6 @@
     align-content: flex-start;
     color: $text-grey;
     letter-spacing: 0.12rem;
-    font-family: MicrosoftYaHei;
     text-align: left;
   }
   .bottom-right span {
@@ -37,27 +35,24 @@
   .level-left span {
     color: $text-grey;
     letter-spacing: 0.12rem;
-    font-family: MicrosoftYaHei;
   }
   .level-right span {
     color: $text-grey;
     letter-spacing: 0.12rem;
-    font-family: MicrosoftYaHei;
   }
   .level-right a {
     color: $text-grey;
     letter-spacing: 0.12rem;
-    font-family: MicrosoftYaHei;
   }
   .level-right .service-reply {
     color: $primary;
   }
   .reply-content {
     border: 1px $grey solid;
+    margin-top: 0.35rem;
     padding: 1.0rem;
     color: $text-grey;
     letter-spacing: 0.05rem;
-    font-family: MicrosoftYaHei;
   }
 }
 

@@ -22,7 +22,7 @@
       </nav>
     </div>
     <div v-show="selectedId==question.id && question.answer!==null" class="level-content reply-content">
-      <p class="subtitle is-6"> {{$t('customerService.reply') }}</p>
+      <p class="subtitle is-6 is-marginless"> {{$t('customerService.reply') }}</p>
       <article class="message">
         <div class="message-body subtitle is-6">
           {{question.answer}}

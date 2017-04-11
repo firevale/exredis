@@ -13,20 +13,18 @@
       </div>
       <div>
         <nav class="level is-mobile">
-          <!-- Left side -->
           <div class="level-item has-text-centered">
             <div class="bottom-left">
-              <div>{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></div>
-              <div>{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></div>
-              <div>{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></div>
+              <p class="subtitle is-6">{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></p>
             </div>
           </div>
-          <!-- Right side -->
           <div class="level-item has-text-centered">
             <div class="bottom-right">
-              <div>{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></div>
-              <div>{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></div>
-              <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name }}</span></div>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name}}</span></p>
             </div>
           </div>
         </nav>

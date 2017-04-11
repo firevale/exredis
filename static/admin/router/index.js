@@ -59,7 +59,7 @@ export default new Router({
     },
     {
       name: 'EditMall',
-      path: 'malls/edit/:mallId',
+      path: 'malls/edit/:appId',
       component: require('../views/malls/editMall')
     }, {
       name: 'Settings',

@@ -12,14 +12,14 @@ const mutations = {
     let hash = {}
     for (let index in malls) {
       let mall = malls[index]
-      hash[mall.id] = mall
+      hash[mall.app_id] = mall
     }
     state.hash = hash
   },
 
   [types.ADD_MALL](state, mall) {
     state.list.push(mall)
-    state.hash[mall.id] = mall
+    state.hash[mall.app_id] = mall
   }
 
 }

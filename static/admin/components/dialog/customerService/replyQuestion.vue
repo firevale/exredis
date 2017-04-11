@@ -7,7 +7,7 @@
       <validation name="question" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.customerService.questionField.title') }}: </label>
         <p class="control">
-          <article class="content">{{question.title}}</article>
+          <textarea class="textarea" rows="10" v-model.trim="question.title"></textarea>
         </p>
         <label class="label"> {{ $t('admin.customerService.questionField.answer') }}: </label>
         <p class="control">
@@ -63,6 +63,7 @@ export default {
       this.processing = true
       let result = await this.$acs.updateQuestion({
           id: this.question.id,
+          title: this.question.title,
           answer: this.question.answer,
           active: this.question.active,
           is_hot: this.question.is_hot

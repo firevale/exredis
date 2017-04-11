@@ -54,6 +54,7 @@ defmodule Acs.AdminRouter do
     get  "/fetch_malls", MallController, :fetch_malls
     post "/update_mall_icon", MallController, :update_mall_icon
     post "/update_mall_info", MallController, :update_mall_info
+    post "/fetch_goods", MallController, :fetch_goods
     
   end
 

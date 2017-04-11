@@ -29,6 +29,10 @@
   .level-content {
     padding: 0.12rem 1.5rem;
   }
+  .level-left{
+    max-width: 95%;
+    overflow: hidden;
+  }
   .level-left p,.level-right p {
     letter-spacing: 0.12rem;
   }
@@ -40,8 +44,5 @@
     margin-top: 0.35rem;
     padding: 1.0rem;
     letter-spacing: 0.05rem;
-  }
-  .reply-content p {
-    margin: 0px;
   }
 }

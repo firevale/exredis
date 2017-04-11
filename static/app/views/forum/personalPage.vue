@@ -4,19 +4,20 @@
       <figure class="media-left" @click="onShowImageUpload">
         <p class="image is-64x64 avatar-image">
           <img :src="this.userInfo.avatar_url"></img>
-         </p>
-         <img-upload url="/forum_actions/update_user_avatar"  @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
-       </figure>
+        </p>
+        <img-upload url="/forum_actions/update_user_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
+          field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
+      </figure>
       <div class="media-content">
         <p>
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
-         <p>
-           {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
-         </p>
-         <p>
-            {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
-         </p>
+        <p>
+          {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
+        </p>
+        <p>
+          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
+        </p>
       </div>
     </article>
     <nav class="nav">
@@ -24,31 +25,39 @@
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
         <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
-        <div class="slider" :style="{'background-position':sliderPosition}"/>
+        <div class="slider" :style="{'background-position':sliderPosition}" />
       </div>
     </nav>
     <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
       <div style="position: relative; height: 100%">
         <scroller :on-load-more="loadmore" ref="scroller">
-          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-posts>
+          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
+            :item-index="index"></my-posts>
           <my-comments v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
-          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete" :item-index="index"></my-favorate>
-       </scroller>
+          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
+            :item-index="index"></my-favorate>
+        </scroller>
       </div>
     </div>
   </div>
 </template>
 <script>
+
 import {
   mapGetters,
   mapActions
 } from 'vuex'
+
+import {
+  showMobileMenu
+} from "common/components/mobileMenu"
 
 import imgUpload from "vue-image-crop-upload/upload-2.vue"
 import scroller from 'common/components/scroller'
 import myPosts from "../../components/myPosts"
 import myFavorate from "../../components/myFavorate"
 import myComments from "../../components/myComments"
+
 
 
 export default {
@@ -59,11 +68,6 @@ export default {
     myComments,
     imgUpload,
   },
-
-  // mounted: function() {
-  //   this.$refs.pag.$on('switch-page', this.getPostPage)
-  //   this.getPostPage(this.page)
-  // }, 
 
   computed: {
     ...mapGetters([
@@ -113,8 +117,16 @@ export default {
     },
 
     onShowImageUpload: function() {
+      // let menu = showMobileMenu({
+      //   visible: true,
+      //   items: [{title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"}, {title: "yyyy"}]
+      // })
+
+      // menu.$on('item-selected', (item) => {
+      //   console.log('mobile menu item selected: ', item)
+      // })
       this.showImgUpload = true
-    },    
+    },
 
     cropUploadSuccess(result, field, key) {
       if (result.success) {
@@ -205,7 +217,6 @@ export default {
         }
       }
     },
-
   },
 }
 </script>

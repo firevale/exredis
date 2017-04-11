@@ -46,7 +46,7 @@ defmodule Acs.MallOrder do
     
     belongs_to :app,  Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
-    belongs_to :goods, Acs.MallGoods, type: :string
+    belongs_to :mall_goods, Acs.MallGoods, type: :string
     belongs_to :user_address, Acs.UserAddress, type: :integer
 
     timestamps()
@@ -61,11 +61,11 @@ defmodule Acs.MallOrder do
                     :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
                     :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
                     :transaction_currency, :transaction_id, :transaction_status, :app_id, 
-                    :user_id, :goods_id, :user_address_id])
-    |> validate_required([:id, :platform, :app_id, :user_id, :goods_id])
+                    :user_id, :mall_goods_id, :user_address_id])
+    |> validate_required([:id, :platform, :app_id, :user_id, :mall_goods_id, :user_address_id])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
-    |> foreign_key_constraint(:goods_id)
+    |> foreign_key_constraint(:mall_goods_id)
     |> foreign_key_constraint(:user_address_id)
   end
 end

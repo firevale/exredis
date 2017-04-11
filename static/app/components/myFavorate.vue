@@ -57,7 +57,7 @@ export default {
         onOk: async _ => {
           let result = await this.$acs.togglePostFavorite(this.itemData.post.id)
           if (result.success) {
-            Toast.show(this.$t(result.i18n_message))
+            Toast.show(this.$t(result.i18n_message, result.i18n_message_object))
             if (this.onItemDeleted) {
               this.onItemDeleted(this.itemIndex)
             }

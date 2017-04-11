@@ -14,6 +14,9 @@ import ServerApi from './serverApi'
 import * as filters from 'common/js/filters'
 import * as acs from 'common/js/acs'
 
+require('login/scss/login.scss')
+require('common/scss/animation.scss')
+
 Vue.use(Vuelidate)
 Vue.use(VueI18n)
 Vue.use(VueResource)

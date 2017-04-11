@@ -2,7 +2,7 @@
   <div class="contact-service">
     <form class="post" @submit.prevent="handleSubmit">
       <div class="contact-top">
-        <textarea class="textarea is-large" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
+        <textarea class="textarea is-medium" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>
       <div class="contact-center">
         <nav class="level is-mobile">

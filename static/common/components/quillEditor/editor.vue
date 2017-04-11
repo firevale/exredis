@@ -109,6 +109,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    placeholder: {
+      type: String,
+      default: '',
+    },
     config: {
       type: Object,
       required: false,
@@ -130,7 +134,7 @@ export default {
         let self = this
         self.quillEditor = new Quill(self.$refs.quill, Object.assign({
           modules: self.defaultModules,
-          placeholder: this.$t('forum.newPost.textAreaPlaceHolder'),
+          placeholder: this.placeholder,
           readOnly: false,
           theme: 'snow',
           boundary: document.body

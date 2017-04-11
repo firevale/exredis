@@ -11,8 +11,8 @@
       <p class="control is-horizontal" style="margin-bottom: 1.5rem">
         <input class="input" style="border-radius: 0" type="text" v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
       </p>
-      <quill-editor v-model.trim="editingPostData.content" @ready="setEditor" @input="handleValidation($v.editingPostData.content)"
-        @image="onInsertImage">
+      <quill-editor v-model.trim="editingPostData.content" :placeholder="$t('forum.newPost.textAreaPlaceHolder')" @ready="setEditor"
+        @input="handleValidation($v.editingPostData.content)" @image="onInsertImage">
       </quill-editor>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
@@ -23,8 +23,8 @@
           <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0;" @click="preview"
             :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           />
-          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary" :class="processing || $v.$invalid ? 'is-disabled' : ''"
-          />
+          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"
+            :class="processing || $v.$invalid ? 'is-disabled' : ''" />
         </p>
       </div>
     </form>

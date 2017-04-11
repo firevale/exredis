@@ -15,7 +15,7 @@ import 'common/js/date'
 
 import * as filters from 'common/js/filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
-import VueQuillEditor from './components/quillEditor'
+import VueQuillEditor from 'common/components/quillEditor'
 
 Vue.use(Vuelidate)
 Vue.use(Resource)

@@ -1,17 +1,17 @@
 <template>
   <div class="common-issues">
     <div class="field is-grouped">
-      <p class="control is-expanded has-icon is-medium">
-        <input type="input" class="input is-medium" v-model.trim="keyword" @keydown.enter="search" @keydown.esc="keyword = ''"
+      <p class="control is-expanded has-icon">
+        <input type="input" class="input " v-model.trim="keyword" @keydown.enter="search" @keydown.esc="keyword = ''"
           :placeholder="$t('customerService.commonIssues.searchPlaceHolder')">
         </input>
-        <span class="icon image-icon is-medium" :class="{
+        <span class="icon image-icon" :class="{
             'icon-circle rotating': searching, 
             'icon-search': !searching,
            }"></span>
       </p>
       <p class="control">
-        <a class="button is-info is-medium" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
+        <a class="button is-info" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
     <div v-if="questions||searching" class="my-service" style="top:13rem;height:100%">
@@ -27,7 +27,8 @@
                       'is-half': historyTableColumns == 2,
                       'is-4': historyTableColumns == 3,
                       'is-3': historyTableColumns == 4,
-                      'is-clickable': keyword}" style="padding: 0.5rem 0" @click="search(keyword)">
+                      'is-clickable': keyword}" style="padding: 0.5rem 0;height:2rem;overflow:hidden; white-space:nowrap; text-overflow:ellipsis;"
+          @click="search(keyword)">
           <span class="title is-5" style="font-weight: 400; font-size: 1.1rem"> {{keyword}} </span>
         </div>
       </div>

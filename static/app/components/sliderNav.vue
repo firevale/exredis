@@ -2,7 +2,7 @@
   <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <a class="nav-item is-tab has-right-line" v-for="(item, index) in menus" :class="{'is-active': index == selectedIndex}"
+        <a class="nav-item is-tab has-right-line" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
           @click.prevent="switchMenu(item,index)">{{item.text}}</a>
         <div class="slider-bar" :style="{'background-position':sliderPosition}"></div>
       </div>
@@ -18,15 +18,27 @@ export default {
         []
       }
     },
-    onSelect: Function
+    selectedValue: undefined
   },
 
   data() {
     return {
-      selectedIndex: 0
+      menuHash: [],
+      currentValue: undefined,
+    }
+  },
+  mounted: function() {
+    for (let i = 0; i < this.menus.length; i++) {
+      this.menuHash[this.menus[i].value] = i
+    }
+    if (this.selectedValue && this.menus) {
+      this.currentValue = this.selectedValue
     }
   },
   computed: {
+    selectedIndex() {
+      return this.menuHash[this.currentValue]
+    },
     sliderPosition() {
       let itemWidth = 13.2
       let barOffset = 0.175
@@ -35,13 +47,17 @@ export default {
   },
   methods: {
     switchMenu: function(item, index) {
-      if (this.selectedIndex == index) {
-        return
-      }
-
-      this.selectedIndex = index
-      if (this.onSelect) {
-        this.onSelect(item, index)
+      this.currentValue = item.value
+      this.$emit('onSelect',
+        item,
+        index
+      )
+    }
+  },
+  watch: {
+    selectedValue(val) {
+      if (!val) {
+        this.currentValue = val
       }
     }
   }

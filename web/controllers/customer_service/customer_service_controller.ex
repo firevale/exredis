@@ -59,13 +59,8 @@ defmodule Acs.CustomerServiceController do
 
   def get_common_issues(conn, %{"app_id" =>app_id}) do
     query = from question in Acs.Question,
-              left_join: user in assoc(question, :user),
-              left_join: app in assoc(question, :app),
-              select: map(question, [:id, :title,:inserted_at]),
-              # where: question.app_id == ^app_id and question.is_hot== true,
-              # where: question.app_id == ^app_id,
-              # limit: 9,
-              preload: [user: user]
+              select: question.title,
+              where: question.app_id == ^app_id and question.is_hot== true
 
     questions = Repo.all(query)
     conn |> json(%{success: true, issues: questions})

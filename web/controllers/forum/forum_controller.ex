@@ -616,10 +616,11 @@ defmodule Acs.ForumController do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         postList = Enum.map(hits, fn(%{
           _id: id,
-          user_id: user_id,
-          forum_id: forum_id,
-          section_id: section_id,
-        } = hit) ->
+          _source: %{
+            user_id: user_id,
+            forum_id: forum_id,
+             section_id: section_id}
+            } = hit) ->
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
                     user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])

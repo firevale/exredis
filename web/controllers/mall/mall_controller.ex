@@ -82,7 +82,9 @@ defmodule Acs.MallController do
                         "keyword" => keyword,
                         "app_id" => app_id}) do
     
-    # if(String.length(keyword)>0) do
+    if(String.length(keyword) > 0) do
+      keyword =  "%" <> keyword <> "%" 
+    end
 
     queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id
     queryTotal = if(String.length(keyword)>0) do
@@ -102,7 +104,6 @@ defmodule Acs.MallController do
               select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
 
     query = if(String.length(keyword)>0) do
-
       query |> where([p], like(p.name, ^keyword))
     else
       query
@@ -111,7 +112,7 @@ defmodule Acs.MallController do
     goodses = Repo.all(query)
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
-  def fetch_malls(conn, _params) do
+  def fetch_goods(conn, _params) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
  

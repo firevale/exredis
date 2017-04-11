@@ -8,7 +8,18 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <div class="tile is-ancestor">
+        <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
+          news: {
+          id: '',
+          title: '',
+          content: '',
+          group: 'activity',
+          app_id: this.$route.params.appId,
+        }}}">
+      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')
+      }}
+    </router-link>
+    <div class="tile is-ancestor" v-if="goodses.length > 0">
       <div class="tile is-parent is-vertical">
         <article class="tile is-child is-12">
           <div class="table-responsive">
@@ -39,7 +50,7 @@
             {{ $t('admin.titles.oops') }}
           </h1>
           <h2 class="subtitle">
-            {{ $t('admin.titles.noOrderToDisplay') }}
+            {{ $t('admin.titles.noGoodsToDisplay') }}
           </h2>
         </div>
       </div>

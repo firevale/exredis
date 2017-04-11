@@ -1,6 +1,7 @@
 import forumsRoutes from './forum'
 import payment from './payment'
 import customerServiceRoutes from './customerService'
+import account from './account'
 import gamesRoutes from './games'
 
 export default function(VueRouter) {
@@ -10,6 +11,7 @@ export default function(VueRouter) {
       ...forumsRoutes,
       ...customerServiceRoutes,
       ...gamesRoutes,
+      ...account,
       ...payment,
     ],
   });

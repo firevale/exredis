@@ -1,5 +1,3 @@
 export default {
-  account: {
-    
-  }
+  accountTitle: '个人中心',      
 }

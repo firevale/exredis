@@ -139,6 +139,14 @@ export default {
         return post(Vue, '/admin_actions/toggle_news_status', params, successMessage)
       },
 
+      updateMallInfo(params, successMessage) {
+        return post(Vue, '/admin_actions/update_mall_info', params, successMessage)
+      },
+
+      fetchGoods(params) {
+        return post(Vue, '/admin_actions/fetch_goods', params)
+      },
+
     }
   }
 }

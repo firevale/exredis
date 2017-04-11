@@ -1,32 +1,30 @@
 <template>
   <div class="contact-service">
     <form class="post" @submit.prevent="handleSubmit">
-      <div class="contact-top">
-        <textarea class="textarea is-large" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
+      <div>
+        <textarea class="textarea is-medium" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>
       <div class="contact-center">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <input class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit" :value="$t('customerService.submitBtn')"></input>
+            <input class="button is-info is-medium" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit" :value="$t('customerService.submitBtn')"></input>
           </div>
         </nav>
       </div>
       <div>
         <nav class="level is-mobile">
-          <!-- Left side -->
           <div class="level-item has-text-centered">
-            <div class="bottom-left">
-              <div>{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></div>
-              <div>{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></div>
-              <div>{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></div>
+            <div class="bottom-content">
+              <p class="subtitle is-6">{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></p>
             </div>
           </div>
-          <!-- Right side -->
           <div class="level-item has-text-centered">
-            <div class="bottom-right">
-              <div>{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></div>
-              <div>{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></div>
-              <div>{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name }}</span></div>
+            <div class="bottom-content">
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></p>
+              <p class="subtitle is-6">{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name}}</span></p>
             </div>
           </div>
         </nav>

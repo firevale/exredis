@@ -24,7 +24,7 @@
                   </figure>
                 </td>
                 <td> {{ item.user.nickname }}</td>
-                <td style="width:450px;overflow: visible; text-overflow: ellipsis; white-space: nowrap;"> {{ item.title }} </td>
+                <td style="width:450px;"> {{ item.title }} </td>
                 <td>
                   <span :class="{tag:true,'is-danger':!item.answer }">
                     {{ item.answer ? $t('admin.titles.yes') : $t('admin.titles.no') }}
@@ -127,7 +127,8 @@ export default {
         type: 'danger',
         onOK: async _ => {
           let result = await this.$acs.deleteQuestion({
-            id: item.id }, this.$t('admin.customerService.messages.questionDeleted', {
+            id: item.id
+          }, this.$t('admin.customerService.messages.questionDeleted', {
             title: item.title
           }))
           if (result.success) {

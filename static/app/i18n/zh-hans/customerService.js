@@ -12,7 +12,8 @@ export default {
     officialHomePage: '官方主页',
     officialForum: '官方论坛',
     officialPostBar: '官方贴吧',
-    officialMicroBlog: '官方微博'
+    officialMicroBlog: '官方微博',
+    addSuccess: '提交成功'
   },
   myService: {
     title: '服务记录',

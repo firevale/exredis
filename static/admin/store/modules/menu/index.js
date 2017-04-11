@@ -39,6 +39,13 @@ const state = {
       meta: {
         icon: 'fa-user-circle'
       },
+    },
+    {
+      name: Vue.t('admin.menu.appMalls'),
+      path: '/admin/malls',
+      meta: {
+        icon: 'fa-shopping-bag'
+      },
     },    
     {
       name: Vue.t('admin.menu.settings'),

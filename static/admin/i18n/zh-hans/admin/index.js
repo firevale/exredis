@@ -3,6 +3,7 @@ import app from './app'
 import news from './news'
 import menu from './menu'
 import forum from './forum'
+import mall from './mall'
 import routes from './routes'
 import setting from './setting'
 import customerService from './customerService'
@@ -76,11 +77,13 @@ export default {
     uploadGoodsIcon: '拖动正方形PNG图片到此(边长 >= 128)',
     uploadAppIcon: '拖动正方形PNG图片到此(边长 >= 128)',
     uploadForumIcon: '修改论坛『{forumName}』的图标',
+    uploadMallIcon: '修改商城『{mallName}』的图标',
     editGoodsProductId: '编辑商品『{goodsName}』在『{sdk}』渠道的产品ID',
     ok: '确认',
     cancel: '取消',
     warning: '警告',
     searchOrders: '输入用户ID/订单号搜索',
+    searchGoods: '搜索商品名称',
     oops: '哦噢。。。',
     noOrderToDisplay: '当前没有任何可以显示的订单',
     loading: '正在加载数据...',
@@ -107,6 +110,7 @@ export default {
     updated: '更新成功',
     appUpdated: '应用更新成功',
     forumUpdated: '论坛更新成功',
+    mallUpdated: '商城更新成功',
   },
 
   serverError: {
@@ -125,6 +129,7 @@ export default {
     emptySectionTitle: '版块标题不能为空',
     emptyForumId: '版块所属论坛编号不能为空',
     forumNotFound: '未找到论坛',
+    mallNotFound: '未找到商城',
     newsNotFound: '未找到该内容',
     newsContentRequired: '内容不能为空',
     newsTitleMinLength: '标题至少4个字',
@@ -135,6 +140,7 @@ export default {
   routes,
   menu,
   forum,
+  mall,
   news,
   sdks,
   setting,

@@ -6,42 +6,34 @@
   .contact-center {
     margin: 0.5rem;
   }
-  .bottom-left {
+  .bottom-content {
     flex-direction: column;
     align-content: flex-start;
-    color: $text-grey;
     letter-spacing: 0.12rem;
     text-align: left;
   }
-  .bottom-left span {
-    color: $primary;
+  .bottom-content p {
+    font-weight: 400;
+    margin-top: 0.5rem;
   }
-  .bottom-right {
-    flex-direction: column;
-    align-content: flex-start;
-    color: $text-grey;
-    letter-spacing: 0.12rem;
-    text-align: left;
-  }
-  .bottom-right span {
+  .bottom-content span {
+    font-weight: 400;
     color: $primary;
   }
 }
 
 .my-service {
+  .subtitle {
+    font-weight: 400;
+  }
   .level-content {
-    padding: 0rem 1.5rem;
+    padding: 0.12rem 1.5rem;
   }
-  .level-left span {
-    color: $text-grey;
-    letter-spacing: 0.12rem;
+  .level-left{
+    max-width: 95%;
+    overflow: hidden;
   }
-  .level-right span {
-    color: $text-grey;
-    letter-spacing: 0.12rem;
-  }
-  .level-right a {
-    color: $text-grey;
+  .level-left p,.level-right p {
     letter-spacing: 0.12rem;
   }
   .level-right .service-reply {
@@ -51,27 +43,6 @@
     border: 1px $grey solid;
     margin-top: 0.35rem;
     padding: 1.0rem;
-    color: $text-grey;
     letter-spacing: 0.05rem;
-  }
-}
-
-.common-issues {
-  .columns {
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid $grey;
-    border-bottom: 1px solid $grey;
-    .column {
-      .title {
-        font-weight: 400;
-        height: 3rem;
-        line-height: 3rem;
-      }
-      white-space: nowrap;
-      text-overflow: clip;
-      border-left: 1px solid $grey;
-      border-top: 1px solid $grey;
-    }
   }
 }

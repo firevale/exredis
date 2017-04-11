@@ -32,10 +32,10 @@ defmodule Acs.AdminRouter do
     post "/fetch_orders", AdminController, :fetch_orders
     post "/search_orders", AdminController, :search_orders
 
-    get  "/fetch_forums", AdminController, :fetch_forums
-    post "/update_forum_icon", AdminController, :update_forum_icon
-    post "/update_forum_info", AdminController, :update_forum_info
-    post "/update_section_info", AdminController, :update_section_info  
+    get  "/fetch_forums", ForumController, :fetch_forums
+    post "/update_forum_icon", ForumController, :update_forum_icon
+    post "/update_forum_info", ForumController, :update_forum_info
+    post "/update_section_info", ForumController, :update_section_info  
 
     post "/get_setting", AdminSettingController, :get_setting
     post "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
@@ -50,6 +50,11 @@ defmodule Acs.AdminRouter do
     post  "/get_news_detail", GamesController, :get_news_detail
     post  "/toggle_news_status", GamesController, :toggle_news_status
     post  "/update_news_pic", GamesController, :update_news_pic
+
+    get  "/fetch_malls", MallController, :fetch_malls
+    post "/update_mall_icon", MallController, :update_mall_icon
+    post "/update_mall_info", MallController, :update_mall_info
+    post "/fetch_goods", MallController, :fetch_goods
     
   end
 

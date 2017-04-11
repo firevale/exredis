@@ -51,6 +51,7 @@ defmodule Acs.CustomerServiceController do
               offset: ^((page - 1) * records_per_page),
               select: map(question, [:id, :title, :answer, :is_hot, :active, :inserted_at, :updated_at, user: [:id, :nickname, :avatar_url]]),
               where: question.app_id == ^app_id,
+              order_by: [desc: :id],
               preload: [user: user]
 
     questions = Repo.all(query)
@@ -59,26 +60,21 @@ defmodule Acs.CustomerServiceController do
 
   def get_common_issues(conn, %{"app_id" =>app_id}) do
     query = from question in Acs.Question,
-              left_join: user in assoc(question, :user),
-              left_join: app in assoc(question, :app),
-              select: map(question, [:id, :title,:inserted_at]),
-              # where: question.app_id == ^app_id and question.is_hot== true,
-              # where: question.app_id == ^app_id,
-              # limit: 9,
-              preload: [user: user]
+              select: question.title,
+              where: question.app_id == ^app_id and question.is_hot== true
 
     questions = Repo.all(query)
     conn |> json(%{success: true, issues: questions})
   end
 
-  def update_question(conn,%{"id" => id, "answer" => answer, "active" => active,"is_hot" => is_hot})  do
+  def update_question(conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot})  do
     with %Question{} = question  <- Repo.get(Question,id),
-         {:ok, question} <- Question.changeset(question,%{answer: answer,active: active, is_hot: is_hot}) |>Repo.update
+         {:ok, question} <- Question.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |>Repo.update
     do
          Elasticsearch.update(%{
             index: "customer_service",
             type: "questions",
-            doc: %{ doc: %{ answer: answer,active: active, is_hot: is_hot }},
+            doc: %{ doc: %{ title: title, answer: answer,active: active, is_hot: is_hot }},
             params: nil,
             id: id
          })

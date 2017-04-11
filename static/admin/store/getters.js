@@ -10,6 +10,8 @@ const menuitems = state => state.menu.items
 const forumList = state => state.forums.list
 const forumHash = state => state.forums.hash
 const sections = state => state.forums.sections
+const mallList = state => state.mall.list
+const mallHash = state => state.mall.hash
 
 export {
   main,
@@ -24,4 +26,6 @@ export {
   forumList,
   forumHash,
   sections,
+  mallList,
+  mallHash,
 }

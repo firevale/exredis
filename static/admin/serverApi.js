@@ -123,6 +123,10 @@ export default {
         return post(Vue, '/customer_service_actions/update_question', params, successMessage)
       },
 
+      deleteQuestion(params, successMessage) {
+        return post(Vue, '/customer_service_actions/delete_question', params, successMessage)
+      },
+
       getNewsDetail(news_id) {
         return post(Vue, '/admin_actions/get_news_detail', { news_id })
       },

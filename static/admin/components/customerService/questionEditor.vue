@@ -41,7 +41,7 @@
                   <a @click.prevent="replyQuestion(item, index)">
                     <i class="fa fa-pencil"></i>
                   </a>
-                  <a @click.prevent="toggleStatus(item)">
+                  <a @click.prevent="deleteItem(item,index)">
                     <i class="fa fa-trash-o"></i>
                   </a>
                 </td>
@@ -95,7 +95,7 @@ export default {
       questions: [],
       page: 1,
       total: 1,
-      recordsPerPage: 5,
+      recordsPerPage: 10,
       loading: true
     }
   },
@@ -107,16 +107,32 @@ export default {
 
   methods: {
 
-    showTag: function(value) {
-
-    },
-
     replyQuestion: function(question, index) {
       openDialog({
         question: question,
         visible: true,
         callback: question => {
           this.questions[index] = question
+        },
+      })
+    },
+
+    deleteItem: function(item, index) {
+      showMessageBox({
+        visible: true,
+        title: this.$t('admin.titles.warning'),
+        message: this.$t('admin.customerService.messages.confirmDeleteQuestion', {
+          title: item.title
+        }),
+        type: 'danger',
+        onOK: async _ => {
+          let result = await this.$acs.deleteQuestion({
+            id: item.id }, this.$t('admin.customerService.messages.questionDeleted', {
+            title: item.title
+          }))
+          if (result.success) {
+            this.questions.splice(index, 1)
+          }
         },
       })
     },

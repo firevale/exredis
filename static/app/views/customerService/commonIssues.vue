@@ -14,12 +14,12 @@
         <a class="button is-info is-medium" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
-    <!--<div class="my-service">
-      <question-item class="row" v-for="item in issues" :question="item">
+    <div v-if="questions" class="my-service">
+      <question-item class="row" v-for="item in questions" :question="item">
       </question-item>
-    </div>-->
-    <div class="columns is-mobile is-multiline is-gapless">
-      <div v-for="item in issues" class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop has-text-centered">
+    </div>
+    <div v-else class="columns is-mobile is-multiline is-gapless">
+      <div v-for="item in keywords" class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop has-text-centered">
         <h5 class="title is-5">{{item.title}}</h5>
       </div>
     </div>
@@ -39,18 +39,20 @@ export default {
   },
   data() {
     return {
-      issues: undefined,
+      keywords: undefined,
+      questions: undefined,
       keyword: "",
       searching: false,
+      page: 1,
+      total: 0,
+      records_per_page: 10,
     }
   },
   mounted: async function() {
-
     let result = await this.$acs.getCommonIssues(this.$route.params.appId)
     if (result.success) {
-      this.issues = result.issues
+      this.keywords = result.issues
     }
-
   },
 
   computed: {
@@ -58,13 +60,22 @@ export default {
   },
 
   methods: {
+    search: async function() {
+      this.searching = true
 
+      let result = await this.$acs.searchQuestion(this.$route.params.appId, this.keyword, this.page,
+        this.records_per_page)
+      if (result.success) {
+        this.questions = result.questions
+      }
+
+      this.searching = false
+    }
   },
-
   watch: {
     keyword(val) {
       if (!val) {
-        this.postList = undefined
+        this.questions = undefined
       }
     }
   }

@@ -147,6 +147,10 @@ export default {
           app_id: app_id
         })
       },
+      searchQuestion(app_id, keyword, page, records_per_page) {
+        return post(Vue, '/customer_service_actions/search', { app_id, keyword, page, records_per_page })
+      },
+
       getAppDetail(app_id) {
         return post(Vue, '/customer_service_actions/get_app_detail', {
           app_id: app_id

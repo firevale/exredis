@@ -18,6 +18,13 @@ defmodule Acs.CustomerServiceController do
       with  contact <- contact |> Map.put("user_id", user_id) |> Map.put("app_id", app_id),
             {:ok, contact} <- Question.changeset(%Question{}, contact) |> Repo.insert
       do
+           Elasticsearch.index(%{
+            index: "customer_service",
+            type: "questions",
+            doc: contact,
+            params: nil,
+            id: contact.id
+          })
        conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
       else
         nil ->
@@ -68,6 +75,13 @@ defmodule Acs.CustomerServiceController do
     with %Question{} = question  <- Repo.get(Question,id),
          {:ok, question} <- Question.changeset(question,%{answer: answer,active: active, is_hot: is_hot}) |>Repo.update
     do
+         Elasticsearch.update(%{
+            index: "customer_service",
+            type: "questions",
+            doc: %{ doc: %{ answer: answer,active: active, is_hot: is_hot }},
+            params: nil,
+            id: id
+         })
         conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
     else
       nil -> conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
@@ -77,6 +91,24 @@ defmodule Acs.CustomerServiceController do
   end
   def update_question(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
+  def delete_question(conn,%{"id" => id})  do
+    with %Question{id: ^id} = question <- Repo.get(Question, id),
+         {:ok, _}  <- Repo.delete(question)
+    do
+        Elasticsearch.delete(%{
+            index: "customer_service",
+            type: "questions",
+            params: nil,
+            id: id
+         })
+      conn |> json(%{success: true})
+    else
+       nil -> conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+       {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+    end
   end
 
   def get_paged_services(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page})do
@@ -92,8 +124,48 @@ defmodule Acs.CustomerServiceController do
               offset: ^((page - 1) * records_per_page),
               select: map(question, [:id, :title, :answer, :inserted_at])
     questions = Repo.all(query)
-    
+
     conn |> json(%{success: true, questions: questions, total: total_page})
+  end
+
+  def search(conn, %{"app_id" => forum_id,
+                     "keyword" => keyword,
+                     "page" => page,
+                     "records_per_page" => records_per_page}) do
+    query = %{
+      query: %{
+        bool: %{
+          must: %{multi_match: %{
+          query: keyword,
+          fields: [:title],
+        }},
+          filter: %{ term: %{active: true} }
+        }
+      },
+      from: ((page - 1) * records_per_page),
+      size: if records_per_page>30 do 30 else records_per_page end
+    }
+
+    case Elasticsearch.search(%{index: "customer_service", type: "questions", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        questions = Enum.map(hits, fn(%{
+          _id: id,
+        } = hit) ->
+          %{
+            id: hit._source.id,
+            title: hit._source.title,
+            answer:  hit._source.answer,
+            active: hit._source.active,
+            inserted_at: hit._source.inserted_at
+          }
+
+        end)
+        total_page = round(Float.ceil(total/records_per_page))
+        conn |> json(%{success: true, questions: questions, total: total_page})
+      error ->
+        error "search failed: #{inspect error, pretty: true}"
+        conn |> json(%{success: false})
+    end
   end
 
   def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do

@@ -7,7 +7,7 @@
       </p>
       <label class="label"> {{ $t('admin.news.content') }}: </label>
       <p class="control">
-        <quill-editor style="min-height: 200px" v-model.trim="news.content" @ready="setEditor" @input="handleValidation($v.news.content)"
+        <quill-editor style="min-height: 200px" v-model.trim="news.content" :full-featured="true" @ready="setEditor" @input="handleValidation($v.news.content)"
           @image="onInsertImage">
         </quill-editor>
       </p>
@@ -42,9 +42,21 @@ export default {
 
   data() {
     return {
-      news: undefined,
+      news: {
+        title: '',
+        content: '',
+      },
       processing: false,
-      editor: undefined,
+      editor: undefined
+    }
+  },
+
+  validations: {
+    news: {
+      content: {
+        required,
+        minLength: minLength(20),
+      }
     }
   },
 
@@ -54,11 +66,11 @@ export default {
     },
 
     handleValidation: function($v) {
-      $v.$reset()
-      if (touchMap.has($v)) {
-        clearTimeout(touchMap.get($v))
-      }
-      touchMap.set($v, setTimeout($v.$touch(), 2000))
+      // $v.$reset()
+      // if (touchMap.has($v)) {
+      //   clearTimeout(touchMap.get($v))
+      // }
+      // touchMap.set($v, setTimeout($v.$touch(), 2000))
     },
 
     onInsertImage: function(editor) {

@@ -4,7 +4,7 @@
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
         <h5 class="title is-5">{{ $t('admin.titles.editGoodsInfo', {appName: appName}) }}</h5>
       </div>
-      <validation name="goods" @submit.prevent="handleSubmit">
+      <form name="goods" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.app.goods.id') }}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="goods.id">
@@ -24,7 +24,7 @@
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>
-      </validation>
+      </form>
     </div>
   </modal>
 </template>

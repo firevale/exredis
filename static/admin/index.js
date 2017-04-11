@@ -4,7 +4,7 @@ import Vue from 'admin/vue-i18n'
 import Resource from 'vue-resource'
 import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
-import VueValidator from 'vue-validator'
+import Vuelidate from 'vuelidate'
 
 import App from './App.vue'
 import router from './router'
@@ -17,7 +17,7 @@ import * as filters from 'common/js/filters'
 import { TOGGLE_SIDEBAR } from './store/mutation-types'
 import VueQuillEditor from './components/quillEditor'
 
-Vue.use(VueValidator)
+Vue.use(Vuelidate)
 Vue.use(Resource)
 Vue.use(NProgress)
 Vue.use(ServerApi)

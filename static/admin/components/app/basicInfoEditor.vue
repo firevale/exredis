@@ -1,5 +1,5 @@
 <template>
-  <validation name="basicInfo" @submit.prevent="handleSubmit">
+  <form name="basicInfo" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
       <div class="column is-4" v-if="app.id">
         <label class="label"> {{ $t('admin.label.appId')}}: </label>
@@ -117,7 +117,7 @@
     <div class="has-text-centered" style="margin-top: 15px">
       <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
     </div>
-  </validation>
+  </form>
 </template>
 <script>
 import {

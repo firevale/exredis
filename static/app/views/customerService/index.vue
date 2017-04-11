@@ -10,7 +10,7 @@
         </div>
       </nav>
     </div>
-    <slider-nav :menus="menus" :selectedValue="selectMenu" @onSelect="switchMenu"></slider-nav>
+    <slider-nav :menus="menus" :selectedValue="currentNav" @onSelect="switchMenu"></slider-nav>
     <transition>
       <router-view class="content-container customer-service"> </router-view>
     </transition>
@@ -57,7 +57,7 @@ export default {
     ...mapGetters([
       'transitionName',
     ]),
-    selectMenu() {
+    currentNav() {
       return this.$route.name
     }
   },

@@ -31,9 +31,15 @@ export default {
     for (let i = 0; i < this.menus.length; i++) {
       this.menuHash[this.menus[i].value] = i
     }
-    if (this.selectedValue && this.menus) {
-      this.currentValue = this.selectedValue
+
+    this.currentValue = this.selectedValue
+    if (!this.currentValue && this.menus) {
+      this.currentValue = this.menus[0].value
     }
+
+    this.$on('select', value => {
+      this.currentValue = value
+    })
   },
   computed: {
     selectedIndex() {

@@ -3,28 +3,29 @@
     <div class="level-content">
       <nav class="level is-mobile">
         <div class="level-left">
-          <span style="flex: 1;">{{question.inserted_at | formatServerDateTime}}</span>
+          <p class="subtitle is-6">{{question.inserted_at | formatServerDateTime}}</p>
         </div>
         <div class="level-right">
-          <span v-if="question.answer === null">{{$t('customerService.myService.noReply') }}</span>
-          <span v-else class="service-reply">{{$t('customerService.myService.alreadyReply') }}</span>
+          <p class="subtitle is-6" v-if="question.answer === null">{{$t('customerService.myService.noReply') }}</p>
+          <p class="service-reply subtitle is-6" v-else>{{$t('customerService.myService.alreadyReply') }}</p>
         </div>
       </nav>
     </div>
     <div class="level-content">
       <nav class="level is-mobile">
         <div class="level-left">
-          <span style="flex: 1;">{{question.title}}</span>
+          <p class="subtitle is-6">{{question.title}}</p>
         </div>
         <div class="level-right">
-          >
+          <p style="padding-right:0.20rem" class="subtitle is-6">></p>
         </div>
       </nav>
     </div>
     <div v-show="selectedId==question.id && question.answer!==null" class="level-content reply-content">
-      {{$t('customerService.reply') }}
+      <p class="subtitle is-6"> {{$t('customerService.reply') }}</p>
       <article class="message">
-        <div class="message-body">{{question.answer}}
+        <div class="message-body subtitle is-6">
+          {{question.answer}}
         </div>
       </article>
     </div>

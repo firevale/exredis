@@ -1,27 +1,27 @@
 <template>
   <div class="contact-service">
     <form class="post" @submit.prevent="handleSubmit">
-      <div class="contact-top">
+      <div>
         <textarea class="textarea is-medium" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>
       <div class="contact-center">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <input class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit" :value="$t('customerService.submitBtn')"></input>
+            <input class="button is-info is-medium" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit" :value="$t('customerService.submitBtn')"></input>
           </div>
         </nav>
       </div>
       <div>
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <div class="bottom-left">
+            <div class="bottom-content">
               <p class="subtitle is-6">{{$t('customerService.contactService.hotline') }} : <span>{{appDetail.cs_phone_number}}</span></p>
               <p class="subtitle is-6">{{$t('customerService.contactService.officialHomePage') }} : <span>{{appDetail.website_url}}</span></p>
               <p class="subtitle is-6">{{$t('customerService.contactService.weChat') }} : <span>{{appDetail.public_weixin_name}}</span></p>
             </div>
           </div>
           <div class="level-item has-text-centered">
-            <div class="bottom-right">
+            <div class="bottom-content">
               <p class="subtitle is-6">{{$t('customerService.contactService.officialForum') }} : <span>{{appDetail.forum_url}}</span></p>
               <p class="subtitle is-6">{{$t('customerService.contactService.officialPostBar') }} : <span>{{appDetail.baidu_tieba_name}}</span></p>
               <p class="subtitle is-6">{{$t('customerService.contactService.officialMicroBlog') }} : <span>{{appDetail.weibo_name}}</span></p>

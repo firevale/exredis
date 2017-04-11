@@ -9,4 +9,6 @@ export const showFileUploadDialog = (propsData = {
     el: document.createElement('div'),
     propsData
   });
+
+  return instance;
 }

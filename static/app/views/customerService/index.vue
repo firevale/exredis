@@ -1,23 +1,22 @@
 <template>
-<div class="tile is-ancestor is-vertical root-container">
-  <div class="top-bar">
-    <div class="title-bar">
-      <h4 class="title is-4">{{$t('customerService.title')}}</h4>
-    </div>
-    <nav class="nav">
-      <div class="nav-left has-text-left">
-        <span v-show="canGoBack && inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
+  <div class="tile is-ancestor is-vertical root-container">
+    <div class="top-bar">
+      <div class="title-bar">
+        <h4 class="title is-4">{{$t('customerService.title')}}</h4>
       </div>
-    </nav>
+      <nav class="nav">
+        <div class="nav-left has-text-left">
+          <span v-show="canGoBack && inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
+        </div>
+      </nav>
+    </div>
+    <slider-nav :menus="menus" :selectedValue="currentNav" @onSelect="switchMenu"></slider-nav>
+    <transition>
+      <router-view class="content-container customer-service"> </router-view>
+    </transition>
   </div>
-  <slider-nav :menus="menus" :onSelect="switchMenu"></slider-nav>
-  <transition >
-    <router-view class="content-container customer-service"> </router-view>
-  </transition>
-</div>
 </template>
 <script>
-
 import Vue from '../../vue-installed'
 import {
   mapGetters,
@@ -57,7 +56,10 @@ export default {
   computed: {
     ...mapGetters([
       'transitionName',
-    ])
+    ]),
+    currentNav() {
+      return this.$route.name
+    }
   },
 
   methods: {

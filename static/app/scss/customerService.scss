@@ -6,50 +6,30 @@
   .contact-center {
     margin: 0.5rem;
   }
-  .bottom-left {
+  .bottom-content {
     flex-direction: column;
     align-content: flex-start;
     letter-spacing: 0.12rem;
     text-align: left;
   }
-  .bottom-left p{
+  .bottom-content p {
     font-weight: 400;
-    margin-top: 0.2rem;
+    margin-top: 0.5rem;
   }
-  .bottom-left span {
-    font-weight: 400;
-    color: $primary;
-  }
-  .bottom-right {
-    flex-direction: column;
-    align-content: flex-start;
-    letter-spacing: 0.12rem;
-    text-align: left;
-  }
-  .bottom-right p{
-    font-weight: 400;
-    margin-top: 0.2rem;
-  }
-  .bottom-right span {
+  .bottom-content span {
     font-weight: 400;
     color: $primary;
   }
 }
 
 .my-service {
+  .subtitle {
+    font-weight: 400;
+  }
   .level-content {
-    padding: 0rem 1.5rem;
+    padding: 0.12rem 1.5rem;
   }
-  .level-left span {
-    color: $text-grey;
-    letter-spacing: 0.12rem;
-  }
-  .level-right span {
-    color: $text-grey;
-    letter-spacing: 0.12rem;
-  }
-  .level-right a {
-    color: $text-grey;
+  .level-left p,.level-right p {
     letter-spacing: 0.12rem;
   }
   .level-right .service-reply {
@@ -59,7 +39,9 @@
     border: 1px $grey solid;
     margin-top: 0.35rem;
     padding: 1.0rem;
-    color: $text-grey;
     letter-spacing: 0.05rem;
+  }
+  .reply-content p {
+    margin: 0px;
   }
 }

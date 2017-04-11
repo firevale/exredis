@@ -59,13 +59,6 @@ export default {
         index
       )
     }
-  },
-  watch: {
-    selectedValue(val) {
-      if (!val) {
-        this.currentValue = val
-      }
-    }
   }
 }
 </script>

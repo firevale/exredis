@@ -139,6 +139,7 @@ export default {
   routes,
   menu,
   forum,
+  mall,
   news,
   sdks,
   setting,

@@ -5,7 +5,7 @@ export default {
 
   id: '编号',
   title: '标题',
-  content: '内容',
+  appId: 'APP编号',
   pic: '题图',
   edit: '修改',
   delete: '删除',

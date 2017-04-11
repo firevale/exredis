@@ -10,7 +10,7 @@
         </div>
       </nav>
     </div>
-    <slider-nav :menus="menus" :selectedValue="selectMenu" @onSelect="switchMenu"></slider-nav>
+    <slider-nav :menus="menus" :selectedValue="$route.name" @onSelect="switchMenu" ref="nav"></slider-nav>
     <transition>
       <router-view class="content-container customer-service"> </router-view>
     </transition>
@@ -57,14 +57,11 @@ export default {
     ...mapGetters([
       'transitionName',
     ]),
-    selectMenu() {
-      return this.$route.name
-    }
   },
 
   methods: {
     ...mapActions([
-      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'serUserProfile'
+      'setTransitionName',  'serUserProfile'
     ]),
 
     onBtnBackClicked: function() {
@@ -87,6 +84,7 @@ export default {
   watch: {
     '$route' (to, from) {
       this.canGoBack = (history.state != null)
+      this.$refs.nav.$emit('select',to.name)
     }
   },
 }

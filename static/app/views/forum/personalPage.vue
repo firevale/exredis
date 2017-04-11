@@ -117,15 +117,15 @@ export default {
     },
 
     onShowImageUpload: function() {
-      let menu = showMobileMenu({
-        visible: true,
-        items: [{title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"}, {title: "yyyy"}]
-      })
+      // let menu = showMobileMenu({
+      //   visible: true,
+      //   items: [{title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"}, {title: "yyyy"}]
+      // })
 
-      menu.$on('item-selected', (item) => {
-        console.log('mobile menu item selected: ', item)
-      })
-      // this.showImgUpload = true
+      // menu.$on('item-selected', (item) => {
+      //   console.log('mobile menu item selected: ', item)
+      // })
+      this.showImgUpload = true
     },
 
     cropUploadSuccess(result, field, key) {

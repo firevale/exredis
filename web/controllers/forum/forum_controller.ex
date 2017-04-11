@@ -3,7 +3,6 @@ defmodule Acs.ForumController do
 
   alias   Acs.RedisForum
   alias   Acs.RedisSetting
-  alias   Acs.RedisForum
   require Floki
 
   plug :fetch_app_id
@@ -12,6 +11,108 @@ defmodule Acs.ForumController do
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
+
+  # fetch_forums
+  def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
+    fetch_forums(conn, page, records_per_page)
+  end
+  def fetch_forums(conn, _params) do
+    fetch_forums(conn, 1, 100)
+  end
+  defp fetch_forums(conn, page, records_per_page) do
+    total = Repo.one!(from forum in Forum, select: count(forum.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from forum in Forum,
+              left_join: sections in assoc(forum, :sections),
+              order_by: [desc: forum.id, desc: sections.sort],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: forum,
+              preload: [sections: sections]
+
+    forums = Repo.all(query)
+    conn |> json(%{success: true, forums: forums, total: total_page})
+  end
+
+  # update_forum_icon
+  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
+    case Repo.get(Forum, forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
+
+      %Forum{} = forum ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 128, height: 128} = upload_image ->
+            if upload_image.format == "png" do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/forum_icons/"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
+              icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
+              d "icon_url: #{icon_url}"
+              Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+              #RedisApp.refresh(app_id)
+              conn |> json(%{success: true, icon_url: icon_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+
+  # update_forum_info
+  def update_forum_info(conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
+    case Repo.get(Forum, forum_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound"})
+
+      %Forum{} = forum ->
+        Forum.changeset(forum, forum_info) |> Repo.update!
+        conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
+    end
+  end
+
+  # update_section_info
+  def update_section_info(conn, %{"section" => %{"title" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptySectionTitle"})
+  end
+  def update_section_info(conn, %{"section" => %{"forum_id" => ""}}) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyForumId"})
+  end
+  def update_section_info(conn, %{"section" => %{
+      "id" => id,
+      "title" => title,
+      "sort" => sort,
+      "active" => active,
+      "forum_id" => forum_id,
+    } = section}) do
+    case Repo.get(ForumSection, id) do
+      nil ->
+        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+
+      %ForumSection{} = old_section ->
+        case ForumSection.changeset(old_section, section) |> Repo.update do
+          {:ok, new_section} ->
+            conn |> json(%{success: true, section: new_section })
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+    end
+  end
 
   # get_paged_forums
   def get_paged_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do

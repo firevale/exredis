@@ -121,4 +121,8 @@ defmodule Acs.Router do
   scope path: "/games_actions", alias: Acs do
     forward "/", GamesRouter
   end
+
+  scope path: "/mall_actions", alias: Acs do
+    forward "/", MallRouter
+  end
 end

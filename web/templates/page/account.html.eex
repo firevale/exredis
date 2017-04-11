@@ -2,15 +2,17 @@
 <html lang="zh-cmn-Hans">
   <head>
     <meta charset="utf-8"/>
-    <title> <%= gettext("Firevale Forum") %> </title>
+    <title> Firevale Account Profile </title>
     <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="full-screen" content="true"/>
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
+    <%= unless Mix.env in [:dev, :test] do %>
     <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
+    <% end %>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">

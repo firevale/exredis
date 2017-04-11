@@ -14,7 +14,7 @@
         <a class="button is-info" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
-    <div v-if="questions||searching" class="my-service" style="top:13rem;height:100%">
+    <div v-if="questions||searching" class="my-service" style="position:relative;top:1rem;height:100%">
       <scroller :on-load-more="loadmore" ref="scroller">
         <question-item class="row" v-for="item in questions" :question="item">
         </question-item>
@@ -27,7 +27,7 @@
                       'is-half': historyTableColumns == 2,
                       'is-4': historyTableColumns == 3,
                       'is-3': historyTableColumns == 4,
-                      'is-clickable': keyword}" style="padding: 0.5rem 0;height:2rem;overflow:hidden; white-space:nowrap; text-overflow:ellipsis;"
+                      'is-clickable': keyword}" style="padding: 0.5rem 0;overflow:hidden; white-space:nowrap; text-overflow:ellipsis;"
           @click="search(keyword)">
           <span class="title is-5" style="font-weight: 400; font-size: 1.1rem"> {{keyword}} </span>
         </div>
@@ -64,16 +64,9 @@ export default {
     }
   },
   mounted: async function() {
+    this.resize()
     window.addEventListener('resize', e => {
-      let width = window.innerWidth || document.documentElement.clientWidth || document.body
-        .clientWidth
-      if (width < 768) {
-        this.historyTableColumns = 2
-      } else if (width > 768 && width < 1384) {
-        this.historyTableColumns = 3
-      } else {
-        this.historyTableColumns = 4
-      }
+      this.resize()
     })
 
     let result = await this.$acs.getCommonIssues(this.$route.params.appId)
@@ -110,6 +103,17 @@ export default {
   },
 
   methods: {
+    resize: function() {
+      let width = window.innerWidth || document.documentElement.clientWidth || document.body
+        .clientWidth
+      if (width < 768) {
+        this.historyTableColumns = 2
+      } else if (width > 768 && width < 1384) {
+        this.historyTableColumns = 3
+      } else {
+        this.historyTableColumns = 4
+      }
+    },
     search: async function(keyword) {
       if (keyword && typeof keyword == 'string') {
         this.keyword = keyword

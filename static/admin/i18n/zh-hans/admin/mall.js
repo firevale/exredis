@@ -13,9 +13,9 @@ export default {
   active: '是否启用',
 
   goods: {
+    add: '添加新商品',
     title: '版块名称',
     sort: '版块排序',
-    add: '添加新版块',
   },
 
   

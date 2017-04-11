@@ -86,6 +86,7 @@ export default {
     searchGoods: '搜索商品名称',
     oops: '哦噢。。。',
     noOrderToDisplay: '当前没有任何可以显示的订单',
+    noGoodsToDisplay: '当前没有任何商品',
     loading: '正在加载数据...',
     editActivityInfo: '编辑活动信息',
     editNoticeInfo: '编辑公告信息',

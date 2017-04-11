@@ -70,6 +70,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
 .-mobile-menu-container {
   position: fixed;

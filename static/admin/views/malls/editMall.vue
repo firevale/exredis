@@ -30,7 +30,7 @@ import orderInfoEditor from 'admin/components/mall/orderInfoEditor'
 
 export default {
   mounted() {
-    let mall = this.mallHash[this.$route.params.mallId]
+    let mall = this.mallHash[this.$route.params.appId]
 
     if (typeof mall == 'undefined') {
       this.$router.replace({

@@ -1,115 +1,144 @@
 <template>
-  <div class="tile is-ancestor">
-    <div class="tile is-parent">
-      <article class="tile is-child">
-        <div class="table-responsive" v-if="forum">
-          <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead v-show="forum.sections && forum.sections.length > 0">
-              <tr>
-                <th>{{ $t('admin.forum.id') }}</th>
-                <th>{{ $t('admin.forum.section.title') }}</th>
-                <th>{{ $t('admin.forum.section.sort')}}</th>
-                <th>{{ $t('admin.forum.created_at')}}</th>
-                <th>{{ $t('admin.forum.active')}}</th>
-                <th>{{ $t('admin.forum.edit')}}</th>
-              </tr>
-            </thead>
-            <tfoot>
-              <tr>
-                <th :colspan="6" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
-                  <a class="button is-primary" style="min-width: 100px" @click="addNewSection">
-                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.forum.section.add') }}
-                  </a>
-                </th>
-              </tr>
-            </tfoot>
-            <tbody v-show="forum.sections && forum.sections.length > 0">
-              <tr v-for="(section, index) in forum.sections">
-                <td> {{ section.id }} </td>
-                <td> {{ section.title }} </td>
-                <td> {{ section.sort }} </td>
-                <td> {{ section.inserted_at | formatServerDateTime }} </td>
-                <td v-if="section.active">正常</td><td v-else>禁用</td>
-                <td class="is-icon">
-                  <a @click.prevent="editSectionInfo(section, index)">
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <div>
+    <div class="control has-icon has-icon-left">
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchGoods')"
+        v-model="keyword">
+      <span class="icon is-small">
+        <i v-if="searching" class="fa fa-spinner fa-spin"></i>
+        <i v-else class="fa fa-search"></i>
+      </span>
+    </div>
+    <div class="tile is-ancestor">
+      <div class="tile is-parent is-vertical">
+        <article class="tile is-child is-12">
+          <div class="table-responsive">
+            <template v-for="goods in goodses">
+              <figure class="image is-128x128" style="display: block">
+                <img :src="getGoodsIcon(goods)"></img>
+              </figure>
+            </template>
+          </div>
+        </article>
+        <article class="tile is-child is-12">
+          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+        </article>
+      </div>
+    </div>
+    <div class="box" v-else>
+      <div class="hero-body has-text-centered">
+        <div v-if="loading" class="container">
+          <span class="icon is-large">
+            <i class="fa fa-spinner fa-spin"></i>
+          </span>
+          <h2 class="subtitle" style="margin-top: 20px">
+            {{ $t('admin.titles.loading') }}
+          </h2>
         </div>
-      </article>
+        <div v-else class="container">
+          <h1 class="title">
+            {{ $t('admin.titles.oops') }}
+          </h1>
+          <h2 class="subtitle">
+            {{ $t('admin.titles.noOrderToDisplay') }}
+          </h2>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  processAjaxError
+} from 'admin/miscellaneous'
 
-  import {
-    openNotification,
-    processAjaxError
-  } from 'admin/miscellaneous'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import Vue from 'admin/vue-i18n'
+import * as getters from 'admin/store/getters'
+import Pagination from 'admin/components/Pagination'
+import Tooltip from 'vue-bulma-tooltip'
 
-  import sectionInfoDialog from 'admin/components/dialog/forum/sectionInfo'
-  const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
-
-  const openSectionInfoDialog = (propsData = {
-    visible: true
-  }) => {
-    return new sectionInfoDialogComponent({
-      el: document.createElement('div'),
-      propsData
-    })
-  }
-
-  import Tooltip from 'vue-bulma-tooltip'
-
-  export default {
-    props: {
-      forum: Object,
-    },
-
-    methods: {
-
-      editSectionInfo: function(section, index) {
-        openSectionInfoDialog({
-          section: section,
-          visible: true,
-          callback: new_section => {
-            this.forum.sections[index] = new_section
-          },
-        })
-      },
-
-      addNewSection: function() {
-        openSectionInfoDialog({
-          section: {
-            id: '',
-            sort: 0,
-            title: '',
-            active: true,
-            forum_id: this.forum.id,
-          },
-          visible: true,
-          callback: section => {
-            this.forum.sections.push(section)
-          },
-        })
-      },
-
-
-    },
-
-    components: {
-      Tooltip
+export default {
+  data: function() {
+    return {
+      keyword: "",
+      searching: false,
+      loading: true,
+      goodses: [],
+      page: 1,
+      total: 1,
+      recordsPerPage: 8,
+      appId: "",
     }
+  },
 
+  mounted: function() {
+    this.appId = this.$route.params.appId
+    this.fetchGoods(this.page, this.recordsPerPage)
+  },
+
+  methods: {
+    getGoodsIcon: function(goods) {
+      let goodsInfo = this.mallGoods[`${goods.app_id}-${goods.id}`]
+      if (goodsInfo && goodsInfo.pic) {
+        return goodsInfo.pic
+      } else {
+        return 'https://placehold.it/128x128?text=未上传'
+      }
+    },
+
+    onPageChange: function(page) {
+      this.fetchGoods(page, this.recordsPerPage)
+    },
+
+    onSearchBoxSubmit: function() {
+      if (this.keyword) {
+        this.searchGoods(1)
+      } else {
+        this.fetchGoods(1, this.recordsPerPage)
+      }
+    },
+
+    fetchGoods: async function(page, recordsPerPage) {
+      this.loading = true
+      let result = await this.$acs.fetchGoods({
+        keyword: "",
+        app_id: this.appId,
+        page: page,
+        records_per_page: recordsPerPage
+      })
+
+      if (result.success) {
+        this.total = result.total
+        this.goodses = result.goodses
+        this.page = page
+      }
+
+      this.loading = false
+    },
+
+    searchGoods: async function(page) {
+      this.searching = true
+      let result = await this.$acs.fetchGoods({
+        keyword: this.keyword,
+        app_id: this.app_id,
+        page: page,
+        records_per_page: this.recordsPerPage
+      })
+      if (result.success) {
+        this.total = result.total
+        this.goodses = result.goodses
+        this.page = page
+      }
+      this.searching = false
+    },
+  },
+
+  components: {
+    Pagination,
+    Tooltip
   }
+}
 </script>

@@ -1,8 +1,7 @@
 defmodule Acs.MallController do
   use Acs.Web, :controller
 
-  alias   Acs.RedisForum
-  alias   Acs.RedisSetting
+  # alias   Acs.RedisMall
   require Floki
 
   plug :fetch_app_id
@@ -75,6 +74,45 @@ defmodule Acs.MallController do
         Mall.changeset(mall, mall_info) |> Repo.update!
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
+  end
+
+  # fetch_goods
+  def fetch_goods(conn, %{"page" => page, 
+                        "records_per_page" => records_per_page,
+                        "keyword" => keyword,
+                        "app_id" => app_id}) do
+    
+    # if(String.length(keyword)>0) do
+
+    queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id
+    queryTotal = if(String.length(keyword)>0) do
+      queryTotal |> where([p], like(p.name, ^keyword))
+    else
+      queryTotal
+    end
+
+    total = Repo.one!(queryTotal)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from g in MallGoods,
+              where: g.app_id == ^app_id,
+              order_by: [desc: g.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
+
+    query = if(String.length(keyword)>0) do
+
+      query |> where([p], like(p.name, ^keyword))
+    else
+      query
+    end
+
+    goodses = Repo.all(query)
+    conn |> json(%{success: true, goodses: goodses, total: total_page})
+  end
+  def fetch_malls(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
  
 end

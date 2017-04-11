@@ -11,7 +11,7 @@
           </figure>
           <div class="tile is-vertical is-child" style="padding-left: 5px;">
             <h3 style="font-weight: bold"> {{mall.title}} </h3>
-            <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'EditMall', params: {mallId: mall.id}}">
+            <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'EditMall', params: {appId: mall.app_id}}">
               <span class="icon is-small"><i class="fa fa-search"></i></span>
               <span> {{ $t('admin.routes.Malls') }} </span>
             </router-link>

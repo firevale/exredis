@@ -14,9 +14,11 @@
         <a class="button is-info is-medium" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
-    <div v-if="questions" class="my-service">
-      <question-item class="row" v-for="item in questions" :question="item">
-      </question-item>
+    <div v-if="questions||searching" class="my-service" style="top:13rem;height:100%">
+      <scroller :on-load-more="loadmore" ref="scroller">
+        <question-item class="row" v-for="item in questions" :question="item">
+        </question-item>
+      </scroller>
     </div>
     <div v-else style="padding: 1rem 1px">
       <div v-for="(row, i) in searchHistoryTable" class="columns is-mobile is-gapless" style="margin-bottom: 0">
@@ -25,7 +27,7 @@
                       'is-half': historyTableColumns == 2,
                       'is-4': historyTableColumns == 3,
                       'is-3': historyTableColumns == 4,
-                      'is-clickable': keyword}" style="padding: 0.5rem 0" @click="search()">
+                      'is-clickable': keyword}" style="padding: 0.5rem 0" @click="search(keyword)">
           <span class="title is-5" style="font-weight: 400; font-size: 1.1rem"> {{keyword}} </span>
         </div>
       </div>
@@ -39,9 +41,13 @@ import {
 } from 'vuex'
 
 import * as utils from 'common/js/utils'
+
+import scroller from 'common/components/scroller'
 import questionItem from '../../components/questionItem'
+
 export default {
   components: {
+    scroller,
     questionItem
   },
   data() {
@@ -50,8 +56,8 @@ export default {
       questions: undefined,
       keyword: "",
       searching: false,
-      page: 1,
-      total: 0,
+      page: 0,
+      total: 1,
       records_per_page: 10,
       historyTableColumns: 2,
     }
@@ -103,16 +109,35 @@ export default {
   },
 
   methods: {
-    search: async function() {
-      this.searching = true
-
-      let result = await this.$acs.searchQuestion(this.$route.params.appId, this.keyword, this.page,
-        this.records_per_page)
-      if (result.success) {
-        this.questions = result.questions
+    search: async function(keyword) {
+      if (keyword && typeof keyword == 'string') {
+        this.keyword = keyword
       }
 
+      this.searching = true
+      this.page = 0;
+      this.resetScroller()
+      await this.loadmore()
       this.searching = false
+    },
+    resetScroller: function() {
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
+    },
+    loadmore: async function() {
+      let result = await this.$acs.searchQuestion(this.$route.params.appId, this.keyword, this.page +
+        1, this.records_per_page)
+
+      if (result.success) {
+        this.questions = this.page == 0 ? result.questions : this.questions.concat(result.questions)
+        this.total = result.total
+        this.page = this.page + 1
+
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
+        }
+      }
     }
   },
   watch: {

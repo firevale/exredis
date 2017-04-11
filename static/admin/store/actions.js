@@ -82,3 +82,17 @@ export const fetchForums = ({
       }
     }).catch(e => processAjaxError(e))
 }
+
+export const fetchMalls = ({
+  commit
+}) => {
+  Vue.http.get('/admin_actions/fetch_malls', {})
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        commit(types.UPDATE_MALLS, result.malls)
+      } else {
+        return Promise.reject(result)
+      }
+    }).catch(e => processAjaxError(e))
+}

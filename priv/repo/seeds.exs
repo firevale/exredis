@@ -23,6 +23,7 @@ alias Acs.ForumComment
 alias Acs.User
 alias Acs.ForumManager
 alias Acs.AdminSetting
+alias Acs.Mall
 
 require Logger
 
@@ -95,3 +96,6 @@ ForumComment.changeset(%ForumComment{}, %{title: "回复:测试文章1", content
 
 AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_limit", value: "5", memo: "论坛热帖时段内回复数(热帖阀值)", group: "basicInfo", active: true}) |> Repo.insert
 AdminSetting.changeset(%AdminSetting{}, %{name: "forum_post_hot_hours", value: "12", memo: "论坛热帖检查时间(小时)", group: "basicInfo", active: true}) |> Repo.insert
+AdminSetting.changeset(%AdminSetting{}, %{name: "keyword", value: "色情,法轮功,江泽民", memo: "网站敏感词过滤", group: "keyword", active: true}) |> Repo.insert
+
+Mall.changeset(%Mall{}, %{title: "战神大陆商城", active: true, app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert

@@ -58,6 +58,7 @@ export default {
     this.fetchPlatformApps()
     this.fetchSupportedSdks()
     this.fetchForums()
+    this.fetchMalls()
   },
 
   computed: mapGetters({
@@ -70,6 +71,7 @@ export default {
     'fetchPlatformApps',
     'fetchSupportedSdks',
     'fetchForums',
+    'fetchMalls',
   ])
 }
 </script>

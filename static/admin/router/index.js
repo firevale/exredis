@@ -51,6 +51,16 @@ export default new Router({
       name: 'EditNews',
       path: 'apps/news/edit',
       component: require('../views/news/editNews')
+    },
+    {
+      name: 'Malls',
+      path: 'malls',
+      component: require('../views/malls/malls')
+    },
+    {
+      name: 'EditMall',
+      path: 'malls/edit/:mallId',
+      component: require('../views/malls/editMall')
     }, {
       name: 'Settings',
       path: 'settings',

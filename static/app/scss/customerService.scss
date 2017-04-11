@@ -9,21 +9,29 @@
   .bottom-left {
     flex-direction: column;
     align-content: flex-start;
-    color: $text-grey;
     letter-spacing: 0.12rem;
     text-align: left;
   }
+  .bottom-left p{
+    font-weight: 400;
+    margin-top: 0.2rem;
+  }
   .bottom-left span {
+    font-weight: 400;
     color: $primary;
   }
   .bottom-right {
     flex-direction: column;
     align-content: flex-start;
-    color: $text-grey;
     letter-spacing: 0.12rem;
     text-align: left;
   }
+  .bottom-right p{
+    font-weight: 400;
+    margin-top: 0.2rem;
+  }
   .bottom-right span {
+    font-weight: 400;
     color: $primary;
   }
 }

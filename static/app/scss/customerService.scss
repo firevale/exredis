@@ -55,23 +55,3 @@
     letter-spacing: 0.05rem;
   }
 }
-
-.common-issues {
-  .columns {
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid $grey;
-    border-bottom: 1px solid $grey;
-    .column {
-      .title {
-        font-weight: 400;
-        height: 3rem;
-        line-height: 3rem;
-      }
-      white-space: nowrap;
-      text-overflow: clip;
-      border-left: 1px solid $grey;
-      border-top: 1px solid $grey;
-    }
-  }
-}

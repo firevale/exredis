@@ -14,5 +14,9 @@
    replyForm: {
      name: '编辑回复',
      replyPlaceholder: '请输入回复内容',
+   },
+   messages: {
+     confirmDeleteQuestion: '您确定要删除『{title}』么?',
+     questionDeleted: '问题『{title}』已成功删除',
    }
  }

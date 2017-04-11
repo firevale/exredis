@@ -67,9 +67,7 @@ export default {
           active: this.question.active,
           is_hot: this.question.is_hot
         },
-        this.$t('admin.messages.questionInfoUpdated', {
-          questionTitle: result.question.title
-        }))
+        undefined)
       if (result.success) {
         if (this.callback) {
           this.callback(result.question)

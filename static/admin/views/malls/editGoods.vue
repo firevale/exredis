@@ -112,10 +112,12 @@ export default {
       let result = await this.$acs.updateGoods({
         goods_id: this.goods.id,
         app_id: this.goods.app_id,
-        title: this.goods.title,
-        content: this.goods.content,
-        group: this.goods.group,
-        is_top: false
+        name: this.goods.name,
+        pic: this.goods.pic,
+        description: this.goods.description,
+        price: this.goods.price,
+        postage: this.goods.postage,
+        stock: this.goods.stock
       })
       if (result.success) {
         this.$router.go(-1)

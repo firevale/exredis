@@ -147,6 +147,18 @@ export default {
         return post(Vue, '/admin_actions/fetch_goods', params)
       },
 
+      updateGoods(params) {
+        return post(Vue, '/admin_actions/update_goods', params)
+      },
+
+      toggleGoodsStatus(params) {
+        return post(Vue, '/admin_actions/toggle_goods_status', params)
+      },
+
+      deleteGoods(params) {
+        return post(Vue, '/admin_actions/delete_goods', params)
+      },
+
     }
   }
 }

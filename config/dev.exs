@@ -13,8 +13,8 @@ config :acs, Acs.Endpoint,
   static_url: [host: System.get_env("ACS_HOST") || "localhost", port: 80, scheme: "http"],
   debug_errors: true,
   code_reloader: false,
-  check_origin: false,
-  watchers: [yarn: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
+  check_origin: false
+  # watchers: [yarn: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
 
 # Watch static and templates for browser reloading.
 config :acs, Acs.Endpoint,

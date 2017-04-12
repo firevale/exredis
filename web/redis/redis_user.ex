@@ -325,7 +325,13 @@ defmodule Acs.RedisUser do
       {"#{sdk}.#{app_id}", sdk_user_id}
     end) |> Enum.into(%{})
 
-    d "user: #{inspect user, pretty: true}"
+    user = case user.nickname do 
+      nil ->
+        {:ok, new_user} = User.changeset(user, %{nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}) |> Repo.update
+        new_user
+      _ -> 
+        user
+    end
 
     cache = %__MODULE__{
               id: user.id,

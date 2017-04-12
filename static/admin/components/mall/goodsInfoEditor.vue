@@ -17,6 +17,7 @@
           price: '',
           postage: 0,
           stock: '',
+          currency: 'CNY',
           app_id: this.$route.params.appId,
         }}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')

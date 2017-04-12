@@ -1,5 +1,5 @@
 <template>
-    <div class="tile is-marginless is-vertical">
+    <div class="mall-index tile is-marginless is-vertical">
         <div class="top-bar">
             <div class="title-bar">
                 <h4 class="title is-4">商城名称</h4>
@@ -15,16 +15,22 @@
                 </div>
             </nav>
         </div>
-        <div style="width:100%; height:100%;top: 5.8rem;position: absolute;">
+        <div class="middle-content">
             <scroller :on-load-more="loadmore" ref="scroller">
                 <div class="columns is-multiline is-mobile">
                     <div v-for="item in goodsList" class="column is-half has-text-centered">
-                        <figure class="image is-400x400">
-                            <img v-if="item.pic" :src="item.pic">
-                            <img v-else src="https://placehold.it/300x300?text=300x300">
-                        </figure>
-                        <p class="subtitle is-marginless is-6" style="font-weight:400">{{item.name}}</p>
-                        <p class="subtitle is-marginless is-6" style="font-weight:400">{{item.price}}</p>
+                        <div class="card-image pic">
+                            <figure class="image is-400x400">
+                                <img v-if="item.pic" :src="item.pic">
+                                <img v-else src="https://placehold.it/300x300?text=400x400">
+                            </figure>
+                        </div>
+                        <p class="subtitle is-marginless is-5 name">
+                            {{item.name}}
+                        </p>
+                        <p class="subtitle is-marginless is-5 price">
+                            <label>{{(item.price / 100).toFixed(2)}}</label>
+                        </p>
                     </div>
                 </div>
             </scroller>

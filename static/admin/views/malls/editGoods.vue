@@ -16,9 +16,9 @@
         </quill-editor>
       </p>
       <div class="has-text-centered" style="margin-top: 15px">
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
+        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onDelete">{{ $t('admin.mall.goods.delete') }}</a>
+        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onPublish">{{ $t('admin.mall.goods.publish') }}</a>
+        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSave">{{ $t('admin.mall.goods.save') }}</a>
       </div>
     </form>
   </div>
@@ -91,11 +91,12 @@ export default {
       })
     },
 
-    onSubmit: function() {
-      if (this.goods.title.length == 0 || this.goods.description.length == 0) {
+    onSave: function() {
+      if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price.length == 0 
+      || this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.pic.length == 0) {
         openNotification({
           title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.requireTitleContent'),
+          message: this.$t('admin.mall.goods.pleaseFill'),
           type: 'danger',
           duration: 4500,
           container: '.notifications',

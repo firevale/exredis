@@ -9,11 +9,14 @@
       </span>
     </div>
         <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
-          news: {
+          goods: {
           id: '',
-          title: '',
-          content: '',
-          group: 'activity',
+          pic: '',
+          name: '',
+          description: '',
+          price: '',
+          postage: 0,
+          stock: '',
           app_id: this.$route.params.appId,
         }}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')

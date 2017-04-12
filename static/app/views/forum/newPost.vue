@@ -108,7 +108,7 @@ export default {
   mounted: function() {
     this.$nextTick(_ => {
       let menuItems = {}
-      this.editingPostData.selectedSectionId = this.currentSectionId || 1
+      this.editingPostData.selectedSectionId = (this.currentSectionId == 0 ? 1 : this.currentSectionId)
       this.forumInfo.sections.forEach(section => {
         menuItems[section.id] = {
           title: section.title,

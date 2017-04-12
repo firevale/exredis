@@ -32,7 +32,7 @@ export const clearSearchHistory = ({
   commit(types.CLEAR_SEARCH_HISTORY, key)
 }
 
-export const serUserProfile = ({
+export const setUserProfile = ({
   commit
 }, user) => {
   commit('SET_USER_PROFILE', user)

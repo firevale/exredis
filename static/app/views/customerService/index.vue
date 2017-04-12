@@ -61,7 +61,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName',  'serUserProfile'
+      'setTransitionName',  'setUserProfile'
     ]),
 
     onBtnBackClicked: function() {

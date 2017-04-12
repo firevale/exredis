@@ -32,7 +32,6 @@ window.addEventListener('popstate', _ => {
 
 let router = routerMap(VueRouter)
 router.afterEach(route => {
-  console.log(route)
   Vue.nextTick(_ => store.commit('SET_TRANSITION_NAME', transitionSlideRightToLeft))
 })
 

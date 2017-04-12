@@ -11,10 +11,8 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <%= unless Mix.env in [:dev, :test] do %>
     <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
-    <% end %>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">

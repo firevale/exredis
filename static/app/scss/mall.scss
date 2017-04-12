@@ -1,0 +1,24 @@
+.mall-index {
+    .middle-content {
+        width: 100%;
+        height: 100%;
+        top: 5.8rem;
+        position: absolute;
+    }
+    .middle-content .name {
+        font-weight: 400;
+        padding-top: 1.0rem;
+    }
+    .middle-content .pic {
+        padding: 0.35rem;
+        border: 1px $grey solid
+    }
+    .middle-content .price {
+        font-weight: 400;
+        padding-top: 0.56rem;
+        color: $primary;
+    }
+    label:before {
+        content: '¥ ';
+    }
+}

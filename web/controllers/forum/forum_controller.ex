@@ -43,21 +43,30 @@ defmodule Acs.ForumController do
 
       %Forum{} = forum ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 128, height: 128} = upload_image ->
-            if upload_image.format == "png" do
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/forum_icons/"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-              icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-              d "icon_url: #{icon_url}"
-              Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
-              #RedisApp.refresh(app_id)
-              conn |> json(%{success: true, icon_url: icon_url})
-            else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+          %{width: width, height: height} = upload_image ->
+            if width == height do 
+              if width >= 128 do 
+                if upload_image.format == "png" do
+                  Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
+                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+                  [file_md5 | _] = String.split(md5sum_result)
+                  static_path = Application.app_dir(:acs, "priv/static/")
+                  url_path = "/images/forum_icons/"
+                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
+                  icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
+                  d "icon_url: #{icon_url}"
+                  Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+                  #RedisApp.refresh(app_id)
+                  conn |> json(%{success: true, icon_url: icon_url})
+                else
+                  conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+                end
+              else 
+                conn |> json(%{success: false, i18n_message: "admin.serverError.imageMinWidth", i18n_message_object: %{minWdith: 128}})
+              end
+            else 
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageShouldBeSquare"})
             end
           _ ->
             conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})

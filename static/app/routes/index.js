@@ -3,7 +3,7 @@ import payment from './payment'
 import customerServiceRoutes from './customerService'
 import account from './account'
 import gamesRoutes from './games'
-import mallsRoutes from './malls'
+import mallRoutes from './mall'
 
 export default function(VueRouter) {
   return new VueRouter({
@@ -14,7 +14,7 @@ export default function(VueRouter) {
       ...gamesRoutes,
       ...account,
       ...payment,
-      ...mallsRoutes,
+      ...mallRoutes,
     ],
   });
 }

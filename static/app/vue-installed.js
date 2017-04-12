@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import VueTimeago from 'vue-timeago'
 import Vuelidate from 'vuelidate'
-import VueTouch from 'vue-touch'
+import VueTouch from 'common/components/vue-touch'
 import ServerApi from './serverApi'
 import VueQuillEditor from 'common/components/quillEditor'
 

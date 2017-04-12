@@ -62,7 +62,7 @@ export default {
           filter.init(result.keyword)
 
           if(window.acsConfig.acsUser){
-            vm.serUserProfile(window.acsConfig.acsUser)
+            vm.setUserProfile(window.acsConfig.acsUser)
           }
         })
       } else {
@@ -79,7 +79,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'serUserProfile'
+      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'setUserProfile'
     ]),
 
     onBtnBackClicked: function() {

@@ -28,8 +28,8 @@ defmodule Acs.MallGoods do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :description, :price, :postage, :pic, :stock, :sold, :reads, :active, :app_id, :user_id])
-    |> validate_required([:name, :description, :price, :postage, :pic, :app_id, :user_id])
+    |> cast(params, [:id, :name, :description, :price, :postage, :pic, :stock, :sold, :reads, :active, :app_id, :user_id])
+    |> validate_required([:id, :name, :description, :price, :postage, :pic, :app_id, :user_id])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
 

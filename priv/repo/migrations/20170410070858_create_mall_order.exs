@@ -10,7 +10,6 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
 
       add :goods_name, :string
       add :price, :integer, default: 0
-      add :amount, :integer, default: 0       #数量
       add :postage, :integer, default: 0      #邮费
       add :discount, :integer, default: 0     #折扣
       add :final_price, :integer, default: 0  #最终价格

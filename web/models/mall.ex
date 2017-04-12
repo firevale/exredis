@@ -19,8 +19,8 @@ defmodule Acs.Mall do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :icon, :active])
-    |> validate_required([:title])
+    |> cast(params, [:title, :icon, :active, :app_id])
+    |> validate_required([:title, :app_id])
     |> foreign_key_constraint(:app_id)
   end
 end

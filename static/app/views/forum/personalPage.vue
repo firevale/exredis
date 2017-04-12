@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'serUserProfile'
+      'setUserProfile'
     ]),
 
     switchMenu: function(menu) {
@@ -133,7 +133,7 @@ export default {
 
     cropUploadSuccess(result, field, key) {
       if (result.success) {
-        this.serUserProfile(result.user)
+        this.setUserProfile(result.user)
       }
     },
 

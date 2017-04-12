@@ -210,8 +210,8 @@ defmodule Acs.ForumController do
   end
   def get_user_paged_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                             %{"forum_id" => forum_id,
-                             "page" => page,
-                             "records_per_page" => records_per_page}) do
+                              "page" => page,
+                              "records_per_page" => records_per_page}) do
     get_paged_post_list(conn, forum_id, 0, page, records_per_page, "id", user_id)
   end
   def get_user_paged_post(conn, _) do
@@ -414,19 +414,20 @@ defmodule Acs.ForumController do
 
   # get_user_post_comments
   def get_user_post_comments(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                              %{"page" => page,
+                              %{"forum_id" => forum_id,
+                                "page" => page,
                                 "records_per_page" => records_per_page}) do
     total = Repo.one!(from c in ForumComment, 
                       join: p in assoc(c, :post), 
                       select: count(1), 
-                      where: c.user_id == ^user_id and c.active == true and p.active == true)
+                      where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,
             join: p in assoc(c, :post),
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
-            where: c.user_id == ^user_id and c.active == true and p.active == true,
+            where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true,
             select: map(c, [:id, :content, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -476,7 +477,7 @@ defmodule Acs.ForumController do
 
   # toggle_post_favorite (need user login)
   def toggle_post_favorite(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                  %{"post_id" => post_id} = post) do
+                           %{"post_id" => post_id} = post) do
     favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
     case favorite do
       nil ->
@@ -573,8 +574,9 @@ defmodule Acs.ForumController do
 
   # get_user_favorites
   def get_user_favorites(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                                    %{"page" => page,
-                                    "records_per_page" => records_per_page}) do
+                         %{"forum_id" => forum_id,
+                           "page" => page,
+                           "records_per_page" => records_per_page}) do
     queryTotal = from f in UserFavoritePost, join: p in assoc(f, :post), select: count(1), where: f.user_id == ^user_id and p.active == true
     total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
@@ -584,7 +586,7 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             select: map(f, [:id, post: [:id, :inserted_at, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
-            where: f.user_id == ^user_id and p.active == true,
+            where: p.forum_id == ^forum_id and f.user_id == ^user_id and p.active == true,
             offset: ^((page - 1) * records_per_page),
             preload: [post: {p, section: s}],
             order_by: [{:desc, f.id}]
@@ -701,5 +703,14 @@ defmodule Acs.ForumController do
       conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
     end
   end
+
+  def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                           %{"forum_id" => forum_id}) do 
+    total = Repo.one!(from p in ForumPost, 
+                      select: count(1), 
+                      where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
+    conn |> json(%{success: true, post_count: total}) 
+  end
+
  
 end

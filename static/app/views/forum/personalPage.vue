@@ -13,7 +13,7 @@
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
         <p>
-          {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
+          {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.post_count}}</span>
         </p>
         <p>
           {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
@@ -103,13 +103,23 @@ export default {
       page: 0,
       total: 1,
       recordsPerPage: 10,
-      postRecords: 0,
       showImgUpload: false
     }
   },
+
+  mounted: async function() {
+    if (this.userInfo.post_count == 0) {
+      let result = await this.$acs.getUserPostCount(this.$route.params.forumId)     
+
+      if (result.success) {
+        this.updateUserPostCount(result.post_count)  
+      }
+    }  
+  },
+
   methods: {
     ...mapActions([
-      'setUserProfile'
+      'setUserProfile', 'updateUserPostCount', 'decrUserPostCount'
     ]),
 
     switchMenu: function(menu) {
@@ -169,7 +179,7 @@ export default {
     onItemDelete(index) {
       switch (this.type) {
         case "myPosts":
-          this.postRecords--;
+          this.decrUserPostCount()
           this.postList.splice(index, 1)
           break;
         case "myFavor":
@@ -179,7 +189,7 @@ export default {
     },
 
     getPostPage: async function() {
-      let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
+      let result = await this.$acs.getUserPagedPost(this.$route.params.forumId,
         this.page + 1, this.recordsPerPage)
 
       if (result.success) {
@@ -194,7 +204,7 @@ export default {
     },
 
     getCommentPage: async function() {
-      let result = await this.$acs.getUserPostComments(this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
 
       if (result.success) {
         this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
@@ -208,7 +218,7 @@ export default {
     },
 
     getFavoritePage: async function() {
-      let result = await this.$acs.getUserPostFavorites(this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
 
       if (result.success) {
         this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)

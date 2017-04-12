@@ -35,7 +35,19 @@ export const clearSearchHistory = ({
 export const setUserProfile = ({
   commit
 }, user) => {
-  commit('SET_USER_PROFILE', user)
+  commit(types.SET_USER_PROFILE, user)
+}
+
+export const updateUserPostCount = ({
+  commit
+}, postCount) => {
+  commit(types.UPDATE_USER_POST_COUNT, postCount)
+}
+
+export const decrUserPostCount = ({
+  commit
+}) => {
+  commit(types.DECR_USER_POST_COUNT)
 }
 
 export const setCommonIssues = ({

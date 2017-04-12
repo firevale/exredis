@@ -10,7 +10,7 @@ defmodule Acs.MallController do
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   # plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
-  plug :check_is_admin when action in [:update_goods, :update_news_pic]
+  plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
 
   # fetch_malls
   def fetch_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -152,7 +152,7 @@ defmodule Acs.MallController do
         goods = goods |> Map.put("user_id", user_id)
         case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
           {:ok, new_goods} ->
-            goods = goods |> Map.put("id", new_goods.id) |> Map.put("inserted_at", new_goods.inserted_at)
+            goods = goods |> Map.put("id", new_goods.id) |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: "admin.error.networkError"})
@@ -167,6 +167,41 @@ defmodule Acs.MallController do
 
   end
   def update_goods(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
+  # toggle_goods_status
+  def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
+                  %{"goods_id" => goods_id}) do
+    case Repo.get(MallGoods, goods_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+      %MallGoods{} = goods ->
+        MallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+    end
+  end
+  def toggle_goods_status(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
+  # delete_goods
+  def delete_goods(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
+                     %{"goods_id" => goods_id}) do
+    case Repo.get(MallGoods, goods_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+      %MallGoods{} = goods ->
+        case Repo.delete(goods) do
+          {:ok, _} ->
+            conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+    end
+  end
+  def delete_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
  

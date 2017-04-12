@@ -205,4 +205,24 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
  
+ #  show active_mall_goods
+ def get_active_goods_paged(conn, %{"page" => page, 
+                        "records_per_page" => records_per_page,
+                        "app_id" => app_id}) do    
+
+    queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.active==true
+
+    total = Repo.one!(queryTotal)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from g in MallGoods,
+              where: g.app_id == ^app_id and g.active==true,
+              order_by: [desc: g.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
+
+    goodses = Repo.all(query)
+    conn |> json(%{success: true, goodses: goodses, total: total_page})
+  end
 end

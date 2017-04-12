@@ -28,7 +28,9 @@ var outputPath = function() {
 }
 
 var plugins = [
-  new webpack.DefinePlugin(consts.defines({ isProduction: isProduction() })),
+  new webpack.DefinePlugin(consts.defines({
+    isProduction: isProduction(),
+  })),
   new CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',

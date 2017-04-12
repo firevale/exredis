@@ -37,13 +37,13 @@ defmodule Acs.AdminRouter do
     post "/update_forum_info", ForumController, :update_forum_info
     post "/update_section_info", ForumController, :update_section_info  
 
-    post "/get_setting", AdminSettingController, :get_setting
-    post "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
-    post "/get_settings_by_group", AdminSettingController, :get_settings_by_group
-    post "/delete_setting", AdminSettingController, :delete_setting
-    post "/add_setting", AdminSettingController, :add_setting
-    post "/update_setting", AdminSettingController, :update_setting
-    post "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+    post  "/get_setting", AdminSettingController, :get_setting
+    post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
+    post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
+    post  "/delete_setting", AdminSettingController, :delete_setting
+    post  "/add_setting", AdminSettingController, :add_setting
+    post  "/update_setting", AdminSettingController, :update_setting
+    post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
 
     post  "/update_news", GamesController, :update_news
     post  "/get_paged_news_admin", GamesController, :get_paged_news_admin
@@ -51,10 +51,12 @@ defmodule Acs.AdminRouter do
     post  "/toggle_news_status", GamesController, :toggle_news_status
     post  "/update_news_pic", GamesController, :update_news_pic
 
-    get  "/fetch_malls", MallController, :fetch_malls
-    post "/update_mall_icon", MallController, :update_mall_icon
-    post "/update_mall_info", MallController, :update_mall_info
-    post "/fetch_goods", MallController, :fetch_goods
+    get   "/fetch_malls", MallController, :fetch_malls
+    post  "/update_mall_icon", MallController, :update_mall_icon
+    post  "/update_mall_info", MallController, :update_mall_info
+    post  "/fetch_goods", MallController, :fetch_goods
+    post  "/update_goods_pic", MallController, :update_goods_pic
+    post  "/update_goods", MallController, :update_goods
     
   end
 

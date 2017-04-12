@@ -16,6 +16,7 @@ export default {
   AppStats: '应用统计数据',
   EditForum: '修改论坛配置',
   EditMall: '商城管理',
+  EditGoods: '商品详情',
   NewNews: '添加新内容',
   EditNews: '修改内容',
 }

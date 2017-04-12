@@ -85,6 +85,7 @@ defmodule Acs.Web do
       alias  Acs.Mall
       alias  Acs.MallGoods
       alias  Acs.MallOrder
+      alias  Acs.MallOrderDetail
       alias  Acs.MallOPLog
 
     end

@@ -39,7 +39,7 @@
                       </span>{{ (order.fee / 100).toFixed(0) }}
                     </td>
                     <td style="border-bottom: none">
-                      {{ $t('admin.label.createdAt') + ': ' }} {{ order.created_at | formatServerDateTime }}
+                      {{ $t('admin.label.createdAt') + ': ' }} {{ order.inserted_at | formatServerDateTime }}
                     </td>
                     <td style="border-bottom: none">
                       {{ $t('admin.label.paidAt') + ': ' }} {{ order.paid_at | formatServerDateTime }}

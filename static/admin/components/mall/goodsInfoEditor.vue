@@ -8,7 +8,7 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-        <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
+    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
           goods: {
           id: '',
           pic: '',
@@ -17,26 +17,44 @@
           price: '',
           postage: 0,
           stock: '',
+          currency: 'CNY',
           app_id: this.$route.params.appId,
         }}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')
       }}
     </router-link>
-    <div class="tile is-ancestor" v-if="goodses.length > 0">
-      <div class="tile is-parent is-vertical">
-        <article class="tile is-child is-12">
-          <div class="table-responsive">
-            <template v-for="goods in goodses">
+    <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
+      <div class="columns is-multiline">
+        <div v-for="goods in goodses" class="column is-half">
+          <div class="columns">
+            <div class="column is-parent is-one-third">
               <figure class="image is-128x128" style="display: block">
                 <img :src="getGoodsIcon(goods)"></img>
               </figure>
-            </template>
+            </div>
+            <div class="column is-parent is-vertical">
+              <article class="tile is-child">
+                <p class="subtitle is-6">{{ goods.name}}</p>
+                <p class="subtitle is-6">{{ $t('admin.mall.goods.priceList', {price: getPrice(goods.price), postage: getPrice(goods.postage)}) }}</p>
+                <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
+                <p class="field">
+                  <a class="button is-small">
+                    <span class="icon is-small"><i class="fa fa-pencil"></i></span>
+                    <span>{{ $t('admin.mall.goods.edit') }}</span>
+                  </a>
+                  <a class="button is-small">
+                    <span class="icon is-small"><i class="fa fa-close"></i></span>
+                    <span>{{ $t('admin.mall.goods.delete') }}</span>
+                  </a>
+                </p>
+              </article>
+            </div>
           </div>
-        </article>
-        <article class="tile is-child is-12">
-          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-        </article>
+        </div>
       </div>
+      <article class="tile is-child is-12">
+        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      </article>
     </div>
     <div class="box" v-else>
       <div class="hero-body has-text-centered">
@@ -94,10 +112,14 @@ export default {
   },
 
   methods: {
+    getPrice: function(price) 
+    {
+      return "¥" + parseFloat(price/100).toFixed(2)
+    },
+
     getGoodsIcon: function(goods) {
-      let goodsInfo = this.mallGoods[`${goods.app_id}-${goods.id}`]
-      if (goodsInfo && goodsInfo.pic) {
-        return goodsInfo.pic
+      if (goods) {
+        return goods.pic
       } else {
         return 'https://placehold.it/128x128?text=未上传'
       }

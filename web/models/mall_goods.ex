@@ -11,7 +11,7 @@ defmodule Acs.MallGoods do
     field :description, :binary
 
     field :price, :integer
-    field :currency, :string
+    field :currency, :string, default: "CNY" 
 
     field :postage, :integer      #邮费
     field :stock, :integer, default: 0    #库存

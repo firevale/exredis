@@ -3,7 +3,7 @@
     <article class="media info">
       <figure class="media-left" @click="onShowImageUpload">
         <p class="image is-64x64 avatar-image">
-          <img :src="this.userInfo.avatar_url"></img>
+          <img :src="avatarUrl"></img>
         </p>
         <img-upload url="/forum_actions/update_user_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
           field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
@@ -88,6 +88,9 @@ export default {
         case "myFavor":
           return "90% bottom"
       }
+    },
+    avatarUrl() {
+      return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
     }
   },
 
@@ -106,7 +109,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'serUserProfile'
+      'setUserProfile'
     ]),
 
     switchMenu: function(menu) {
@@ -130,7 +133,7 @@ export default {
 
     cropUploadSuccess(result, field, key) {
       if (result.success) {
-        this.serUserProfile(result.user)
+        this.setUserProfile(result.user)
       }
     },
 

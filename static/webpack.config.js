@@ -5,13 +5,10 @@ var consts = require('./webpack.consts')
 var merge = require('webpack-merge')
 
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var WebpackMd5Hash = require('webpack-md5-hash');
-var ManifestPlugin = require('webpack-manifest-plugin');
-var CompressionPlugin = require("compression-webpack-plugin");
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const projectRoot = path.resolve(__dirname, './')
 
@@ -28,8 +25,10 @@ var outputPath = function() {
 }
 
 var plugins = [
-  new webpack.DefinePlugin(consts.defines({ isProduction: isProduction() })),
-  new CommonsChunkPlugin({
+  new webpack.DefinePlugin(consts.defines({
+    isProduction: isProduction(),
+  })),
+  new webpack.optimize.CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',
     chunks: ['admin'],
@@ -38,7 +37,7 @@ var plugins = [
         './node_modules')) === 0))
     }
   }),
-  new CommonsChunkPlugin({
+  new webpack.optimize.CommonsChunkPlugin({
     name: "login_commons",
     filename: 'js/login_commons.js',
     chunks: ['login'],
@@ -47,7 +46,7 @@ var plugins = [
         './node_modules')) === 0))
     }
   }),
-  new CommonsChunkPlugin({
+  new webpack.optimize.CommonsChunkPlugin({
     name: "app_commons",
     filename: 'js/app_commons.js',
     chunks: ['app'],
@@ -134,16 +133,15 @@ if (isProduction()) {
       },
       canPrint: true
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      'screw-ie8': true,
+    new UglifyJSPlugin({
       sourceMap: false,
       compress: {
         warnings: false
       },
-      output: {
-        comments: false
-      }
-    }), new webpack.optimize.OccurrenceOrderPlugin())
+      comments: false,
+      beautify: true
+    })
+   )
 } else {
   module.exports.devtool = '#cheap-source-map'
 }

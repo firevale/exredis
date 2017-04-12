@@ -15,6 +15,7 @@ export default {
   updateSuccess: '更新成功',
 
   goods: {
+    edit: '编辑',
     delete: '删除',
     publish: '发布',
     save: '保存',
@@ -26,7 +27,11 @@ export default {
     postage: '邮费',
     stock: '库存',
     pleaseFill: '请完整填写各项内容',
-    toolTip: '文字不超过8000个字节，图片支持jpg,png格式，大小不超过200k;',
+    picPlaceholder: '图片为正方形，支持jpg、png格式，大小不超过500k；',
+    namePlaceholder: '不超过50个字节',
+    descPlaceholder: '文字不超过8000个字节，图片支持jpg,png格式，大小不超过200k;',
+    priceList: '单价：{price} / 邮费: {postage}',
+    stockList: '库存：{stock} / 销量: {sold}',
   },
 
 

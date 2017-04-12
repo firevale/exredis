@@ -8,7 +8,7 @@ defmodule Acs.Repo.Migrations.CreateMallGoods do
       add :description, :binary
 
       add :price, :integer
-      add :currency, :string
+      add :currency, :string, default: "CNY"
       add :postage, :integer      #邮费
       add :pic, :string
       add :stock, :integer, default: 0    #库存

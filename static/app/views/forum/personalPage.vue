@@ -90,7 +90,7 @@ export default {
       }
     },
     avatarUrl() {
-      this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
+      return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
     }
   },
 

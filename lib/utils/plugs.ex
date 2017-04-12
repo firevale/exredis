@@ -9,7 +9,6 @@ defmodule Acs.Plugs do
   alias   Acs.Repo
   alias   Acs.AdminUser
   alias   Acs.ForumManager
-  alias   Acs.User
   require Gettext
   require Redis
 
@@ -163,13 +162,15 @@ defmodule Acs.Plugs do
     end
   end
   def fetch_session_user(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _options) do
-    query = from u in User,
-        where: u.id == ^user_id,
-        select: map(u, [:id, :nickname, :avatar_url, :inserted_at])
-    case Repo.one(query) do
+    case RedisUser.find(String.to_integer("#{user_id}")) do
       nil -> conn
       _ = user ->
-        conn |> put_private(:acs_session_user, user)
+        if is_nil(user.inserted_at) do 
+          user = RedisUser.refresh("#{user_id}" |> String.to_integer)
+          conn |> put_private(:acs_session_user, user)
+        else
+          conn |> put_private(:acs_session_user, user)
+        end
     end
   end
   def fetch_session_user(%Plug.Conn{} = conn, _options), do: conn
@@ -276,7 +277,12 @@ defmodule Acs.Plugs do
     case RedisUser.find("#{user_id}" |> String.to_integer) do
       nil -> conn
       %RedisUser{} = user ->
-        conn |> put_private(:acs_user, user)
+        if is_nil(user.inserted_at) do 
+          user = RedisUser.refresh("#{user_id}" |> String.to_integer)
+          conn |> put_private(:acs_user, user)
+        else
+          conn |> put_private(:acs_user, user)
+        end
     end
   end
   def fetch_user(%Plug.Conn{} = conn, _options), do: conn
@@ -365,7 +371,6 @@ defmodule Acs.Plugs do
               admin_user
             end
 
-            d "admin_user: #{inspect admin_user}"
             case admin_user do
               nil -> _response_admin_access_failed(conn)
               _ -> conn
@@ -471,7 +476,6 @@ defmodule Acs.Plugs do
                    end
         %{conn | before_send: [do_cache | conn.before_send]}
       raw -> 
-        d "use cached page for #{key}"
         {resp_headers, resp_body} = :erlang.binary_to_term(raw)
         %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
     end

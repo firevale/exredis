@@ -1,3 +1,4 @@
+<% session_user = @conn.private[:acs_session_user] %>
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -26,7 +27,12 @@
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,
-        acsUser: <%= raw JSON.encode!(@conn.private[:acs_session_user]) %>,
+        acsUser: {
+          id: <%= session_user.id %>,
+          nickname: '<%= session_user.nickname %>',
+          avatar_url: '<%= session_user.avatar_url %>',
+          inserted_at: '<%= session_user.inserted_at %>',
+        },
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
       }
     </script>

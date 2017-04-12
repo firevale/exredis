@@ -55,9 +55,8 @@ defmodule Acs.ForumController do
                   {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
                   {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
                   icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-                  d "icon_url: #{icon_url}"
                   Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
-                  #RedisApp.refresh(app_id)
+                  RedisForum.refresh(forum_id)
                   conn |> json(%{success: true, icon_url: icon_url})
                 else
                   conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
@@ -84,6 +83,7 @@ defmodule Acs.ForumController do
 
       %Forum{} = forum ->
         Forum.changeset(forum, forum_info) |> Repo.update!
+        RedisForum.refresh(forum_id)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -106,6 +106,7 @@ defmodule Acs.ForumController do
       nil ->
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
+            RedisForum.refresh(new_section.forum_id)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -115,6 +116,7 @@ defmodule Acs.ForumController do
       %ForumSection{} = old_section ->
         case ForumSection.changeset(old_section, section) |> Repo.update do
           {:ok, new_section} ->
+            RedisForum.refresh(new_section.forum_id)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -271,6 +273,7 @@ defmodule Acs.ForumController do
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
           %{width: 200, height: 200} = upload_image  ->
             if upload_image.format in ["jpg","jpeg","png"] do
+              Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
               {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
               [file_md5 | _] = String.split(md5sum_result)
               static_path = Application.app_dir(:acs, "priv/static/")
@@ -278,10 +281,14 @@ defmodule Acs.ForumController do
               {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
               {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
               avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
-              d "icon_url: #{avatar_url}"
               User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
               update_user = RedisUser.refresh(String.to_integer(user_id))
-              conn |> json(%{success: true, user: update_user})
+              conn |> json(%{success: true, user: %{
+                id: update_user.id,
+                nickname: update_user.nickname,
+                avatar_url: update_user.avatar_url,
+                inserted_at: update_user.inserted_at
+              }})
             else
               conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end

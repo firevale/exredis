@@ -25,7 +25,9 @@ alias Acs.ForumManager
 alias Acs.AdminSetting
 alias Acs.Mall
 alias Acs.MallGoods
-
+alias Acs.MallOrder
+alias Acs.MallOrderDetail
+alias Acs.UserAddress
 require Logger
 
 Redis.flushdb()
@@ -108,3 +110,10 @@ MallGoods.changeset(%MallGoods{}, %{id: "1010002", name: "经典白色T恤", pic
 MallGoods.changeset(%MallGoods{}, %{id: "1010003", name: "经典灰色T恤", pic: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977358176&di=13043c1fe2aec64f9d7d7fadaf9e56ee&imgtype=0&src=http%3A%2F%2Fimg4.vipshop.com%2Fupload%2Fmerchandise%2F40504%2FHUNTCITY-3321002063-1.jpg", description: "经典黑色T恤", active: true, price: 19900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
 MallGoods.changeset(%MallGoods{}, %{id: "1010004", name: "经典红色T恤", pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", description: "经典黑色T恤", active: true, price: 11900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
+
+
+UserAddress.changeset(%UserAddress{}, %{ name: "钟楼",mobile: "13110234567", area: "福建福州", area_code: "350001",address: "工业路",user_id: "100001"}) |> Repo.insert
+
+MallOrder.changeset(%MallOrder{}, %{ id: "A10000010",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, final_price: 1100,postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
+
+MallOrderDetail.changeset(%MallOrderDetail{}, %{ good_name: "127.0.0.1",good_pic: "经典灰色T恤", price: 1100, final_price: 1100,amount: 1,good_id: "1010001", order_id: "A10000010"}) |> Repo.insert

@@ -7,7 +7,6 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :platform, :string, size: 10
       add :device_id, :string
       add :user_ip, :string       #IP地址
-      add :zone_id, :string
 
       add :goods_name, :string
       add :price, :integer, default: 0
@@ -32,7 +31,6 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
-      add :mall_goods_id, references(:mall_goods, type: :string, on_delete: :nothing)
       add :user_address_id, references(:user_address, on_delete: :nothing)
 
       timestamps()

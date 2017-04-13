@@ -5,7 +5,7 @@
         <div class="tile is-vertical">
           <div class="tile">
             <h5 class="title is-5">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
-            <a v-show="!itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
+            <a v-show="itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
           </div>
           <div class="tile">
             <span class="subtitle">{{ itemData.inserted_at | formatServerDateTime }}</span>

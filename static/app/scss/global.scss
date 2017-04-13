@@ -33,7 +33,6 @@ body:not(.in-app) {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-
   &.is-ancestor {
     margin: 0;
   }
@@ -145,7 +144,6 @@ input.input:focus {
   overflow: hidden;
   display: flex;
   flex-flow: column nowrap;
-
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -290,7 +288,9 @@ only screen and (min-resolution: 1.25dppx) {
   body:not(.ios) {
     .has-bottom-line {
       &:after {
+        -webkit-transform: translateZ(0) scaleY(.3);
         transform: translateZ(0) scaleY(.3);
+        -webkit-transform-origin: 0 0;
         transform-origin: 0 0;
       }
     }
@@ -323,7 +323,11 @@ only screen and (min-resolution: 2.25dppx) {
   body:not(.ios) {
     .has-bottom-line {
       &:after {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transform: translateZ(0) scaleY(.2);
         transform: translateZ(0) scaleY(.2);
+        -webkit-transform-origin: 0 0;
         transform-origin: 0 0;
       }
     }

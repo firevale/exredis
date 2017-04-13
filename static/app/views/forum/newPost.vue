@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tile is-full has-text-left" style="padding: 1rem 0">
+    <div class="tile has-text-left" style="padding: 1rem 0; flex-grow: 0">
       <span class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @click="showSelectSectionMenu">
          {{ selectedSectionTitle }}
       </span>

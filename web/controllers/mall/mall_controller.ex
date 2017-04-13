@@ -117,6 +117,15 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
+  # check_goods_id
+  def check_goods_id(conn, %{"app_id" => app_id, "goods_id" => goods_id}) do
+    count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^goods_id)
+    conn |> json(%{success: true, count: count})
+  end
+  def check_goods_id(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
   # update_goods_pic
   def update_goods_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 

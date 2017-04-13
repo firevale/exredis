@@ -11,7 +11,7 @@
                 <div class="nav-center">
                 </div>
                 <div class="nav-right has-text-right">
-                    <a v-if="$route.name == 'index'" class="icon image-icon icon-user" @click.prevent=""></a>
+                    <a class="icon image-icon icon-user" @click.prevent=""></a>
                 </div>
             </nav>
         </div>
@@ -21,7 +21,7 @@
                     <div class="columns is-multiline has-text-centered is-mobile">
                         <div v-for="item in goodsList" class="column is-half">
                             <div class="card-image pic">
-                                <figure class="image is-400x400">
+                                <figure class="image is-400x400" @click.prevent="showGoodDetail(item.id)">
                                     <img v-if="item.pic" :src="item.pic">
                                     <img v-else src="https://placehold.it/300x300?text=400x400">
                                 </figure>
@@ -103,6 +103,14 @@
                 if (result.success) {
                     this.mallDetail = result.mall
                 }
+            },
+            showGoodDetail: function (goodId) {
+                this.$router.push({
+                    name: 'goodDetail',
+                    params: {
+                        goodId: goodId
+                    },
+                })
             }
         },
         watch: {

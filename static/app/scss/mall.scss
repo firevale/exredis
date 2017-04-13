@@ -27,3 +27,30 @@
         content: '¥ ';
     }
 }
+
+.good-detail {
+    .subtitle {
+        font-weight: 400;
+    }
+    .good-name {
+        padding-top: 1.2rem;
+    }
+    .good-price {
+        padding-top: 0.8rem;
+        color: $lightred;
+    }
+    .good-price label:before {
+        content: '¥ ';
+    }
+    .good-info {
+        padding-top:0.8rem;
+    }
+    .good-bottom{
+        left: 0;
+        height:3.41rem;
+        position: fixed;
+        bottom:0;
+        width:100%;
+        z-index:999; 
+    }
+}

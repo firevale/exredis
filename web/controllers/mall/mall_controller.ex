@@ -283,4 +283,13 @@ defmodule Acs.MallController do
   def get_mall_detail(conn, _) do
     conn |> json(%{success: false, i18n_message: "mall.serverError.badRequestParams"})
   end
+
+  def get_good_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"good_id" =>good_id})do
+    good= Repo.one!(from g in MallGoods, select: map(g, [:id, :name, :description, :price, :postage, :pic, :stock, :active]), where: g.id == ^good_id)
+    conn |> json(%{success: true, good: good})
+  end
+  def get_good_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "good.serverError.badRequestParams"})
+  end
+  
 end

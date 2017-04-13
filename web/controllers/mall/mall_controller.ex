@@ -126,13 +126,43 @@ defmodule Acs.MallController do
   end
 
   # update_goods_pic
-  def update_goods_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
+  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
+   case Repo.get(MallGoods, goods_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
+
+      %MallGoods{} = goods ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 400, height: 400} = upload_image ->
+            if upload_image.format in ["jpg", "jpeg", "png"] do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/goods_icon/#{goods_id}"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+
+              MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+
+              conn |> json(%{success: true, pic_url: pic_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize400x400"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
     if upload_image.format in ["jpg", "jpeg", "png"] do
       {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
       [file_md5 | _] = String.split(md5sum_result)
       static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/goods_pics/#{app_id}"
+      url_path = "/images/goods_pics/#{goods_id}"
       {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})

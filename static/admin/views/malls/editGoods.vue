@@ -19,8 +19,8 @@
         <div class="tile is-parent">
           <article class="tile is-child">
             <center>
-              <figure class="image is-128x128" style="display: block" @click="onShowImageUpload">
-                <img src="https://placehold.it/256x256?text=400X400">
+              <figure class="image" style="display: block" @click="onShowImageUpload">
+                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=400X400'" style="width:160px; height:160px;"></img>
               </figure>
               <p class="help">{{ $t('admin.mall.goods.picPlaceholder') }}</p>
             </center>
@@ -93,8 +93,6 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
-
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
@@ -102,10 +100,6 @@ import {
 const touchMap = new WeakMap()
 
 export default {
-  components: {
-    imgUpload,
-  },
-
   mounted: function() {
     this.goods = this.$route.params.goods
     if (this.goods) {
@@ -162,7 +156,16 @@ export default {
 
     onShowImageUpload: function() {
       if (this.goods.id.length > 0) {
-        this.showImgUpload = true
+        showFileUploadDialog({
+          postAction: '/mall_actions/update_goods_pic',
+          accept: 'image/jpeg, image/png',
+          data: {
+            app_id: this.goods.app_id
+          },
+          extensions: ['png', 'jpg', 'jpeg'],
+          title: this.$t('admin.titles.uploadGoodsPic'),
+          callback: response => this.goods.pic = response.pic_url,
+        })
       } else {
         openNotification({
           title: this.$t('admin.titles.warning'),
@@ -176,7 +179,7 @@ export default {
 
     onInsertImage: function(editor) {
       showFileUploadDialog({
-        postAction: '/admin_actions/update_goods_pic',
+        postAction: '/mall_actions/update_goods_content_pic',
         accept: 'image/jpeg, image/png',
         data: {
           app_id: this.goods.app_id
@@ -243,7 +246,7 @@ export default {
         is_new: this.isNew
       })
       if (result.success) {
-        this.$router.go(-1)
+        this.isNew = false
       }
       this.saving = false
     },

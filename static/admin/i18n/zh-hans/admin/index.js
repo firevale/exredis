@@ -92,6 +92,7 @@ export default {
     editNoticeInfo: '编辑公告信息',
     editNewsInfo: '编辑新闻信息',
     uploadNewsPic: '修改题图',
+    uploadGoodsPic: '修改商品题图',
     yes: '是',
     no: '否',
     noData: '暂无数据',
@@ -116,6 +117,7 @@ export default {
 
   serverError: {
     imageSize128x128: '图片的尺寸必须为128x128',
+    imageSize400x400: '图片的尺寸必须为400x400',
     imageSize860x350: '图片的尺寸必须为860x350',
     imageFormatPNG: '图片格式必须为PNG文件',
     badRequestParams: '请求参数错误',

@@ -11,8 +11,8 @@
           group: 'activity',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.activity.add')
-            }}
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
+            $t('admin.news.activity.add') }}
           </router-link>
         </div>
       </article>
@@ -150,7 +150,7 @@ export default {
 
     updateNewsPic: function(news) {
       showFileUploadDialog({
-        postAction: '/admin_actions/update_news_pic',
+        postAction: '/games_actions/update_news_pic',
         accept: 'image/png',
         data: {
           news_id: news.id

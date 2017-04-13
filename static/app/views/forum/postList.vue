@@ -1,34 +1,26 @@
 <template>
-  <div style="overflow-y: hidden">
-    <div class="has-bottom-line">
+  <div>
+    <div class="flex-fixed-size has-bottom-line">
       <div class="tab-bar">
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
         <span class="seperator"></span>
         <div class="tile">
-          <v-touch @tap="loading || setCurrentSectionId(0)" 
-                   class="button"
-                   :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" 
-                   tag="a">
+          <v-touch @tap="loading || setCurrentSectionId(0)" class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'"
+            tag="a">
             {{ $t('forum.postList.all') }}
           </v-touch>
-          <v-touch v-for="section in forumInfo.sections"
-                   @tap="loading || setCurrentSectionId(section.id)" 
-                   class="button"
-                   :key="section.id"
-                   :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" 
-                   tag="a">
+          <v-touch v-for="section in forumInfo.sections" @tap="loading || setCurrentSectionId(section.id)" class="button" :key="section.id"
+            :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" tag="a">
             {{ section.title }}
           </v-touch>
         </div>
       </div>
     </div>
-    <div style="position: static; height: 100%">
-      <div style="position: relative; height: 100%">
-        <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-          <post-list-item class="row" v-for="item in postList" :key="item.id" :post-info="item">
-          </post-list-item>
-        </scroller>
-      </div>
+    <div class="flex-take-rest" style="position: relative">
+      <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
+        <post-list-item class="row" v-for="item in postList" :key="item.id" :post-info="item">
+        </post-list-item>
+      </scroller>
     </div>
   </div>
 </template>

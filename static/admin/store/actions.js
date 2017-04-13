@@ -72,7 +72,7 @@ export const addForum = ({
 export const fetchForums = ({
   commit
 }) => {
-  Vue.http.get('/admin_actions/fetch_forums', {})
+  Vue.http.get('/forum_actions/fetch_forums', {})
     .then(res => res.json())
     .then(result => {
       if (result.success) {
@@ -86,7 +86,7 @@ export const fetchForums = ({
 export const fetchMalls = ({
   commit
 }) => {
-  Vue.http.get('/admin_actions/fetch_malls', {})
+  Vue.http.get('/mall_actions/fetch_malls', {})
     .then(res => res.json())
     .then(result => {
       if (result.success) {

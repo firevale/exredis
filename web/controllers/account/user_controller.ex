@@ -71,12 +71,10 @@ defmodule Acs.UserController do
     if RedisUser.exists?(account_id) do
       conn |> json(%{success: false, message: "account.error.accountInUse"})
     else
-      d "bind anonymous user #{bind_user_id}"
       case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do
         nil ->
           conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
         %RedisUser{} = user ->
-          d "bind result: #{inspect user, pretty: true}"
           create_and_response_access_token(conn, user, app_id, device_id, platform)
       end
     end
@@ -123,12 +121,10 @@ defmodule Acs.UserController do
                 user = RedisUser.save!(user)
                 create_and_response_access_token(conn, user, app_id, device_id, platform)
               bind_user_id ->
-                d "bind anonymous user #{bind_user_id}"
                 case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do
                   nil ->
                     conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
                   %RedisUser{} = user ->
-                    d "bind result: #{inspect user, pretty: true}"
                     create_and_response_access_token(conn, user, app_id, device_id, platform)
                 end
             end
@@ -308,6 +304,9 @@ defmodule Acs.UserController do
             conn |> json(%{success: false, message: "signature mismatch"})
         end
     end
+  end
+  def verify_token(conn, _params) do 
+    conn |> json(%{success: false, message: "app not found, check your verify token url & location"})
   end
 
   def authorization_token(conn, params) do

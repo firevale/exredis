@@ -28,8 +28,8 @@
         <div v-for="goods in goodses" class="column is-half" @click="onEdit(goods)">
           <div class="columns">
             <div class="column is-parent is-one-third">
-              <figure class="image is-128x128" style="display: block">
-                <img :src="getGoodsIcon(goods)"></img>
+              <figure class="image" style="display: block">
+                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
               </figure>
             </div>
             <div class="column is-parent is-vertical">
@@ -126,14 +126,6 @@ export default {
   methods: {
     getPrice: function(price) {
       return "¥" + parseFloat(price / 100).toFixed(2)
-    },
-
-    getGoodsIcon: function(goods) {
-      if (goods) {
-        return goods.pic
-      } else {
-        return 'https://placehold.it/128x128?text=未上传'
-      }
     },
 
     onPageChange: function(page) {

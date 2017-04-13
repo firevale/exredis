@@ -1,66 +1,48 @@
 <template>
   <div>
     <div class="control has-icon has-icon-left">
-      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchOrders')" v-model="keyword">
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchOrders')"
+        v-model="keyword">
       <span class="icon is-small">
         <i v-if="searching" class="fa fa-spinner fa-spin"></i>
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <div class="tile is-ancestor" v-if="!initing && orders.length > 0">
-      <div class="tile is-parent is-vertical">
-        <article class="tile is-child is-12">
-          <div class="table-responsive">
-            <table class="table is-narrow goods-table">
-              <tbody>
-                <template v-for="order in orders">
-                  <tr>
-                    <td class="is-icon" rowspan="2">
-                      <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
-                    </td>
-                    <td class="is-icon" rowspan="2">
-                      <tooltip :label="getAppName(order)" placement="top">
-                        <figure class="image is-32x32" style="display: block">
-                          <img :src="getAppIcon(order)"></img>
-                        </figure>
-                      </tooltip>
-                    </td>
-                    <td class="is-icon" rowspan="2">
-                      <tooltip :label="getGoodsName(order)" placement="top">
-                        <figure class="image is-32x32" style="display: block">
-                          <img :src="getGoodsIcon(order)"></img>
-                        </figure>
-                      </tooltip>
-                    </td>
-                    <td style="border-bottom: none"> {{ order.user_id }} </td>
-                    <td rowspan="2" style="min-width: 60px; color: firebrick">
-                      <span class="icon" style="width: 1.2rem; height: 1rem; line-height: 1rem; vertical-align: middle; font-size: 18px">
-                        <i :class="`fa fa-${order.transaction_currency.toLowerCase()}`"></i>
-                      </span>{{ (order.fee / 100).toFixed(0) }}
-                    </td>
-                    <td style="border-bottom: none">
-                      {{ $t('admin.label.createdAt') + ': ' }} {{ order.created_at | formatServerDateTime }}
-                    </td>
-                    <td style="border-bottom: none">
-                      {{ $t('admin.label.paidAt') + ': ' }} {{ order.paid_at | formatServerDateTime }}
-                    </td>
-                    <td style="border-bottom: none">
-                      {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.deliver_at | formatServerDateTime }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> {{ order.zone_id }}区 </td>
-                    <td> {{ $t('admin.label.transactionId') + ': ' }} {{ getOrderTransactionId(order) }} </td>
-                    <td colspan="2"> {{ $t('admin.label.cpOrderId') + ': ' }} {{ order.cp_order_id }} </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
+    <div v-if="orders.length > 0">
+      <div v-for="item in orders" class="media" style="align-items: stretch; margin:1rem auto;">
+        <div class="media-left">
+          <p>{{item.id}}</p>
+          <p>待付款</p>
+          <p> {{ item.inserted_at | formatServerDateTime }}</p>
+          <p>{{item.user.nickname}}&nbsp;&nbsp;&nbsp;{{item.user.mobile}}</p>
+        </div>
+        <div class="media-content columns" style="border:1px solid grey;margin:0; padding:0 1rem;">
+          <div v-for="detail in item.details" class="cloumn">
+            <div class="media" style="padding-top:1rem;margin-right:1rem;">
+              <figure class="media-left">
+                <p class="image is-64x64">
+                  <img :src="detail.goods_pic">
+                </p>
+              </figure>
+              <div class="media-content">
+                <p>{{detail.goods_name}} </p>
+                <p> {{detail.price}}</p>
+                <p> X{{detail.amount}}</p>
+              </div>
+            </div>
           </div>
-        </article>
-        <article class="tile is-child is-12">
-          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-        </article>
+        </div>
+        <div class="media-right level" style="width:220px">
+          <div class="level-item">
+            <div>
+              <p>{{$t('admin.mall.order.fields.postage')}}:{{item.postage}}</p>
+              <p>{{$t('admin.mall.order.fields.total')}}:{{item.price}}</p>
+            </div>
+          </div>
+          <div class="level-item">
+            <a class="button"> {{$t('admin.mall.order.viewDetail')}} </a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="box" v-else>
@@ -119,22 +101,11 @@ export default {
     ]),
   },
 
-  mounted: function() {
-    if (Object.keys(this.appHash).length > 0) {
-      this.fetchOrders(this.page, this.recordsPerPage)
-      this.loading = true
-    } else {
-      this.initing = true
-    }
+  mounted: async function() {
+    await this.fetchOrders(this.page, this.recordsPerPage)
   },
 
-  watch: {
-    appHash: function() {
-      this.initing = false
-      this.loading = true
-      this.fetchOrders(this.page, this.recordsPerPage)
-    }
-  },
+  watch: {},
 
   methods: {
     getAppIcon: function(order) {
@@ -235,7 +206,8 @@ export default {
 
     fetchOrders: async function(page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.fetchOrders({
+      let result = await this.$acs.fetchMallOrders({
+        app_id: '',
         page,
         records_per_page: recordsPerPage
       })

@@ -39,7 +39,15 @@ export default {
     saveFirst: '请先保存商品',
     
   },
+  order: {
+    viewDetail: '查看详情',
+    fields: {
+      id: '订单号',
+      postage: '邮费',
+      total: '合计',
+    },
+  }
 
 
-  
+
 }

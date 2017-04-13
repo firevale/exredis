@@ -15,7 +15,7 @@
         </p>
         <p class="control">
           <label class="checkbox">
-            <input class="checkbox" type="checkbox" v-model.trim="section.active"> {{ $t('admin.forum.section.active') }}
+            <input class="checkbox" type="checkbox" v-model.trim="section.active"> {{ $t('admin.forum.active') }}
           </label>
         </p>
         <div class="has-text-centered" style="margin-top: 15px">

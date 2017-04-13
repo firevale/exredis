@@ -27,12 +27,14 @@
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,
+        <%= if is_map(session_user) do %>
         acsUser: {
           id: <%= session_user.id %>,
           nickname: '<%= session_user.nickname %>',
           avatar_url: '<%= session_user.avatar_url %>',
           inserted_at: '<%= session_user.inserted_at %>',
         },
+        <% end %>
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
       }
     </script>

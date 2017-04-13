@@ -177,7 +177,7 @@ defmodule Acs.GamesController do
               conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize860x350"})
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize640x260"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})

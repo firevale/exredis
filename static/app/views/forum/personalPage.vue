@@ -16,7 +16,7 @@
           {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.post_count}}</span>
         </p>
         <p>
-          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
+          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.inserted_at | formatServerDateTime }}</span>
         </p>
       </div>
     </article>
@@ -31,18 +31,17 @@
     <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
       <div style="position: relative; height: 100%">
         <scroller :on-load-more="loadmore" ref="scroller">
-          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
-            :item-index="index"></my-posts>
-          <my-comments v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
-          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
-            :item-index="index"></my-favorate>
+          <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+            :item-index="index"></my-post-list-item>
+          <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
+          <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+            :item-index="index"></my-favorite-list-item>
         </scroller>
       </div>
     </div>
   </div>
 </template>
 <script>
-
 import {
   mapGetters,
   mapActions
@@ -54,18 +53,17 @@ import {
 
 import imgUpload from "vue-image-crop-upload/upload-2.vue"
 import scroller from 'common/components/scroller'
-import myPosts from "../../components/myPosts"
-import myFavorate from "../../components/myFavorate"
-import myComments from "../../components/myComments"
 
-
+import myPostListItem from "../../components/myPostListItem"
+import myFavoriteListItem from "../../components/myFavoriteListItem"
+import myCommentListItem from "../../components/myCommentListItem"
 
 export default {
   components: {
     scroller,
-    myPosts,
-    myFavorate,
-    myComments,
+    myPostListItem,
+    myFavoriteListItem,
+    myCommentListItem,
     imgUpload,
   },
 
@@ -109,12 +107,12 @@ export default {
 
   mounted: async function() {
     if (this.userInfo.post_count == 0) {
-      let result = await this.$acs.getUserPostCount(this.$route.params.forumId)     
+      let result = await this.$acs.getUserPostCount(this.$route.params.forumId)
 
       if (result.success) {
-        this.updateUserPostCount(result.post_count)  
+        this.updateUserPostCount(result.post_count)
       }
-    }  
+    }
   },
 
   methods: {
@@ -176,13 +174,14 @@ export default {
       }
     },
 
-    onItemDelete(index) {
-      switch (this.type) {
-        case "myPosts":
+    onItemDelete(type, index) {
+      switch (type) {
+        case "myPost":
           this.decrUserPostCount()
           this.postList.splice(index, 1)
           break;
-        case "myFavor":
+
+        case "myFavorite":
           this.favoriteList.splice(index, 1)
           break;
       }

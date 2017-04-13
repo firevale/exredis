@@ -56,6 +56,8 @@ var plugins = [
     }
   }),
 
+  new ExtractTextPlugin('css/[name].css'),
+
   new CopyWebpackPlugin([{
     from: 'assets/*',
     to: 'images/',
@@ -122,7 +124,6 @@ module.exports = {
 
 if (isProduction()) {
   module.exports.plugins.push(
-    new ExtractTextPlugin('css/[name].css'),
     new OptimizeCssAssetsPlugin({
       assetNameRegExp: /\.css$/g,
       cssProcessor: require('cssnano'),

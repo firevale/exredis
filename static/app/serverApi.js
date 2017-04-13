@@ -231,6 +231,11 @@ export default {
           records_per_page
         })
       },
+      getMallDetail(app_id) {
+        return post(Vue, '/mall_actions/get_mall_detail', {
+          app_id
+        })
+      },
     }
   }
 }

@@ -513,8 +513,8 @@ defmodule Acs.ForumController do
 
   # toggle post status
   def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                              acs_is_forum_admin: is_admin}} = conn,
-                  %{"post_id" => post_id} = params) do
+                                               acs_is_forum_admin: is_admin}} = conn,
+                         %{"post_id" => post_id} = params) do
     case is_admin do
       true ->
         with params = Map.put(params, "editer_id", user_id),

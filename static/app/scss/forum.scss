@@ -194,7 +194,6 @@ input.input:focus {
   &.circle-icon {
     @include border-radius(50%);
     border: 1px solid $grey;
-
     &.active {
       background-color: $primary;
       border: none;
@@ -672,35 +671,24 @@ form.post {
   .content {
     margin-top: 1em;
     .content-item {
-      border-left: 0.2em solid $bottom-line-light;
-      border-top: 0.2em solid $bottom-line-light;
-      border-right: 0.2em solid $bottom-line-light;
-      &:last-child {
-        border-bottom: 0.2em solid $bottom-line-light;
+      padding: 0.6rem 0;
+      .tile.is-vertical>.tile:not(:last-child) {
+        margin-bottom: 0.5rem;
       }
-      .title-line {
-        padding: 0 1em;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start; // margin-bottom: .8em;
-        &.has-background {
-          background-color: $bottom-line-light;
-        }
-        .title {
-          margin-bottom: 0px;
-          font-size: 1.25em;
-          font-weight: 400;
-          line-height: 2.5;
-        }
-        .tag.is-outlined {
-          margin-left: 1em;
-          padding: 0 .2em;
-          border-radius: 3px;
-          background-color: transparent;
-          border: 1px solid $primary;
-          color: $primary;
-        }
+      h5 {
+        display: inline-block;
+        margin-bottom: 0;
+      }
+      .has-background {
+        background-color: $bottom-line-light;
+      }
+      .tag.is-outlined {
+        margin-left: 1em;
+        padding: 0 .2em;
+        border-radius: 3px;
+        background-color: transparent;
+        border: 1px solid $primary;
+        color: $primary;
       }
       .level:not(:last-child) {
         margin-bottom: 0;

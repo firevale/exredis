@@ -43,21 +43,29 @@ defmodule Acs.ForumController do
 
       %Forum{} = forum ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 128, height: 128} = upload_image ->
-            if upload_image.format == "png" do
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/forum_icons/"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-              icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-              d "icon_url: #{icon_url}"
-              Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
-              #RedisApp.refresh(app_id)
-              conn |> json(%{success: true, icon_url: icon_url})
-            else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+          %{width: width, height: height} = upload_image ->
+            if width == height do 
+              if width >= 128 do 
+                if upload_image.format == "png" do
+                  Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
+                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+                  [file_md5 | _] = String.split(md5sum_result)
+                  static_path = Application.app_dir(:acs, "priv/static/")
+                  url_path = "/images/forum_icons/"
+                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
+                  icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
+                  Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+                  RedisForum.refresh(forum_id)
+                  conn |> json(%{success: true, icon_url: icon_url})
+                else
+                  conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+                end
+              else 
+                conn |> json(%{success: false, i18n_message: "admin.serverError.imageMinWidth", i18n_message_object: %{minWdith: 128}})
+              end
+            else 
+              conn |> json(%{success: false, i18n_message: "admin.serverError.imageShouldBeSquare"})
             end
           _ ->
             conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})
@@ -75,6 +83,7 @@ defmodule Acs.ForumController do
 
       %Forum{} = forum ->
         Forum.changeset(forum, forum_info) |> Repo.update!
+        RedisForum.refresh(forum_id)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -97,6 +106,7 @@ defmodule Acs.ForumController do
       nil ->
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
+            RedisForum.refresh(new_section.forum_id)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -106,6 +116,7 @@ defmodule Acs.ForumController do
       %ForumSection{} = old_section ->
         case ForumSection.changeset(old_section, section) |> Repo.update do
           {:ok, new_section} ->
+            RedisForum.refresh(new_section.forum_id)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -199,8 +210,8 @@ defmodule Acs.ForumController do
   end
   def get_user_paged_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                             %{"forum_id" => forum_id,
-                             "page" => page,
-                             "records_per_page" => records_per_page}) do
+                              "page" => page,
+                              "records_per_page" => records_per_page}) do
     get_paged_post_list(conn, forum_id, 0, page, records_per_page, "id", user_id)
   end
   def get_user_paged_post(conn, _) do
@@ -262,6 +273,7 @@ defmodule Acs.ForumController do
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
           %{width: 200, height: 200} = upload_image  ->
             if upload_image.format in ["jpg","jpeg","png"] do
+              Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
               {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
               [file_md5 | _] = String.split(md5sum_result)
               static_path = Application.app_dir(:acs, "priv/static/")
@@ -269,10 +281,14 @@ defmodule Acs.ForumController do
               {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
               {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
               avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
-              d "icon_url: #{avatar_url}"
               User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
               update_user = RedisUser.refresh(String.to_integer(user_id))
-              conn |> json(%{success: true, user: update_user})
+              conn |> json(%{success: true, user: %{
+                id: update_user.id,
+                nickname: update_user.nickname,
+                avatar_url: update_user.avatar_url,
+                inserted_at: update_user.inserted_at
+              }})
             else
               conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
             end
@@ -398,19 +414,20 @@ defmodule Acs.ForumController do
 
   # get_user_post_comments
   def get_user_post_comments(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                              %{"page" => page,
+                              %{"forum_id" => forum_id,
+                                "page" => page,
                                 "records_per_page" => records_per_page}) do
     total = Repo.one!(from c in ForumComment, 
                       join: p in assoc(c, :post), 
                       select: count(1), 
-                      where: c.user_id == ^user_id and c.active == true and p.active == true)
+                      where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,
             join: p in assoc(c, :post),
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
-            where: c.user_id == ^user_id and c.active == true and p.active == true,
+            where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true,
             select: map(c, [:id, :content, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -460,7 +477,7 @@ defmodule Acs.ForumController do
 
   # toggle_post_favorite (need user login)
   def toggle_post_favorite(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                  %{"post_id" => post_id} = post) do
+                           %{"post_id" => post_id} = post) do
     favorite = Repo.one(from f in UserFavoritePost, select: f, where: f.post_id == ^post_id and f.user_id == ^user_id)
     case favorite do
       nil ->
@@ -496,8 +513,8 @@ defmodule Acs.ForumController do
 
   # toggle post status
   def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                              acs_is_forum_admin: is_admin}} = conn,
-                  %{"post_id" => post_id} = params) do
+                                               acs_is_forum_admin: is_admin}} = conn,
+                         %{"post_id" => post_id} = params) do
     case is_admin do
       true ->
         with params = Map.put(params, "editer_id", user_id),
@@ -557,8 +574,9 @@ defmodule Acs.ForumController do
 
   # get_user_favorites
   def get_user_favorites(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                                    %{"page" => page,
-                                    "records_per_page" => records_per_page}) do
+                         %{"forum_id" => forum_id,
+                           "page" => page,
+                           "records_per_page" => records_per_page}) do
     queryTotal = from f in UserFavoritePost, join: p in assoc(f, :post), select: count(1), where: f.user_id == ^user_id and p.active == true
     total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
@@ -568,7 +586,7 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             select: map(f, [:id, post: [:id, :inserted_at, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
-            where: f.user_id == ^user_id and p.active == true,
+            where: p.forum_id == ^forum_id and f.user_id == ^user_id and p.active == true,
             offset: ^((page - 1) * records_per_page),
             preload: [post: {p, section: s}],
             order_by: [{:desc, f.id}]
@@ -685,5 +703,14 @@ defmodule Acs.ForumController do
       conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
     end
   end
+
+  def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+                           %{"forum_id" => forum_id}) do 
+    total = Repo.one!(from p in ForumPost, 
+                      select: count(1), 
+                      where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
+    conn |> json(%{success: true, post_count: total}) 
+  end
+
  
 end

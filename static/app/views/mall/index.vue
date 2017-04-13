@@ -1,8 +1,8 @@
 <template>
-    <div class="tile is-marginless is-vertical">
+    <div class="tile is-vertical root-container mall-index">
         <div class="top-bar">
             <div class="title-bar">
-                <h4 class="title is-4">商城名称</h4>
+                <h4 class="title is-4">{{mallDetail.title}}</h4>
             </div>
             <nav class="nav">
                 <div class="nav-left has-text-left">
@@ -11,20 +11,28 @@
                 <div class="nav-center">
                 </div>
                 <div class="nav-right has-text-right">
-                    <a v-if="$route.name == 'index'" class="icon image-icon icon-user" @click.prevent=""></a>
+                    <a class="icon image-icon icon-user" @click.prevent=""></a>
                 </div>
             </nav>
         </div>
-        <div style="width:100%; height:100%;top: 5.8rem;position: absolute;">
+        <div class="middle-content">
             <scroller :on-load-more="loadmore" ref="scroller">
-                <div class="columns is-multiline is-mobile">
-                    <div v-for="item in goodsList" class="column is-half has-text-centered">
-                        <figure class="image is-400x400">
-                            <img v-if="item.pic" :src="item.pic">
-                            <img v-else src="https://placehold.it/300x300?text=300x300">
-                        </figure>
-                        <p class="subtitle is-marginless is-6" style="font-weight:400">{{item.name}}</p>
-                        <p class="subtitle is-marginless is-6" style="font-weight:400">{{item.price}}</p>
+                <div class="content-goods">
+                    <div class="columns is-multiline has-text-centered is-mobile">
+                        <div v-for="item in goodsList" class="column is-half">
+                            <div class="card-image pic">
+                                <figure class="image is-400x400" @click.prevent="showGoodDetail(item.id)">
+                                    <img v-if="item.pic" :src="item.pic">
+                                    <img v-else src="https://placehold.it/300x300?text=400x400">
+                                </figure>
+                            </div>
+                            <p class="subtitle is-marginless is-5 name">
+                                {{item.name}}
+                            </p>
+                            <p class="subtitle is-marginless is-5 price">
+                                <label>{{(item.price / 100).toFixed(2)}}</label>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </scroller>
@@ -42,6 +50,9 @@
         components: {
             scroller
         },
+        mounted: async function () {
+            await this.getMallDetail()
+        },
         data: function () {
             return {
                 canGoBack: false,
@@ -50,7 +61,8 @@
                 page: 0,
                 total: 1,
                 recordsPerPage: 12,
-                postRecords: 0
+                postRecords: 0,
+                mallDetail: {}
             }
         },
         methods: {
@@ -84,6 +96,21 @@
                         this.$refs.scroller.$emit('all-loaded')
                     }
                 }
+            },
+            getMallDetail: async function () {
+                let appId = this.$router.currentRoute.params.appId
+                let result = await this.$acs.getMallDetail(appId)
+                if (result.success) {
+                    this.mallDetail = result.mall
+                }
+            },
+            showGoodDetail: function (goodId) {
+                this.$router.push({
+                    name: 'goodDetail',
+                    params: {
+                        goodId: goodId
+                    },
+                })
             }
         },
         watch: {

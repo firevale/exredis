@@ -16,7 +16,6 @@ config :acs, Acs.Endpoint,
   check_origin: false,
   watchers: [yarn: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
 
-
 # Watch static and templates for browser reloading.
 config :acs, Acs.Endpoint,
   live_reload: [

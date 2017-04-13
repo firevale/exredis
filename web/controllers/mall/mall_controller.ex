@@ -5,8 +5,7 @@ defmodule Acs.MallController do
   require Floki
 
   plug :fetch_app_id
-  plug :fetch_session_user_id  
-  plug :fetch_session_user
+  plug :fetch_access_token
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   # plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
@@ -102,7 +101,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :app_id, :name, :currency, :description, :pic, :price, :postage, :stock, :sold])
 
     query = if(String.length(keyword)>0) do
       query |> where([p], like(p.name, ^keyword))
@@ -114,6 +113,15 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
   def fetch_goods(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
+  # check_goods_id
+  def check_goods_id(conn, %{"app_id" => app_id, "goods_id" => goods_id}) do
+    count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^goods_id)
+    conn |> json(%{success: true, count: count})
+  end
+  def check_goods_id(conn, _params) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -138,33 +146,45 @@ defmodule Acs.MallController do
 
   # update_goods
   def update_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
-                "goods_id" => goods_id,
+                "id" => id,
                 "app_id" => app_id,
                 "name" => name,
                 "pic" => pic,
                 "description" => description,
                 "price" => price,
+                "currency" => currency,
                 "postage" => postage,
-                "stock" => stock} = goods) do
-    case Repo.get(MallGoods, goods_id) do
-      nil ->
+                "stock" => stock,
+                "is_new" => is_new} = goods) do
+    case is_new do
+      true ->
         # add new
-        goods = goods |> Map.put("user_id", user_id)
-        case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
-          {:ok, new_goods} ->
-            goods = goods |> Map.put("id", new_goods.id) |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-            conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: "admin.error.networkError"})
+        count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^id)
+        if(count > 0) do
+          conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
+        else
+          goods = goods |> Map.put("user_id", user_id)
+          case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
+            {:ok, new_goods} ->
+              goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+              conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+          end
         end
-        
-      %MallGoods{} = mg ->
-        # update
-        MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
-        goods = goods |> Map.put("id", mg.id) |> Map.put("inserted_at", mg.inserted_at)
-        conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
-    end
 
+      false -> 
+        # update 
+        case Repo.get(MallGoods, id) do
+          nil -> 
+            conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
+
+          %MallGoods{} = mg ->
+            goods = goods |> Map.put("user_id", user_id)
+            MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
+            conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
+        end
+    end
   end
   def update_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
@@ -206,7 +226,7 @@ defmodule Acs.MallController do
   end
  
  #  show active_mall_goods
- def get_active_goods_paged(conn, %{"page" => page, 
+ def get_active_goods_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"page" => page, 
                         "records_per_page" => records_per_page,
                         "app_id" => app_id}) do    
 
@@ -224,5 +244,13 @@ defmodule Acs.MallController do
 
     goodses = Repo.all(query)
     conn |> json(%{success: true, goodses: goodses, total: total_page})
+  end
+
+  def get_mall_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+    mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
+    conn |> json(%{success: true, mall: mall})
+  end
+  def get_mall_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "mall.serverError.badRequestParams"})
   end
 end

@@ -21,37 +21,42 @@
     </div>
   </div>
 </template>
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import {
-    showFileUploadDialog
-  } from 'common/components/fileUpload'
+import {
+  showFileUploadDialog
+} from 'common/components/fileUpload'
 
-  export default {
-    computed: {
-      ...mapGetters([
-        'forumList'
-      ]),
+export default {
+  computed: {
+    ...mapGetters([
+      'forumList'
+    ]),
+  },
+
+  methods: {
+    updateForumIcon: function(forum) {
+      showFileUploadDialog({
+        postAction: '/admin_actions/update_forum_icon',
+        accept: 'image/png',
+        data: {
+          forum_id: forum.id,
+        },
+        extensions: ['png'],
+        title: this.$t('admin.titles.uploadForumIcon', {
+          forumName: forum.title
+        }),
+        imageValidator: {
+          square: true,
+          minWidth: 128,
+        },
+        callback: response => forum.icon = response.icon_url,
+      })
     },
-
-    methods: {
-      updateForumIcon: function(forum) {
-        showFileUploadDialog({
-          postAction: '/admin_actions/update_forum_icon',
-          accept: 'image/png',
-          data: {
-            forum_id: forum.id,
-          },
-          extensions: ['png'],
-          title: this.$t('admin.titles.uploadForumIcon', {forumName: forum.title}),
-          callback: response => forum.icon = response.icon_url,
-        })
-      },
-    }
   }
+}
 </script>

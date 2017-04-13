@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: relative">
     <scroller ref="scroller" :on-load-more="loadmore">
       <post-detail-view v-if="postDetail" :post-data="postDetail">
       </post-detail-view>

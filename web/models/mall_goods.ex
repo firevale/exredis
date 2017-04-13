@@ -11,7 +11,7 @@ defmodule Acs.MallGoods do
     field :description, :binary
 
     field :price, :integer
-    field :currency, :string
+    field :currency, :string, default: "CNY" 
 
     field :postage, :integer      #邮费
     field :stock, :integer, default: 0    #库存
@@ -31,7 +31,7 @@ defmodule Acs.MallGoods do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:id, :name, :description, :price, :currency, :postage, :pic, :stock, :sold, :reads, :active, :app_id, :user_id])
-    |> validate_required([:id, :name, :description, :price, :postage, :pic, :app_id, :user_id])
+    |> validate_required([:id, :name, :description, :price, :postage, :app_id, :user_id])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
 

@@ -1,9 +1,9 @@
 <template>
   <div class="person">
-    <article class="media info">
+    <article class="media info flex-fixed-size">
       <figure class="media-left" @click="onShowImageUpload">
         <p class="image is-64x64 avatar-image">
-          <img :src="this.userInfo.avatar_url"></img>
+          <img :src="avatarUrl"></img>
         </p>
         <img-upload url="/forum_actions/update_user_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
           field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
@@ -13,14 +13,14 @@
           {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
         </p>
         <p>
-          {{ $t('forum.personal.postCount') }} <span>{{ this.postRecords}}</span>
+          {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.post_count}}</span>
         </p>
         <p>
-          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.reg_at | formatServerDateTime }}</span>
+          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.inserted_at | formatServerDateTime }}</span>
         </p>
       </div>
     </article>
-    <nav class="nav">
+    <nav class="nav flex-fixed-size">
       <div class="nav-center">
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
@@ -28,21 +28,18 @@
         <div class="slider" :style="{'background-position':sliderPosition}" />
       </div>
     </nav>
-    <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
-      <div style="position: relative; height: 100%">
-        <scroller :on-load-more="loadmore" ref="scroller">
-          <my-posts v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
-            :item-index="index"></my-posts>
-          <my-comments v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comments>
-          <my-favorate v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" :on-item-deleted="onItemDelete"
-            :item-index="index"></my-favorate>
-        </scroller>
-      </div>
+    <div class="content flex-take-rest" style="position: relative">
+      <scroller :on-load-more="loadmore" ref="scroller">
+        <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+          :item-index="index"></my-post-list-item>
+        <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
+        <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+          :item-index="index"></my-favorite-list-item>
+      </scroller>
     </div>
   </div>
 </template>
 <script>
-
 import {
   mapGetters,
   mapActions
@@ -54,18 +51,17 @@ import {
 
 import imgUpload from "vue-image-crop-upload/upload-2.vue"
 import scroller from 'common/components/scroller'
-import myPosts from "../../components/myPosts"
-import myFavorate from "../../components/myFavorate"
-import myComments from "../../components/myComments"
 
-
+import myPostListItem from "../../components/myPostListItem"
+import myFavoriteListItem from "../../components/myFavoriteListItem"
+import myCommentListItem from "../../components/myCommentListItem"
 
 export default {
   components: {
     scroller,
-    myPosts,
-    myFavorate,
-    myComments,
+    myPostListItem,
+    myFavoriteListItem,
+    myCommentListItem,
     imgUpload,
   },
 
@@ -88,6 +84,9 @@ export default {
         case "myFavor":
           return "90% bottom"
       }
+    },
+    avatarUrl() {
+      return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
     }
   },
 
@@ -100,13 +99,23 @@ export default {
       page: 0,
       total: 1,
       recordsPerPage: 10,
-      postRecords: 0,
       showImgUpload: false
     }
   },
+
+  mounted: async function() {
+    if (this.userInfo.post_count == 0) {
+      let result = await this.$acs.getUserPostCount(this.$route.params.forumId)
+
+      if (result.success) {
+        this.updateUserPostCount(result.post_count)
+      }
+    }
+  },
+
   methods: {
     ...mapActions([
-      'serUserProfile'
+      'setUserProfile', 'updateUserPostCount', 'decrUserPostCount'
     ]),
 
     switchMenu: function(menu) {
@@ -130,7 +139,7 @@ export default {
 
     cropUploadSuccess(result, field, key) {
       if (result.success) {
-        this.serUserProfile(result.user)
+        this.setUserProfile(result.user)
       }
     },
 
@@ -163,20 +172,21 @@ export default {
       }
     },
 
-    onItemDelete(index) {
-      switch (this.type) {
-        case "myPosts":
-          this.postRecords--;
+    onItemDelete(type, index) {
+      switch (type) {
+        case "myPost":
+          this.decrUserPostCount()
           this.postList.splice(index, 1)
           break;
-        case "myFavor":
+
+        case "myFavorite":
           this.favoriteList.splice(index, 1)
           break;
       }
     },
 
     getPostPage: async function() {
-      let result = await this.$acs.getUserPagedPost(this.$router.currentRoute.params.forumId,
+      let result = await this.$acs.getUserPagedPost(this.$route.params.forumId,
         this.page + 1, this.recordsPerPage)
 
       if (result.success) {
@@ -191,7 +201,7 @@ export default {
     },
 
     getCommentPage: async function() {
-      let result = await this.$acs.getUserPostComments(this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
 
       if (result.success) {
         this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
@@ -205,7 +215,7 @@ export default {
     },
 
     getFavoritePage: async function() {
-      let result = await this.$acs.getUserPostFavorites(this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
 
       if (result.success) {
         this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)

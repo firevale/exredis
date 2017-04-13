@@ -1,3 +1,4 @@
+<% session_user = @conn.private[:acs_session_user] %>
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -9,10 +10,8 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <%= unless Mix.env in [:dev, :test] do %>
     <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
-    <% end %>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">
@@ -28,7 +27,14 @@
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,
-        acsUser: <%= raw JSON.encode!(@conn.private[:acs_session_user]) %>,
+        <%= if is_map(session_user) do %>
+        acsUser: {
+          id: <%= session_user.id %>,
+          nickname: '<%= session_user.nickname %>',
+          avatar_url: '<%= session_user.avatar_url %>',
+          inserted_at: '<%= session_user.inserted_at %>',
+        },
+        <% end %>
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
       }
     </script>

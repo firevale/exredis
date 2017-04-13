@@ -24,7 +24,6 @@ defmodule Acs.MallOrder do
 
     field :goods_name, :string
     field :price, :integer, default: 0
-    field :amount, :integer, default: 0       #数量
     field :postage, :integer, default: 0      #邮费
     field :discount, :integer, default: 0     #折扣
     field :final_price, :integer, default: 0  #最终价格
@@ -57,7 +56,7 @@ defmodule Acs.MallOrder do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:id, :platform, :device_id, :user_ip, :goods_name, :price, :amount,
+    |> cast(params, [:id, :platform, :device_id, :user_ip, :goods_name, :price,
                     :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
                     :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
                     :transaction_currency, :transaction_id, :transaction_status, :app_id, 

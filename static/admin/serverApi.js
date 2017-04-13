@@ -78,11 +78,11 @@ export default {
       },
 
       updateForumInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_forum_info', params, successMessage)
+        return post(Vue, '/forum_actions/update_forum_info', params, successMessage)
       },
 
       updateForumSectionInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_section_info', params, successMessage)
+        return post(Vue, '/forum_actions/update_section_info', params, successMessage)
       },
 
       getSetting(params) {
@@ -102,7 +102,7 @@ export default {
       },
 
       getPagedNews(app_id, group, page, records_per_page) {
-        return post(Vue, '/admin_actions/get_paged_news_admin', {
+        return post(Vue, '/games_actions/get_paged_news_admin', {
           app_id,
           group,
           page,
@@ -127,35 +127,39 @@ export default {
       },
 
       getNewsDetail(news_id) {
-        return post(Vue, '/admin_actions/get_news_detail', { news_id })
+        return post(Vue, '/games_actions/get_news_detail', { news_id })
       },
 
       updateNews(params) {
-        return post(Vue, '/admin_actions/update_news', params)
+        return post(Vue, '/games_actions/update_news', params)
       },
 
       toggleStatus(params, successMessage) {
-        return post(Vue, '/admin_actions/toggle_news_status', params, successMessage)
+        return post(Vue, '/games_actions/toggle_news_status', params, successMessage)
       },
 
       updateMallInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_mall_info', params, successMessage)
+        return post(Vue, '/mall_actions/update_mall_info', params, successMessage)
       },
 
       fetchGoods(params) {
-        return post(Vue, '/admin_actions/fetch_goods', params)
+        return post(Vue, '/mall_actions/fetch_goods', params)
       },
 
       updateGoods(params) {
-        return post(Vue, '/admin_actions/update_goods', params)
+        return post(Vue, '/mall_actions/update_goods', params)
       },
 
       toggleGoodsStatus(params) {
-        return post(Vue, '/admin_actions/toggle_goods_status', params)
+        return post(Vue, '/mall_actions/toggle_goods_status', params)
       },
 
       deleteGoods(params) {
-        return post(Vue, '/admin_actions/delete_goods', params)
+        return post(Vue, '/mall_actions/delete_goods', params)
+      },
+
+      checkGoodsId(params) {
+        return post(Vue, '/mall_actions/check_goods_id', params)
       },
 
       fetchMallOrders(params) {

@@ -23,6 +23,7 @@ defmodule Acs.RedisUser do
             age: 1,              # 年龄
             avatar_url: nil,
             last_login_at: nil,
+            inserted_at: nil,
             bindings: %{}
 
 
@@ -60,20 +61,9 @@ defmodule Acs.RedisUser do
 
   def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     if not exists?(account_id) do
-      case parse_account_id(account_id) do
-        :email ->
-          [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
-          %__MODULE__{email: String.downcase(account_id),
-                      encrypted_password: Utils.hash_password(password),
-                      nickname: nickname}
-
-        :mobile ->
-          %__MODULE__{mobile: account_id,
-                      encrypted_password: Utils.hash_password(password)}
-
-        _ ->
-          raise InvalidAccountId, message: "invalid user account_id #{account_id}"
-      end
+      %__MODULE__{email: String.downcase(account_id),
+                  encrypted_password: Utils.hash_password(password),
+                  nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}
     else
       raise AccountIdInUse, message: "user account_id #{account_id} is already used by other user"
     end
@@ -86,17 +76,10 @@ defmodule Acs.RedisUser do
         create!(account_id, password)
 
       %{email: nil, mobile: nil, nickname: "anonymous"} = user ->
-        case parse_account_id(account_id) do
-          :email ->
-            [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
-            %{user | email: String.downcase(account_id), device_id: nil, nickname: nickname, encrypted_password: Utils.hash_password(password)}
-
-          :mobile ->
-            %{user | mobile: account_id, device_id: nil, nickname: "fvu#{user.id}", encrypted_password: Utils.hash_password(password)}
-
-          _ ->
-            raise ArgumentError, message: "invalid user account_id #{account_id}"
-        end
+        %{user | mobile: account_id, 
+                 device_id: nil, 
+                 nickname: "fvu#{Utils.generate_token(5) |> String.downcase}", 
+                 encrypted_password: Utils.hash_password(password)}
     end
   end
 
@@ -110,6 +93,12 @@ defmodule Acs.RedisUser do
                       avatar_url: avatar_url}) do
 
     bkey = "#{sdk}.#{app_id}"
+
+    nickname = case nickname do 
+                 nil -> "fvu#{Utils.generate_token(5) |> String.downcase}"
+                 "" -> "fvu#{Utils.generate_token(5) |> String.downcase}"
+                 _ -> nickname
+               end
 
     case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) || find(device_id) do
       nil ->
@@ -153,21 +142,10 @@ defmodule Acs.RedisUser do
   def bind_anonymous_user(account_id, password, device_id, bind_user_id) do
     case find(String.to_integer(bind_user_id)) do
       %{nickname: "anonymous", device_id: ^device_id} = user ->
-        new_user = case parse_account_id(account_id) do
-                     :email ->
-                      [[_, nickname, _]] = Regex.scan(~r/(\w+)@(.*)/, account_id)
-                       %{user | email: account_id,
-                                encrypted_password: Utils.hash_password(password),
-                                nickname: nickname,
-                                device_id: nil}
-                     :mobile ->
-                       %{user | mobile: account_id,
-                                encrypted_password: Utils.hash_password(password),
-                                nickname: "fvu#{user.id}",
-                                device_id: nil}
-                     _ ->
-                       raise InvalidAccountId, message: "invalid account id, can't bind"
-                   end
+        new_user = %{user | email: account_id,
+                            encrypted_password: Utils.hash_password(password),
+                            nickname: "fvu#{Utils.generate_token(5) |> String.downcase}",
+                            device_id: nil}
        save!(new_user)
       _ -> nil
     end
@@ -182,17 +160,23 @@ defmodule Acs.RedisUser do
                     email: case user.email do
                              nil -> nil
                              v when is_bitstring(v) -> String.downcase(user.email)
-                           end}
+                           end,
+                    nickname: case user.nickname do 
+                                nil -> "fvu#{Utils.generate_token(5) |> String.downcase}"
+                                v when is_bitstring(v) -> v
+                              end}
     
     Repo.transaction(fn ->
       # ecto's upset is not stable for now
       case Repo.get(User, user.id) do
         nil ->
-          User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert!
+          {:ok, db_user} = User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert
+          user = %{user | inserted_at: db_user.inserted_at}
           "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
 
         %User{} = old_user ->
           User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
+          user = %{user | inserted_at: old_user.inserted_at}
           "ok" = Scripts.save_user([], [to_json(user),
                                  user.id,
                                  user.email,
@@ -341,6 +325,14 @@ defmodule Acs.RedisUser do
       {"#{sdk}.#{app_id}", sdk_user_id}
     end) |> Enum.into(%{})
 
+    user = case user.nickname do 
+      nil ->
+        {:ok, new_user} = User.changeset(user, %{nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}) |> Repo.update
+        new_user
+      _ -> 
+        user
+    end
+
     cache = %__MODULE__{
               id: user.id,
               email: user.email,
@@ -353,6 +345,7 @@ defmodule Acs.RedisUser do
               gender: user.gender,      # 性别 ()
               age: user.age,              # 年龄
               avatar_url: user.avatar_url,
+              inserted_at: user.inserted_at,
               bindings: sdk_bindings
           }
     save_cache(cache)

@@ -51,10 +51,10 @@ AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxb@firevale.com"}) |> Repo
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com"}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "xiebing@firevale.com"}) |> Repo.insert
 
-User.changeset(%User{}, %{id: "100001", email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1}) |> Repo.insert
-User.changeset(%User{}, %{id: "100002", email: "zhumingzhen@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
-User.changeset(%User{}, %{id: "100003", email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$ofJOLH.3vbHuma7t/DGQmQ$0wRciGKFbmyb6U077Flruk/LStLBa167Q5ejgZNXYxeEIquCTPfYr0AkapEQNWVOjtJ5rTu9n2bWJyLKXJsnKw", nickname: "逍遥", gender: "male", age: 1}) |> Repo.insert
-User.changeset(%User{}, %{id: "100004", email: "xiebing@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$iH9w/vVpiR58wgv379WaOg$nS5OABJHfBOXXYjuSnXwhJXMaDdqnwE0vIQmPLFBCsWCxNgr02kfQ3PGSwx6tBCnsDQmluh/rB8zCMkxgcarwg", nickname: "流年", gender: "male", age: 18}) |> Repo.insert
+User.changeset(%User{}, %{id: 100001, email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: 100002, email: "zhumingzhen@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: 100003, email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$ofJOLH.3vbHuma7t/DGQmQ$0wRciGKFbmyb6U077Flruk/LStLBa167Q5ejgZNXYxeEIquCTPfYr0AkapEQNWVOjtJ5rTu9n2bWJyLKXJsnKw", nickname: "逍遥", gender: "male", age: 1}) |> Repo.insert
+User.changeset(%User{}, %{id: 100004, email: "xiebing@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$iH9w/vVpiR58wgv379WaOg$nS5OABJHfBOXXYjuSnXwhJXMaDdqnwE0vIQmPLFBCsWCxNgr02kfQ3PGSwx6tBCnsDQmluh/rB8zCMkxgcarwg", nickname: "流年", gender: "male", age: 18}) |> Repo.insert
 
 ForumManager.changeset(%ForumManager{}, %{forum_id: 1, user_id: 100001}) |> Repo.insert
 ForumManager.changeset(%ForumManager{}, %{forum_id: 1, user_id: 100002}) |> Repo.insert
@@ -103,14 +103,13 @@ AdminSetting.changeset(%AdminSetting{}, %{name: "keyword", value: "色情,法轮
 
 Mall.changeset(%Mall{}, %{title: "战神大陆商城", active: true, app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
-MallGoods.changeset(%MallGoods{}, %{id: "1010001", name: "经典黑色T恤", pic: "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3164574553,770329306&fm=23&gp=0.jpg", description: "经典黑色T恤", active: true, price: 12000, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
+MallGoods.changeset(%MallGoods{}, %{id: "1010001", name: "经典黑色T恤", pic: "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3164574553,770329306&fm=23&gp=0.jpg", description: "经典黑色T恤", active: true, currency: "CNY", price: 12000, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
-MallGoods.changeset(%MallGoods{}, %{id: "1010002", name: "经典白色T恤", pic: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977331445&di=81098768e236f3090b3fcd4f866e7a2b&imgtype=0&src=http%3A%2F%2Fwww.spolo.cn%2Fuserfiles%2Fimages%2Fproduct%2F1%2F11%2F2.jpg", description: "经典黑色T恤", active: true, price: 9900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
+MallGoods.changeset(%MallGoods{}, %{id: "1010002", name: "经典白色T恤", pic: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977331445&di=81098768e236f3090b3fcd4f866e7a2b&imgtype=0&src=http%3A%2F%2Fwww.spolo.cn%2Fuserfiles%2Fimages%2Fproduct%2F1%2F11%2F2.jpg", description: "经典黑色T恤", active: true, currency: "CNY", price: 9900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
-MallGoods.changeset(%MallGoods{}, %{id: "1010003", name: "经典灰色T恤", pic: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977358176&di=13043c1fe2aec64f9d7d7fadaf9e56ee&imgtype=0&src=http%3A%2F%2Fimg4.vipshop.com%2Fupload%2Fmerchandise%2F40504%2FHUNTCITY-3321002063-1.jpg", description: "经典黑色T恤", active: true, price: 19900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
+MallGoods.changeset(%MallGoods{}, %{id: "1010003", name: "经典灰色T恤", pic: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977358176&di=13043c1fe2aec64f9d7d7fadaf9e56ee&imgtype=0&src=http%3A%2F%2Fimg4.vipshop.com%2Fupload%2Fmerchandise%2F40504%2FHUNTCITY-3321002063-1.jpg", description: "经典黑色T恤", active: true, currency: "CNY", price: 19900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
-MallGoods.changeset(%MallGoods{}, %{id: "1010004", name: "经典红色T恤", pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", description: "经典黑色T恤", active: true, price: 11900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
-
+MallGoods.changeset(%MallGoods{}, %{id: "1010004", name: "经典红色T恤", pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", description: "经典黑色T恤", active: true, currency: "CNY", price: 11900, postage: 1000, stock: 100, user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"}) |> Repo.insert
 
 UserAddress.changeset(%UserAddress{}, %{ name: "钟楼",mobile: "13110234567", area: "福建福州", area_code: "350001",address: "工业路",user_id: "100001"}) |> Repo.insert
 

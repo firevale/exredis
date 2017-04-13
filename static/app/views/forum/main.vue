@@ -1,6 +1,6 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
-  <div class="top-bar">
+  <div class="top-bar flex-fixed-size">
     <div class="title-bar">
       <h4 class="title is-4">{{forumInfo.title}}</h4>
     </div>
@@ -19,7 +19,7 @@
     </nav>
   </div>
   <transition :name="transitionName">
-    <router-view class="content-container forum"> </router-view>
+    <router-view class="content-container flex-take-rest forum"> </router-view>
   </transition>
 </div>
 </template>
@@ -62,7 +62,7 @@ export default {
           filter.init(result.keyword)
 
           if(window.acsConfig.acsUser){
-            vm.serUserProfile(window.acsConfig.acsUser)
+            vm.setUserProfile(window.acsConfig.acsUser)
           }
         })
       } else {
@@ -79,7 +79,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'serUserProfile'
+      'setTransitionName', 'updateForumInfo', 'updateKeyword', 'setUserProfile'
     ]),
 
     onBtnBackClicked: function() {

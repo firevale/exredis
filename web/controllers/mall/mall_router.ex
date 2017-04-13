@@ -16,9 +16,19 @@ defmodule Acs.MallRouter do
   scope "/", Acs do
     pipe_through :mall
 
+    get   "/fetch_malls", MallController, :fetch_malls
+    post  "/update_mall_icon", MallController, :update_mall_icon
+    post  "/update_mall_info", MallController, :update_mall_info
+    post  "/fetch_goods", MallController, :fetch_goods
+    post  "/update_goods_pic", MallController, :update_goods_pic
+    post  "/update_goods", MallController, :update_goods
+
     get  "/get_mall_info", MallController, :get_mall_info
     post "/get_mall_info", MallController, :get_mall_info
     post "/get_active_goods_paged", MallController, :get_active_goods_paged
+    
+    post "/check_goods_id", MallController, :check_goods_id
+    post "/get_mall_detail", MallController, :get_mall_detail
 
     post "fetch_order_list", MallOrderController, :fetch_order_list
     # get   "/get_paged_post", ForumController, :get_paged_post

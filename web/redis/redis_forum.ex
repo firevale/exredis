@@ -48,8 +48,6 @@ defmodule Acs.RedisForum do
     case Repo.one(query) do
       nil -> nil
       %Forum{} = forum ->
-        #Logger.debug "mysql app: #{inspect app, pretty: true}"
-
         cache = %__MODULE__{
           id: forum.id,
           title: forum.title,

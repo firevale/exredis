@@ -16,6 +16,11 @@ defmodule Acs.ForumRouter do
   scope "/", Acs do
     pipe_through :forum
 
+    get  "/fetch_forums", ForumController, :fetch_forums
+    post "/update_forum_icon", ForumController, :update_forum_icon
+    post "/update_forum_info", ForumController, :update_forum_info
+    post "/update_section_info", ForumController, :update_section_info  
+
     get  "/get_forum_info", ForumController, :get_forum_info
     post "/get_forum_info", ForumController, :get_forum_info
     post "/get_paged_forums", ForumController, :get_paged_forums
@@ -23,13 +28,15 @@ defmodule Acs.ForumRouter do
 
     get   "/get_paged_post", ForumController, :get_paged_post
     post  "/get_paged_post", ForumController, :get_paged_post
-    post  "/get_user_paged_post", ForumController, :get_user_paged_post
     post  "/update_user_avatar", ForumController, :update_user_avatar
 
     post  "/add_post", ForumController, :add_post
 
     post  "/get_post_detail", ForumController, :get_post_detail
     post  "/get_post_comments", ForumController, :get_post_comments
+
+    post  "/get_user_post_count", ForumController, :get_user_post_count
+    post  "/get_user_paged_post", ForumController, :get_user_paged_post
     post  "/get_user_post_comments", ForumController, :get_user_post_comments
 
     post  "/delete_comment", ForumController, :delete_comment

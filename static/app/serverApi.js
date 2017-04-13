@@ -41,7 +41,7 @@ const post = async(Vue, uri, params) => {
 }
 
 export default {
-  install: function (Vue, options) {
+  install: function(Vue, options) {
     Vue.prototype.$acs = {
       getPagedForums() {
         return post(Vue, '/forum_actions/get_paged_forums', {})
@@ -57,13 +57,6 @@ export default {
         })
       },
 
-      getUserPagedPost(forum_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_user_paged_post', {
-          forum_id,
-          page,
-          records_per_page
-        })
-      },
 
       getForumInfo(forum_id) {
         return post(Vue, '/forum_actions/get_forum_info', {
@@ -118,15 +111,31 @@ export default {
         })
       },
 
-      getUserPostComments(page, records_per_page) {
-        return post(Vue, '/forum_actions/get_user_post_comments', {
+      getUserPostCount(forum_id) {
+        return post(Vue, '/forum_actions/get_user_post_count', {
+          forum_id
+        })
+      },
+
+      getUserPagedPost(forum_id, page, records_per_page) {
+        return post(Vue, '/forum_actions/get_user_paged_post', {
+          forum_id,
           page,
           records_per_page
         })
       },
 
-      getUserPostFavorites(page, records_per_page) {
+      getUserPostComments(forum_id, page, records_per_page) {
+        return post(Vue, '/forum_actions/get_user_post_comments', {
+          forum_id,
+          page,
+          records_per_page
+        })
+      },
+
+      getUserPostFavorites(forum_id, page, records_per_page) {
         return post(Vue, '/forum_actions/get_user_favorites', {
+          forum_id,
           page,
           records_per_page
         })
@@ -220,6 +229,11 @@ export default {
           app_id,
           page,
           records_per_page
+        })
+      },
+      getMallDetail(app_id) {
+        return post(Vue, '/mall_actions/get_mall_detail', {
+          app_id
         })
       },
     }

@@ -236,6 +236,11 @@ export default {
           app_id
         })
       },
+      getGoodDetail(good_id) {
+        return post(Vue, '/mall_actions/get_good_detail', {
+          good_id
+        })
+      },
     }
   }
 }

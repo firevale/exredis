@@ -5,7 +5,6 @@ html {
 body {
   font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   color: $text;
-  background-color: $bottom-line-light;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -19,10 +18,25 @@ body:not(.in-app) {
 }
 
 #app {
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
   background-color: $white;
-  transform: translate3d(0, 0, 0);
+  transform: translateZ(0);
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+
+.root-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+
+  &.is-ancestor {
+    margin: 0;
+  }
 }
 
 .title {
@@ -73,22 +87,10 @@ input.input:focus {
   border-color: $blue;
 }
 
-
-
-.root-container {
-  position: relative;
-  width: 100vw;
-  min-height: 100vh;
-  overflow: hidden;
-  &.is-ancestor {
-    margin: 0;
-  }
-}
-
 .top-bar {
   position: relative;
   height: 5rem;
-  width: 100vw;
+  width: 100%;
   padding: 1rem 1.5rem;
   .title-bar {
     position: absolute;
@@ -138,19 +140,28 @@ input.input:focus {
 }
 
 .content-container {
-  position: absolute;
+  margin: 0 1.5rem;
   background-color: $white;
-  top: 5rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  bottom: 0;
-  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+
   -ms-overflow-style: none;
-  overflow-x: hidden;
-  overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 0 !important;
   }
+}
+
+.flex-fixed-size {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+.flex-take-rest {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
 }
 
 .has-bottom-line {

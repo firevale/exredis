@@ -1,10 +1,9 @@
 export default [{
-  path: '/mall/:appId',
-  name: 'mall',
-  component: require('../views/mall/index.vue'),
-  children: [{
-    path: 'index',
-    name: 'index',
-    component: require('../views/mall/index.vue')
-  }]
-}, ]
+  path: '/mall/:appId/index',
+  name: 'mallIndex',
+  component: require('../views/mall/index.vue')
+}, {
+  path: '/mall/:goodId/detail',
+  name: 'goodDetail',
+  component: require('../views/mall/goodDetail.vue')
+}]

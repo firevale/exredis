@@ -1,6 +1,6 @@
 <template>
   <div class="person">
-    <article class="media info">
+    <article class="media info flex-fixed-size">
       <figure class="media-left" @click="onShowImageUpload">
         <p class="image is-64x64 avatar-image">
           <img :src="avatarUrl"></img>
@@ -20,7 +20,7 @@
         </p>
       </div>
     </article>
-    <nav class="nav">
+    <nav class="nav flex-fixed-size">
       <div class="nav-center">
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
         <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
@@ -28,16 +28,14 @@
         <div class="slider" :style="{'background-position':sliderPosition}" />
       </div>
     </nav>
-    <div class="content" style="position: absolute; top: 12rem;left: 0;right: 0; bottom: 0;">
-      <div style="position: relative; height: 100%">
-        <scroller :on-load-more="loadmore" ref="scroller">
-          <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
-            :item-index="index"></my-post-list-item>
-          <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
-          <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
-            :item-index="index"></my-favorite-list-item>
-        </scroller>
-      </div>
+    <div class="content flex-take-rest" style="position: relative">
+      <scroller :on-load-more="loadmore" ref="scroller">
+        <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+          :item-index="index"></my-post-list-item>
+        <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
+        <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
+          :item-index="index"></my-favorite-list-item>
+      </scroller>
     </div>
   </div>
 </template>

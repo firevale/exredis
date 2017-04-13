@@ -1,4 +1,3 @@
-
 .tab-bar {
   display: flex;
   flex-direction: row;
@@ -199,10 +198,11 @@ form.post {
 }
 
 .person {
+  display: flex;
+  flex-flow: column nowrap;
   .info {
     padding: 0.8rem 2rem 0.8rem;
     font-size: 1.1rem;
-    position: relative;
     figure {
       margin-top: 0.4rem;
       margin-right: 2rem;
@@ -263,7 +263,6 @@ form.post {
     }
   }
   .content {
-    margin-top: 1em;
     .content-item {
       padding: 0.6rem 0;
       .tile.is-vertical>.tile:not(:last-child) {

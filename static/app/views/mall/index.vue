@@ -2,7 +2,7 @@
     <div class="tile is-vertical root-container mall-index">
         <div class="top-bar">
             <div class="title-bar">
-                <h4 class="title is-4">商城名称</h4>
+                <h4 class="title is-4">{{mallDetail.title}}</h4>
             </div>
             <nav class="nav">
                 <div class="nav-left has-text-left">
@@ -50,6 +50,9 @@
         components: {
             scroller
         },
+        mounted: async function () {
+            await this.getMallDetail()
+        },
         data: function () {
             return {
                 canGoBack: false,
@@ -58,7 +61,8 @@
                 page: 0,
                 total: 1,
                 recordsPerPage: 12,
-                postRecords: 0
+                postRecords: 0,
+                mallDetail: {}
             }
         },
         methods: {
@@ -91,6 +95,13 @@
                     if (this.$refs.scroller && this.page >= this.total) {
                         this.$refs.scroller.$emit('all-loaded')
                     }
+                }
+            },
+            getMallDetail: async function () {
+                let appId = this.$router.currentRoute.params.appId
+                let result = await this.$acs.getMallDetail(appId)
+                if (result.success) {
+                    this.mallDetail = result.mall
                 }
             }
         },

@@ -160,7 +160,7 @@ export default {
           postAction: '/mall_actions/update_goods_pic',
           accept: 'image/jpeg, image/png',
           data: {
-            app_id: this.goods.app_id
+            goods_id: this.goods.id
           },
           extensions: ['png', 'jpg', 'jpeg'],
           title: this.$t('admin.titles.uploadGoodsPic'),

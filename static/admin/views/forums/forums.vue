@@ -41,7 +41,7 @@ export default {
   methods: {
     updateForumIcon: function(forum) {
       showFileUploadDialog({
-        postAction: '/admin_actions/update_forum_icon',
+        postAction: '/forum_actions/update_forum_icon',
         accept: 'image/png',
         data: {
           forum_id: forum.id,

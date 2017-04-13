@@ -1,5 +1,5 @@
 <template>
-    <div class="mall-index tile is-marginless is-vertical">
+    <div class="tile is-vertical root-container mall-index">
         <div class="top-bar">
             <div class="title-bar">
                 <h4 class="title is-4">商城名称</h4>
@@ -17,20 +17,22 @@
         </div>
         <div class="middle-content">
             <scroller :on-load-more="loadmore" ref="scroller">
-                <div class="columns is-multiline is-mobile">
-                    <div v-for="item in goodsList" class="column is-half has-text-centered">
-                        <div class="card-image pic">
-                            <figure class="image is-400x400">
-                                <img v-if="item.pic" :src="item.pic">
-                                <img v-else src="https://placehold.it/300x300?text=400x400">
-                            </figure>
+                <div class="content-goods">
+                    <div class="columns is-multiline has-text-centered is-mobile">
+                        <div v-for="item in goodsList" class="column is-half">
+                            <div class="card-image pic">
+                                <figure class="image is-400x400">
+                                    <img v-if="item.pic" :src="item.pic">
+                                    <img v-else src="https://placehold.it/300x300?text=400x400">
+                                </figure>
+                            </div>
+                            <p class="subtitle is-marginless is-5 name">
+                                {{item.name}}
+                            </p>
+                            <p class="subtitle is-marginless is-5 price">
+                                <label>{{(item.price / 100).toFixed(2)}}</label>
+                            </p>
                         </div>
-                        <p class="subtitle is-marginless is-5 name">
-                            {{item.name}}
-                        </p>
-                        <p class="subtitle is-marginless is-5 price">
-                            <label>{{(item.price / 100).toFixed(2)}}</label>
-                        </p>
                     </div>
                 </div>
             </scroller>

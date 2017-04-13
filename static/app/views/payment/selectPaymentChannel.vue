@@ -1,6 +1,6 @@
 <template>
   <div>
-    <article class="media" style="margin-top: 1rem; margin-bottom: 1rem;">
+    <article class="media flex-fixed-size" style="margin-top: 1rem; margin-bottom: 1rem;">
       <figure class="media-left" v-if="icon">
         <p class="image is-48x48">
           <img :src="icon">
@@ -21,28 +21,30 @@
         </div>
       </div>
     </article>
-    <p class="is-seperator">{{ $t('payment.selectPaymentChannel') }}
+    <p class="is-seperator flex-fixed-sized">{{ $t('payment.selectPaymentChannel') }}
     </p>
-    <div class="tile is-vertical" <div class="tile is-payment-channel has-bottom-line" v-for="channel in channels">
-      <v-touch @tap="setActiveChannel(channel)" class="level is-mobile" style="padding: 0.5rem 0; width: 100%; cursor: pointer">
-        <div class="level-left">
-          <a class="sdk-icon" :class="channel">
-          </a>
-          <div class="tile is-vertical" style="margin-left: 1rem">
-            <p>{{ $t(`payment.channel.${channel}`) }}</p>
-            <p>{{ $t(`payment.slogan.${channel}`) }}</p>
+    <div class="tile is-vertical flex-take-rest">
+      <div class="tile is-payment-channel has-bottom-line" v-for="channel in channels">
+        <v-touch @tap="setActiveChannel(channel)" class="level is-mobile" style="padding: 0.5rem 0; width: 100%; cursor: pointer">
+          <div class="level-left">
+            <a class="sdk-icon" :class="channel">
+            </a>
+            <div class="tile is-vertical" style="margin-left: 1rem">
+              <p>{{ $t(`payment.channel.${channel}`) }}</p>
+              <p>{{ $t(`payment.slogan.${channel}`) }}</p>
+            </div>
           </div>
-        </div>
-        <div class="level-right">
-          <span class="icon image-icon circle-icon" :class="activeChannel == channel ? 'active' : ''">
+          <div class="level-right">
+            <span class="icon image-icon circle-icon" :class="activeChannel == channel ? 'active' : ''">
             </span>
-        </div>
-      </v-touch>
-    </div>
-    <div class="has-text-centered" style="width: 100%; height: 3rem; margin-top: 2rem;">
-      <v-touch @tap="onPurchaseByChannel" class="button is-primary is-medium" style="min-width: 10rem;" tag="a">
-        {{ $t('payment.buyNow') }}
-      </v-touch>
+          </div>
+        </v-touch>
+      </div>
+      <div class="has-text-centered" style="width: 100%; height: 3rem; margin-top: 2rem;">
+        <v-touch @tap="onPurchaseByChannel" class="button is-primary is-medium" style="min-width: 10rem;" tag="a">
+          {{ $t('payment.buyNow') }}
+        </v-touch>
+      </div>
     </div>
   </div>
 </template>

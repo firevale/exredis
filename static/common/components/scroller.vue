@@ -103,11 +103,11 @@ export default {
       this.$nextTick(_ => this.checkLoadMore())
       this.sensor = new ResizeSensor(this.$refs.scroller_content, _ => {
         if (!(this.isScrolling || this.loading)) {
-          if (this.iscroll.isInTransition) {
+          if (this.iscroll && this.iscroll.isInTransition) {
             this.needRefresh = true
           } else {
             this.$nextTick(_ => {
-              this.iscroll.refresh()
+              this.iscroll ? this.iscroll.refresh() : undefined
             })
           }
         } else {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tile is-full has-text-left" style="padding: 1rem 0">
+    <div class="has-text-left" style="padding: 1rem 0;">
       <span class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @click="showSelectSectionMenu">
          {{ selectedSectionTitle }}
       </span>
@@ -20,7 +20,7 @@
       </div>
       <div class="tile is-full has-text-centered">
         <p style="margin: 0 auto">
-          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0;" @click="preview"
+          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block" @click="preview"
             :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           />
           <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"

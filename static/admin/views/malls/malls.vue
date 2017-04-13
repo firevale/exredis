@@ -39,7 +39,7 @@
     methods: {
       updateMallIcon: function(mall) {
         showFileUploadDialog({
-          postAction: '/admin_actions/update_mall_icon',
+          postAction: '/mall_actions/update_mall_icon',
           accept: 'image/png',
           data: {
             mall_id: mall.id,

@@ -13,6 +13,8 @@ export default {
   active: '是否启用',
   addSuccess: '添加成功',
   updateSuccess: '更新成功',
+  notExist: '商品不存在',
+  sameGoodsIdExist: '商品编号已存在，请重新输入',
 
   goods: {
     edit: '编辑',
@@ -35,8 +37,17 @@ export default {
     priceList: '单价：{price} / 邮费: {postage}',
     stockList: '库存：{stock} / 销量: {sold}',
     saveFirst: '请先保存商品',
+    
   },
+  order: {
+    viewDetail: '查看详情',
+    fields: {
+      id: '订单号',
+      postage: '邮费',
+      total: '合计',
+    },
+  }
 
 
-  
+
 }

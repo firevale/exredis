@@ -25,17 +25,19 @@
     </router-link>
     <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
       <div class="columns is-multiline">
-        <div v-for="goods in goodses" class="column is-half">
+        <div v-for="goods in goodses" class="column is-half" @click="onEdit(goods)">
           <div class="columns">
             <div class="column is-parent is-one-third">
-              <figure class="image is-128x128" style="display: block">
-                <img :src="getGoodsIcon(goods)"></img>
+              <figure class="image" style="display: block">
+                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
               </figure>
             </div>
             <div class="column is-parent is-vertical">
               <article class="tile is-child">
                 <p class="subtitle is-6">{{ goods.name}}</p>
-                <p class="subtitle is-6">{{ $t('admin.mall.goods.priceList', {price: getPrice(goods.price), postage: getPrice(goods.postage)}) }}</p>
+                <p class="subtitle is-6">{{ $t('admin.mall.goods.priceList', {price: getPrice(goods.price), postage: getPrice(goods.postage)})
+                  }}
+                </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
                   <a class="button is-small">
@@ -115,22 +117,15 @@ export default {
 
   mounted: function() {
     this.appId = this.$route.params.appId
-    this.currency = this.appHash[this.appId].currency
-    this.fetchGoods(this.page, this.recordsPerPage)
+    if (this.appId && this.appHash[this.appId]) {
+      this.currency = this.appHash[this.appId].currency
+      this.fetchGoods(this.page, this.recordsPerPage)
+    }
   },
 
   methods: {
-    getPrice: function(price) 
-    {
-      return "¥" + parseFloat(price/100).toFixed(2)
-    },
-
-    getGoodsIcon: function(goods) {
-      if (goods) {
-        return goods.pic
-      } else {
-        return 'https://placehold.it/128x128?text=未上传'
-      }
+    getPrice: function(price) {
+      return "¥" + parseFloat(price / 100).toFixed(2)
     },
 
     onPageChange: function(page) {
@@ -143,6 +138,15 @@ export default {
       } else {
         this.fetchGoods(1, this.recordsPerPage)
       }
+    },
+
+    onEdit: function(goods) {
+      this.$router.push({
+        name: 'EditGoods',
+        params: {
+          goods: goods
+        }
+      })
     },
 
     fetchGoods: async function(page, recordsPerPage) {

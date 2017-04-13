@@ -7,7 +7,7 @@
         </div>
         <div class="field-body">
           <input class="input" :placeholder="$t('admin.mall.goods.namePlaceholder')" type="text" v-model.trim="goods.name">
-        </div>        
+        </div>
         <div class="field-label">
           <label class="label">{{ $t('admin.mall.goods.id') }}</label>
         </div>
@@ -19,8 +19,8 @@
         <div class="tile is-parent">
           <article class="tile is-child">
             <center>
-              <figure class="image is-128x128" style="display: block" @click="onShowImageUpload">
-                <img src="https://placehold.it/256x256?text=400X400">
+              <figure class="image" style="display: block" @click="onShowImageUpload">
+                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=400X400'" style="width:160px; height:160px;"></img>
               </figure>
               <p class="help">{{ $t('admin.mall.goods.picPlaceholder') }}</p>
             </center>
@@ -35,13 +35,13 @@
               <div class="field-body">
                 <input class="input" type="text" disabled v-model.trim="goods.currency">
               </div>
-            </div>            
+            </div>
             <div class="field is-horizontal">
               <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.price') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" v-model.trim="goods.price">
+                <input class="input" type="text" v-model.trim="realPrice">
               </div>
             </div>
             <div class="field is-horizontal">
@@ -49,7 +49,7 @@
                 <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" v-model.trim="goods.postage">
+                <input class="input" type="text" v-model.trim="realPostage">
               </div>
             </div>
             <div class="field is-horizontal">
@@ -93,8 +93,6 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
-
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
@@ -102,13 +100,14 @@ import {
 const touchMap = new WeakMap()
 
 export default {
-  components: {
-    imgUpload,
-  },
-
   mounted: function() {
     this.goods = this.$route.params.goods
-    if(this.goods.id.length == 0) this.isNew = true
+    if (this.goods) {
+      if (this.goods.id.length == 0) this.isNew = true
+      if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
+      if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
+        2)
+    }
   },
 
   data() {
@@ -119,10 +118,30 @@ export default {
       publishing: false,
       isNew: false,
       editor: undefined,
+      realPrice: 0.00,
+      realPostage: 0.00,
+    }
+  },
+
+  watch: {
+    realPrice: function() {
+      // this.realPrice = parseFloat(this.realPrice).toFixed(2)
+      this.goods.price = Math.round(this.realPrice * 100)
+    },
+    realPostage: function() {
+      // this.realPostage = parseFloat(this.realPostage).toFixed(2)
+      this.goods.postage = Math.round(this.realPostage * 100)
     }
   },
 
   methods: {
+    getPrice: function(price) {
+      if (price)
+        return parseFloat(price / 100).toFixed(2)
+      else
+        return 0
+    },
+
     setEditor: function(editor) {
       this.editor = editor
     },
@@ -136,8 +155,17 @@ export default {
     },
 
     onShowImageUpload: function() {
-      if (this.goods.id) {
-        this.showImgUpload = true
+      if (this.goods.id.length > 0) {
+        showFileUploadDialog({
+          postAction: '/mall_actions/update_goods_pic',
+          accept: 'image/jpeg, image/png',
+          data: {
+            goods_id: this.goods.id
+          },
+          extensions: ['png', 'jpg', 'jpeg'],
+          title: this.$t('admin.titles.uploadGoodsPic'),
+          callback: response => this.goods.pic = response.pic_url,
+        })
       } else {
         openNotification({
           title: this.$t('admin.titles.warning'),
@@ -151,7 +179,7 @@ export default {
 
     onInsertImage: function(editor) {
       showFileUploadDialog({
-        postAction: '/admin_actions/update_goods_pic',
+        postAction: '/mall_actions/update_goods_content_pic',
         accept: 'image/jpeg, image/png',
         data: {
           app_id: this.goods.app_id
@@ -188,7 +216,8 @@ export default {
     onSave: function() {
       if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price.length ==
         0 ||
-        this.goods.stock.length == 0 || this.goods.postage.length == 0) {
+        this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.id.length ==
+        0) {
         openNotification({
           title: this.$t('admin.titles.warning'),
           message: this.$t('admin.mall.goods.pleaseFill'),
@@ -204,19 +233,20 @@ export default {
 
     handleSubmit: async function() {
       this.saving = true
-      if (!this.goods.id) this.goods.id = ""
       let result = await this.$acs.updateGoods({
-        goods_id: this.goods.id,
+        id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,
         pic: this.goods.pic,
         description: this.goods.description,
         price: this.goods.price,
         postage: this.goods.postage,
-        stock: this.goods.stock
+        stock: this.goods.stock,
+        currency: this.goods.currency,
+        is_new: this.isNew
       })
       if (result.success) {
-        this.$router.go(-1)
+        this.isNew = false
       }
       this.saving = false
     },

@@ -15,14 +15,13 @@ const processResponse = async(Vue, response, successMessage) => {
       type: 'success',
       duration: 4500,
     })
-  }
-  else if (result.i18n_message) {
+  } else if (result.i18n_message) {
     openNotification({
       title: Vue.t('admin.notification.title.success'),
       message: Vue.t(result.i18n_message, result.i18n_message_object),
       type: 'success',
       duration: 4500,
-    })    
+    })
   }
 
   return result
@@ -161,6 +160,10 @@ export default {
 
       checkGoodsId(params) {
         return post(Vue, '/mall_actions/check_goods_id', params)
+      },
+
+      fetchMallOrders(params) {
+        return post(Vue, '/mall_actions/fetch_order_list', params)
       },
 
     }

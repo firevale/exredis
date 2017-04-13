@@ -5,8 +5,7 @@ defmodule Acs.MallController do
   require Floki
 
   plug :fetch_app_id
-  plug :fetch_session_user_id  
-  plug :fetch_session_user
+  plug :fetch_access_token
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   # plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
@@ -102,7 +101,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :app_id, :name, :currency, :description, :pic, :price, :postage, :stock, :sold])
 
     query = if(String.length(keyword)>0) do
       query |> where([p], like(p.name, ^keyword))
@@ -127,13 +126,43 @@ defmodule Acs.MallController do
   end
 
   # update_goods_pic
-  def update_goods_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
+  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
+   case Repo.get(MallGoods, goods_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
+
+      %MallGoods{} = goods ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 400, height: 400} = upload_image ->
+            if upload_image.format in ["jpg", "jpeg", "png"] do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/goods_icon/#{goods_id}"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+
+              MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+
+              conn |> json(%{success: true, pic_url: pic_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize400x400"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
     if upload_image.format in ["jpg", "jpeg", "png"] do
       {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
       [file_md5 | _] = String.split(md5sum_result)
       static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/goods_pics/#{app_id}"
+      url_path = "/images/goods_pics/#{goods_id}"
       {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
@@ -147,33 +176,45 @@ defmodule Acs.MallController do
 
   # update_goods
   def update_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
-                "goods_id" => goods_id,
+                "id" => id,
                 "app_id" => app_id,
                 "name" => name,
                 "pic" => pic,
                 "description" => description,
                 "price" => price,
+                "currency" => currency,
                 "postage" => postage,
-                "stock" => stock} = goods) do
-    case Repo.get(MallGoods, goods_id) do
-      nil ->
+                "stock" => stock,
+                "is_new" => is_new} = goods) do
+    case is_new do
+      true ->
         # add new
-        goods = goods |> Map.put("user_id", user_id)
-        case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
-          {:ok, new_goods} ->
-            goods = goods |> Map.put("id", new_goods.id) |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-            conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: "admin.error.networkError"})
+        count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^id)
+        if(count > 0) do
+          conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
+        else
+          goods = goods |> Map.put("user_id", user_id)
+          case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
+            {:ok, new_goods} ->
+              goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+              conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+          end
         end
-        
-      %MallGoods{} = mg ->
-        # update
-        MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
-        goods = goods |> Map.put("id", mg.id) |> Map.put("inserted_at", mg.inserted_at)
-        conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
-    end
 
+      false -> 
+        # update 
+        case Repo.get(MallGoods, id) do
+          nil -> 
+            conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
+
+          %MallGoods{} = mg ->
+            goods = goods |> Map.put("user_id", user_id)
+            MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
+            conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
+        end
+    end
   end
   def update_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})

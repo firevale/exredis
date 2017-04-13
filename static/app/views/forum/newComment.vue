@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tile is-full has-text-left" style="padding: 1rem 0">
+    <div class="has-text-left" style="padding: 1rem 0;">
       <h6 class="title is-6" style="font-weight: 400">{{$t('forum.detail.replyBtn') + ": " + currentPostTitle}}</h6>
     </div>
     <form class="post" @submit.prevent="handleSubmit" v-show="currentPostTitle">

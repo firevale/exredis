@@ -1,13 +1,15 @@
 defmodule Acs.MallOrderDetail do
   use Acs.Web, :model
 
+@derive {Poison.Encoder, except: [:mall_order, :mall_goods, :__meta__]}
+
   schema "mall_order_details" do
-    field :good_name, :string
-    field :good_pic, :string
+    field :goods_name, :string
+    field :goods_pic, :string
     field :price, :integer
     field :amount, :integer
-    belongs_to :good, Acs.Good
-    belongs_to :order, Acs.Order
+    belongs_to :mall_goods, Acs.MallGoods
+    belongs_to :mall_order, Acs.MallOrder,type: :string
 
     timestamps()
   end
@@ -17,7 +19,9 @@ defmodule Acs.MallOrderDetail do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:good_name, :good_pic, :price, :amount])
-    |> validate_required([:good_name, :good_pic, :price, :amount])
+    |> cast(params, [:goods_name, :goods_pic, :price, :amount, :mall_goods_id, :mall_order_id])
+    |> validate_required([:goods_name, :goods_pic, :price, :amount])
+    |> foreign_key_constraint(:mall_goods_id)
+    |> foreign_key_constraint(:mall_order_id)
   end
 end

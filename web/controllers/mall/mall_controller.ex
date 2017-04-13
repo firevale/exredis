@@ -117,6 +117,15 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
+  # check_goods_id
+  def check_goods_id(conn, %{"app_id" => app_id, "goods_id" => goods_id}) do
+    count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^goods_id)
+    conn |> json(%{success: true, count: count})
+  end
+  def check_goods_id(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+
   # update_goods_pic
   def update_goods_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
@@ -206,7 +215,7 @@ defmodule Acs.MallController do
   end
  
  #  show active_mall_goods
- def get_active_goods_paged(conn, %{"page" => page, 
+ def get_active_goods_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"page" => page, 
                         "records_per_page" => records_per_page,
                         "app_id" => app_id}) do    
 
@@ -224,5 +233,13 @@ defmodule Acs.MallController do
 
     goodses = Repo.all(query)
     conn |> json(%{success: true, goodses: goodses, total: total_page})
+  end
+
+  def get_mall_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+    mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
+    conn |> json(%{success: true, mall: mall})
+  end
+  def get_mall_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "mall.serverError.badRequestParams"})
   end
 end

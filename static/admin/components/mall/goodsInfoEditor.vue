@@ -17,7 +17,7 @@
           price: '',
           postage: 0,
           stock: '',
-          currency: 'CNY',
+          currency: currency,
           app_id: this.$route.params.appId,
         }}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')
@@ -103,11 +103,19 @@ export default {
       total: 1,
       recordsPerPage: 8,
       appId: "",
+      currency: "",
     }
+  },
+
+  computed: {
+    ...mapGetters([
+      'appHash'
+    ]),
   },
 
   mounted: function() {
     this.appId = this.$route.params.appId
+    this.currency = this.appHash[this.appId].currency
     this.fetchGoods(this.page, this.recordsPerPage)
   },
 

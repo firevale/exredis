@@ -19,6 +19,8 @@ defmodule Acs.MallRouter do
     get  "/get_mall_info", MallController, :get_mall_info
     post "/get_mall_info", MallController, :get_mall_info
     post "/get_active_goods_paged", MallController, :get_active_goods_paged
+    post "/check_goods_id", MallController, :check_goods_id
+    post "/get_mall_detail", MallController, :get_mall_detail
 
     post "/get_order_list", MallOrderController, :get_order_list
     # get   "/get_paged_post", ForumController, :get_paged_post

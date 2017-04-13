@@ -1,24 +1,26 @@
 <template>
   <div class="box">
     <form name="goods" @submit.prevent="handleSubmit" v-if="goods">
-      <div class="field is-horizontal">
-        <div class="field-label is-normal">
+      <div class="tile">
+        <div class="field-label">
           <label class="label">{{ $t('admin.mall.goods.name') }}</label>
         </div>
         <div class="field-body">
-          <div class="field is-grouped">
-            <p class="control is-expanded">
-              <input class="input" :placeholder="$t('admin.mall.goods.namePlaceholder')" type="text" v-model.trim="goods.name">
-            </p>
-          </div>
+          <input class="input" :placeholder="$t('admin.mall.goods.namePlaceholder')" type="text" v-model.trim="goods.name">
+        </div>        
+        <div class="field-label">
+          <label class="label">{{ $t('admin.mall.goods.id') }}</label>
+        </div>
+        <div class="field-body">
+          <input class="input" type="text" v-model.trim="goods.id" :disabled="!isNew">
         </div>
       </div>
       <div class="tile">
         <div class="tile is-parent">
           <article class="tile is-child">
             <center>
-              <figure class="image is-128x128" style="display: block">
-                <img src="https://placehold.it/128x128?text=400X400">
+              <figure class="image is-128x128" style="display: block" @click="onShowImageUpload">
+                <img src="https://placehold.it/256x256?text=400X400">
               </figure>
               <p class="help">{{ $t('admin.mall.goods.picPlaceholder') }}</p>
             </center>
@@ -26,27 +28,35 @@
         </div>
         <div class="tile is-parent is-vertical">
           <article class="tile is-child">
-            <div class="columns">
-              <div class="column">
-                {{ $t('admin.mall.goods.price') }}
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.currency') }}</label>
               </div>
-              <div class="column is-10">
+              <div class="field-body">
+                <input class="input" type="text" disabled v-model.trim="goods.currency">
+              </div>
+            </div>            
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.price') }}</label>
+              </div>
+              <div class="field-body">
                 <input class="input" type="text" v-model.trim="goods.price">
               </div>
             </div>
-            <div class="columns">
-              <div class="column">
-                {{ $t('admin.mall.goods.postage') }}
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
               </div>
-              <div class="column is-10">
+              <div class="field-body">
                 <input class="input" type="text" v-model.trim="goods.postage">
               </div>
             </div>
-            <div class="columns">
-              <div class="column">
-                {{ $t('admin.mall.goods.stock') }}
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.stock') }}</label>
               </div>
-              <div class="column is-10">
+              <div class="field-body">
                 <input class="input" type="text" v-model.trim="goods.stock">
               </div>
             </div>
@@ -61,11 +71,11 @@
         </quill-editor>
       </div>
       <div style="margin-top: 15px">
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onDelete">
+        <a class="button is-primary" :class="{'is-loading': deleting}" @click.prevent="onDelete">
           <span class="icon is-small"><i class="fa fa-close"></i></span><span>{{ $t('admin.mall.goods.delete') }}</span></a>
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onPublish">
+        <a class="button is-primary" :class="{'is-loading': publishing}" @click.prevent="onPublish">
           <span class="icon is-small"><i class="fa fa-level-up"></i></span><span>{{ $t('admin.mall.goods.publish') }}</span></a>
-        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSave">
+        <a class="button is-primary" :class="{'is-loading': saving}" @click.prevent="onSave">
           <span class="icon is-small"><i class="fa fa-save"></i></span><span>{{ $t('admin.mall.goods.save') }}</span></a>
       </div>
     </form>
@@ -83,6 +93,8 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
+import imgUpload from "vue-image-crop-upload/upload-2.vue"
+
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
@@ -90,14 +102,22 @@ import {
 const touchMap = new WeakMap()
 
 export default {
+  components: {
+    imgUpload,
+  },
+
   mounted: function() {
     this.goods = this.$route.params.goods
+    if(this.goods.id.length == 0) this.isNew = true
   },
 
   data() {
     return {
       goods: undefined,
-      processing: false,
+      deleting: false,
+      saving: false,
+      publishing: false,
+      isNew: false,
       editor: undefined,
     }
   },
@@ -113,6 +133,20 @@ export default {
         clearTimeout(touchMap.get($v))
       }
       touchMap.set($v, setTimeout($v.$touch(), 2000))
+    },
+
+    onShowImageUpload: function() {
+      if (this.goods.id) {
+        this.showImgUpload = true
+      } else {
+        openNotification({
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.mall.goods.saveFirst'),
+          type: 'danger',
+          duration: 4500,
+          container: '.notifications',
+        })
+      }
     },
 
     onInsertImage: function(editor) {
@@ -139,11 +173,22 @@ export default {
       })
     },
 
+    onDelete: function() {
+      // 点击删除按钮，需判断该商品是否已有销量，销量不为0的商品不可删除，需文字提示：该商品已销售不可删除；
+      // 商品销量为0，则可删除，仍需有二次文字信息提示：请确认是否删除该商品？
+      // 选择确认，则成功在前后端删除，返回商品管理页；
+      // 选择取消，则不删除，返回商品详情页；
+    },
+
+    onPublish: function() {
+      // 点击发布按钮，判断必填项是否为空或都按规则填写； // 全部正确填写，则成功发布，发布按钮变为取消按钮，可在前端显示并搜索到该商品； // 为空或未按规则填写，则需分别报错提示： // 请上传正确的商品图片；
+      // 请正确填写商品名称/单价／邮费/库存/商品详情； // 点击取消按钮，取消按钮变为发布按钮，不可在前端显示并搜索到该商品；
+    },
+
     onSave: function() {
       if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price.length ==
         0 ||
-        this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.pic.length ==
-        0) {
+        this.goods.stock.length == 0 || this.goods.postage.length == 0) {
         openNotification({
           title: this.$t('admin.titles.warning'),
           message: this.$t('admin.mall.goods.pleaseFill'),
@@ -158,8 +203,8 @@ export default {
     },
 
     handleSubmit: async function() {
-      this.processing = true
-      if (!this.goods.id) this.goods.id = 0
+      this.saving = true
+      if (!this.goods.id) this.goods.id = ""
       let result = await this.$acs.updateGoods({
         goods_id: this.goods.id,
         app_id: this.goods.app_id,
@@ -173,7 +218,7 @@ export default {
       if (result.success) {
         this.$router.go(-1)
       }
-      this.processing = false
+      this.saving = false
     },
   }
 }

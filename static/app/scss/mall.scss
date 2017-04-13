@@ -1,22 +1,27 @@
 .mall-index {
     .middle-content {
         width: 100%;
-        height: 100%;
-        top: 5.8rem;
+        height: 90%;
+        top: 6rem;
         position: absolute;
     }
-    .middle-content .name {
+    .content-goods {
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .content-goods .name {
         font-weight: 400;
         padding-top: 1.0rem;
     }
-    .middle-content .pic {
+    .content-goods .pic {
         padding: 0.35rem;
         border: 1px $grey solid
     }
-    .middle-content .price {
+    .content-goods .price {
         font-weight: 400;
         padding-top: 0.56rem;
-        color: $primary;
+        color: $lightred;
     }
     label:before {
         content: '¥ ';

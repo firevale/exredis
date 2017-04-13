@@ -1,20 +1,23 @@
 <template>
-  <div class="content-item">
-    <div class="title-line" @click="showDetail">
-      <h5 class="title is-5">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
-    </div>
+  <div class="content-item has-bottom-line">
     <div class="level is-mobile">
-      <div class="level-left level-item">
-        <span class="subtitle">{{ itemData.post.inserted_at | formatServerDateTime }}</span>
-        <span class="subtitle" style="margin:0 1em">|</span>
-        <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
-      </div>
-      <div class="level-right level-item">
-        <span class="icon image-icon icon-trash is-small" @click.prevent="confirmDeletePost"></span>
-        <span class="is-danger" @click.prevent="confirmDeleteFavorite"> {{ $t('forum.personal.cancelFavor') }}</span>
-      </div>
+      <v-touch class="level-left level-item is-clickable" @tap="showDetail">
+        <div class="tile is-vertical">
+          <div class="tile">
+            <h5 class="title is-5">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
+          </div>
+          <div class="tile">
+            <span class="subtitle">{{ itemData.post.inserted_at | formatServerDateTime }}</span>
+            <span class="subtitle" style="margin: 0 1rem">|</span>
+            <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
+          </div>
+        </div>
+      </v-touch>
+      <v-touch class="level-right level-item is-narrow is-clickable" @tap="confirmDeleteFavorite">
+        <span class="icon image-icon icon-trash is-small"></span>
+        <span class="is-danger"> {{ $t('forum.personal.cancelFavor') }}</span>
+      </v-touch>
     </div>
-    <div/>
   </div>
 </template>
 <script>
@@ -58,9 +61,7 @@ export default {
           let result = await this.$acs.togglePostFavorite(this.itemData.post.id)
           if (result.success) {
             Toast.show(this.$t(result.i18n_message, result.i18n_message_object))
-            if (this.onItemDeleted) {
-              this.onItemDeleted(this.itemIndex)
-            }
+            this.$emit('item-deleted', 'myFavorite', this.itemIndex)
           }
         },
         onCancel: null,

@@ -224,16 +224,20 @@ export default {
 }
 
 .scroller-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 
   .scroller {
     touch-action: none;
     position: absolute;
     overflow: hidden;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 
     &-content {
       -webkit-transform-style: preserve-3d;

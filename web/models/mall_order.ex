@@ -47,7 +47,7 @@ defmodule Acs.MallOrder do
     belongs_to :user, Acs.User, type: :integer
     belongs_to :user_address, Acs.UserAddress, type: :integer
     has_many :goods, Acs.MallGoods, references: :id
-    has_many :order_details, Acs.MallOrderDetail, references: :id
+    has_many :details, Acs.MallOrderDetail,references: :id
 
     timestamps()
   end

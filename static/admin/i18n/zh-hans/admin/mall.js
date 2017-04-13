@@ -31,7 +31,15 @@ export default {
     priceList: '单价：{price} / 邮费: {postage}',
     stockList: '库存：{stock} / 销量: {sold}',
   },
+  order: {
+    viewDetail: '查看详情',
+    fields: {
+      id: '订单号',
+      postage: '邮费',
+      total: '合计',
+    },
+  }
 
 
-  
+
 }

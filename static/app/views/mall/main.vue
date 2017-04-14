@@ -10,7 +10,7 @@
                 </div>
                 <div class="nav-center">
                 </div>
-                <div class="nav-right has-text-right">
+                <div class="nav-right has-text-right">                   
                     <a class="icon image-icon icon-user" @click.prevent=""></a>
                 </div>
             </nav>
@@ -31,7 +31,7 @@
     import * as acs from 'common/js/acs'
 
     export default {
-        mounted: async function () {
+         mounted: async function () {
             await this.getMallDetail()
         },
         data: function () {

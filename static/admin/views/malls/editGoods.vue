@@ -65,7 +65,7 @@
       </div>
       <div>
         <label> {{ $t('admin.mall.goods.description') }} </label>
-        <quill-editor v-model.trim="goods.description" :placeholder="$t('admin.mall.goods.descPlaceholder')"
+        <quill-editor v-model.trim="goods.description" :full-featured="true" :placeholder="$t('admin.mall.goods.descPlaceholder')"
           style="min-height: 200px" @ready="setEditor" @input="handleValidation($v.goods.description)"
           @image="onInsertImage">
         </quill-editor>

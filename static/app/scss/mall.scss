@@ -4,31 +4,37 @@
     margin-left: auto;
     margin-right: auto;
 
+    figure.image.is-40vwx40vw {
+      width: 36vw;
+      height: 36vw;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
     .goods-list {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        padding: 0 10vw;
-
-        .goods-item {
-            flex-grow: 0;
-            flex-shrink: 1;
-            flex-basis: auto;
-        }
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      padding: 0 8vw;
+      .goods-item {
+        flex-grow: 0;
+        flex-shrink: 1;
+        flex-basis: auto;
+        margin-bottom:0.8rem;
+      }
     }
   }
   .content-goods .name {
     font-weight: 400;
     padding-top: 1.0rem;
   }
-
   .content-goods .pic {
     display: block;
     margin: 0;
     padding: 0.35rem;
     border: 1px $grey solid;
   }
-
   .content-goods .price {
     font-weight: 400;
     padding-top: 0.56rem;

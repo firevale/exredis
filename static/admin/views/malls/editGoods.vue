@@ -105,18 +105,31 @@ const touchMap = new WeakMap()
 
 export default {
   mounted: function() {
-    this.goods = this.$route.params.goods
-    if (this.goods) {
-      if (this.goods.id.length == 0) this.isNew = true
-      if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
-      if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
-        2)
+    let gid = this.$route.params.goodsId
+    let currency = this.$route.params.currency
+    if (gid) {
+      this.isNew = false
+      this.getGoodsDetail(gid)
+    } else {
+      this.isNew = true
+      this.goods = {
+        id: '',
+        pic: '',
+        name: '',
+        description: '',
+        price: 0,
+        postage: 0,
+        stock: 0,
+        currency: currency,
+        app_id: this.$route.params.appId,
+      }
     }
   },
 
   data() {
     return {
       goods: undefined,
+      loading: false,
       deleting: false,
       saving: false,
       publishing: false,
@@ -179,6 +192,20 @@ export default {
           container: '.notifications',
         })
       }
+    },
+
+    getGoodsDetail: async function(goodsId) {
+      this.loading = true
+      let result = await this.$acs.getGoodsDetail({
+        goods_id: goodsId
+      })
+      if (result.success) {
+        this.goods = result.goods
+        if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
+        if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
+          2)
+      }
+      this.loading = false
     },
 
     onInsertImage: function(editor) {

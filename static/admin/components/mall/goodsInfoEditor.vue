@@ -8,20 +8,8 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
-          goods: {
-          id: '',
-          pic: '',
-          name: '',
-          description: '',
-          price: '',
-          postage: 0,
-          stock: '',
-          currency: currency,
-          app_id: this.$route.params.appId,
-        }}}">
-      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')
-      }}
+    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {goodsId: '', currency: currency}}">
+      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
     </router-link>
     <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
       <div class="columns is-multiline">
@@ -40,7 +28,7 @@
                 </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
-                  <a class="button is-small" @click="onEdit(goods)">
+                  <a class="button is-small" @click="onEdit(goods.id)">
                     <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                     <span>{{ $t('admin.mall.goods.edit') }}</span>
                   </a>
@@ -143,11 +131,12 @@ export default {
       }
     },
 
-    onEdit: function(goods) {
+    onEdit: function(goods_id) {
       this.$router.push({
         name: 'EditGoods',
         params: {
-          goods: goods
+          goodsId: goods_id,
+          currency: this.currency
         }
       })
     },

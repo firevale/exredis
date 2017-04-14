@@ -7,5 +7,13 @@ export default {
   residentInfo: '实名认证',
   logout: '退出登录',
   notBound: '未绑定',
+  bind: '绑定',
   notAuthenticated: '未认证',
+  fetchVeiryCode: '获取验证码',
+
+  placeholder: {
+    inputMobileNumber: '请输入手机号码',
+    inputVerifyCode: '请输入验证码',
+    inputEmail: '请输入邮箱地址',
+  }
 }

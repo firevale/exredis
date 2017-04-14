@@ -25,7 +25,7 @@ Object.keys(filters).forEach(function (k) {
 const transitionSlideLeftToRight = 'slide-right'
 const transitionSlideRightToLeft = 'slide-left'
 
-document.ontouchmove = e => e.preventDefault()
+// document.ontouchmove = e => e.preventDefault()
 
 // insert popstate event listener before router,
 // by doing so, we can change transition name while user press "Back" button

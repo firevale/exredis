@@ -13,19 +13,31 @@
         <div class="column is-9">
           <v-touch class="level is-mobile is-clickable has-bottom-line" style="margin-top: 0.5rem" @tap="$router.push({path: '/account/edit_nickname'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.nickname') }} </p>
-            <p class="level-right level-item has-text-right"> {{ userInfo.nickName }} > </p>
+            <p class="level-right level-item has-text-right">
+              {{ userInfo.nickName }}
+              <span class="icon image-icon icon-arrow-right"></span>
+            </p>
           </v-touch>
           <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_mobile'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.mobile') }} </p>
-            <p class="level-right level-item has-text-right"> {{ mobile }} > </p>
+            <p class="level-right level-item has-text-right">
+              {{ mobile }}
+              <span class="icon image-icon icon-arrow-right"> </span>
+            </p>
           </v-touch>
           <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_email'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.email') }} </p>
-            <p class="level-right level-item has-text-right"> {{ email }} > </p>
+            <p class="level-right level-item has-text-right"> 
+              {{ email }} 
+              <span class="icon image-icon icon-arrow-right"></span> 
+            </p>
           </v-touch>
           <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_resident'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.residentInfo') }} </p>
-            <p class="level-right level-item has-text-right"> {{ userInfo.resident_id || $t('account.notAuthenticated') }} > </p>
+            <p class="level-right level-item has-text-right"> 
+              {{ userInfo.resident_id || $t('account.notAuthenticated') }} 
+              <span class="icon image-icon icon-arrow-right"></span>              
+           </p>
           </v-touch>
         </div>
       </div>

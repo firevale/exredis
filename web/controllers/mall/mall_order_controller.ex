@@ -23,12 +23,14 @@ defmodule Acs.MallOrderController do
     query = from order in MallOrder,
               left_join: details in assoc(order, :details),
               left_join: user in assoc(order, :user),
+              left_join: address in assoc(order, :user_address),
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :postage, :inserted_at,
-              user: [:id, :nickname, :mobile], details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              user: [:id, :nickname, :mobile], details: [:id, :goods_name, :goods_pic, :price, :amount] ,
+              user_address: [:id, :name, :mobile, :area, :address, :area_code] ]),
               order_by: [desc: order.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              preload: [user: user, details: details]
+              preload: [user: user, user_address: address, details: details]
     orders = Repo.all(query)
     conn |> json(%{success: true, orders: orders, total: total_page})
   end

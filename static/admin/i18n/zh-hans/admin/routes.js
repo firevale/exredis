@@ -17,6 +17,7 @@ export default {
   EditForum: '修改论坛配置',
   EditMall: '商城管理',
   EditGoods: '商品详情',
+  MallOrderInfo: '订单详情',
   NewNews: '添加新内容',
   EditNews: '修改内容',
 }

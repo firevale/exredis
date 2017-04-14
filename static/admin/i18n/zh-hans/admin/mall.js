@@ -50,6 +50,16 @@ export default {
       id: '订单号',
       postage: '邮费',
       total: '合计',
+      status: '订单状态',
+      inserted_at: '下单时间',
+      email: '用户帐号',
+      paid_type: '支付渠道',
+      transaction_id: '支付单号',
+      user_address: {
+        name: '姓名',
+        mobile: '电话',
+        address: '地址',
+      },
     },
   }
 

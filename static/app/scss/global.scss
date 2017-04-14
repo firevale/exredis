@@ -95,7 +95,6 @@ input.input:focus {
   flex-grow: 0;
   flex-shrink: 1;
   flex-basis: auto;
-
   .title-bar {
     position: absolute;
     top: 2rem;
@@ -173,7 +172,6 @@ input.input:focus {
 .has-bottom-line {
   position: relative;
   z-index: 0;
-
   &:after {
     z-index: 5;
     @include bottom-line(1px, rgba(203, 203, 203, 0.8));

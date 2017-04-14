@@ -11,22 +11,22 @@
           </div>
         </div>
         <div class="column is-9">
-          <div class="level is-mobile has-bottom-line" style="margin-top: 0.5rem">
+          <v-touch class="level is-mobile is-clickable has-bottom-line" style="margin-top: 0.5rem" @tap="$router.push({path: '/account/edit_nickname'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.nickname') }} </p>
             <p class="level-right level-item has-text-right"> {{ userInfo.nickName }} > </p>
-          </div>
-          <div class="level is-mobile has-bottom-line">
+          </v-touch>
+          <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_mobile'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.mobile') }} </p>
-            <p class="level-right level-item has-text-right"> {{ userInfo.mobile || $t('account.notBound') }} > </p>
-          </div>
-          <div class="level is-mobile has-bottom-line">
+            <p class="level-right level-item has-text-right"> {{ mobile }} > </p>
+          </v-touch>
+          <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_email'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.email') }} </p>
-            <p class="level-right level-item has-text-right"> {{ userInfo.email || $t('account.notBound') }} > </p>
-          </div>
-          <div class="level is-mobile has-bottom-line">
+            <p class="level-right level-item has-text-right"> {{ email }} > </p>
+          </v-touch>
+          <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_resident'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.residentInfo') }} </p>
             <p class="level-right level-item has-text-right"> {{ userInfo.resident_id || $t('account.notAuthenticated') }} > </p>
-          </div>
+          </v-touch>
         </div>
       </div>
       <v-touch tag="a" class="button is-info is-submit" style="width: 50%; margin-top: 2rem;">
@@ -40,6 +40,8 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+
+import * as utils from 'common/js/utils'
 
 import {
   showMobileMenu
@@ -55,6 +57,14 @@ export default {
 
     avatarUrl() {
       return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
+    },
+
+    email() {
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t('account.notBound')
+    },
+
+    mobile() {
+      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t('account.notBound')
     }
   },
 

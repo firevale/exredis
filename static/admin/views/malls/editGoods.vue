@@ -71,10 +71,10 @@
         </quill-editor>
       </div>
       <div style="margin-top: 15px">
-        <a class="button is-primary" :class="{'is-loading': deleting}" @click.prevent="onDelete">
+        <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': deleting}" @click.prevent="onDelete">
           <span class="icon is-small"><i class="fa fa-close"></i></span><span>{{ $t('admin.mall.goods.delete') }}</span></a>
-        <a class="button is-primary" :class="{'is-loading': publishing}" @click.prevent="onPublish">
-          <span class="icon is-small"><i class="fa fa-level-up"></i></span><span>{{ $t('admin.mall.goods.publish') }}</span></a>
+        <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': publishing}" @click.prevent="onPublish">
+          <span class="icon is-small"><i class="fa " :class="goods.active==true? ' fa-level-down' : ' fa-level-up'"></i></span><span>{{ goods.active==true? $t('admin.mall.goods.unPublish') : $t('admin.mall.goods.publish') }}</span></a>
         <a class="button is-primary" :class="{'is-loading': saving}" @click.prevent="onSave">
           <span class="icon is-small"><i class="fa fa-save"></i></span><span>{{ $t('admin.mall.goods.save') }}</span></a>
       </div>
@@ -142,11 +142,9 @@ export default {
 
   watch: {
     realPrice: function() {
-      // this.realPrice = parseFloat(this.realPrice).toFixed(2)
       this.goods.price = Math.round(this.realPrice * 100)
     },
     realPostage: function() {
-      // this.realPostage = parseFloat(this.realPostage).toFixed(2)
       this.goods.postage = Math.round(this.realPostage * 100)
     }
   },
@@ -184,13 +182,7 @@ export default {
           callback: response => this.goods.pic = response.pic_url,
         })
       } else {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.saveFirst'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
+        this.showWarning(this.$t('admin.mall.goods.saveFirst'))
       }
     },
 
@@ -234,13 +226,7 @@ export default {
 
     onDelete: function() {
       if (this.goods.sold > 0) {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.soldCanNotDelete'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
+        this.showWarning(this.$t('admin.mall.soldCanNotDelete'))
       } else {
         showMessageBox({
           visible: true,
@@ -249,29 +235,67 @@ export default {
           type: 'danger',
           onOK: async _ => {
             let result = await this.$acs.deleteMallGoods({
-              app_id: goods.app_id,
-              goods_id: goods.id
+              app_id: this.goods.app_id,
+              goods_id: this.goods.id
             }, this.$t('admin.notification.message.mallGoodsDeleted'))
             if (result.success) {
               this.$router.replace({
                 name: 'EditMall',
                 params: {
-                  appId: goods.app_id
+                  appId: this.goods.app_id
                 }
               })
             }
           },
         })
       }
-      // 点击删除按钮，需判断该商品是否已有销量，销量不为0的商品不可删除，需文字提示：该商品已销售不可删除；
-      // 商品销量为0，则可删除，仍需有二次文字信息提示：请确认是否删除该商品？
-      // 选择确认，则成功在前后端删除，返回商品管理页；
-      // 选择取消，则不删除，返回商品详情页；
     },
 
     onPublish: function() {
-      // 点击发布按钮，判断必填项是否为空或都按规则填写； // 全部正确填写，则成功发布，发布按钮变为取消按钮，可在前端显示并搜索到该商品； // 为空或未按规则填写，则需分别报错提示： // 请上传正确的商品图片；
-      // 请正确填写商品名称/单价／邮费/库存/商品详情； // 点击取消按钮，取消按钮变为发布按钮，不可在前端显示并搜索到该商品；
+      if (this.goods.active) {
+        //下架
+        showMessageBox({
+          visible: true,
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.messages.confirmUnPublishGoods'),
+          type: 'danger',
+          onOK: async _ => {
+            this.toggleStatus()
+          },
+        })
+      } else {
+        //上架
+        if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price
+          .length == 0 || this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods
+          .id.length == 0) {
+          this.showWarning(this.$t('admin.mall.goods.pleaseFill'))
+          return;
+        }
+        if (!this.goods.pic || this.goods.pic.length == 0) {
+          this.showWarning(this.$t('admin.mall.goods.pleaseUpPic'))
+          return;
+        }
+        this.toggleStatus()
+      }
+    },
+
+    toggleStatus: async function() {
+      let result = await this.$acs.toggleGoodsStatus({
+        goods_id: this.goods.id
+      }, this.$t('admin.operateSuccess'))
+      if (result.success) {
+        this.goods.active = !this.goods.active
+      }
+    },
+
+    showWarning: function(message) {
+      openNotification({
+        title: this.$t('admin.titles.warning'),
+        message: message,
+        type: 'danger',
+        duration: 4500,
+        container: '.notifications',
+      })
     },
 
     onSave: function() {
@@ -279,13 +303,7 @@ export default {
         0 ||
         this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.id.length ==
         0) {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.pleaseFill'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
+        this.showWarning(this.$t('admin.mall.goods.pleaseFill'))
         return;
       }
 

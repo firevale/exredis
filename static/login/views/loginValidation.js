@@ -1,4 +1,4 @@
-import {required, minLength, maxLength} from 'vuelidate/lib/validators'
+import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 import * as utils from 'common/js/utils'
 
 export const password = {

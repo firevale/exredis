@@ -154,12 +154,12 @@ export default {
         return post(Vue, '/mall_actions/toggle_goods_status', params)
       },
 
-      deleteGoods(params) {
+      deleteMallGoods(params) {
         return post(Vue, '/mall_actions/delete_goods', params)
       },
 
-      checkGoodsId(params) {
-        return post(Vue, '/mall_actions/check_goods_id', params)
+      getGoodsDetail(params) {
+        return post(Vue, '/mall_actions/get_goods_detail', params)
       },
 
       fetchMallOrders(params) {

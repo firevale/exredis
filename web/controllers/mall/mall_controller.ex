@@ -26,7 +26,7 @@ defmodule Acs.MallController do
               order_by: [desc: m.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(m, [:id, :title, :icon, :app_id, :inserted_at])
+              select: map(m, [:id, :title, :active, :icon, :app_id, :inserted_at])
 
     malls = Repo.all(query)
     conn |> json(%{success: true, malls: malls, total: total_page})
@@ -101,7 +101,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :app_id, :name, :currency, :description, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active])
 
     query = if(String.length(keyword)>0) do
       query |> where([p], like(p.name, ^keyword))
@@ -116,23 +116,44 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
-  # check_goods_id
-  def check_goods_id(conn, %{"app_id" => app_id, "goods_id" => goods_id}) do
-    count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^goods_id)
-    conn |> json(%{success: true, count: count})
-  end
-  def check_goods_id(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
-  end
-
   # update_goods_pic
-  def update_goods_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
+  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
+   case Repo.get(MallGoods, goods_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
+
+      %MallGoods{} = goods ->
+        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
+          %{width: 400, height: 400} = upload_image ->
+            if upload_image.format in ["jpg", "jpeg", "png"] do
+              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
+              [file_md5 | _] = String.split(md5sum_result)
+              static_path = Application.app_dir(:acs, "priv/static/")
+              url_path = "/images/goods_icon/#{goods_id}"
+              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
+              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
+              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+
+              MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+
+              conn |> json(%{success: true, pic_url: pic_url})
+            else
+              conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+            end
+          _ ->
+            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize400x400"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    end
+  end
+  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
     upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
     if upload_image.format in ["jpg", "jpeg", "png"] do
       {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
       [file_md5 | _] = String.split(md5sum_result)
       static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/goods_pics/#{app_id}"
+      url_path = "/images/goods_pics/#{goods_id}"
       {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
@@ -212,12 +233,16 @@ defmodule Acs.MallController do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
       %MallGoods{} = goods ->
-        case Repo.delete(goods) do
-          {:ok, _} ->
-            conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+        if(goods.sold > 0) do
+          conn |> json(%{success: false, i18n_message: "admin.mall.soldCanNotDelete"})
+        else
+          case Repo.delete(goods) do
+            {:ok, _} ->
+              conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: translate_errors(errors)})
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
         end
     end
   end
@@ -226,7 +251,7 @@ defmodule Acs.MallController do
   end
  
  #  show active_mall_goods
- def get_active_goods_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"page" => page, 
+ def get_active_goods_paged(conn, %{"page" => page, 
                         "records_per_page" => records_per_page,
                         "app_id" => app_id}) do    
 
@@ -246,11 +271,20 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
 
-  def get_mall_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+  def get_mall_detail(conn,%{"app_id" =>app_id})do
     mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
     conn |> json(%{success: true, mall: mall})
   end
   def get_mall_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "mall.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
+
+  def get_goods_detail(conn,%{"goods_id" =>goods_id})do
+    goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
+    conn |> json(%{success: true, goods: goods})
+  end
+  def get_goods_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+  end
+  
 end

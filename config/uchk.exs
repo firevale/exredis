@@ -8,7 +8,7 @@ config :acs, Acs.Endpoint,
 
 # Don't support mobile phone at Hong Kong site
 config :acs, sm_provider: :none
-config :acs, email_service_provider: Acs.MandrillMailer
+config :acs, email_service_provider: Acs.SendCloudMailer
 
 # Configure your database
 config :acs, Acs.Repo,

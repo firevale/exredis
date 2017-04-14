@@ -236,6 +236,11 @@ export default {
           app_id
         })
       },
+      getGoodsDetail(goods_id) {
+        return post(Vue, '/mall_actions/get_goods_detail', {
+          goods_id
+        })
+      },
     }
   }
 }

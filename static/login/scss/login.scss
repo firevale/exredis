@@ -320,7 +320,7 @@ span.addon-icon {
     right: .65rem;
   }
   &.icon-user {
-    background-image: url(~assets/user@1x.png)
+    background-image: url(~assets/icon-user@1x.png)
   }
   &.icon-lock {
     background-image: url(~assets/lock@1x.png)
@@ -332,7 +332,7 @@ span.addon-icon {
     background-image: url(~assets/eye-slash@1x.png)
   }
   &.icon-check {
-    background-image: url(~assets/check@1x.png)
+    background-image: url(~assets/icon-shield@1x.png)
   }
   &.icon-down {
     background-image: url(~assets/down@1x.png)
@@ -452,7 +452,7 @@ only screen and (min-resolution: 1.25dppx) {
   }
   span.addon-icon {
     &.icon-user {
-      background-image: url(~assets/user@2x.png)
+      background-image: url(~assets/icon-user@2x.png)
     }
     &.icon-lock {
       background-image: url(~assets/lock@2x.png)
@@ -464,7 +464,7 @@ only screen and (min-resolution: 1.25dppx) {
       background-image: url(~assets/eye-slash@2x.png)
     }
     &.icon-check {
-      background-image: url(~assets/check@2x.png)
+      background-image: url(~assets/icon-shield@2x.png)
     }
     &.icon-down {
       background-image: url(~assets/down@2x.png)
@@ -513,7 +513,7 @@ only screen and (min-resolution: 2.25dppx) {
   }
   span.addon-icon {
     &.icon-user {
-      background-image: url(~assets/user@3x.png)
+      background-image: url(~assets/icon-user@3x.png)
     }
     &.icon-lock {
       background-image: url(~assets/lock@3x.png)
@@ -525,7 +525,7 @@ only screen and (min-resolution: 2.25dppx) {
       background-image: url(~assets/eye-slash@3x.png)
     }
     &.icon-check {
-      background-image: url(~assets/check@3x.png)
+      background-image: url(~assets/icon-shield@3x.png)
     }
     &.icon-down {
       background-image: url(~assets/down@3x.png)

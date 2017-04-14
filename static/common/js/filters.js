@@ -1,6 +1,10 @@
 import './date'
 import * as filter from './keywordFilter'
 
+import {emailMask, mobileMask} from './utils'
+
+export {emailMask, mobileMask}
+
 export const humanReadableDownloadSpeed = val => {
   let resStr = ''
   let bytes = parseInt(val)

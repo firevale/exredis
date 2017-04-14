@@ -9,6 +9,7 @@ export default {
     appInfoUpdated: '{appName}配置已成功更新',
     goodsInfoUpdated: '商品『{goodsName}』信息已成功更新',
     goodsDeleted: '商品『{goodsName}』已成功删除',
+    mallGoodsDeleted: '商品已成功删除',
     goodsProductIdUpdated: '商品『{goodsName}』在『{sdk}』渠道的产品ID已成功更新',
     sectionInfoUpdated: '论坛版块信息已成功更新',
     forumInfoUpdated: '论坛信息已成功更新',

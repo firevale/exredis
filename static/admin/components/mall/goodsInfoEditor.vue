@@ -8,28 +8,16 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {
-          goods: {
-          id: '',
-          pic: '',
-          name: '',
-          description: '',
-          price: '',
-          postage: 0,
-          stock: '',
-          currency: currency,
-          app_id: this.$route.params.appId,
-        }}}">
-      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')
-      }}
+    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {goodsId: '', currency: currency}}">
+      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
     </router-link>
     <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
       <div class="columns is-multiline">
-        <div v-for="goods in goodses" class="column is-half" @click="onEdit(goods)">
+        <div v-for="(goods, index) in goodses" class="column is-half">
           <div class="columns">
             <div class="column is-parent is-one-third">
-              <figure class="image is-128x128" style="display: block">
-                <img :src="getGoodsIcon(goods)"></img>
+              <figure class="image" style="display: block">
+                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
               </figure>
             </div>
             <div class="column is-parent is-vertical">
@@ -40,11 +28,13 @@
                 </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
-                  <a class="button is-small">
+                  <span class="tag is-primary" v-if="goods.active==true">{{ $t('admin.mall.goods.up') }} </span>
+                  <span class="tag is-dark" v-else>{{ $t('admin.mall.goods.down') }}</span>
+                  <a class="button is-small" @click="onEdit(goods.id)">
                     <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                     <span>{{ $t('admin.mall.goods.edit') }}</span>
                   </a>
-                  <a class="button is-small">
+                  <a class="button is-small" @click="onDelete(goods, index)">
                     <span class="icon is-small"><i class="fa fa-close"></i></span>
                     <span>{{ $t('admin.mall.goods.delete') }}</span>
                   </a>
@@ -82,17 +72,21 @@
 </template>
 <script>
 import {
-  processAjaxError
-} from 'admin/miscellaneous'
-
-import {
   mapGetters,
   mapActions
 } from 'vuex'
 
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
+
 import * as getters from 'admin/store/getters'
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
+import {
+  showMessageBox
+} from 'admin/components/dialog/messageBox'
 
 export default {
   data: function() {
@@ -128,14 +122,6 @@ export default {
       return "¥" + parseFloat(price / 100).toFixed(2)
     },
 
-    getGoodsIcon: function(goods) {
-      if (goods) {
-        return goods.pic
-      } else {
-        return 'https://placehold.it/128x128?text=未上传'
-      }
-    },
-
     onPageChange: function(page) {
       this.fetchGoods(page, this.recordsPerPage)
     },
@@ -148,13 +134,42 @@ export default {
       }
     },
 
-    onEdit: function(goods) {
+    onEdit: function(goods_id) {
       this.$router.push({
         name: 'EditGoods',
         params: {
-          goods: goods
+          goodsId: goods_id,
+          currency: this.currency
         }
       })
+    },
+
+    onDelete: function(goods, index) {
+      if (goods.sold > 0) {
+        openNotification({
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.mall.soldCanNotDelete'),
+          type: 'danger',
+          duration: 4500,
+          container: '.notifications',
+        })
+      } else {
+        showMessageBox({
+          visible: true,
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.messages.confirmDeleteMallGoods'),
+          type: 'danger',
+          onOK: async _ => {
+            let result = await this.$acs.deleteMallGoods({
+              app_id: goods.app_id,
+              goods_id: goods.id
+            }, this.$t('admin.notification.message.mallGoodsDeleted'))
+            if (result.success) {
+              this.goodses.splice(index, 1)
+            }
+          },
+        })
+      }
     },
 
     fetchGoods: async function(page, recordsPerPage) {
@@ -179,7 +194,7 @@ export default {
       this.searching = true
       let result = await this.$acs.fetchGoods({
         keyword: this.keyword,
-        app_id: this.app_id,
+        app_id: this.appId,
         page: page,
         records_per_page: this.recordsPerPage
       })

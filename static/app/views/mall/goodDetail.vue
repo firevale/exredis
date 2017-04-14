@@ -43,6 +43,9 @@
                     <p class="notification is-primary">{{$t('mall.goods.soldOut')}}</p>
                 </div>
                 <div v-else>
+                    <a class="button is-large" @click.prevent="quantityPlus" style="border:1px white solid; background-color:#0d61e7; color:white;width:3rem;font-weight:400">-</a>
+                     <input class="input is-large has-text-centered" type="number" style="width:4rem;border:1px white solid;" :value="quantity">
+                    <a class="button is-large" @click.prevent="quantityReduce" style="border:1px white solid; background-color:#0d61e7; color:white;width:3rem;font-weight:400">+</a>
                     <a class="button is-info is-large is-fullwidth">{{$t('mall.goods.buyNow')}}</a>
                 </div>
             </div>
@@ -63,6 +66,7 @@
             return {
                 canGoBack: false,
                 inApp: window.acsConfig.inApp,
+                quantity: 1,
                 good: {}
             }
         },
@@ -82,6 +86,12 @@
                 if (result.success) {
                     this.good = result.good
                 }
+            },
+            quantityPlus: function(){
+                this.quantity=this.quantity+1
+            },
+            quantityReduce: function(){
+                this.quantity=this.quantity-1
             }
         },
         watch: {

@@ -15,7 +15,8 @@ export default {
   updateSuccess: '更新成功',
   notExist: '商品不存在',
   sameGoodsIdExist: '商品编号已存在，请重新输入',
-
+  soldCanNotDelete: '该商品已销售不可删除',
+  
   goods: {
     edit: '编辑',
     delete: '删除',

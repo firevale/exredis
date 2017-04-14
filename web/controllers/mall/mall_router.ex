@@ -23,6 +23,7 @@ defmodule Acs.MallRouter do
     post  "/update_goods_pic", MallController, :update_goods_pic
     post  "/update_goods_content_pic", MallController, :update_goods_content_pic
     post  "/update_goods", MallController, :update_goods
+    post  "/delete_goods", MallController, :delete_goods
 
     get  "/get_mall_info", MallController, :get_mall_info
     post "/get_mall_info", MallController, :get_mall_info

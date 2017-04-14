@@ -154,7 +154,7 @@ export default {
         return post(Vue, '/mall_actions/toggle_goods_status', params)
       },
 
-      deleteGoods(params) {
+      deleteMallGoods(params) {
         return post(Vue, '/mall_actions/delete_goods', params)
       },
 

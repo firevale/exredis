@@ -233,26 +233,36 @@ export default {
     },
 
     onDelete: function() {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.messages.confirmDeleteMallGoods'),
-        type: 'danger',
-        onOK: async _ => {
-          let result = await this.$acs.deleteMallGoods({
-            app_id: goods.app_id,
-            goods_id: goods.id
-          }, this.$t('admin.notification.message.mallGoodsDeleted'))
-          if (result.success) {
-            this.$router.replace({
-              name: 'EditMall',
-              params: {
-                appId: goods.app_id
-              }
-            })
-          }
-        },
-      })
+      if (this.goods.sold > 0) {
+        openNotification({
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.mall.soldCanNotDelete'),
+          type: 'danger',
+          duration: 4500,
+          container: '.notifications',
+        })
+      } else {
+        showMessageBox({
+          visible: true,
+          title: this.$t('admin.titles.warning'),
+          message: this.$t('admin.messages.confirmDeleteMallGoods'),
+          type: 'danger',
+          onOK: async _ => {
+            let result = await this.$acs.deleteMallGoods({
+              app_id: goods.app_id,
+              goods_id: goods.id
+            }, this.$t('admin.notification.message.mallGoodsDeleted'))
+            if (result.success) {
+              this.$router.replace({
+                name: 'EditMall',
+                params: {
+                  appId: goods.app_id
+                }
+              })
+            }
+          },
+        })
+      }
       // 点击删除按钮，需判断该商品是否已有销量，销量不为0的商品不可删除，需文字提示：该商品已销售不可删除；
       // 商品销量为0，则可删除，仍需有二次文字信息提示：请确认是否删除该商品？
       // 选择确认，则成功在前后端删除，返回商品管理页；

@@ -233,12 +233,16 @@ defmodule Acs.MallController do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
       %MallGoods{} = goods ->
-        case Repo.delete(goods) do
-          {:ok, _} ->
-            conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+        if(goods.sold > 0) do
+          conn |> json(%{success: false, i18n_message: "admin.mall.soldCanNotDelete"})
+        else
+          case Repo.delete(goods) do
+            {:ok, _} ->
+              conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: translate_errors(errors)})
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
         end
     end
   end
@@ -276,7 +280,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :name, :description, :price, :postage, :pic, :stock, :active]), where: g.id == ^goods_id)
+    goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
     conn |> json(%{success: true, goods: goods})
   end
   def get_goods_detail(conn, _) do

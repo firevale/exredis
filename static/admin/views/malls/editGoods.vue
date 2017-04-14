@@ -179,6 +179,10 @@ export default {
           },
           extensions: ['png', 'jpg', 'jpeg'],
           title: this.$t('admin.titles.uploadGoodsPic'),
+          imageValidator: {
+            square: true,
+            minWidth: 400,
+          },
           callback: response => this.goods.pic = response.pic_url,
         })
       } else {

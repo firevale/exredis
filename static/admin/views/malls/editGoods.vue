@@ -71,6 +71,8 @@
         </quill-editor>
       </div>
       <div style="margin-top: 15px">
+        <a class="button is-white" @click.prevent="onBack">
+          <span class="icon is-small"><i class="fa fa-backward"></i></span><span>{{ $t('admin.mall.goods.back') }}</span></a>
         <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': deleting}" @click.prevent="onDelete">
           <span class="icon is-small"><i class="fa fa-close"></i></span><span>{{ $t('admin.mall.goods.delete') }}</span></a>
         <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': publishing}" @click.prevent="onPublish">
@@ -299,6 +301,15 @@ export default {
         type: 'danger',
         duration: 4500,
         container: '.notifications',
+      })
+    },
+
+    onBack: function() {
+      this.$router.replace({
+        name: 'EditMall',
+        params: {
+          appId: this.goods.app_id
+        }
       })
     },
 

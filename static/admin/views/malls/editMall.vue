@@ -1,15 +1,15 @@
 <template>
   <div>
-    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
+    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false" ref="tab" @tab-selected="tabSelected">
       <tab-pane icon="fa fa-clone" :label="$t('admin.mall.basicInfo')">
         <basic-info-editor v-if="mall" :mall="mall"></basic-info-editor>
       </tab-pane>
       <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.mall.goodsInfo')">
         <goods-info-editor v-if="mall" :mall="mall"></goods-info-editor>
-      </tab-pane>  
+      </tab-pane>
       <tab-pane icon="fa fa-star" :label="$t('admin.mall.orderInfo')">
         <order-info-editor v-if="mall" :mall="mall"></order-info-editor>
-      </tab-pane>                
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -39,11 +39,27 @@ export default {
     } else {
       this.mall = mall
     }
+
+    if (this.$route.query && this.$route.query.tabIndex)
+      this.$refs.tab.select(parseInt(this.$route.query.tabIndex))
+
   },
 
   data() {
     return {
       mall: {},
+    }
+  },
+  methods: {
+    tabSelected: function(index) {
+      if (index == 0) return
+      this.$router.push({
+        name: this.$route.name,
+        params: this.$route.params,
+        query: {
+          tabIndex: index
+        }
+      })
     }
   },
 
@@ -52,7 +68,6 @@ export default {
       'mallHash'
     ]),
   },
-
   components: {
     Tabs,
     TabPane,

@@ -40,7 +40,8 @@
             </div>
           </div>
           <div class="level-item">
-            <a class="button"> {{$t('admin.mall.order.viewDetail')}} </a>
+            <!--<a class="button"> {{$t('admin.mall.order.viewDetail')}} </a>-->
+            <router-link class="button" :to="{name: 'MallOrderInfo', params: {orderId: item.id, orderInfo:item }}">{{$t('admin.mall.order.viewDetail')}}</router-link>
           </div>
         </div>
       </div>

@@ -65,6 +65,11 @@ export default new Router({
         name: 'EditGoods',
         path: 'malls/edit/:appId/editGoods',
         component: require('../views/malls/editGoods')
+      },
+      {
+        name: 'MallOrderInfo',
+        path: 'malls/order/:orderId',
+        component: require('../views/malls/orderInfo')
       }, {
         name: 'Settings',
         path: 'settings',

@@ -2,7 +2,7 @@
     <div class="tile is-ancestor is-vertical root-container">
         <div class="top-bar flex-fixed-size">
             <div class="title-bar">
-                <h4 class="title is-4">{{mall.title}}</h4>
+                <h4 class="title is-4">{{ $t('mall.titles.' + $route.name) }}</h4>
             </div>
             <nav class="nav">
                 <div class="nav-left has-text-left">

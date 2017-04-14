@@ -4,8 +4,8 @@ export default [{
   component: require('../views/mall/main.vue'),
   children: [{
       path: 'index',
-      name: 'mallIndex',
-      component: require('../views/mall/index.vue')
+      name: 'goodsIndex',
+      component: require('../views/mall/goodsList.vue')
     },
     {
       path: 'goods/:goodsId',

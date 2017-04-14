@@ -101,7 +101,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :app_id, :name, :currency, :description, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold])
 
     query = if(String.length(keyword)>0) do
       query |> where([p], like(p.name, ^keyword))
@@ -113,15 +113,6 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
   def fetch_goods(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
-  end
-
-  # check_goods_id
-  def check_goods_id(conn, %{"app_id" => app_id, "goods_id" => goods_id}) do
-    count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.id == ^goods_id)
-    conn |> json(%{success: true, count: count})
-  end
-  def check_goods_id(conn, _params) do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
@@ -281,15 +272,15 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, mall: mall})
   end
   def get_mall_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "mall.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
-  def get_good_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"good_id" =>good_id})do
-    good= Repo.one!(from g in MallGoods, select: map(g, [:id, :name, :description, :price, :postage, :pic, :stock, :active]), where: g.id == ^good_id)
-    conn |> json(%{success: true, good: good})
+  def get_goods_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"goods_id" =>goods_id})do
+    goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :name, :description, :price, :postage, :pic, :stock, :active]), where: g.id == ^goods_id)
+    conn |> json(%{success: true, goods: goods})
   end
-  def get_good_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "good.serverError.badRequestParams"})
+  def get_goods_detail(conn, _) do
+    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
   
 end

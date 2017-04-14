@@ -3,7 +3,7 @@ export default [{
   name: 'mallIndex',
   component: require('../views/mall/index.vue')
 }, {
-  path: '/mall/:goodId/detail',
-  name: 'goodDetail',
-  component: require('../views/mall/goodDetail.vue')
+  path: '/goods/:goodsId/detail',
+  name: 'goodsDetail',
+  component: require('../views/mall/goodsDetail.vue')
 }]

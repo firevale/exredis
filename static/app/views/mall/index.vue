@@ -21,7 +21,7 @@
                     <div class="columns is-multiline has-text-centered is-mobile">
                         <div v-for="item in goodsList" class="column is-half">
                             <div class="card-image pic">
-                                <figure class="image is-400x400" @click.prevent="showGoodDetail(item.id)">
+                                <figure class="image is-400x400" @click.prevent="showGoodsDetail(item.id)">
                                     <img v-if="item.pic" :src="item.pic">
                                     <img v-else src="https://placehold.it/300x300?text=400x400">
                                 </figure>
@@ -104,11 +104,11 @@
                     this.mallDetail = result.mall
                 }
             },
-            showGoodDetail: function (goodId) {
+            showGoodsDetail: function (goodsId) {
                 this.$router.push({
-                    name: 'goodDetail',
+                    name: 'goodsDetail',
                     params: {
-                        goodId: goodId
+                        goodsId: goodsId
                     },
                 })
             }

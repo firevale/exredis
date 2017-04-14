@@ -61,9 +61,18 @@ defmodule Acs.RedisUser do
 
   def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     if not exists?(account_id) do
-      %__MODULE__{email: String.downcase(account_id),
-                  encrypted_password: Utils.hash_password(password),
-                  nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}
+      case parse_account_id(account_id) do 
+        :email -> 
+          %__MODULE__{email: String.downcase(account_id),
+                      encrypted_password: Utils.hash_password(password),
+                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}
+        :mobile -> 
+          %__MODULE__{mobile: account_id,
+                      encrypted_password: Utils.hash_password(password),
+                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}          
+        _ ->
+          raise InvalidAccountId, message: "account id: #{account_id} unknown type"
+      end
     else
       raise AccountIdInUse, message: "user account_id #{account_id} is already used by other user"
     end

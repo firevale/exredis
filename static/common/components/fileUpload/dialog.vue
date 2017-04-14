@@ -3,9 +3,9 @@
     <div class="tile box is-ancestor is-vertical file-upload-modal has-text-centered" style="padding: 10px; margin: 0">
       <div class="tile is-parent is-full is-vertical">
         <article class="tile is-child file-upload-container">
-          <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title"
-            :drop="true" :accept="accept" :multiple="false" :headers="headers" :data="data" :size="maxFileSize" :timeout="60000"
-            :postAction="postAction" :extensions="extensions" :events="uploadEvents">
+          <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title" :drop="true"
+            :accept="accept" :multiple="false" :headers="headers" :data="data" :size="maxFileSize" :timeout="60000" :postAction="postAction"
+            :extensions="extensions" :events="uploadEvents">
           </file-upload>
         </article>
       </div>
@@ -131,10 +131,10 @@ export default {
             if (/^image\/(.*)/.test(file.file.type)) {
               let reader = new FileReader()
               reader.onloadend = _ => {
-                this.upload.$el.style.backgroundImage = `url(${reader.result})`
                 if (this.imageValidator) {
                   let img = new Image()
                   img.onload = _ => {
+                    this.upload.$el.style.backgroundImage = `url(${reader.result})`
                     if (this.imageValidator.square) {
                       if (img.width != img.height) {
                         this.errorMessage = this.$t('upload.imgShouldBeSquare')
@@ -144,7 +144,9 @@ export default {
                     }
                     if (this.imageValidator.minWidth) {
                       if (img.width < this.imageValidator.minWidth) {
-                        this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {minWidth: this.imageValidator.minWidth})
+                        this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {
+                          minWidth: this.imageValidator.minWidth
+                        })
                         this.upload.clear()
                         return
                       }
@@ -157,11 +159,7 @@ export default {
             }
           }
         },
-        before: _ => {
-          this.active = true
-        },
         after: (file, component) => {
-          this.active = false
           this.file = undefined
           this.visible = false
 

@@ -24,6 +24,7 @@
         locale: '<%= @conn.private[:acs_locale] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',
+        <%= if !is_nil(@user) do %>
         user: {
           id: <%= @user.id %>,
           nickname: '<%= @user.nickname %>',
@@ -34,7 +35,8 @@
           residentName: '<%= @user.resident_name %>',
           avatarUrl: '<%= @user.avatar_url %>',
         },
-        defaultAvatarUrl: 'https://fvvrres.firevale.com/avatar/6b55aad73c03a9fca6fb0c81b8b564a7.png',
+        <% end %>
+        defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
         is_mobile_account_supported: <%= @is_mobile_account_supported %>,
       }
     </script>

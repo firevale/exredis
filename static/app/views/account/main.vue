@@ -31,7 +31,11 @@ export default {
     }
   },
 
-  created: function() {},
+  created: function() {
+    if (window.acsConfig.user) {
+      this.setUserProfile(window.acsConfig.user)
+    }
+  },
 
   computed: {
     ...mapGetters([
@@ -41,7 +45,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setTransitionName'
+      'setTransitionName', 'setUserProfile'
     ]),
 
     onBtnBackClicked: function() {

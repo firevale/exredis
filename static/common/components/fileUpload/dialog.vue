@@ -3,9 +3,9 @@
     <div class="tile box is-ancestor is-vertical file-upload-modal has-text-centered" style="padding: 10px; margin: 0">
       <div class="tile is-parent is-full is-vertical">
         <article class="tile is-child file-upload-container">
-          <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title" :drop="true"
-            :accept="accept" :multiple="false" :headers="headers" :data="data" :size="maxFileSize" :timeout="60000" :postAction="postAction"
-            :extensions="extensions" :events="uploadEvents">
+          <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title"
+            :drop="true" :accept="accept" :multiple="false" :headers="headers" :data="data" :size="maxFileSize"
+            :timeout="60000" :postAction="postAction" :extensions="extensions" :events="uploadEvents">
           </file-upload>
         </article>
       </div>
@@ -28,7 +28,8 @@
           </div>
           <div class="column has-text-left is-9">
             <div class="control" style="padding-top: 0.375em">
-              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="file.progress" max="100"> {{ file.progress }}%
+              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="file.progress" max="100">
+              {{ file.progress }}%
               </progress>
             </div>
           </div>
@@ -65,6 +66,12 @@ import FileUpload from 'vue-upload-component'
 import {
   humanReadableSize
 } from 'common/js/filters'
+
+function checkFileType(accepts, fileType) {
+  return accepts.split(',').reduce((acc, accept) => {
+    return acc || new RegExp(accept.trim().replace('*', '(.*)')).test(fileType)
+  }, false)
+}
 
 export default {
   props: {
@@ -119,43 +126,53 @@ export default {
       errorMessage: '',
       uploadEvents: {
         add: file => {
+          this.file = undefined
+          this.upload.$el.style.backgroundImage = ''
+
           if (file.size > this.maxFileSize) {
             this.errorMessage = this.$t('upload.fileIsTooLarge', {
-              maxFileSize: humanReadableSize('' +
-                this.maxFileSize)
+              maxFileSize: humanReadableSize('' + this.maxFileSize)
+            })
+            this.upload.clear()
+          } else if (!checkFileType(this.accept, file.file.type)) {
+            this.errorMessage = this.$t('upload.invalidFileType', {
+              fileType: file.file.type
             })
             this.upload.clear()
           } else {
             this.errorMessage = ''
-            this.file = file
-            if (/^image\/(.*)/.test(file.file.type)) {
+
+            if (/image\/(.*)/.test(file.file.type)) {
+              console.log('file is image...')
               let reader = new FileReader()
               reader.onloadend = _ => {
-                if (this.imageValidator) {
-                  let img = new Image()
-                  img.onload = _ => {
-                    this.upload.$el.style.backgroundImage = `url(${reader.result})`
-                    if (this.imageValidator.square) {
-                      if (img.width != img.height) {
-                        this.errorMessage = this.$t('upload.imgShouldBeSquare')
-                        this.upload.clear()
-                        return
-                      }
-                    }
-                    if (this.imageValidator.minWidth) {
-                      if (img.width < this.imageValidator.minWidth) {
-                        this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {
-                          minWidth: this.imageValidator.minWidth
-                        })
-                        this.upload.clear()
-                        return
-                      }
+                let img = new Image()
+                img.onload = _ => {
+                  if (this.imageValidator && this.imageValidator.square) {
+                    if (img.width != img.height) {
+                      this.errorMessage = this.$t('upload.imgShouldBeSquare')
+                      this.upload.clear()
+                      return
                     }
                   }
-                  img.src = reader.result
+
+                  if (this.imageValidator && this.imageValidator.minWidth) {
+                    if (img.width < this.imageValidator.minWidth) {
+                      this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {
+                        minWidth: this.imageValidator.minWidth
+                      })
+                      this.upload.clear()
+                      return
+                    }
+                  }
+                  this.file = file
+                  this.upload.$el.style.backgroundImage = `url(${reader.result})`
                 }
+                img.src = reader.result
               }
               reader.readAsDataURL(file.file)
+            } else {
+              this.file = file
             }
           }
         },

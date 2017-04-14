@@ -20,7 +20,9 @@
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
           </div>
           <div class="nav-right has-text-right" style="flex-glow: 0">
-            <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">{{$t('forum.detail.showAuthorOnly')}}</v-touch>
+            <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">
+              {{$t('forum.detail.showAuthorOnly')}}
+            </v-touch>
           </div>
         </nav>
         <p>

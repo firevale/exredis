@@ -34,6 +34,7 @@
           residentId: '<%= @user.resident_id %>',
           residentName: '<%= @user.resident_name %>',
           avatarUrl: '<%= @user.avatar_url %>',
+          is_anonymous: '<%= !is_nil(@user.device_id) %>',
         },
         <% end %>
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',

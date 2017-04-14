@@ -51,13 +51,11 @@ defmodule Acs.RedisUser do
     defexception message: "account id is not valid"
   end
 
-
   @user_base_key       "acs.user."
   @email_index_key     "acs.indexes.user_email."
   @binding_index_key   "acs.indexes.sdk_binding."
   @mobile_index_key    "acs.indexes.user_mobile."
   @device_index_key    "acs.indexes.user_device."
-
 
   def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     if not exists?(account_id) do
@@ -65,11 +63,11 @@ defmodule Acs.RedisUser do
         :email -> 
           %__MODULE__{email: String.downcase(account_id),
                       encrypted_password: Utils.hash_password(password),
-                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}
+                      nickname: gen_nickname()}
         :mobile -> 
           %__MODULE__{mobile: account_id,
                       encrypted_password: Utils.hash_password(password),
-                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}          
+                      nickname: gen_nickname()}          
         _ ->
           raise InvalidAccountId, message: "account id: #{account_id} unknown type"
       end
@@ -87,34 +85,24 @@ defmodule Acs.RedisUser do
       %{email: nil, mobile: nil, nickname: "anonymous"} = user ->
         %{user | mobile: account_id, 
                  device_id: nil, 
-                 nickname: "fvu#{Utils.generate_token(5) |> String.downcase}", 
+                 nickname: gen_nickname(), 
                  encrypted_password: Utils.hash_password(password)}
     end
   end
 
   def bind_sdk_user(%{sdk: sdk,
                       app_id: app_id,
-                      sdk_user_id: sdk_user_id,
-                      email: email,
                       mobile: mobile,
-                      nickname: nickname,
-                      device_id: device_id,
+                      email: email,
+                      sdk_user_id: sdk_user_id,
                       avatar_url: avatar_url}) do
 
     bkey = "#{sdk}.#{app_id}"
 
-    nickname = case nickname do 
-                 nil -> "fvu#{Utils.generate_token(5) |> String.downcase}"
-                 "" -> "fvu#{Utils.generate_token(5) |> String.downcase}"
-                 _ -> nickname
-               end
-
-    case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) || find(device_id) do
+    case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) do
       nil ->
         user =  %__MODULE__{
-                    email: email, # make email case insensitive
-                    nickname: nickname,
-                    mobile: mobile,
+                    nickname: gen_nickname(),
                     avatar_url: avatar_url,
                     bindings: Map.put(%{}, bkey, sdk_user_id)
                   }
@@ -123,10 +111,6 @@ defmodule Acs.RedisUser do
         {:ok, user}
 
       user ->
-        user = %{user | email: email}
-        user = %{user | mobile: mobile}
-        user = %{user | nickname: nickname}
-        user = %{user | avatar_url: avatar_url}
         user = %{user | bindings: Map.put(user.bindings, bkey, sdk_user_id)}
 
         user = save!(user)
@@ -134,28 +118,40 @@ defmodule Acs.RedisUser do
     end
   end
 
+  # anonymous user identified by device_id
   def fetch_anonymous_user(device_id) do
     case find(device_id) do
-      %{email: nil, mobile: nil, nickname: "anonymous"} = anonymous_user ->
+      %{email: nil, mobile: nil} = anonymous_user ->
         anonymous_user
 
       _ ->
         save!(%__MODULE__{
-          nickname: "anonymous",
+          nickname: gen_nickname(),
           device_id: device_id,
           bindings: %{}
         })
     end
   end
 
-  def bind_anonymous_user(account_id, password, device_id, bind_user_id) do
-    case find(String.to_integer(bind_user_id)) do
-      %{nickname: "anonymous", device_id: ^device_id} = user ->
-        new_user = %{user | email: account_id,
-                            encrypted_password: Utils.hash_password(password),
-                            nickname: "fvu#{Utils.generate_token(5) |> String.downcase}",
-                            device_id: nil}
-       save!(new_user)
+  def bind_anonymous_user(account_id, password, device_id) do
+    case find(device_id) do
+      %{device_id: ^device_id} = user ->
+        case parse_account_id(account_id) do 
+          :email ->
+            new_user = %{user | email: account_id,
+                                encrypted_password: Utils.hash_password(password),
+                                nickname: gen_nickname(),
+                                device_id: nil}
+            save!(new_user)
+          :mobile ->
+            new_user = %{user | mobile: account_id,
+                                encrypted_password: Utils.hash_password(password),
+                                nickname: gen_nickname(),
+                                device_id: nil}
+            save!(new_user)    
+          _ -> 
+            nil
+        end      
       _ -> nil
     end
   end
@@ -171,7 +167,7 @@ defmodule Acs.RedisUser do
                              v when is_bitstring(v) -> String.downcase(user.email)
                            end,
                     nickname: case user.nickname do 
-                                nil -> "fvu#{Utils.generate_token(5) |> String.downcase}"
+                                nil -> gen_nickname()
                                 v when is_bitstring(v) -> v
                               end}
     
@@ -464,5 +460,9 @@ defmodule Acs.RedisUser do
         100_001
       uid when uid > 100_000 -> uid
     end
+  end
+
+  defp gen_nickname() do 
+    "fvu#{Utils.generate_token(5) |> String.downcase}"
   end
 end

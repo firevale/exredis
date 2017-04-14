@@ -67,13 +67,14 @@ defmodule Acs.UserController do
   def bind_anonymous(%Plug.Conn{private: %{acs_app_id: app_id,
                                            acs_device_id: device_id,
                                            acs_platform: platform}} = conn,
-                   %{"email" => account_id, "password" => password, "bind_user_id" => bind_user_id} = params) do
+                   %{"email" => account_id, "password" => password} = params) do
     if RedisUser.exists?(account_id) do
       conn |> json(%{success: false, message: "account.error.accountInUse"})
     else
-      case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do
+      case RedisUser.bind_anonymous_user(account_id, password, device_id) do
         nil ->
           conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
+          
         %RedisUser{} = user ->
           create_and_response_access_token(conn, user, app_id, device_id, platform)
       end
@@ -98,7 +99,7 @@ defmodule Acs.UserController do
   end
 
   def create_user(conn, %{"verify_code" => ""}) do
-      conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})
+    conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})
   end
   def create_user(%Plug.Conn{private: %{acs_app_id: app_id,
                                         acs_device_id: device_id,
@@ -115,19 +116,9 @@ defmodule Acs.UserController do
                               _ -> false
                              end
           if is_valid_account do
-            case params["bind_user_id"] do
-              nil ->
-                user = RedisUser.create!(account_id, password)
-                user = RedisUser.save!(user)
-                create_and_response_access_token(conn, user, app_id, device_id, platform)
-              bind_user_id ->
-                case RedisUser.bind_anonymous_user(account_id, password, device_id, bind_user_id) do
-                  nil ->
-                    conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
-                  %RedisUser{} = user ->
-                    create_and_response_access_token(conn, user, app_id, device_id, platform)
-                end
-            end
+            user = RedisUser.create!(account_id, password)
+            user = RedisUser.save!(user)
+            create_and_response_access_token(conn, user, app_id, device_id, platform)
           else
             conn |> json(%{success: false, message: "account.error.accountIdChanged"})
           end
@@ -144,6 +135,7 @@ defmodule Acs.UserController do
     case RedisUser.find(account_id) do
       nil ->
         conn |> json(%{success: false, message: "account.error.accountNotFound"})
+
       %RedisUser{} = user ->
         case get_session(conn, :retrieve_password_account_id) do
           ^account_id ->
@@ -179,7 +171,7 @@ defmodule Acs.UserController do
 
     case RedisAccessToken.find(access_token_id) do
       nil ->
-        Logger.error "access token not found for #{access_token_id}"
+        error "access token not found for #{access_token_id}"
         conn |> json(%{success: false,
                        message: "access token not found"})
 
@@ -191,16 +183,11 @@ defmodule Acs.UserController do
                            message: "token user not exists!"})
           %RedisUser{} = user ->
             RedisAccessToken.delete(token)
-            is_anonymous = case user.nickname do
-                             "anonymous" -> true
-                             _ -> false
-                           end
-
-            create_and_response_access_token(conn, user, app_id, device_id, platform, is_anonymous)
+            create_and_response_access_token(conn, user, app_id, device_id, platform, !is_nil(user.device_id))
         end
 
       what ->
-        Logger.error "invalid access token found for #{access_token_id}, #{inspect what, pretty: true}"
+        error "invalid access token found for #{access_token_id}, #{inspect what, pretty: true}"
         conn |> json(%{success: false,
                        message: "invalid access token id"})
     end
@@ -243,12 +230,7 @@ defmodule Acs.UserController do
                user_id: to_string(user.id),
                user_email: user.email || "",
                user_mobile: user.mobile || "",
-               nick_name:
-               if is_anonymous do
-                 gettext("anonymous") <> "-" <> (user.id |> :binary.encode_unsigned |> Base.encode32(padding: false, case: :lower))
-               else
-                user.nickname || ""
-               end,
+               nick_name: user.nickname,
                is_anonymous: is_anonymous,
                sdk: :firevale,
                binding: %{},
@@ -259,7 +241,6 @@ defmodule Acs.UserController do
   def logout(conn, _params) do
     case get_session(conn, :access_token) do
       nil ->
-        # not logged in
         conn |> json(%{success: true})
 
       access_token_id ->
@@ -310,7 +291,6 @@ defmodule Acs.UserController do
   end
 
   def authorization_token(conn, params) do
-    d "authorization_token, params: #{inspect params}"
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")
   end
 end

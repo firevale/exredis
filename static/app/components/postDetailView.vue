@@ -20,7 +20,7 @@
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
           </div>
           <div class="nav-right has-text-right" style="flex-glow: 0">
-            <a class="button level-button is-primary">{{$t('forum.detail.showAuthorOnly')}}</a>
+            <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">{{$t('forum.detail.showAuthorOnly')}}</v-touch>
           </div>
         </nav>
         <p>
@@ -35,8 +35,8 @@
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
           <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
-          <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable" style="margin-right: 0.1rem"
-            @tap="toggleFavorite">
+          <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
+            style="margin-right: 0.1rem" @tap="toggleFavorite">
           </v-touch>
           <span v-if="favoriting" class="is-grey">
             {{ $t('forum.detail.favoriting') }}
@@ -48,24 +48,24 @@
       </div>
     </article>
     <nav v-if="isManager" class="nav post-manage-bar">
-      <div class="nav-left has-text-left" @click="toggleActive">
+      <v-touch class="nav-left has-text-left" @tap="toggleActive">
         <a class="button is-danger">
           <span class="icon image-icon icon-times" style="">
           </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}
         </a>
-      </div>
-      <div class="nav-center has-text-center" @click="toggleEssence">
+      </v-touch>
+      <v-touch class="nav-center has-text-center" @tap="toggleEssence">
         <a class="button is-primary">
           <span class="icon image-icon icon-star" style="">
           </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}
         </a>
-      </div>
-      <div class="nav-right has-text-right" @click="toggleUp">
+      </v-touch>
+      <v-touch class="nav-right has-text-right" @tap="toggleUp">
         <a class="button is-info">
           <span class="icon image-icon icon-top" style="">
           </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}
         </a>
-      </div>
+      </v-touch>
     </nav>
   </div>
 </template>

@@ -69,7 +69,7 @@ defmodule Acs.RedisUser do
         :mobile -> 
           %__MODULE__{mobile: account_id,
                       encrypted_password: Utils.hash_password(password),
-                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"          
+                      nickname: "fvu#{Utils.generate_token(5) |> String.downcase}"}          
         _ ->
           raise InvalidAccountId, message: "account id: #{account_id} unknown type"
       end

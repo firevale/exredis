@@ -73,7 +73,8 @@ span {
   }
 }
 
-input[type="submit"].button {
+input[type="submit"].button,
+.button.is-submit {
   display: block;
   min-width: 8rem;
   border-radius: 0;
@@ -91,6 +92,10 @@ input.input:focus {
   height: 5rem;
   width: 100%;
   padding: 1rem 1.5rem;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+
   .title-bar {
     position: absolute;
     top: 2rem;
@@ -142,6 +147,9 @@ input.input:focus {
   margin: 0 1.5rem;
   background-color: $white;
   overflow: hidden;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
   display: flex;
   flex-flow: column nowrap;
   -ms-overflow-style: none;
@@ -164,8 +172,11 @@ input.input:focus {
 
 .has-bottom-line {
   position: relative;
+  z-index: 0;
+
   &:after {
-    @include bottom-line(1px, $bottom-line-dark);
+    z-index: 5;
+    @include bottom-line(1px, rgba(203, 203, 203, 0.8));
   }
 }
 
@@ -285,7 +296,7 @@ only screen and (-webkit-min-device-pixel-ratio: 1.25),
 only screen and (min--moz-device-pixel-ratio: 1.25),
 only screen and (min-device-pixel-ratio: 1.25),
 only screen and (min-resolution: 1.25dppx) {
-  body:not(.ios) {
+  body:not(.ios):not(.android) {
     .has-bottom-line {
       &:after {
         -webkit-transform: translateZ(0) scaleY(.3);
@@ -315,12 +326,24 @@ only screen and (min-resolution: 1.25dppx) {
       }
     }
   }
+  body.android {
+    .has-bottom-line {
+      &:after {
+        border-color: rgba(203, 203, 203, 0.6);
+      }
+    }
+    .has-hairline-border {
+      &:after {
+        border-color: rgba(203, 203, 203, 0.6);
+      }
+    }
+  }
 } // @3x resources
 @media only screen and (-o-min-device-pixel-ratio: 9/4),
 only screen and (-webkit-min-device-pixel-ratio: 2.25),
 only screen and (min-device-pixel-ratio: 2.25),
 only screen and (min-resolution: 2.25dppx) {
-  body:not(.ios) {
+  body:not(.ios):not(.android) {
     .has-bottom-line {
       &:after {
         -webkit-backface-visibility: hidden;
@@ -343,13 +366,26 @@ only screen and (min-resolution: 2.25dppx) {
   body.ios {
     .has-bottom-line {
       &:after {
-        border-width: 0.3px;
+        border-color: #cbcbcb;
+        border-width: 0.2px;
       }
     }
     .has-hairline-border {
       &:after {
-        border-width: 0.3px;
-        border-width: 0.3px;
+        border-color: #cbcbcb;
+        border-width: 0.2px;
+      }
+    }
+  }
+  body.android {
+    .has-bottom-line {
+      &:after {
+        border-color: rgba(203, 203, 203, 0.5);
+      }
+    }
+    .has-hairline-border {
+      &:after {
+        border-color: rgba(203, 203, 203, 0.5);
       }
     }
   }

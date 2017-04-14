@@ -1,5 +1,5 @@
 <template>
-    <div class="tile is-ancestor is-vertical root-container goods-detail">
+    <!--<div class="tile is-ancestor is-vertical root-container goods-detail">
         <div class="top-bar flex-fixed-size">
             <div class="title-bar">
                 <h4 class="title is-4">{{$t('mall.goods.description') }}</h4>
@@ -68,70 +68,70 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 </template>
 
 <script>
-    import Vue from '../../vue-installed'
-    import * as acs from 'common/js/acs'
-    import nativeApi from 'common/js/nativeApi'
+    // import Vue from '../../vue-installed'
+    // import * as acs from 'common/js/acs'
+    // import nativeApi from 'common/js/nativeApi'
 
-    export default {
-        mounted: async function () {
-            await this.getGoodsDetail()
-        },
-        data: function () {
-            return {
-                canGoBack: false,
-                inApp: window.acsConfig.inApp,
-                quantity: 1,
-                goods: {}
-            }
-        },
-        methods: {
-            onBtnBackClicked: function () {
-                if (this.canGoBack) {
-                    this.$router.back()
-                } else if (this.inApp) {
-                    nativeApi.closeWebviewWithResult({
-                        success: false
-                    })
-                }
-            },
-            getGoodsDetail: async function () {
-                let goodsId = this.$router.currentRoute.params.goodsId
-                let result = await this.$acs.getGoodsDetail(goodsId)
-                if (result.success) {
-                    this.goods = result.goods
-                }
-            },
-            quantityPlus: function () {
-                if (this.quantity <= 1)
-                    this.quantity = 1
-                else
-                    this.quantity = this.quantity - 1
-            },
-            quantityReduce: function () {
-                if (this.goods.stock <= this.quantity)
-                    this.quantity = this.goods.stock
-                else
-                    this.quantity = this.quantity + 1
-            },
-            quantityChange: function () {
-                let num = this.$refs.quantity.value
-                if (num == "" || num <= 0) {
-                    num = 1
-                    this.$refs.quantity.value = 1
-                }
-                if (this.goods.stock <= num) {
-                    this.$refs.quantity.value = this.goods.stock
-                }
-            }
-        },
-        watch: {
-            '$route' (to, from) {
-                this.canGoBack = (history.state != null)
-            }
-        }
-    }
+    // export default {
+    //     mounted: async function () {
+    //         await this.getGoodsDetail()
+    //     },
+    //     data: function () {
+    //         return {
+    //             canGoBack: false,
+    //             inApp: window.acsConfig.inApp,
+    //             quantity: 1,
+    //             goods: {}
+    //         }
+    //     },
+    //     methods: {
+    //         onBtnBackClicked: function () {
+    //             if (this.canGoBack) {
+    //                 this.$router.back()
+    //             } else if (this.inApp) {
+    //                 nativeApi.closeWebviewWithResult({
+    //                     success: false
+    //                 })
+    //             }
+    //         },
+    //         getGoodsDetail: async function () {
+    //             let goodsId = this.$router.currentRoute.params.goodsId
+    //             let result = await this.$acs.getGoodsDetail(goodsId)
+    //             if (result.success) {
+    //                 this.goods = result.goods
+    //             }
+    //         },
+    //         quantityPlus: function () {
+    //             if (this.quantity <= 1)
+    //                 this.quantity = 1
+    //             else
+    //                 this.quantity = this.quantity - 1
+    //         },
+    //         quantityReduce: function () {
+    //             if (this.goods.stock <= this.quantity)
+    //                 this.quantity = this.goods.stock
+    //             else
+    //                 this.quantity = this.quantity + 1
+    //         },
+    //         quantityChange: function () {
+    //             let num = this.$refs.quantity.value
+    //             if (num == "" || num <= 0) {
+    //                 num = 1
+    //                 this.$refs.quantity.value = 1
+    //             }
+    //             if (this.goods.stock <= num) {
+    //                 this.$refs.quantity.value = this.goods.stock
+    //             }
+    //         }
+    //     },
+    //     watch: {
+    //         '$route' (to, from) {
+    //             this.canGoBack = (history.state != null)
+    //         }
+    //     }
+    // }
 </script>

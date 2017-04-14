@@ -247,7 +247,7 @@ defmodule Acs.MallController do
   end
  
  #  show active_mall_goods
- def get_active_goods_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"page" => page, 
+ def get_active_goods_paged(conn, %{"page" => page, 
                         "records_per_page" => records_per_page,
                         "app_id" => app_id}) do    
 
@@ -267,7 +267,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
 
-  def get_mall_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+  def get_mall_detail(conn,%{"app_id" =>app_id})do
     mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
     conn |> json(%{success: true, mall: mall})
   end
@@ -275,7 +275,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
   end
 
-  def get_goods_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"goods_id" =>goods_id})do
+  def get_goods_detail(conn,%{"goods_id" =>goods_id})do
     goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :name, :description, :price, :postage, :pic, :stock, :active]), where: g.id == ^goods_id)
     conn |> json(%{success: true, goods: goods})
   end

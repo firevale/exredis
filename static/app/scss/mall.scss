@@ -28,24 +28,24 @@
     }
 }
 
-.good-detail {
+.goods-detail {
     .subtitle {
         font-weight: 400;
     }
-    .good-name {
+    .goods-name {
         padding-top: 1.2rem;
     }
-    .good-price {
+    .goods-price {
         padding-top: 0.8rem;
         color: $lightred;
     }
-    .good-price label:before {
+    .goods-price label:before {
         content: '¥ ';
     }
-    .good-info {
+    .goods-info {
         padding-top:0.8rem;
     }
-    .good-bottom{
+    .goods-bottom{
         left: 0;
         height:3.41rem;
         position: fixed;

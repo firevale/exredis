@@ -106,6 +106,9 @@ export default {
     confirmDeleteNews: '您确定要删除该内容么?',
     confirmPublishNews: '您确定要发布该内容么?',
     confirmUnPublishNews: '您确定要取消发布该内容么?',
+    confirmDeleteMallGoods: '您确定要删除该商品么?',
+    confirmPublishGoods: '您确定要发布该商品么?',
+    confirmUnPublishGoods: '您确定要下架该商品么?',    
   },
 
   serverSuccess: {

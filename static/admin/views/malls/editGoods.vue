@@ -70,6 +70,10 @@
           @image="onInsertImage">
         </quill-editor>
       </div>
+      <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
+        <span class="icon is-sign">!</span>
+        <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
+      </div>
       <div style="margin-top: 15px">
         <a class="button is-white" @click.prevent="onBack">
           <span class="icon is-small"><i class="fa fa-backward"></i></span><span>{{ $t('admin.mall.goods.back') }}</span></a>
@@ -128,9 +132,41 @@ export default {
     }
   },
 
+  computed: {
+    errorHint: function() {
+      if (!this.$v.goods.name.required) {
+        return this.$t('admin.mall.goods.pleaseFill')
+      } else if (!this.$v.goods.name.maxLength) {
+        return this.$t('admin.mall.goods.namePlaceholder')
+      } else if (!this.$v.goods.description.required) {
+        return this.$t('admin.mall.goods.descPlaceholder')
+      } else if (!this.$v.goods.description.maxLength) {
+        return this.$t('admin.mall.goods.descPlaceholder')
+      }
+
+      return ''
+    },
+  },
+
+  validations: {
+    goods: {
+      name: {
+        required,
+        maxLength: maxLength(50),
+      },
+      description: {
+        required,
+        maxLength: maxLength(8000),
+      }
+    }
+  },
+
   data() {
     return {
-      goods: undefined,
+      goods: {
+        name: '',
+        description: '',
+      },
       loading: false,
       deleting: false,
       saving: false,

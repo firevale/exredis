@@ -28,7 +28,8 @@
                 </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
-                  
+                  <span class="tag is-primary" v-if="goods.active==true">{{ $t('admin.mall.goods.up') }} </span>
+                  <span class="tag is-dark" v-else>{{ $t('admin.mall.goods.down') }}</span>
                   <a class="button is-small" @click="onEdit(goods.id)">
                     <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                     <span>{{ $t('admin.mall.goods.edit') }}</span>
@@ -37,8 +38,6 @@
                     <span class="icon is-small"><i class="fa fa-close"></i></span>
                     <span>{{ $t('admin.mall.goods.delete') }}</span>
                   </a>
-                  <span class="tag is-primary" v-if="goods.active==true">{{ $t('admin.mall.goods.up') }} </span>
-                  <span class="tag is-dark" v-else>{{ $t('admin.mall.goods.down') }}</span>
                 </p>
               </article>
             </div>

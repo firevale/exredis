@@ -101,7 +101,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active])
 
     query = if(String.length(keyword)>0) do
       query |> where([p], like(p.name, ^keyword))

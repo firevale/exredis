@@ -13,7 +13,7 @@
     </router-link>
     <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
       <div class="columns is-multiline">
-        <div v-for="goods in goodses" class="column is-half">
+        <div v-for="(goods, index) in goodses" class="column is-half">
           <div class="columns">
             <div class="column is-parent is-one-third">
               <figure class="image" style="display: block">
@@ -28,11 +28,13 @@
                 </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
+                  <span class="tag is-primary" v-if="goods.active==true">{{ $t('admin.mall.goods.up') }} </span>
+                  <span class="tag is-dark" v-else>{{ $t('admin.mall.goods.down') }}</span>
                   <a class="button is-small" @click="onEdit(goods.id)">
                     <span class="icon is-small"><i class="fa fa-pencil"></i></span>
                     <span>{{ $t('admin.mall.goods.edit') }}</span>
                   </a>
-                  <a class="button is-small" @click="onDelete(goods)">
+                  <a class="button is-small" @click="onDelete(goods, index)">
                     <span class="icon is-small"><i class="fa fa-close"></i></span>
                     <span>{{ $t('admin.mall.goods.delete') }}</span>
                   </a>
@@ -142,7 +144,7 @@ export default {
       })
     },
 
-    onDelete: function(goods) {
+    onDelete: function(goods, index) {
       if (goods.sold > 0) {
         openNotification({
           title: this.$t('admin.titles.warning'),
@@ -163,20 +165,11 @@ export default {
               goods_id: goods.id
             }, this.$t('admin.notification.message.mallGoodsDeleted'))
             if (result.success) {
-              this.$router.replace({
-                name: 'EditMall',
-                params: {
-                  appId: goods.app_id
-                }
-              })
+              this.goodses.splice(index, 1)
             }
           },
         })
       }
-      // 点击删除按钮，需判断该商品是否已有销量，销量不为0的商品不可删除，需文字提示：该商品已销售不可删除；
-      // 商品销量为0，则可删除，仍需有二次文字信息提示：请确认是否删除该商品？
-      // 选择确认，则成功在前后端删除，返回商品管理页；
-      // 选择取消，则不删除，返回商品详情页；
     },
 
     fetchGoods: async function(page, recordsPerPage) {
@@ -201,7 +194,7 @@ export default {
       this.searching = true
       let result = await this.$acs.fetchGoods({
         keyword: this.keyword,
-        app_id: this.app_id,
+        app_id: this.appId,
         page: page,
         records_per_page: this.recordsPerPage
       })

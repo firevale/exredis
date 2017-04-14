@@ -35,15 +35,15 @@
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
           <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
-          <span v-else :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable" style="margin-right: 0.1rem"
-            @click="toggleFavorite">
-          </span>
+          <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable" style="margin-right: 0.1rem"
+            @tap="toggleFavorite">
+          </v-touch>
           <span v-if="favoriting" class="is-grey">
             {{ $t('forum.detail.favoriting') }}
           </span>
-          <span v-else class="is-grey is-clickable" @click="toggleFavorite">
+          <v-touch v-else tag="span" class="is-grey is-clickable" @tap="toggleFavorite">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
-          </span>
+          </v-touch>
         </div>
       </div>
     </article>

@@ -66,6 +66,12 @@ import {
   humanReadableSize
 } from 'common/js/filters'
 
+function checkFileType(accepts, fileType) {
+  return accepts.split(',').reduce((acc, accept) => {
+    return acc || new RegExp(accept.replace('*', '(.*)')).test(fileType)
+  }, false)
+}
+
 export default {
   props: {
     visible: {
@@ -119,22 +125,28 @@ export default {
       errorMessage: '',
       uploadEvents: {
         add: file => {
+          this.file = undefined
+          this.upload.$el.style.backgroundImage = ''
+
           if (file.size > this.maxFileSize) {
             this.errorMessage = this.$t('upload.fileIsTooLarge', {
-              maxFileSize: humanReadableSize('' +
-                this.maxFileSize)
+              maxFileSize: humanReadableSize('' + this.maxFileSize)
+            })
+            this.upload.clear()
+          } else if (!checkFileType(this.accept, file.file.type)) {
+            this.errorMessage = this.$t('upload.invalidFileType', {
+              fileType: file.file.type
             })
             this.upload.clear()
           } else {
             this.errorMessage = ''
-            this.file = file
+
             if (/^image\/(.*)/.test(file.file.type)) {
               let reader = new FileReader()
               reader.onloadend = _ => {
                 if (this.imageValidator) {
                   let img = new Image()
                   img.onload = _ => {
-                    this.upload.$el.style.backgroundImage = `url(${reader.result})`
                     if (this.imageValidator.square) {
                       if (img.width != img.height) {
                         this.errorMessage = this.$t('upload.imgShouldBeSquare')
@@ -142,6 +154,7 @@ export default {
                         return
                       }
                     }
+
                     if (this.imageValidator.minWidth) {
                       if (img.width < this.imageValidator.minWidth) {
                         this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {
@@ -151,11 +164,15 @@ export default {
                         return
                       }
                     }
+                    this.file = file
+                    this.upload.$el.style.backgroundImage = `url(${reader.result})`
                   }
                   img.src = reader.result
                 }
               }
               reader.readAsDataURL(file.file)
+            } else {
+              this.file = file
             }
           }
         },

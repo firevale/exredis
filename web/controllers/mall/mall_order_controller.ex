@@ -35,4 +35,21 @@ defmodule Acs.MallOrderController do
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
 
+  def fetch_order(conn, %{"order_id" => order_id }) do
+    fetch_order_info(conn,order_id)
+  end
+
+  defp fetch_order_info(conn, order_id) do
+    query = from o in MallOrder,
+              left_join: details in assoc(o, :details),
+              left_join: user in assoc(o, :user),
+              left_join: address in assoc(o, :user_address),
+              select: map(o, [:id, :goods_name, :status, :price, :final_price, :postage, :inserted_at,
+              user: [:id, :nickname, :mobile], details: [:id, :goods_name, :goods_pic, :price, :amount] ,
+              user_address: [:id, :name, :mobile, :area, :address, :area_code] ]),
+              where: o.id ==^order_id,
+              preload: [user: user, user_address: address, details: details]
+    order = Repo.one(query)
+    conn |> json(%{success: true, order: order})
+  end
 end

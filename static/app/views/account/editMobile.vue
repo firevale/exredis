@@ -1,7 +1,7 @@
 <template>
   <div class="edit-account">
     <form class="account-fields" @submit.prevent="onSubmit">
-      <p v-show="userInfo.mobile" class="help is-primary"> {{ $t('account.hint.currentBoundModile', {mobile: boundMobile}) }} </p>
+      <p v-show="userInfo.mobile" class="help is-primary"> {{ $t('account.hint.currentBoundMobile', {mobile: boundMobile}) }} </p>
       <div>
         <div class="field">
           <p class="control has-icon">
@@ -141,7 +141,7 @@ export default {
         })
         if (result.success) {
           this.updateUserMobile(this.mobile)
-          
+
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.mobileBindSuccess', {
               mobile: this.mobile

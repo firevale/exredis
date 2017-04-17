@@ -28,9 +28,9 @@ defmodule Acs.CustomerServiceController do
        conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "customer.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "customer.error.networkError"})
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       end
   end
   def add_contact(conn, _) do

@@ -5,7 +5,7 @@
       <div>
         <div class="field">
           <p class="control has-icon">
-            <input class="input" type="number" v-model.trim="email" @input="handleValidation" :placeholder="$t('account.placeholder.inputEmail')"
+            <input class="input" type="email" v-model.trim="email" @input="handleValidation" :placeholder="$t('account.placeholder.inputEmail')"
             />
             <span class="icon image-icon icon-envelope"></span>
           </p>
@@ -78,10 +78,10 @@ export default {
     let email = {
       required,
       valid: function(val) {
-        return utils.isValidEmailNumber(val)
+        return utils.isValidEmail(val)
       },
       changed: function(val) {
-        return utils.isValidEmailNumber(this.userInfo.email) ? (val != this.userInfo.email) : true
+        return utils.isValidEmail(this.userInfo.email) ? (val != this.userInfo.email) : true
       },
     }
 
@@ -134,7 +134,7 @@ export default {
     onSubmit: async function() {
       if (!this.processing) {
         this.processing = true
-        let result = await this.$acs.updateUserEmailNumber({
+        let result = await this.$acs.updateUserEmail({
           email: this.email,
           verify_code: this.verifyCode,
           password: this.password,

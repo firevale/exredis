@@ -246,13 +246,16 @@ export default {
       },
 
       sendBindMobileVerifyCode(mobile) {
-        console.log('sendBindMobileVerifyCode', mobile)
-        return post(Vue, "/send_mobile_bind_verify_code", {mobile})
+        return post(Vue, "/send_mobile_bind_verify_code", { mobile })
       },
 
       updateUserMobileNumber(params) {
         return post(Vue, "/user/update_mobile", params)
-      }
+      },
+
+      sendBindEmailVerifyCode(email) {
+        return post(Vue, "/send_email_bind_verify_code", { email })
+      },
     }
   }
 }

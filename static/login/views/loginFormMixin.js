@@ -84,7 +84,7 @@ export default {
           return this.$t('account.error.invalidAccountId')
         }
       } else {
-        return this.$t('account.error.invalidEmailAddres')
+        return this.$t('account.error.invalidEmailAddress')
       }
     }
 

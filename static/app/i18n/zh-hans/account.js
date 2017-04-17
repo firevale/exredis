@@ -15,5 +15,11 @@ export default {
     inputMobileNumber: '请输入手机号码',
     inputVerifyCode: '请输入验证码',
     inputEmail: '请输入邮箱地址',
+  }, 
+
+  error: {
+    requireMobile: '请输入手机号码',
+    invalidMobileNumber: '请输入正确的手机号码',
+    mobileNotChanged: '当前已绑定此手机号码',
   }
 }

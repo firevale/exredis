@@ -7,13 +7,6 @@ export const password = {
   maxLength: maxLength(20),
 }
 
-export const mobile = {
-  required,
-  valid: function(val) {
-    return utils.isValidMobileNumber(val)
-  }
-}
-
 export const email = {
   required,
   valid: function(val) {

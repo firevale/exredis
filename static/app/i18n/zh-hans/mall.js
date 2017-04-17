@@ -6,5 +6,8 @@ export default {
         stock: '库存',
         buyNow: '立即购买',
         soldOut: '已售罄'
+    },
+    titles: {
+        goodsDetail: '商品详情'
     }
 }

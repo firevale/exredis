@@ -10,15 +10,5 @@ export default {
   buttons: {
     back: '返回',
   },
-
-  error: {
-    pageTitle: '糟糕，出错了',
-
-  },
-  serverError: {
-    badRequestParams: '请求参数错误',
-
-  },
-
   
 }

@@ -72,11 +72,11 @@ export default {
       if (!this.$v.editingPostData.title.required) {
         return this.$t('forum.newPost.titlePlaceholder')
       } else if (!this.$v.editingPostData.title.minLength) {
-        return this.$t('forum.error.postTitleMinLength')
+        return this.$t('error.validation.postTitleMinLength')
       } else if (!this.$v.editingPostData.title.maxLength) {
-        return this.$t('forum.error.postTitleMaxLength')
+        return this.$t('error.validation.postTitleMaxLength')
       } else if (!this.$v.editingPostData.content.required) {
-        return this.$t('forum.error.commentContentRequired')
+        return this.$t('error.validation.commentContentRequired')
       }
 
       return ''

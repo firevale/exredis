@@ -48,9 +48,9 @@ export default {
 
     errorHint: function() {
       if (!this.$v.content.required) {
-        return this.$t('forum.error.commentContentRequired')
+        return this.$t('error.validation.commentContentRequired')
       } else if (!this.$v.content.minLength) {
-        return this.$t('forum.error.commentContentRequired')
+        return this.$t('error.validation.commentContentRequired')
       }
 
       return ''

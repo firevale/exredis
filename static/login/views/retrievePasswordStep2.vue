@@ -108,7 +108,7 @@ export default {
           if (result.success) {
             this.cooldownCounter = 60
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (_) {
           this.setErrorMessage(this.$t('account.error.networkError'))

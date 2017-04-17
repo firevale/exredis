@@ -61,6 +61,18 @@
   &.icon-mobile {
     background-image: url("~assets/icon-mobile@2x.png");
   }
+  &.icon-error-sign {
+    background-image: url("~assets/icon-error-sign@1x.png");
+  }
+  &.icon-lock {
+    background-image: url("~assets/lock@2x.png");
+  }
+  &.icon-eye {
+    background-image: url("~assets/eye@2x.png");
+  }
+  &.icon-eye-slash {
+    background-image: url("~assets/eye-slash@2x.png");
+  }
   &.icon-arrow-right {
     transform: rotate(270deg);
     background-image: url("~assets/down@2x.png");
@@ -100,9 +112,9 @@
 only screen and (-webkit-min-device-pixel-ratio: 1.25),
 only screen and (min--moz-device-pixel-ratio: 1.25),
 only screen and (min-device-pixel-ratio: 1.25),
-only screen and (min-resolution: 1.25dppx) {
+only screen and (min-resolution: 1.25dppx) {}
 
-} // @3x resources
+// @3x resources
 @media only screen and (-o-min-device-pixel-ratio: 9/4),
 only screen and (-webkit-min-device-pixel-ratio: 2.25),
 only screen and (min-device-pixel-ratio: 2.25),
@@ -152,6 +164,18 @@ only screen and (min-resolution: 2.25dppx) {
     }
     &.icon-shield {
       background-image: url("~assets/icon-shield@3x.png");
+    }
+    &.icon-error-sign {
+      background-image: url("~assets/icon-error-sign@2x.png");
+    }
+    &.icon-lock {
+      background-image: url("~assets/lock@3x.png");
+    }
+    &.icon-eye {
+      background-image: url("~assets/eye@3x.png");
+    }
+    &.icon-eye-slash {
+      background-image: url("~assets/eye-slash@3x.png");
     }
   }
 }

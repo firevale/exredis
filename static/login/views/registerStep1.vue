@@ -84,7 +84,6 @@ export default {
               this.setRegisterAccountId(this.accountId)
               if (window.acsConfig.isMobileAccountSupported && utils.isValidMobileNumber(this.accountId)) {
                 try {
-                  console.log('send mobile verify code...')
                   let result = await this.$acs.sendMobileVerifyCode(this.accountId)
                   if (result.success) {
                     this.$router.replace({
@@ -95,7 +94,7 @@ export default {
                       }
                     })
                   } else {
-                    this.setErrorMessage(this.$t(result.message))
+                    this.setErrorMessage(this.$t(result.i18n_message))
                   }
                 } catch (e) {
                   this.setErrorMessage(this.$t('account.error.networkError'), e)
@@ -111,7 +110,7 @@ export default {
               }
             }
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (e) {
           this.setErrorMessage(this.$t('account.error.networkError'), e)

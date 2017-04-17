@@ -6,8 +6,11 @@ export default [{
       path: 'index',
       name: 'goodsIndex',
       component: require('../views/mall/goodsList.vue')
-    },
-    {
+    },{
+      path: 'order',
+      name: 'mallOrder',
+      component: require('../views/mall/order.vue')
+    },{
       path: 'goods/:goodsId',
       name: 'goodsDetail',
       component: require('../views/mall/goodsDetail.vue')

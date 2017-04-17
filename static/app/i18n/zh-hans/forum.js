@@ -52,23 +52,6 @@ export default {
     unUpPost: '取消',
     operateSuccess: '操作成功',
   },
-  error: {
-    pageTitle: '糟糕，出错了',
-    networkError: '网络错误',
-    illegal: '非法操作',
-    postContentRequired: '帖子内容不能为空',
-    postTitleMinLength: '帖子标题至少4个字',
-    postTitleMaxLength: '帖子标题不能超过30个字',
-    commentContentRequired: '回帖内容最少5个字',
-  },
-  serverError: {
-    badRequestParams: '请求参数错误',
-    forumNotExist: '论坛不存在',
-    postNotExist: '帖子不存在',
-    commentNotFound: '评论不存在',
-    needLogin: '需要登录',
-    userNotExist: '用户不存在',
-  },
   newPost: {
     title: '发帖子',
     btnTitle: '发帖',

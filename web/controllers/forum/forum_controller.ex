@@ -152,7 +152,7 @@ defmodule Acs.ForumController do
   def get_forum_info(conn, %{"forum_id" => forum_id}) do
     case get_forum_info_by_id(forum_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
+        conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
       %Forum{} = forum ->
         conn |> json(%{success: true, forum: forum})
     end
@@ -162,16 +162,16 @@ defmodule Acs.ForumController do
       {:ok, forum_id}  ->
         case get_forum_info_by_id(forum_id) do
           nil ->
-            conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
+            conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
           %Forum{} = forum ->
             conn |> json(%{success: true, forum: forum})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
+        conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
     end
   end
   def get_forum_info(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp get_forum_info_by_id(forum_id) do
     query = from f in Forum,
@@ -186,7 +186,7 @@ defmodule Acs.ForumController do
   def get_forum_info_with_keyword(conn, %{"forum_id" => forum_id}) do
     case get_forum_info_by_id(forum_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.forumNotExist"})
+        conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
       %Forum{} = forum ->
         case RedisSetting.find("keyword")  do
           nil -> 
@@ -197,7 +197,7 @@ defmodule Acs.ForumController do
     end
   end
   def get_forum_info_with_keyword(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_paged_post
@@ -215,10 +215,10 @@ defmodule Acs.ForumController do
     get_paged_post_list(conn, forum_id, 0, page, records_per_page, "id", user_id)
   end
   def get_user_paged_post(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def get_paged_post(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
     queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
@@ -268,7 +268,7 @@ defmodule Acs.ForumController do
   def update_user_avatar(conn, %{"user_id" => user_id, "avatar" => %{} = upload_file}) do
     case Repo.get(User, user_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.userNotExist"})
+        conn |> json(%{success: false, i18n_message: "error.server.userNotExist"})
       %User{} = user ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
           %{width: 200, height: 200} = upload_image  ->
@@ -344,14 +344,14 @@ defmodule Acs.ForumController do
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
       else
         nil ->
-            conn |> json(%{success: false, message: "forum.error.illegal"})
+            conn |> json(%{success: false, message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
           d "errs: #{inspect errors, pretty: true}"
-          conn |> json(%{success: false, message: "forum.error.networkError"})
+          conn |> json(%{success: false, message: "error.server.networkError"})
       end
   end
   def add_post(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
 
   # get_post_detail
@@ -383,7 +383,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, detail: post})
   end
   def get_post_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_post_comments
@@ -409,7 +409,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
   def get_post_comments(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_user_post_comments
@@ -438,7 +438,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})
   end
   def get_user_post_comments(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # delete_comment
@@ -447,10 +447,10 @@ defmodule Acs.ForumController do
                      %{"comment_id" => comment_id}) do
     case Repo.get(ForumComment, comment_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.commentNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.commentNotFound"})
       %ForumComment{} = comment ->
         if(!is_admin and comment.user_id != user_id) do
-          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         else
           with post_id = comment.post_id,
             {:ok, _} <- ForumComment.changeset(comment,
@@ -466,13 +466,13 @@ defmodule Acs.ForumController do
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, message: translate_errors(errors)})
             _ ->
-              conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+              conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
           end
         end
     end
   end
   def delete_comment(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # toggle_post_favorite (need user login)
@@ -503,12 +503,12 @@ defmodule Acs.ForumController do
         end
 
       _ ->
-        conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
 
     end
   end
   def toggle_post_favorite(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
 
   # toggle post status
@@ -524,16 +524,16 @@ defmodule Acs.ForumController do
           conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
         else
           {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           _ ->
-            conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+            conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         end
       false ->
-        conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+        conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
   end
   def toggle_post_status(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # add_comment
@@ -563,13 +563,13 @@ defmodule Acs.ForumController do
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       end
   end
   def add_comment(conn, _) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams", action: "login"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
 
   # get_user_favorites
@@ -595,7 +595,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, favorites: favorites, total: total_page, records: total})
   end
   def get_user_favorites(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "forum.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   defp add_post_click(post_id, click) do
@@ -606,7 +606,7 @@ defmodule Acs.ForumController do
   defp check_exist_by_appid(app_id) do
     case Repo.get_by(Forum, app_id: app_id) do
       nil ->
-        {:error, i18n_message: "forum.serverError.forumNotExist"}
+        {:error, i18n_message: "error.server.forumNotExist"}
       %Forum{} = forum ->
         {:ok, forum.id}
     end

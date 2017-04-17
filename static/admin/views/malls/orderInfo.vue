@@ -3,10 +3,9 @@
     <div class="tile is-parent is-vertical">
       <div class="tile is-child">
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.id')}}:{{orderInfo.id}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.status')}}:{{orderInfo.id}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.inserted_at')}}:{{orderInfo.id}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.email')}}:{{orderInfo.id}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.inserted_at')}}:{{orderInfo.id}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.status')}}: {{$t('admin.mall.order.status.'+orderInfo.status) }}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.inserted_at')}}:{{orderInfo.inserted_at |formatServerDateTime}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.email')}}:{{orderInfo.user.email}}</h6>
       </div>
       <div class="tile is-child">
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.name')}}:{{orderInfo.user_address.name}}</h6>
@@ -23,8 +22,8 @@
                 </p>
               </figure>
               <div class="media-content">
-                <h6 class="subtitle is-6">{{detail.goods_name}}经典红色款</h6>
-                <h6 class="subtitle is-6"> {{detail.price}}</h6>
+                <h6 class="subtitle is-6">{{detail.goods_name}}</h6>
+                <h6 class="subtitle is-6" :class="['currency', orderInfo.currency]">{{detail.price | formatPrice}}</h6>
                 <h6 class="subtitle is-6"> X{{detail.amount}} </h6>
               </div>
             </div>
@@ -32,22 +31,21 @@
         </div>
       </div>
       <div class="tile is-child">
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.postage')}}:{{orderInfo.user_address.name}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.total')}}:{{orderInfo.user_address.mobile}}</h6>
-        <!--<span class="subtitle is-6">{{$t('admin.mall.order.fields.paid_type')}}:{{orderInfo.paid_type}}</span>
-        <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>-->
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.postage')}}:<span :class="['currency', orderInfo.currency]">{{orderInfo.postage | formatPrice}}</span></h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.total')}}:<span :class="['currency', orderInfo.currency]">{{orderInfo.price | formatPrice}}</span></h6>
+        <span class="subtitle is-6">{{$t('admin.mall.order.fields.paid_type.label')}}:{{$t('admin.mall.order.fields.paid_type.'+orderInfo.paid_type)}}</span>
+        <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>
       </div>
     </div>
     <div class="tile is-parent is-vertical">
       <h6 class="subtitle is-6">历史记录:</h6>
-      <!--待付款->己付款-->
       <div class="box" v-for="op in orderInfo.op_logs" style="width: 400px">
         <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.inserted_at')}}:{{op.inserted_at | formatServerDateTime  }}</h6>
         <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.op_user')}}:{{getOpUser(orderInfo.user.email, op.admin_user)}}</h6>
         <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.content')}}:
-          {{$t('admin.mall.op_logs.status.'+op.status) }}
+          {{$t('admin.mall.order.status.'+op.status) }}
           {{$t('admin.mall.op_logs.change_to') }}
-          {{$t('admin.mall.op_logs.status.'+op.changed_status) }}</h6>
+          {{$t('admin.mall.order.status.'+op.changed_status) }}</h6>
         <h6 v-if="op.content && op.content.transaction_id" class="subtitle is-6">{{$t('admin.mall.op_logs.transaction_id')}}:{{op.content.transaction_id}}</h6>
         <h6 v-if="op.content && op.content.refundMoney" class="subtitle is-6">{{$t('admin.mall.op_logs.refundMoney')}}:{{op.content.refundMoney}}</h6>
       </div>
@@ -168,6 +166,10 @@ export default {
 <style lang="scss" scoped>
 .tile .subtitle:not(:last-child) {
   margin-bottom: .8rem;
+}
+
+.media-content > .subtitle:not(:last-child) {
+  margin-bottom: .5rem;
 }
 
 .box {

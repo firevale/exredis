@@ -28,13 +28,13 @@ defmodule Acs.CustomerServiceController do
        conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "customer.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "customer.error.networkError"})
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       end
   end
   def add_contact(conn, _) do
-    conn |> json(%{success: false, i18n_message: "customer.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def get_paged_questions(conn, %{"app_id" =>app_id, "page" => page, "records_per_page" => records_per_page}) do
@@ -170,6 +170,6 @@ defmodule Acs.CustomerServiceController do
      conn |> json(%{success: true, app: app})
   end
    def get_app_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "customer.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 end

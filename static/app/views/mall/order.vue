@@ -26,6 +26,7 @@
         </article>
       </div>
     </div>
+    <div class="columns" ></div>
   </div>
 </template>
 <script>

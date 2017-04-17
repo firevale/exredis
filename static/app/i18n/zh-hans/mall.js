@@ -9,10 +9,10 @@ export default {
     },
     order: {
         addressPlaceholder: '请填写收货地址',
-        totalPrice: '合计：{currency} {price}（含邮费 {currency} {postage}）',
+        totalPrice: '合计：{price}（含邮费 {postage}）',
     },
     titles: {
         goodsDetail: '商品详情',
-        order: '订单详情',
+        mallOrder: '订单详情',
     }
 }

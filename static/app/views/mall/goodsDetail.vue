@@ -57,7 +57,17 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
+    </div>-->
+  <div class="tile is-ancestor is-vertical root-container goods-detail">
+    <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'mallOrder', params: {goodsId: '1010004', quantity: 2}}">
+      <span class="icon is-small"><i class="fa fa-search"></i></span>
+      <span> Order Test </span>
+    </router-link>
+  </div>
+=======
     </div>
+>>>>>>> a0c3fd65055b73b55b74b08427e69a3c02bedda9
 </template>
 
 <script>
@@ -110,8 +120,7 @@
                 else
                     this.quantity = this.quantity + 1
             },
-            quantityChange: function () {
-            }
+            quantityChange: function () {}
         },
         watch: {
             '$route' (to, from) {

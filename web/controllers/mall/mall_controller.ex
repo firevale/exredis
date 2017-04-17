@@ -280,7 +280,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = Repo.one!(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
+    goods = Repo.one(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
     conn |> json(%{success: true, goods: goods})
   end
   def get_goods_detail(conn, _) do

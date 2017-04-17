@@ -21,7 +21,7 @@
           <span class="is-grey">
             <timeago :since="nowdate" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ userInfo.nickName }}</span>
+          <span class="is-primary">{{ userInfo.nickname }}</span>
         </p>
         <div class="post-content">
           <div class="ql-editor" v-html="filterContent">

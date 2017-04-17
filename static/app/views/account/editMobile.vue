@@ -1,7 +1,7 @@
 <template>
   <div class="edit-account">
     <form class="account-fields" @submit.prevent="onSubmit">
-      <p v-show="userInfo.mobile" class="help is-primary"> {{ $t('account.hint.currentBoundModile', {mobile: boundMobile}) }} </p>
+      <p v-show="userInfo.mobile" class="help is-primary"> {{ $t('account.hint.currentBoundMobile', {mobile: boundMobile}) }} </p>
       <div>
         <div class="field">
           <p class="control has-icon">
@@ -57,6 +57,8 @@ import {
 import formMixin from './formMixin'
 
 import * as utils from 'common/js/utils'
+
+import Toast from 'common/components/toast'
 
 export default {
   data() {
@@ -127,8 +129,28 @@ export default {
   },
 
   methods: {
-    onSubmit() {
+    ...mapActions(['updateUserMobile']),
 
+    onSubmit: async function() {
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.updateUserMobileNumber({
+          mobile: this.mobile,
+          verify_code: this.verifyCode,
+          password: this.password,
+        })
+        if (result.success) {
+          this.updateUserMobile(this.mobile)
+
+          this.$nextTick(_ => {
+            Toast.show(this.$t('account.messages.mobileBindSuccess', {
+              mobile: this.mobile
+            }))
+            this.$router.back()
+          })
+        }
+        this.processing = false
+      }
     },
 
     cooldownTimer: function() {
@@ -141,7 +163,7 @@ export default {
     sendMobileVerifyCode: async function() {
       try {
         this.sendingVerifyCode = true
-        let result = await this.$acs.sendBindMobileVerifyCodee(this.mobile)
+        let result = await this.$acs.sendBindMobileVerifyCode(this.mobile)
         if (result.success) {
           this.cooldownCounter = 60
           setTimeout(this.cooldownTimer, 1000)

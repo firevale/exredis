@@ -13,11 +13,10 @@ export default {
     },
 
     togglePasswordVisibility() {
-      this.showPassword = !this.showPassword 
+      this.showPassword = !this.showPassword
       if (this.showPassword) {
         this.$refs.password.type = 'text'
-      } 
-      else {
+      } else {
         this.$refs.password.type = 'password'
       }
     }
@@ -32,18 +31,19 @@ export default {
           return this.$t('error.validation.invalidMobileNumber')
         } else if (typeof this.$v.mobile == 'object' && !this.$v.mobile.changed) {
           return this.$t('error.validation.mobileNotChanged')
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
-          return this.$t('error.validation.requirePassword')
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('error.validation.invalidPasswordLength')
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
           return this.$t('error.validation.requireVerifyCode')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {
           return this.$t('error.validation.invalidVerifyCodeLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.maxLength) {
           return this.$t('error.validation.invalidVerifyCodeLength')
+        } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
+          return this.$t('error.validation.requirePassword')
+        } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
+          return this.$t('error.validation.invalidPasswordLength')
+        } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
+          return this.$t('error.validation.invalidPasswordLength')
+
         }
       } else {
         return this.errorMessage

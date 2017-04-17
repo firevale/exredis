@@ -120,8 +120,7 @@
                 else
                     this.quantity = this.quantity + 1
             },
-            quantityChange: function () {
-            }
+            quantityChange: function () {}
         },
         watch: {
             '$route' (to, from) {

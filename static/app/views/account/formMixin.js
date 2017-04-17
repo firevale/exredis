@@ -11,6 +11,16 @@ export default {
       this.$v.$touch()
       this.errorMessage = ''
     },
+
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword 
+      if (this.showPassword) {
+        this.$refs.password.type = 'text'
+      } 
+      else {
+        this.$refs.password.type = 'password'
+      }
+    }
   },
 
   computed: {

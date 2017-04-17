@@ -14,14 +14,16 @@
           <p class="control has-icon has-button has-button-right">
             <input class="input" type="text" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')" />
             <span class="icon image-icon icon-shield"></span>
-            <v-touch tag="a" class="button is-primary" :class="$v.mobile.$invalid ? 'is-disabled' : ''">
-              {{ $t('account.fetchVeiryCode') }}
+            <v-touch tag="a" class="button is-primary" :class="{'is-disabled': $v.mobile.$invalid || cooldownCounter > 0,
+             'is-loading': sendingVerifyCode }" @tap="sendMobileVerifyCode">
+              {{ btnFetchVerifyCodeTitle }}
             </v-touch>
           </p>
         </div>
-        <div class="field">
+        <div class="field" v-if="userInfo.is_anonymous">
           <p class="control has-icons-left has-icons-right">
-            <input ref="password" class="input" type="password" v-model.trim="password" :placeholder="$t('account.placeholder.inputPassword')" />
+            <input ref="password" class="input" type="password" v-model.trim="password" :placeholder="$t('account.placeholder.inputPassword')"
+            />
             <span class="icon is-left image-icon icon-lock"></span>
             <v-touch tag="span" v-if="showPassword" class="icon is-right image-icon icon-eye is-clickable" @tap="togglePasswordVisibility"></v-touch>
             <v-touch tag="span" v-else class="icon is-right image-icon icon-eye-slash is-clickable" @tap="togglePasswordVisibility"></v-touch>
@@ -63,6 +65,8 @@ export default {
       password: null,
       errorMessage: '',
       showPassword: false,
+      sendingVerifyCode: false,
+      cooldownCounter: 0,
     }
   },
 
@@ -105,6 +109,16 @@ export default {
       'userInfo'
     ]),
 
+    btnFetchVerifyCodeTitle() {
+      if (this.cooldownCounter > 0) {
+        return this.$t('account.cooldownText', {
+          timer: this.cooldownCounter
+        })
+      } else {
+        return this.$t('account.fetchVeiryCode')
+      }
+    },
+
     boundMobile() {
       return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : ''
     }
@@ -115,15 +129,34 @@ export default {
 
     },
 
-    togglePasswordVisibility() {
-      this.showPassword = !this.showPassword 
-      if (this.showPassword) {
-        this.$refs.password.type = 'text'
-      } 
-      else {
-        this.$refs.password.type = 'password'
+    cooldownTimer: function() {
+      if (this.cooldownCounter > 0) {
+        this.cooldownCounter--;
+        setTimeout(this.cooldownTimer, 1000);
       }
-    }
+    },
+
+    sendMobileVerifyCode: async function() {
+      try {
+        this.sendingVerifyCode = true
+        let result = await this.$acs.sendMobileVerifyCode(this.mobile)
+        if (result.success) {
+          this.cooldownCounter = 60
+          setTimeout(this.cooldownTimer, 1000)
+        } else {
+          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+        }
+        this.sendingVerifyCode = false
+        return result
+      } catch (_) {
+        this.setErrorMessage(this.$t('account.error.networkError'))
+        this.sendingVerifyCode = false
+        return {
+          success: false
+        }
+      }
+
+    },
   },
 
   mixins: [formMixin]

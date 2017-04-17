@@ -36,7 +36,7 @@ defmodule Acs.MallController do
   def update_mall_icon(conn, %{"mall_id" => mall_id, "file" => %{} = upload_file}) do
     case Repo.get(Mall, mall_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.mallNotFound", i18n_message_object: %{mall_id: mall_id}})
+        conn |> json(%{success: false, i18n_message: "error.server.mallNotFound", i18n_message_object: %{mall_id: mall_id}})
 
       %Mall{} = mall ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
@@ -54,13 +54,13 @@ defmodule Acs.MallController do
               #RedisApp.refresh(app_id)
               conn |> json(%{success: true, icon_url: icon_url})
             else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})
+            conn |> json(%{success: false, i18n_message: "error.server.imageSize128x128"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
@@ -68,7 +68,7 @@ defmodule Acs.MallController do
   def update_mall_info(conn, %{"mall" => %{"id" => mall_id} = mall_info}) do
     case Repo.get(Mall, mall_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.mallNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.mallNotFound"})
 
       %Mall{} = mall ->
         Mall.changeset(mall, mall_info) |> Repo.update!
@@ -113,14 +113,14 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
   def fetch_goods(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update_goods_pic
   def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
    case Repo.get(MallGoods, goods_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
+        conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
       %MallGoods{} = goods ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
@@ -138,13 +138,13 @@ defmodule Acs.MallController do
 
               conn |> json(%{success: true, pic_url: pic_url})
             else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+              conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize400x400"})
+            conn |> json(%{success: false, i18n_message: "error.server.imageSize400x400"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
   def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
@@ -158,11 +158,11 @@ defmodule Acs.MallController do
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
     else
-      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
     end
   end
   def update_goods_pic(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update_goods
@@ -190,7 +190,7 @@ defmodule Acs.MallController do
               goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: errors}} ->
-              conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+              conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           end
         end
 
@@ -208,7 +208,7 @@ defmodule Acs.MallController do
     end
   end
   def update_goods(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # toggle_goods_status
@@ -216,14 +216,14 @@ defmodule Acs.MallController do
                   %{"goods_id" => goods_id}) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       %MallGoods{} = goods ->
         MallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end
   def toggle_goods_status(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # delete_goods
@@ -231,7 +231,7 @@ defmodule Acs.MallController do
                      %{"goods_id" => goods_id}) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       %MallGoods{} = goods ->
         if(goods.sold > 0) do
           conn |> json(%{success: false, i18n_message: "admin.mall.soldCanNotDelete"})
@@ -247,7 +247,7 @@ defmodule Acs.MallController do
     end
   end
   def delete_goods(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
  
  #  show active_mall_goods
@@ -276,7 +276,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, mall: mall})
   end
   def get_mall_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
@@ -284,7 +284,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goods: goods})
   end
   def get_goods_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   
 end

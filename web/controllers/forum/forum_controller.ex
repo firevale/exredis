@@ -39,7 +39,7 @@ defmodule Acs.ForumController do
   def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
     case Repo.get(Forum, forum_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
+        conn |> json(%{success: false, i18n_message: "error.server.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
 
       %Forum{} = forum ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
@@ -59,19 +59,19 @@ defmodule Acs.ForumController do
                   RedisForum.refresh(forum_id)
                   conn |> json(%{success: true, icon_url: icon_url})
                 else
-                  conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+                  conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
                 end
               else 
-                conn |> json(%{success: false, i18n_message: "admin.serverError.imageMinWidth", i18n_message_object: %{minWdith: 128}})
+                conn |> json(%{success: false, i18n_message: "error.server.imageMinWidth", i18n_message_object: %{minWdith: 128}})
               end
             else 
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageShouldBeSquare"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageShouldBeSquare"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize128x128"})
+            conn |> json(%{success: false, i18n_message: "error.server.imageSize128x128"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
@@ -79,7 +79,7 @@ defmodule Acs.ForumController do
   def update_forum_info(conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
     case Repo.get(Forum, forum_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.forumNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.forumNotFound"})
 
       %Forum{} = forum ->
         Forum.changeset(forum, forum_info) |> Repo.update!
@@ -90,10 +90,10 @@ defmodule Acs.ForumController do
 
   # update_section_info
   def update_section_info(conn, %{"section" => %{"title" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptySectionTitle"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptySectionTitle"})
   end
   def update_section_info(conn, %{"section" => %{"forum_id" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyForumId"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptyForumId"})
   end
   def update_section_info(conn, %{"section" => %{
       "id" => id,
@@ -290,10 +290,10 @@ defmodule Acs.ForumController do
                 inserted_at: update_user.inserted_at
               }})
             else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})           
+            conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})           
         end
     end
   end
@@ -700,7 +700,7 @@ defmodule Acs.ForumController do
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
     else
-      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
     end
   end
 

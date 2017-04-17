@@ -61,14 +61,6 @@ export default {
     postTitleMaxLength: '帖子标题不能超过30个字',
     commentContentRequired: '回帖内容最少5个字',
   },
-  serverError: {
-    badRequestParams: '请求参数错误',
-    forumNotExist: '论坛不存在',
-    postNotExist: '帖子不存在',
-    commentNotFound: '评论不存在',
-    needLogin: '需要登录',
-    userNotExist: '用户不存在',
-  },
   newPost: {
     title: '发帖子',
     btnTitle: '发帖',

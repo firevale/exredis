@@ -155,7 +155,7 @@ export default {
                 }
               })
             } else {
-              this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
+              this.setErrorMessage(this.$t('error.server.invalidVerifyCode'))
             }
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))

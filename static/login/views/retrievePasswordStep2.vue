@@ -115,7 +115,7 @@ export default {
         }
         this.sendingVerifyCode = false
       } else {
-        this.setErrorMessage(this.$t('account.error.sendSmsCooldown'))
+        this.setErrorMessage(this.$t('error.server.sendSmsCooldown'))
       }
     },
 
@@ -133,7 +133,7 @@ export default {
               }
             })
           } else {
-            this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
+            this.setErrorMessage(this.$t('error.server.invalidVerifyCode'))
           }
         } catch (_) {
           this.setErrorMessage(this.$t('error.server.networkError'))

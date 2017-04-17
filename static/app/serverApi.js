@@ -57,7 +57,6 @@ export default {
         })
       },
 
-
       getForumInfo(forum_id) {
         return post(Vue, '/forum_actions/get_forum_info', {
           forum_id
@@ -204,11 +203,13 @@ export default {
           records_per_page
         })
       },
+
       getCommonIssues(app_id) {
         return post(Vue, '/customer_service_actions/get_common_issues', {
           app_id: app_id
         })
       },
+
       searchQuestion(app_id, keyword, page, records_per_page) {
         return post(Vue, '/customer_service_actions/search', {
           app_id,
@@ -231,15 +232,21 @@ export default {
           records_per_page
         })
       },
+
       getMallDetail(app_id) {
         return post(Vue, '/mall_actions/get_mall_detail', {
           app_id
         })
       },
+
       getGoodsDetail(goods_id) {
         return post(Vue, '/mall_actions/get_goods_detail', {
           goods_id
         })
+      },
+
+      sendMobileVerifyCode(mobile) {
+        return post(Vue, "/send_mobile_register_verify_code", {mobile})
       },
     }
   }

@@ -75,7 +75,7 @@ export default {
             this.setLoginAccountId(this.accountId)
             this.$router.back()
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (_) {
           this.setErrorMessage(this.$t('account.error.networkError'))

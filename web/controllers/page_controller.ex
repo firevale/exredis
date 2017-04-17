@@ -179,6 +179,7 @@ defmodule Acs.PageController do
                           acs_platform: platform}} = conn,
                         _options) do
     class = case platform do
+      "macos" -> "macos #{browser}"
       "wp8" -> "wp8 in-app"
       "ios" ->
         case browser do

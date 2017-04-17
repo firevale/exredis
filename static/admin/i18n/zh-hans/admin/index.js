@@ -8,6 +8,7 @@ import routes from './routes'
 import setting from './setting'
 import customerService from './customerService'
 import notification from './notification'
+import error from 'common/i18n/zh-hans/error'
 
 export default {
   admin: '管理后台',
@@ -118,31 +119,6 @@ export default {
     mallUpdated: '商城更新成功',
   },
 
-  serverError: {
-    imageSize128x128: '图片的尺寸必须为128x128',
-    imageSize400x400: '图片的尺寸必须为400x400',
-    imageSize640x260: '图片的尺寸必须为640x260',
-    imageFormatPNG: '图片格式必须为PNG文件',
-    badRequestParams: '请求参数错误',
-    networkError: '网络错误',
-    illegal: '没有权限',
-    goodsNotFound: '未找到商品',
-    appNameExists: '应用名称【{app_name}】已被其他应用使用',
-    emptyGoodsId: '商品ID不能为空',
-    emptyGoodsName: '商品名称不能为空',
-    emptyGoodsDescription: '商品简介不能为空',
-    invalidGoodsPrice: '商品价格不能为负数',
-    emptySectionTitle: '版块标题不能为空',
-    emptyForumId: '版块所属论坛编号不能为空',
-    forumNotFound: '未找到论坛',
-    mallNotFound: '未找到商城',
-    newsNotFound: '未找到该内容',
-    goodsNotFound: '未找到该商品',
-    newsContentRequired: '内容不能为空',
-    newsTitleMinLength: '标题至少4个字',
-    newsTitleMaxLength: '标题不能超过30个字',
-  },
-
   app,
   routes,
   menu,
@@ -152,5 +128,6 @@ export default {
   sdks,
   setting,
   customerService,
-  notification
+  notification,
+  error
 }

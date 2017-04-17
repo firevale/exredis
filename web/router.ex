@@ -51,6 +51,7 @@ defmodule Acs.Router do
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code
+    post "/send_mobile_bind_verify_code", VerifyCodeController, :send_mobile_bind_verify_code
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
   end
@@ -65,6 +66,11 @@ defmodule Acs.Router do
     post "/create_user", UserController, :create_user
     post "/update_token", UserController, :update_token
     post "/update_password", UserController, :update_password # update(reset) password
+    post "/update_mobile", UserController, :update_mobile # update(reset) password
+    post "/update_email", UserController, :update_email # update(reset) password
+    post "/update_nickname", UserController, :update_nickname # update(reset) password
+    post "/update_avatar", UserController, :update_avatar # update(reset) password
+    post "/update_resident_info", UserController, :update_redident_info # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
   end

@@ -27,23 +27,23 @@ export default {
     errorHint: function() {
       if (typeof this.$v == 'object' && this.$v.$error) {
         if (typeof this.$v.mobile == 'object' && !this.$v.mobile.required) {
-          return this.$t('account.error.requireMobile')
+          return this.$t('error.validation.requireMobile')
         } else if (typeof this.$v.mobile == 'object' && !this.$v.mobile.valid) {
-          return this.$t('account.error.invalidMobileNumber')
+          return this.$t('error.validation.invalidMobileNumber')
         } else if (typeof this.$v.mobile == 'object' && !this.$v.mobile.changed) {
-          return this.$t('account.error.mobileNotChanged')
+          return this.$t('error.validation.mobileNotChanged')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
-          return this.$t('account.error.requirePassword')
+          return this.$t('error.validation.requirePassword')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('account.error.invalidPasswordLength')
+          return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('account.error.invalidPasswordLength')
+          return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
-          return this.$t('account.error.requireVerifyCode')
+          return this.$t('error.validation.requireVerifyCode')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
+          return this.$t('error.validation.invalidVerifyCodeLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.maxLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
+          return this.$t('error.validation.invalidVerifyCodeLength')
         }
       } else {
         return this.errorMessage

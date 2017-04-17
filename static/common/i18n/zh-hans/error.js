@@ -21,7 +21,6 @@
      imageSize400x400: '图片的尺寸必须为400x400',
      imageSize640x260: '图片的尺寸必须为640x260',
      imageFormatPNG: '图片格式必须为PNG文件',
-     networkError: '网络错误',
      illegal: '没有权限',
      goodsNotFound: '未找到商品',
      appNameExists: '应用名称【{app_name}】已被其他应用使用',

@@ -1,9 +1,9 @@
 import './date'
 import * as filter from './keywordFilter'
 
-import {emailMask, mobileMask} from './utils'
+import { emailMask, mobileMask } from './utils'
 
-export {emailMask, mobileMask}
+export { emailMask, mobileMask }
 
 export const humanReadableDownloadSpeed = val => {
   let resStr = ''
@@ -70,6 +70,13 @@ export const convertServerDateTime = val => {
   } else {
     return ''
   }
+}
+
+export const formatPrice = val => {
+  if (val)
+    return parseFloat(val / 100).toFixed(2)
+  else
+    return 0
 }
 
 export const filterKeyword = val => {

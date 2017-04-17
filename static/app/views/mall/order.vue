@@ -20,13 +20,22 @@
       <div class="column is-parent is-vertical">
         <article class="tile is-child">
           <p class="subtitle is-4">{{ goods.name}}</p>
-          <p class="subtitle is-4">{{ getPrice(goods.price) }}</p>
-          <p class="subtitle is-4">{{ this.quantity }}</p>
-          <p class="subtitle is-4">{{ $t('mall.order.totalPrice', {currency: '¥', price: getPrice(goods.price), postage: getPrice(goods.postage)}) }}</p>
+          <p class="subtitle is-4" style="color:#ff6600;">{{ getPrice(goods.price) }}</p>
+          <p class="subtitle is-4">X {{ this.quantity }}</p>
+          <p class="subtitle is-4" style="color:#ff6600;">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goods.postage)})
+            }}
+          </p>
         </article>
       </div>
     </div>
-    <div class="columns" ></div>
+    <div class="columns">
+      <div class="column is-3">
+        <a class="button is-info is-large is-fullwidth" @click.prevent="wechatPay">{{$t('mall.order.wechatPay')}}</a>
+      </div>
+      <div class="column is-3">
+        <a class="button is-info is-large is-fullwidth" @click.prevent="aliPay">{{$t('mall.order.aliPay')}}</a>
+      </div>      
+    </div>
   </div>
 </template>
 <script>
@@ -37,6 +46,7 @@ import {
 } from 'vuex'
 
 import nativeApi from 'common/js/nativeApi'
+import * as filter from 'common/js/filters'
 
 export default {
   mounted: async function() {
@@ -47,13 +57,14 @@ export default {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
       quantity: 1,
+      totalPrice: "",
       goods: {},
       goodsId: "",
     }
   },
   methods: {
     getPrice: function(price) {
-      return "¥" + parseFloat(price / 100).toFixed(2)
+      return "¥" + filter.formatPrice(price)
     },
     onBtnBackClicked: function() {
       if (this.canGoBack) {
@@ -70,7 +81,15 @@ export default {
       let result = await this.$acs.getGoodsDetail(this.goodsId)
       if (result.success) {
         this.goods = result.goods
+        this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
+          100).toFixed(2)
       }
+    },
+    wechatPay: function() {
+
+    },
+    aliPay: function() {
+
     },
   },
   watch: {

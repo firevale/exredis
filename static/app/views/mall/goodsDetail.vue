@@ -1,6 +1,6 @@
 <template>
     <div class="goods-detail is-marginless is-paddingless">
-        <div class="flex-take-rest" style="flex-basis: auto;  margin: 1rem; position:relative">
+        <div class="flex-take-rest goods-content">
             <scroller ref="scroller">
                 <div class="columns is-multiline is-mobile has-text-centered">
                     <div class="column is-12">
@@ -43,7 +43,7 @@
             </scroller>
         </div>
         <div class="flex-fixed-size goods-bottom">
-            <div class="columns is-multiline is-mobile">
+            <div v-if="goods.stock>0" class="columns is-multiline is-mobile">
                 <div class="column is-6 bottom-left">
                     <div class="left-content">
                         <a class="button is-large content-item" @click.prevent="quantityPlus">-</a>
@@ -55,6 +55,9 @@
                 <div class="column is-6">
                     <a class="button is-info is-large is-fullwidth goods-buyNow" @click.prevent="buyNow">{{$t('mall.goods.buyNow')}}</a>
                 </div>
+            </div>
+            <div v-else class="goods-sellOut">
+                <div class="title is-5 has-text-centered">{{$t('mall.goods.soldOut')}}</div>
             </div>
         </div>
     </div>

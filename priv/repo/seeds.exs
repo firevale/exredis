@@ -114,7 +114,7 @@ MallGoods.changeset(%MallGoods{}, %{id: "1010004", name: "经典红色T恤", pic
 
 UserAddress.changeset(%UserAddress{}, %{ name: "钟楼",mobile: "13110234567", area: "福建福州", area_code: "350001",address: "工业路",user_id: "100001"}) |> Repo.insert
 
-MallOrder.changeset(%MallOrder{}, %{ id: "A10000010",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, final_price: 1100,postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
+MallOrder.changeset(%MallOrder{}, %{ id: "A10000010",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, final_price: 1100, currency: "CNY", paid_type:"wechat", postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
 
 MallOrderDetail.changeset(%MallOrderDetail{}, %{ goods_name: "经典红色T恤",goods_pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", price: 1100, final_price: 1100,amount: 1,mall_goods_id: "1010001", mall_order_id: "A10000010"}) |> Repo.insert
 
@@ -122,12 +122,12 @@ MallOrderDetail.changeset(%MallOrderDetail{}, %{ goods_name: "经典灰色T恤",
 
 
 
-MallOrder.changeset(%MallOrder{}, %{ id: "A10000011",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, final_price: 1100,postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
+MallOrder.changeset(%MallOrder{}, %{ id: "A10000011",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, currency: "CNY", final_price: 1100, paid_type:"wechat",postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
 
 MallOrderDetail.changeset(%MallOrderDetail{}, %{ goods_name: "经典红色T恤",goods_pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", price: 1100, final_price: 1100,amount: 1,mall_goods_id: "1010001", mall_order_id: "A10000011"}) |> Repo.insert
 
 
-MallOrder.changeset(%MallOrder{}, %{ id: "A10000012",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, final_price: 1100,postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
+MallOrder.changeset(%MallOrder{}, %{ id: "A10000012",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤", price: 1100, currency: "CNY", final_price: 1100, paid_type:"wechat", postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D",user_address_id: 1}) |> Repo.insert
 
 MallOrderDetail.changeset(%MallOrderDetail{}, %{ goods_name: "经典红色T恤",goods_pic: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=928281993,479971005&fm=23&gp=0.jpg", price: 1100, final_price: 1100,amount: 1,mall_goods_id: "1010001", mall_order_id: "A10000012"}) |> Repo.insert
 

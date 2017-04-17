@@ -53,7 +53,10 @@ export default {
       status: '订单状态',
       inserted_at: '下单时间',
       email: '用户帐号',
-      paid_type: '支付渠道',
+      paid_type: {
+        label: '支付渠道',
+        wechat: '微信'
+      },
       transaction_id: '支付单号',
       user_address: {
         name: '姓名',
@@ -61,15 +64,6 @@ export default {
         address: '地址',
       },
     },
-  },
-  op_logs: {
-    inserted_at: '操作时间',
-    op_user: '操作账号',
-    op_admin: '管理员',
-    content: '操作内容',
-    transaction_id: '支付单号',
-    refundMoney: '退款金额',
-    change_to: '更改为',
     status: {
       '-3': '已退款',
       '-2': '已退货',
@@ -81,5 +75,15 @@ export default {
       '4': '已完成'
 
     }
+  },
+  op_logs: {
+    label: '历史记录',
+    inserted_at: '操作时间',
+    op_user: '操作账号',
+    op_admin: '管理员',
+    content: '操作内容',
+    transaction_id: '支付单号',
+    refundMoney: '退款金额',
+    change_to: '更改为',
   }
 }

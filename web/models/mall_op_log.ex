@@ -8,7 +8,7 @@ defmodule Acs.MallOPLog do
     field :status, :integer
     field :changed_status, :integer
     field :admin_user, :string 
-    belongs_to :order, Acs.MallOrder, type: :string
+    belongs_to :mall_order, Acs.MallOrder, type: :string
 
     timestamps()
   end
@@ -18,8 +18,8 @@ defmodule Acs.MallOPLog do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content, :status, :changed_status,:admin_user, :order_id])
-    |> validate_required([:status, :changed_status, :order_id])
-    |> foreign_key_constraint(:order_id)
+    |> cast(params, [:content, :status, :changed_status,:admin_user, :mall_order_id])
+    |> validate_required([:status, :changed_status, :mall_order_id])
+    |> foreign_key_constraint(:mall_order_id)
   end
 end

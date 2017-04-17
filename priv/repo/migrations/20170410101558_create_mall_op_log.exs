@@ -8,11 +8,11 @@ defmodule Acs.Repo.Migrations.CreateMallOPLog do
       add :status, :integer
       add :changed_status, :integer
       add :admin_user, :string
-      add :order_id, references(:mall_orders, type: :string, on_delete: :delete_all)
+      add :mall_order_id, references(:mall_orders, type: :string, on_delete: :delete_all)
       timestamps()
     end
 
-    create index(:mall_op_logs, [:order_id])
+    create index(:mall_op_logs, [:mall_order_id])
 
   end
 end

@@ -70,7 +70,7 @@
         </div>
     </div>-->
   <div class="tile is-ancestor is-vertical root-container goods-detail">
-    <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'mallOrder', params: {goodsId: 'P00004', quantity: 2}}">
+    <router-link class="button is-small is-outlined" style="margin-top: 15px" :to="{name: 'mallOrder', params: {goodsId: '1010004', quantity: 2}}">
       <span class="icon is-small"><i class="fa fa-search"></i></span>
       <span> Order Test </span>
     </router-link>

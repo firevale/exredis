@@ -1,4 +1,6 @@
  export default {
+   pageTitle: '糟糕， 出错了',
+
    // errors replied from acs server
    server: {
      networkError: '网络错误，请稍后再试',
@@ -58,5 +60,9 @@
      invalidVerifyCodeLength: '验证码长度4~6位',
      mobileNotChanged: '当前已绑定此手机号码',
      emailNotChanged: '当前已绑定此电子邮箱',
+     postContentRequired: '帖子内容不能为空',
+     postTitleMinLength: '帖子标题至少4个字',
+     postTitleMaxLength: '帖子标题不能超过30个字',
+     commentContentRequired: '回帖内容最少5个字',
    }
  }

@@ -2,7 +2,7 @@
 <div class="tile is-ancestor is-vertical root-container">
   <div class="tile is-child is-full stay-top title-bar has-text-centered has-bottom-thick-line">
     <span class="icon nav-icon pull-right icon-close " @click="onClose"></span>
-    <h4 class="title is-4" style="font-weight: 400">{{$t('games.error.pageTitle')}}</h4>
+    <h4 class="title is-4" style="font-weight: 400">{{$t('error.pageTitle')}}</h4>
   </div>
 </div>
 </template>

@@ -80,13 +80,13 @@ defmodule Acs.CustomerServiceController do
          })
         conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
     else
-      nil -> conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
-      {:error, %{errors: errors}} -> conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+      nil -> conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+      {:error, %{errors: errors}} -> conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
 
   end
   def update_question(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def delete_question(conn,%{"id" => id})  do
@@ -101,7 +101,7 @@ defmodule Acs.CustomerServiceController do
          })
       conn |> json(%{success: true})
     else
-       nil -> conn |> json(%{success: false, i18n_message: "admin.serverError.goodsNotFound"})
+       nil -> conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
        {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
     end

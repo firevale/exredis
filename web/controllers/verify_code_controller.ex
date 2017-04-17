@@ -24,6 +24,10 @@ defmodule Acs.VerifyCodeController do
     send_mobile_verify_code(conn, mobile, "register")
   end
 
+  def send_mobile_bind_verify_code(conn, %{"mobile" => mobile}) do 
+    send_mobile_verify_code(conn, mobile, "bind_mobile")
+  end
+
   def check_retrieve_password_verify_code(conn, %{"token" => value}) do 
     check_retrieve_password_verify_code(conn, %{"verify_code" => value})
   end
@@ -50,10 +54,10 @@ defmodule Acs.VerifyCodeController do
                  |> put_session(String.to_atom("#{type}_verify_code"), code)
                  |> json(%{success: true})
           _ ->
-            conn |> json(%{success: false, i18n_message: "account.error.sendSmsFailed"})
+            conn |> json(%{success: false, i18n_message: "error.server.sendSmsFailed"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "account.error.sendSmsCooldown"})
+        conn |> json(%{success: false, i18n_message: "error.server.sendSmsCooldown"})
     end
   end
 
@@ -68,16 +72,16 @@ defmodule Acs.VerifyCodeController do
                  |> put_session(:retrieve_password_verify_code, code)
                  |> json(%{success: true})
           _ ->
-            conn |> json(%{success: false, i18n_message: "account.error.sendEmailFailed"})
+            conn |> json(%{success: false, i18n_message: "error.server.sendEmailFailed"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "account.error.sendEmailCooldown"})
+        conn |> json(%{success: false, i18n_message: "error.server.sendEmailCooldown"})
     end
   end
 
   defp check_account_exist(%Plug.Conn{params: %{"account_id" => account_id}} = conn, _options) do 
     if not RedisUser.exists?(account_id) do 
-      conn |> json(%{success: false, i18n_message: "account.error.accountNotFound"}) |> halt
+      conn |> json(%{success: false, i18n_message: "error.server.accountNotFound"}) |> halt
     else 
       conn
     end

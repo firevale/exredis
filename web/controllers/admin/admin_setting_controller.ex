@@ -15,7 +15,7 @@ defmodule Acs.AdminSettingController do
     end
   end
   def get_setting(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get setting from redis
@@ -24,7 +24,7 @@ defmodule Acs.AdminSettingController do
     conn |> json(%{success: true, setting: setting})
   end
   def get_setting_from_redis(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get settings
@@ -37,7 +37,7 @@ defmodule Acs.AdminSettingController do
       conn |> json(%{success: true, settings: settings})
   end
   def get_settings_by_group(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # delete_setting
@@ -51,7 +51,7 @@ defmodule Acs.AdminSettingController do
     end
   end
   def delete_setting(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # add setting
@@ -67,13 +67,13 @@ defmodule Acs.AdminSettingController do
       conn |> json(%{success: true, setting: setting})
     else
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.illegal"})
+        conn |> json(%{success: false, i18n_message: "error.server.illegal"})
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, i18n_message: translate_errors(errors)})
     end
   end
   def add_setting(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update setting
@@ -92,7 +92,7 @@ defmodule Acs.AdminSettingController do
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
           _ -> 
-            conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
         end
 
       %AdminSetting{} = setting ->
@@ -107,7 +107,7 @@ defmodule Acs.AdminSettingController do
     end
   end
   def update_setting_by_name(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def update_setting(conn, %{"setting_id" => setting_id,
                             "setting_value" => setting_value,
@@ -124,11 +124,11 @@ defmodule Acs.AdminSettingController do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
       {:error, _} ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.networkError"})
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
   end
   def update_setting(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
 end

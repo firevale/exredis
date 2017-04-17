@@ -13,7 +13,8 @@ export default {
   cooldownText: '重新发送({timer}s)',
 
   hint: {
-    currentBoundModile: '提示: 您当前已绑定手机{mobile}',
+    currentBoundMobile: '提示: 您当前已绑定手机"{mobile}"',
+    currentBoundEmail: '提示: 您当前已绑定邮箱"{email}"',
   },
 
   placeholder: {
@@ -22,4 +23,8 @@ export default {
     inputEmail: '请输入邮箱地址',
     inputPassword: '请输入密码',
   },
+
+  messages: {
+    mobileBindSuccess: '已绑定手机{mobile}',
+  }
 }

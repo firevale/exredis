@@ -52,6 +52,7 @@ defmodule Acs.Router do
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code
     post "/send_mobile_bind_verify_code", VerifyCodeController, :send_mobile_bind_verify_code
+    post "/send_email_bind_verify_code", VerifyCodeController, :send_email_bind_verify_code
     post "/check_retrieve_password_verify_code", VerifyCodeController, :check_retrieve_password_verify_code
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
   end

@@ -28,6 +28,10 @@ defmodule Acs.VerifyCodeController do
     send_mobile_verify_code(conn, mobile, "bind_mobile")
   end
 
+  def send_email_bind_verify_code(conn, %{"email" => email}) do 
+    send_email_verify_code(conn, email, "bind_email")
+  end
+
   def check_retrieve_password_verify_code(conn, %{"token" => value}) do 
     check_retrieve_password_verify_code(conn, %{"verify_code" => value})
   end
@@ -40,7 +44,7 @@ defmodule Acs.VerifyCodeController do
     send_mobile_verify_code(conn, mobile, "retrieve_password")
   end
   def send_retrieve_password_verify_code(%Plug.Conn{private: %{acs_email: email}} = conn, _) do 
-    send_email_verify_code(conn, email)
+    send_email_verify_code(conn, email, "retrieve_password")
   end
 
   defp send_mobile_verify_code(conn, mobile, type) do 
@@ -61,15 +65,15 @@ defmodule Acs.VerifyCodeController do
     end
   end
 
-  defp send_email_verify_code(%Plug.Conn{private: %{acs_locale: locale}} = conn, email) do 
+  defp send_email_verify_code(%Plug.Conn{private: %{acs_locale: locale}} = conn, email, type) do 
     case Redis.get("vc.email.#{email}") do 
       :undefined ->
         code = gen_code()
         case EmailService.deliver_reset_password(locale, email, code) do 
           :ok ->
             Redis.setex("vc.email.#{email}", 60, code)
-            conn |> put_session(:retrieve_password_account_id, email)
-                 |> put_session(:retrieve_password_verify_code, code)
+            conn |> put_session(String.to_atom("#{type}_account_id"), email)
+                 |> put_session(String.to_atom("#{type}_verify_code"), code)
                  |> json(%{success: true})
           _ ->
             conn |> json(%{success: false, i18n_message: "error.server.sendEmailFailed"})

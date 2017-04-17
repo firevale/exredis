@@ -1,12 +1,13 @@
  export default {
    // errors replied from acs server
    server: {
+     networkError: '网络错误，请稍后再试',
+     badRequestParams: '请求参数错误',
+
      userNameTooLong: '用户名超长',
      accountInUse: '账号已被使用',
      accountNotExist: '用户名或密码错误',
-     invalidPasswordLength: '密码长度6-20位',
      invalidVerifyCode: '验证码输入有误',
-     invalidVerifyCodeLength: '验证码长度4-6位',
      passwordNotMatch: '用户名或密码错误',
      tooManyFails: '您已经多次输错密码，请稍后再试',
      sendSmsFailed: '验证短信发送失败, 请稍后再试',
@@ -14,14 +15,12 @@
      sendEmailFailed: '验证邮件发送失败，请稍后再试',
      sendEmailCooldown: '一分钟内不能发送多次验证码',
      accountNotFound: '账号不存在',
-     networkError: '网络错误，请稍后再试',
      accountIdChanged: '账号被修改',
      sendSmsCooldown: '一分钟内只能发送一次，请稍后再试',
      imageSize128x128: '图片的尺寸必须为128x128',
      imageSize400x400: '图片的尺寸必须为400x400',
      imageSize640x260: '图片的尺寸必须为640x260',
      imageFormatPNG: '图片格式必须为PNG文件',
-     badRequestParams: '请求参数错误',
      networkError: '网络错误',
      illegal: '没有权限',
      goodsNotFound: '未找到商品',
@@ -51,6 +50,7 @@
      invalidAccountId: '请输入正确的手机号码／电子邮箱',
      invalidMobileNumber: '请输入正确的手机号码',
      invalidEmailAddress: '请输入正确的电子邮箱',
+     invalidPasswordLength: '密码长度6~20位',
      invalidVerifyCodeLength: '验证码长度4~6位',
      mobileNotChanged: '当前已绑定此手机号码',
      emailNotChanged: '当前已绑定此电子邮箱',

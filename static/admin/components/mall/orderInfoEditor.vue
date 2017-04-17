@@ -12,7 +12,7 @@
       <div v-for="item in orders" class="media" style="align-items: stretch; margin:1rem auto;">
         <div class="media-left">
           <p>{{item.id}}</p>
-          <p>待付款</p>
+          <p> {{$t('admin.mall.order.status.'+item.status) }}</p>
           <p> {{ item.inserted_at | formatServerDateTime }}</p>
           <p>{{item.user.nickname}}&nbsp;&nbsp;&nbsp;{{item.user.mobile}}</p>
         </div>
@@ -26,7 +26,7 @@
               </figure>
               <div class="media-content">
                 <p>{{detail.goods_name}} </p>
-                <p> {{detail.price}}</p>
+                <p :class="['currency', item.currency]">{{detail.price | formatPrice}}</p>
                 <p> X{{detail.amount}}</p>
               </div>
             </div>
@@ -35,8 +35,12 @@
         <div class="media-right level" style="width:220px">
           <div class="level-item">
             <div>
-              <p>{{$t('admin.mall.order.fields.postage')}}:{{item.postage}}</p>
-              <p>{{$t('admin.mall.order.fields.total')}}:{{item.price}}</p>
+              <p>{{$t('admin.mall.order.fields.postage')}}:
+                <span :class="['currency', item.currency]">{{item.postage | formatPrice}}</span>
+              </p>
+              <p>{{$t('admin.mall.order.fields.total')}}:
+                <span :class="['currency', item.currency]">{{item.price | formatPrice}}</span>
+              </p>
             </div>
           </div>
           <div class="level-item">

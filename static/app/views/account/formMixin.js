@@ -43,7 +43,6 @@ export default {
           return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
           return this.$t('error.validation.invalidPasswordLength')
-
         }
       } else {
         return this.errorMessage

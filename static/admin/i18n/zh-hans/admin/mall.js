@@ -16,7 +16,7 @@ export default {
   notExist: '商品不存在',
   sameGoodsIdExist: '商品编号已存在，请重新输入',
   soldCanNotDelete: '该商品已销售不可删除',
-  
+
   goods: {
     edit: '编辑',
     delete: '删除',
@@ -61,8 +61,25 @@ export default {
         address: '地址',
       },
     },
+  },
+  op_logs: {
+    inserted_at: '操作时间',
+    op_user: '操作账号',
+    op_admin: '管理员',
+    content: '操作内容',
+    transaction_id: '支付单号',
+    refundMoney: '退款金额',
+    change_to: '更改为',
+    status: {
+      '-3': '已退款',
+      '-2': '已退货',
+      '-1': '已关闭',
+      '0': '待支付',
+      '1': '已支付',
+      '2': '待收货',
+      '3': '待确认',
+      '4': '已完成'
+
+    }
   }
-
-
-
 }

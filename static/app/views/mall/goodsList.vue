@@ -4,16 +4,18 @@
       <div class="content-goods">
         <div class="is-multiline is-marginless has-text-centered goods-list">
           <div v-for="item in goodsList" class="tile goods-item">
-            <figure class="image is-40vwx40vw pic" @click.prevent="showGoodsDetail(item.id)">
-              <img v-if="item.pic" :src="item.pic">
-              <img v-else src="https://placehold.it/300x300?text=400x400">
-            </figure>
-            <p class="subtitle is-marginless is-5 name">
-              {{item.name}}
-            </p>
-            <p class="subtitle is-marginless is-5 price">
-              <label>{{(item.price / 100).toFixed(2)}}</label>
-            </p>
+            <div>
+              <figure class="image is-40vwx40vw" @click.prevent="showGoodsDetail(item.id)">
+                <img v-if="item.pic" :src="item.pic">
+                <img v-else src="https://placehold.it/300x300?text=400x400">
+              </figure>
+              <p class="subtitle is-marginless is-5 name">
+                {{item.name}}
+              </p>
+              <p class="subtitle is-marginless is-5 price">
+                <label class="CNY">{{(item.price / 100).toFixed(2)}}</label>
+              </p>
+            </div>
           </div>
         </div>
       </div>

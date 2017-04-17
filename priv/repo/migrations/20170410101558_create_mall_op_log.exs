@@ -4,7 +4,7 @@ defmodule Acs.Repo.Migrations.CreateMallOPLog do
   def change do
     create table(:mall_op_logs) do
 
-      add :content, :string
+      add :content, :map
       add :status, :integer
       add :changed_status, :integer
       add :admin_user, :string

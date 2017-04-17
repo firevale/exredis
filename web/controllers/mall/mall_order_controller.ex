@@ -47,9 +47,10 @@ defmodule Acs.MallOrderController do
               left_join: address in assoc(o, :user_address),
               left_join: op_logs in assoc(o, :op_logs),
               select: map(o, [:id, :goods_name, :status, :price, :final_price, :postage, :inserted_at,
-                user: [:id, :nickname, :mobile], details: [:id, :goods_name, :goods_pic, :price, :amount],
+                user: [:id, :nickname, :mobile, :email],
+                details: [:id, :goods_name, :goods_pic, :price, :amount],
                 user_address: [:id, :name, :mobile, :area, :address, :area_code],
-                op_logs: [:id, :status, :changed_status, :content, :admin_user] ]),                
+                op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),                
               where: o.id ==^order_id,
               preload: [user: user, user_address: address, details: details, op_logs: op_logs]
     order = Repo.one(query)

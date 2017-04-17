@@ -40,6 +40,7 @@
     </div>
     <div class="tile">
       <h6 class="subtitle is-6">历史记录:</h6>
+      
     </div>
   </div>
 </template>
@@ -68,8 +69,14 @@ export default {
     imgUpload,
   },
 
-  mounted: function() {
-    this.orderInfo = this.$route.params.orderInfo
+  mounted: async function() {
+    let result = await this.$acs.fetchMallOrder({
+      order_id: this.$route.params.orderId
+    })
+
+    if (result.success) {
+      this.orderInfo = result.order
+    }
   },
 
   data() {
@@ -87,56 +94,6 @@ export default {
         return parseFloat(price / 100).toFixed(2)
       else
         return 0
-    },
-
-    setEditor: function(editor) {
-      this.editor = editor
-    },
-
-    handleValidation: function($v) {
-      $v.$reset()
-      if (touchMap.has($v)) {
-        clearTimeout(touchMap.get($v))
-      }
-      touchMap.set($v, setTimeout($v.$touch(), 2000))
-    },
-
-    onShowImageUpload: function() {
-      if (this.goods.id.length > 0) {
-        this.showImgUpload = true
-      } else {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.saveFirst'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
-      }
-    },
-
-    onInsertImage: function(editor) {
-      showFileUploadDialog({
-        postAction: '/admin_actions/update_goods_pic',
-        accept: 'image/jpeg, image/png',
-        data: {
-          app_id: this.goods.app_id
-        },
-        extensions: ['png', 'jpg', 'jpeg'],
-        callback: response => {
-          if (response.success) {
-            editor.focus()
-            let range = editor.getSelection()
-            editor.insertEmbed(range.index, 'image', response.link)
-          } else if (response.i18n_message) {
-            message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
-          } else if (response.message) {
-            message.showMsg(response.message)
-          } else {
-            message.showMsg(this.$t('admin.error.networkError'))
-          }
-        },
-      })
     },
 
     onDelete: function() {

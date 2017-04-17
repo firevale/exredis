@@ -2,7 +2,8 @@
     <div class="tile is-ancestor is-vertical root-container">
         <div class="top-bar flex-fixed-size">
             <div class="title-bar">
-                <h4 class="title is-4">{{ $t('mall.titles.' + $route.name) }}</h4>
+                <h4 v-if="$route.name == 'goodsIndex'" class="title is-4">{{ mall.title}}</h4>
+                <h4 v-else class="title is-4">{{ $t('mall.titles.' + $route.name) }}</h4>
             </div>
             <nav class="nav">
                 <div class="nav-left has-text-left">
@@ -10,7 +11,7 @@
                 </div>
                 <div class="nav-center">
                 </div>
-                <div class="nav-right has-text-right">                   
+                <div class="nav-right has-text-right">
                     <a class="icon image-icon icon-user" @click.prevent=""></a>
                 </div>
             </nav>
@@ -31,7 +32,7 @@
     import * as acs from 'common/js/acs'
 
     export default {
-         mounted: async function () {
+        mounted: async function () {
             await this.getMallDetail()
         },
         data: function () {

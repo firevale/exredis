@@ -166,6 +166,9 @@ export default {
         return post(Vue, '/mall_actions/fetch_order_list', params)
       },
 
+      fetchMallOrder(params) {
+        return post(Vue, '/mall_actions/fetch_order', params)
+      },
     }
   }
 }

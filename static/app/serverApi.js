@@ -33,7 +33,7 @@ const post = async(Vue, uri, params) => {
     let response = await Vue.http.post(uri, params)
     return processResponse(Vue, response)
   } catch (_) {
-    Toast.show(Vue.t('forum.error.networkError'))
+    Toast.show(Vue.t('error.server.networkError'))
     return {
       success: false
     }

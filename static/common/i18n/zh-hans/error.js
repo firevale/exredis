@@ -1,4 +1,6 @@
  export default {
+   pageTitle: '糟糕， 出错了',
+
    // errors replied from acs server
    server: {
      networkError: '网络错误，请稍后再试',

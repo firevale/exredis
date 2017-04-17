@@ -344,10 +344,10 @@ defmodule Acs.ForumController do
           conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
       else
         nil ->
-            conn |> json(%{success: false, message: "forum.error.illegal"})
+            conn |> json(%{success: false, message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
           d "errs: #{inspect errors, pretty: true}"
-          conn |> json(%{success: false, message: "forum.error.networkError"})
+          conn |> json(%{success: false, message: "error.server.networkError"})
       end
   end
   def add_post(conn, _) do
@@ -450,7 +450,7 @@ defmodule Acs.ForumController do
         conn |> json(%{success: false, i18n_message: "error.server.commentNotFound"})
       %ForumComment{} = comment ->
         if(!is_admin and comment.user_id != user_id) do
-          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         else
           with post_id = comment.post_id,
             {:ok, _} <- ForumComment.changeset(comment,
@@ -524,12 +524,12 @@ defmodule Acs.ForumController do
           conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
         else
           {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           _ ->
             conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         end
       false ->
-        conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+        conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
   end
   def toggle_post_status(conn, _) do
@@ -563,9 +563,9 @@ defmodule Acs.ForumController do
         conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "forum.error.illegal"})
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "forum.error.networkError"})
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       end
   end
   def add_comment(conn, _) do

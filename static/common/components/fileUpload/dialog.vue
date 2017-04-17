@@ -187,7 +187,7 @@ export default {
               } else {
                 this.callback({
                   success: false,
-                  i18n_message: 'forum.error.networkError'
+                  i18n_message: 'error.server.networkError'
                 })
               }
             }

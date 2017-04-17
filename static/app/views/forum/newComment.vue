@@ -117,7 +117,7 @@ export default {
           } else if (response.message) {
             Toast.show(response.message)
           } else {
-            Toast.show(this.$t('forum.error.networkError'))
+            Toast.show(this.$t('error.server.networkError'))
           }
         },
       })

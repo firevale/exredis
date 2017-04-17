@@ -184,6 +184,34 @@ defmodule Acs.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def update_email(%Plug.Conn{private: %{acs_session_user: user}} = conn, 
+                   %{"email" => email, "verify_code" => verify_code} = params) do
+    case get_session(conn, :bind_email_verify_code) do
+      ^verify_code ->
+        case RedisUser.find(email) do 
+          nil -> 
+            # update mobile, remove device_id if it's anonymous user
+            user = %{user | email: email, device_id: nil}
+            user = if is_bitstring(params["password"]) and String.length(params["password"]) >= 6 do 
+              %{user | encrypted_password: Utils.hash_password(params["password"])}
+            else 
+              user
+            end
+            RedisUser.save!(user)
+            conn |> delete_session(:bind_email_verify_code)
+                 |> delete_session(:bind_email_account_id)
+                 |> json(%{success: true})
+          _ ->
+            conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
+    end
+  end
+  def update_email(conn, _) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
   def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id,
                                                    acs_device_id: device_id,
                                                    acs_platform: platform}} = conn, _) do

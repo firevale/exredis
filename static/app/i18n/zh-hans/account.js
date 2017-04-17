@@ -26,5 +26,6 @@ export default {
 
   messages: {
     mobileBindSuccess: '已绑定手机{mobile}',
+    emailBindSuccess: '已绑定邮箱{email}',
   }
 }

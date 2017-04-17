@@ -31,6 +31,12 @@ export default {
           return this.$t('error.validation.invalidMobileNumber')
         } else if (typeof this.$v.mobile == 'object' && !this.$v.mobile.changed) {
           return this.$t('error.validation.mobileNotChanged')
+        } else if (typeof this.$v.email == 'object' && !this.$v.email.required) {
+          return this.$t('error.validation.requireEmail')
+        } else if (typeof this.$v.email == 'object' && !this.$v.email.valid) {
+          return this.$t('error.validation.invalidEmailAddress')
+        } else if (typeof this.$v.email == 'object' && !this.$v.email.changed) {
+          return this.$t('error.validation.emailNotChanged')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
           return this.$t('error.validation.requireVerifyCode')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {

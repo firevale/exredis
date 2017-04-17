@@ -14,7 +14,7 @@
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.address')}}:{{orderInfo.user_address.area}}{{orderInfo.user_address.address}}</h6>
       </div>
       <div class="title is-child">
-        <div class="box columns" style="border-radius: 0;margin:0;padding:.5rem;">
+        <div class="box columns" style="margin:0;padding:.5rem;">
           <div v-for="detail in orderInfo.details" class="cloumn">
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
@@ -38,9 +38,19 @@
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>-->
       </div>
     </div>
-    <div class="tile">
+    <div class="tile is-parent is-vertical">
       <h6 class="subtitle is-6">历史记录:</h6>
-      
+      <!--待付款->己付款-->
+      <div class="box" v-for="op in orderInfo.op_logs" style="width: 400px">
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.inserted_at')}}:{{op.inserted_at | formatServerDateTime  }}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.op_user')}}:{{getOpUser(orderInfo.user.email, op.admin_user)}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.content')}}:
+          {{$t('admin.mall.op_logs.status.'+op.status) }}
+          {{$t('admin.mall.op_logs.change_to') }}
+          {{$t('admin.mall.op_logs.status.'+op.changed_status) }}</h6>
+        <h6 v-if="op.content && op.content.transaction_id" class="subtitle is-6">{{$t('admin.mall.op_logs.transaction_id')}}:{{op.content.transaction_id}}</h6>
+        <h6 v-if="op.content && op.content.refundMoney" class="subtitle is-6">{{$t('admin.mall.op_logs.refundMoney')}}:{{op.content.refundMoney}}</h6>
+      </div>
     </div>
   </div>
 </template>
@@ -89,6 +99,13 @@ export default {
   },
 
   methods: {
+    getOpUser: function(user, adminUser) {
+      if (adminUser) {
+        return adminUser + '[' + this.$t('admin.mall.op_logs.op_admin') + ']';
+      } else {
+        return user;
+      }
+    },
     getPrice: function(price) {
       if (price)
         return parseFloat(price / 100).toFixed(2)
@@ -148,8 +165,12 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .tile .subtitle:not(:last-child) {
   margin-bottom: .8rem;
+}
+
+.box {
+  border-radius: 0;
 }
 </style>

@@ -245,8 +245,8 @@ export default {
         })
       },
 
-      sendMobileVerifyCode(mobile) {
-        return post(Vue, "/send_mobile_register_verify_code", {mobile})
+      sendBindMobileVerifyCode(mobile) {
+        return post(Vue, "/send_mobile_bind_verify_code", {mobile})
       },
     }
   }

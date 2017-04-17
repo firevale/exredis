@@ -33,7 +33,7 @@ defmodule Acs.AdminController do
   def update_app_info(conn, %{"app" => %{"id" => app_id} = app_info}) do
     case Repo.get(App, app_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.appNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
@@ -95,16 +95,16 @@ defmodule Acs.AdminController do
   end
 
   def update_app_goods_info(conn, %{"goods" => %{"id" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsId"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptyGoodsId"})
   end
   def update_app_goods_info(conn, %{"goods" => %{"name" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsName"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptyGoodsName"})
   end
   def update_app_goods_info(conn, %{"goods" => %{"description" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsDescription"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptyGoodsDescription"})
   end
   def update_app_goods_info(conn, %{"goods" => %{"app_id" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.emptyGoodsAppId"})
+    conn |> json(%{success: false, i18n_message: "error.server.emptyGoodsAppId"})
   end
   def update_app_goods_info(conn, %{"goods" => %{
       "id" => goods_id,
@@ -114,7 +114,7 @@ defmodule Acs.AdminController do
       "app_id" => _,
     } = goods}) do
     if goods["price"] < 0 do
-      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidGoodsPrice"})
+      conn |> json(%{success: false, i18n_message: "error.server.invalidGoodsPrice"})
     else
       case Repo.get(AppGoods, goods_id) do
         nil ->
@@ -143,7 +143,7 @@ defmodule Acs.AdminController do
   def update_app_icon(conn, %{"app_id" => app_id, "file" => %{} = upload_file} = params) do
     case Repo.get(App, app_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.appNotFound", i18n_message_object: %{app_id: app_id}})
+        conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
 
       %App{} = app ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
@@ -165,19 +165,19 @@ defmodule Acs.AdminController do
                   RedisApp.refresh(app_id)
                   conn |> json(%{success: true, icon_url: icon_url})
                 else 
-                  conn |> json(%{success: false, i18n_message: "admin.serverError.imageMinWidth", i18n_message_object: %{minWdith: 128}})
+                  conn |> json(%{success: false, i18n_message: "error.server.imageMinWidth", i18n_message_object: %{minWdith: 128}})
                 end
               else
-                conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+                conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
               end
             else 
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageShouldBeSquare"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageShouldBeSquare"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+            conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
@@ -185,7 +185,7 @@ defmodule Acs.AdminController do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
-                       i18n_message: "admin.serverError.goodsNotFound",
+                       i18n_message: "error.server.goodsNotFound",
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
@@ -207,30 +207,30 @@ defmodule Acs.AdminController do
                   RedisApp.refresh(app_id)
                   conn |> json(%{success: true, icon_url: icon_url})
                 else
-                  conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+                  conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
                 end
               else 
-                conn |> json(%{success: false, i18n_message: "admin.serverError.imageMinWidth", i18n_message_object: %{minWdith: 128}})
+                conn |> json(%{success: false, i18n_message: "error.server.imageMinWidth", i18n_message_object: %{minWdith: 128}})
               end
             else 
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageShouldBeSquare"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageShouldBeSquare"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+            conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
   def delete_app_goods(conn, %{"goods_id" => ""}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def delete_app_goods(conn, %{"goods_id" => goods_id, "app_id" => app_id}) do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
-                       i18n_message: "admin.serverError.goodsNotFound",
+                       i18n_message: "error.server.goodsNotFound",
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id} = goods ->
@@ -243,15 +243,15 @@ defmodule Acs.AdminController do
             conn |> json(%{success: false, message: translate_errors(errors)})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
   def update_app_goods_product_id(conn, %{"product_id_info" => %{"app_goods_id" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def update_app_goods_product_id(conn, %{"product_id_info" => %{"product_id" => ""}}) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def update_app_goods_product_id(conn, %{"product_id_info" => %{} = product_id_info, "app_id" => app_id}) do
     case Repo.get_by(AppGoodsProductId, app_goods_id: product_id_info["app_goods_id"], sdk: product_id_info["sdk"]) do

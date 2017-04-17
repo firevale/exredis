@@ -18,7 +18,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: true, apps: apps})
   end
   def fetch_apps(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_top_news
@@ -34,7 +34,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: true, news: news})
   end
   def get_top_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_paged_news
@@ -56,7 +56,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: true, news: news, total: total_page, records: total})
   end
   def get_paged_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def get_paged_news_admin(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, 
                           %{"app_id" => app_id,
@@ -77,7 +77,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: true, news: news, total: total_page, records: total})
   end
   def get_paged_news_admin(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end    
   
   # get_news_detail
@@ -97,7 +97,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: true, news: news})
   end
   def get_news_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp add_news_click(news_id, click) do
     news = Repo.get(AppNews, news_id)
@@ -133,7 +133,7 @@ defmodule Acs.GamesController do
 
   end
   def update_news(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # toggle_news_status
@@ -141,14 +141,14 @@ defmodule Acs.GamesController do
                   %{"news_id" => news_id}) do
     case Repo.get(AppNews, news_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.newsNotFound"})
       %AppNews{} = news ->
         AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end
   def toggle_news_status(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update_news_pic
@@ -156,7 +156,7 @@ defmodule Acs.GamesController do
                       %{"news_id" => news_id, "file" => %{} = upload_file}) do
     case Repo.get(AppNews, news_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.newsNotFound", i18n_message_object: %{news_id: news_id}})
+        conn |> json(%{success: false, i18n_message: "error.server.newsNotFound", i18n_message_object: %{news_id: news_id}})
 
       %AppNews{} = news ->
         case Mogrify.open(upload_file.path) |> Mogrify.verbose do
@@ -174,13 +174,13 @@ defmodule Acs.GamesController do
               #RedisApp.refresh(app_id)
               conn |> json(%{success: true, pic: pic_url})
             else
-              conn |> json(%{success: false, i18n_message: "admin.serverError.imageFormatPNG"})
+              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
             end
           _ ->
-            conn |> json(%{success: false, i18n_message: "admin.serverError.imageSize640x260"})
+            conn |> json(%{success: false, i18n_message: "error.server.imageSize640x260"})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
   def update_news_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
@@ -194,11 +194,11 @@ defmodule Acs.GamesController do
       {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
       conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
     else
-      conn |> json(%{success: false, i18n_message: "admin.serverError.invalidImageFormat"})
+      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
     end
   end
   def update_news_pic(conn, _) do
-    conn |> json(%{success: false, i18n_message: "admin.serverError.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
 end

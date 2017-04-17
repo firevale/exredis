@@ -29,7 +29,7 @@ export const emailMask = val => {
 }
 
 export const mobileMask = val => {
-  return val.replace(/^(\d{3})\d{6}(\d{2})/g, '$1******$2')
+  return val.replace(/^(\d{3})\d{4}(\d{4})/g, '$1****$2')
 }
 
 export const guid = _ => {

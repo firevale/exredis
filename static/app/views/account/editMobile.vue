@@ -5,14 +5,14 @@
       <div>
         <div class="field">
           <p class="control has-icon">
-            <input class="input" type="text" v-model.trim="mobile" @input="handleValidation" :placeholder="$t('account.placeholder.inputMobileNumber')"
+            <input class="input" type="number" v-model.trim="mobile" @input="handleValidation" :placeholder="$t('account.placeholder.inputMobileNumber')"
             />
             <span class="icon image-icon icon-mobile"></span>
           </p>
         </div>
         <div class="field">
           <p class="control has-icon has-button has-button-right">
-            <input class="input" type="text" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')" />
+            <input class="input" type="number" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')" />
             <span class="icon image-icon icon-shield"></span>
             <v-touch tag="a" class="button is-primary" :class="{'is-disabled': $v.mobile.$invalid || cooldownCounter > 0,
              'is-loading': sendingVerifyCode }" @tap="sendMobileVerifyCode">
@@ -31,7 +31,8 @@
         </div>
       </div>
       <p v-show="errorHint" class="help is-danger"> <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
-      <v-touch tag="input" type="submit" class="button is-info is-submit" :class="$v.$invalid ? 'is-disabled' : ''" :value="$t('account.bind')">
+      <v-touch tag="input" type="submit" class="button is-info is-submit" :class="{'is-disabled': $v.$invalid,
+        'is-loading': processing}" :value="$t('account.bind')">
       </v-touch>
     </form>
   </div>
@@ -67,6 +68,7 @@ export default {
       showPassword: false,
       sendingVerifyCode: false,
       cooldownCounter: 0,
+      processing: false,
     }
   },
 
@@ -139,7 +141,7 @@ export default {
     sendMobileVerifyCode: async function() {
       try {
         this.sendingVerifyCode = true
-        let result = await this.$acs.sendMobileVerifyCode(this.mobile)
+        let result = await this.$acs.sendBindMobileVerifyCodee(this.mobile)
         if (result.success) {
           this.cooldownCounter = 60
           setTimeout(this.cooldownTimer, 1000)
@@ -147,15 +149,10 @@ export default {
           this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
         }
         this.sendingVerifyCode = false
-        return result
       } catch (_) {
-        this.setErrorMessage(this.$t('account.error.networkError'))
+        this.setErrorMessage(this.$t('error.server.networkError'))
         this.sendingVerifyCode = false
-        return {
-          success: false
-        }
       }
-
     },
   },
 

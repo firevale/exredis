@@ -22,4 +22,8 @@ export default {
     inputEmail: '请输入邮箱地址',
     inputPassword: '请输入密码',
   },
+
+  messages: {
+    mobileBindSuccess: '已绑定手机{mobile}',
+  }
 }

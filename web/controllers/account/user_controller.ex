@@ -162,7 +162,8 @@ defmodule Acs.UserController do
       ^verify_code ->
         case RedisUser.find(mobile) do 
           nil -> 
-            user = %{user | mobile: mobile}
+            # update mobile, remove device_id if it's anonymous user
+            user = %{user | mobile: mobile, device_id: nil}
             user = if is_bitstring(params["password"]) and String.length(params["password"]) >= 6 do 
               %{user | encrypted_password: Utils.hash_password(params["password"])}
             else 

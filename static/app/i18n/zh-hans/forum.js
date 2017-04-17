@@ -78,7 +78,7 @@ export default {
   },
   personal: {
     title: '个人主页',
-    nickName: '昵称 : ',
+    nickname: '昵称 : ',
     postCount: '发帖数 : ',
     registerTime: '注册时间 : ',
     myPosts: '我的帖子',

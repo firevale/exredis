@@ -10,7 +10,7 @@
       </figure>
       <div class="media-content">
         <p>
-          {{ $t('forum.personal.nickName') }} <span>{{ this.userInfo.nickName }}</span>
+          {{ $t('forum.personal.nickname') }} <span>{{ this.userInfo.nickname }}</span>
         </p>
         <p>
           {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.post_count}}</span>

@@ -13,7 +13,7 @@
                 {{item.name}}
               </p>
               <p class="subtitle is-marginless is-5 price">
-                <label class="CNY">{{(item.price / 100).toFixed(2)}}</label>
+                <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
               </p>
             </div>
           </div>

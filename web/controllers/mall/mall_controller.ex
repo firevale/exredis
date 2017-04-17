@@ -265,7 +265,7 @@ defmodule Acs.MallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold])
+              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold])
 
     goodses = Repo.all(query)
     conn |> json(%{success: true, goodses: goodses, total: total_page})

@@ -74,7 +74,7 @@ export default {
             this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (e) {
-          this.setErrorMessage(this.$t('account.error.networkError'))
+          this.setErrorMessage(this.$t('error.server.networkError'))
         }
         this.processing = false
       }

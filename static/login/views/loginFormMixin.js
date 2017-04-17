@@ -32,28 +32,28 @@ export default {
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {
               console.log('require mobile number')
-              return this.$t('account.error.requireMobile')
+              return this.$t('error.validation.requireMobile')
             } else {
               console.log('require account id')
-              return this.$t('account.error.requireAccountId')
+              return this.$t('error.validation.requireAccountId')
             }
           } else {
-            return this.$t('account.error.requireEmail')
+            return this.$t('error.validation.requireEmail')
           }
         } else if (typeof this.$v.accountId == 'object' && !this.$v.accountId.valid) {
           return this.invalidAccountIdErrorMessage
         } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
-          return this.$t('account.error.requirePassword')
+          return this.$t('error.validation.requirePassword')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('account.error.invalidPasswordLength')
+          return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('account.error.invalidPasswordLength')
+          return this.$t('error.validation.invalidPasswordLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
-          return this.$t('account.error.requireVerifyCode')
+          return this.$t('error.validation.requireVerifyCode')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
+          return this.$t('error.validation.invalidVerifyCodeLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.maxLength) {
-          return this.$t('account.error.invalidVerifyCodeLength')
+          return this.$t('error.validation.invalidVerifyCodeLength')
         }
       } else {
         return this.errorMessage
@@ -79,12 +79,12 @@ export default {
     invalidAccountIdErrorMessage: function() {
       if (window.acsConfig.isMobileAccountSupported) {
         if (this.$route.name == 'registerStep1') {
-          return this.$t('account.error.invalidMobileNumber')
+          return this.$t('error.validation.invalidMobileNumber')
         } else {
-          return this.$t('account.error.invalidAccountId')
+          return this.$t('error.validation.invalidAccountId')
         }
       } else {
-        return this.$t('account.error.invalidEmailAddress')
+        return this.$t('error.validation.invalidEmailAddress')
       }
     }
 

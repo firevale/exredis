@@ -116,7 +116,7 @@
               }
             }
           } catch (_) {
-            this.setErrorMessage(this.$t('account.error.networkError'))
+            this.setErrorMessage(this.$t('error.server.networkError'))
           }
           this.processing = false
         }

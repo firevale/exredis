@@ -32,7 +32,7 @@ defmodule Acs.UserController do
     d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}"
     case RedisUser.find(account_id) do
       nil ->
-        conn |> json(%{success: false, message: "account.error.accountNotExist"})
+        conn |> json(%{success: false, i18n_message: "account.error.accountNotExist"})
 
       %RedisUser{} ->
         now = Utils.unix_timestamp
@@ -51,10 +51,10 @@ defmodule Acs.UserController do
             _ ->
               conn |> put_session(:failed_attempts, failed_attempts + 1)
                   |> put_session(:last_failed_timestamp, now)
-                  |> json(%{success: false, message: "account.error.passwordNotMatch"})
+                  |> json(%{success: false, i18n_message: "account.error.passwordNotMatch"})
           end
         else
-          conn |> json(%{success: false, message: "account.error.tooManyFails"})
+          conn |> json(%{success: false, i18n_message: "account.error.tooManyFails"})
         end
     end
   end
@@ -69,11 +69,11 @@ defmodule Acs.UserController do
                                            acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password} = params) do
     if RedisUser.exists?(account_id) do
-      conn |> json(%{success: false, message: "account.error.accountInUse"})
+      conn |> json(%{success: false, i18n_message: "account.error.accountInUse"})
     else
       case RedisUser.bind_anonymous_user(account_id, password, device_id) do
         nil ->
-          conn |> json(%{success: false, message: "account.error.anonymousUserNotFound"})
+          conn |> json(%{success: false, i18n_message: "account.error.anonymousUserNotFound"})
           
         %RedisUser{} = user ->
           create_and_response_access_token(conn, user, app_id, device_id, platform)
@@ -86,7 +86,7 @@ defmodule Acs.UserController do
                                          acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password} = params) do
     if RedisUser.exists?(account_id) do
-      conn |> json(%{success: false, message: "account.error.accountInUse"})
+      conn |> json(%{success: false, i18n_message: "account.error.accountInUse"})
     else
       user = RedisUser.create!(account_id, password)
       user = RedisUser.save!(user)
@@ -99,14 +99,14 @@ defmodule Acs.UserController do
   end
 
   def create_user(conn, %{"verify_code" => ""}) do
-    conn |> json(%{success: false, message: "account.error.emptyVerifyCode"})
+    conn |> json(%{success: false, i18n_message: "account.error.emptyVerifyCode"})
   end
   def create_user(%Plug.Conn{private: %{acs_app_id: app_id,
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code} = params) do
     if RedisUser.exists?(account_id) do
-      conn |> json(%{success: false, message: "account.error.accountInUse"})
+      conn |> json(%{success: false, i18n_message: "account.error.accountInUse"})
     else
       case get_session(conn, :register_verify_code) do
         ^verify_code ->
@@ -120,10 +120,10 @@ defmodule Acs.UserController do
             user = RedisUser.save!(user)
             create_and_response_access_token(conn, user, app_id, device_id, platform)
           else
-            conn |> json(%{success: false, message: "account.error.accountIdChanged"})
+            conn |> json(%{success: false, i18n_message: "account.error.accountIdChanged"})
           end
         _ ->
-          conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+          conn |> json(%{success: false, i18n_message: "account.error.invalidVerifyCode"})
       end
     end
   end
@@ -134,7 +134,7 @@ defmodule Acs.UserController do
   def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do
     case RedisUser.find(account_id) do
       nil ->
-        conn |> json(%{success: false, message: "account.error.accountNotFound"})
+        conn |> json(%{success: false, i18n_message: "account.error.accountNotFound"})
 
       %RedisUser{} = user ->
         case get_session(conn, :retrieve_password_account_id) do
@@ -147,10 +147,10 @@ defmodule Acs.UserController do
                      |> delete_session(:retrieve_password_account_id)
                      |> json(%{success: true})
               _ ->
-                conn |> json(%{success: false, message: "account.error.invalidVerifyCode"})
+                conn |> json(%{success: false, i18n_message: "account.error.invalidVerifyCode"})
             end
           _ ->
-            conn |> json(%{success: false, message: "account.error.accountIdChanged"})
+            conn |> json(%{success: false, i18n_message: "account.error.accountIdChanged"})
        end
     end
   end

@@ -18,7 +18,7 @@
               <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
-          <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_mobile'})">
+          <v-touch v-if="isMobileAccountSupported" class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_mobile'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.mobile') }} </p>
             <p class="level-right level-item has-text-right">
               {{ mobile }}
@@ -27,17 +27,17 @@
           </v-touch>
           <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_email'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.email') }} </p>
-            <p class="level-right level-item has-text-right"> 
-              {{ email }} 
-              <span class="icon image-icon icon-arrow-right"></span> 
+            <p class="level-right level-item has-text-right">
+              {{ email }}
+              <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
-          <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_resident'})">
+          <v-touch v-if="isMobileAccountSupported" class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_resident'})">
             <p class="level-left level-item has-text-left"> {{ $t('account.residentInfo') }} </p>
-            <p class="level-right level-item has-text-right"> 
-              {{ userInfo.resident_id || $t('account.notAuthenticated') }} 
-              <span class="icon image-icon icon-arrow-right"></span>              
-           </p>
+            <p class="level-right level-item has-text-right">
+              {{ userInfo.resident_id || $t('account.notAuthenticated') }}
+              <span class="icon image-icon icon-arrow-right"></span>
+            </p>
           </v-touch>
         </div>
       </div>
@@ -62,6 +62,12 @@ import {
 import scroller from 'common/components/scroller'
 
 export default {
+  data() {
+    return {
+      isMobileAccountSupported: window.acsConfig.isMobileAccountSupported
+    }
+  },
+
   computed: {
     ...mapGetters([
       'userInfo'
@@ -78,6 +84,10 @@ export default {
     mobile() {
       return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t('account.notBound')
     }
+  },
+
+  methods: {
+
   },
 
   components: {

@@ -14,7 +14,7 @@
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.address')}}:{{orderInfo.user_address.area}}{{orderInfo.user_address.address}}</h6>
       </div>
       <div class="title is-child">
-        <div class="box columns" style="border-radius: 0;margin:0;padding:.5rem;">
+        <div class="box columns" style="margin:0;padding:.5rem;">
           <div v-for="detail in orderInfo.details" class="cloumn">
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
@@ -38,8 +38,19 @@
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>-->
       </div>
     </div>
-    <div class="tile">
+    <div class="tile is-parent is-vertical">
       <h6 class="subtitle is-6">历史记录:</h6>
+      <!--待付款->己付款-->
+      <div class="box" v-for="op in orderInfo.op_logs" style="width: 400px">
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.inserted_at')}}:{{op.inserted_at | formatServerDateTime  }}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.op_user')}}:{{getOpUser(orderInfo.user.email, op.admin_user)}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.op_logs.content')}}:
+          {{$t('admin.mall.op_logs.status.'+op.status) }}
+          {{$t('admin.mall.op_logs.change_to') }}
+          {{$t('admin.mall.op_logs.status.'+op.changed_status) }}</h6>
+        <h6 v-if="op.content && op.content.transaction_id" class="subtitle is-6">{{$t('admin.mall.op_logs.transaction_id')}}:{{op.content.transaction_id}}</h6>
+        <h6 v-if="op.content && op.content.refundMoney" class="subtitle is-6">{{$t('admin.mall.op_logs.refundMoney')}}:{{op.content.refundMoney}}</h6>
+      </div>
     </div>
   </div>
 </template>
@@ -68,8 +79,14 @@ export default {
     imgUpload,
   },
 
-  mounted: function() {
-    this.orderInfo = this.$route.params.orderInfo
+  mounted: async function() {
+    let result = await this.$acs.fetchMallOrder({
+      order_id: this.$route.params.orderId
+    })
+
+    if (result.success) {
+      this.orderInfo = result.order
+    }
   },
 
   data() {
@@ -82,61 +99,18 @@ export default {
   },
 
   methods: {
+    getOpUser: function(user, adminUser) {
+      if (adminUser) {
+        return adminUser + '[' + this.$t('admin.mall.op_logs.op_admin') + ']';
+      } else {
+        return user;
+      }
+    },
     getPrice: function(price) {
       if (price)
         return parseFloat(price / 100).toFixed(2)
       else
         return 0
-    },
-
-    setEditor: function(editor) {
-      this.editor = editor
-    },
-
-    handleValidation: function($v) {
-      $v.$reset()
-      if (touchMap.has($v)) {
-        clearTimeout(touchMap.get($v))
-      }
-      touchMap.set($v, setTimeout($v.$touch(), 2000))
-    },
-
-    onShowImageUpload: function() {
-      if (this.goods.id.length > 0) {
-        this.showImgUpload = true
-      } else {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.saveFirst'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
-      }
-    },
-
-    onInsertImage: function(editor) {
-      showFileUploadDialog({
-        postAction: '/admin_actions/update_goods_pic',
-        accept: 'image/jpeg, image/png',
-        data: {
-          app_id: this.goods.app_id
-        },
-        extensions: ['png', 'jpg', 'jpeg'],
-        callback: response => {
-          if (response.success) {
-            editor.focus()
-            let range = editor.getSelection()
-            editor.insertEmbed(range.index, 'image', response.link)
-          } else if (response.i18n_message) {
-            message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
-          } else if (response.message) {
-            message.showMsg(response.message)
-          } else {
-            message.showMsg(this.$t('admin.error.networkError'))
-          }
-        },
-      })
     },
 
     onDelete: function() {
@@ -191,8 +165,12 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .tile .subtitle:not(:last-child) {
   margin-bottom: .8rem;
+}
+
+.box {
+  border-radius: 0;
 }
 </style>

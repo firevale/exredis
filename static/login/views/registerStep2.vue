@@ -127,7 +127,7 @@ export default {
             this.cooldownCounter = 60
             setTimeout(this.cooldownTimer, 1000)
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.i18n_message))
           }
           return result
         } catch (_) {
@@ -158,7 +158,7 @@ export default {
               this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
             }
           } else {
-            this.setErrorMessage(this.$t(result.message))
+            this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (_) {
           this.setErrorMessage(this.$t('account.error.networkError'))

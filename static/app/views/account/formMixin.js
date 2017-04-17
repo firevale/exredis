@@ -15,7 +15,7 @@ export default {
 
   computed: {
     errorHint: function() {
-      if (typeof this.$v == 'object' && this.$v.$invalid) {
+      if (typeof this.$v == 'object' && this.$v.$error) {
         if (typeof this.$v.mobile == 'object' && !this.$v.mobile.required) {
           return this.$t('account.error.requireMobile')
         } else if (typeof this.$v.mobile == 'object' && !this.$v.mobile.valid) {

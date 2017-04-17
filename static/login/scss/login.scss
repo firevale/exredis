@@ -361,7 +361,7 @@ p.errors {
     &.error-sign {
       width: .9rem;
       height: .9rem;
-      background-image: url(~assets/error-sign@1x.png);
+      background-image: url(~assets/icon-error-sign@1x.png);
     }
   }
 }
@@ -614,7 +614,7 @@ only screen and (min-resolution: 2.25dppx) {
 .error-sign {
   width: .9rem;
   height: .9rem;
-  background-image: url(~assets/error-sign@1x.png);
+  background-image: url(~assets/icon-error-sign@1x.png);
 }
 
 .submit-button {

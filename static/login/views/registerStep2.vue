@@ -131,7 +131,7 @@ export default {
           }
           return result
         } catch (_) {
-          this.setErrorMessage(this.$t('account.error.networkError'))
+          this.setErrorMessage(this.$t('error.server.networkError'))
           return {
             success: false
           }
@@ -155,13 +155,13 @@ export default {
                 }
               })
             } else {
-              this.setErrorMessage(this.$t('account.error.invalidVerifyCode'))
+              this.setErrorMessage(this.$t('error.server.invalidVerifyCode'))
             }
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (_) {
-          this.setErrorMessage(this.$t('account.error.networkError'))
+          this.setErrorMessage(this.$t('error.server.networkError'))
         }
         this.processing = false
       }

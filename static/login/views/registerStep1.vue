@@ -78,7 +78,7 @@ export default {
           let result = await this.$acs.isAccountExists(this.accountId)
           if (result.success) {
             if (result.exists) {
-              this.setErrorMessage(this.$t('account.error.accountInUse'))
+              this.setErrorMessage(this.$t('error.server.accountInUse'))
             } else {
               console.log('account is not in use', this.accountId)
               this.setRegisterAccountId(this.accountId)
@@ -97,7 +97,7 @@ export default {
                     this.setErrorMessage(this.$t(result.i18n_message))
                   }
                 } catch (e) {
-                  this.setErrorMessage(this.$t('account.error.networkError'), e)
+                  this.setErrorMessage(this.$t('error.server.networkError'), e)
                 }
               } else {
                 this.$router.replace({
@@ -113,7 +113,7 @@ export default {
             this.setErrorMessage(this.$t(result.i18n_message))
           }
         } catch (e) {
-          this.setErrorMessage(this.$t('account.error.networkError'), e)
+          this.setErrorMessage(this.$t('error.server.networkError'), e)
         }
         this.processing = false
       }

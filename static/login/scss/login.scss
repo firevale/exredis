@@ -2,7 +2,6 @@
 @import "common/scss/mixins";
 @import "common/scss/reset";
 @import "common/scss/animation";
-
 html {
   font-size: $middle;
 }
@@ -24,6 +23,12 @@ body.in-app {
 
 body.wp8 {
   background: #000;
+}
+
+body.ios, body.android {
+  input {
+    -webkit-appearance: none;
+  }
 }
 
 body.in-app *:not(input) {
@@ -124,16 +129,11 @@ hr {
   }
   .row-login {
     position: relative;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -ms-flex-direction: row;
-    -webkit-flex-direction: row;
     flex-direction: row;
-    -ms-flex-pack: justify;
-    -webkit-justify-content: space-between;
     justify-content: space-between;
     margin: 0;
+    border: none;
     p.title {
       -ms-flex: 1;
       -webkit-flex: 1;
@@ -626,4 +626,28 @@ only screen and (min-resolution: 2.25dppx) {
 .native-button {
   font-size: .9rem !important;
   margin-top: .6rem !important;
+}
+
+@media only screen and (-o-min-device-pixel-ratio: 5/4),
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and (min--moz-device-pixel-ratio: 1.25),
+only screen and (min-device-pixel-ratio: 1.25),
+only screen and (min-resolution: 1.25dppx) {
+  body.ios {
+    input {
+      border-width: 0.5px;
+    }
+  }
+}
+
+@media only screen and (-o-min-device-pixel-ratio: 9/4),
+only screen and (-webkit-min-device-pixel-ratio: 2.25),
+only screen and (min--moz-device-pixel-ratio: 2.25),
+only screen and (min-device-pixel-ratio: 2.25),
+only screen and (min-resolution: 2.25dppx) {
+  body.ios {
+    input {
+      border-width: 0.3px;
+    }
+  }
 }

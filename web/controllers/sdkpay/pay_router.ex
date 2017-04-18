@@ -29,6 +29,7 @@ defmodule Acs.PayRouter do
     scope path: "/wechat" do
       get  "/prepay", WechatController, :prepay
       post "/prepay", WechatController, :prepay
+      post "/mallprepay", WechatController, :mallprepay
 
       get  "/notify", WechatController, :notify
       post "/notify", WechatController, :notify

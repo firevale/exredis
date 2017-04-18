@@ -1,10 +1,10 @@
 import './date'
-import {guid} from './utils'
+import { guid } from './utils'
 
 export const getAppId = _ => {
-  return window.acsConfig.appId
-    ? window.acsConfig.appId
-    : 'account-center'
+  return window.acsConfig.appId ?
+    window.acsConfig.appId :
+    'account-center'
 }
 
 export const getDeviceId = _ => {
@@ -30,4 +30,10 @@ export const checkIsLogin = (callback) => {
   }
 }
 
-
+export const checkMallIsLogin = (callback) => {
+  if (!window.acsConfig.acsSessionUserId) {
+    window.location.href = '/login?redirect_uri=' + btoa(window.location.href);
+  } else {
+    callback()
+  }
+}

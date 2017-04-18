@@ -13,7 +13,7 @@ defmodule Acs.MallOrder do
     def cheat, do: 403
   end
 
-@derive {Poison.Encoder, except: [:app, :user, :goods, :user_address, :__meta__]}
+@derive {Poison.Encoder, except: [:app, :user, :goods, :details, :op_logs, :user_address, :__meta__]}
 
 @primary_key false
   schema "mall_orders" do

@@ -104,7 +104,7 @@ module.exports = {
   module: {
     rules: [{
       test: /\.vue$/,
-      use: 'vue-loader',
+      loader: 'vue-loader',
       options: require('./vue-loader.conf'),
     }, {
       test: /\.js$/,

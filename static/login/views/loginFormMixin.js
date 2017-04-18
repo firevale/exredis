@@ -21,8 +21,6 @@ export default {
         this.$refs.password.type = 'text'
       }
     },
-
-
   },
 
   computed: {

@@ -21,7 +21,7 @@ export default {
     goodsDetail: '商品详情',
     mallOrder: '订单详情',
     mine: '我的',
-    myOrder: '我的订单',
-    myAddress: '我的地址',
+    myOrders: '我的订单',
+    myAddresses: '我的地址',
   }
 }

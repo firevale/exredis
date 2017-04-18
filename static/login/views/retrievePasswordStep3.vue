@@ -1,31 +1,30 @@
 <template>
-<div class="login-box">
-  <form @submit.prevent="handleSubmit">
-    <div class="row-login">
-      <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
-    </div>
-    <p class="code-tip">
-      {{ $t('account.retrievePasswordPage.setNewPassword') }}:
-    </p>
-    <div class="row-login">
-      <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')"
-          v-model.trim="password" autocomplete="off" name="password" @input="handleValidation" />
-      <span class="icon addon-icon icon-lock"></span>
-      <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
-    </div>
-    <p class="errors">
-      <span v-if="errorHint" class="icon error-sign"></span>
-      <span>{{ errorHint }}</span>
-    </p>
-    <div class="row-login">
-      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.retrievePasswordPage.complete')"
-          :disabled="processing" />
-      <span v-show="processing" class="icon progress-icon rotating"></span>
-    </div>
-  </form>
-</div>
+  <div class="login-box">
+    <form @submit.prevent="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
+      </div>
+      <p class="code-tip">
+        {{ $t('account.retrievePasswordPage.setNewPassword') }}:
+      </p>
+      <div class="row-login">
+        <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
+          autocomplete="off" name="password" @input="handleValidation" />
+        <span class="icon addon-icon icon-lock"></span>
+        <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
+      </div>
+      <p class="errors">
+        <span v-if="errorHint" class="icon error-sign"></span>
+        <span>{{ errorHint }}</span>
+      </p>
+      <div class="row-login">
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.retrievePasswordPage.complete') }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
-
 <script>
 import {
   mapGetters,

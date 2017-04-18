@@ -13,10 +13,11 @@ defmodule Acs.VerifyCodeController do
     conn |> json(%{success: true, match: verify_code == String.downcase(value)})
   end
 
-  def reset_register_captcha(conn, _params) do 
+  def reset_register_captcha(conn, %{"register_account_id" => register_account_id} = _params) do 
     code = gen_hex_code() 
     image_url = CaptchaGenerator.generate(code)
     conn |> put_session(:register_verify_code, code)
+         |> put_session(:register_account_id, register_account_id)
          |> json(%{success: true, image_url: image_url})
   end
 

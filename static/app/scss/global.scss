@@ -80,6 +80,7 @@ span {
 }
 
 input[type="submit"].button,
+button[type="submit"].button,
 .button.is-submit {
   display: block;
   min-width: 8rem;

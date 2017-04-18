@@ -1,22 +1,24 @@
 <template>
-  <div class="mall-index" style="position: relative; margin: 1rem;">
+  <div class="mall-index">
     <scroller :on-load-more="loadmore" ref="scroller">
       <div class="content-goods">
-        <div class="is-multiline is-marginless has-text-centered goods-list">
-          <div v-for="item in goodsList" class="tile goods-item">
-            <div>
-              <figure class="image is-40vwx40vw" @click.prevent="showGoodsDetail(item.id)">
-                <img v-if="item.pic" :src="item.pic">
-                <img v-else src="https://placehold.it/300x300?text=400x400">
-              </figure>
-              <p class="subtitle is-marginless is-5 name">
-                {{item.name}}
-              </p>
-              <p class="subtitle is-marginless is-5 price">
-                <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
-              </p>
+        <div class="is-multiline is-marginless has-text-centered goods-list is-mobile">
+          <v-touch v-for="item in goodsList" @tap="showGoodsDetail(item.id)">
+            <div class="tile goods-item">
+              <div>
+                <figure class="image is-40vwx40vw">
+                  <img v-if="item.pic" :src="item.pic">
+                  <img v-else src="https://placehold.it/300x300?text=400x400">
+                </figure>
+                <p class="subtitle is-marginless is-5 name">
+                  {{item.name}}
+                </p>
+                <p class="subtitle is-marginless is-5 price">
+                  <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
+                </p>
+              </div>
             </div>
-          </div>
+          </v-touch>
         </div>
       </div>
     </scroller>

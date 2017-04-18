@@ -100,8 +100,7 @@ defmodule Acs.MallOrderController do
       end
   end
   def create_mall_order(conn, _) do
-    d "-----------conn: #{inspect conn.private, pretty: true}"
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
   defp _create_order_id(user_id, pay_type) do
     order_id = Utils.unix_timestamp <> String.slice(user_id, -4, 4)

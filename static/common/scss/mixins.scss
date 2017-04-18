@@ -19,19 +19,11 @@
 }
 
 @mixin border-radius($val) {
-  -webkit-border-radius: $val;
-  -moz-border-radius: $val;
   border-radius: $val;
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
   background-clip: padding-box;
 }
 
 @mixin display-flex($direction, $justify, $align) {
-  display: -webkit-flex;
-  -webkit-flex-direction: $direction;
-  -webkit-justify-content: $justify;
-  -webkit-align-items: $align;
   display: flex;
   flex-direction: $direction;
   justify-content: $justify;

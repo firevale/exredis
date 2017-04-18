@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="my-orders">
     <slider-nav :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div>
       <order-item v-for="order in orders" :order="order"></order-item>
@@ -21,6 +21,7 @@ import sliderNav from '../../components/sliderNav'
 import scroller from 'common/components/scroller'
 
 import orderItem from '../../components/orderItem'
+
 export default {
   components: {
     sliderNav,
@@ -67,9 +68,7 @@ export default {
       'setTransitionName'
     ]),
     switchMenu: function(item, index) {
-      this.$router.push({
-        name: item.value
-      })
+
     }
   }
 }

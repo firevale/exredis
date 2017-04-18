@@ -1,13 +1,11 @@
 @mixin slideIn($from, $to) {
   0% {
     opacity: 0.3;
-    -webkit-transform: translate3d($from, -100%, 0);
     transform: translate3d($from, -100%, 0);
   }
 
   100% {
     opacity: 1;
-    -webkit-transform: translate3d($to, -100%, 0);
     transform: translate3d($to, -100%, 0);
   }
 }
@@ -27,13 +25,11 @@
 @mixin slideOut($from, $to) {
   0% {
     opacity: 1;
-    -webkit-transform: translate3d($from, 0, 0);
     transform: translate3d($from, 0, 0);
   }
 
   100% {
     opacity: 0;
-    -webkit-transform: translate3d($to, 0, 0);
     transform: translate3d($to, 0, 0);
   }
 }
@@ -52,9 +48,6 @@
 
 $animation-time: 0.3s;
 @mixin animation($name) {
-  -webkit-animation-name: $name;
-  -webkit-animation-duration: $animation-time;
-  -webkit-animation-timing-function: ease;
   animation-name: $name;
   animation-duration: $animation-time;
   animation-timing-function: ease;
@@ -78,31 +71,23 @@ $animation-time: 0.3s;
 
 @keyframes linear-rotate {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
 
 @-webkit-keyframes linear-rotate {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
 
 .rotating {
-  -webkit-animation-name: linear-rotate;
-  -webkit-animation-duration: 1.2s;
-  -webkit-animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
   animation-name: linear-rotate;
   animation-duration: 1.2s;
   animation-timing-function: linear;

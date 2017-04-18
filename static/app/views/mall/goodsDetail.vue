@@ -2,7 +2,7 @@
     <div class="goods-detail is-marginless is-paddingless">
         <div class="flex-take-rest goods-content">
             <scroller ref="scroller">
-                <div class="columns is-multiline is-mobile has-text-centered">
+                <div class="columns is-multiline is-mobile has-text-centered has-bottom-line is-marginless is-paddingless">
                     <div class="column is-12">
                         <div class="card-image">
                             <figure class="image is-400x400">
@@ -11,27 +11,26 @@
                             </figure>
                         </div>
                     </div>
-                    <div class="column is-12">
+                    <div style="margin-top:0.2rem;" class="column is-12">
                         <h5 class="title is-5">
                             {{goods.name}}
                         </h5>
                     </div>
                     <div class="column is-12">
                         <h5 class="title is-5 goods-price">
-                            <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>（{{$t('mall.goods.postage')
-                            }}：
+                            <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
+                            <label>（{{$t('mall.goods.postage')}}：</label>
                             <label :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
                         </h5>
                     </div>
-                    <div class="column is-12">
+                    <div style="margin-bottom:0.7rem;" class="column is-12">
                         <h5 class="title is-5">
                             {{$t('mall.goods.stock') }}：{{goods.stock}}
                         </h5>
                     </div>
                 </div>
-                <hr>
-                <div class="columns is-multiline is-mobile has-text-centered">
-                    <div class="column is-12">
+                <div class="columns is-multiline is-mobile has-text-centered is-marginless is-paddingless">
+                    <div style="margin-top:0.7rem;" class="column is-12">
                         <h5 class="title is-5">
                             {{$t('mall.goods.description') }}
                         </h5>
@@ -43,8 +42,8 @@
                 </div>
             </scroller>
         </div>
-        <div class="flex-fixed-size goods-bottom">
-            <div v-if="goods.stock>0" class="columns is-multiline is-mobile">
+        <div v-if="goods.stock>0" class="flex-fixed-size goods-bottom">
+            <div class="columns is-multiline is-mobile">
                 <div class="column is-6 bottom-left">
                     <div class="left-content">
                         <a class="button is-large content-item" @click.prevent="quantityPlus">-</a>
@@ -57,7 +56,9 @@
                     <a class="button is-info is-large is-fullwidth goods-buyNow" @click.prevent="buyNow">{{$t('mall.goods.buyNow')}}</a>
                 </div>
             </div>
-            <div v-else class="goods-sellOut">
+        </div>
+        <div v-if="goods.stock<=0" class="flex-fixed-size goods-bottom">
+            <div class="goods-sellOut">
                 <div class="title is-5 has-text-centered">{{$t('mall.goods.soldOut')}}</div>
             </div>
         </div>

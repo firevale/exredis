@@ -1,11 +1,11 @@
 <template>
-  <div class="mall-index" style="position: relative; margin: 1rem;">
+  <div class="mall-index">
     <scroller :on-load-more="loadmore" ref="scroller">
       <div class="content-goods">
-        <div class="is-multiline is-marginless has-text-centered goods-list">
-          <div v-for="item in goodsList" class="tile goods-item">
+        <div class="is-multiline is-marginless has-text-centered goods-list is-mobile">
+          <v-touch class="tile goods-item" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item.id)">
             <div>
-              <figure class="image is-40vwx40vw" @click.prevent="showGoodsDetail(item.id)">
+              <figure class="image is-40vwx40vw">
                 <img v-if="item.pic" :src="item.pic">
                 <img v-else src="https://placehold.it/300x300?text=400x400">
               </figure>
@@ -16,7 +16,7 @@
                 <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
               </p>
             </div>
-          </div>
+          </v-touch>
         </div>
       </div>
     </scroller>

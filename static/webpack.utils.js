@@ -1,11 +1,11 @@
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-exports.cssLoaders = function (options) {
+exports.cssLoaders = function(options) {
   options = options || {}
   // generate loader string to be used with extract text plugin
-  function generateLoaders (loaders) {
-    var sourceLoader = loaders.map(function (loader) {
+  function generateLoaders(loaders) {
+    var sourceLoader = loaders.map(function(loader) {
       var extraParamChar
       if (/\?/.test(loader)) {
         loader = loader.replace(/\?/, '-loader?')
@@ -18,7 +18,7 @@ exports.cssLoaders = function (options) {
     }).join('!')
 
     if (options.extract) {
-      return ExtractTextPlugin.extract({fallback: 'vue-style-loader', use: sourceLoader})
+      return ExtractTextPlugin.extract({ fallback: 'vue-style-loader', use: sourceLoader })
     } else {
       return ['vue-style-loader', sourceLoader].join('!')
     }
@@ -37,14 +37,14 @@ exports.cssLoaders = function (options) {
 }
 
 // Generate loaders for standalone style files (outside of .vue)
-exports.styleLoaders = function (options) {
+exports.styleLoaders = function(options) {
   var output = []
   var loaders = exports.cssLoaders(options)
   for (var extension in loaders) {
     var loader = loaders[extension]
     output.push({
       test: new RegExp('\\.' + extension + '$'),
-      loader: loader
+      use: loader,
     })
   }
   return output

@@ -156,25 +156,14 @@ defmodule Acs.UserController do
     end
   end
 
-  def update_mobile(%Plug.Conn{private: %{acs_session_user: user}} = conn, 
+  def update_mobile(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
                     %{"mobile" => mobile, "verify_code" => verify_code} = params) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
         case RedisUser.find(mobile) do 
-          nil -> 
-            # update mobile, remove device_id if it's anonymous user
-            user = %{user | mobile: mobile, device_id: nil}
-            user = if is_bitstring(params["password"]) and String.length(params["password"]) >= 6 do 
-              %{user | encrypted_password: Utils.hash_password(params["password"])}
-            else 
-              user
-            end
-            RedisUser.save!(user)
-            conn |> delete_session(:bind_mobile_verify_code)
-                 |> delete_session(:bind_mobile_account_id)
-                 |> json(%{success: true})
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
+          nil -> _update_mobile(conn, user, mobile) 
+          %{id: ^user_id} -> _update_mobile(conn, user, mobile) 
+          _ -> conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -183,26 +172,27 @@ defmodule Acs.UserController do
   def update_mobile(conn, _) do 
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
+  defp _update_mobile(conn, user, mobile) do 
+    user = %{user | mobile: mobile, device_id: nil}
+    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do 
+      %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
+    else 
+      user
+    end
+    RedisUser.save!(user)
+    conn |> delete_session(:bind_mobile_verify_code)
+         |> delete_session(:bind_mobile_account_id)
+         |> json(%{success: true})
+  end
 
-  def update_email(%Plug.Conn{private: %{acs_session_user: user}} = conn, 
+  def update_email(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
                    %{"email" => email, "verify_code" => verify_code} = params) do
     case get_session(conn, :bind_email_verify_code) do
       ^verify_code ->
         case RedisUser.find(email) do 
-          nil -> 
-            # update mobile, remove device_id if it's anonymous user
-            user = %{user | email: email, device_id: nil}
-            user = if is_bitstring(params["password"]) and String.length(params["password"]) >= 6 do 
-              %{user | encrypted_password: Utils.hash_password(params["password"])}
-            else 
-              user
-            end
-            RedisUser.save!(user)
-            conn |> delete_session(:bind_email_verify_code)
-                 |> delete_session(:bind_email_account_id)
-                 |> json(%{success: true})
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
+          nil -> _update_email(conn, user, email)
+          %{id: ^user_id} -> _update_email(conn, user, email)
+          _ -> conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -210,6 +200,18 @@ defmodule Acs.UserController do
   end
   def update_email(conn, _) do 
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+  defp _update_email(conn, user, email) do 
+    user = %{user | email: email, device_id: nil}
+    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do 
+      %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
+    else 
+      user
+    end
+    RedisUser.save!(user)
+    conn |> delete_session(:bind_email_verify_code)
+         |> delete_session(:bind_email_account_id)
+         |> json(%{success: true})
   end
 
   def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id,

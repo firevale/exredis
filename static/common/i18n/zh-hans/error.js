@@ -8,6 +8,8 @@
 
      userNameTooLong: '用户名超长',
      accountInUse: '账号已被使用',
+     mobileInUse: '手机号码已被其他账号使用',
+     emailInUse: '电子邮箱已被其他账号使用',
      accountNotExist: '用户名或密码错误',
      invalidVerifyCode: '验证码输入有误',
      passwordNotMatch: '用户名或密码错误',

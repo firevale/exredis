@@ -21,8 +21,8 @@ export default {
         return await response.json()
       },
 
-      async createUser(account_id, password, verify_code, bind_user_id) {
-        let response = await Vue.http.post("/user/create_user", {account_id, password, verify_code, bind_user_id})
+      async createUser(account_id, password, verify_code) {
+        let response = await Vue.http.post("/user/create_user", {account_id, password, verify_code})
         return await response.json()
       },
 
@@ -51,8 +51,8 @@ export default {
         return await response.json()
       },
 
-      async updateCaptcha() {
-        let response = await Vue.http.post("/reset_register_captcha", {})
+      async updateCaptcha(params) {
+        let response = await Vue.http.post("/reset_register_captcha", params)
         return await response.json()
       }
     }

@@ -18,8 +18,9 @@
         <span>{{ errorHint }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing" />
-        <span v-show="processing" class="icon progress-icon rotating"></span>
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.loginPage.btnSubmit') }}
+        </button>
       </div>
       <div class="row-login">
         <router-link class="pull-left" :to="{ name: 'registerStep1' }">{{ $t('account.loginPage.registration') }}</router-link>

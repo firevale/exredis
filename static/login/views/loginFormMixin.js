@@ -27,7 +27,7 @@ export default {
 
   computed: {
     errorHint: function() {
-      if (typeof this.$v == 'object' && this.$v.$invalid) {
+      if (typeof this.$v == 'object' && this.$v.$error) {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {

@@ -2,7 +2,7 @@
   <div class="login-box">
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
       <p v-if="!isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputCaptchaVerifyCode') }}: </p>
       <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
@@ -22,12 +22,12 @@
         <span>{{ errorHint }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"
-        />
-        <span v-show="processing" class="icon progress-icon rotating"></span>
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.registerPage.nextStep') }}
+        </button>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a class="pull-right" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </form>
   </div>
@@ -62,12 +62,10 @@ export default {
       verifyCode: '',
       errorMessage: '',
       processing: false,
-      bindUserId: ''
     }
   },
 
   created: function() {
-    this.bindUserId = this.$route.query.bindUserId
     this.accountId = atob(this.$route.query.accountId)
 
     if (utils.isValidEmail(this.accountId)) {
@@ -105,7 +103,7 @@ export default {
     ...mapActions(['setCaptchaUrl']),
 
     updateCaptcha: async function() {
-      let result = await this.$acs.updateCaptcha()
+      let result = await this.$acs.updateCaptcha({register_account_id: this.accountId})
       if (result.success) {
         this.setCaptchaUrl(result.image_url)
       }
@@ -151,7 +149,6 @@ export default {
                 query: {
                   accountId: btoa(this.accountId),
                   verifyCode: btoa(this.verifyCode),
-                  bindUserId: this.$route.query.bindUserId,
                 }
               })
             } else {

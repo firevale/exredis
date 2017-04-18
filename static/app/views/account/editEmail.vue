@@ -31,7 +31,7 @@
         </div>
       </div>
       <p v-show="errorHint" class="help is-danger"> <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
-      <v-touch tag="button" type="submit" class="button is-info is-submit" :class="{'is-disabled': $v.$invalid,
+      <v-touch tag="button" type="submit" class="button is-info is-submit is-loading" :class="{'is-disabled': $v.$invalid,
         'is-loading': processing}">
         {{ $t('account.bind') }}
       </v-touch>

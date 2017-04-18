@@ -23,55 +23,55 @@
   </div>
 </template>
 <script>
-  import Vue from '../../vue-installed'
-  import scroller from 'common/components/scroller'
+import Vue from '../../vue-installed'
+import scroller from 'common/components/scroller'
 
-  export default {
-    components: {
-      scroller
-    },
-    data: function () {
-      return {
-        canGoBack: false,
-        inApp: window.acsConfig.inApp,
-        goodsList: [],
-        page: 0,
-        total: 1,
-        recordsPerPage: 12,
-        postRecords: 0
+export default {
+  components: {
+    scroller
+  },
+  data: function() {
+    return {
+      canGoBack: false,
+      inApp: window.acsConfig.inApp,
+      goodsList: [],
+      page: 0,
+      total: 1,
+      recordsPerPage: 12,
+      postRecords: 0
+    }
+  },
+  methods: {
+    resetScroller: function() {
+      this.page = 0
+      this.total = 1
+      this.goodsList = []
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
       }
     },
-    methods: {
-      resetScroller: function () {
-        this.page = 0
-        this.total = 1
-        this.goodsList = []
-        if (this.$refs.scroller) {
-          this.$refs.scroller.$emit('reset')
-        }
-      },
-      loadmore: async function () {
-        let appId = this.$router.currentRoute.params.appId
-        let result = await this.$acs.getActiveGoodsPaged(appId, this.page + 1, this.recordsPerPage)
+    loadmore: async function() {
+      let appId = this.$router.currentRoute.params.appId
+      let result = await this.$acs.getActiveGoodsPaged(appId, this.page + 1, this.recordsPerPage)
 
-        if (result.success) {
-          this.goodsList = this.page == 0 ? result.goodses : this.goodsList.concat(result.goodses)
-          this.total = result.total
-          this.page = this.page + 1
+      if (result.success) {
+        this.goodsList = this.page == 0 ? result.goodses : this.goodsList.concat(result.goodses)
+        this.total = result.total
+        this.page = this.page + 1
 
-          if (this.$refs.scroller && this.page >= this.total) {
-            this.$refs.scroller.$emit('all-loaded')
-          }
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
         }
-      },
-      showGoodsDetail: function (goodsId) {
-        this.$router.push({
-          name: 'goodsDetail',
-          params: {
-            goodsId: goodsId
-          },
-        })
       }
+    },
+    showGoodsDetail: function(goodsId) {
+      this.$router.push({
+        name: 'goodsDetail',
+        params: {
+          goodsId: goodsId
+        },
+      })
     }
   }
+}
 </script>

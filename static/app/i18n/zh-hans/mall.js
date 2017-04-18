@@ -16,6 +16,7 @@ export default {
     fields: {
       id: '订单号',
       postage: '邮费',
+      with_postage: '含邮费',
       total: '合计',
       status: '订单状态',
       inserted_at: '下单时间',
@@ -43,11 +44,11 @@ export default {
     }
   },
   mine: {
-    myOrder:{
-      tabs:{
+    myOrder: {
+      tabs: {
         all: '全部',
-        unPay:'待付款',
-        unReceived:'未收货'
+        unPay: '待付款',
+        unReceived: '未收货'
       }
     }
   },

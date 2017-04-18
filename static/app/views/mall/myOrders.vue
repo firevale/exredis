@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <slider-nav :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
-    <div>
-      <!--<order-item v-for="order in orders" :order="order"></order-item>-->
+  <div class="my-orders">
+    <slider-nav class="flex-fixed-size" :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <div class="flex-fixed-rest">
+      <order-item v-for="order in orders" :order="order"></order-item>
     </div>
   </div>
 </template>
@@ -21,6 +21,7 @@ import sliderNav from '../../components/sliderNav'
 import scroller from 'common/components/scroller'
 
 import orderItem from '../../components/orderItem'
+
 export default {
   components: {
     sliderNav,
@@ -67,9 +68,7 @@ export default {
       'setTransitionName'
     ]),
     switchMenu: function(item, index) {
-      this.$router.push({
-        name: item.value
-      })
+
     }
   }
 }

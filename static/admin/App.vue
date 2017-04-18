@@ -22,8 +22,6 @@ import {
   mapActions
 } from 'vuex'
 
-require('admin/scss/admin.scss')
-
 export default {
   components: {
     'navbar': Navbar,

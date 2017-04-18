@@ -23,7 +23,10 @@ const processResponse = async(Vue, response) => {
     }
 
     return {
-      success: false
+      success: false,
+      i18n_message: result.i18n_message,
+      i18n_message_object: result.i18n_message_object,
+      message: result.message
     }
   }
 }
@@ -268,6 +271,10 @@ export default {
 
       updateUserEmail(params) {
         return post(Vue, "/user/update_email", params)
+      },
+
+      updateUserNickname(params) {
+        return post(Vue, "/user/update_nickname", params)
       },
 
       fetchMyOrders(type, page, records_per_page) {

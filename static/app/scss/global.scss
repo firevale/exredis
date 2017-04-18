@@ -59,7 +59,7 @@ body:not(.in-app) {
   }
 }
 
-span {
+span,p {
   &.is-primary {
     color: $primary;
   }

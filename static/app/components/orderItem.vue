@@ -27,7 +27,12 @@
       </div>
     </div>
     <footer class="card-footer">
-      <span class="card-footer-item has-text-right"> sdfsdfsdf</span>
+      <p class="card-footer-item has-text-right is-primary"> {{$t('mall.order.fields.total') }}:
+        <span :class="['currency', order.currency]">{{order.price | formatPrice}}</span>
+        ({{$t('mall.order.fields.with_postage')}}
+        <span :class="['currency', order.currency]">{{order.postage | formatPrice}}</span>
+        )
+      </p>
     </footer>
   </div>
 </template>

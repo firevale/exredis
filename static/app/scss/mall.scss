@@ -113,8 +113,17 @@
     margin-bottom: .5rem;
   }
   .card {
+    box-shadow: none;
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
     .card-footer-item.has-text-right {
       justify-content: flex-end;
+    }
+    &:not(:last-child):after {
+      @include bottom-line(.5rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
     }
   }
 }

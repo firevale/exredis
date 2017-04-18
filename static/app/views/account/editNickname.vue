@@ -67,7 +67,7 @@ export default {
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.updateUserNickname({
-          nickname: this.nickname
+          nickname: utils.formatEmojiChars(this.nickname)
         })
         if (result.success) {
           this.updateUserNickname(this.nickname)

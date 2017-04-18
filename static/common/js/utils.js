@@ -141,3 +141,7 @@ export const chunkify = (a, n, balanced) => {
 
   return out;
 }
+
+export const formatEmojiChars = val => {
+  return val.replace(/\ud83d[\ude00-\ude4f]/g, match => encodeURIComponent(match))
+}

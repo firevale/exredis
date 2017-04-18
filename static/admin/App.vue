@@ -73,6 +73,3 @@ export default {
   ])
 }
 </script>
-<style lang="scss">
-  @import "admin/scss/admin";
-</style>

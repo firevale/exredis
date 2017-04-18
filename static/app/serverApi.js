@@ -272,6 +272,10 @@ export default {
         return post(Vue, "/user/update_email", params)
       },
 
+      updateUserNickname(params) {
+        return post(Vue, "/user/update_nickname", params)
+      },
+
       fetchMyOrders(type, page, records_per_page) {
         return post(Vue, '/mall_actions/fetch_my_orders', {
           type,

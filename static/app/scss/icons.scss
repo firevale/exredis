@@ -80,6 +80,9 @@
   &.icon-envelope {
     background-image: url("~assets/icon-envelope@2x.png");
   }
+  &.icon-edit {
+    background-image: url("~assets/edit@2x.png");
+  }
   &.icon-circle {
     background-image: url("data:image/svg+xml;utf8,<svg width=\"1792\" height=\"1792\" viewBox=\"0 0 1792 1792\" \
                            xmlns='http://www.w3.org/2000/svg'> \
@@ -182,6 +185,9 @@ only screen and (min-resolution: 2.25dppx) {
     }
     &.icon-envelope {
       background-image: url("~assets/icon-envelope@3x.png");
+    }
+    &.icon-edit {
+      background-image: url("~assets/edit@3x.png");
     }
   }
 }

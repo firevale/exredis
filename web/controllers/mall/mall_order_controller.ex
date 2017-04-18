@@ -54,4 +54,59 @@ defmodule Acs.MallOrderController do
     order = Repo.one(query)
     conn |> json(%{success: true, order: order})
   end
+
+  # create_mall_order
+  def create_mall_order(%Plug.Conn{private: %{acs_session_user_id: user_id,
+                                              acs_platform: platform,
+                                              acs_device_id: device_id}} = conn,
+                    %{"goods_id" => goods_id,
+                      "quantity" => quantity,
+                      "pay_type" => pay_type,
+                      "user_address_id" => user_address_id}) do
+
+      with %MallGoods{} = goods <- Repo.get(MallGoods, goods_id),
+        order_id <- _create_order_id(user_id, pay_type)
+      do
+        final_price = goods.price * quantity + goods.postage
+        if(quantity <= 0 or final_price < 0) do
+          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+        else
+          ip = conn.remote_ip |> Tuple.to_list |> Enum.join(".")
+
+          Repo.transaction(fn ->
+            # add order
+            order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip, 
+                    "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
+                    "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
+                    "app_id": goods.app_id, "user_id": user_id, "user_address_id": user_address_id}
+
+            {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
+
+            # add order detail
+            order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price, 
+                          "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
+
+            {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
+
+            conn |>json(%{success: true, order: mall_order, order_detail: mall_order_detail, i18n_message: "mall.order.addSuccess"})
+            :ok
+          end)
+        end
+        
+      else
+        nil ->
+          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+      end
+  end
+  def create_mall_order(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+  defp _create_order_id(user_id, pay_type) do
+    order_id = Utils.unix_timestamp <> String.slice(user_id, -4, 4)
+    order_id = case pay_type do
+      "wechat" -> "w" <> order_id
+      "alipay" -> "a" <> order_id
+    end
+    order_id
+  end
 end

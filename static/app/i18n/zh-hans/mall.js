@@ -12,6 +12,7 @@ export default {
     totalPrice: '合计：{price}（含邮费 {postage}）',
     wechatPay: '微信支付',
     aliPay: '支付宝',
+    addSuccess: '订单添加成功',
     fields: {
       id: '订单号',
       postage: '邮费',

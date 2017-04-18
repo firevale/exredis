@@ -4,7 +4,7 @@
       <p class="control has-icons-left has-icons-right">
         <input class="input is-large" type="text" :placeholder="$t('mall.order.addressPlaceholder')">
         <span class="icon is-medium is-left">
-        <i class="fa fa-pencil"></i>
+        <i class="fa fa-email"></i>
         </span>
         <span class="icon is-medium is-right">
         <i class="fa fa-angle-right"></i>
@@ -13,15 +13,17 @@
     </div>
     <div class="columns" v-if="goods">
       <div class="column is-parent is-one-third">
-        <figure class="image" style="display: block">
-          <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
-        </figure>
+        <center>
+          <figure class="image" style="display: block">
+            <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
+          </figure>
+        </center>
       </div>
       <div class="column is-parent is-vertical">
         <article class="tile is-child">
           <p class="subtitle is-4">{{ goods.name}}</p>
           <p class="subtitle is-4" style="color:#ff6600;">{{ getPrice(goods.price) }}</p>
-          <p class="subtitle is-4">X {{ this.quantity }}</p>
+          <p class="subtitle is-4">x {{ this.quantity }}</p>
           <p class="subtitle is-4" style="color:#ff6600;">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goods.postage)})
             }}
           </p>
@@ -29,10 +31,10 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-3">
+      <div class="column is-half">
         <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
       </div>
-      <div class="column is-3">
+      <div class="column is-half">
         <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
       </div>
     </div>

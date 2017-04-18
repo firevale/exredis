@@ -1,31 +1,29 @@
 <template>
-<div class="login-box">
-  <form @submit.prevent="handleSubmit">
-    <div class="row-login">
-      <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
-    </div>
-    <p class="code-tip" v-html="verifyCodeSentHint"> </p>
-    <div class="row-login">
-      <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode"
-          autocomplete="off" class="outsideText" name="verifyCode" @input="handleValidation" />
-      <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex"
-          @click.prevent="sendVerifyCode">
-      </input>
-      <span class="icon addon-icon icon-check"></span>
-    </div>
-    <p class="errors">
-      <span v-if="errorHint" class="icon error-sign"></span>
-      <span>{{ errorHint }}</span>
-    </p>
-    <div class="row-login">
-      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')"
-          :disabled="processing" />
-      <span v-show="processing" class="icon progress-icon rotating"></span>
-    </div>
-  </form>
-</div>
+  <div class="login-box">
+    <form @submit.prevent="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
+      </div>
+      <p class="code-tip" v-html="verifyCodeSentHint"> </p>
+      <div class="row-login">
+        <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
+          class="outsideText" name="verifyCode" @input="handleValidation" />
+        <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex" @click.prevent="sendVerifyCode">
+        </input>
+        <span class="icon addon-icon icon-check"></span>
+      </div>
+      <p class="errors">
+        <span v-if="errorHint" class="icon error-sign"></span>
+        <span>{{ errorHint }}</span>
+      </p>
+      <div class="row-login">
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.registerPage.nextStep') }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
-
 <script>
 import * as utils from 'common/js/utils'
 

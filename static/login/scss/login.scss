@@ -1,7 +1,7 @@
 @import "./variables";
 @import "common/scss/mixins";
 @import "common/scss/reset";
-
+@import "common/scss/animation";
 html {
   font-size: $middle;
 }
@@ -23,6 +23,12 @@ body.in-app {
 
 body.wp8 {
   background: #000;
+}
+
+body.ios, body.android {
+  input {
+    -webkit-appearance: none;
+  }
 }
 
 body.in-app *:not(input) {
@@ -123,16 +129,11 @@ hr {
   }
   .row-login {
     position: relative;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -ms-flex-direction: row;
-    -webkit-flex-direction: row;
     flex-direction: row;
-    -ms-flex-pack: justify;
-    -webkit-justify-content: space-between;
     justify-content: space-between;
     margin: 0;
+    border: none;
     p.title {
       -ms-flex: 1;
       -webkit-flex: 1;
@@ -159,7 +160,7 @@ hr {
     input[name=verifyCode].sibling:not(:focus) {
       border-top: none;
     }
-    input[type=submit] {
+    button[type="submit"] {
       color: $white;
       background: $blue;
       border: none;
@@ -171,6 +172,30 @@ hr {
       -ms-flex: 1;
       -webkit-flex: 1;
       flex: 1;
+    }
+    button[type="submit"].button {
+      flex: 1;
+      position: relative;
+      &.is-loading {
+        opacity: 0.5;
+        pointer-events: none;
+        &:after {
+          border: 2px solid #dbdbdb;
+          border-radius: 50%;
+          border-right-color: transparent;
+          border-top-color: transparent;
+          content: "";
+          display: block;
+          width: 1em;
+          height: 1em;
+          top: 50%;
+          right: 1em;
+          margin-left: -0.5em;
+          margin-top: -0.5em;
+          position: absolute !important;
+          animation: linear-rotate 1s infinite;
+        }
+      }
     }
     .inside-input {
       position: absolute;
@@ -261,39 +286,6 @@ span.nav-icon {
   &.pull-right {
     right: .8rem;
   }
-}
-
-@keyframes linear-rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-@-webkit-keyframes linear-rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-.rotating {
-  -webkit-animation-name: linear-rotate;
-  -webkit-animation-duration: 1.2s;
-  -webkit-animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
-  animation-name: linear-rotate;
-  animation-duration: 1.2s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
 }
 
 span.progress-icon {
@@ -634,4 +626,28 @@ only screen and (min-resolution: 2.25dppx) {
 .native-button {
   font-size: .9rem !important;
   margin-top: .6rem !important;
+}
+
+@media only screen and (-o-min-device-pixel-ratio: 5/4),
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and (min--moz-device-pixel-ratio: 1.25),
+only screen and (min-device-pixel-ratio: 1.25),
+only screen and (min-resolution: 1.25dppx) {
+  body.ios {
+    input {
+      border-width: 0.5px;
+    }
+  }
+}
+
+@media only screen and (-o-min-device-pixel-ratio: 9/4),
+only screen and (-webkit-min-device-pixel-ratio: 2.25),
+only screen and (min--moz-device-pixel-ratio: 2.25),
+only screen and (min-device-pixel-ratio: 2.25),
+only screen and (min-resolution: 2.25dppx) {
+  body.ios {
+    input {
+      border-width: 0.3px;
+    }
+  }
 }

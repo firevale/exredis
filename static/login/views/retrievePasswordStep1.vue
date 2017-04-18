@@ -1,28 +1,27 @@
 <template>
-<div class="login-box">
-  <form @submit.prevent="handleSubmit">
-    <div class="row-login">
-      <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
-    </div>
-    <p class="code-tip"> </p>
-    <div class="row-login">
-      <input type="text" class="outsideText" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
-          name="user" @input="handleValidation" />
-      <span class="icon addon-icon icon-user"></span>
-    </div>
-    <p class="errors">
-      <span v-if="errorHint" class="icon error-sign"></span>
-      <span>{{ errorHint }}</span>
-    </p>
-    <div class="row-login">
-      <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')"
-          :disabled="processing" />
-      <span v-show="processing" class="icon progress-icon rotating"></span>
-    </div>
-  </form>
-</div>
+  <div class="login-box">
+    <form @submit.prevent="handleSubmit">
+      <div class="row-login">
+        <p class="title">{{ $t('account.loginPage.retrievePasswordTitle') }}</p>
+      </div>
+      <p class="code-tip"> </p>
+      <div class="row-login">
+        <input type="text" class="outsideText" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
+          @input="handleValidation" />
+        <span class="icon addon-icon icon-user"></span>
+      </div>
+      <p class="errors">
+        <span v-if="errorHint" class="icon error-sign"></span>
+        <span>{{ errorHint }}</span>
+      </p>
+      <div class="row-login">
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.registerPage.nextStep') }}
+        </button>
+      </div>
+    </form>
+  </div>
 </template>
-
 <script>
 import {
   mapGetters,
@@ -30,7 +29,9 @@ import {
 } from 'vuex'
 
 import loginFormMixin from './loginFormMixin'
-import {accountId} from './loginValidation'
+import {
+  accountId
+} from './loginValidation'
 
 export default {
   mixins: [loginFormMixin],
@@ -53,7 +54,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'loginAccount', 'invalidAccountIdErrorMessage' 
+      'loginAccount', 'invalidAccountIdErrorMessage'
     ]),
   },
 

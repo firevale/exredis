@@ -27,6 +27,7 @@ defmodule Acs.MallOrderController do
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile], 
                 details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              where: order.app_id == ^app_id,
               order_by: [desc: order.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
@@ -110,5 +111,30 @@ defmodule Acs.MallOrderController do
       "alipay" -> "a" <> order_id
     end
     order_id
+  end
+  
+  def fetch_my_orders(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+      %{"page" => page, "records_per_page" => records_per_page}) do
+    fetch_my_orders(conn,user_id, page, records_per_page)
+  end
+  def fetch_my_orders(conn, _params) do
+    fetch_my_orders(conn,0, 1, 100)
+  end
+  defp fetch_my_orders(conn, user_id, page, records_per_page) do
+    total = Repo.one!(from order in MallOrder, select: count(1))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from order in MallOrder,
+              left_join: details in assoc(order, :details),
+              left_join: user in assoc(order, :user),
+              select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+                user: [:id, :nickname, :mobile], 
+                details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              order_by: [desc: order.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              preload: [user: user, details: details]
+    orders = Repo.all(query)
+    conn |> json(%{success: true, orders: orders, total: total_page})
   end
 end

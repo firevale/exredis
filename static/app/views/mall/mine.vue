@@ -1,6 +1,6 @@
 <template>
   <div class="mall-mine">
-    <router-link class="level has-bottom-line" :to="{name: 'myOrders'}" tag="div">
+    <router-link class="level is-mobile has-bottom-line" :to="{name: 'myOrders'}" tag="div">
       <div class="level-left">
         <h5 class="subtitle is-5">{{$t('mall.titles.myOrders')}}</h5>
       </div>
@@ -8,7 +8,7 @@
         <h5 class="subtitle is-4">></h5>
       </div>
     </router-link>
-    <router-link class="level has-bottom-line" :to="{name: 'myAddresses'}" tag="div">
+    <router-link class="level is-mobile has-bottom-line" :to="{name: 'myAddresses'}" tag="div">
       <div class="level-left">
         <h5 class="subtitle is-5">{{$t('mall.titles.myAddresses')}}</h5>
       </div>
@@ -16,7 +16,6 @@
         <h5 class="subtitle is-4">></h5>
       </div>
     </router-link>
-  </div>
   </div>
 </template>
 <script>
@@ -26,16 +25,47 @@ import {
   mapActions
 } from 'vuex'
 
+import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
 import * as filter from 'common/js/filters'
 
+import sliderNav from '../../components/sliderNav'
+
 export default {
+  components: {
+    sliderNav
+  },
   mounted: async function() {},
   data: function() {
-    return {}
+    return {
+      menus: [{
+          text: this.$t('customerService.commonIssues.title'),
+          value: 'commonIssues'
+        }, {
+          text: this.$t('customerService.contactService.title'),
+          value: 'contactService'
+        },
+        {
+          text: this.$t('customerService.myService.title'),
+          value: 'myService'
+        }
+      ]
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'transitionName',
+    ]),
   },
   methods: {
-
+    ...mapActions([
+      'setTransitionName'
+    ]),
+    switchMenu: function(item, index) {
+      this.$router.push({
+        name: item.value
+      })
+    }
   }
 }
 </script>

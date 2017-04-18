@@ -101,9 +101,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'appHash', 'goods'
-    ]),
   },
 
   mounted: async function() {
@@ -121,39 +118,7 @@ export default {
         return 'https://placehold.it/32x32?text=' + app.name
       }
     },
-
-    getAppName: function(order) {
-      let app = this.appHash[order.app_id]
-      return app.name
-    },
-
-    getGoodsIcon: function(order) {
-      let goodsInfo = this.goods[`${order.app_id}-${order.goods_id}`]
-      if (goodsInfo && goodsInfo.icon) {
-        return goodsInfo.icon
-      } else {
-        return 'https://placehold.it/32x32?text=未上传'
-      }
-    },
-
-    getGoodsName: function(order) {
-      let goodsInfo = this.goods[`${order.app_id}-${order.goods_id}`]
-      if (goodsInfo && goodsInfo.name) {
-        return goodsInfo.name
-      } else {
-        return order.goods_name
-      }
-    },
-
-    getAppCurrency: function(order) {
-      let app = this.appHash[order.app_id]
-      if (app && app.currency) {
-        return app.currency
-      } else {
-        return ''
-      }
-    },
-
+   
     getOrderTransactionId: function(order) {
       if (order.transaction_id.startsWith('empty.')) {
         return ''
@@ -212,7 +177,7 @@ export default {
     fetchOrders: async function(page, recordsPerPage) {
       this.loading = true
       let result = await this.$acs.fetchMallOrders({
-        app_id: '',
+        app_id: this.$route.params.appId,
         page,
         records_per_page: recordsPerPage
       })

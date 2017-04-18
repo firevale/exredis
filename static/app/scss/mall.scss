@@ -3,6 +3,8 @@ label.CNY::before {
 }
 
 .mall-index {
+  position: relative;
+  margin: 1rem;
   .content-goods {
     width: 100%;
     margin-left: auto;
@@ -39,7 +41,7 @@ label.CNY::before {
   .content-goods .price {
     font-weight: 400;
     padding-top: 0.56rem;
-    color: $lightred;
+    color: $primary;
   }
 }
 
@@ -48,6 +50,10 @@ label.CNY::before {
   input::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
     margin: 0;
+  }
+  h5,
+  label {
+    font-weight: 400;
   }
   .goods-content {
     margin: 1rem;
@@ -80,7 +86,7 @@ label.CNY::before {
     }
   }
   .goods-price {
-    color: $lightred;
+    color: $primary;
   }
   .goods-buyNow {
     height: 4.3rem;
@@ -88,11 +94,11 @@ label.CNY::before {
   .goods-sellOut {
     height: 100%;
     background-color: $bottom-line-dark;
-    div{
-      color: white; 
-      height:4.5rem; 
-      padding-top:1.25rem; 
-      font-weight:400
+    div {
+      color: $white;
+      height: 4.5rem;
+      padding-top: 1.25rem;
+      font-weight: 400
     }
   }
 }

@@ -5,6 +5,7 @@ defmodule Acs.MallOrderController do
   require Floki
 
   plug :fetch_app_id
+  plug :fetch_access_token 
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
@@ -26,6 +27,7 @@ defmodule Acs.MallOrderController do
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile], 
                 details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              where: order.app_id == ^app_id,
               order_by: [desc: order.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
@@ -99,7 +101,7 @@ defmodule Acs.MallOrderController do
       end
   end
   def create_mall_order(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
   defp _create_order_id(user_id, pay_type) do
     order_id = Utils.unix_timestamp <> String.slice(user_id, -4, 4)
@@ -108,5 +110,30 @@ defmodule Acs.MallOrderController do
       "alipay" -> "a" <> order_id
     end
     order_id
+  end
+  
+  def fetch_my_orders(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
+      %{"page" => page, "records_per_page" => records_per_page}) do
+    fetch_my_orders(conn,user_id, page, records_per_page)
+  end
+  def fetch_my_orders(conn, _params) do
+    fetch_my_orders(conn,0, 1, 100)
+  end
+  defp fetch_my_orders(conn, user_id, page, records_per_page) do
+    total = Repo.one!(from order in MallOrder, select: count(1))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from order in MallOrder,
+              left_join: details in assoc(order, :details),
+              left_join: user in assoc(order, :user),
+              select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+                user: [:id, :nickname, :mobile], 
+                details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              order_by: [desc: order.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              preload: [user: user, details: details]
+    orders = Repo.all(query)
+    conn |> json(%{success: true, orders: orders, total: total_page})
   end
 end

@@ -80,11 +80,20 @@ export default {
     getGoodsDetail: async function() {
       this.goodsId = this.$route.params.goodsId
       this.quantity = this.$route.params.quantity
-      let result = await this.$acs.getGoodsDetail(this.goodsId)
-      if (result.success) {
-        this.goods = result.goods
-        this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
-          100).toFixed(2)
+      if (this.goodsId && this.quantity) {
+        let result = await this.$acs.getGoodsDetail(this.goodsId)
+        if (result.success) {
+          this.goods = result.goods
+          this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
+            100).toFixed(2)
+        }
+      } else {
+        this.$router.push({
+          name: 'goodsIndex',
+          params: {
+            appId: this.$route.params.appId
+          },
+        })
       }
     },
 

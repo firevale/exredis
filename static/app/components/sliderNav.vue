@@ -67,6 +67,7 @@ export default {
 @import "../scss/variables";
 .slider-nav {
   .nav {
+    $item-width:13.2rem;
     margin-bottom: .5rem;
     border-bottom: .5rem solid $bottom-line-light;
     height: 4.8rem;
@@ -87,10 +88,12 @@ export default {
       }
       .nav-item {
         color: $black;
-        padding: 1rem 2rem;
-        margin: auto 2rem;
+        /*padding: 1rem 2rem;*/
+        /*margin: auto 2rem;*/
         font-size: 1.3rem;
+        width: $item-width;
         &.is-tab {
+          padding: 0;
           border-bottom-width: 0;
           &:hover {
             color: $primary;
@@ -106,7 +109,7 @@ export default {
               width: 0;
               height: 1.5rem;
               top: 1rem;
-              right: -2rem;
+              right: 0rem;
               content: "";
               border-right: 0.12rem solid $bottom-line-light;
             }

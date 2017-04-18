@@ -30,11 +30,11 @@
     </div>
     <div class="columns">
       <div class="column is-3">
-        <a class="button is-info is-large is-fullwidth" @click.prevent="wechatPay">{{$t('mall.order.wechatPay')}}</a>
+        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
       </div>
       <div class="column is-3">
-        <a class="button is-info is-large is-fullwidth" @click.prevent="aliPay">{{$t('mall.order.aliPay')}}</a>
-      </div>      
+        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
+      </div>
     </div>
   </div>
 </template>
@@ -85,11 +85,35 @@ export default {
           100).toFixed(2)
       }
     },
-    wechatPay: function() {
 
+    onPrepay: async function(payType) {
+      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType)
+      if (result.success) {
+        let order_id = result.order.id
+        switch (payType) {
+          case 'alipay':
+            this.alipayRedirect(order_id)
+            break;
+          case 'wechat':
+            this.wechatPay(order_id)
+            break;
+        }
+      }
     },
-    aliPay: function() {
-
+    onWechatPay: async function(order_id) {
+      let result = await this.$acs.wechatPrepay(order_id)
+      if (result.success) {
+        nativeApi.openWechatPay(JSON.stringify(result))
+      }
+    },
+    alipayRedirect: async function(order_id) {
+      let result = await this.$acs.alipayRedirect(order_id,
+        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?merchant_order_id=${order_id}`,
+        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`
+      )
+      if (result.success) {
+        window.location = result.redirect_uri
+      }
     },
   },
   watch: {

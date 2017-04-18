@@ -28,3 +28,12 @@
     padding-right: 2.25em;
   }
 }
+
+input {
+  &.button.is-submit.is-loading {
+    font-size: 20rem;
+    &:before {
+      content: 'loading'
+    }
+  }
+}

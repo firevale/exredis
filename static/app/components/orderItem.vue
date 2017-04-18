@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!--<div>
     <div class="level">
       <div class="level-left">
         <h5 class="subtitle is-5">{{$t('mall.order.fileds.id)}}:{{order.id}}</h5>
@@ -8,7 +8,7 @@
         aaaaa
       </div>
     </div>
-  </div>1
+  </div>-->
 </template>
 <script>
 import {

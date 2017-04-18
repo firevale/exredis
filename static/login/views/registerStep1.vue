@@ -2,7 +2,7 @@
   <div class="login-box">
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
-        <p class="title">{{ bindUserId? $t('account.loginPage.titleBind') : $t('account.loginPage.titleRegister') }}</p>
+        <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
       <p class="code-tip"> {{ registerAccountIdPlaceholder }}: </p>
       <div class="row-login">
@@ -15,18 +15,17 @@
         <span>{{ errorHint }}</span>
       </p>
       <div class="row-login">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.registerPage.nextStep')" :disabled="processing"
-        />
-        <span v-show="processing" class="icon progress-icon rotating"></span>
+        <button type="submit" class="button" :class="{'is-loading': processing}">
+          {{ $t('account.registerPage.nextStep') }}
+        </button>
       </div>
       <div class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
-        <a class="pull-right" v-show="!bindUserId" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
+        <a class="pull-right" @click.prevent="$router.back()">{{ $t('account.registerPage.goLoginPage') }} </a>
       </div>
     </form>
   </div>
 </template>
 <script>
-
 import * as utils from 'common/js/utils'
 
 import {
@@ -51,12 +50,10 @@ export default {
       accountId: '',
       errorMessage: '',
       processing: false,
-      bindUserId: '',
     }
   },
 
   created: function() {
-    this.bindUserId = this.$route.query.bindUserId
     this.accountId = this.registerAccount
   },
 
@@ -80,7 +77,6 @@ export default {
             if (result.exists) {
               this.setErrorMessage(this.$t('error.server.accountInUse'))
             } else {
-              console.log('account is not in use', this.accountId)
               this.setRegisterAccountId(this.accountId)
               if (window.acsConfig.isMobileAccountSupported && utils.isValidMobileNumber(this.accountId)) {
                 try {
@@ -90,7 +86,6 @@ export default {
                       name: 'registerStep2',
                       query: {
                         accountId: btoa(this.accountId),
-                        bindUserId: this.$route.query.bindUserId
                       }
                     })
                   } else {
@@ -104,7 +99,6 @@ export default {
                   name: 'registerStep2',
                   query: {
                     accountId: btoa(this.accountId),
-                    bindUserId: this.$route.query.bindUserId
                   }
                 })
               }

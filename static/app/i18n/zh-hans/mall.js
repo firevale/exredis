@@ -12,6 +12,7 @@ export default {
     totalPrice: '合计：{price}（含邮费 {postage}）',
     wechatPay: '微信支付',
     aliPay: '支付宝',
+    addSuccess: '订单添加成功',
   },
   mine: {
 
@@ -20,7 +21,7 @@ export default {
     goodsDetail: '商品详情',
     mallOrder: '订单详情',
     mine: '我的',
-    myOrder: '我的订单',
-    myAddress: '我的地址',
+    myOrders: '我的订单',
+    myAddresses: '我的地址',
   }
 }

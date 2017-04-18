@@ -23,6 +23,7 @@ defmodule Acs.Repo.Migrations.CreateUser do
     create index(:users, [:email], unique: true)
     create index(:users, [:mobile], unique: true)
     create index(:users, [:device_id], unique: true)
+    create index(:users, [:nickname])
   end
 
 end

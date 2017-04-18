@@ -214,6 +214,24 @@ defmodule Acs.UserController do
          |> json(%{success: true})
   end
 
+  def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+                      %{"nickname" => nickname} = params) do
+    query = from u in Acs.User,
+            select: count(1),
+            where: u.nickname == ^nickname and u.id != ^user_id
+    case Repo.one!(query) do 
+      0 -> 
+        user = %{user | nickname: nickname}
+        RedisUser.save!(user)
+        conn |> json(%{success: true})
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})
+    end
+  end
+  def update_nickname(conn, _) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
   def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id,
                                                    acs_device_id: device_id,
                                                    acs_platform: platform}} = conn, _) do

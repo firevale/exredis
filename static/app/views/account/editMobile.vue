@@ -149,6 +149,8 @@ export default {
             }))
             this.$router.back()
           })
+        } else {
+          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
         }
         this.processing = false
       }

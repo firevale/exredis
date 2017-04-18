@@ -31,7 +31,7 @@
         </div>
       </div>
       <p v-show="errorHint" class="help is-danger"> <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
-      <v-touch tag="button" type="submit" class="button is-info is-submit is-loading" :class="{'is-disabled': $v.$invalid,
+      <v-touch tag="button" type="submit" class="button is-info is-submit" :class="{'is-disabled': $v.$invalid,
         'is-loading': processing}">
         {{ $t('account.bind') }}
       </v-touch>
@@ -142,13 +142,15 @@ export default {
         })
         if (result.success) {
           this.updateUserEmail(this.email)
-          
+
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.emailBindSuccess', {
               email: this.email
             }))
             this.$router.back()
           })
+        } else {
+          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
         }
         this.processing = false
       }

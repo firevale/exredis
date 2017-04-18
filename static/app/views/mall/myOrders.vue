@@ -1,8 +1,10 @@
 <template>
   <div class="my-orders">
     <slider-nav class="flex-fixed-size" :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
-    <div class="flex-fixed-rest">
-      <order-item v-for="order in orders" :order="order"></order-item>
+    <div class="flex-take-rest" style="position: relative">
+      <scroller :on-load-more="loadmore" ref="scroller">
+        <order-item v-for="order in orders" :order="order"></order-item>
+      </scroller>
     </div>
   </div>
 </template>
@@ -27,15 +29,6 @@ export default {
     sliderNav,
     scroller,
     orderItem
-  },
-  mounted: async function() {
-    let result = await this.$acs.fetchMyOrders('all', this.page + 1, this.records_per_page)
-    if (result.success) {
-      this.orders = result.orders
-
-      this.total = result.total
-      this.page = this.page + 1
-    }
   },
   data: function() {
     return {
@@ -68,8 +61,29 @@ export default {
       'setTransitionName'
     ]),
     switchMenu: function(item, index) {
+      this.resetScroller()
+      this.page = 0
+      this.type = item.value
+      this.orders = []
+    },
+    resetScroller: function() {
+      if (this.$refs.scroller) {
+        this.$refs.scroller.$emit('reset')
+      }
+    },
+    loadmore: async function() {
+      let result = await this.$acs.fetchMyOrders(this.type, this.page + 1, this.records_per_page)
 
-    }
-  }
+      if (result.success) {
+        this.orders = this.page == 0 ? result.orders : this.orders.concat(result.orders)
+        this.total = result.total
+        this.page = this.page + 1
+
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
+        }
+      }
+    },
+  },
 }
 </script>

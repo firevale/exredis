@@ -31,7 +31,7 @@ var plugins = [
     options: {
       postcss: [
         require('autoprefixer')({
-          browsers: ['last 3 versions']
+          browsers: ['last 3 version']
         }),
       ]
     }
@@ -104,13 +104,49 @@ module.exports = {
   module: {
     rules: [{
       test: /\.vue$/,
-      loader: 'vue-loader',
+      use: 'vue-loader',
       options: require('./vue-loader.conf'),
     }, {
       test: /\.js$/,
       use: 'babel-loader',
       include: projectRoot,
       exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
+    }, {
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader']
+      })
+    }, {
+      test: /\.scss$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader', 'postcss-loader', 'sass-loader']
+      })
+    }, {
+      test: /\.sass$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: 'css-loader!postcss-loader!sass-loader?indentedSyntax'
+      })
+    }, {
+      test: /\.less$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: 'css-loader!postcss-loader!less-loader'
+      })
+    }, {
+      test: /\.styl$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: 'css-loader!postcss-loader!stylus-loader'
+      })
+    }, {
+      test: /\.stylus$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: 'css-loader!postcss-loader!stylus-loader'
+      })
     }, {
       test: /\.(jpe?g|png|gif|svg)$/,
       use: "url-loader?limit=4096&name=/images/[name].[ext]"
@@ -120,7 +156,7 @@ module.exports = {
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       use: "file-loader?name=/fonts/[name].[ext]"
-    }, ].concat(utils.styleLoaders({ sourceMap: false, extract: true, }))
+    }, ]
   },
 
   plugins: plugins,

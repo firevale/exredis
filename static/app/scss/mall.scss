@@ -49,11 +49,13 @@ label.CNY::before {
     -webkit-appearance: none !important;
     margin: 0;
   }
+  .goods-content {
+    margin: 1rem;
+    position: relative;
+  }
   .goods-bottom {
     height: 4.3rem;
     background-color: $blue;
-    margin-left: 0.25rem;
-    margin-right: 0.25rem
   }
   .subtitle {
     font-weight: 400;
@@ -84,6 +86,20 @@ label.CNY::before {
     height: 4.3rem;
   }
   .goods-sellOut {
-    padding: 0.2rem
+    height: 100%;
+    background-color: $bottom-line-dark;
+    div{
+      color: white; 
+      height:4.5rem; 
+      padding-top:1.25rem; 
+      font-weight:400
+    }
+  }
+}
+
+.mall-mine {
+  .title {
+    // font-weight: 400;
+    // color:$black
   }
 }

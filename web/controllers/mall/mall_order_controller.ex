@@ -23,15 +23,13 @@ defmodule Acs.MallOrderController do
     query = from order in MallOrder,
               left_join: details in assoc(order, :details),
               left_join: user in assoc(order, :user),
-              left_join: address in assoc(order, :user_address),
-              select: map(order, [:id, :goods_name, :status, :price, :final_price, :postage, :inserted_at,
+              select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile], 
-                details: [:id, :goods_name, :goods_pic, :price, :amount],
-                user_address: [:id, :name, :mobile, :area, :address, :area_code] ]),
+                details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
               order_by: [desc: order.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              preload: [user: user, user_address: address, details: details]
+              preload: [user: user, details: details]
     orders = Repo.all(query)
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
@@ -46,7 +44,7 @@ defmodule Acs.MallOrderController do
               left_join: user in assoc(o, :user),
               left_join: address in assoc(o, :user_address),
               left_join: op_logs in assoc(o, :op_logs),
-              select: map(o, [:id, :goods_name, :status, :price, :final_price, :postage, :inserted_at,
+              select: map(o, [:id, :goods_name, :status, :price, :final_price, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile, :email],
                 details: [:id, :goods_name, :goods_pic, :price, :amount],
                 user_address: [:id, :name, :mobile, :area, :address, :area_code],

@@ -256,6 +256,19 @@ export default {
           payType
         })
       },
+
+      updateUserMobileNumber(params) {
+        return post(Vue, "/user/update_mobile", params)
+      },
+
+      sendBindEmailVerifyCode(email) {
+        return post(Vue, "/send_email_bind_verify_code", { email })
+      },
+
+      updateUserEmail(params) {
+        return post(Vue, "/user/update_email", params)
+      },
+
     }
   }
 }

@@ -38,6 +38,24 @@ export const setUserProfile = ({
   commit(types.SET_USER_PROFILE, user)
 }
 
+export const updateUserMobile = ({
+  commit
+}, mobile) => {
+  commit(types.UPDATE_USER_MOBILE, mobile)
+}
+
+export const updateUserEmail = ({
+  commit
+}, email) => {
+  commit(types.UPDATE_USER_EMAIL, email)
+}
+
+export const updateUserNickname = ({
+  commit
+}, nickname) => {
+  commit(types.UPDATE_USER_NICKNAME, nickname)
+}
+
 export const updateUserPostCount = ({
   commit
 }, postCount) => {

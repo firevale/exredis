@@ -1,5 +1,10 @@
-label.CNY::before {
-  content: '¥ ';
+.currency {
+  &.CNY:before {
+    content: '¥';
+  }
+  &.USD:before {
+    content: '$';
+  }
 }
 
 .mall-index {
@@ -103,9 +108,13 @@ label.CNY::before {
   }
 }
 
-.mall-mine {
-  .title {
-    // font-weight: 400;
-    // color:$black
+.my-orders {
+  .media p:not(:last-child) {
+    margin-bottom: .5rem;
+  }
+  .card {
+    .card-footer-item.has-text-right {
+      justify-content: flex-end;
+    }
   }
 }

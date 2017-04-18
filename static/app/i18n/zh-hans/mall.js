@@ -43,11 +43,11 @@ export default {
     }
   },
   mine: {
-    myOrder:{
-      tabs:{
+    myOrder: {
+      tabs: {
         all: '全部',
-        unPay:'待付款',
-        unReceived:'未收货'
+        unPay: '待付款',
+        unReceived: '未收货'
       }
     }
   },

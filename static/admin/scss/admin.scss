@@ -420,8 +420,13 @@ label.file-upload {
   }
 }
 
-.currency.CNY:before {
-  content: '¥';
+.currency {
+  &.CNY:before {
+    content: '¥';
+  }
+  &.USD:before {
+    content: '$';
+  }
 }
 
 .file-upload-modal {

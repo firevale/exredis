@@ -6,7 +6,6 @@ var merge = require('webpack-merge')
 
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
@@ -28,6 +27,15 @@ var plugins = [
   new webpack.DefinePlugin(consts.defines({
     isProduction: isProduction(),
   })),
+  new webpack.LoaderOptionsPlugin({
+    options: {
+      postcss: [
+        require('autoprefixer')({
+          browsers: ['last 3 versions']
+        }),
+      ]
+    }
+  }),
   new webpack.optimize.CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',
@@ -94,25 +102,25 @@ module.exports = {
   cache: isDev(),
 
   module: {
-    loaders: [{
+    rules: [{
       test: /\.vue$/,
       loader: 'vue-loader',
       options: require('./vue-loader.conf'),
     }, {
       test: /\.js$/,
-      loader: 'babel-loader',
+      use: 'babel-loader',
       include: projectRoot,
       exclude: [new RegExp(`node_modules\\${path.sep}(?!vue-bulma-.*)`)],
     }, {
       test: /\.(jpe?g|png|gif|svg)$/,
-      loader: "url-loader?limit=4096&name=/images/[name].[ext]"
+      use: "url-loader?limit=4096&name=/images/[name].[ext]"
     }, {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
+      use: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "file-loader?name=/fonts/[name].[ext]"
-    }, ].concat(utils.styleLoaders({ sourceMap: false, extract: isProduction(), }))
+      use: "file-loader?name=/fonts/[name].[ext]"
+    }, ].concat(utils.styleLoaders({ sourceMap: false, extract: true, }))
   },
 
   plugins: plugins,
@@ -135,14 +143,14 @@ if (isProduction()) {
       canPrint: true
     }),
     new UglifyJSPlugin({
-      sourceMap: false,
+      sourceMap: true,
       compress: {
         warnings: false
       },
       comments: false,
       beautify: true
     })
-   )
+  )
 } else {
   module.exports.devtool = '#cheap-source-map'
 }

@@ -1,21 +1,20 @@
 <template>
-<div class="g-doc">
-  <div ref="gCon" class="g-con">
-    <span v-show="canGoBack" class="icon nav-icon icon-back show-in-app" @click.prevent="$router.back()">
+  <div class="g-doc">
+    <div ref="gCon" class="g-con">
+      <span v-show="canGoBack" class="icon nav-icon icon-back show-in-app" @click.prevent="$router.back()">
       </span>
-    <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose">
+      <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose">
       </span>
-    <div class="g-mask">
-      <transition :name="transitionName">
-        <router-view> </router-view>
-      </transition>
-    </div>
-    <div ref="msg">
+      <div class="g-mask">
+        <transition :name="transitionName">
+          <router-view> </router-view>
+        </transition>
+      </div>
+      <div ref="msg">
+      </div>
     </div>
   </div>
-</div>
 </template>
-
 <script>
 import {
   mapGetters,
@@ -62,3 +61,6 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import "login/scss/login";
+</style>

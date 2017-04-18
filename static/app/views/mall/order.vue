@@ -98,9 +98,9 @@ export default {
     },
 
     onPrepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType)
+      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, 1)
       if (result.success) {
-        let order_id = result.order.id
+        let order_id = result.order_id
         switch (payType) {
           case 'alipay':
             this.alipayRedirect(order_id)
@@ -111,9 +111,10 @@ export default {
         }
       }
     },
-    onWechatPay: async function(order_id) {
+    wechatPay: async function(order_id) {
       let result = await this.$acs.wechatPrepay(order_id)
       if (result.success) {
+        console.log("--------prepay ok:" + result.prepay_id)
         nativeApi.openWechatPay(JSON.stringify(result))
       }
     },

@@ -123,7 +123,7 @@
                     this.quantity = 1
             },
             buyNow: function () {
-                acs.checkIsLogin(_ => {
+                acs.checkMallIsLogin(_ => {
                     this.$router.push({
                         name: 'mallOrder',
                         params: {

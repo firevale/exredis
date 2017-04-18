@@ -8,6 +8,7 @@ defmodule Acs.MallOrderController do
   plug :fetch_access_token 
   plug :fetch_session_user_id
   plug :fetch_session_user
+  plug :fetch_device_id
   plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
 
   # fetch_malls
@@ -73,11 +74,14 @@ defmodule Acs.MallOrderController do
         if(quantity <= 0 or final_price < 0) do
           conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         else
-          ip = conn.remote_ip |> Tuple.to_list |> Enum.join(".")
+          ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+            [val | _] -> val
+            _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+          end
 
           Repo.transaction(fn ->
             # add order
-            order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip, 
+            order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
                     "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
                     "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
                     "app_id": goods.app_id, "user_id": user_id, "user_address_id": user_address_id}
@@ -89,12 +93,9 @@ defmodule Acs.MallOrderController do
                           "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
 
             {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
-
-            conn |>json(%{success: true, order: mall_order, order_detail: mall_order_detail, i18n_message: "mall.order.addSuccess"})
-            :ok
           end)
+          conn |>json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
         end
-        
       else
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.illegal"})
@@ -104,7 +105,7 @@ defmodule Acs.MallOrderController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
   defp _create_order_id(user_id, pay_type) do
-    order_id = Utils.unix_timestamp <> String.slice(user_id, -4, 4)
+    order_id = Integer.to_string(Utils.unix_timestamp) <> String.slice(Integer.to_string(user_id), -4, 4)
     order_id = case pay_type do
       "wechat" -> "w" <> order_id
       "alipay" -> "a" <> order_id

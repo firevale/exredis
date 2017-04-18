@@ -5,6 +5,7 @@ defmodule SDKWechat do
   alias Utils.Httpc
   alias Acs.Repo
   alias Acs.AppOrder
+  alias Acs.MallOrder
   alias Acs.RedisApp
 
   @wechat_config      Application.get_env(:acs, :wechat)
@@ -16,6 +17,48 @@ defmodule SDKWechat do
   @trade_type         "APP"
 
   @status_paid AppOrder.Status.paid()
+
+  def mallprepay(order_id, wechat_info, ip_address, notify_url) do
+    case Repo.get(MallOrder, order_id) do
+      order = %MallOrder{} ->
+        # update order info (paid channel)
+        MallOrder.changeset(order, %{paid_type: "wechat"}) |> Repo.update!
+
+        params = %{
+          appid: wechat_info.app_id,
+          body: order.goods_name,
+          mch_id: wechat_info.partnerid,
+          nonce_str: Utils.nonce,
+          notify_url: notify_url,
+          out_trade_no: order.id,
+          spbill_create_ip: ip_address,
+          total_fee: order.final_price,
+          trade_type: @trade_type,
+        }
+
+        req_params = params_with_sign(params, wechat_info.sign_key)
+
+        req_data = """
+          <xml>
+            #{Enum.map_join(req_params, "", fn({k, v}) -> "<#{k}>#{v}</#{k}>" end)}
+          </xml>
+        """
+
+        response = Httpc.post(@prepay_url, body: req_data)
+
+        d "wechat prepay, response: #{inspect response.body, pretty: true}"
+        with true <- Httpc.success?(response),
+             {:ok, prepay_id} <- get_prepay_id(response.body)
+        do
+          resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
+          {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
+        else
+          _ -> {:error, "get prepay id failed"}
+        end
+      _ ->
+        {:error, "order not found"}
+    end
+  end
 
   def prepay(order_id, wechat_info, ip_address, notify_url) do
     case Repo.get(AppOrder, order_id) do

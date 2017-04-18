@@ -165,7 +165,7 @@ export default {
       },
 
       wechatPrepay(payment_order_id) {
-        return post(Vue, '/api/pay/wechat/prepay', {
+        return post(Vue, '/api/pay/wechat/mallprepay', {
           payment_order_id
         })
       },
@@ -249,11 +249,12 @@ export default {
         return post(Vue, "/send_mobile_bind_verify_code", { mobile })
       },
 
-      createMallOrder(goods_id, quantity, pay_type) {
+      createMallOrder(goods_id, quantity, pay_type, user_address_id) {
         return post(Vue, '/mall_actions/create_mall_order', {
           goods_id,
           quantity,
-          pay_type
+          pay_type,
+          user_address_id
         })
       },
 

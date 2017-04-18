@@ -39,6 +39,38 @@ defmodule Acs.WechatController do
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
+  # mallprepay
+  def mallprepay(%Plug.Conn{private: %{acs_app: %RedisApp{
+                        sdk_bindings: %{wechat: wechat_info}}}} = conn,
+             %{"payment_order_id" => order_id} = _params) do
+
+    notify_url = "#{url(conn)}/api/pay/wechat/notify"
+
+    # handling request via nginx reverse proxy
+    ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+      [val | _] -> val
+      _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+    end
+
+    case SDKWechat.mallprepay(order_id, wechat_info, ip_address, notify_url) do
+      {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
+        conn |> json(%{
+          success: true,
+          partnerid: partnerid,
+          prepay_id: prepay_id,
+          noncestr: noncestr,
+          timestamp: timestamp,
+          sign: sign
+        })
+      _ ->
+        conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+    end
+  end
+  def mallprepay(conn, _params) do
+    d "req : #{inspect conn.private, pretty: true}"
+    conn |> json(%{success: false, message: "invalid request params"})
+  end
+
   # notify
   def notify(conn, _params) do
     with {:ok, body, _} <- read_body(conn),

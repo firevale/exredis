@@ -281,10 +281,15 @@ defmodule Acs.MallController do
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
     goods = Repo.one(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
+    add_goods_click(goods_id,1)
     conn |> json(%{success: true, goods: goods})
   end
   def get_goods_detail(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+  defp add_goods_click(goods_id, click) do
+    goods = Repo.get(MallGoods, goods_id)
+    MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
   end
   
 end

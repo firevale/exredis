@@ -18,7 +18,8 @@
                     </div>
                     <div class="column is-12">
                         <h5 class="title is-5 goods-price">
-                            <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>（{{$t('mall.goods.postage') }}：
+                            <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>（{{$t('mall.goods.postage')
+                            }}：
                             <label :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
                         </h5>
                     </div>
@@ -104,7 +105,7 @@
                 if (this.quantity <= 1)
                     this.quantity = 1
                 else
-                    this.quantity = parseInt(this.quantity) - 1
+                    this.quantity = this.quantity - 1
             },
             quantityReduce: function () {
                 if (this.goods.stock <= this.quantity)
@@ -112,10 +113,13 @@
                 else if (this.quantity >= 99)
                     this.quantity = 99
                 else
-                    this.quantity = parseInt(this.quantity) + 1
+                    this.quantity = this.quantity + 1
             },
             quantityChange: function () {
-
+                if (this.quantity >= 99)
+                    this.quantity = 99
+                else if (this.quantity <= 0)
+                    this.quantity = 1
             },
             buyNow: function () {
                 this.$router.push({

@@ -5,6 +5,7 @@ defmodule Acs.MallOrderController do
   require Floki
 
   plug :fetch_app_id
+  plug :fetch_access_token 
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
@@ -99,6 +100,7 @@ defmodule Acs.MallOrderController do
       end
   end
   def create_mall_order(conn, _) do
+    d "-----------conn: #{inspect conn.private, pretty: true}"
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp _create_order_id(user_id, pay_type) do

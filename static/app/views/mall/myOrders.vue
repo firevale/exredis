@@ -2,7 +2,7 @@
   <div>
     <slider-nav :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div>
-      <order-item v-for="order in orders" :order="order"></order-item>
+      <!--<order-item v-for="order in orders" :order="order"></order-item>-->
     </div>
   </div>
 </template>

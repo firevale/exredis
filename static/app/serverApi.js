@@ -246,7 +246,15 @@ export default {
       },
 
       sendBindMobileVerifyCode(mobile) {
-        return post(Vue, "/send_mobile_bind_verify_code", {mobile})
+        return post(Vue, "/send_mobile_bind_verify_code", { mobile })
+      },
+
+      createMallOrder(goods_id, quantity, payType) {
+        return post(Vue, '/mall_actions/create_mall_order', {
+          goods_id,
+          quantity,
+          payType
+        })
       },
     }
   }

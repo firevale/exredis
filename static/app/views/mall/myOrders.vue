@@ -1,7 +1,7 @@
 <template>
   <div class="my-orders">
-    <slider-nav :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
-    <div>
+    <slider-nav class="flex-fixed-size" :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <div class="flex-fixed-rest">
       <order-item v-for="order in orders" :order="order"></order-item>
     </div>
   </div>

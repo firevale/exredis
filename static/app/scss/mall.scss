@@ -110,12 +110,16 @@
 
 .my-orders {
   .media p:not(:last-child) {
-    margin-bottom: .5rem;
+    margin-bottom: .2rem;
   }
   .card {
     box-shadow: none;
+    font-size: 1.25rem;
     &:not(:last-child) {
       margin-bottom: 1rem;
+    }
+    .card-header-title {
+      font-weight: 400;
     }
     .card-footer-item.has-text-right {
       justify-content: flex-end;

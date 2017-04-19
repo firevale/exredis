@@ -54,6 +54,7 @@ defmodule Acs.Mixfile do
         :bamboo_smtp,
         :plugsnag,
         :floki,
+        :exmoji,
         :mix,
     ]]
   end
@@ -81,19 +82,20 @@ defmodule Acs.Mixfile do
      {:poolboy, "~> 1.5"},
      {:logger_file_backend, ">= 0.0.9"},
      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
-     {:comeonin, "~> 2.6"},
+     {:comeonin, "~> 3.0"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
      {:exsyslog, "~> 1.0"},
-     {:poison, "~> 3.0", override: true},
+     {:poison, "~> 3.1", override: true},
      {:sweet_xml, "~> 0.6"},
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},
      {:oauther, "~> 1.1"},
      {:timex, "~> 3.1", override: true},
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
-     {:floki, "~> 0.15.0"},
+     {:floki, "~> 0.17"},
+     {:exmoji, "~> 0.2"},
      {:distillery, "~> 1.3"},
     ]
   end

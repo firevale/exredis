@@ -43,9 +43,9 @@ export default {
         } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
           return this.$t('error.validation.requirePassword')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('error.validation.invalidPasswordLength')
+          return this.$t('error.validation.minPasswordLength')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('error.validation.invalidPasswordLength')
+          return this.$t('error.validation.maxPasswordLength')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
           return this.$t('error.validation.requireVerifyCode')
         } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {

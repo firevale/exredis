@@ -33,6 +33,8 @@ defmodule Acs.MallRouter do
     post "/get_mall_detail", MallController, :get_mall_detail
     post "/get_goods_detail", MallController, :get_goods_detail
 
+    post "/get_addresses_paged", MallController, :get_addresses_paged
+
     post "/create_mall_order", MallOrderController, :create_mall_order
     
     post "/fetch_order_list", MallOrderController, :fetch_order_list

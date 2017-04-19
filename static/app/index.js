@@ -7,18 +7,12 @@ import locales from './i18n'
 import store from './store'
 import routerMap from './routes'
 
+import {i18n} from './vue-i18n'
 import * as filters from 'common/js/filters'
 
 require('app/scss/app.scss')
 
-Vue.config.lang = window.acsConfig.locale || 'zh-hans'
-
-Object.keys(locales).forEach(function (lang) {
-  Vue.locale(lang, locales[lang])
-})
-
 Object.keys(filters).forEach(function (k) {
-  console.log('add filter: ', k)
   Vue.filter(k, filters[k])
 })
 
@@ -39,6 +33,7 @@ router.afterEach(route => {
 })
 
 let App = new Vue({
+  i18n,
   router,
   store,
 }).$mount('#app')

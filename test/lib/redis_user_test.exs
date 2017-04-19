@@ -37,7 +37,9 @@ defmodule Acs.RedisUserTest do
     end
 
     email = "xiaobin@firevale.com"
-    with user = %RedisUser{} <- RedisUser.find(email), do: RedisUser.delete(user.id)
+    with user = %RedisUser{} <- RedisUser.find(email) do
+      RedisUser.delete!(user.id)
+    end
 
     user = RedisUser.create!(email, "123456")
     assert user.id == 0
@@ -104,6 +106,15 @@ defmodule Acs.RedisUserTest do
     json_str = %{id: 10001, email: "xxx@firevale.com", scope: "xxx", unlock_token: "yyyy", timezone: "", picture_url: ""} |> JSON.encode!
     user = RedisUser.from_json(json_str)
     assert user.email == "xxx@firevale.com"
+  end
+
+  test "parse account id type" do
+    assert RedisUser.parse_account_id("18101329172") == :mobile
+    assert RedisUser.parse_account_id("18002344990") == :mobile
+    assert RedisUser.parse_account_id("xiaobin@firevale.com") == :email
+    assert RedisUser.parse_account_id("idfa.xaadsfadsfadsfadsfadsf") == :device
+    assert RedisUser.parse_account_id("idfv.xaadsfadsfadsfadsfadsf") == :device
+    assert RedisUser.parse_account_id("android_id.xaadsfadsfadsfadsfadsf") == :device
   end
 
 end

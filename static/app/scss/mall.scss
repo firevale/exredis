@@ -141,3 +141,32 @@
     }
   }
 }
+
+.my-addresses {
+  .card {
+    box-shadow: none;
+    font-size: 1.25rem;
+    &:not(:last-child) {
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .subtitle {
+      font-weight: 400;      
+    }
+    .card-header-icon {
+      padding-right: 1.5rem;
+    }
+    &:not(:last-child):after {
+      @include bottom-line(1.0rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
+    }
+  }
+  .addresses-content {
+    margin-top: 0.5rem;
+    position: relative;
+  }
+  .addresses-bottom {
+    height: 4rem;
+  }
+}

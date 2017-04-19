@@ -68,7 +68,7 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import Vue from 'admin/vue-i18n'
+import Vue from 'vue'
 
 import replyQuestion from 'admin/components/dialog/customerService/replyQuestion'
 const replyQuestionDialog = Vue.extend(replyQuestion)

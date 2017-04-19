@@ -49,8 +49,14 @@ export default {
   validations: {
     nickname: {
       required,
-      minLength: minLength(2),
-      maxLength: maxLength(20),
+      minLength: utils.minLength(4),
+      maxLength: utils.maxLength(20),
+      valid: function(val) {
+        return !(/\%/.test(val))
+      },
+      emoji: function(val) {
+        return !(/\ud83d[\ude00-\ude4f]/.test(val))
+      }
     }
   },
 

@@ -21,7 +21,7 @@ elseif key_field == 'device' then
 elseif key_field == 'sdk' then 
   user_id = redis.call('get', binding_index_key..key_value)
 elseif key_field == 'id' then 
-  user_id = key_field
+  user_id = key_value
 end
 
 if user_id then 

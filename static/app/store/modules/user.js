@@ -17,7 +17,7 @@ const mutations = {
 
   [types.SET_USER_PROFILE](state, user) {
     state.id = user.id
-    state.nickname = decodeURIComponent(user.nickname)
+    state.nickname = user.nickname
     state.avatar_url = user.avatar_url
     state.inserted_at = user.inserted_at
     state.is_anonymous = user.is_anonymous

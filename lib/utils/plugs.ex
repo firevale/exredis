@@ -9,8 +9,10 @@ defmodule Acs.Plugs do
   alias   Acs.Repo
   alias   Acs.AdminUser
   alias   Acs.ForumManager
+
   require Gettext
   require Redis
+  require Exmoji.Scanner
 
   def no_cache(%Plug.Conn{} = conn, _options) do
     conn |> delete_resp_header("cache-control")
@@ -478,6 +480,23 @@ defmodule Acs.Plugs do
       raw -> 
         {resp_headers, resp_body} = :erlang.binary_to_term(raw)
         %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
+    end
+  end
+
+  def no_emoji(conn, opt) do 
+    case opt[:param_name] do 
+      param_name when is_bitstring(param_name) ->
+        case conn.params[param_name] do 
+          param_value when is_bitstring(param_value) ->
+            case Exmoji.Scanner.scan(param_value) do 
+              [] -> 
+                conn
+              _ ->
+                conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt 
+            end
+          _ -> conn
+        end
+      _ -> conn
     end
   end
 

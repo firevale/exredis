@@ -74,7 +74,7 @@ import {
   openNotification,
 } from 'admin/miscellaneous'
 
-import Vue from 'admin/vue-i18n'
+import Vue from 'vue'
 
 import goodsInfoDialog from 'admin/components/dialog/app/goodsInfo'
 const goodsInfoDialogComponent = Vue.extend(goodsInfoDialog)

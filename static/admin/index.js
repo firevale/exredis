@@ -1,9 +1,11 @@
 import 'babel-polyfill'
 
-import Vue from 'admin/vue-i18n'
+import Vue from 'vue'
+import {i18n} from 'admin/vue-i18n'
 import Resource from 'vue-resource'
 import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
+import VueI18n from 'vue-i18n'
 import Vuelidate from 'vuelidate'
 
 import App from './App.vue'
@@ -19,6 +21,7 @@ import VueQuillEditor from 'common/components/quillEditor'
 
 require('admin/scss/admin.scss')
 
+Vue.use(VueI18n)
 Vue.use(Vuelidate)
 Vue.use(Resource)
 Vue.use(NProgress)
@@ -46,6 +49,7 @@ Object.keys(filters).forEach(key => {
 })
 
 const app = new Vue({
+  i18n,
   router,
   store,
   nprogress,

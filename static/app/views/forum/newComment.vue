@@ -38,8 +38,6 @@ const touchMap = new WeakMap()
 
 import {
   required,
-  minLength,
-  maxLength
 } from 'vuelidate/lib/validators'
 
 export default {
@@ -78,7 +76,7 @@ export default {
   validations: {
     content: {
       required: required,
-      minLength: minLength(5),
+      minLength: utils.minLength(5),
     }
   },
 

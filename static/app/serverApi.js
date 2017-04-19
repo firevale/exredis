@@ -300,19 +300,17 @@ export default {
         return post(Vue, '/mall_actions/fetch_order', params)
       },
 
-<<<<<<< HEAD
       getGoodsStock(goods_id) {
         return post(Vue, '/mall_actions/get_goods_stock', { goods_id })
       },
       
-=======
       getAddressesPaged(page, records_per_page) {
         return post(Vue, '/mall_actions/get_addresses_paged', {
           page,
           records_per_page
         })
       },
->>>>>>> a595d34109b0462411916f30519d1d95af557d15
+      
     }
   }
 }

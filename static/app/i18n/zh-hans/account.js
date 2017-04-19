@@ -33,5 +33,6 @@ export default {
     mobileBindSuccess: '已绑定手机{mobile}',
     emailBindSuccess: '已绑定邮箱{email}',
     nicknameUpdated: '昵称已成功修改',
+    residentInfoUpdated: '实名制信息已成功更新',
   }
 }

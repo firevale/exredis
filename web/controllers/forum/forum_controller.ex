@@ -11,6 +11,7 @@ defmodule Acs.ForumController do
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
+  plug :no_emoji, [param_name: "title"] when action == :add_post
 
   # fetch_forums
   def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -316,7 +317,7 @@ defmodule Acs.ForumController do
               preload: [sections: s]
 
       with %Forum{} <- Repo.one(query),
-            {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
+        {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
       do
           Elasticsearch.index(%{
             index: "forum",

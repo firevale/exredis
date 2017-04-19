@@ -64,6 +64,7 @@ defmodule Acs.RedisUser do
           %__MODULE__{email: String.downcase(account_id),
                       encrypted_password: Utils.hash_password(password),
                       nickname: gen_nickname()}
+
         :mobile -> 
           %__MODULE__{mobile: account_id,
                       encrypted_password: Utils.hash_password(password),
@@ -138,15 +139,17 @@ defmodule Acs.RedisUser do
       %{device_id: ^device_id} = user ->
         case parse_account_id(account_id) do 
           :email ->
+            d "bind_anonymous_user, account_id: #{account_id}, bind to email"
             new_user = %{user | email: account_id,
+                                nickname: gen_nickname(), 
                                 encrypted_password: Utils.hash_password(password),
-                                nickname: gen_nickname(),
                                 device_id: nil}
             save!(new_user)
           :mobile ->
+            d "bind_anonymous_user, account_id: #{account_id}, bind to mobile"
             new_user = %{user | mobile: account_id,
+                                nickname: gen_nickname(), 
                                 encrypted_password: Utils.hash_password(password),
-                                nickname: gen_nickname(),
                                 device_id: nil}
             save!(new_user)    
           _ -> 
@@ -443,7 +446,7 @@ defmodule Acs.RedisUser do
   def parse_account_id(account_id) when is_bitstring(account_id) do
     cond do
       Regex.match?(~r/^yyh\.([a-zA-Z0-9\-_]+)\.yyh@([^@]+)/, account_id) -> :sdk
-      Regex.match?(~r/([^@]+)@([^@]+)/, account_id) -> :email
+      Regex.match?(~r/^([^@]+)@([^@]+)/, account_id) -> :email
       Regex.match?(~r/^(idfa|idfv|android_id)\.(.*)/, account_id) -> :device
       Regex.match?(~r/^1\d{10}$/, account_id) -> :mobile
       Regex.match?(~r/^\d+$/, account_id) -> :id

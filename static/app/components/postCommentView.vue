@@ -15,7 +15,7 @@
           <span class="is-grey" style="margin-right: 0.5rem">
             <timeago :since="(commentData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ decodeURIComponent(commentData.user.nickname) }}</span>
+          <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>
         <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>

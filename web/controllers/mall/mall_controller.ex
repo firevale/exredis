@@ -273,6 +273,18 @@ defmodule Acs.MallController do
     conn |> json(%{success: true, goodses: goodses, total: total_page})
   end
 
+  def get_goods_stock(conn,%{"goods_id" => goods_id})do
+    case Repo.one(from g in MallGoods, select: map(g, [:stock]), where: g.id == ^goods_id and g.active == true) do
+      %MallGoods{} = goods ->
+        conn |> json(%{success: true, stock: goods.stock})
+      _ ->
+        conn |> json(%{success: true, stock: 0}) 
+    end
+  end
+  def get_goods_stock(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
   def get_mall_detail(conn,%{"app_id" =>app_id})do
     mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
     conn |> json(%{success: true, mall: mall})
@@ -294,4 +306,19 @@ defmodule Acs.MallController do
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
   end
   
+   def get_addresses_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"page" => page,"records_per_page" => records_per_page})do    
+    queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
+    total = Repo.one!(queryTotal)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from us in UserAddress,
+              where: us.user_id == ^user_id,
+              order_by: [desc: us.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(us, [:id, :name, :mobile, :address, :is_default])
+
+    addresses = Repo.all(query)
+    conn |> json(%{success: true, addresses: addresses, total: total_page})
+  end
 end

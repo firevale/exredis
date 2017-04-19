@@ -1,5 +1,6 @@
 import * as types from './mutation-types'
-import Vue from 'admin/vue-i18n'
+import Vue from 'vue'
+
 import {
   processAjaxError
 } from 'admin/miscellaneous'

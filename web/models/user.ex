@@ -38,8 +38,8 @@ defmodule Acs.User do
     |> cast(params, [:id, :email, :mobile, :encrypted_password, :device_id, :nickname, :resident_id, :resident_name,
                      :gender, :age, :avatar_url])
     |> validate_required([:id])
-    |> validate_format(:email, ~r/[^@]+@[^@+]/)
-    |> validate_format(:mobile, ~r/^\d+/)
+    |> validate_format(:email, ~r/^[^@]+@[^@]+$/)
+    |> validate_format(:mobile, ~r/^1\d+$/)
     |> unique_constraint(:mobile)
     |> unique_constraint(:email)
     |> unique_constraint(:device_id)

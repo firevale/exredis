@@ -20,8 +20,8 @@
       </div>
       <div class="tile is-full has-text-centered">
         <p style="margin: 0 auto">
-          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block" @click="preview"
-            :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block"
+            @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           />
           <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"
             :class="processing || $v.$invalid ? 'is-disabled' : ''" />
@@ -38,8 +38,6 @@ import {
 
 import {
   required,
-  minLength,
-  maxLength
 } from 'vuelidate/lib/validators'
 
 import menuModal from '../../components/menuModal'
@@ -75,6 +73,8 @@ export default {
         return this.$t('error.validation.postTitleMinLength')
       } else if (!this.$v.editingPostData.title.maxLength) {
         return this.$t('error.validation.postTitleMaxLength')
+      } else if (!this.$v.editingPostData.title.emoji) {
+        return this.$t('error.validation.emojiPostTitle')
       } else if (!this.$v.editingPostData.content.required) {
         return this.$t('error.validation.commentContentRequired')
       }
@@ -87,12 +87,15 @@ export default {
     editingPostData: {
       title: {
         required,
-        minLength: minLength(4),
-        maxLength: maxLength(30),
+        minLength: utils.minLength(10),
+        maxLength: utils.maxLength(50),
+        emoji: function(val) {
+          return !(/\ud83d[\ude00-\ude4f]/.test(val))
+        },
       },
       content: {
         required,
-        minLength: minLength(5),
+        minLength: utils.minLength(10),
       }
     }
   },

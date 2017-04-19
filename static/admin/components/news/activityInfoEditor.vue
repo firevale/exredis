@@ -68,8 +68,6 @@ import {
   mapActions
 } from 'vuex'
 
-import Vue from 'admin/vue-i18n'
-
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'

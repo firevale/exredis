@@ -46,9 +46,19 @@ export default {
         } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
           return this.$t('error.validation.requirePassword')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('error.validation.invalidPasswordLength')
+          return this.$t('error.validation.minPasswordLength')
         } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('error.validation.invalidPasswordLength')
+          return this.$t('error.validation.maxPasswordLength')
+        } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.required) {
+          return this.$t('error.validation.requireNickname')
+        } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.minLength) {
+          return this.$t('error.validation.minNicknameLength')
+        } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.maxLength) {
+          return this.$t('error.validation.maxNicknameLength')
+        } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.valid) {
+          return this.$t('error.validation.invalidNickname')
+        } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.emoji) {
+          return this.$t('error.validation.emojiNickname')
         }
       } else {
         return this.errorMessage

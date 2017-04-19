@@ -274,7 +274,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
-    case Repo.one(from g in MallGoods, select: map(g, [:stock]), where: g.id == ^goods_id and g.active == true) do
+    case Repo.get(MallGoods, goods_id) do
       %MallGoods{} = goods ->
         conn |> json(%{success: true, stock: goods.stock})
       _ ->

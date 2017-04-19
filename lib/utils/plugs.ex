@@ -9,8 +9,10 @@ defmodule Acs.Plugs do
   alias   Acs.Repo
   alias   Acs.AdminUser
   alias   Acs.ForumManager
+
   require Gettext
   require Redis
+  require Exmoji.Scanner
 
   def no_cache(%Plug.Conn{} = conn, _options) do
     conn |> delete_resp_header("cache-control")
@@ -486,10 +488,11 @@ defmodule Acs.Plugs do
       param_name when is_bitstring(param_name) ->
         case conn.params[param_name] do 
           param_value when is_bitstring(param_value) ->
-            if Regex.match?(~r/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/, param_value) do 
-              conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt 
-            else 
-              conn
+            case Exmoji.Scanner.scan(param_value) do 
+              [] -> 
+                conn
+              _ ->
+                conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt 
             end
           _ -> conn
         end

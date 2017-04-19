@@ -9,9 +9,9 @@
       </p>
     </header>
     <div class="card-content">
-      <div class="columns" style="margin:0;padding:.5rem;">
-        <div v-for="detail in order.details" class="cloumn">
-          <div class="media" style="margin-right:1rem;">
+      <div class="columns is-mobile is-multiline" style="margin:0;padding:.5rem;">
+        <div v-for="detail in order.details" class="column is-narrow">
+          <div class="media is-mobile" style="margin-right:1rem;">
             <figure class="media-left">
               <p class="image is-64x64">
                 <img :src="detail.goods_pic">

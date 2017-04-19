@@ -23,6 +23,11 @@ export default [{
       component: require('../views/mall/myOrders.vue')
     },
     {
+      path: 'mine/orderDetail/:orderId',
+      name: 'myOrderDetail',
+      component: require('../views/mall/orderDetail.vue')
+    },
+    {
       path: 'mine/myAddresses',
       name: 'myAddresses',
       component: require('../views/mall/myAddresses.vue')

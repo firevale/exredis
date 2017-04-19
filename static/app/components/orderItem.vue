@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <v-touch class="card" @tap="viewOrderDetail(order.id)">
     <header class="card-header">
       <p class="card-header-title">
         {{$t('mall.order.fields.id') }}:{{order.id}}
@@ -34,7 +34,7 @@
         )
       </p>
     </footer>
-  </div>
+  </v-touch>
 </template>
 <script>
 import * as filter from 'common/js/filters'
@@ -46,9 +46,14 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-
+  methods: {
+    viewOrderDetail: function(orderId) {
+      this.$router.push({
+        name: 'myOrderDetail',
+        params: {
+          orderId: orderId
+        }
+      })
     }
   }
 

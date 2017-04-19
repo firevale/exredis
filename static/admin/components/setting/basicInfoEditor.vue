@@ -55,6 +55,7 @@ import {
 } from 'vuex'
 
 import Vue from 'vue'
+import i18n from 'admin/vue-i18n'
 
 import {
   showMessageBox
@@ -67,6 +68,7 @@ const openSettingInfoDialog = (propsData = {
   visible: true
 }) => {
   return new settingInfoDialogComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })

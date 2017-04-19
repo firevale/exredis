@@ -75,6 +75,7 @@ import {
 } from 'admin/miscellaneous'
 
 import Vue from 'vue'
+import {i18n} from 'admin/vue-i18n'
 
 import goodsInfoDialog from 'admin/components/dialog/app/goodsInfo'
 const goodsInfoDialogComponent = Vue.extend(goodsInfoDialog)
@@ -83,6 +84,7 @@ const openGoodsInfoDialog = (propsData = {
   visible: true
 }) => {
   return new goodsInfoDialogComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })
@@ -95,6 +97,7 @@ const openGoodsProductIdDialog = (propsData = {
   visible: true
 }) => {
   return new goodsProductIdDialogComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })

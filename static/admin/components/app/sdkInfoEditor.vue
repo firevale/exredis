@@ -20,6 +20,7 @@ import {
 } from 'vuex'
 
 import Vue from 'vue'
+import {i18n} from 'admin/vue-i18n'
 
 import sdkInfoDialog from 'admin/components/dialog/app/sdkInfo'
 const sdkInfoDialogComponent = Vue.extend(sdkInfoDialog)
@@ -28,6 +29,7 @@ const openSdkInfoDialog = (propsData = {
   visible: true
 }) => {
   return new sdkInfoDialogComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })
@@ -40,6 +42,7 @@ const openSdkListDialog = (propsData = {
   visible: true
 }) => {
   return new sdkListDialogComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })

@@ -12,6 +12,7 @@ export const openNotification = (propsData = {
   container: '.notifications'
 }) => {
   return new NotificationComponent({
+    i18n,
     el: document.createElement('div'),
     propsData
   })

@@ -56,6 +56,7 @@
   } from 'admin/miscellaneous'
 
   import Vue from 'vue'
+  import {i18n} from 'admin/vue-i18n'
 
   import sectionInfoDialog from 'admin/components/dialog/forum/sectionInfo'
   const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
@@ -64,6 +65,7 @@
     visible: true
   }) => {
     return new sectionInfoDialogComponent({
+      i18n,
       el: document.createElement('div'),
       propsData
     })

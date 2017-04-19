@@ -45,15 +45,13 @@ defmodule Acs.MallOrderController do
     query = from o in MallOrder,
               left_join: details in assoc(o, :details),
               left_join: user in assoc(o, :user),
-              left_join: address in assoc(o, :user_address),
               left_join: op_logs in assoc(o, :op_logs),
-              select: map(o, [:id, :goods_name, :status, :price, :final_price, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
+              select: map(o, [:id, :goods_name, :status, :price, :final_price, :address, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile, :email],
                 details: [:id, :goods_name, :goods_pic, :price, :amount],
-                user_address: [:id, :name, :mobile, :area, :address, :area_code],
                 op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),                
               where: o.id ==^order_id,
-              preload: [user: user, user_address: address, details: details, op_logs: op_logs]
+              preload: [user: user, details: details, op_logs: op_logs]
     order = Repo.one(query)
     conn |> json(%{success: true, order: order})
   end
@@ -65,7 +63,7 @@ defmodule Acs.MallOrderController do
                     %{"goods_id" => goods_id,
                       "quantity" => quantity,
                       "pay_type" => pay_type,
-                      "user_address_id" => user_address_id}) do
+                      "address" => address}) do
 
       with %MallGoods{} = goods <- Repo.get(MallGoods, goods_id),
         order_id <- _create_order_id(user_id, pay_type)
@@ -90,7 +88,7 @@ defmodule Acs.MallOrderController do
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
-                      "app_id": goods.app_id, "user_id": user_id, "user_address_id": user_address_id}
+                      "app_id": goods.app_id, "user_id": user_id, "address": address}
 
               {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
 

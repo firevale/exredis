@@ -274,7 +274,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
-    case Repo.one(from g in MallGoods, select: map(g, [:stock]), where: g.id == ^goods_id and g.active == true) do
+    case Repo.get(MallGoods, goods_id) do
       %MallGoods{} = goods ->
         conn |> json(%{success: true, stock: goods.stock})
       _ ->
@@ -320,5 +320,45 @@ defmodule Acs.MallController do
 
     addresses = Repo.all(query)
     conn |> json(%{success: true, addresses: addresses, total: total_page})
+  end
+
+  def delete_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do
+    case Repo.get(UserAddress, address_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      %UserAddress{} = address ->
+         case Repo.delete(address) do
+            {:ok, _} ->
+              conn |> json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
+
+            {:error, %{errors: errors}} ->
+              conn |> json(%{success: false, message: translate_errors(errors)})
+          end
+          _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    end
+  end
+  def delete_address(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  def set_default_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id})do
+    queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
+    case Repo.one!(queryTotal) do
+      0 ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      _ ->
+          Repo.transaction(fn ->
+            # set all default false
+            from(us in UserAddress, where: us.user_id == ^user_id) |> Repo.update_all(set: [is_default: false])
+
+            # set current default true
+            from(us in UserAddress, where: us.id == ^address_id) |> Repo.update_all(set: [is_default: true])
+          end)
+          conn |>json(%{success: true, i18n_message: "mall.address.setDefaultSuccess"})
+    end
+  end
+   def set_default_address(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 end

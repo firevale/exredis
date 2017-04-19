@@ -63,7 +63,7 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
-      addressId: 0,
+      addressId: 1,
     }
   },
   methods: {

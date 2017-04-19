@@ -23,14 +23,15 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :snapshots, :binary     #订单快照
       add :paid_result, :binary   #支付结果
       add :memo, :string   #备注
+      add :address, :string   #地址 json格式
       add :debug_mode, :boolean, default: false
+      add :fee, :integer, default: 0
       add :transaction_currency, :string
       add :transaction_id, :string
       add :transaction_status, :string, size: 20
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
-      add :user_address_id, references(:user_address, on_delete: :nothing)
 
       timestamps()
     end

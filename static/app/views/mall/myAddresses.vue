@@ -36,6 +36,7 @@
 <script>
 import Vue from '../../vue-installed'
 import scroller from 'common/components/scroller'
+import Toast from 'common/components/toast'
 
 export default {
   components: {
@@ -81,6 +82,18 @@ export default {
           addressId: addressId
         },
       })
+    },
+    setDefaultAddress: async function(addressId) {     
+     let result = await this.$acs.SetDefaultAddress(addressId)
+      if (result.success) {
+        Toast.show(this.$t('mall.address.setDefaultSuccess'))
+      }
+    },
+    deleteAddress: async function(addressId) {
+      let result = await this.$acs.DeleteAddress(addressId)
+      if (result.success) {
+        Toast.show(this.$t('mall.address.deleteSuccess'))
+      }
     }
   }
 }

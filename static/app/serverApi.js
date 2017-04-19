@@ -168,6 +168,12 @@ export default {
       },
 
       wechatPrepay(payment_order_id) {
+        return post(Vue, '/api/pay/wechat/prepay', {
+          payment_order_id
+        })
+      },
+
+     wechatMallPrepay(payment_order_id) {
         return post(Vue, '/api/pay/wechat/mallprepay', {
           payment_order_id
         })
@@ -284,7 +290,9 @@ export default {
           records_per_page
         })
       },
-
+      fetchMallOrder(params) {
+        return post(Vue, '/mall_actions/fetch_order', params)
+      },
     }
   }
 }

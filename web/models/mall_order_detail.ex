@@ -8,7 +8,7 @@ defmodule Acs.MallOrderDetail do
     field :goods_pic, :string
     field :price, :integer
     field :amount, :integer
-    belongs_to :mall_goods, Acs.MallGoods
+    belongs_to :mall_goods, Acs.MallGoods,type: :string
     belongs_to :mall_order, Acs.MallOrder,type: :string
 
     timestamps()

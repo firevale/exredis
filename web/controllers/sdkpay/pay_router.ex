@@ -33,6 +33,7 @@ defmodule Acs.PayRouter do
 
       get  "/notify", WechatController, :notify
       post "/notify", WechatController, :notify
+      post "/mallnotify", WechatController, :mallnotify
     end
 
     get  "/add_applestore_order",     AppleStoreController, :add_order

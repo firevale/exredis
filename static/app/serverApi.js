@@ -259,12 +259,12 @@ export default {
         return post(Vue, "/send_mobile_bind_verify_code", { mobile })
       },
 
-      createMallOrder(goods_id, quantity, pay_type, user_address_id) {
+      createMallOrder(goods_id, quantity, pay_type, address) {
         return post(Vue, '/mall_actions/create_mall_order', {
           goods_id,
           quantity,
           pay_type,
-          user_address_id
+          address
         })
       },
 

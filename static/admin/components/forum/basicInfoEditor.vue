@@ -38,8 +38,6 @@ import {
   mapActions
 } from 'vuex'
 
-import Vue from 'admin/vue-i18n'
-
 export default {
   props: {
     forum: Object,

@@ -17,19 +17,18 @@ import * as acs from 'common/js/acs'
 require('login/scss/login.scss')
 
 Vue.use(Vuelidate)
-Vue.use(VueI18n)
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.use(VueI18n)
 Vue.use(ServerApi)
-
-Vue.config.lang = window.acsConfig.locale || 'zh-hans'
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = acs.getAppId()
 Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()
 
-Object.keys(locales).forEach(lang => {
-  Vue.locale(lang, locales[lang])
+const i18n = new VueI18n({
+  locale: window.acsConfig.locale || 'zh-hans',
+  messages: locales
 })
 
 Object.keys(filters).forEach(k => {
@@ -52,6 +51,7 @@ router.afterEach(route => {
 })
 
 let App = new Vue({
+  i18n,
   router,
   store,
 }).$mount('#app')

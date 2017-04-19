@@ -1,20 +1,21 @@
 import Toast from 'common/components/toast'
+import {i18n} from './vue-i18n'
 
-const processResponse = async(Vue, response) => {
+const processResponse = async(response) => {
   let result = await response.json()
 
   if (result.success) {
     return result
   } else {
     if (result.i18n_message) {
-      Toast.show(Vue.t(result.i18n_message, result.i18n_message_object))
+      Toast.show(i18n.t(result.i18n_message, result.i18n_message_object))
     } else if (result.message) {
       Toast.show(result.message)
     }
 
     switch (result.action) {
       case 'login':
-        Vue.nextTick(_ => {
+        vm.$nextTick(_ => {
           window.location = `/login?redirect_uri=${btoa(window.location.href)}`
         });
         break;
@@ -34,9 +35,9 @@ const processResponse = async(Vue, response) => {
 const post = async(Vue, uri, params) => {
   try {
     let response = await Vue.http.post(uri, params)
-    return processResponse(Vue, response)
+    return processResponse(response)
   } catch (_) {
-    Toast.show(Vue.t('error.server.networkError'))
+    Toast.show(i18n.t('error.server.networkError'))
     return {
       success: false
     }
@@ -281,6 +282,10 @@ export default {
 
       updateUserNickname(params) {
         return post(Vue, "/user/update_nickname", params)
+      },
+
+      updateUserResidentInfo(params) {
+        return post(Vue, "/user/update_resident_info", params)
       },
 
       fetchMyOrders(type, page, records_per_page) {

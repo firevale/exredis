@@ -25,6 +25,8 @@ export default {
     inputEmail: '请输入邮箱地址',
     inputPassword: '请输入密码',
     inputNickname: '请输入新的昵称',
+    inputResidentName: '请输入您的真实姓名',
+    inputResidentId: '请输入您的身份证号码',
   },
 
   messages: {

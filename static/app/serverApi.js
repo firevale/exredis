@@ -290,7 +290,9 @@ export default {
           records_per_page
         })
       },
-
+      fetchMallOrder(params) {
+        return post(Vue, '/mall_actions/fetch_order', params)
+      },
     }
   }
 }

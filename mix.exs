@@ -54,7 +54,6 @@ defmodule Acs.Mixfile do
         :bamboo_smtp,
         :plugsnag,
         :floki,
-        :exmoji,
         :mix,
     ]]
   end
@@ -95,7 +94,6 @@ defmodule Acs.Mixfile do
      {:bamboo, "~> 0.8"},
      {:bamboo_smtp, "~> 1.3"},
      {:floki, "~> 0.15.0"},
-     {:exmoji, "~> 0.2"},
      {:distillery, "~> 1.3"},
     ]
   end

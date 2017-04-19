@@ -86,13 +86,13 @@ export default {
     setDefaultAddress: async function(addressId) {     
      let result = await this.$acs.SetDefaultAddress(addressId)
       if (result.success) {
-        Toast.show(this.$t('forum.newPost.addSuccess'))
+        Toast.show(this.$t('mall.address.setDefaultSuccess'))
       }
     },
     deleteAddress: async function(addressId) {
       let result = await this.$acs.DeleteAddress(addressId)
       if (result.success) {
-        Toast.show(this.$t('forum.newPost.addSuccess'))
+        Toast.show(this.$t('mall.address.deleteSuccess'))
       }
     }
   }

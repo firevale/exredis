@@ -3,25 +3,25 @@
     <div class="flex-take-rest addresses-content">
       <scroller :on-load-more="loadmore" ref="scroller">
         <div v-for="item in addressesList" class="card">
-          <header class="card-header">
+          <v-touch class="card-header" tag="header" @tap="showAddressDetail(item.id)">
             <div class="card-header-title">
               <article class="tile is-vertical">
-                <p class="subtitle is-5 is-marginless">姓名：{{item.name}}</p>
-                <p class="subtitle is-5 is-marginless">手机：{{item.mobile}}</p>
-                <p class="subtitle is-5 is-marginless">地址：{{item.address}}</p>
+                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
+                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
+                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{item.address}}</p>
               </article>
             </div>
             <div class="card-header-icon">
               <h5 class="subtitle is-4">></h5>
             </div>
-          </header>
+          </v-touch>
           <div class="card-content">
             <div class="columns is-mobile" style="width:95vw">
               <div class="column is-10 is-paddingless">
-               <span class="subtitle is-5 is-primary">默认地址</span>
+                <v-touch class="subtitle is-5 is-primary" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
               </div>
               <div class="column is-paddingless">
-               <span class="subtitle is-5">删除</span>
+                <v-touch class="subtitle is-5" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
               </div>
             </div>
           </div>
@@ -29,11 +29,10 @@
       </scroller>
     </div>
     <div class="flex-fixed-size addresses-bottom has-text-center">
-     <v-touch class="button is-info is-large is-fullwidth" @tap="">添加地址</v-touch>
+      <v-touch class="button is-info is-large is-fullwidth" @tap="">{{$t('mall.address.add') }}</v-touch>
     </div>
   </div>
 </template>
-
 <script>
 import Vue from '../../vue-installed'
 import scroller from 'common/components/scroller'
@@ -65,7 +64,8 @@ export default {
       let result = await this.$acs.getAddressesPaged(this.page + 1, this.recordsPerPage)
 
       if (result.success) {
-        this.addressesList = this.page == 0 ? result.addresses : this.addressesList.concat(result.addresses)
+        this.addressesList = this.page == 0 ? result.addresses : this.addressesList.concat(result
+          .addresses)
         this.total = result.total
         this.page = this.page + 1
 
@@ -74,14 +74,14 @@ export default {
         }
       }
     },
-    // showAddressDetail: function(addressId) {
-    //   this.$router.push({
-    //     name: 'addressDetail',
-    //     params: {
-    //       addressId: addressId
-    //     },
-    //   })
-    // }
+    showAddressDetail: function(addressId) {
+      this.$router.push({
+        name: 'addressDetail',
+        params: {
+          addressId: addressId
+        },
+      })
+    }
   }
 }
 </script>

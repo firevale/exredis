@@ -60,5 +60,14 @@ export default {
     myOrders: '我的订单',
     myOrderDetail: '订单详情',
     myAddresses: '我的地址',
+  },
+  address: {
+    add: '添加地址',
+    fields: {
+      name: '姓名',
+      mobile: '手机',
+      address: '地址',
+      is_default: '默认地址'
+    }
   }
 }

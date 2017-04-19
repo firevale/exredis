@@ -5,6 +5,7 @@ defmodule Acs.UserController do
   plug :fetch_app
   plug :fetch_session_user_id  
   plug :fetch_session_user
+  plug :no_emoji, [param_name: "nickname"] when action == :update_nickname
 
   def is_account_exists(conn, %{"account_id" => ""}) do
     conn |> json(%{success: true, exists: false})
@@ -216,9 +217,11 @@ defmodule Acs.UserController do
 
   def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
                       %{"nickname" => nickname} = params) do
+                
     query = from u in Acs.User,
             select: count(1),
             where: u.nickname == ^nickname and u.id != ^user_id
+
     case Repo.one!(query) do 
       0 -> 
         user = %{user | nickname: nickname}

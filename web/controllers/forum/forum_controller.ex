@@ -316,7 +316,7 @@ defmodule Acs.ForumController do
               preload: [sections: s]
 
       with %Forum{} <- Repo.one(query),
-            {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
+        {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
       do
           Elasticsearch.index(%{
             index: "forum",

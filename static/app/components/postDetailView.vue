@@ -29,7 +29,7 @@
           <span class="is-grey">
             <timeago :since="(postData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ decodeURIComponent(postData.user.nickname) }}</span>
+          <span class="is-primary">{{ postData.user.nickname }}</span>
         </p>
         <div class="post-content">
           <div class="ql-editor" v-html="filterContent">

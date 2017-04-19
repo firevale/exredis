@@ -25,7 +25,7 @@
       </div>
       <div class="level is-mobile">
         <div class="level-left level-item">
-          <span class="is-primary">{{ decodeURIComponent(postInfo.user.nickname) }}</span>
+          <span class="is-primary">{{ postInfo.user.nickname }}</span>
         </div>
         <div class="level-right level-item has-text-right grey-text">{{postInfo.comms}}/{{postInfo.reads}}</div>
       </div>

@@ -115,6 +115,16 @@
   .card {
     box-shadow: none;
     font-size: 1.25rem;
+    .is-vertical {
+      flex-direction: column;
+      align-items: flex-start;
+      font-weight: 300;
+    }
+    .has-bottom-line{
+      @extend .has-bottom-line;
+      border: none;
+      box-shadow: none;
+    }
     &:not(:last-child) {
       margin-bottom: 1rem;
     }

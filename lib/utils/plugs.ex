@@ -481,6 +481,22 @@ defmodule Acs.Plugs do
     end
   end
 
+  def no_emoji(conn, opt) do 
+    case opt[:param_name] do 
+      param_name when is_bitstring(param_name) ->
+        case conn.params[param_name] do 
+          param_value when is_bitstring(param_value) ->
+            if Regex.match?(~r/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/, param_value) do 
+              conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt 
+            else 
+              conn
+            end
+          _ -> conn
+        end
+      _ -> conn
+    end
+  end
+
   defp _response_admin_access_failed(%Plug.Conn{private: %{phoenix_format: "json"}} = conn) do
     conn |> Phoenix.Controller.json(%{success: false, need_authentication: true}) |> halt
   end

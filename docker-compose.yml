@@ -11,6 +11,7 @@ services:
   redis:
     image: docker-registry.firevale.com/redis
     container_name: acs_redis
+    command: ['redis-server', '--loglevel', 'debug', '--logfile', '/data/redis-server.log']
     ports:
       - "6380:6379"
   elasticsearch:

@@ -62,7 +62,8 @@
      invalidMobileNumber: '请输入正确的手机号码',
      invalidEmailAddress: '请输入正确的电子邮箱',
      invalidNickname: '昵称不能包含字符"%"',
-     emojiNickname: '昵称不能包含表情符号',
+     emojiPostTitle: '帖子标题不能包含表情文字',
+     emojiNickname: '昵称不能包含表情文字',
      minPasswordLength: '密码太短了',
      maxPasswordLength: '密码太长了',
      invalidVerifyCodeLength: '验证码长度4~6位',
@@ -71,8 +72,8 @@
      maxNicknameLength: '昵称太长了',
      emailNotChanged: '当前已绑定此电子邮箱',
      postContentRequired: '帖子内容不能为空',
-     postTitleMinLength: '帖子标题至少4个字',
-     postTitleMaxLength: '帖子标题不能超过30个字',
+     postTitleMinLength: '标题文字太短了',
+     postTitleMaxLength: '标题文字太长了',
      commentContentRequired: '回帖内容最少5个字',
    }
  }

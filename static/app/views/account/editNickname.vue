@@ -49,13 +49,8 @@ export default {
   validations: {
     nickname: {
       required,
-      minLength: function(val) {
-        let cleanVal = utils.removeEmojiChars(val)
-        let m = encodeURIComponent(cleanVal).match(/%[89ABab]/g)
-        let l = cleanVal.length + (m ? m.length : 0)
-        return l >= 4
-      },
-      maxLength: maxLength(20),
+      minLength: utils.minLength(4),
+      maxLength: utils.maxLength(20),
       valid: function(val) {
         return !(/\%/.test(val))
       },

@@ -38,9 +38,9 @@
 
   import {
     required,
-    minLength,
-    maxLength
   } from 'vuelidate/lib/validators'
+
+  import {minLength, maxLength} from 'common/js/utils'
 
   export default {
     mounted: async function () {

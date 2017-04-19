@@ -1,10 +1,10 @@
-import { required, minLength, maxLength } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 import * as utils from 'common/js/utils'
 
 export const password = {
   required,
-  minLength: minLength(6),
-  maxLength: maxLength(20),
+  minLength: utils.minLength(6),
+  maxLength: utils.maxLength(20),
 }
 
 export const email = {
@@ -16,6 +16,6 @@ export const email = {
 
 export const verifyCode = {
   required,
-  minLength: minLength(4),
-  maxLength: maxLength(6),
+  minLength: utils.minLength(4),
+  maxLength: utils.maxLength(6),
 }

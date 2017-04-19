@@ -46,8 +46,6 @@ import {
 
 import {
   required,
-  minLength,
-  maxLength
 } from 'vuelidate/lib/validators'
 
 import {
@@ -88,8 +86,8 @@ export default {
 
     let password = {
       required,
-      minLength: minLength(6),
-      maxLength: maxLength(20)
+      minLength: utils.minLength(6),
+      maxLength: utils.maxLength(20)
     }
     if (this.userInfo.is_anonymous) {
       return {

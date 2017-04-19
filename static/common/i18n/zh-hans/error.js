@@ -39,6 +39,7 @@
      mallNotFound: '未找到商城',
      newsNotFound: '未找到该内容',
      goodsNotFound: '未找到该商品',
+     addressNotFound: '未找到该地址',
      newsContentRequired: '内容不能为空',
      newsTitleMinLength: '标题至少4个字',
      newsTitleMaxLength: '标题不能超过30个字',

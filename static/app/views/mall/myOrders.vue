@@ -3,7 +3,7 @@
     <slider-nav class="flex-fixed-size" :menus="menus" :selectedValue="type" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div class="flex-take-rest" style="position: relative">
       <scroller :on-load-more="loadmore" ref="scroller">
-        <order-item v-for="order in orders" :order="order"></order-item>
+        <order-item  v-for="order in orders" :order="order"></order-item>
       </scroller>
     </div>
   </div>

@@ -73,8 +73,6 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import Vue from 'admin/vue-i18n'
-
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'

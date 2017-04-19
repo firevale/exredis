@@ -59,7 +59,8 @@ body:not(.in-app) {
   }
 }
 
-span,p {
+span,
+p {
   &.is-primary {
     color: $primary;
   }
@@ -76,6 +77,15 @@ span,p {
     background-color: $primary;
     color: $white;
     border-radius: 50%;
+  }
+  &.is-normal {
+    font-weight: normal;
+  }
+  &.is-thickness {
+    font-weight: 300;
+  }
+  &.is-blackness {
+    font-weight: 700;
   }
 }
 

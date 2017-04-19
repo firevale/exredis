@@ -1,3 +1,5 @@
+import VueI18n from 'vue-i18n'
+
 export default {
   install : function(Vue, options) {
     Vue.prototype.$acs = {

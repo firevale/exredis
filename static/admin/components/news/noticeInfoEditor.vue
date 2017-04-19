@@ -62,8 +62,6 @@ import {
   mapActions
 } from 'vuex'
 
-import Vue from 'admin/vue-i18n'
-
 import {
   showMessageBox
 } from '../dialog/messageBox'

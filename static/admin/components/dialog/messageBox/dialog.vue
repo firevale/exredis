@@ -33,7 +33,7 @@
     Modal
   } from 'vue-bulma-modal'
 
-  import Vue from 'admin/vue-i18n'
+  import {i18n} from 'admin/vue-i18n'
 
   export default {
     props: {
@@ -46,11 +46,11 @@
       },
       okTitle: {
         type: String,
-        default: Vue.t('admin.titles.ok'),
+        default: i18n.t('admin.titles.ok'),
       },
       cancelTitle: {
         type: String,
-        default: Vue.t('admin.titles.cancel'),
+        default: i18n.t('admin.titles.cancel'),
       },
       onOK: Function,
     },

@@ -1,4 +1,4 @@
-import Vue from 'admin/vue-i18n'
+import {i18n} from 'admin/vue-i18n'
 
 export default {
   generateAppMenuItem: function(app) {
@@ -10,16 +10,16 @@ export default {
         expanded: false
       },
       children: [{
-        name: Vue.t('admin.menu.appEdit'),
+        name: i18n.t('admin.menu.appEdit'),
         path: `/admin/apps/edit/${app.id}`,
       }, {
-        name: Vue.t('admin.menu.appGoods'),
+        name: i18n.t('admin.menu.appGoods'),
         path: `/admin/apps/goods/${app.id}`,
       }, {
-        name: Vue.t('admin.menu.appOrders'),
+        name: i18n.t('admin.menu.appOrders'),
         path: `/admin/apps/orders/${app.id}`,
       }, {
-        name: Vue.t('admin.menu.appStats'),
+        name: i18n.t('admin.menu.appStats'),
         path: `/admin/apps/stats/${app.id}`,
       }]
     }

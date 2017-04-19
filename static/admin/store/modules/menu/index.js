@@ -1,4 +1,4 @@
-import Vue from 'admin/vue-i18n'
+import {i18n} from 'admin/vue-i18n'
 
 import * as types from '../../mutation-types'
 import x from './apps.js'
@@ -6,49 +6,49 @@ import x from './apps.js'
 const state = {
   items: [
     {
-      name: Vue.t('admin.menu.dashboard'),
+      name: i18n.t('admin.menu.dashboard'),
       path: '/admin/dashboard',
       meta: {
         icon: 'fa-tachometer'
       },
     },
     {
-      name: Vue.t('admin.menu.appManage'),
+      name: i18n.t('admin.menu.appManage'),
       path: '/admin/apps',
       meta: {
         icon: 'fa-bars',
       },
     },
     {
-      name: Vue.t('admin.menu.userManage'),
+      name: i18n.t('admin.menu.userManage'),
       path: '/admin/users',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
-      name: Vue.t('admin.menu.orderManage'),
+      name: i18n.t('admin.menu.orderManage'),
       path: '/admin/orders',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
-      name: Vue.t('admin.menu.forumManage'),
+      name: i18n.t('admin.menu.forumManage'),
       path: '/admin/forums',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
-      name: Vue.t('admin.menu.appMalls'),
+      name: i18n.t('admin.menu.appMalls'),
       path: '/admin/malls',
       meta: {
         icon: 'fa-shopping-bag'
       },
     },    
     {
-      name: Vue.t('admin.menu.settings'),
+      name: i18n.t('admin.menu.settings'),
       path: '/admin/settings',
       meta: {
         icon: 'fa-cog'

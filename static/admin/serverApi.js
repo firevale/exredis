@@ -3,6 +3,9 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
+import {i18n} from './vue-i18n'
+
+
 const processResponse = async(Vue, response, successMessage) => {
   let result = await response.json()
 
@@ -10,15 +13,15 @@ const processResponse = async(Vue, response, successMessage) => {
     processAjaxError(result)
   } else if (successMessage) {
     openNotification({
-      title: Vue.t('admin.notification.title.success'),
+      title: i18n.t('admin.notification.title.success'),
       message: successMessage,
       type: 'success',
       duration: 4500,
     })
   } else if (result.i18n_message) {
     openNotification({
-      title: Vue.t('admin.notification.title.success'),
-      message: Vue.t(result.i18n_message, result.i18n_message_object),
+      title: i18n.t('admin.notification.title.success'),
+      message: i18n.t(result.i18n_message, result.i18n_message_object),
       type: 'success',
       duration: 4500,
     })
@@ -33,8 +36,8 @@ const post = async(Vue, uri, params, successMessage) => {
     return processResponse(Vue, response, successMessage)
   } catch (_) {
     openNotification({
-      title: Vue.t('admin.notification.title.failed'),
-      message: Vue.t('admin.notification.message.unknownError'),
+      title: i18n.t('admin.notification.title.failed'),
+      message: i18n.t('admin.notification.message.unknownError'),
       type: 'danger',
       duration: 4500,
     })

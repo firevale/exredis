@@ -47,6 +47,7 @@ import {
   mapActions
 } from 'vuex'
 
+import Toast from 'common/components/toast'
 import nativeApi from 'common/js/nativeApi'
 import * as filter from 'common/js/filters'
 
@@ -62,6 +63,7 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
+      addressId: 0,
     }
   },
   methods: {
@@ -96,9 +98,28 @@ export default {
         })
       }
     },
-
     onPrepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, 1)
+      //check address
+      if (this.addressId == 0) {
+        Toast.show(this.$t('mall.order.addressPlaceholder'))
+        return;
+      }
+      //check stock
+      this.checkStock(payType)
+    },
+    checkStock: async function(payType) {
+      let result = await this.$acs.getGoodsStock(this.goodsId)
+      if (result.success) {
+        let stock = result.stock
+        if (stock <= this.quantity) {
+          Toast.show(this.$t('mall.order.stockOut'))
+        } else {
+          this.prepay(payType)
+        }
+      }
+    },
+    prepay: async function(payType) {
+      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, this.addressId)
       if (result.success) {
         let order_id = result.order_id
         switch (payType) {

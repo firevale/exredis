@@ -295,10 +295,15 @@ export default {
           records_per_page
         })
       },
+
       fetchMallOrder(params) {
         return post(Vue, '/mall_actions/fetch_order', params)
       },
 
+      getGoodsStock(goods_id) {
+        return post(Vue, '/mall_actions/get_goods_stock', { goods_id })
+      },
+      
       getAddressesPaged(page, records_per_page) {
         return post(Vue, '/mall_actions/get_addresses_paged', {
           page,

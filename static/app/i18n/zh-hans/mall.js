@@ -9,6 +9,7 @@ export default {
   },
   order: {
     addressPlaceholder: '请填写收货地址',
+    stockOut: '该商品已售罄',
     totalPrice: '合计：{price}（含邮费 {postage}）',
     wechatPay: '微信支付',
     aliPay: '支付宝',

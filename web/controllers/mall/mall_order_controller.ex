@@ -9,7 +9,7 @@ defmodule Acs.MallOrderController do
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :fetch_device_id
-  plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
+  plug :check_is_admin when action in [:delete_goods]
 
   # fetch_malls
   def fetch_order_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
@@ -74,27 +74,34 @@ defmodule Acs.MallOrderController do
         if(quantity <= 0 or final_price < 0) do
           conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         else
-          ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
-            [val | _] -> val
-            _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+          if(goods.stock == 0 or goods.stock < quantity) do
+            conn |> json(%{success: false, i18n_message: "mall.order.stockOut"})
+          else
+            ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+              [val | _] -> val
+              _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+            end
+
+            Repo.transaction(fn ->
+              # goods stock
+              MallGoods.changeset(goods, %{stock: goods.stock - quantity}) |> Repo.update()
+
+              # add order
+              order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
+                      "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
+                      "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
+                      "app_id": goods.app_id, "user_id": user_id, "user_address_id": user_address_id}
+
+              {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
+
+              # add order detail
+              order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price, 
+                            "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
+
+              {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
+            end)
+            conn |>json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})          
           end
-
-          Repo.transaction(fn ->
-            # add order
-            order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
-                    "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
-                    "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
-                    "app_id": goods.app_id, "user_id": user_id, "user_address_id": user_address_id}
-
-            {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
-
-            # add order detail
-            order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price, 
-                          "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
-
-            {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
-          end)
-          conn |>json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
         end
       else
         nil ->

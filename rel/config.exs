@@ -56,7 +56,6 @@ release :acs do
     :bamboo_smtp,
     :plugsnag,
     :floki,
-    :exmoji,
     :mix,
   ]
 

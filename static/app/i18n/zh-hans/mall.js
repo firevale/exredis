@@ -63,6 +63,8 @@ export default {
   },
   address: {
     add: '添加地址',
+    deleteSuccess: '地址删除成功',
+    setDefaultSuccess: '设置默认地址成功',
     fields: {
       name: '姓名',
       mobile: '手机',

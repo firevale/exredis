@@ -300,6 +300,17 @@ export default {
           records_per_page
         })
       },
+      DeleteAddress(address_id) {
+        return post(Vue, '/mall_actions/delete_address', {
+          address_id
+        })
+      },
+      SetDefaultAddress(address_id) {
+        return post(Vue, '/mall_actions/set_default_address', {
+          address_id
+        })
+      },
+
     }
   }
 }

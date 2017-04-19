@@ -310,7 +310,6 @@ export default {
           records_per_page
         })
       },
-      
     }
   }
 }

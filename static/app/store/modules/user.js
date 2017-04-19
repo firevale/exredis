@@ -44,6 +44,11 @@ const mutations = {
     state.nickname = nickname
   },
 
+  [types.UPDATE_USER_RESIDENT_INFO](state, residentInfo) {
+    state.resident_id = residentInfo.resident_id
+    state.resident_name = residentInfo.resident_name
+  },
+
   [types.UPDATE_USER_POST_COUNT](state, post_count) {
     state.post_count = post_count
   },

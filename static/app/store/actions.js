@@ -56,6 +56,12 @@ export const updateUserNickname = ({
   commit(types.UPDATE_USER_NICKNAME, nickname)
 }
 
+export const updateUserResidentInfo = ({
+  commit
+}, residentInfo) => {
+  commit(types.UPDATE_USER_RESIDENT_INFO, residentInfo)
+}
+
 export const updateUserPostCount = ({
   commit
 }, postCount) => {

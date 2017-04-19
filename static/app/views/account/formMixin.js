@@ -59,6 +59,20 @@ export default {
           return this.$t('error.validation.invalidNickname')
         } else if (typeof this.$v.nickname == 'object' && !this.$v.nickname.emoji) {
           return this.$t('error.validation.emojiNickname')
+        } else if (typeof this.$v.residentName == 'object' && !this.$v.residentName.required) {
+          return this.$t('error.validation.requireResidentName')
+        } else if (typeof this.$v.residentName == 'object' && !this.$v.residentName.minLength) {
+          return this.$t('error.validation.minResidentNameLength')
+        } else if (typeof this.$v.residentName == 'object' && !this.$v.residentName.maxLength) {
+          return this.$t('error.validation.maxResidentNameLength')
+        } else if (typeof this.$v.residentId == 'object' && !this.$v.residentId.required) {
+          return this.$t('error.validation.requireResidentId')
+        } else if (typeof this.$v.residentId == 'object' && !this.$v.residentId.minLength) {
+          return this.$t('error.validation.minResidentIdLength')
+        } else if (typeof this.$v.residentId == 'object' && !this.$v.residentId.maxLength) {
+          return this.$t('error.validation.maxResidentIdLength')
+        } else if (typeof this.$v.residentId == 'object' && !this.$v.residentId.valid) {
+          return this.$t('error.validation.invalidResidentId')
         }
       } else {
         return this.errorMessage

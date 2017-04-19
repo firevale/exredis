@@ -71,7 +71,7 @@ defmodule Acs.Router do
     post "/update_email", UserController, :update_email # update(reset) password
     post "/update_nickname", UserController, :update_nickname # update(reset) password
     post "/update_avatar", UserController, :update_avatar # update(reset) password
-    post "/update_resident_info", UserController, :update_redident_info # update(reset) password
+    post "/update_resident_info", UserController, :update_resident_info # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
   end

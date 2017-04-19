@@ -52,6 +52,11 @@ export default {
     }
   },
 
+  mounted() {
+    this.residentId = this.userInfo.resident_id
+    this.residentName = this.userInfo.resident_name
+  },
+
   validations: {
     residentName: {
       required,
@@ -62,6 +67,7 @@ export default {
       required,
       minLength: utils.minLength(15),
       maxLength: utils.maxLength(18),
+      valid: utils.isValidResidentId,
     }
   },
 
@@ -82,12 +88,13 @@ export default {
           resident_name: this.residentName,
         })
         if (result.success) {
-          this.updateUserMobile(this.mobile)
+          this.updateUserResidentInfo({
+            resident_id: this.residentId,
+            resident_name: this.residentName,
+          })
 
           this.$nextTick(_ => {
-            Toast.show(this.$t('account.messages.mobileBindSuccess', {
-              mobile: this.mobile
-            }))
+            Toast.show(this.$t('account.messages.residentInfoUpdateds'))
             this.$router.back()
           })
         } else {

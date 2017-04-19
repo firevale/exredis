@@ -44,7 +44,7 @@ defmodule Acs.WechatController do
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
-    notify_url = "#{url(conn)}/api/pay/wechat/notify"
+    notify_url = "#{url(conn)}/api/pay/wechat/mallnotify"
 
     # handling request via nginx reverse proxy
     ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
@@ -100,7 +100,43 @@ defmodule Acs.WechatController do
     end
   end
 
+  # mallnotify
+  def mallnotify(conn, _params) do
+    with {:ok, body, _} <- read_body(conn),
+         notify_params <- XmlUtils.convert(body),
+         "SUCCESS" <- notify_params[:return_code],
+         %MallOrder{} = order <- Repo.get(MallOrder, notify_params[:out_trade_no]),
+         {:ok, sign_key} <- get_mall_wechat_sign_key(order),
+         :ok <- SDKWechat.check_sign(notify_params, sign_key)
+    do
+      MallOrder.changeset(order, %{
+        status: MallOrder.Status.paid(),
+        paid_at: DateTime.utc_now(),
+        transaction_id: "wechat." <> notify_params[:transaction_id],
+        paid_type: "wechat",
+        transaction_currency: notify_params[:fee_type]
+      }) |> Repo.update!
+
+      conn |> text(xml_response("SUCCESS", "OK"))
+    else
+      nil ->
+        conn |> text(xml_response("FAIL", "order not found"))
+      {:error, msg} ->
+        conn |> text(xml_response("FAIL", msg))
+      _ ->
+        conn |> text(xml_response("FAIL", "unknown error"))
+    end
+  end
+
   defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do
+    case RedisApp.find(app_id) do
+      nil -> {:error, "app not found"}
+      %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
+      _ -> {:error, "wechat configuration not found"}
+    end
+  end
+
+  defp get_mall_wechat_sign_key(%MallOrder{app_id: app_id}) do
     case RedisApp.find(app_id) do
       nil -> {:error, "app not found"}
       %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}

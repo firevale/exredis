@@ -112,9 +112,8 @@ export default {
       }
     },
     wechatPay: async function(order_id) {
-      let result = await this.$acs.wechatPrepay(order_id)
+      let result = await this.$acs.wechatMallPrepay(order_id)
       if (result.success) {
-        console.log("--------prepay ok:" + result.prepay_id)
         nativeApi.openWechatPay(JSON.stringify(result))
       }
     },

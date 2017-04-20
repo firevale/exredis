@@ -132,7 +132,9 @@ export default {
         this.districtCode = codeItem[2]
       }
     },
-    onSelect: function(province, city, district) {}
+    onSelect: function(province, city, district) {
+      debugger 
+    }
   },
   watch: {
     '$route' (to, from) {

@@ -23,7 +23,7 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :snapshots, :binary     #订单快照
       add :paid_result, :binary   #支付结果
       add :memo, :string   #备注
-      add :address, :string   #地址 json格式
+      add :address, :map   #地址 json格式
       add :debug_mode, :boolean, default: false
       add :fee, :integer, default: 0
       add :transaction_currency, :string

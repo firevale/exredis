@@ -58,7 +58,7 @@ export default {
         wechat: '微信'
       },
       transaction_id: '支付单号',
-      user_address: {
+      address: {
         name: '姓名',
         mobile: '电话',
         address: '地址',

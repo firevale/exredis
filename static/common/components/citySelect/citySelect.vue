@@ -2,25 +2,25 @@
   <div class="field has-addons is-marginless is-paddingless">
     <p class="control">
       <span class="select">
-        <select v-model="province" @change="onSelect">
+        <select v-model="province">
           <option value="">选择省</option>
-          <option v-for="province in provinces" :value="province[valueType]">{{province.name}}</option>
-        </select>
-      </span> 
-    </p>
-    <p class="control">
-      <span class="select">
-        <select v-model="city" @change="onSelect">
-          <option value="">选择城市</option>
-          <option v-for="city in cities" :value="city[valueType]">{{city.name}}</option>
+          <option v-for="province in provinces" :value="province.code">{{province.name}}</option>
         </select>
       </span>
     </p>
     <p class="control">
       <span class="select">
-        <select v-model="district" @change="onSelect">
+        <select v-model="city">
+          <option value="">选择城市</option>
+          <option v-for="city in cities" :value="city.code">{{city.name}}</option>
+        </select>
+      </span>
+    </p>
+    <p class="control">
+      <span class="select">
+        <select v-model="district">
           <option value="">选择县/区</option>
-          <option v-for="district in districts" :value="district[valueType]">{{district.name}}</option>
+          <option v-for="district in districts" :value="district.code">{{district.name}}</option>
         </select>
       </span>
     </p>
@@ -33,45 +33,29 @@ import citydata from './citydata.json';
 export default {
   mounted: function() {
     this.provinces = citydata;
-    this.oldProvince = this.province;
-    this.oldCity = this.city;
-    this.oldDistrict = this.district;
-    let seletedProvince = this.provinces.filter(function(item) {
-      return item[this.valueType] == this.province;
-    }.bind(this));
-    if (seletedProvince.length) {
-      this.cities = seletedProvince[0]['children'];
-    }
-    let seletedCity = this.cities.filter(function(item) {
-      return item[this.valueType] == this.city;
-    }.bind(this));
-    if (seletedCity.length) {
-      this.districts = seletedCity[0]['children'];
-    }
   },
   props: {
-    province: {
+    _province: {
       twoWay: true,
       default: ''
     },
-    city: {
+    _city: {
       twoWay: true,
       default: ''
     },
-    district: {
+    _district: {
       twoWay: true,
       default: ''
-    },
-    valueType: {
-      type: String,
-      default: 'name'
     }
   },
   data() {
     return {
-      oldProvince: '',
-      oldCity: '',
-      oldDistrict: '',
+      province: this._province,
+      city: this._city,
+      district: this._district,
+      oldProvince: undefined,
+      oldCity: undefined,
+      oldDistrict: undefined,
       provinces: [],
       cities: [],
       districts: []
@@ -79,41 +63,48 @@ export default {
   },
   methods: {
     onSelect() {
-      this.$emit('onSelect', this.province, this.city, this.district)
+
     }
   },
   watch: {
     province() {
       let seletedItem = this.provinces.filter(function(item) {
-        return item[this.valueType] == this.province;
+        return item.code == this.province;
       }.bind(this));
+
       if (seletedItem.length) {
+        this.oldProvince = seletedItem[0];
         this.cities = seletedItem[0]['children'];
-        this.city = this.city == this.oldCity ? this.cities[0][this.valueType] : this.city;
+        this.city = this.cities[0].code;
       } else {
         this.city = '';
         this.cities = [];
       }
-      this.oldCity = this.city;
+
     },
     city() {
       let seletedItem = this.cities.filter(function(item) {
-        return item[this.valueType] == this.city;
+        return item.code == this.city;
       }.bind(this));
       if (seletedItem.length) {
+        this.oldCity = seletedItem[0];
         this.districts = seletedItem[0]['children'];
-        this.district = this.district == this.oldDistrict ? this.districts[0][this.valueType] :
-          this.district;
+        this.district = this.districts[0].code
       } else {
         this.district = '';
         this.districts = [];
       }
-      this.oldDistrict = this.district;
     },
     district() {
       let seletedItem = this.districts.filter(function(item) {
-        return item[this.valueType] == this.district;
+        return item.code == this.district;
       }.bind(this));
+
+      if (seletedItem.length) {
+        this.oldDistrict = seletedItem[0];
+      }
+
+      this.$emit('onSelect', this.oldProvince, this.oldCity, this.oldDistrict)
     }
   },
   computed: {}

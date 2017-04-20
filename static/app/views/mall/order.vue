@@ -30,11 +30,11 @@
         </article>
       </div>
     </div>
-    <div class="columns">
-      <div class="column is-half">
+    <div class="tile">
+      <div class="tile" style="padding: 1rem;" v-if="this.isSupportWechat()">
         <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
       </div>
-      <div class="column is-half">
+      <div class="tile" style="padding: 1rem;">
         <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
       </div>
     </div>
@@ -63,10 +63,21 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
-      address: {name: "", mobile: "", area: "", address: "", area_code: ""}
+      address: {
+        name: "",
+        mobile: "",
+        area: "",
+        address: "",
+        area_code: ""
+      },
+      orderId: "",
     }
   },
   methods: {
+    isSupportWechat: function() {
+      return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
+    },
+
     getPrice: function(price) {
       return "¥" + filter.formatPrice(price)
     },
@@ -121,13 +132,13 @@ export default {
     prepay: async function(payType) {
       let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, this.address)
       if (result.success) {
-        let order_id = result.order_id
+        this.orderId = result.order_id
         switch (payType) {
           case 'alipay':
-            this.alipayRedirect(order_id)
+            this.alipayRedirect(this.orderId)
             break;
           case 'wechat':
-            this.wechatPay(order_id)
+            this.wechatPay(this.orderId)
             break;
         }
       }
@@ -148,6 +159,16 @@ export default {
         window.location = result.redirect_uri
       }
     },
+    showSuccess: function() {
+      if (this.orderId) {
+        this.$router.push({
+          name: 'myOrderDetail',
+          params: {
+            orderId: this.orderId
+          },
+        })
+      }
+    }
   },
   watch: {
     '$route' (to, from) {

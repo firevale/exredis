@@ -37,7 +37,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <city-select :province.sync="province" :city.sync="city" :district.sync="district" @onSelect="onSelect"></city-select>
+                <city-select :_province="province" :_city="city" :_district="district" @onSelect="onSelect"></city-select>
               </div>
             </div>
           </div>
@@ -114,7 +114,9 @@ export default {
         })
       }
     },
-    onSelect: function(province, city, district) {}
+    onSelect: function(province, city, district) {
+      debugger
+    }
   },
   watch: {
     '$route' (to, from) {

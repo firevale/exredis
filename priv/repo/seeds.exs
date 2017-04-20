@@ -133,3 +133,10 @@ MallOrderDetail.changeset(%MallOrderDetail{}, %{ goods_name: "经典红色T恤",
 
 MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: "A10000010",  status: 0, changed_status: 1, content: %{ transaction_id: "20171010101201"} }) |> Repo.insert
 MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: "A10000010",  status: 1, changed_status: 2, admin_user: "zhumingzhen@firevale.com" }) |> Repo.insert
+
+
+Elasticsearch.index(%{ index: "mall",type: "orders",
+            doc: %{ id: "A10000012",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤",  paid_type: "wechat", postage: 500,user_id: "100001", app_id: "978A7D84040FE589ED0C76295131E43D"},
+            params: nil,
+            id: "A10000012"
+          })

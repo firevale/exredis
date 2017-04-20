@@ -154,7 +154,7 @@ defmodule Acs.MallOrderController do
             %{term: %{goods_name: keyword}},
             %{term: %{app_id: keyword}},
             %{term: %{user_id: keyword}},
-            %{term: %{user_ip: keyword}},
+             %{term: %{user_ip: keyword}},
             %{term: %{memo: keyword}},
             %{term: %{address: keyword}},
             %{term: %{transaction_id: keyword}}

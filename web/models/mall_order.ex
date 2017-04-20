@@ -82,7 +82,7 @@ defmodule Acs.MallOrder do
              app_id: %{type: :keyword},
              platform: %{type: :keyword},
              device_id: %{type: :keyword},
-             user_ip: %{type: :ip},
+             user_ip: %{type: :keyword},
              user_id: %{type: :keyword},
              currency: %{type: :keyword},
              paid_type: %{type: :keyword},

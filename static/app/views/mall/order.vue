@@ -63,7 +63,7 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
-      address: "地址地址",
+      address: %{name:"" , mobile: "", area: "", address: "", area_code: "", user_id: "" }
     }
   },
   methods: {

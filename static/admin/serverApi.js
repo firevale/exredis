@@ -172,6 +172,9 @@ export default {
       fetchMallOrder(params) {
         return post(Vue, '/mall_actions/fetch_order', params)
       },
+      searchMallOrders(params) {
+        return post(Vue, '/mall_actions/search_orders', params)
+      },
     }
   }
 }

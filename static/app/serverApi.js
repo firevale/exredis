@@ -168,6 +168,15 @@ export default {
         })
       },
 
+      alipayMallRedirect(payment_order_id, merchant_url, callback_url, notify_url) {
+        return post(Vue, '/api/pay/alipay/mall_redirect', {
+          payment_order_id,
+          merchant_url,
+          callback_url,
+          notify_url
+        })
+      },
+
       wechatPrepay(payment_order_id) {
         return post(Vue, '/api/pay/wechat/prepay', {
           payment_order_id
@@ -310,20 +319,26 @@ export default {
           records_per_page
         })
       },
-      DeleteAddress(address_id) {
+      deleteAddress(address_id) {
         return post(Vue, '/mall_actions/delete_address', {
           address_id
         })
       },
-      SetDefaultAddress(address_id) {
+      setDefaultAddress(address_id) {
         return post(Vue, '/mall_actions/set_default_address', {
           address_id
         })
       },
-      GetAddressDetail(address_id) {
+      getAddressDetail(address_id) {
         return post(Vue, '/mall_actions/get_address_detail', {
           address_id
         })
+      },
+      insertAddress(params) {
+        return post(Vue, '/mall_actions/insert_address', params)
+      },
+      updateAddress(params) {
+        return post(Vue, '/mall_actions/update_address', params)
       },
 
     }

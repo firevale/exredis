@@ -19,7 +19,7 @@ defmodule Acs.UserAddress do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :mobile, :area, :address, :area_code, :is_default])
+    |> cast(params, [:name, :mobile, :area, :address, :area_code, :is_default, :user_id])
     |> validate_required([:name, :mobile, :area, :address, :area_code])
     |> foreign_key_constraint(:user_id)
   end

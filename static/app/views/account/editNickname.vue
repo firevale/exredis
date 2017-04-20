@@ -1,6 +1,6 @@
 <template>
   <div class="edit-account">
-    <form class="account-fields" @submit.prevent="onSubmit">
+    <form class="account-fields" style="margin-top: 2rem" @submit.prevent="onSubmit">
       <p v-show="userInfo.nickname" class="help is-primary"> {{ $t('account.hint.currentNickName', {nickname: userInfo.nickname}) }} </p>
       <div>
         <div class="field">

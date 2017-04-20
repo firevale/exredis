@@ -64,7 +64,7 @@ export default {
     return {
       mobile: '',
       verifyCode: '',
-      password: null,
+      password: '',
       errorMessage: '',
       showPassword: false,
       sendingVerifyCode: false,
@@ -89,6 +89,7 @@ export default {
       minLength: utils.minLength(6),
       maxLength: utils.maxLength(20)
     }
+    
     if (this.userInfo.is_anonymous) {
       return {
         mobile,

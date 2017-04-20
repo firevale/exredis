@@ -5,6 +5,7 @@ import locales from './i18n'
 Vue.use(VueI18n)
 
 export const i18n = new VueI18n({
-  locale: window.acsConfig.locale || 'zh-hans',
+  // locale: window.acsConfig.locale || 'zh-hans',
+  locale: 'zh-hans',
   messages: locales
 })

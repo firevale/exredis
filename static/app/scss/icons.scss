@@ -4,6 +4,7 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
   &.circle-icon {
     @include border-radius(50%);
@@ -122,9 +123,9 @@ only screen and (min-resolution: 1.25dppx) {}
 
 // @3x resources
 @media only screen and (-o-min-device-pixel-ratio: 9/4),
-only screen and (-webkit-min-device-pixel-ratio: 2.25),
-only screen and (min-device-pixel-ratio: 2.25),
-only screen and (min-resolution: 2.25dppx) {
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2),
+only screen and (min-resolution: 2dppx) {
   .icon {
     &.icon-close {
       background-image: url("~assets/times@3x.png");

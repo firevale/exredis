@@ -94,17 +94,16 @@ export default {
       loading: true,
       initing: false,
       orders: [],
-      page: 1,
+      page: 0,
       total: 1,
       recordsPerPage: 10,
     }
   },
 
-  computed: {
-  },
+  computed: {},
 
   mounted: async function() {
-    await this.fetchOrders(this.page, this.recordsPerPage)
+    await this.fetchOrders()
   },
 
   watch: {},
@@ -118,7 +117,7 @@ export default {
         return 'https://placehold.it/32x32?text=' + app.name
       }
     },
-   
+
     getOrderTransactionId: function(order) {
       if (order.transaction_id.startsWith('empty.')) {
         return ''
@@ -162,49 +161,41 @@ export default {
       return result
     },
 
-    onPageChange: function(page) {
-      this.fetchOrders(page, this.recordsPerPage)
+    onPageChange: async function(page) {
+      this.page = page
+      await this.fetchOrders()
     },
 
-    onSearchBoxSubmit: function() {
-      if (this.keyword) {
-        this.searchOrders(1)
-      } else {
-        this.fetchOrders(1, this.recordsPerPage)
-      }
+    onSearchBoxSubmit: async function() {
+      this.page = 0;
+      await this.fetchOrders()
     },
 
-    fetchOrders: async function(page, recordsPerPage) {
+    fetchOrders: async function() {
       this.loading = true
-      let result = await this.$acs.fetchMallOrders({
-        app_id: this.$route.params.appId,
-        page,
-        records_per_page: recordsPerPage
-      })
+      let result = undefined;
+      if (this.keyword && this.keyword != "") {
+        result = await this.$acs.searchMallOrders({
+          app_id: this.$route.params.appId,
+          keyword: this.keyword,
+          page: this.page + 1,
+          records_per_page: this.recordsPerPage
+        })
+      } else {
+        result = await this.$acs.fetchMallOrders({
+          app_id: this.$route.params.appId,
+          page: this.page + 1,
+          records_per_page: this.recordsPerPage
+        })
+      }
 
       if (result.success) {
         this.total = result.total
         this.orders = result.orders
-        this.page = page
+        this.page = this.page + 1
       }
 
       this.loading = false
-    },
-
-    searchOrders: async function(page) {
-      this.searching = true
-      let result = await this.$acs.searchOrders({
-        keyword: this.keyword,
-        page: page,
-        records_per_page: this.recordsPerPage
-      })
-      if (result.success) {
-        this.total = result.total
-        this.orders = result.orders
-        this.page = page
-
-      }
-      this.searching = false
     },
   },
 

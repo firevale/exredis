@@ -265,58 +265,7 @@ only screen and (min-resolution: 1.25dppx) {
       }
     }
   }
-} // @3x resources
-@media only screen and (-o-min-device-pixel-ratio: 9/4),
-only screen and (-webkit-min-device-pixel-ratio: 2.25),
-only screen and (min-device-pixel-ratio: 2.25),
-only screen and (min-resolution: 2.25dppx) {
-  body:not(.ios):not(.android) {
-    .has-bottom-line {
-      &:after {
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        -webkit-transform: translateZ(0) scaleY(.2);
-        transform: translateZ(0) scaleY(.2);
-        -webkit-transform-origin: 0 0;
-        transform-origin: 0 0;
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        width: 400%;
-        height: 400%;
-        transform: translateZ(0) scale(.25);
-        transform-origin: left top;
-      }
-    }
-  }
-  body.ios {
-    .has-bottom-line {
-      &:after {
-        border-color: #cbcbcb;
-        border-width: 0.2px;
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        border-color: #cbcbcb;
-        border-width: 0.2px;
-      }
-    }
-  }
-  body.android {
-    .has-bottom-line {
-      &:after {
-        border-color: rgba(203, 203, 203, 0.5);
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        border-color: rgba(203, 203, 203, 0.5);
-      }
-    }
-  }
-}
+} 
 
 .is-clickable {
   cursor: pointer;

@@ -89,8 +89,10 @@ export default {
 
 .-mobile-menu-mask {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   opacity: 0;
   z-index: 999;
 }
@@ -144,6 +146,8 @@ export default {
     height: 0;
     bottom: 0;
     width: 100%;
+    left: 0;
+    right: 0;
     content: "";
     border-bottom: 1px solid #f2f2f2;
   }
@@ -176,25 +180,9 @@ only screen and (min-resolution: 1.25dppx) {
   }
   body.ios {
     .-mobile-menu-item:not(:last-child)::after {
-      border-width: 0.3px;
+      border-width: 0.5px;
     }
   }
 }
 
-@media only screen and (-o-min-device-pixel-ratio: 9/4),
-only screen and (-webkit-min-device-pixel-ratio: 2.25),
-only screen and (min-device-pixel-ratio: 2.25),
-only screen and (min-resolution: 2.25dppx) {
-  body:not(.ios) {
-    .-mobile-menu-item:not(:last-child)::after {
-      transform: translateZ(0) scaleY(.1);
-      transform-origin: 0 0;
-    }
-  }
-  body.ios {
-    .-mobile-menu-item:not(:last-child)::after {
-      border-width: 0.2px;
-    }
-  }
-}
 </style>

@@ -3,9 +3,9 @@
     <div class="card">
       <header class="card-header has-bottom-line">
         <div class="card-header-title is-vertical">
-          <p class="is-thickness"> {{$t('mall.order.fields.user_address.name') }}：{{order.user_address.name}} </p>
-          <p class="is-thickness"> {{$t('mall.order.fields.user_address.mobile') }}：{{order.user_address.mobile}} </p>
-          <p class="is-thickness"> {{$t('mall.order.fields.user_address.address') }}：{{order.user_address.area}}{{order.user_address.address}} </p>
+          <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{order.address.name}} </p>
+          <p class="is-thickness"> {{$t('mall.order.fields.address.mobile') }}：{{order.address.mobile}} </p>
+          <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{order.address.area}}{{order.address.address}} </p>
         </div>
         <p class="card-header-icon">
           >

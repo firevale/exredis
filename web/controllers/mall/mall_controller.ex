@@ -377,4 +377,46 @@ defmodule Acs.MallController do
   def get_address_detail(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
+  def insert_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                "name" => name,
+                "mobile" => mobile,
+                "area" => area,
+                "address" => address,
+                "area_code" => area_code} = us_address)do
+    us_address = us_address |> Map.put("user_id", user_id) |> Map.put("is_default",false)
+    case UserAddress.changeset(%UserAddress{}, us_address) |> Repo.insert do
+        {:ok, new_address} ->
+          conn |> json(%{success: true, i18n_message: "mall.address.addSuccess"})
+        {:error, %{errors: errors}} ->
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+    end
+  end
+  def insert_address(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+  def update_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                "id" => id,
+                "name" => name,
+                "mobile" => mobile,
+                "area" => area,
+                "address" => address,
+                "area_code" => area_code,
+                "is_default" => is_default} = us_address)do
+
+    case Repo.get(UserAddress, id) do
+        nil -> 
+          conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+          
+        %UserAddress{} = us ->
+          if(us.user_id !== user_id)do
+            conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+          else
+            UserAddress.changeset(us, %{name: name, mobile: mobile, area: area, address: address, area_code: area_code, is_default: is_default}) |> Repo.update!
+            conn |> json(%{success: true, i18n_message: "mall.address.updateSuccess"})
+          end
+      end
+  end
+  def update_address(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
 end

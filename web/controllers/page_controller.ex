@@ -125,7 +125,9 @@ defmodule Acs.PageController do
          |> render("payment.html", platform: app_order.platform,
                                    app_id: app.id,
                                    order_id: app_order.id,
+                                   goods_id: goods_id,
                                    goods_name: app_order.goods_name,
+                                   goods_icon: "",
                                    price: price,
                                    currency: app_order.currency)
   end

@@ -28,6 +28,17 @@ export default {
     return false
   },
 
+  pickAvatarFrom: function(type, callback) {
+    if (typeof AndroidNativeAPI === 'object' &&
+      typeof AndroidNativeAPI.pickAvatarFrom === 'function') {
+    } else if (typeof IOSNativeAPI === 'object' &&
+      typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
+      IOSNativeAPI.pickAvatarFromCallback(type, callback) 
+    } else {
+      console.error('native function isMediaSourceTypeAvailable is not available')
+    }
+  },
+
   showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
       window.showAlertDialogCallback = callback

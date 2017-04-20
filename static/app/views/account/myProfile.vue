@@ -98,20 +98,47 @@ export default {
 
   methods: {
     onUpdateAvatar: function() {
-      console.log('onUpdateAvatar.....')
       if (window.acsConfig.inApp) {
+        let items = [{
+          title: this.$t('common.cancel'),
+          value: 'cancel',
+        }]
+
         let cameraAvailable = nativeApi.isMediaSourceTypeAvailable('camera')
+
+        if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
+          items.unshift({
+            title: this.$t('common.photoLib'),
+            value: 'photoLib',
+          })
+        }
+
+        if (nativeApi.isMediaSourceTypeAvailable('camera')) {
+          items.unshift({
+            title: this.$t('common.camera'),
+            value: 'camera',
+          })
+        }
+
         let menu = showMobileMenu({
           visible: true,
-          items: [{
-            title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"
-          }, {
-            title: "yyyy"
-          }]
+          items: items
         })
 
         menu.$on('item-selected', (item) => {
-          console.log('mobile menu item selected: ', item)
+          switch (item.value) {
+            case 'camera':
+              nativeApi.pickAvatarFrom('camera', function(result) {
+
+              })
+              break;
+
+            case 'photoLib':
+              nativeApi.pickAvatarFrom('photoLib', function(result) {
+
+              })
+              break;
+          }
         })
 
       } else {

@@ -147,7 +147,7 @@ export default {
     },
 
     updateNewsPic: function(news) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/games_actions/update_news_pic',
         accept: 'image/png',
         data: {

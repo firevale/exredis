@@ -40,7 +40,7 @@ export default {
 
   methods: {
     updateForumIcon: function(forum) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/forum_actions/update_forum_icon',
         accept: 'image/png',
         data: {

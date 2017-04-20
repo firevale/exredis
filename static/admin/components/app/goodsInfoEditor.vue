@@ -148,7 +148,7 @@ export default {
     },
 
     updateGoodsIcon: function(goods) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/admin_actions/update_goods_icon',
         accept: 'image/png',
         data: {

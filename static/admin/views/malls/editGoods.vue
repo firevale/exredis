@@ -209,7 +209,7 @@ export default {
 
     onShowImageUpload: function() {
       if (this.goods.id.length > 0) {
-        showFileUploadDialog({
+        showFileUploadDialog(this.$i18n, {
           postAction: '/mall_actions/update_goods_pic',
           accept: 'image/jpeg, image/png',
           data: {
@@ -243,7 +243,7 @@ export default {
     },
 
     onInsertImage: function(editor) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/mall_actions/update_goods_content_pic',
         accept: 'image/jpeg, image/png',
         data: {

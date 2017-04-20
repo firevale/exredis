@@ -21,9 +21,12 @@ defmodule Acs.PayRouter do
     scope path: "/alipay" do
       get   "/redirect", AlipayController, :alipay_redirect
       post  "/redirect", AlipayController, :alipay_redirect
+      post  "/mall_redirect", AlipayController, :alipay_mall_redirect
 
       get   "/notify",   AlipayController, :notify
       post  "/notify",   AlipayController, :notify
+      get   "/mall_notify",   AlipayController, :mall_notify
+      post  "/mall_notify",   AlipayController, :mall_notify
     end
 
     scope path: "/wechat" do

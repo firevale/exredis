@@ -357,7 +357,8 @@ div.horizontal-stack-box {
       display: block;
       width: 3.5rem;
       height: 3.5rem;
-      @include border-radius(50%);
+      margin: 0 auto;
+      border-radius: 50%;
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;

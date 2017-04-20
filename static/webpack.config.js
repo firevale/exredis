@@ -31,7 +31,7 @@ var plugins = [
     options: {
       postcss: [
         require('autoprefixer')({
-          browsers: ['last 3 version']
+          browsers: ['last 3 version', 'iOS >= 8', 'Safari >= 8']
         }),
       ]
     }

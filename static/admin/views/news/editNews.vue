@@ -74,7 +74,7 @@ export default {
     },
 
     onInsertImage: function(editor) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/admin_actions/update_news_pic',
         accept: 'image/jpeg, image/png',
         data: {

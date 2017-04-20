@@ -152,7 +152,7 @@ export default {
     },
 
     updateNewsPic: function(news) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/admin_actions/update_news_pic',
         accept: 'image/png',
         data: {

@@ -67,4 +67,36 @@ defmodule Acs.MallOrder do
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
   end
+
+  def init_mapping() do
+    unless Elasticsearch.is_index?("mall") do
+         settings = %{
+           number_of_shards: 5,
+           number_of_replicas: 1,
+         }
+
+         mapping = %{
+           properties: %{
+             id: %{type: :keyword},
+             goods_name: %{type: :text, analyzer: :smartcn},
+             app_id: %{type: :keyword},
+             platform: %{type: :keyword},
+             device_id: %{type: :keyword},
+             user_ip: %{type: :ip},
+             user_id: %{type: :keyword},
+             currency: %{type: :keyword},
+             paid_type: %{type: :keyword},
+             memo: %{type: :text, analyzer: :smartcn},
+             address: %{type: :text, analyzer: :smartcn},
+             transaction_id: %{type: :keyword},
+             status: %{type: :integer},
+             inserted_at: %{type: :date}
+           }
+         }
+
+         Elasticsearch.create_index("mall", settings, %{
+           orders: mapping
+         })
+    end
+  end
 end

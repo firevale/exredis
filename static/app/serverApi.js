@@ -168,6 +168,15 @@ export default {
         })
       },
 
+      alipayMallRedirect(payment_order_id, merchant_url, callback_url, notify_url) {
+        return post(Vue, '/api/pay/alipay/mall_redirect', {
+          payment_order_id,
+          merchant_url,
+          callback_url,
+          notify_url
+        })
+      },
+
       wechatPrepay(payment_order_id) {
         return post(Vue, '/api/pay/wechat/prepay', {
           payment_order_id

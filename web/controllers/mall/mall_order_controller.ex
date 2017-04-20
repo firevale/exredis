@@ -142,4 +142,53 @@ defmodule Acs.MallOrderController do
     orders = Repo.all(query)
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
+
+  def search_orders(conn, %{"keyword" => keyword,
+                            "page" => page,
+                            "records_per_page" => records_per_page}) do
+    query = %{
+      query: %{
+        bool: %{
+          should: [
+            %{term: %{id: keyword}},
+            %{term: %{goods_name: keyword}},
+            %{term: %{app_id: keyword}},
+            %{term: %{user_id: keyword}},
+            %{term: %{user_ip: keyword}},
+            %{term: %{memo: keyword}},
+            %{term: %{address: keyword}},
+            %{term: %{transaction_id: keyword}}
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    case Elasticsearch.search(%{index: "mall", type: "orders", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        ids = Enum.map(hits, &(&1._id))
+        query = from order in MallOrder,
+              left_join: details in assoc(order, :details),
+              left_join: user in assoc(order, :user),
+              select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+                user: [:id, :nickname, :mobile], 
+                details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+              where: order.id in ^ids,
+              order_by: [desc: order.inserted_at],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              preload: [user: user, details: details]
+
+        orders = Repo.all(query)
+        conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})
+
+      error ->
+        error "search orders failed: #{inspect error, pretty: true}"
+        conn |> json(%{success: false})
+    end
+  end
 end

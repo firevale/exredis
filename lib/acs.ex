@@ -54,97 +54,10 @@ defmodule Acs do
   end
 
   defp init_elasticsearch_mappings() do
-   unless Elasticsearch.is_index?("acs") do
-      settings = %{
-        number_of_shards: 5,
-        number_of_replicas: 1,
-      }
-
-      orders_mapping = %{
-        properties: %{
-          app_id: %{type: :keyword},
-          user_id: %{type: :keyword},
-          goods_id: %{type: :keyword},
-          device_id: %{type: :keyword},
-          cp_order_id: %{type: :text},
-          transaction_id: %{type: :text},
-          app_user_id: %{type: :keyword},
-          sdk_user_id: %{type: :keyword},
-          inserted_at: %{type: :date},
-        }
-      }
-
-      Elasticsearch.create_index("acs", settings, %{
-        orders: orders_mapping
-      })
-    end
-
-    init_forum_mapping()
-    init_customer_service_mapping()
-    
-  end
-
-  defp init_forum_mapping() do
-    unless Elasticsearch.is_index?("forum") do
-         settings = %{
-           number_of_shards: 5,
-           number_of_replicas: 1,
-         }
-
-         posts_mapping = %{
-           properties: %{
-             id: %{type: :integer},
-             forum_id: %{type: :integer},
-             user_id: %{type: :integer},
-             section_id: %{type: :integer},
-             title: %{type: :text, analyzer: :smartcn},
-             content: %{type: :text, analyzer: :smartcn},
-             is_top: %{type: :boolean},
-             is_hot: %{type: :boolean},
-             is_vote: %{type: :boolean},
-             reads: %{type: :integer},
-             comms: %{type: :integer},
-             inserted_at: %{type: :date},
-             last_reply_at: %{type: :date},
-             active: %{type: :boolean},
-             has_pic: %{type: :boolean}
-           }
-         }
-
-         Elasticsearch.create_index("forum", settings, %{
-           posts: posts_mapping
-         })
-    end
-  end
-
-  defp init_customer_service_mapping() do
-    unless Elasticsearch.is_index?("customer_service") do
-         settings = %{
-           number_of_shards: 5,
-           number_of_replicas: 1,
-         }
-
-         mapping = %{
-           properties: %{
-             id: %{type: :integer},
-             app_id: %{type: :keyword},
-             platform: %{type: :integer},
-             title: %{type: :text, analyzer: :smartcn},
-             answer: %{type: :text, analyzer: :smartcn},
-             active: %{type: :boolean},
-             is_hot: %{type: :boolean},
-             sort_index: %{type: :integer},
-             user_id: %{type: :integer},
-             inserted_at: %{type: :date},
-             updated_at: %{type: :date},
-             reply_at: %{type: :date}
-           }
-         }
-
-         Elasticsearch.create_index("customer_service", settings, %{
-           questions: mapping
-         })
-    end
+    Acs.AppOrder.init_mapping()
+    Acs.Forum.init_mapping()
+    Acs.Question.init_mapping()
+    Acs.MallOrder.init_mapping()
   end
 
 end

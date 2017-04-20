@@ -139,9 +139,10 @@ export default {
       }
     },
     alipayRedirect: async function(order_id) {
-      let result = await this.$acs.alipayRedirect(order_id,
+      let result = await this.$acs.alipayMallRedirect(order_id,
         `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?merchant_order_id=${order_id}`,
-        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`
+        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`,
+        `${window.location.protocol}//${window.location.hostname}/api/pay/alipay/mall_notify`
       )
       if (result.success) {
         window.location = result.redirect_uri

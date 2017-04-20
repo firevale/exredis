@@ -114,6 +114,7 @@ defmodule Acs.WechatController do
         paid_at: DateTime.utc_now(),
         transaction_id: "wechat." <> notify_params[:transaction_id],
         paid_type: "wechat",
+        fee: notify_params[:total_fee],
         transaction_currency: notify_params[:fee_type]
       }) |> Repo.update!
 

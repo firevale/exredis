@@ -1,5 +1,5 @@
 <template>
-  <div class="my-orders">
+  <div class="my-orders" v-if="order">
     <div class="card">
       <header class="card-header has-bottom-line">
         <div class="card-header-title is-vertical">

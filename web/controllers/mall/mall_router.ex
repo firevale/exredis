@@ -44,8 +44,9 @@ defmodule Acs.MallRouter do
     
     post "/fetch_order_list", MallOrderController, :fetch_order_list
     post "/fetch_order", MallOrderController, :fetch_order
-
     post "/fetch_my_orders", MallOrderController, :fetch_my_orders
+    post "/search_orders", MallOrderController, :search_orders
+
     post "/get_goods_stock", MallController, :get_goods_stock
     # get   "/get_paged_post", ForumController, :get_paged_post
     # post  "/get_paged_post", ForumController, :get_paged_postb

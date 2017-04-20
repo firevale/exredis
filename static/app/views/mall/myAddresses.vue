@@ -77,7 +77,7 @@ export default {
     },
     showAddressDetail: function(addressId) {
       this.$router.push({
-        name: 'addressDetail',
+        name: 'addressEdit',
         params: {
           addressId: addressId
         },

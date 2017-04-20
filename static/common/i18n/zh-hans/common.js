@@ -4,4 +4,5 @@
    add: '添加',
    delete: '删除',
    close: '关闭',
+   save: '保存'
  }

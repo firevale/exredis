@@ -29,7 +29,7 @@
       </scroller>
     </div>
     <div class="flex-fixed-size addresses-bottom has-text-center">
-      <v-touch class="button is-info is-large is-fullwidth" @tap="">{{$t('mall.address.add') }}</v-touch>
+      <v-touch class="button is-info is-large is-fullwidth" @tap="newAddress">{{$t('mall.address.add') }}</v-touch>
     </div>
   </div>
 </template>
@@ -77,23 +77,28 @@ export default {
     },
     showAddressDetail: function(addressId) {
       this.$router.push({
-        name: 'addressEdit',
+        name: 'editAddress',
         params: {
           addressId: addressId
         },
       })
     },
     setDefaultAddress: async function(addressId) {     
-     let result = await this.$acs.SetDefaultAddress(addressId)
+     let result = await this.$acs.setDefaultAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.setDefaultSuccess'))
       }
     },
     deleteAddress: async function(addressId) {
-      let result = await this.$acs.DeleteAddress(addressId)
+      let result = await this.$acs.deleteAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.deleteSuccess'))
       }
+    },
+    newAddress: function(){
+      this.$router.push({
+        name: 'newAddress'
+      })
     }
   }
 }

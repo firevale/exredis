@@ -310,20 +310,26 @@ export default {
           records_per_page
         })
       },
-      DeleteAddress(address_id) {
+      deleteAddress(address_id) {
         return post(Vue, '/mall_actions/delete_address', {
           address_id
         })
       },
-      SetDefaultAddress(address_id) {
+      setDefaultAddress(address_id) {
         return post(Vue, '/mall_actions/set_default_address', {
           address_id
         })
       },
-      GetAddressDetail(address_id) {
+      getAddressDetail(address_id) {
         return post(Vue, '/mall_actions/get_address_detail', {
           address_id
         })
+      },
+      insertAddress(params) {
+        return post(Vue, '/mall_actions/insert_address', params)
+      },
+      updateAddress(params) {
+        return post(Vue, '/mall_actions/update_address', params)
       },
 
     }

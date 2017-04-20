@@ -63,4 +63,31 @@ defmodule Acs.AppOrder do
     |> validate_inclusion(:platform, @platforms)
 
   end
+
+  def init_mapping() do
+   unless Elasticsearch.is_index?("acs") do
+      settings = %{
+        number_of_shards: 5,
+        number_of_replicas: 1,
+      }
+
+      orders_mapping = %{
+        properties: %{
+          app_id: %{type: :keyword},
+          user_id: %{type: :keyword},
+          goods_id: %{type: :keyword},
+          device_id: %{type: :keyword},
+          cp_order_id: %{type: :text},
+          transaction_id: %{type: :text},
+          app_user_id: %{type: :keyword},
+          sdk_user_id: %{type: :keyword},
+          inserted_at: %{type: :date},
+        }
+      }
+
+      Elasticsearch.create_index("acs", settings, %{
+        orders: orders_mapping
+      })
+    end
+  end
 end

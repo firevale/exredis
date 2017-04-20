@@ -1,5 +1,5 @@
 <template>
-  <div class="box tile is-ancestor">
+  <div class="box tile is-ancestor" v-if="orderInfo">
     <div class="tile is-parent is-vertical">
       <div class="tile is-child">
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.id')}}:{{orderInfo.id}}</h6>
@@ -8,9 +8,9 @@
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.email')}}:{{orderInfo.user.email}}</h6>
       </div>
       <div class="tile is-child">
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.name')}}:{{orderInfo.user_address.name}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.mobile')}}:{{orderInfo.user_address.mobile}}</h6>
-        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.user_address.address')}}:{{orderInfo.user_address.area}}{{orderInfo.user_address.address}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.address.name')}}:{{orderInfo.address.name}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.address.mobile')}}:{{orderInfo.address.mobile}}</h6>
+        <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.address.address')}}:{{orderInfo.address.area}}{{orderInfo.address.address}}</h6>
       </div>
       <div class="title is-child">
         <div class="box columns" style="margin:0;padding:.5rem;">

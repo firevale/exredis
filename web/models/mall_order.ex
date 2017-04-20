@@ -37,7 +37,7 @@ defmodule Acs.MallOrder do
     field :snapshots, :binary     #订单快照
     field :paid_result, :binary   #支付结果
     field :memo, :string   #备注
-    field :address, :string   #地址 json格式
+    field :address, :map   #地址 json格式
     field :debug_mode, :boolean, default: false
     field :fee, :integer, default: 0
     field :transaction_currency, :string

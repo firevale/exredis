@@ -63,7 +63,7 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
-      addressId: 1,
+      address: {name: "", mobile: "", area: "", address: "", area_code: ""}
     }
   },
   methods: {
@@ -100,7 +100,7 @@ export default {
     },
     onPrepay: async function(payType) {
       //check address
-      if (this.addressId == 0) {
+      if (this.address == "") {
         Toast.show(this.$t('mall.order.addressPlaceholder'))
         return;
       }
@@ -119,7 +119,7 @@ export default {
       }
     },
     prepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, this.addressId)
+      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, this.address)
       if (result.success) {
         let order_id = result.order_id
         switch (payType) {

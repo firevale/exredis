@@ -1,5 +1,5 @@
 import Toast from 'common/components/toast'
-import {i18n} from './vue-i18n'
+import { i18n } from './vue-i18n'
 
 const processResponse = async(response) => {
   let result = await response.json()
@@ -259,12 +259,12 @@ export default {
         return post(Vue, "/send_mobile_bind_verify_code", { mobile })
       },
 
-      createMallOrder(goods_id, quantity, pay_type, user_address_id) {
+      createMallOrder(goods_id, quantity, pay_type, address) {
         return post(Vue, '/mall_actions/create_mall_order', {
           goods_id,
           quantity,
           pay_type,
-          user_address_id
+          address
         })
       },
 
@@ -303,7 +303,7 @@ export default {
       getGoodsStock(goods_id) {
         return post(Vue, '/mall_actions/get_goods_stock', { goods_id })
       },
-      
+
       getAddressesPaged(page, records_per_page) {
         return post(Vue, '/mall_actions/get_addresses_paged', {
           page,
@@ -317,6 +317,11 @@ export default {
       },
       SetDefaultAddress(address_id) {
         return post(Vue, '/mall_actions/set_default_address', {
+          address_id
+        })
+      },
+      GetAddressDetail(address_id) {
+        return post(Vue, '/mall_actions/get_address_detail', {
           address_id
         })
       },

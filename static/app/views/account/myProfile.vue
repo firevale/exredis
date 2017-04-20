@@ -3,39 +3,47 @@
     <scroller class="account-info">
       <div class="columns is-mobile is-multiline is-paddingless is-marginless">
         <div class="column is-3">
-          <figure class="image is-64x64 avatar-image" style="margin: 1rem auto;">
+          <v-touch tag="figure" class="image is-64x64 avatar-image" style="margin: 1rem auto;" @tap="onUpdateAvatar">
             <img :src="avatarUrl"></img>
-          </figure>
+          </v-touch>
           <div class="level is-mobile is-paddingless">
             <p class="level-center level-item has-text-right"> {{ $t('account.userId') }}: {{ userInfo.id }}</p>
           </div>
         </div>
         <div class="column is-9">
           <v-touch class="level is-mobile is-clickable has-bottom-line" style="margin-top: 0.5rem" @tap="$router.push({path: '/account/edit_nickname'})">
-            <p class="level-left level-item has-text-left"> {{ $t('account.nickname') }} </p>
+            <p class="level-left level-item has-text-left is-narrow">
+              <span style="width: 100%"> {{ $t('account.nickname') }} </span>
+            </p>
             <p class="level-right level-item has-text-right">
               {{ userInfo.nickname }}
               <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
           <v-touch v-if="isMobileAccountSupported" class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_mobile'})">
-            <p class="level-left level-item has-text-left"> {{ $t('account.mobile') }} </p>
-            <p class="level-right level-item has-text-right">
-              {{ mobile }}
+            <p class="level-left level-item has-text-left">
+              <span style="width: 100%"> {{ $t('account.mobile') }} </span>
+            </p>
+            <p class="level-right level-item has-text-right is-narrow">
+              <span> {{ mobile }} </span>
               <span class="icon image-icon icon-arrow-right"> </span>
             </p>
           </v-touch>
           <v-touch class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_email'})">
-            <p class="level-left level-item has-text-left"> {{ $t('account.email') }} </p>
+            <p class="level-left level-item has-text-left">
+              <span style="width: 100%"> {{ $t('account.email') }} </span>
+            </p>
             <p class="level-right level-item has-text-right">
-              {{ email }}
-              <span class="icon image-icon icon-arrow-right"></span>
+              <span> {{ email }} </span>
+              <span class="icon image-icon icon-arrow-right is-narrow"></span>
             </p>
           </v-touch>
           <v-touch v-if="isMobileAccountSupported" class="level is-mobile is-clickable has-bottom-line" @tap="$router.push({path: '/account/edit_resident'})">
-            <p class="level-left level-item has-text-left"> {{ $t('account.residentInfo') }} </p>
-            <p class="level-right level-item has-text-right">
-              {{ userInfo.resident_id || $t('account.notAuthenticated') }}
+            <p class="level-left level-item has-text-left">
+              <span style="width: 100%"> {{ $t('account.residentInfo') }} </span>
+            </p>
+            <p class="level-right level-item has-text-right is-narrow">
+              <span> {{ userInfo.resident_id || $t('account.notAuthenticated') }} </span>
               <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
@@ -54,6 +62,8 @@ import {
 } from 'vuex'
 
 import * as utils from 'common/js/utils'
+
+import nativeApi from 'common/js/nativeApi'
 
 import {
   showMobileMenu
@@ -87,7 +97,27 @@ export default {
   },
 
   methods: {
+    onUpdateAvatar: function() {
+      console.log('onUpdateAvatar.....')
+      if (window.acsConfig.inApp) {
+        let cameraAvailable = nativeApi.isMediaSourceTypeAvailable('camera')
+        let menu = showMobileMenu({
+          visible: true,
+          items: [{
+            title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"
+          }, {
+            title: "yyyy"
+          }]
+        })
 
+        menu.$on('item-selected', (item) => {
+          console.log('mobile menu item selected: ', item)
+        })
+
+      } else {
+
+      }
+    }
   },
 
   components: {

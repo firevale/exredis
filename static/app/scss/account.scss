@@ -9,7 +9,7 @@
     position: relative;
     .account-fields {
       position: absolute;
-      top: 1rem;
+      top: 0;
       bottom: 0;
       left: 25%;
       right: 25%;
@@ -129,19 +129,19 @@ only screen and (min-resolution: 1.25dppx) {
   body.ios,
   body.macos {
     .account-page .content-container.edit-account .account-fields .control .input {
-      border-width: 0.4px;
+      border-width: 0.5px;
     }
   }
 }
 
 @media only screen and (-o-min-device-pixel-ratio: 9/4),
-only screen and (-webkit-min-device-pixel-ratio: 2.25),
-only screen and (min-device-pixel-ratio: 2.25),
-only screen and (min-resolution: 2.25dppx) {
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2),
+only screen and (min-resolution: 2dppx) {
   body.ios,
   body.macos {
     .account-page .content-container.edit-account .account-fields .control .input {
-      border-width: 0.2px;
+      border-width: 0.3px;
     }
   }
 }

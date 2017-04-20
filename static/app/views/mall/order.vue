@@ -63,7 +63,7 @@ export default {
       totalPrice: "",
       goods: {},
       goodsId: "",
-      address: %{name:"" , mobile: "", area: "", address: "", area_code: "", user_id: "" }
+      address: {name: "", mobile: "", area: "", address: "", area_code: ""}
     }
   },
   methods: {

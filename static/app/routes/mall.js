@@ -35,6 +35,10 @@ export default [{
       path: 'goods/:goodsId',
       name: 'goodsDetail',
       component: require('../views/mall/goodsDetail.vue')
+    }, {
+      path: 'address/edit/:addressId',
+      name: 'addressEdit',
+      component: require('../views/mall/editAddress.vue')
     }
   ]
 }]

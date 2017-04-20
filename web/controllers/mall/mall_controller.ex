@@ -358,7 +358,23 @@ defmodule Acs.MallController do
           conn |>json(%{success: true, i18n_message: "mall.address.setDefaultSuccess"})
     end
   end
-   def set_default_address(conn, _) do
+  def set_default_address(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  def get_address_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do
+    query = from ads in UserAddress,
+            select: map(ads,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),
+            where: ads.id == ^address_id
+    
+    case address = Repo.one!(query) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      _ ->
+          conn |> json(%{success: true, address: address})
+    end
+  end
+  def get_address_detail(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 end

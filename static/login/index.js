@@ -26,8 +26,11 @@ Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = acs.getAppId()
 Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()
 
+// now we don't support en language
+// let locale = window.acsConfig.locale || 'zh-hans'
+
 const i18n = new VueI18n({
-  locale: window.acsConfig.locale || 'zh-hans',
+  locale: 'zh-hans',
   messages: locales
 })
 

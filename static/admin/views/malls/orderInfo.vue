@@ -1,5 +1,5 @@
 <template>
-  <div class="box tile is-ancestor">
+  <div class="box tile is-ancestor" v-if="orderInfo">
     <div class="tile is-parent is-vertical">
       <div class="tile is-child">
         <h6 class="subtitle is-6">{{$t('admin.mall.order.fields.id')}}:{{orderInfo.id}}</h6>

@@ -45,7 +45,7 @@ export default {
 
   methods: {
     updateAppIcon: function(app) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/admin_actions/update_app_icon',
         accept: 'image/png',
         data: {

@@ -8,7 +8,7 @@
               <article class="tile is-vertical">
                 <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
                 <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{item.address}}</p>
+                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{item.area.replace(/-/g," ") }} {{item.address}}</p>
               </article>
             </div>
             <div class="card-header-icon">
@@ -18,7 +18,8 @@
           <div class="card-content">
             <div class="columns is-mobile" style="width:95vw">
               <div class="column is-10 is-paddingless">
-                <v-touch class="subtitle is-5 is-primary" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
+                <v-touch v-if="item.is_default" class="subtitle is-5 is-primary" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
+                <v-touch v-else class="subtitle is-5" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
               </div>
               <div class="column is-paddingless">
                 <v-touch class="subtitle is-5" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
@@ -83,19 +84,21 @@ export default {
         },
       })
     },
-    setDefaultAddress: async function(addressId) {     
-     let result = await this.$acs.setDefaultAddress(addressId)
+    setDefaultAddress: async function(addressId) {
+      let result = await this.$acs.setDefaultAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.setDefaultSuccess'))
+        this.resetScroller()
       }
     },
     deleteAddress: async function(addressId) {
       let result = await this.$acs.deleteAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.deleteSuccess'))
+        this.resetScroller()
       }
     },
-    newAddress: function(){
+    newAddress: function() {
       this.$router.push({
         name: 'newAddress'
       })

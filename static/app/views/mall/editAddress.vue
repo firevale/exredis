@@ -37,7 +37,8 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <city-select :province.sync="province" :city.sync="city" :district.sync="district" @onSelect="onSelect"></city-select>
+                <city-select v-if="provinceCode>0" :_province="provinceCode" :_city="cityCode" :_district="districtCode"
+                  @onSelect="onSelect"></city-select>
               </div>
             </div>
           </div>
@@ -93,20 +94,23 @@ export default {
   },
   methods: {
     handleSubmit: async function() {
+      let area = this.district == "" ? null : this.province + "-" + this.city + "-" + this.district
+      let area_code = this.districtCode == "" ? null : this.provinceCode + "-" + this.cityCode +
+        "-" + this.districtCode
       let result = await this.$acs.updateAddress({
-          id: this.address.id,
-          name: this.address.name,
-          mobile: this.address.mobile,
-          area: this.address.area,
-          address: this.address.address,
-          area_code: this.address.area_code,
-          is_default: this.address.is_default
+        id: this.address.id,
+        name: this.address.name,
+        mobile: this.address.mobile,
+        area: area,
+        address: this.address.address,
+        area_code: area_code,
+        is_default: this.address.is_default
+      })
+      if (result.success) {
+        this.$router.replace({
+          name: 'myAddresses'
         })
-        if (result.success) {
-          this.$router.replace({
-            name: 'myAddresses'
-          })
-        }
+      }
     },
     onBtnBackClicked: function() {
       if (this.canGoBack) {
@@ -133,7 +137,12 @@ export default {
       }
     },
     onSelect: function(province, city, district) {
-      debugger 
+      this.province = province.name
+      this.provinceCode = province.code
+      this.city = city.name
+      this.cityCode = city.code
+      this.district = district.name
+      this.districtCode = district.code
     }
   },
   watch: {

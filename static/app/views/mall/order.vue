@@ -146,7 +146,17 @@ export default {
     wechatPay: async function(order_id) {
       let result = await this.$acs.wechatMallPrepay(order_id)
       if (result.success) {
-        nativeApi.openWechatPay(JSON.stringify(result))
+        nativeApi.openWechatPayWithCallback(JSON.stringify(result),
+          async rst => {
+            if (this.orderId) {
+              this.$router.push({
+                name: 'myOrderDetail',
+                params: {
+                  orderId: this.orderId
+                },
+              })
+            }
+          })
       }
     },
     alipayRedirect: async function(order_id) {
@@ -159,16 +169,6 @@ export default {
         window.location = result.redirect_uri
       }
     },
-    showSuccess: function() {
-      if (this.orderId) {
-        this.$router.push({
-          name: 'myOrderDetail',
-          params: {
-            orderId: this.orderId
-          },
-        })
-      }
-    }
   },
   watch: {
     '$route' (to, from) {

@@ -201,7 +201,8 @@ defmodule Utils do
 
 	def check_password(password, hash) do 
 		case hash do 
-			# comeonin hash
+      nil ->
+        false
 			"$pbkdf2-sha512$" <> _ ->
 				Pbkdf2.checkpw(password, hash)
 			_ ->
@@ -272,6 +273,24 @@ defmodule Utils do
   for {h, i} <- Enum.with_index(hex_table) do 
     @inline true
     defp hex_(unquote(i)), do: unquote(h)
+  end
+
+  def cp_file_to_md5_name(src, dest, ext) do 
+    if File.exists?(src) do 
+      case File.mkdir_p!(dest) do 
+        :ok ->
+          {md5sum_result, 0} = System.cmd("md5sum", [src])
+          [file_md5 | _] = String.split(md5sum_result)
+          file_name = "/#{file_md5}.#{ext}"
+          case File.cp(src, Path.join(dest, file_name)) do 
+            :ok -> {:ok, file_name}
+            {:error, reason} -> {:error, reason} 
+          end
+        {:error, reason} -> {:error, reason} 
+      end
+    else 
+      {:error, "file #{src} not exists"}
+    end
   end
 
 end

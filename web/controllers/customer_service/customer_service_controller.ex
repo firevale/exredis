@@ -67,9 +67,9 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, issues: questions})
   end
 
-  def update_question(conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot})  do
-    with %Question{} = question  <- Repo.get(Question,id),
-         {:ok, question} <- Question.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |>Repo.update
+  def update_question(conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot}) do
+    with %Question{} = question <- Repo.get(Question,id),
+         {:ok, question} <- Question.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |> Repo.update
     do
          Elasticsearch.update(%{
             index: "customer_service",

@@ -209,18 +209,23 @@ defmodule Acs.ForumController do
                              "order" => order}) do
     get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, 0)
   end
+  def get_paged_post(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
   def get_user_paged_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                             %{"forum_id" => forum_id,
                               "page" => page,
                               "records_per_page" => records_per_page}) do
     get_paged_post_list(conn, forum_id, 0, page, records_per_page, "id", user_id)
   end
+  def get_user_paged_post(conn, %{"forum_id" => _, "page" => _, "records_per_page" => _}) do
+    conn |> json(%{success: false, action: "login", i18n_message: "error.server.needLogin"})
+  end
   def get_user_paged_post(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-  def get_paged_post(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-  end
+
   defp get_paged_post_list(conn, forum_id, section_id, page, records_per_page, order, author_user_id) do
     queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == true
     queryTotal = if(is_integer(section_id) and section_id > 0) do
@@ -264,39 +269,6 @@ defmodule Acs.ForumController do
     posts = Repo.all(query) |> RedisForum.filterHotList
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
-  end
-
-  def update_user_avatar(conn, %{"user_id" => user_id, "avatar" => %{} = upload_file}) do
-    case Repo.get(User, user_id) do
-      nil ->
-        conn |> json(%{success: false, i18n_message: "error.server.userNotExist"})
-      %User{} = user ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 200, height: 200} = upload_image  ->
-            if upload_image.format in ["jpg","jpeg","png"] do
-              Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/users_avatars/"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-              avatar_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
-              User.changeset(user, %{avatar_url: avatar_url}) |> Repo.update!
-              update_user = RedisUser.refresh(String.to_integer(user_id))
-              conn |> json(%{success: true, user: %{
-                id: update_user.id,
-                nickname: update_user.nickname,
-                avatar_url: update_user.avatar_url,
-                inserted_at: update_user.inserted_at
-              }})
-            else
-              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})           
-        end
-    end
   end
 
   # add_post

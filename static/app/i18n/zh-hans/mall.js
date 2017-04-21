@@ -69,6 +69,7 @@ export default {
   address: {
     add: '添加地址',
     deleteSuccess: '地址删除成功',
+    setDefault: '设为默认',
     setDefaultSuccess: '设置默认地址成功',
     addSuccess: '地址添加成功',
     updateSuccess: '地址更新成功',

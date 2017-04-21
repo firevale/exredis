@@ -313,11 +313,8 @@ export default {
         return post(Vue, '/mall_actions/get_goods_stock', { goods_id })
       },
 
-      getAddressesPaged(page, records_per_page) {
-        return post(Vue, '/mall_actions/get_addresses_paged', {
-          page,
-          records_per_page
-        })
+      getUserAddresses() {
+        return post(Vue, '/mall_actions/get_user_addresses', {})
       },
       deleteAddress(address_id) {
         return post(Vue, '/mall_actions/delete_address', {

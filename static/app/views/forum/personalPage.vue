@@ -5,8 +5,6 @@
         <p class="image is-64x64 avatar-image">
           <img :src="avatarUrl"></img>
         </p>
-        <img-upload url="/user/update_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
-          field="file" :headers="headers" v-model="showImgUpload"></img-upload>
       </figure>
       <div class="media-content">
         <p>
@@ -49,12 +47,14 @@ import {
   showMobileMenu
 } from "common/components/mobileMenu"
 
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
+import Vue from 'vue'
 import scroller from 'common/components/scroller'
 
 import myPostListItem from "../../components/myPostListItem"
 import myFavoriteListItem from "../../components/myFavoriteListItem"
 import myCommentListItem from "../../components/myCommentListItem"
+
+import CropUploadDialog from 'common/components/imageCropUpload'
 
 export default {
   components: {
@@ -62,7 +62,6 @@ export default {
     myPostListItem,
     myFavoriteListItem,
     myCommentListItem,
-    imgUpload,
   },
 
   computed: {
@@ -94,10 +93,6 @@ export default {
       page: 0,
       total: 1,
       recordsPerPage: 10,
-      showImgUpload: false,
-      headers: {
-        'x-csrf-token': window.acsConfig.csrfToken
-      }
     }
   },
 
@@ -132,18 +127,16 @@ export default {
       // menu.$on('item-selected', (item) => {
       //   console.log('mobile menu item selected: ', item)
       // })
-      this.showImgUpload = true
+
+      CropUploadDialog.show({
+        url: '/user/update_avatar',
+        callback: result => {
+          if (result.success) {
+            this.setUserProfile(result.user)
+          }
+        }
+      })
     },
-
-    cropUploadSuccess(result, field, key) {
-      if (result.success) {
-        this.setUserProfile(result.user)
-      }
-    },
-
-    cropUploadFail(status, field, key) {},
-
-    onPageChange: function(page) {},
 
     resetScroller: function() {
       this.page = 0
@@ -229,8 +222,8 @@ export default {
 }
 </script>
 <style lang="css">
-.vue-image-crop-upload .vicp-wrap .vicp-step1 .vicp-drop-area,
-.vue-image-crop-upload .vicp-wrap .vicp-step3 .vicp-upload {
-  height: 175px;
+div.vue-image-crop-upload .vicp-wrap .vicp-step1 .vicp-drop-area,
+div.vue-image-crop-upload .vicp-wrap .vicp-step3 .vicp-upload {
+  height: 200px !important;
 }
 </style>

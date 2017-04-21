@@ -332,20 +332,14 @@ defmodule Acs.MallController do
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
   end
 
-   def get_addresses_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"page" => page,"records_per_page" => records_per_page})do
-    queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
-    total = Repo.one!(queryTotal)
-    total_page = round(Float.ceil(total / records_per_page))
-
+   def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do
     query = from us in UserAddress,
               where: us.user_id == ^user_id,
               order_by: [desc: us.inserted_at],
-              limit: ^records_per_page,
-              offset: ^((page - 1) * records_per_page),
               select: map(us, [:id, :name, :mobile, :area, :address, :is_default])
 
     addresses = Repo.all(query)
-    conn |> json(%{success: true, addresses: addresses, total: total_page})
+    conn |> json(%{success: true, addresses: addresses})
   end
 
   def delete_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do

@@ -7,6 +7,11 @@
   }
 }
 
+.no-border {
+  border: 0;
+  box-shadow: none;
+}
+
 .mall-index {
   position: relative;
   margin: 1rem;
@@ -153,9 +158,6 @@
       padding-bottom: 0.5rem;
       margin-bottom: 1rem;
     }
-    .subtitle {
-      font-weight: 400;      
-    }
     .card-header-icon {
       padding-right: 1.5rem;
     }
@@ -170,6 +172,21 @@
     position: relative;
   }
   .addresses-bottom {
-    height: 4rem;
+    height: 3.4rem;
+  }
+  .card-content {
+    .columns {
+      width: 95vw;
+    }
+  }
+  .tile {
+    p {
+      margin-top: -.5rem;
+    }
+  }
+}
+.new-address,.edit-address{
+  .width-5{
+    width: 5rem;
   }
 }

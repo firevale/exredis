@@ -1,59 +1,35 @@
 <template>
-  <div class="columns is-multiline is-mobile">
+  <div class="new-address columns is-multiline is-mobile">
     <form @submit.prevent="handleSubmit">
       <div class="column is-12 has-bottom-line">
-        <div class="field is-horizontal">
-          <div class="field-label">
-            <label class="label">{{$t('mall.address.fields.name') }}：</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <input class="input" type="text" v-model="name">
-              </div>
-            </div>
+        <div class="level is-mobile">
+          <div class="level-item">
+            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.name') }}：</span>
+            <input class="input no-border" type="text" v-model="name">
           </div>
         </div>
       </div>
       <div class="column is-12 has-bottom-line">
-        <div class="field is-horizontal">
-          <div class="field-label">
-            <label class="label">{{$t('mall.address.fields.mobile') }}：</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <input class="input" type="number" v-model="mobile">
-              </div>
-            </div>
+        <div class="level is-mobile">
+          <div class="level-item">
+            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.mobile') }}：</span>
+            <input class="input no-border" type="number" v-model="mobile">
           </div>
         </div>
       </div>
       <div class="column is-12 has-bottom-line">
-        <div class="field is-horizontal">
-          <div class="field-label">
-            <label class="label">{{$t('mall.address.fields.area') }}：</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <city-select @onSelect="onSelect"></city-select>
-              </div>
-            </div>
+        <div class="level is-mobile has-text-left">
+          <div class="level-item">
+            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.area') }}：</span>
+            <city-select @onSelect="onSelect" style="width:100%"></city-select>
           </div>
         </div>
       </div>
       <div class="column is-12 has-bottom-line">
-        <div class="field is-horizontal">
-          <div class="field-label">
-            <label class="label">{{$t('mall.address.fields.address') }}：</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <input class="input" type="text" v-model="address">
-              </div>
-            </div>
+        <div class="level is-mobile">
+          <div class="level-item">
+            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.address') }}：</span>
+            <input class="input no-border" type="text" v-model="address">
           </div>
         </div>
       </div>
@@ -123,8 +99,7 @@ export default {
     handleSubmit: async function() {
       let area = this.district == "" ? null : this.province + "-" + this.city + "-" + this.district
       let area_code = this.districtCode == "" ? null : this.provinceCode + "-" + this.cityCode +
-        "-" +
-        this.districtCode
+        "-" + this.districtCode
 
       let result = await this.$acs.insertAddress({
         name: this.name,

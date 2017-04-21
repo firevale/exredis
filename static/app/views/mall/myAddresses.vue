@@ -1,14 +1,14 @@
 <template>
   <div class="my-addresses">
     <div class="flex-take-rest addresses-content">
-      <scroller :on-load-more="loadmore" ref="scroller">
+      <scroller ref="scroller" style="margin-bottom:-3.6rem;">
         <div v-for="item in addressesList" class="card">
           <v-touch class="card-header" tag="header" @tap="showAddressDetail(item.id)">
             <div class="card-header-title">
               <article class="tile is-vertical">
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{item.area.replace(/-/g," ") }} {{item.address}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{item.area.replace(/-/g," ") }} {{item.address}}</p>
               </article>
             </div>
             <div class="card-header-icon">
@@ -16,13 +16,13 @@
             </div>
           </v-touch>
           <div class="card-content">
-            <div class="columns is-mobile" style="width:95vw">
+            <div class="columns is-mobile">
               <div class="column is-10 is-paddingless">
-                <v-touch v-if="item.is_default" class="subtitle is-5 is-primary" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
-                <v-touch v-else class="subtitle is-5" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
+                <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
+                <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.setDefault') }}</v-touch>
               </div>
               <div class="column is-paddingless">
-                <v-touch class="subtitle is-5" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
+                <v-touch class="subtitle is-5 is-normal" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
               </div>
             </div>
           </div>
@@ -43,37 +43,21 @@ export default {
   components: {
     scroller
   },
+  mounted: async function() {
+    await this.loadAddress()
+  },
   data: function() {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
-      addressesList: [],
-      page: 0,
-      total: 1,
-      recordsPerPage: 12
+      addressesList: []
     }
   },
   methods: {
-    resetScroller: function() {
-      this.page = 0
-      this.total = 1
-      this.addressesList = []
-      if (this.$refs.scroller) {
-        this.$refs.scroller.$emit('reset')
-      }
-    },
-    loadmore: async function() {
-      let result = await this.$acs.getAddressesPaged(this.page + 1, this.recordsPerPage)
-
+    loadAddress: async function() {
+      let result = await this.$acs.getUserAddresses()
       if (result.success) {
-        this.addressesList = this.page == 0 ? result.addresses : this.addressesList.concat(result
-          .addresses)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
+        this.addressesList = result.addresses
       }
     },
     showAddressDetail: function(addressId) {
@@ -88,7 +72,7 @@ export default {
       let result = await this.$acs.setDefaultAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.setDefaultSuccess'))
-        this.resetScroller()
+        this.loadAddress()
       }
     },
     deleteAddress: async function(addressId) {

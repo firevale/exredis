@@ -33,7 +33,7 @@ defmodule Acs.MallRouter do
     post "/get_mall_detail", MallController, :get_mall_detail
     post "/get_goods_detail", MallController, :get_goods_detail
 
-    post "/get_addresses_paged", MallController, :get_addresses_paged
+    post "/get_user_addresses", MallController, :get_user_addresses
     post "/delete_address", MallController, :delete_address
     post "/set_default_address", MallController, :set_default_address
     post "/get_address_detail", MallController,  :get_address_detail

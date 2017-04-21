@@ -79,43 +79,69 @@ defmodule Acs.MallController do
   end
 
   # fetch_goods
-  def fetch_goods(conn, %{"page" => page, 
-                        "records_per_page" => records_per_page,
-                        "keyword" => keyword,
-                        "app_id" => app_id}) do
-    
-    if(String.length(keyword) > 0) do
-      keyword =  "%" <> keyword <> "%" 
-    end
+  def fetch_goods(conn, %{"page" => page, "records_per_page" => records_per_page,
+   "keyword" => keyword, "app_id" => app_id}) do
+
+    {:ok,searchTotal,ids} =search_goods(app_id, keyword,page,records_per_page)
 
     queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id
-    queryTotal = if(String.length(keyword)>0) do
-      queryTotal |> where([p], like(p.name, ^keyword))
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      conn |> json(%{success: true, total: 0, goodses: []})
     else
-      queryTotal
-    end
-
-    total = Repo.one!(queryTotal)
-    total_page = round(Float.ceil(total / records_per_page))
-
-    query = from g in MallGoods,
+        total_page = round(Float.ceil(total / records_per_page))
+        query = from g in MallGoods,
               where: g.app_id == ^app_id,
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active])
 
-    query = if(String.length(keyword)>0) do
-      query |> where([p], like(p.name, ^keyword))
-    else
-      query
-    end
+        query = if(String.length(keyword)>0) do
+          query |> where([p], p.id in ^ids)
+        else
+          query
+        end
 
-    goodses = Repo.all(query)
-    conn |> json(%{success: true, goodses: goodses, total: total_page})
+         goodses = Repo.all(query)
+         conn |> json(%{success: true, goodses: goodses, total: total_page})
+    end
   end
   def fetch_goods(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  defp search_goods(app_id, keyword,page,records_per_page) do
+    if String.length(keyword)>0 do
+          query = %{
+            query: %{
+              bool: %{
+                should: [
+                  %{term: %{id: keyword}},
+                  %{term: %{app_id: keyword}},
+                  %{term: %{name: keyword}},
+                  %{term: %{description: keyword}},
+                ],
+                minimum_should_match: 1,
+                boost: 1.0,
+              },
+            },
+            sort: %{inserted_at: %{order: :desc}},
+            from: (page - 1) * records_per_page,
+            size: records_per_page,
+          }
+
+          case Elasticsearch.search(%{index: "mall", type: "goods", query: query, params: %{timeout: "1m"}}) do
+            {:ok, %{hits: %{hits: hits, total: total}}} ->
+              ids = Enum.map(hits, &(&1._id))
+              {:ok, total, ids }
+            error ->
+             throw(error)
+          end
+        else
+          {:ok,0, {}}
+        end
   end
 
   # update_goods_pic
@@ -150,7 +176,7 @@ defmodule Acs.MallController do
     end
   end
   def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
-    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
+    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose
     if upload_image.format in ["jpg", "jpeg", "png"] do
       {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
       [file_md5 | _] = String.split(md5sum_result)
@@ -196,10 +222,10 @@ defmodule Acs.MallController do
           end
         end
 
-      false -> 
-        # update 
+      false ->
+        # update
         case Repo.get(MallGoods, id) do
-          nil -> 
+          nil ->
             conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
 
           %MallGoods{} = mg ->
@@ -251,11 +277,11 @@ defmodule Acs.MallController do
   def delete_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
- 
+
  #  show active_mall_goods
- def get_active_goods_paged(conn, %{"page" => page, 
+ def get_active_goods_paged(conn, %{"page" => page,
                         "records_per_page" => records_per_page,
-                        "app_id" => app_id}) do    
+                        "app_id" => app_id}) do
 
     queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id and g.active==true
 
@@ -278,7 +304,7 @@ defmodule Acs.MallController do
       %MallGoods{} = goods ->
         conn |> json(%{success: true, stock: goods.stock})
       _ ->
-        conn |> json(%{success: true, stock: 0}) 
+        conn |> json(%{success: true, stock: 0})
     end
   end
   def get_goods_stock(conn, _) do
@@ -305,8 +331,8 @@ defmodule Acs.MallController do
     goods = Repo.get(MallGoods, goods_id)
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
   end
-  
-   def get_addresses_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"page" => page,"records_per_page" => records_per_page})do    
+
+   def get_addresses_paged(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"page" => page,"records_per_page" => records_per_page})do
     queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
     total = Repo.one!(queryTotal)
     total_page = round(Float.ceil(total / records_per_page))
@@ -316,7 +342,7 @@ defmodule Acs.MallController do
               order_by: [desc: us.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(us, [:id, :name, :mobile, :address, :is_default])
+              select: map(us, [:id, :name, :mobile, :area, :address, :is_default])
 
     addresses = Repo.all(query)
     conn |> json(%{success: true, addresses: addresses, total: total_page})
@@ -366,7 +392,7 @@ defmodule Acs.MallController do
     query = from ads in UserAddress,
             select: map(ads,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),
             where: ads.id == ^address_id
-    
+
     case address = Repo.one!(query) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
@@ -404,9 +430,9 @@ defmodule Acs.MallController do
                 "is_default" => is_default} = us_address)do
 
     case Repo.get(UserAddress, id) do
-        nil -> 
+        nil ->
           conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
-          
+
         %UserAddress{} = us ->
           if(us.user_id !== user_id)do
             conn |> json(%{success: false, i18n_message: "error.server.illegal"})

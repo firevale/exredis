@@ -44,6 +44,10 @@ const mutations = {
     state.nickname = nickname
   },
 
+  [types.UPDATE_USER_AVATAR](state, avatar_url) {
+    state.avatar_url = avatar_url
+  },
+
   [types.UPDATE_USER_RESIDENT_INFO](state, residentInfo) {
     state.resident_id = residentInfo.resident_id
     state.resident_name = residentInfo.resident_name

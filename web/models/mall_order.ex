@@ -83,7 +83,7 @@ defmodule Acs.MallOrder do
              platform: %{type: :keyword},
              device_id: %{type: :keyword},
              user_ip: %{type: :keyword},
-             user_id: %{type: :keyword},
+             user_id: %{type: :integer},
              currency: %{type: :keyword},
              paid_type: %{type: :keyword},
              memo: %{type: :text, analyzer: :smartcn},

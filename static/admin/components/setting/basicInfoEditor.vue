@@ -55,7 +55,7 @@ import {
 } from 'vuex'
 
 import Vue from 'vue'
-import i18n from 'admin/vue-i18n'
+import {i18n} from 'admin/vue-i18n'
 
 import {
   showMessageBox

@@ -3,7 +3,7 @@
     <scroller class="account-info">
       <div class="columns is-mobile is-multiline is-paddingless is-marginless">
         <div class="column is-3">
-          <v-touch tag="figure" class="image is-64x64 avatar-image" style="margin: 1rem auto;" @tap="onUpdateAvatar">
+          <v-touch tag="figure" class="image is-64x64 avatar-image is-clickable" style="margin: 1rem auto;" @tap="onUpdateAvatar">
             <img :src="avatarUrl"></img>
           </v-touch>
           <div class="level is-mobile is-paddingless">
@@ -70,6 +70,8 @@ import {
 } from "common/components/mobileMenu"
 
 import scroller from 'common/components/scroller'
+
+import CropUploadDialog from 'common/components/imageCropUpload'
 
 export default {
   data() {
@@ -142,7 +144,12 @@ export default {
         })
 
       } else {
-
+        CropUploadDialog.show({
+          url: '/user/update_avatar',
+          callback: result => {
+            this.updateUserAvatar(result.user.avatar_url)
+          }
+        })
       }
     },
 

@@ -281,7 +281,7 @@ defmodule Utils do
         :ok ->
           {md5sum_result, 0} = System.cmd("md5sum", [src])
           [file_md5 | _] = String.split(md5sum_result)
-          file_name = "/#{file_md5}.#{ext}"
+          file_name = "#{file_md5}.#{ext}"
           case File.cp(src, Path.join(dest, file_name)) do 
             :ok -> {:ok, file_name}
             {:error, reason} -> {:error, reason} 

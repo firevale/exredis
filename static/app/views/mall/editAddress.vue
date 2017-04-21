@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-address columns is-multiline is-mobile">
+  <div v-if="address" class="edit-address columns is-multiline is-mobile">
     <form @submit.prevent="handleSubmit">
       <div class="column is-12 has-bottom-line">
         <div class="level is-mobile">
@@ -61,7 +61,7 @@ export default {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
-      address: {},
+      address: undefined,
       province: '',
       city: '',
       district: '',

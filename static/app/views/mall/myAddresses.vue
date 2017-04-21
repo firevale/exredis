@@ -79,7 +79,6 @@ export default {
       let result = await this.$acs.deleteAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.deleteSuccess'))
-        this.resetScroller()
       }
     },
     newAddress: function() {

@@ -316,7 +316,7 @@ defmodule Acs.MallController do
               order_by: [desc: us.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(us, [:id, :name, :mobile, :address, :is_default])
+              select: map(us, [:id, :name, :mobile, :area, :address, :is_default])
 
     addresses = Repo.all(query)
     conn |> json(%{success: true, addresses: addresses, total: total_page})

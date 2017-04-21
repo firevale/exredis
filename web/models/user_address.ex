@@ -22,5 +22,6 @@ defmodule Acs.UserAddress do
     |> cast(params, [:name, :mobile, :area, :address, :area_code, :is_default, :user_id])
     |> validate_required([:name, :mobile, :area, :address, :area_code])
     |> foreign_key_constraint(:user_id)
+    |> validate_format(:mobile, ~r/^1\d+$/)
   end
 end

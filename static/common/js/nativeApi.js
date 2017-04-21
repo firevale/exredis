@@ -93,4 +93,15 @@ export default {
       return false
     }
   },
+
+  openWechatPayWithCallback: function(payinfo, callback) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
+      window.acsConfig.showSuccessCallback = callback
+      return AndroidNativeAPI.openWechatPay(payinfo)
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
+      return false
+    } else {
+      return false
+    }
+  },
 }

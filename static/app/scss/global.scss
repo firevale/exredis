@@ -23,6 +23,10 @@ body:not(.in-app) {
   }
 }
 
+body.in-app *:not(input) {
+  user-select: none;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
@@ -133,6 +137,12 @@ input.input:focus {
       .icon {
         margin-top: 0.2rem;
         margin-right: 1rem;
+      }
+    }
+    .icon.image-icon {
+      &:active, &:hover {
+        transform: scale(2);
+        transform-origin: 50% 50% 0;
       }
     }
   }
@@ -265,7 +275,7 @@ only screen and (min-resolution: 1.25dppx) {
       }
     }
   }
-} 
+}
 
 .is-clickable {
   cursor: pointer;

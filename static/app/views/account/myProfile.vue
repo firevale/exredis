@@ -97,6 +97,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'updateUserAvatar'
+    ]),
+
     onUpdateAvatar: function() {
       if (window.acsConfig.inApp) {
         let items = [{
@@ -128,21 +132,23 @@ export default {
         menu.$on('item-selected', (item) => {
           switch (item.value) {
             case 'camera':
-              nativeApi.pickAvatarFrom('camera', function(result) {
-
-              })
+              nativeApi.pickAvatarFrom('camera', result => this.handlePickAvatarResult(result))
               break;
 
             case 'photoLib':
-              nativeApi.pickAvatarFrom('photoLib', function(result) {
-
-              })
+              nativeApi.pickAvatarFrom('photoLib', result => this.handlePickAvatarResult(result))
               break;
           }
         })
 
       } else {
 
+      }
+    },
+
+    handlePickAvatarResult: function(result) {
+      if (result.success) {
+        this.updateUserAvatar(`data:image/png;base64, ${result.image}`)
       }
     }
   },

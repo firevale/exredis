@@ -58,6 +58,7 @@ defmodule Acs do
     Acs.Forum.init_mapping()
     Acs.Question.init_mapping()
     Acs.MallOrder.init_mapping()
+    Acs.MallGoods.init_mapping()
   end
 
 end

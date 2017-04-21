@@ -12,17 +12,23 @@ defmodule Acs.MallOrderController do
   plug :check_is_admin when action in [:delete_goods]
 
   # fetch_malls
-  def fetch_order_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
-    fetch_order_list(conn,app_id, page, records_per_page)
+  def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+    fetch_order_list(conn,app_id, keyword, page, records_per_page)
   end
   def fetch_order_list(conn, _params) do
-    fetch_order_list(conn,'', 1, 100)
+    fetch_order_list(conn,'','', 1, 100)
   end
-  defp fetch_order_list(conn, app_id, page, records_per_page) do
-    total = Repo.one!(from order in MallOrder, select: count(1))
-    total_page = round(Float.ceil(total / records_per_page))
+  defp fetch_order_list(conn, app_id, keyword,  page, records_per_page) do
+     {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)      
 
-    query = from order in MallOrder,
+    queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      conn |> json(%{success: true, total: 0, orders: []})
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = from order in MallOrder,
               left_join: details in assoc(order, :details),
               left_join: user in assoc(order, :user),
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
@@ -33,8 +39,60 @@ defmodule Acs.MallOrderController do
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               preload: [user: user, details: details]
-    orders = Repo.all(query)
-    conn |> json(%{success: true, orders: orders, total: total_page})
+
+       query = if(String.length(keyword)>0) do
+                  query |> where([o], o.id in ^ids)
+               else
+                  query
+               end
+
+      orders = Repo.all(query)
+      conn |> json(%{success: true, orders: orders, total: total_page})
+    end
+  end
+
+  def search_orders(app_id,keyword,page,records_per_page) do
+    if String.length(keyword)>0 do
+      query = %{
+        query: %{
+          bool: %{
+            must: %{term: %{app_id: app_id}},
+            should: [
+              %{term: %{id: keyword}},
+              %{term: %{goods_name: keyword}},
+              %{term: %{app_id: keyword}},
+              %{term: %{user_ip: keyword}},
+              %{term: %{memo: keyword}},
+              %{term: %{address: keyword}},
+              %{term: %{transaction_id: keyword}}
+            ],
+            minimum_should_match: 1,
+            boost: 1.0,
+          },
+        },
+        sort: %{inserted_at: %{order: :desc}},
+        from: (page - 1) * records_per_page,
+        size: records_per_page,
+      }
+
+      query = case Integer.parse(keyword) do
+              {int_keyword,_} ->
+                  update_in(query.query.bool.should,&(&1++[ %{term: %{user_id: int_keyword}}]))
+               _ ->
+                  query
+              end
+
+      case Elasticsearch.search(%{index: "mall", type: "orders", query: query, params: %{timeout: "1m"}}) do
+        {:ok, %{hits: %{hits: hits, total: total}}} ->
+          ids = Enum.map(hits, &(&1._id))
+          {:ok, total, ids }
+        error ->
+          error "search orders failed: #{inspect error, pretty: true}"
+          throw(error)
+      end
+    else
+      {:ok, 0, {}}
+    end
   end
 
   def fetch_order(conn, %{"order_id" => order_id }) do
@@ -143,52 +201,4 @@ defmodule Acs.MallOrderController do
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
 
-  def search_orders(conn, %{"keyword" => keyword,
-                            "page" => page,
-                            "records_per_page" => records_per_page}) do
-    query = %{
-      query: %{
-        bool: %{
-          should: [
-            %{term: %{id: keyword}},
-            %{term: %{goods_name: keyword}},
-            %{term: %{app_id: keyword}},
-            %{term: %{user_id: keyword}},
-             %{term: %{user_ip: keyword}},
-            %{term: %{memo: keyword}},
-            %{term: %{address: keyword}},
-            %{term: %{transaction_id: keyword}}
-          ],
-          minimum_should_match: 1,
-          boost: 1.0,
-        },
-      },
-      sort: %{inserted_at: %{order: :desc}},
-      from: (page - 1) * records_per_page,
-      size: records_per_page,
-    }
-
-    case Elasticsearch.search(%{index: "mall", type: "orders", query: query, params: %{timeout: "1m"}}) do
-      {:ok, %{hits: %{hits: hits, total: total}}} ->
-        ids = Enum.map(hits, &(&1._id))
-        query = from order in MallOrder,
-              left_join: details in assoc(order, :details),
-              left_join: user in assoc(order, :user),
-              select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
-                user: [:id, :nickname, :mobile], 
-                details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
-              where: order.id in ^ids,
-              order_by: [desc: order.inserted_at],
-              limit: ^records_per_page,
-              offset: ^((page - 1) * records_per_page),
-              preload: [user: user, details: details]
-
-        orders = Repo.all(query)
-        conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})
-
-      error ->
-        error "search orders failed: #{inspect error, pretty: true}"
-        conn |> json(%{success: false})
-    end
-  end
 end

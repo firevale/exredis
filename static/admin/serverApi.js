@@ -3,7 +3,7 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import {i18n} from './vue-i18n'
+import { i18n } from './vue-i18n'
 
 
 const processResponse = async(Vue, response, successMessage) => {
@@ -171,10 +171,7 @@ export default {
 
       fetchMallOrder(params) {
         return post(Vue, '/mall_actions/fetch_order', params)
-      },
-      searchMallOrders(params) {
-        return post(Vue, '/mall_actions/search_orders', params)
-      },
+      }
     }
   }
 }

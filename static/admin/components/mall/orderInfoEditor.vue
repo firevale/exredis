@@ -173,21 +173,12 @@ export default {
 
     fetchOrders: async function() {
       this.loading = true
-      let result = undefined;
-      if (this.keyword && this.keyword != "") {
-        result = await this.$acs.searchMallOrders({
-          app_id: this.$route.params.appId,
-          keyword: this.keyword,
-          page: this.page + 1,
-          records_per_page: this.recordsPerPage
-        })
-      } else {
-        result = await this.$acs.fetchMallOrders({
-          app_id: this.$route.params.appId,
-          page: this.page + 1,
-          records_per_page: this.recordsPerPage
-        })
-      }
+      let result = result = await this.$acs.fetchMallOrders({
+        app_id: this.$route.params.appId,
+        keyword: this.keyword,
+        page: this.page + 1,
+        records_per_page: this.recordsPerPage
+      })
 
       if (result.success) {
         this.total = result.total

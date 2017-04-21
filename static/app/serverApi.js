@@ -1,7 +1,7 @@
 import Toast from 'common/components/toast'
 import { i18n } from './vue-i18n'
 
-const processResponse = async(response) => {
+const processResponse = async(Vue, response) => {
   let result = await response.json()
 
   if (result.success) {
@@ -15,7 +15,7 @@ const processResponse = async(response) => {
 
     switch (result.action) {
       case 'login':
-        vm.$nextTick(_ => {
+        Vue.nextTick(_ => {
           window.location = `/login?redirect_uri=${btoa(window.location.href)}`
         });
         break;
@@ -35,7 +35,7 @@ const processResponse = async(response) => {
 const post = async(Vue, uri, params) => {
   try {
     let response = await Vue.http.post(uri, params)
-    return processResponse(response)
+    return processResponse(Vue, response)
   } catch (_) {
     Toast.show(i18n.t('error.server.networkError'))
     return {

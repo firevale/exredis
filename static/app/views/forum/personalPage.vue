@@ -5,8 +5,8 @@
         <p class="image is-64x64 avatar-image">
           <img :src="avatarUrl"></img>
         </p>
-        <img-upload url="/forum_actions/update_user_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
-          field="avatar" :params="uploadParams" v-model="showImgUpload"></img-upload>
+        <img-upload url="/user/update_avatar" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail"
+          field="file" :headers="headers" v-model="showImgUpload"></img-upload>
       </figure>
       <div class="media-content">
         <p>
@@ -70,11 +70,6 @@ export default {
       'userInfo'
     ]),
 
-    uploadParams() {
-      return {
-        user_id: this.userInfo.id
-      }
-    },
     sliderPosition() {
       switch (this.type) {
         case "myPosts":
@@ -99,7 +94,10 @@ export default {
       page: 0,
       total: 1,
       recordsPerPage: 10,
-      showImgUpload: false
+      showImgUpload: false,
+      headers: {
+        'x-csrf-token': window.acsConfig.csrfToken
+      }
     }
   },
 

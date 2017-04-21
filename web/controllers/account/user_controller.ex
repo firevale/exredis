@@ -1,5 +1,6 @@
 defmodule Acs.UserController do
   use Acs.Web, :controller
+  import Acs.UploadImagePlugs 
 
   plug :fetch_app_id
   plug :fetch_app
@@ -379,5 +380,26 @@ defmodule Acs.UserController do
 
   def authorization_token(conn, params) do
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")
+  end
+
+  plug :check_upload_image, [
+    param_name: "file", 
+    sqare: true, 
+    format: ["jpg", "jpeg", "png"],
+    min_width: 128, 
+    reformat: "jpg",
+    resize: [width: 128, height: 128]] when action == :update_user_avatar
+  def update_avatar(%Plug.Conn{private: %{acs_session_user: user}} = conn, %{"file" => %{path: image_file_path}}) do 
+    relative_path = "/images/users_avatars/"
+    static_path = Application.app_dir(:acs, "priv/static/") 
+    {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")
+    avatar_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
+    new_user = RedisUser.save(%{user | avatar_url: avatar_url})
+    conn |> json(%{success: true, user: %{
+      id: new_user.id,
+      nickname: new_user.nickname,
+      avatar_url: new_user.avatar_url,
+      inserted_at: new_user.inserted_at
+    }})
   end
 end

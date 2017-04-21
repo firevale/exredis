@@ -147,15 +147,25 @@ export default {
         CropUploadDialog.show({
           url: '/user/update_avatar',
           callback: result => {
-            this.updateUserAvatar(result.user.avatar_url)
+            if (result.success) {
+              this.updateUserAvatar(result.user.avatar_url)
+            }
           }
         })
       }
     },
 
-    handlePickAvatarResult: function(result) {
+    handlePickAvatarResult: async function(result) {
       if (result.success) {
-        this.updateUserAvatar(`data:image/png;base64, ${result.image}`)
+        let upload_result = await this.$acs.updateUserAvatar({
+          file: {
+            base64_content: result.image
+          }
+        })
+
+        if (upload_result) {
+          this.updateUserAvatar(upload_result.user.avatar_url)
+        }
       }
     }
   },

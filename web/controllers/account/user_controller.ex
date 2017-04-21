@@ -382,14 +382,22 @@ defmodule Acs.UserController do
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")
   end
 
+  plug :convert_base64_image, [param_name: "file"] when action == :update_avatar
   plug :check_upload_image, [
     param_name: "file", 
     sqare: true, 
     format: ["jpg", "jpeg", "png"],
-    min_width: 128, 
+    min_width: 96, 
     reformat: "jpg",
-    resize: [width: 128, height: 128]] when action == :update_user_avatar
+    resize: [width: 96, height: 96]] when action == :update_avatar
   def update_avatar(%Plug.Conn{private: %{acs_session_user: user}} = conn, %{"file" => %{path: image_file_path}}) do 
+    _update_avatar(conn, user, image_file_path)
+  end
+  def update_avatar(%Plug.Conn{private: %{image_file_path: image_file_path, acs_session_user: user}} = conn, _) do 
+    _update_avatar(conn, user, image_file_path)
+  end
+
+  defp _update_avatar(conn, user, image_file_path) do 
     relative_path = "/images/users_avatars/"
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")

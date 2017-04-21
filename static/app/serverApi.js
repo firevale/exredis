@@ -297,6 +297,10 @@ export default {
         return post(Vue, "/user/update_resident_info", params)
       },
 
+      updateUserAvatar(params) {
+        return post(Vue, "/user/update_avatar", params)
+      },
+
       fetchMyOrders(type, page, records_per_page) {
         return post(Vue, '/mall_actions/fetch_my_orders', {
           type,

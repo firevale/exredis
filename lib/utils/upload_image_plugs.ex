@@ -2,6 +2,37 @@ defmodule Acs.UploadImagePlugs do
   import Plug.Conn
   use    LogAlias
   require Mogrify
+  require Utils
+
+  def convert_base64_image(conn, opt) do 
+    case opt[:param_name] do 
+      param_name when is_bitstring(param_name) ->
+        case conn.params[param_name] do 
+          %{"base64_content" => base64_content} = file_param ->
+            with image_data <- Base.decode64!(base64_content),
+                 file_name <- Path.join("/tmp", Utils.md5_sign(base64_content)),
+                 {:ok, file} <- File.open(file_name, [:write]),
+                 :ok <- IO.binwrite(file, image_data),
+                 :ok <- File.close(file)
+            do
+              rm_tmp_file = fn(conn) ->
+                File.rm!(file_name)
+                conn
+              end
+
+              %{conn | before_send: [rm_tmp_file | conn.before_send], 
+                       private: Map.put(conn.private, :image_file_path, file_name),
+                       params: Map.put(conn.params, param_name, %{path: file_name})} 
+            else 
+              _ -> conn
+            end
+          _ -> 
+            conn
+        end
+      _ -> 
+        conn
+    end
+  end
 
   def check_upload_image(conn, opt) do 
     case opt[:param_name] do 

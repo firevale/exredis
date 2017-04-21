@@ -49,7 +49,7 @@
           </v-touch>
         </div>
       </div>
-      <v-touch tag="a" class="button is-info is-submit" style="width: 50%; margin-top: 2rem;">
+      <v-touch tag="a" class="button is-info is-submit show-in-app" style="width: 50%; margin-top: 2rem;">
         {{ $t('account.logout') }}
       </v-touch>
     </scroller>

@@ -1,7 +1,7 @@
 <template>
   <div class="person">
     <article class="media info flex-fixed-size">
-      <figure class="media-left" @click="onShowImageUpload">
+      <figure class="media-left is-clickable" @click="onShowMyProfile">
         <p class="image is-64x64 avatar-image">
           <img :src="avatarUrl"></img>
         </p>
@@ -118,24 +118,8 @@ export default {
       }
     },
 
-    onShowImageUpload: function() {
-      // let menu = showMobileMenu({
-      //   visible: true,
-      //   items: [{title: "xxxxxxxxasdfasdfadsfadsfasdfasdfasdfadsfadsfasa"}, {title: "yyyy"}]
-      // })
-
-      // menu.$on('item-selected', (item) => {
-      //   console.log('mobile menu item selected: ', item)
-      // })
-
-      CropUploadDialog.show({
-        url: '/user/update_avatar',
-        callback: result => {
-          if (result.success) {
-            this.setUserProfile(result.user)
-          }
-        }
-      })
+    onShowMyProfile: function() {
+      this.$router.push({path: '/account/my_profile'})
     },
 
     resetScroller: function() {

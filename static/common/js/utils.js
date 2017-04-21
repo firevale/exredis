@@ -152,18 +152,26 @@ export const removeEmojiChars = val => {
 
 export const minLength = length => {
   return val => {
-    let cleanVal = removeEmojiChars(val)
-    let m = encodeURIComponent(cleanVal).match(/%[89ABab]/g)
-    let l = cleanVal.length + (m ? m.length : 0)
-    return l >= length
+    if (typeof val === 'string') {
+      let cleanVal = removeEmojiChars(val)
+      let m = encodeURIComponent(cleanVal).match(/%[89ABab]/g)
+      let l = cleanVal.length + (m ? m.length : 0)
+      return l >= length
+    } else {
+      return false
+    }
   }
 }
 
 export const maxLength = length => {
   return val => {
-    let cleanVal = removeEmojiChars(val)
-    let m = encodeURIComponent(cleanVal).match(/%[89ABab]/g)
-    let l = cleanVal.length + (m ? m.length : 0)
-    return l <= length
+    if (typeof val === 'string') {
+      let cleanVal = removeEmojiChars(val)
+      let m = encodeURIComponent(cleanVal).match(/%[89ABab]/g)
+      let l = cleanVal.length + (m ? m.length : 0)
+      return l <= length
+    } else {
+      return false
+    }
   }
 }

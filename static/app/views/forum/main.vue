@@ -61,8 +61,8 @@ export default {
           vm.updateForumInfo(result.forum)
           filter.init(result.keyword)
 
-          if(window.acsConfig.acsUser){
-            vm.setUserProfile(window.acsConfig.acsUser)
+          if(window.acsConfig.user){
+            vm.setUserProfile(window.acsConfig.user)
           }
         })
       } else {

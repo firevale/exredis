@@ -55,8 +55,16 @@ defmodule Acs.PageController do
 
   # 论坛
   def show_forum_page(conn, _params) do
+    user =
+      case RedisAccessToken.find(conn.private[:acs_access_token]) do
+        nil -> nil
+        token ->
+          RedisUser.find(token.user_id)
+      end
+
     conn |> put_layout(false)
-         |> render("forum.html")
+         |> render("forum.html", user: user,
+                                 is_mobile_account_supported: @is_mobile_account_supported)
   end
 
    # 问题反馈

@@ -4,6 +4,7 @@ defmodule Acs.ForumController do
   alias   Acs.RedisForum
   alias   Acs.RedisSetting
   require Floki
+  import  Acs.UploadImagePlugs 
 
   plug :fetch_app_id
   plug :fetch_session_user_id  
@@ -662,19 +663,17 @@ defmodule Acs.ForumController do
     end
   end
 
-  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file}) do
-    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
-    if upload_image.format in ["jpg", "jpeg", "png"] do
-      {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-      [file_md5 | _] = String.split(md5sum_result)
-      static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/forum_#{forum_id}/posts"
-      {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-      {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-      conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
-    else
-      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
-    end
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["jpg", "jpeg", "png"],
+    reformat: "jpg",
+    resize_to_limit: [width: 600, height: 600]] when action == :upload_post_image
+  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do
+    relative_path = "/images/forum_#{forum_id}/posts"
+    static_path = Application.app_dir(:acs, "priv/static/") 
+    {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")
+    url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
+    conn |> json(%{success: true, link: url})
   end
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,

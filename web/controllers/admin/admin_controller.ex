@@ -155,18 +155,24 @@ defmodule Acs.AdminController do
       %App{} = app ->
         relative_path = "/images/app_icons/"
         static_path = Application.app_dir(:acs, "priv/static/") 
-        {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")
+        {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "png")
         icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
         App.changeset(app, %{icon: icon_url}) |> Repo.update!
         RedisApp.refresh(app_id)
         conn |> json(%{success: true, icon_url: icon_url})
-        
+
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
 
-  def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{} = upload_file} = params) do
+  plug :check_upload_image, [
+    param_name: "file", 
+    square: true,
+    min_width: 128,
+    format: "png",
+    resize_to_limit: [width: 128, height: 128]] when action == :update_goods_icon
+  def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{path: image_file_path}} = params) do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
@@ -174,35 +180,13 @@ defmodule Acs.AdminController do
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: width, height: height} = upload_image ->
-            if width == height do 
-              if width >= 128 do 
-                if upload_image.format == "png" do
-                  Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
-                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-                  [file_md5 | _] = String.split(md5sum_result)
-                  static_path = Application.app_dir(:acs, "priv/static/")
-                  url_path = "/images/goods_icons/"
-                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-                  icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-                  d "icon_url: #{icon_url}"
-                  AppGoods.changeset(goods, %{icon: icon_url}) |> Repo.update!
-                  RedisApp.refresh(app_id)
-                  conn |> json(%{success: true, icon_url: icon_url})
-                else
-                  conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
-                end
-              else 
-                conn |> json(%{success: false, i18n_message: "error.server.imageMinWidth", i18n_message_object: %{minWdith: 128}})
-              end
-            else 
-              conn |> json(%{success: false, i18n_message: "error.server.imageShouldBeSquare"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-        end
+        relative_path = "/images/goods_icons/"
+        static_path = Application.app_dir(:acs, "priv/static/") 
+        {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "png")
+        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}")
+        AppGoods.changeset(goods, %{icon: icon_url}) |> Repo.update!
+        RedisApp.refresh(app_id)
+        conn |> json(%{success: true, icon_url: icon_url})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end

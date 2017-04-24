@@ -111,9 +111,7 @@ export default {
           address: this.address
         })
         if (result.success) {
-          this.$router.replace({
-            name: 'myAddresses'
-          })
+          this.$router.back()
         }
         this.processing = false
       }

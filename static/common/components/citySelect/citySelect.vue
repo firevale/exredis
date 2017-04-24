@@ -122,9 +122,6 @@ export default {
       if (seletedItem.length) {
         this.oldDistrict = seletedItem[0];
       }
-      delete this.oldProvince.children;
-      delete this.oldCity.children;
-      delete this.oldDistrict.children;
       this.$emit('onSelect', this.oldProvince, this.oldCity, this.oldDistrict)
     }
   },

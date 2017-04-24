@@ -1,35 +1,33 @@
 <template>
   <div style="position: relative">
-    <scroller>
-      <div class="has-text-left" style="padding: 1rem 0;">
-        <v-touch tag="span" class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @tap="showSelectSectionMenu">
-         {{ selectedSectionTitle }}
-        </v-touch>
-        <v-touch tag="span" class="icon image-icon icon-pull-down is-clickable" @tap="showSelectSectionMenu"> 
-        </v-touch>
+    <div class="has-text-left" style="padding: 1rem 0;">
+      <v-touch tag="span" class="title is-5 is-clickable" style="margin: 0 0.5rem 0 0; font-weight: 400" @tap="showSelectSectionMenu">
+        {{ selectedSectionTitle }}
+      </v-touch>
+      <v-touch tag="span" class="icon image-icon icon-pull-down is-clickable" @tap="showSelectSectionMenu">
+      </v-touch>
+    </div>
+    <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
+      <p class="control is-horizontal" style="margin-bottom: 1.5rem">
+        <input class="input" style="border-radius: 0" type="text" v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
+      </p>
+      <quill-editor v-model.trim="editingPostData.content" :placeholder="$t('forum.newPost.textAreaPlaceHolder')" @ready="setEditor"
+        @input="handleValidation($v.editingPostData.content)" @image="onInsertImage">
+      </quill-editor>
+      <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
+        <span class="icon is-sign">!</span>
+        <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
-      <form class="post" @submit.prevent="handleSubmit" v-show="selectedSectionTitle">
-        <p class="control is-horizontal" style="margin-bottom: 1.5rem">
-          <input class="input" style="border-radius: 0" type="text" v-model.trim="editingPostData.title" :placeholder="$t('forum.newPost.titlePlaceholder')"></input>
+      <div class="tile is-full has-text-centered">
+        <p style="margin: 0 auto">
+          <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block"
+            @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          />
+          <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"
+            :class="processing || $v.$invalid ? 'is-disabled' : ''" />
         </p>
-        <quill-editor v-model.trim="editingPostData.content" :placeholder="$t('forum.newPost.textAreaPlaceHolder')" @ready="setEditor"
-          @input="handleValidation($v.editingPostData.content)" @image="onInsertImage">
-        </quill-editor>
-        <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
-          <span class="icon is-sign">!</span>
-          <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
-        </div>
-        <div class="tile is-full has-text-centered">
-          <p style="margin: 0 auto">
-            <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block"
-              @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
-            />
-            <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"
-              :class="processing || $v.$invalid ? 'is-disabled' : ''" />
-          </p>
-        </div>
-      </form>
-    </scroller>
+      </div>
+    </form>
   </div>
 </template>
 <script>
@@ -114,13 +112,16 @@ export default {
   mounted: function() {
     this.$nextTick(_ => {
       let menuItems = {}
-      this.editingPostData.selectedSectionId = (this.currentSectionId == 0 ? 1 : this.currentSectionId)
       this.forumInfo.sections.forEach(section => {
+        if (this.editingPostData.selectedSectionId == 0) {
+          this.editingPostData.selectedSectionId = (this.currentSectionId == 0 ? section.id : this.currentSectionId)
+        }
         menuItems[section.id] = {
           title: section.title,
           value: section.id
         }
       })
+
       this.sectionMenuItems = menuItems
     })
   },

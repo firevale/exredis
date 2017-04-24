@@ -27,6 +27,12 @@ body.in-app *:not(input) {
   user-select: none;
 }
 
+body.in-app {
+  .ql-editor, .ql-editor * {
+    user-select: text;
+  }
+}
+
 #app {
   width: 100vw;
   height: 100vh;

@@ -1,6 +1,6 @@
 <template>
   <div class="columns is-multiline is-mobile">
-    <div class="column is-12-mobile is-paddingless" style="margin-top:1rem;">
+    <div class="column is-12 is-paddingless" style="margin-top:1rem;">
       <span class="select">
         <select v-model="province" class="select-content">
           <option value="">选择省</option>

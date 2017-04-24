@@ -12,6 +12,10 @@
   box-shadow: none;
 }
 
+.width-5 {
+  width: 5rem;
+}
+
 .mall-index {
   position: relative;
   margin: 1rem;
@@ -45,13 +49,10 @@
     }
   }
   .content-goods .name {
-    font-weight: 400;
     padding-top: 1.0rem;
   }
   .content-goods .price {
-    font-weight: 400;
     padding-top: 0.56rem;
-    color: $primary;
   }
 }
 
@@ -61,20 +62,12 @@
     -webkit-appearance: none !important;
     margin: 0;
   }
-  h5,
-  label {
-    font-weight: 400;
-  }
   .goods-content {
-    margin: 1rem;
     position: relative;
   }
   .goods-bottom {
     height: 4.3rem;
     background-color: $blue;
-  }
-  .subtitle {
-    font-weight: 400;
   }
   .bottom-left {
     border-right: 1px $white solid;
@@ -85,7 +78,7 @@
     justify-content: flex-start;
     margin-top: 0.45rem;
     .content-item {
-      width: 3rem;
+      width: 3.1rem;
       flex-grow: 0;
       flex-shrink: 1;
       flex-basis: auto;
@@ -95,11 +88,9 @@
       color: $white;
     }
   }
-  .goods-price {
-    color: $primary;
-  }
   .goods-buyNow {
     height: 4.3rem;
+    width: 100%
   }
   .goods-sellOut {
     height: 100%;
@@ -183,10 +174,5 @@
     p {
       margin-top: -.5rem;
     }
-  }
-}
-.new-address,.edit-address{
-  .width-5{
-    width: 5rem;
   }
 }

@@ -37,41 +37,23 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
 
-  # update_forum_icon
-  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{} = upload_file} = params) do
+  plug :check_upload_image, [
+    param_name: "file", 
+    square: true,
+    min_width: 128,
+    format: "png",
+    resize: [width: 128, height: 128]] when action == :update_forum_icon
+  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}} = params) do
     case Repo.get(Forum, forum_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
 
       %Forum{} = forum ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: width, height: height} = upload_image ->
-            if width == height do 
-              if width >= 128 do 
-                if upload_image.format == "png" do
-                  Mogrify.open(upload_file.path) |> Mogrify.resize("128x128") |> Mogrify.save(in_place: true)
-                  {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-                  [file_md5 | _] = String.split(md5sum_result)
-                  static_path = Application.app_dir(:acs, "priv/static/")
-                  url_path = "/images/forum_icons/"
-                  {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-                  {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-                  icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-                  Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
-                  RedisForum.refresh(forum_id)
-                  conn |> json(%{success: true, icon_url: icon_url})
-                else
-                  conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
-                end
-              else 
-                conn |> json(%{success: false, i18n_message: "error.server.imageMinWidth", i18n_message_object: %{minWdith: 128}})
-              end
-            else 
-              conn |> json(%{success: false, i18n_message: "error.server.imageShouldBeSquare"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.imageSize128x128"})
-        end
+        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_icons")
+        icon_url = static_url(conn, icon_path)
+        Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+        RedisForum.refresh(forum_id)
+        conn |> json(%{success: true, icon_url: icon_url})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -669,11 +651,8 @@ defmodule Acs.ForumController do
     reformat: "jpg",
     resize_to_limit: [width: 600, height: 600]] when action == :upload_post_image
   def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do
-    relative_path = "/images/forum_#{forum_id}/posts"
-    static_path = Application.app_dir(:acs, "priv/static/") 
-    {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")
-    url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
-    conn |> json(%{success: true, link: url})
+    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_#{forum_id}/posts/")
+    conn |> json(%{success: true, link: static_url(conn, image_path)})
   end
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,

@@ -1,6 +1,8 @@
 defmodule Acs.GamesController do
   use Acs.Web, :controller
 
+  import  Acs.UploadImagePlugs
+
   plug :fetch_access_token
   plug :fetch_session_user_id
   plug :cache_page, [cache_seconds: 600] when action in [:fetch_apps, :get_top_news, :get_paged_news, :get_news_detail]
@@ -152,50 +154,41 @@ defmodule Acs.GamesController do
   end
 
   # update_news_pic
-  def update_news_pic(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn, 
-                      %{"news_id" => news_id, "file" => %{} = upload_file}) do
+  plug :check_upload_image, [
+    param_name: "file", 
+    ratio: 0.41,
+    min_width: 640,
+    min_height: 260,
+    format: ["png", "jpg", "jpeg"],
+    reformat: "jpg",
+    resize_to_limit: [width: 640, height: 260]] when action == :update_news_title_picture
+  def update_news_title_picture(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn, 
+                      %{"news_id" => news_id, "file" => %{path: image_file_path}}) do
     case Repo.get(AppNews, news_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.newsNotFound", i18n_message_object: %{news_id: news_id}})
 
       %AppNews{} = news ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 640, height: 260} = upload_image ->
-            if upload_image.format == "png" do
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/news_pics/#{news_id}"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-              d "pic_url: #{pic_url}"
-              AppNews.changeset(news, %{pic: pic_url}) |> Repo.update!
-              #RedisApp.refresh(app_id)
-              conn |> json(%{success: true, pic: pic_url})
-            else
-              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.imageSize640x260"})
-        end
+        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{news_id}")
+        pic_url = static_url(conn, image_path)
+        AppNews.changeset(news, %{pic: pic_url}) |> Repo.update!
+        conn |> json(%{success: true, pic: pic_url})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
-  def update_news_pic(conn, %{"app_id" => app_id, "file" => %{} = upload_file}) do
-    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose 
-    if upload_image.format in ["jpg", "jpeg", "png"] do
-      {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-      [file_md5 | _] = String.split(md5sum_result)
-      static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/news_pics/#{app_id}"
-      {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-      {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-      conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
-    else
-      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
-    end
+  def update_news_title_picture(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["png", "jpg", "jpeg"],
+    reformat: "jpg"
+    ] when action == :update_news_pic
+  def update_news_pic(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
+    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{app_id}")
+    conn |> json(%{success: true, link: static_url(conn, image_path)})
   end
   def update_news_pic(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})

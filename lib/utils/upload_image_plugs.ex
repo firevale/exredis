@@ -43,6 +43,7 @@ defmodule Acs.UploadImagePlugs do
               image_file = %Mogrify.Image{} -> 
                 with :ok <- check_image_format(image_file, opt[:format]),
                      :ok <- check_image_square(image_file, opt[:square]),
+                     :ok <- check_image_ratio(image_file, opt[:ratio]),
                      :ok <- check_image_min_width(image_file, opt[:min_width]),
                      :ok <- check_image_max_width(image_file, opt[:max_width]),
                      :ok <- check_image_min_height(image_file, opt[:min_height]),
@@ -100,6 +101,20 @@ defmodule Acs.UploadImagePlugs do
     end
   end
   defp check_image_square(image_file, _), do: :ok
+  
+  defp check_image_ratio(image_file, ratio) when is_integer(ratio) or is_float(ratio) do
+    image_ratio = image_file.height / image_file.width
+    if abs(image_ratio - abs(ratio)) < 0.01 do 
+      :ok
+    else 
+      {:error, %{success: false, 
+                 i18n_message: "error.server.invalidImageRatio", 
+                 i18n_message_object: %{width: image_file.width, 
+                                        height: image_file.height,
+                                        ratio: ratio}}}
+    end
+  end
+  defp check_image_ratio(image_file, _), do: :ok 
 
   defp check_image_min_width(image_file, min_width) when is_integer(min_width) do
     if image_file.width >= min_width do 

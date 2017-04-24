@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="control has-icon has-icon-left">
-      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchOrders')"
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchMallOrders')"
         v-model="keyword">
       <span class="icon is-small">
         <i v-if="searching" class="fa fa-spinner fa-spin"></i>

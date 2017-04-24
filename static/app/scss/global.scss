@@ -139,12 +139,6 @@ input.input:focus {
         margin-right: 1rem;
       }
     }
-    .icon.image-icon {
-      &:active, &:hover {
-        transform: scale(2);
-        transform-origin: 50% 50% 0;
-      }
-    }
   }
   &:after {
     @include bottom-line(.5rem, $bottom-line-light);

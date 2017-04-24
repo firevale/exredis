@@ -2,6 +2,7 @@ defmodule Acs.MallController do
   use Acs.Web, :controller
 
   # alias   Acs.RedisMall
+  import  Acs.UploadImagePlugs
   require Floki
 
   plug :fetch_app_id
@@ -35,32 +36,22 @@ defmodule Acs.MallController do
   end
 
   # update_mall_icon
-  def update_mall_icon(conn, %{"mall_id" => mall_id, "file" => %{} = upload_file}) do
+  plug :check_upload_image, [
+    param_name: "file", 
+    square: true,
+    min_width: 128,
+    format: "png",
+    resize_to_limit: [width: 128, height: 128]] when action == :update_mall_icon
+  def update_mall_icon(conn, %{"mall_id" => mall_id, "file" => %{path: image_file_path}}) do
     case Repo.get(Mall, mall_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound", i18n_message_object: %{mall_id: mall_id}})
 
       %Mall{} = mall ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 128, height: 128} = upload_image ->
-            if upload_image.format == "png" do
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/mall_icons/"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.png"))])
-              icon_url = static_url(conn, Path.join(url_path, "/#{file_md5}.png"))
-              d "icon_url: #{icon_url}"
-              Mall.changeset(mall, %{icon: icon_url}) |> Repo.update!
-              #RedisApp.refresh(app_id)
-              conn |> json(%{success: true, icon_url: icon_url})
-            else
-              conn |> json(%{success: false, i18n_message: "error.server.imageFormatPNG"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.imageSize128x128"})
-        end
+        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "mall_icons")
+        icon_url = static_url(conn, icon_path)
+        Mall.changeset(mall, %{icon: icon_url}) |> Repo.update!
+        conn |> json(%{success: true, icon_url: icon_url})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -145,52 +136,40 @@ defmodule Acs.MallController do
   end
 
   # update_goods_pic
-  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
+  plug :check_upload_image, [
+    param_name: "file", 
+    square: true,
+    min_width: 400,
+    format: ["png", "jpeg", "jpg"],
+    reformat: "jpg",
+    resize_to_limit: [width: 400, height: 400]] when action == :update_goods_pic
+  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path} = upload_file}) do
    case Repo.get(MallGoods, goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
       %MallGoods{} = goods ->
-        case Mogrify.open(upload_file.path) |> Mogrify.verbose do
-          %{width: 400, height: 400} = upload_image ->
-            if upload_image.format in ["jpg", "jpeg", "png"] do
-              {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-              [file_md5 | _] = String.split(md5sum_result)
-              static_path = Application.app_dir(:acs, "priv/static/")
-              url_path = "/images/goods_icon/#{goods_id}"
-              {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-              {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-              pic_url = static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))
+        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
+        pic_url = static_url(conn, image_path)
+        MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+        conn |> json(%{success: true, pic_url: pic_url})
 
-              MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
-
-              conn |> json(%{success: true, pic_url: pic_url})
-            else
-              conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.imageSize400x400"})
-        end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
-  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{} = upload_file}) do
-    upload_image = Mogrify.open(upload_file.path) |> Mogrify.verbose
-    if upload_image.format in ["jpg", "jpeg", "png"] do
-      {md5sum_result, 0} = System.cmd("md5sum", [upload_file.path])
-      [file_md5 | _] = String.split(md5sum_result)
-      static_path = Application.app_dir(:acs, "priv/static/")
-      url_path = "/images/goods_pics/#{goods_id}"
-      {_, 0} = System.cmd("mkdir", ["-p", Path.join(static_path, url_path)])
-      {_, 0} = System.cmd("cp", ["-f", upload_file.path, Path.join(static_path, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))])
-      conn |> json(%{success: true, link: static_url(conn, Path.join(url_path, "/#{file_md5}.#{upload_image.format}"))})
-    else
-      conn |> json(%{success: false, i18n_message: "error.server.invalidImageFormat"})
-    end
-  end
   def update_goods_pic(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["png", "jpeg", "jpg"],
+    reformat: "jpg"
+  ] when action == :update_goods_content_pic
+  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
+    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_pics/#{goods_id}")
+    conn |> json(%{success: true, link: static_url(conn, image_path)})
   end
 
   # update_goods

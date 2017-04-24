@@ -97,3 +97,9 @@ export const updateShoppingCart = ({
 }, goodsItem) => {
   commit(types.UPDATE_MALL_SHOPPINGCART, goodsItem)
 }
+
+export const updateSelectedAddress = ({
+  commit
+}, userAddress) => {
+  commit(types.UPDATE_SELECTED_ADDRESS, userAddress)
+}

@@ -49,9 +49,6 @@
           </v-touch>
         </div>
       </div>
-      <v-touch tag="a" class="button is-info is-submit show-in-app" style="width: 50%; margin-top: 2rem;">
-        {{ $t('account.logout') }}
-      </v-touch>
     </scroller>
   </div>
 </template>
@@ -67,7 +64,11 @@ import nativeApi from 'common/js/nativeApi'
 
 import {
   showMobileMenu
-} from "common/components/mobileMenu"
+} from 'common/components/mobileMenu'
+
+import {
+  showProgress
+} from 'common/components/progress'
 
 import scroller from 'common/components/scroller'
 
@@ -157,11 +158,17 @@ export default {
 
     handlePickAvatarResult: async function(result) {
       if (result.success) {
+        let progress = showProgress({visible: true})
+
         let upload_result = await this.$acs.updateUserAvatar({
           file: {
             base64_content: result.image
           }
+        }, value => {
+          progress.setProgress(value)
         })
+
+        progress.close()
 
         if (upload_result) {
           this.updateUserAvatar(upload_result.user.avatar_url)

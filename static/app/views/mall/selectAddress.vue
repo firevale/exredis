@@ -1,14 +1,14 @@
 <template>
   <div class="my-addresses">
     <div class="flex-take-rest addresses-content">
-      <scroller :on-load-more="loadmore" ref="scroller">
-        <div v-for="item in addressesList" class="card">
-          <v-touch class="card-header" tag="header" @tap="selectAddress(item.id)">
+      <scroller ref="scroller" style="margin-bottom:-3.6rem;">
+        <div v-for="(item, index) in addressesList" class="card">
+          <v-touch class="card-header" tag="header" @tap="selectAddress(index)">
             <div class="card-header-title">
               <article class="tile is-vertical">
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
-                <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{item.area.replace(/-/g," ") }} {{item.address}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{item.name}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{item.mobile}}</p>
+                <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{item.area.replace(/-/g," ") }} {{item.address}}</p>
               </article>
             </div>
             <div class="card-header-icon">
@@ -25,6 +25,11 @@
 </template>
 <script>
 import Vue from '../../vue-installed'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
 import scroller from 'common/components/scroller'
 import Toast from 'common/components/toast'
 
@@ -32,52 +37,35 @@ export default {
   components: {
     scroller
   },
+  mounted: async function() {
+    await this.loadAddress()
+  },
   data: function() {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
       addressesList: [],
-      page: 0,
-      total: 1,
-      recordsPerPage: 12
     }
   },
   methods: {
-    resetScroller: function() {
-      this.page = 0
-      this.total = 1
-      this.addressesList = []
-      if (this.$refs.scroller) {
-        this.$refs.scroller.$emit('reset')
-      }
-    },
-    loadmore: async function() {
-      let result = await this.$acs.getAddressesPaged(this.page + 1, this.recordsPerPage)
-
+    ...mapActions([
+      'updateSelectedAddress'
+    ]),
+    loadAddress: async function() {
+      let result = await this.$acs.getUserAddresses()
       if (result.success) {
-        this.addressesList = this.page == 0 ? result.addresses : this.addressesList.concat(result
-          .addresses)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
+        this.addressesList = result.addresses
       }
     },
-    selectAddress: function(addressId) {
-      this.$router.push({
-        name: 'editAddress',
-        params: {
-          addressId: addressId
-        },
-      })
+    selectAddress: function(index) {
+      this.updateSelectedAddress(this.addressesList[index])
+      this.$router.back()
     },
     newAddress: function() {
       this.$router.push({
         name: 'newAddress'
       })
     }
-  }
+  },
 }
 </script>

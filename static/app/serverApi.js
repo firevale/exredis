@@ -32,9 +32,17 @@ const processResponse = async(Vue, response) => {
   }
 }
 
-const post = async(Vue, uri, params) => {
+const post = async(Vue, uri, params, onProgress) => {
   try {
-    let response = await Vue.http.post(uri, params)
+    let response = await Vue.http.post(uri, params, {
+      progress(e) {
+        if (e.lengthComputable) {
+          if (typeof onProgress === 'function') {
+            onProgress(Math.abs(e.loaded / e.total))
+          }
+        }        
+      }
+    })
     return processResponse(Vue, response)
   } catch (_) {
     Toast.show(i18n.t('error.server.networkError'))
@@ -297,8 +305,8 @@ export default {
         return post(Vue, "/user/update_resident_info", params)
       },
 
-      updateUserAvatar(params) {
-        return post(Vue, "/user/update_avatar", params)
+      updateUserAvatar(params, onProgress) {
+        return post(Vue, "/user/update_avatar", params, onProgress)
       },
 
       fetchMyOrders(type, page, records_per_page) {
@@ -334,6 +342,9 @@ export default {
         return post(Vue, '/mall_actions/get_address_detail', {
           address_id
         })
+      },
+      getDefaultAddress() {
+        return post(Vue, '/mall_actions/get_default_address', {})
       },
       insertAddress(params) {
         return post(Vue, '/mall_actions/insert_address', params)

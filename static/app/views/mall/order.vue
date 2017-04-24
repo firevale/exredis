@@ -2,10 +2,10 @@
   <div class="columns is-vertical">
     <v-touch class="card-header" tag="header" @tap="selectAddress()">
       <div class="card-header-title">
-        <article v-if="this.address.id > 0" class="tile is-vertical">
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.address.name}}</p>
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.address.mobile}}</p>
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.address.area.replace(/-/g," ") }} {{this.address.address}}</p>
+        <article v-if="this.selectedAddress.id > 0" class="tile is-vertical">
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.selectedAddress.area.replace(/-/g," ") }} {{this.selectedAddress.address}}</p>
         </article>
         <div v-else class="level-left" style="padding: 2rem;">
           <span class="level-item icon nav-icon pull-left icon-pen"></span>
@@ -59,7 +59,7 @@ import * as filter from 'common/js/filters'
 export default {
   computed: {
     ...mapGetters([
-      'shoppingCart',
+      'shoppingCart', 'selectedAddress'
     ]),
   },
 
@@ -78,6 +78,10 @@ export default {
         },
       })
     }
+
+    if (this.selectedAddress.id == 0) {
+      this.getDefaultAddress()
+    }
   },
   data: function() {
     return {
@@ -89,20 +93,12 @@ export default {
         goods: {},
       },
       totalPrice: "0",
-      address: {
-        id: "",
-        name: "",
-        mobile: "",
-        area: "",
-        address: "",
-        area_code: ""
-      },
       orderId: "",
     }
   },
   methods: {
     ...mapActions([
-      'updateShoppingCart'
+      'updateShoppingCart', 'updateSelectedAddress'
     ]),
 
     selectAddress: function() {
@@ -127,6 +123,14 @@ export default {
         })
       }
     },
+    getDefaultAddress: async function() {
+      let result = await this.$acs.getDefaultAddress()
+      if (result.success) {
+        if (result.address) {
+          this.updateSelectedAddress(result.address)
+        }
+      }
+    },
     getGoodsDetail: async function() {
       let result = await this.$acs.getGoodsDetail(this.goodsItem.goodsId)
       if (result.success) {
@@ -138,7 +142,7 @@ export default {
     },
     onPrepay: async function(payType) {
       //check address
-      if (this.address == "") {
+      if (this.selectedAddress.id == 0) {
         Toast.show(this.$t('mall.order.addressPlaceholder'))
         return;
       }
@@ -158,7 +162,7 @@ export default {
     },
     prepay: async function(payType) {
       let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity,
-        payType, this.address)
+        payType, this.selectedAddress)
       if (result.success) {
         this.orderId = result.order_id
         switch (payType) {

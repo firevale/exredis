@@ -1,17 +1,19 @@
 <template>
   <div class="columns is-vertical">
-    <div class="field">
-      <p class="control has-icons-left has-icons-right">
-        <input class="input is-large" type="text" :placeholder="$t('mall.order.addressPlaceholder')">
-        <span class="icon is-medium is-left">
-        <i class="fa fa-email"></i>
-        </span>
-        <span class="icon is-medium is-right">
-        <i class="fa fa-angle-right"></i>
-        </span>
-      </p>
-    </div>
-    <div class="columns" v-if="goods">
+    <v-touch class="card-header" tag="header" @tap="selectAddress()">
+      <div class="card-header-title">
+        <article class="tile is-vertical" v-if="this.address.id > 0">
+          <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.name') }}：{{this.address.name}}</p>
+          <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.mobile') }}：{{this.address.mobile}}</p>
+          <p class="subtitle is-5 is-marginless">{{$t('mall.address.fields.address') }}：{{this.address.area.replace(/-/g," ") }} {{this.address.address}}</p>
+        </article>
+        <p v-else class="subtitle is-5 is-marginless">{{$t('mall.order.addressPlaceholder') }}</p>
+      </div>
+      <div class="card-header-icon">
+        <h5 class="subtitle is-4">></h5>
+      </div>
+    </v-touch>
+    <div class="columns" style="padding:2rem;" v-if="goods">
       <div class="column is-parent is-one-third">
         <center>
           <figure class="image" style="display: block">
@@ -52,8 +54,26 @@ import nativeApi from 'common/js/nativeApi'
 import * as filter from 'common/js/filters'
 
 export default {
-  mounted: async function() {
-    await this.getGoodsDetail()
+  computed: {
+    ...mapGetters([
+      'shoppingCart',
+    ]),
+  },
+
+  mounted: function() {
+    this.goodsId = this.$route.params.goodsId ? this.$route.params.goodsId : this.shoppingCart.goodsId
+    this.quantity = this.$route.params.quantity ? this.$route.params.quantity : this.shoppingCart.quantity
+    if (this.goodsId && this.quantity) {
+      this.updateShoppingCart(this.goodsId, this.quantity)
+      this.getGoodsDetail()
+    } else {
+      this.$router.push({
+        name: 'goodsIndex',
+        params: {
+          appId: this.$route.params.appId
+        },
+      })
+    }
   },
   data: function() {
     return {
@@ -64,6 +84,7 @@ export default {
       goods: {},
       goodsId: "",
       address: {
+        id: 0,
         name: "",
         mobile: "",
         area: "",
@@ -74,6 +95,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'updateShoppingCart'
+    ]),
+
     isSupportWechat: function() {
       return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
     },
@@ -90,23 +115,20 @@ export default {
         })
       }
     },
+    selectAddress: function() {
+      this.$router.push({
+        name: 'selectAddress',
+        params: {
+          addressId: this.address.id
+        },
+      })
+    },
     getGoodsDetail: async function() {
-      this.goodsId = this.$route.params.goodsId
-      this.quantity = this.$route.params.quantity
-      if (this.goodsId && this.quantity) {
-        let result = await this.$acs.getGoodsDetail(this.goodsId)
-        if (result.success) {
-          this.goods = result.goods
-          this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
-            100).toFixed(2)
-        }
-      } else {
-        this.$router.push({
-          name: 'goodsIndex',
-          params: {
-            appId: this.$route.params.appId
-          },
-        })
+      let result = await this.$acs.getGoodsDetail(this.goodsId)
+      if (result.success) {
+        this.goods = result.goods
+        this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
+          100).toFixed(2)
       }
     },
     onPrepay: async function(payType) {

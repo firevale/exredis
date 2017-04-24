@@ -165,7 +165,7 @@ defmodule Acs.UploadImagePlugs do
   defp check_image_max_height(image_file, _), do: :ok
 
   defp resize_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
-    case Mogrify.open(path) |> Mogrify.resize("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
+    case image_file |> Mogrify.resize("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
       %{path: ^path} = new_image_file -> 
         {:ok, new_image_file}
       _ ->
@@ -176,7 +176,7 @@ defmodule Acs.UploadImagePlugs do
   defp resize_image(image_file, _), do: {:ok, image_file}
 
   defp resize_to_limit_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
-    case Mogrify.open(path) |> Mogrify.resize_to_limit("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
+    case image_file |> Mogrify.resize_to_limit("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
       %{path: ^path} = new_image_file -> 
         {:ok, new_image_file}
       _ ->
@@ -192,8 +192,6 @@ defmodule Acs.UploadImagePlugs do
     else 
       {_, 0} = System.cmd("mogrify", ["-format", new_format, path])
       new_file_name = Path.rootname(path, Path.extname(path)) <> ".#{new_format}"
-
-      d "new file name: #{new_file_name}"
 
       if File.exists?(new_file_name) do 
         {_, 0} = System.cmd("mv", ["-f", new_file_name, path])       

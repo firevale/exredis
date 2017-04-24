@@ -14,7 +14,7 @@
         <a class="button is-info" @click.prevent="search">{{ $t('customerService.commonIssues.btnTitle') }}</a>
       </p>
     </div>
-    <div v-if="questions||searching" class="my-service" style="position:relative;top:1rem;height:100%">
+    <div v-if="questions||searching" class="my-service flex-take-rest" style="position:relative;top:1rem;">
       <scroller :on-load-more="loadmore" ref="scroller">
         <question-item class="row" v-for="item in questions" :question="item">
         </question-item>

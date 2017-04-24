@@ -76,7 +76,7 @@ defmodule Acs.MallOrderController do
       }
 
       query = case Integer.parse(keyword) do
-              {int_keyword,_} ->
+              {int_keyword,""} ->
                   update_in(query.query.bool.should,&(&1++[ %{term: %{user_id: int_keyword}}]))
                _ ->
                   query

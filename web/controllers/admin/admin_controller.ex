@@ -183,7 +183,7 @@ defmodule Acs.AdminController do
         relative_path = "/images/goods_icons/"
         static_path = Application.app_dir(:acs, "priv/static/") 
         {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "png")
-        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}")
+        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
         AppGoods.changeset(goods, %{icon: icon_url}) |> Repo.update!
         RedisApp.refresh(app_id)
         conn |> json(%{success: true, icon_url: icon_url})

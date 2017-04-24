@@ -63,7 +63,8 @@ defmodule Acs.MallOrderController do
               %{term: %{app_id: keyword}},
               %{term: %{user_ip: keyword}},
               %{term: %{memo: keyword}},
-              %{term: %{address: keyword}},
+              %{term: %{"address.name": keyword}},
+              %{term: %{"address.mobile": keyword}},
               %{term: %{transaction_id: keyword}}
             ],
             minimum_should_match: 1,
@@ -76,7 +77,7 @@ defmodule Acs.MallOrderController do
       }
 
       query = case Integer.parse(keyword) do
-              {int_keyword,_} ->
+              {int_keyword,""} ->
                   update_in(query.query.bool.should,&(&1++[ %{term: %{user_id: int_keyword}}]))
                _ ->
                   query

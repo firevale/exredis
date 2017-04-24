@@ -39,6 +39,10 @@ export default [{
       path: 'address/new',
       name: 'newAddress',
       component: require('../views/mall/newAddress.vue')
+    },{
+      path: 'selectAddress',
+      name: 'selectAddress',
+      component: require('../views/mall/selectAddress.vue')
     }, {
       path: 'address/edit/:addressId',
       name: 'editAddress',

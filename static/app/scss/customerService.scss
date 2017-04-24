@@ -1,7 +1,3 @@
-.customer-service.content-container {
-  top: 11rem;
-}
-
 .contact-service {
   .contact-center {
     margin: 0.5rem;
@@ -23,17 +19,21 @@
 }
 
 .my-service {
+  position: relative;
+  top: 1rem;
+
   .subtitle {
     font-weight: 400;
   }
   .level-content {
     padding: 0.12rem 1.5rem;
   }
-  .level-left{
+  .level-left {
     max-width: 95%;
     overflow: hidden;
   }
-  .level-left p,.level-right p {
+  .level-left p,
+  .level-right p {
     letter-spacing: 0.12rem;
   }
   .level-right .service-reply {

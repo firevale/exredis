@@ -1,5 +1,6 @@
 defmodule Utils do 
   use Bitwise
+  use LogAlias
 
   require Ecto.DateTime
   alias   Comeonin.Pbkdf2
@@ -297,10 +298,11 @@ defmodule Utils do
     ext = case Mogrify.open(from) |> Mogrify.verbose do 
       %Mogrify.Image{format: "png"} -> "png"
       %Mogrify.Image{format: "jpeg"} -> "jpg"
-      %Mogrify.Image{format: "jpg"} -> "jpg"
+      %Mogrify.Image{format: "jpg"} -> "jpg" 
       %Mogrify.Image{format: "gif"} -> "gif"
     end
-    relative_path = "/images/#{to}"
+    d "deploy image file, #{inspect (Mogrify.open(from) |> Mogrify.verbose), pretty: true}, ext: #{ext}"
+    relative_path = Path.join("/images", "/#{to}")
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
     path = Path.join(relative_path, "/#{dest_file_name}")    

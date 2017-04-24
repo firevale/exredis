@@ -387,9 +387,9 @@ defmodule Acs.UserController do
     param_name: "file", 
     sqare: true, 
     format: ["jpg", "jpeg", "png"],
-    min_width: 96, 
+    min_width: 128, 
     reformat: "jpg",
-    resize: [width: 96, height: 96]] when action == :update_avatar
+    resize: [width: 128, height: 128]] when action == :update_avatar
   def update_avatar(%Plug.Conn{private: %{acs_session_user: user}} = conn, %{"file" => %{path: image_file_path}}) do 
     _update_avatar(conn, user, image_file_path)
   end

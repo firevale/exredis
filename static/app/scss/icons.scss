@@ -16,9 +16,6 @@
   }
   &.nav-icon {
     cursor: pointer;
-    &:active {
-      transform: scaleX(1.1) scaleY(1.1);
-    }
   }
   &.icon-close {
     background-image: url("~assets/times@2x.png");
@@ -189,6 +186,9 @@ only screen and (min-resolution: 2dppx) {
     }
     &.icon-envelope {
       background-image: url("~assets/icon-envelope@3x.png");
+    }
+    &.icon-pen {
+      background-image: url("~assets/icon-pen@3x.png");
     }
     &.icon-edit {
       background-image: url("~assets/edit@3x.png");

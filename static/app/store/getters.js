@@ -9,6 +9,7 @@ const commonIssues = state => state.commonIssues.issues
 const forumInfo = state => state.forum.info
 const currentPostTitle = state => state.forum.currentPostTitle
 const editingPostData = state => state.forum.editingPostData
+const shoppingCart = state => state.mall.shoppingCart
 
 export {
   transitionName,
@@ -20,4 +21,5 @@ export {
   forumInfo,
   currentPostTitle,
   editingPostData,
+  shoppingCart,
 }

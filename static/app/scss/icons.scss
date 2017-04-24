@@ -16,9 +16,6 @@
   }
   &.nav-icon {
     cursor: pointer;
-    &:active {
-      transform: scaleX(1.1) scaleY(1.1);
-    }
   }
   &.icon-close {
     background-image: url("~assets/times@2x.png");

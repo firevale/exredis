@@ -9,10 +9,10 @@
                 <img v-if="item.pic" :src="item.pic">
                 <img v-else src="https://placehold.it/300x300?text=400x400">
               </figure>
-              <p class="subtitle is-marginless is-5 name">
+              <p class="subtitle is-marginless is-5 is-normal name">
                 {{item.name}}
               </p>
-              <p class="subtitle is-marginless is-5 price">
+              <p class="subtitle is-marginless is-5 is-normal is-primary price">
                 <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
               </p>
             </div>

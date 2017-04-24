@@ -17,7 +17,7 @@
           </v-touch>
           <div class="card-content">
             <div class="columns is-mobile">
-              <div class="column is-10 is-paddingless">
+              <div class="column is-8-mobile is-11-tablet is-11-desktop is-paddingless">
                 <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
                 <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.setDefault') }}</v-touch>
               </div>
@@ -79,6 +79,7 @@ export default {
       let result = await this.$acs.deleteAddress(addressId)
       if (result.success) {
         Toast.show(this.$t('mall.address.deleteSuccess'))
+        this.loadAddress()
       }
     },
     newAddress: function() {

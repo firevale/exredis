@@ -48,11 +48,11 @@ defmodule Acs.UploadImagePlugs do
                      :ok <- check_image_max_width(image_file, opt[:max_width]),
                      :ok <- check_image_min_height(image_file, opt[:min_height]),
                      :ok <- check_image_max_height(image_file, opt[:max_height]),
-                     :ok <- resize_to_limit_image(image_file, opt[:resize_to_limit]),
-                     :ok <- resize_image(image_file, opt[:resize]),
-                     {:ok, format} <- reformat_image(image_file, opt[:reformat])
+                     {:ok, image_file} <- resize_to_limit_image(image_file, opt[:resize_to_limit]),
+                     {:ok, image_file} <- resize_image(image_file, opt[:resize]),
+                     {:ok, image_file} <- reformat_image(image_file, opt[:reformat])
                 do 
-                  conn |> put_private(:image_format, format)
+                  conn |> put_private(:image_format, image_file.format)
                 else
                   {:error, result} ->
                     conn |> Phoenix.Controller.json(result) |> halt
@@ -165,39 +165,46 @@ defmodule Acs.UploadImagePlugs do
   defp check_image_max_height(image_file, _), do: :ok
 
   defp resize_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
-    case image_file |> Mogrify.resize("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
-      %{path: ^path} -> :ok
+    case Mogrify.open(path) |> Mogrify.resize("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
+      %{path: ^path} = new_image_file -> 
+        {:ok, new_image_file}
       _ ->
         {:error, %{success: false, 
                    i18n_message: "error.server.resizeImageFailed"}}
     end
   end
-  defp resize_image(image_file, _), do: :ok
+  defp resize_image(image_file, _), do: {:ok, image_file}
 
   defp resize_to_limit_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
-    case image_file |> Mogrify.resize_to_limit("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
-      %{path: ^path} -> :ok
+    case Mogrify.open(path) |> Mogrify.resize_to_limit("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
+      %{path: ^path} = new_image_file -> 
+        {:ok, new_image_file}
       _ ->
         {:error, %{success: false, 
                    i18n_message: "error.server.resizeImageFailed"}}
     end
   end
-  defp resize_to_limit_image(image_file, _), do: :ok
+  defp resize_to_limit_image(image_file, _), do: {:ok, image_file}
 
   defp reformat_image(%{path: path, format: format} = image_file, new_format) when new_format in ["jpg", "jpeg", "png"] do 
     if format == new_format do  
-      {:ok, format}
+      {:ok, image_file}
     else 
-      case image_file |> Mogrify.format(new_format) |> Mogrify.save(in_place: true) do 
-        %{path: ^path, format: ^new_format} -> 
-          {:ok, new_format}
-        _ -> 
-          {:error, %{success: false, 
-                    i18n_message: "error.server.reformatImageFailed"}}
+      {_, 0} = System.cmd("mogrify", ["-format", new_format, path])
+      new_file_name = Path.rootname(path, Path.extname(path)) <> ".#{new_format}"
+
+      d "new file name: #{new_file_name}"
+
+      if File.exists?(new_file_name) do 
+        {_, 0} = System.cmd("mv", ["-f", new_file_name, path])       
+        {:ok, Mogrify.open(path) |> Mogrify.verbose}
+      else
+        {:error, %{success: false, 
+                  i18n_message: "error.server.reformatImageFailed"}}
       end
     end
   end
-  defp reformat_image(image_file, _), do: {:ok, image_file.format}
+  defp reformat_image(image_file, _), do: {:ok, image_file}
 
 
 end

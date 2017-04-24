@@ -1,17 +1,22 @@
 <template>
   <div class="columns is-vertical">
-    <div class="field">
-      <p class="control has-icons-left has-icons-right">
-        <input class="input is-large" type="text" :placeholder="$t('mall.order.addressPlaceholder')">
-        <span class="icon is-medium is-left">
-        <i class="fa fa-email"></i>
-        </span>
-        <span class="icon is-medium is-right">
-        <i class="fa fa-angle-right"></i>
-        </span>
-      </p>
-    </div>
-    <div class="columns" v-if="goodsItem.goods">
+    <v-touch class="card-header" tag="header" @tap="selectAddress()">
+      <div class="card-header-title">
+        <article v-if="this.address.id > 0" class="tile is-vertical">
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.address.name}}</p>
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.address.mobile}}</p>
+          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.address.area.replace(/-/g," ") }} {{this.address.address}}</p>
+        </article>
+        <div v-else class="level-left" style="padding: 2rem;">
+          <span class="level-item icon nav-icon pull-left icon-pen"></span>
+          <span class="level-item subtitle is-4 is-normal">{{$t('mall.order.addressPlaceholder') }}</span>
+        </div>
+      </div>
+      <div class="card-header-icon">
+        <h5 class="subtitle is-4">></h5>
+      </div>
+    </v-touch>
+    <div class="columns" v-if="goodsItem.goods" style="padding-top:2rem;">
       <div class="column is-parent is-one-third">
         <center>
           <figure class="image" style="display: block">
@@ -59,8 +64,10 @@ export default {
   },
 
   mounted: function() {
-    this.goodsItem.goodsId = this.$route.params.goodsId ? this.$route.params.goodsId : this.shoppingCart.goodsId
-    this.goodsItem.quantity = this.$route.params.quantity ? this.$route.params.quantity : this.shoppingCart.quantity
+    this.goodsItem.goodsId = this.$route.params.goodsId ? this.$route.params.goodsId : this.shoppingCart
+      .goodsId
+    this.goodsItem.quantity = this.$route.params.quantity ? this.$route.params.quantity : this.shoppingCart
+      .quantity
     if (this.goodsItem.goodsId && this.goodsItem.quantity) {
       this.getGoodsDetail()
     } else {
@@ -98,6 +105,12 @@ export default {
       'updateShoppingCart'
     ]),
 
+    selectAddress: function() {
+      this.$router.push({
+        name: 'selectAddress'
+      })
+    },
+
     isSupportWechat: function() {
       return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
     },
@@ -118,7 +131,8 @@ export default {
       let result = await this.$acs.getGoodsDetail(this.goodsItem.goodsId)
       if (result.success) {
         this.goodsItem.goods = result.goods
-        this.totalPrice = "¥ " + parseFloat((this.goodsItem.goods.price * this.goodsItem.quantity + this.goodsItem.goods.postage) / 100).toFixed(2)
+        this.totalPrice = "¥ " + parseFloat((this.goodsItem.goods.price * this.goodsItem.quantity +
+          this.goodsItem.goods.postage) / 100).toFixed(2)
         this.updateShoppingCart(this.goodsItem)
       }
     },
@@ -143,7 +157,8 @@ export default {
       }
     },
     prepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity, payType, this.address)
+      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity,
+        payType, this.address)
       if (result.success) {
         this.orderId = result.order_id
         switch (payType) {

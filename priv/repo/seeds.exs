@@ -142,7 +142,8 @@ Elasticsearch.index(%{ index: "mall",type: "goods",
           })
 
 Elasticsearch.index(%{ index: "mall",type: "orders",
-            doc: %{ id: "A10000012",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典红色T恤",  paid_type: "wechat", postage: 500,user_id: 100001, app_id: "978A7D84040FE589ED0C76295131E43D"},
+            doc: %{ id: "A10000011",platform: "ios",user_ip: "127.0.0.1",goods_name: "经典灰色T恤",  paid_type: "wechat", postage: 500,user_id: 100001, app_id: "978A7D84040FE589ED0C76295131E43D",
+            address: %{name: "钟楼" , mobile: "1101101101101", area: "福建福州", address: "工业路", area_code: "3500001" }},
             params: nil,
             id: "A10000012"
           })

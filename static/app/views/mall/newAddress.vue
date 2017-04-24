@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="column is-12 has-text-centered">
-        <v-touch class="button is-info is-large is-fullwidth" :class="$v.$invalid ? 'is-disabled' : ''" tag="a"
+        <v-touch class="button is-info is-large is-fullwidth" :class="processing || $v.$invalid ? 'is-disabled' : ''" tag="a"
           @tap="handleSubmit">{{$t('common.save') }}</v-touch>
       </div>
     </form>
@@ -97,21 +97,25 @@ export default {
   },
   methods: {
     handleSubmit: async function() {
-      let area = this.district == "" ? null : this.province + "-" + this.city + "-" + this.district
-      let area_code = this.districtCode == "" ? null : this.provinceCode + "-" + this.cityCode +
-        "-" + this.districtCode
+      if (!this.processing) {
+        this.processing = true
+        let area = this.district == "" ? null : this.province + "-" + this.city + "-" + this.district
+        let area_code = this.districtCode == "" ? null : this.provinceCode + "-" + this.cityCode +
+          "-" + this.districtCode
 
-      let result = await this.$acs.insertAddress({
-        name: this.name,
-        mobile: this.mobile,
-        area: area,
-        area_code: area_code,
-        address: this.address
-      })
-      if (result.success) {
-        this.$router.replace({
-          name: 'myAddresses'
+        let result = await this.$acs.insertAddress({
+          name: this.name,
+          mobile: this.mobile,
+          area: area,
+          area_code: area_code,
+          address: this.address
         })
+        if (result.success) {
+          this.$router.replace({
+            name: 'myAddresses'
+          })
+        }
+        this.processing = false
       }
     },
     onBtnBackClicked: function() {

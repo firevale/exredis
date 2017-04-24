@@ -84,6 +84,7 @@ export default {
     cancel: '取消',
     warning: '警告',
     searchOrders: '输入用户ID/订单号搜索',
+    searchMallOrders: '输入用户ID/订单号/用户姓名/手机号搜索',
     searchGoods: '搜索商品名称',
     oops: '哦噢。。。',
     noOrderToDisplay: '当前没有任何可以显示的订单',

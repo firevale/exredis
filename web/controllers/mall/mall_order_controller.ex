@@ -63,7 +63,8 @@ defmodule Acs.MallOrderController do
               %{term: %{app_id: keyword}},
               %{term: %{user_ip: keyword}},
               %{term: %{memo: keyword}},
-              %{term: %{address: keyword}},
+              %{term: %{"address.name": keyword}},
+              %{term: %{"address.mobile": keyword}},
               %{term: %{transaction_id: keyword}}
             ],
             minimum_should_match: 1,

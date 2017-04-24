@@ -1,6 +1,6 @@
 <template>
   <div class="tile is-ancestor is-vertical root-container">
-    <div class="top-bar">
+    <div class="top-bar flex-fixed-size">
       <div class="title-bar">
         <h4 class="title is-4">{{$t('customerService.title')}}</h4>
       </div>
@@ -10,9 +10,9 @@
         </div>
       </nav>
     </div>
-    <slider-nav :menus="menus" :selectedValue="$route.name" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <slider-nav class="flex-fixed-size" :menus="menus" :selectedValue="$route.name" @onSelect="switchMenu" ref="nav"></slider-nav>
     <transition>
-      <router-view class="content-container customer-service"> </router-view>
+      <router-view class="content-container customer-service flex-take-rest"> </router-view>
     </transition>
   </div>
 </template>

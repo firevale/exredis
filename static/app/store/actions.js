@@ -91,3 +91,9 @@ export const updateForumInfo = ({
 }, forum) => {
   commit(types.UPDATE_FORUM_INFO, forum)
 }
+
+export const updateShoppingCart = ({
+  commit
+}, goodsItem) => {
+  commit(types.UPDATE_MALL_SHOPPINGCART, goodsItem)
+}

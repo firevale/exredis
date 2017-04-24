@@ -8,11 +8,10 @@ const state = {
 }
 
 const mutations = {
-  [types.UPDATE_SHOPPING_CART](state, goodsId, quantity) {
-    alert(goodsId);
-    if (goodsId && quantity) {
-      state.shoppingCart.goodsId =  goodsId
-      state.shoppingCart.quantity = quantity
+  [types.UPDATE_MALL_SHOPPINGCART](state, goodsItem) {
+    if (goodsItem) {
+      state.shoppingCart.goodsId = goodsItem.goodsId
+      state.shoppingCart.quantity = goodsItem.quantity
     }
   }
 }

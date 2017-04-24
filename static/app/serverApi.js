@@ -343,6 +343,9 @@ export default {
           address_id
         })
       },
+      getDefaultAddress() {
+        return post(Vue, '/mall_actions/get_default_address', {})
+      },
       insertAddress(params) {
         return post(Vue, '/mall_actions/insert_address', params)
       },

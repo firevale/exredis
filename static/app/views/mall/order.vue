@@ -59,7 +59,7 @@ import * as filter from 'common/js/filters'
 export default {
   computed: {
     ...mapGetters([
-      'shoppingCart','selectedAddress'
+      'shoppingCart', 'selectedAddress'
     ]),
   },
 
@@ -78,6 +78,10 @@ export default {
         },
       })
     }
+
+    if (this.selectedAddress.id == 0) {
+      this.getDefaultAddress()
+    }
   },
   data: function() {
     return {
@@ -94,7 +98,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateShoppingCart'
+      'updateShoppingCart', 'updateSelectedAddress'
     ]),
 
     selectAddress: function() {
@@ -117,6 +121,14 @@ export default {
         nativeApi.closeWebviewWithResult({
           success: false
         })
+      }
+    },
+    getDefaultAddress: async function() {
+      let result = await this.$acs.getDefaultAddress()
+      if (result.success) {
+        if (result.address) {
+          this.updateSelectedAddress(result.address)
+        }
       }
     },
     getGoodsDetail: async function() {

@@ -1,6 +1,6 @@
 defmodule Acs.GamesController do
   use Acs.Web, :controller
-  
+
   import  Acs.UploadImagePlugs
 
   plug :fetch_access_token
@@ -156,6 +156,7 @@ defmodule Acs.GamesController do
   # update_news_pic
   plug :check_upload_image, [
     param_name: "file", 
+    ratio: 0.41,
     min_width: 640,
     min_height: 260,
     format: ["png", "jpg", "jpeg"],

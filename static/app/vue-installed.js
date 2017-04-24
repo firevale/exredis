@@ -7,7 +7,6 @@ import Vuelidate from 'vuelidate'
 import VueTouch from 'common/components/vue-touch'
 import ServerApi from './serverApi'
 import VueQuillEditor from 'common/components/quillEditor'
-
 import * as acs from 'common/js/acs'
 
 Vue.use(Vuelidate)

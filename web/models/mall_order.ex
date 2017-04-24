@@ -87,7 +87,15 @@ defmodule Acs.MallOrder do
              currency: %{type: :keyword},
              paid_type: %{type: :keyword},
              memo: %{type: :text, analyzer: :smartcn},
-             address: %{type: :text, analyzer: :smartcn},
+             address: %{
+               properties: %{
+                  name: %{type: :keyword},
+                  mobile: %{type: :keyword},
+                  address: %{type: :text, analyzer: :smartcn},
+                  area: %{type: :text, analyzer: :smartcn},                 
+                  area_code: %{type: :keyword}
+                }
+             },
              transaction_id: %{type: :keyword},
              status: %{type: :integer},
              inserted_at: %{type: :date}

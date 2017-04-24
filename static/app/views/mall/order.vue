@@ -11,20 +11,20 @@
         </span>
       </p>
     </div>
-    <div class="columns" v-if="goods">
+    <div class="columns" v-if="goodsItem.goods">
       <div class="column is-parent is-one-third">
         <center>
           <figure class="image" style="display: block">
-            <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
+            <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
           </figure>
         </center>
       </div>
       <div class="column is-parent is-vertical">
         <article class="tile is-child">
-          <p class="subtitle is-4">{{ goods.name}}</p>
-          <p class="subtitle is-4" style="color:#ff6600;">{{ getPrice(goods.price) }}</p>
-          <p class="subtitle is-4">x {{ this.quantity }}</p>
-          <p class="subtitle is-4" style="color:#ff6600;">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goods.postage)})
+          <p class="subtitle is-4">{{ goodsItem.goods.name}}</p>
+          <p class="subtitle is-4" style="color:#ff6600;">{{ getPrice(goodsItem.goods.price) }}</p>
+          <p class="subtitle is-4">x {{ goodsItem.quantity }}</p>
+          <p class="subtitle is-4" style="color:#ff6600;">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
             }}
           </p>
         </article>
@@ -52,18 +52,38 @@ import nativeApi from 'common/js/nativeApi'
 import * as filter from 'common/js/filters'
 
 export default {
-  mounted: async function() {
-    await this.getGoodsDetail()
+  computed: {
+    ...mapGetters([
+      'shoppingCart',
+    ]),
+  },
+
+  mounted: function() {
+    this.goodsItem.goodsId = this.$route.params.goodsId ? this.$route.params.goodsId : this.shoppingCart.goodsId
+    this.goodsItem.quantity = this.$route.params.quantity ? this.$route.params.quantity : this.shoppingCart.quantity
+    if (this.goodsItem.goodsId && this.goodsItem.quantity) {
+      this.getGoodsDetail()
+    } else {
+      this.$router.push({
+        name: 'goodsIndex',
+        params: {
+          appId: this.$route.params.appId
+        },
+      })
+    }
   },
   data: function() {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
-      quantity: 1,
-      totalPrice: "",
-      goods: {},
-      goodsId: "",
+      goodsItem: {
+        goodsId: "",
+        quantity: 1,
+        goods: {},
+      },
+      totalPrice: "0",
       address: {
+        id: "",
         name: "",
         mobile: "",
         area: "",
@@ -74,12 +94,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'updateShoppingCart'
+    ]),
+
     isSupportWechat: function() {
       return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
     },
 
     getPrice: function(price) {
-      return "¥" + filter.formatPrice(price)
+      return "¥ " + filter.formatPrice(price)
     },
     onBtnBackClicked: function() {
       if (this.canGoBack) {
@@ -91,22 +115,11 @@ export default {
       }
     },
     getGoodsDetail: async function() {
-      this.goodsId = this.$route.params.goodsId
-      this.quantity = this.$route.params.quantity
-      if (this.goodsId && this.quantity) {
-        let result = await this.$acs.getGoodsDetail(this.goodsId)
-        if (result.success) {
-          this.goods = result.goods
-          this.totalPrice = "¥" + parseFloat((this.goods.price * this.quantity + this.goods.postage) /
-            100).toFixed(2)
-        }
-      } else {
-        this.$router.push({
-          name: 'goodsIndex',
-          params: {
-            appId: this.$route.params.appId
-          },
-        })
+      let result = await this.$acs.getGoodsDetail(this.goodsItem.goodsId)
+      if (result.success) {
+        this.goodsItem.goods = result.goods
+        this.totalPrice = "¥ " + parseFloat((this.goodsItem.goods.price * this.goodsItem.quantity + this.goodsItem.goods.postage) / 100).toFixed(2)
+        this.updateShoppingCart(this.goodsItem)
       }
     },
     onPrepay: async function(payType) {
@@ -119,10 +132,10 @@ export default {
       this.checkStock(payType)
     },
     checkStock: async function(payType) {
-      let result = await this.$acs.getGoodsStock(this.goodsId)
+      let result = await this.$acs.getGoodsStock(this.goodsItem.goodsId)
       if (result.success) {
         let stock = result.stock
-        if (stock <= this.quantity) {
+        if (stock <= this.goodsItem.quantity) {
           Toast.show(this.$t('mall.order.stockOut'))
         } else {
           this.prepay(payType)
@@ -130,7 +143,7 @@ export default {
       }
     },
     prepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsId, this.quantity, payType, this.address)
+      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity, payType, this.address)
       if (result.success) {
         this.orderId = result.order_id
         switch (payType) {

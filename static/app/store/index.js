@@ -9,6 +9,7 @@ import search from './modules/search'
 import user from './modules/user'
 import forum from './modules/forum'
 import commonIssues from './modules/commonIssue'
+import mall from './modules/mall'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ const store = new Vuex.Store({
     search,
     user,
     commonIssues,
-    forum
+    forum,
+    mall
   },
   mutations: {
   }

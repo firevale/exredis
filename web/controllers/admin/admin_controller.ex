@@ -37,15 +37,15 @@ defmodule Acs.AdminController do
 
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
-        RedisApp.refresh(app_id)
-        case update_app_forum(app_info["has_forum"],app_id,app_info["name"]) do
-           {:ok, forum} ->
-             d "req : #{inspect forum, pretty: true}"
-             conn |> json(%{success: true, forum: forum, i18n_message: "admin.serverSuccess.appUpdated"})
+        case update_app_forum(app_info["has_forum"], app_id, app_info["name"]) do
+          {:ok, forum} ->
+            RedisApp.refresh(app_id)
+            conn |> json(%{success: true, forum: forum, i18n_message: "admin.serverSuccess.appUpdated"})
           nil ->
-             conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
-           {:error, %{errors: errors}}->
-             conn |> json(%{success: false, message: translate_errors(errors)})
+            RedisApp.refresh(app_id)
+            conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
+          {:error, %{errors: errors}}->
+            conn |> json(%{success: false, message: translate_errors(errors)})
         end
     end
   end
@@ -55,16 +55,16 @@ defmodule Acs.AdminController do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
       {:ok, app} ->
-          RedisApp.refresh(app.id)
-          case update_app_forum(app.has_forum, app.id, app.name) do
-             {:ok, forum} ->
-               d "req2 : #{inspect forum, pretty: true}"
-               conn |> json(%{success: true, forum: forum, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
-              nil ->
-                conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
-              {:error, %{errors: errors}}->
-                  conn |> json(%{success: false, message: translate_errors(errors)})
-          end
+        case update_app_forum(app.has_forum, app.id, app.name) do
+          {:ok, forum} ->
+            RedisApp.refresh(app.id)
+            conn |> json(%{success: true, forum: forum, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
+          nil ->
+            RedisApp.refresh(app.id)
+            conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
+          {:error, %{errors: errors}}->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
 
@@ -72,7 +72,7 @@ defmodule Acs.AdminController do
     unless has_forum do
       nil
     else
-      forumRec=Repo.get_by(Forum, app_id: app_id)
+      forumRec = Repo.get_by(Forum, app_id: app_id)
       unless forumRec do
          case Forum.changeset(%Forum{}, %{title: app_title, active: true, app_id: app_id}) |> Repo.insert do
             {:ok, forum} ->
@@ -86,6 +86,7 @@ defmodule Acs.AdminController do
                       where: f.app_id == ^app_id,
                       preload: [:sections]
               result = Repo.one(query)
+              RedisApp.refresh(app_id)
               {:ok, result}
             {:error, %{errors: errors}} ->
               {:error,errors}

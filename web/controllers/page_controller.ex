@@ -53,7 +53,13 @@ defmodule Acs.PageController do
                                    is_mobile_account_supported: @is_mobile_account_supported)
   end
 
-  # 论坛
+  def show_app_forum(%Plug.Conn{private: %{acs_app: %{forum_id: nil}}} = conn, _params) do 
+    conn |> send_resp(500, gettext("forum not configured for app"))
+  end
+  def show_app_forum(%Plug.Conn{private: %{acs_app: %{forum_id: forum_id}}} = conn, _params) do 
+    conn |> redirect(to: "/forum/#{forum_id}/index")
+  end
+
   def show_forum_page(conn, _params) do
     user =
       case RedisAccessToken.find(conn.private[:acs_access_token]) do
@@ -66,6 +72,7 @@ defmodule Acs.PageController do
          |> render("forum.html", user: user,
                                  is_mobile_account_supported: @is_mobile_account_supported)
   end
+
 
    # 问题反馈
   def show_customer_service_page(conn, _params) do

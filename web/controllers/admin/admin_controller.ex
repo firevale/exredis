@@ -2,7 +2,6 @@ defmodule Acs.AdminController do
   use Acs.Web, :controller
 
   import  Acs.UploadImagePlugs
-  require Mogrify
   alias   Acs.SdkInfoGenerator
 
   def fetch_apps(conn, params) do
@@ -153,13 +152,10 @@ defmodule Acs.AdminController do
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
 
       %App{} = app ->
-        relative_path = "/images/app_icons/"
-        static_path = Application.app_dir(:acs, "priv/static/") 
-        {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "png")
-        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
-        App.changeset(app, %{icon: icon_url}) |> Repo.update!
+        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "app_icons")
+        App.changeset(app, %{icon: static_url(conn, icon_path)}) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, icon_url: icon_url})
+        conn |> json(%{success: true, icon_url: static_url(conn, icon_path)})
 
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -180,11 +176,8 @@ defmodule Acs.AdminController do
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
-        relative_path = "/images/goods_icons/"
-        static_path = Application.app_dir(:acs, "priv/static/") 
-        {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "png")
-        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}")
-        AppGoods.changeset(goods, %{icon: icon_url}) |> Repo.update!
+        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
+        AppGoods.changeset(goods, %{icon: static_url(conn, image_path)}) |> Repo.update!
         RedisApp.refresh(app_id)
         conn |> json(%{success: true, icon_url: icon_url})
       _ ->

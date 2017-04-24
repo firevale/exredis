@@ -398,11 +398,8 @@ defmodule Acs.UserController do
   end
 
   defp _update_avatar(conn, user, image_file_path) do 
-    relative_path = "/images/users_avatars/"
-    static_path = Application.app_dir(:acs, "priv/static/") 
-    {:ok, dest_file_name} = Utils.cp_file_to_md5_name(image_file_path, Path.join(static_path, relative_path), "jpg")
-    avatar_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}"))
-    new_user = RedisUser.save(%{user | avatar_url: avatar_url})
+    {:ok, avatar_path} = Utils.deploy_image_file(from: image_file_path, to: "user_avatars")
+    new_user = RedisUser.save(%{user | avatar_url: static_url(conn, avatar_path)})
     conn |> json(%{success: true, user: %{
       id: new_user.id,
       nickname: new_user.nickname,

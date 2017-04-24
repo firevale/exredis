@@ -177,7 +177,6 @@ defmodule Acs.AdminController do
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
-        icon_url = static_url(conn, Path.join(relative_path, "/#{dest_file_name}")
         AppGoods.changeset(goods, %{icon: static_url(conn, image_path)}) |> Repo.update!
         RedisApp.refresh(app_id)
         conn |> json(%{success: true, icon_url: icon_url})

@@ -64,7 +64,8 @@ export default {
     myOrderDetail: '订单详情',
     myAddresses: '我的地址',
     editAddress: '编辑地址',
-    newAddress: '添加地址'
+    newAddress: '添加地址',
+    selectAddress: '选择地址',
   },
   address: {
     add: '添加地址',

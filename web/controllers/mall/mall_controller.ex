@@ -311,14 +311,18 @@ defmodule Acs.MallController do
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
   end
 
-   def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do
+  def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do
     query = from us in UserAddress,
               where: us.user_id == ^user_id,
               order_by: [desc: us.inserted_at],
-              select: map(us, [:id, :name, :mobile, :area, :address, :is_default])
+              select: map(us, [:id, :name, :mobile, :area, :area_code, :address, :is_default])
 
     addresses = Repo.all(query)
     conn |> json(%{success: true, addresses: addresses})
+  end
+  def get_user_addresses(conn, _) do
+    d "---------------conn:#{inspect conn.private, pretty: true}"
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def delete_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do

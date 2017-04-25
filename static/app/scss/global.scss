@@ -50,6 +50,7 @@ body.in-app {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
   &.is-ancestor {
     margin: 0;
   }
@@ -120,9 +121,6 @@ input.input:focus {
   height: 5rem;
   width: 100%;
   padding: 1rem 1.5rem;
-  flex-grow: 0;
-  flex-shrink: 1;
-  flex-basis: auto;
   .title-bar {
     position: absolute;
     top: 2rem;
@@ -174,15 +172,24 @@ input.input:focus {
   margin: 0 1.5rem;
   background-color: $white;
   overflow: hidden;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
   display: flex;
   flex-flow: column nowrap;
   -ms-overflow-style: none;
+  position: relative;
   &::-webkit-scrollbar {
     width: 0 !important;
   }
+  &.slide-right-enter-active,
+  &.slide-right-leave-active,
+  &.slide-left-enter-active, 
+  &.slide-left-leave-active {
+    flex-basis: calc(100% - 5rem); 
+  }
+  &.slide-right-enter-active,
+  &.slide-left-enter-active {
+    top: calc(5rem - 100%);
+  }
+
 }
 
 .flex-fixed-size {

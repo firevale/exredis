@@ -1,6 +1,6 @@
 <template>
   <div class="tile is-ancestor is-vertical root-container account-page">
-    <div class="top-bar">
+    <div class="top-bar flex-fixed-size">
       <div class="title-bar">
         <h4 class="title is-4">{{$t('account.accountTitle')}}</h4>
       </div>
@@ -11,7 +11,7 @@
       </nav>
     </div>
     <transition :name="transitionName">
-      <router-view class="content-container"> </router-view>
+      <router-view class="content-container flex-take-rest"> </router-view>
     </transition>
   </div>
 </template>

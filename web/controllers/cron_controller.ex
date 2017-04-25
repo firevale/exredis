@@ -59,11 +59,21 @@ defmodule Acs.CronController do
               where: order.status == 0 and
                 order.inserted_at <= ago(20, "minute")
 
-     Repo.all(query) |> Enum.each(fn(order) ->
-      MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
-      d "-------- auto close order: #{order.id}"
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
+        rollback_goods_stock(order.id)
+        d "-------- auto close order: #{order.id}"
     end)
     conn |> json(%{success: true, message: "done"})
+  end
+  defp rollback_goods_stock(order_id) do
+    query = from od in MallOrderDetail,
+                  select: od,
+                  where: od.mall_order_id == ^order_id
+    Repo.all(query) |> Enum.each(fn(detail) ->
+      goods = Repo.get(MallGoods, detail.mall_goods_id) 
+      MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+    end)
   end
 
 end

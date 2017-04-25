@@ -60,6 +60,21 @@ defmodule Acs.PageController do
     conn |> redirect(to: "/forum/#{forum_id}/index")
   end
 
+  def show_app_games(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 
+    conn |> redirect(to: "/games/#{app_id}")
+  end
+  def show_app_games(conn, _params) do 
+    conn |> send_resp(500, gettext("app not found"))
+  end
+
+  def show_app_faq(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 
+    conn |> redirect(to: "/customerService/#{app_id}/index")
+  end
+  def show_app_faq(conn, _params) do 
+    conn |> send_resp(500, gettext("app not found"))
+  end
+
+
   def show_forum_page(conn, _params) do
     user =
       case RedisAccessToken.find(conn.private[:acs_access_token]) do

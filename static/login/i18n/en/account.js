@@ -19,7 +19,7 @@ export default {
     verifyCodePlaceholder: 'Please input verify code',
     forgetPassword: 'Forgot password',
     registration: 'Register now',
-    otherWays: 'Select Account type',
+    otherWays: 'Select Account Type',
     changeCode: 'Change',
   },
 

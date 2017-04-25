@@ -98,7 +98,7 @@ export default {
     },
 
     onInsertImage: function(editor) {
-      showFileUploadDialog({
+      showFileUploadDialog(this.$i18n, {
         postAction: '/forum_actions/upload_post_image',
         accept: 'image/jpeg, image/png',
         data: {

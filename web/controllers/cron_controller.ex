@@ -51,4 +51,19 @@ defmodule Acs.CronController do
     ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
   end
+
+  def cancel_mall_order(conn, params) do 
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 0 and
+                order.inserted_at <= ago(20, "minute")
+
+     Repo.all(query) |> Enum.each(fn(order) ->
+      MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
+      d "-------- auto close order: #{order.id}"
+    end)
+    conn |> json(%{success: true, message: "done"})
+  end
+
 end

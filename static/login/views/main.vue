@@ -6,7 +6,7 @@
       <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose">
       </span>
       <div class="g-mask">
-        <transition :name="transitionName">
+        <transition :enter-active-class="`${transitionName}-enter-active`" :leave-active-class="`${transitionName}-leave-active`">
           <router-view> </router-view>
         </transition>
       </div>

@@ -24,7 +24,7 @@ export default {
     inputVerifyCode: 'Verify code',
     inputEmail: 'Email address',
     inputPassword: 'Password',
-    inputNickname: 'Nickname',
+    inputNickname: 'New nickname',
     inputResidentName: 'Resident name',
     inputResidentId: 'Social security number',
   },

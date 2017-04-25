@@ -13,6 +13,8 @@ export default {
     accountIdPlaceholder: '請輸入您的賬號ID',
     userMobilePlaceholder: '請輸入您的手機號碼',
     userEmailPlaceholder: '請輸入您的電子郵箱',
+    userMobileLabel: '請輸入您的手機號碼',
+    userEmailLabel: '請輸入您的電子郵箱',
     userPasswordPlaceHolder: '請輸入密碼，6-20位英文或數字',
     verifyCodePlaceholder: '請輸入驗證碼',
     forgetPassword: '忘記密碼',

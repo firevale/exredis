@@ -34,14 +34,18 @@
         </div>
       </div>
       <div class="column is-12 has-text-centered">
-        <v-touch class="button is-info is-large is-fullwidth" :class="processing || $v.$invalid ? 'is-disabled' : ''" tag="a"
-          @tap="handleSubmit">{{$t('common.save') }}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+          tag="a" @tap="handleSubmit">{{$t('common.save') }}</v-touch>
       </div>
     </form>
   </div>
 </template>
 <script>
 import Vue from '../../vue-installed'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
 import scroller from 'common/components/scroller'
@@ -96,6 +100,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'updateSelectedAddress'
+    ]),
     handleSubmit: async function() {
       if (!this.processing) {
         this.processing = true
@@ -111,6 +118,8 @@ export default {
           address: this.address
         })
         if (result.success) {
+          console.log("------------------aaa")
+          this.updateSelectedAddress(result.address)
           this.$router.back()
         }
         this.processing = false

@@ -437,7 +437,8 @@ defmodule Acs.MallController do
     end
     case UserAddress.changeset(%UserAddress{}, us_address) |> Repo.insert do
         {:ok, new_address} ->
-          conn |> json(%{success: true, i18n_message: "mall.address.addSuccess"})
+          us_address = us_address |> Map.put("id", new_address.id)
+          conn |> json(%{success: true, address: us_address, i18n_message: "mall.address.addSuccess"})
         {:error, %{errors: errors}} ->
           conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end

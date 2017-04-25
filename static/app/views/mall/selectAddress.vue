@@ -62,7 +62,7 @@ export default {
       this.$router.back()
     },
     newAddress: function() {
-      this.$router.push({
+      this.$router.replace({
         name: 'newAddress'
       })
     }

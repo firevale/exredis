@@ -58,6 +58,14 @@ export default {
       }
     },
 
+    registerAccountIdLabel: function() {
+      if (window.acsConfig.isMobileAccountSupported) {
+        return this.$t('account.loginPage.userMobileLabel')
+      } else {
+        return this.$t('account.loginPage.userEmailLabel')
+      }
+    },
+
     registerAccountIdPlaceholder: function() {
       if (window.acsConfig.isMobileAccountSupported) {
         return this.$t('account.loginPage.userMobilePlaceholder')

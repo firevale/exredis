@@ -18,12 +18,12 @@
           <div class="card-content">
             <div class="columns is-mobile">
               <div class="column is-8-mobile is-11-tablet is-11-desktop is-paddingless">
-                 <label class="radio">
-                      <input v-if="item.is_default" type="radio" name="is_default" checked>
-                      <input v-else type="radio" name="is_default">
-                      <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.fields.is_default') }}</v-touch>
-                      <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.setDefault') }}</v-touch>
-                    </label>
+                <label class="radio">
+                  <input v-if="item.is_default" type="radio" name="is_default" checked>
+                  <input v-else type="radio" name="is_default">
+                  <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span">{{$t('mall.address.fields.is_default') }}</v-touch>
+                  <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.setDefault') }}</v-touch>
+                </label>
               </div>
               <div class="column is-paddingless">
                 <v-touch class="subtitle is-5 is-normal" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
@@ -52,6 +52,7 @@ export default {
   },
   data: function() {
     return {
+      processing: false,
       canGoBack: false,
       inApp: window.acsConfig.inApp,
       addressesList: []
@@ -73,17 +74,25 @@ export default {
       })
     },
     setDefaultAddress: async function(addressId) {
-      let result = await this.$acs.setDefaultAddress(addressId)
-      if (result.success) {
-        Toast.show(this.$t('mall.address.setDefaultSuccess'))
-        this.loadAddress()
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.setDefaultAddress(addressId)
+        if (result.success) {
+          Toast.show(this.$t('mall.address.setDefaultSuccess'))
+          this.loadAddress()
+        }
+        this.processing = false
       }
     },
     deleteAddress: async function(addressId) {
-      let result = await this.$acs.deleteAddress(addressId)
-      if (result.success) {
-        Toast.show(this.$t('mall.address.deleteSuccess'))
-        this.loadAddress()
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.deleteAddress(addressId)
+        if (result.success) {
+          Toast.show(this.$t('mall.address.deleteSuccess'))
+          this.loadAddress()
+        }
+        this.processing = false
       }
     },
     newAddress: function() {

@@ -30,6 +30,7 @@ body.in-app *:not(input) {
 body.in-app {
   .ql-editor, .ql-editor * {
     user-select: text;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 }
 

@@ -1,5 +1,50 @@
 <template>
-  <div class="columns is-vertical">
+  <div class="is-marginless is-paddingless">
+    <div class="card is-mobile">
+      <v-touch class="card-header" tag="header" @tap="selectAddress()">
+        <article v-if="this.selectedAddress.id > 0" class="tile is-vertical" style="padding: 1.5rem;">
+          <p class="title is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
+          <p class="title is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
+          <p class="title is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.selectedAddress.area.replace(/-/g," ") }} {{this.selectedAddress.address}}</p>
+        </article>
+        <p v-else class="card-header-title">
+          <span class="subtitle is-5 is-normal">{{$t('mall.order.addressPlaceholder') }}</span>
+        </p>
+        <p class="card-header-icon" style="margin-right: 1.5rem;">
+          >
+        </p>
+      </v-touch>
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <p class="image is-64x64">
+              <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/64x64?text=loading...'">
+            </p>
+          </div>
+          <div class="media-content is-marginless is-paddingless">
+            <p style="margin-bottom:0.8rem;" class="title is-normal is-5">{{ goodsItem.goods.name}}</p>
+            <p style="margin-bottom:0.8rem;" class="title is-normal is-5 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
+            <p style="margin-bottom:0rem;" class="title is-normal is-5">X{{ goodsItem.quantity }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="content has-text-right">
+        <p class="subtitle is-5 is-primary is-normal">
+          {{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
+          }}
+        </p>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <div class="is-fullwidth" v-if="this.isSupportWechat()">
+        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
+      </div>
+      <div class="is-fullwidth">
+        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
+      </div>
+    </div>
+  </div>
+  <!--<div class="columns is-vertical">
     <v-touch class="card-header" tag="header" @tap="selectAddress()">
       <div class="card-header-title">
         <article v-if="this.selectedAddress.id > 0" class="tile is-vertical">
@@ -43,7 +88,7 @@
         <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 <script>
 import Vue from '../../vue-installed'

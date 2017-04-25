@@ -1,14 +1,14 @@
 export default {
-  title: '活动',
+  title: '活動',
 
   tab: {
-    activity: '游戏活动',
-    notice: '游戏公告',
-    news: '官方新闻',
+    activity: '遊戲活動',
+    notice: '遊戲公告',
+    news: '官方新聞',
   },
 
   buttons: {
     back: '返回',
   },
-  
+
 }

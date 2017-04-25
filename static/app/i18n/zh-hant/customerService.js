@@ -1,29 +1,29 @@
 export default {
   title: '客服',
   commonIssues: {
-    title: '常见问题',
-    searchPlaceHolder: '请输入问题关键词',
-    btnTitle: '搜索问题'
+    title: '常見問題',
+    searchPlaceHolder: '請輸入問題關鍵詞',
+    btnTitle: '搜索問題'
   },
   contactService: {
-    title: '联系客服',
-    hotline: '客服热线',
-    weChat: '微信公众号',
-    officialHomePage: '官方主页',
-    officialForum: '官方论坛',
-    officialPostBar: '官方贴吧',
+    title: '聯繫客服',
+    hotline: '客服熱線',
+    weChat: '微信公眾號',
+    officialHomePage: '官方主頁',
+    officialForum: '官方論壇',
+    officialPostBar: '官方貼吧',
     officialMicroBlog: '官方微博',
     addSuccess: '提交成功'
   },
   myService: {
-    title: '服务记录',
+    title: '服務記錄',
     noReply: '未回复',
     alreadyReply: '已回复'
   },
-  searchBtn: '搜索问题',
-  searchPlaceHolder: '请输入问题关键词',
-  issueTitle: '问题：{title}',
+  searchBtn: '搜索問題',
+  searchPlaceHolder: '請輸入問題關鍵詞',
+  issueTitle: '問題：{title}',
   reply: '回复 :',
-  contactPlaceHolder: '请输入您的问题或建议',
+  contactPlaceHolder: '請輸入您的問題或建議',
   submitBtn: '提交'
 }

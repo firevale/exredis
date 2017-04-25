@@ -74,6 +74,10 @@ export default {
     setDefaultSuccess: '设置默认地址成功',
     addSuccess: '地址添加成功',
     updateSuccess: '地址更新成功',
+    namePlaceholder: '不超过15个字符',
+    mobilePlaceholder: '请输入11位手机号码',
+    areaPlaceholder: '请选择地区',
+    addressPlaceholder: '不超过50个字符',
     fields: {
       name: '姓名',
       mobile: '手机',

@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative">
+  <div>
     <scroller class="account-info">
       <div class="columns is-mobile is-multiline is-paddingless is-marginless">
         <div class="column is-3">

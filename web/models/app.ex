@@ -1,7 +1,7 @@
 defmodule Acs.App do
   use Acs.Web, :model
 
-  @derive {Poison.Encoder, except: [:sdk_payment_callbacks, :__meta__]}
+  @derive {Poison.Encoder, except: [:sdk_payment_callbacks, :__meta__, :forum, :mall]}
 
   @primary_key false
   schema "apps" do
@@ -34,6 +34,8 @@ defmodule Acs.App do
     has_many :sdk_bindings, Acs.AppSdkBinding, references: :id
     has_many :goods, Acs.AppGoods, references: :id
     has_many :sdk_payment_callbacks, Acs.AppSdkPaymentCallback, references: :id
+    has_one  :forum, Acs.Forum, references: :id
+    has_one  :mall, Acs.Mall, references: :id
 
     timestamps()
   end

@@ -42,6 +42,9 @@ defmodule Acs.Router do
     get  "/forum", PageController, :show_forum_page
     get  "/forum/index", PageController, :show_forum_page
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
+    get  "/show_app_forum", PageController, :show_app_forum
+    get  "/show_app_games", PageController, :show_app_games
+    get  "/show_app_faq", PageController, :show_app_faq
     get  "/customerService/*path", PageController, :show_customer_service_page
     get  "/games/*path", PageController, :show_games_page
     get  "/mall/*path",  PageController, :show_mall_page
@@ -111,6 +114,7 @@ defmodule Acs.Router do
   scope path: "/cron", alias: Acs do
     get "/notify_cp", CronController, :notify_cp
     get "/report_sms_amount", CronController, :report_sms_amount
+    get "/cancel_mall_order", CronController, :cancel_mall_order
   end
 
   scope path: "/admin_actions", alias: Acs do

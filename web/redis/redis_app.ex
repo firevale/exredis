@@ -36,6 +36,8 @@ defmodule Acs.RedisApp do
             public_weixin_url: nil,
             sdk_bindings: %{},
             sdk_payment_callbacks: %{},
+            forum_id: nil,
+            mall_id: nil,
             goods: %{}
 
   use     Utils.Jsonable
@@ -61,9 +63,13 @@ defmodule Acs.RedisApp do
               left_join: goods in assoc(app, :goods),
               left_join: callbacks in assoc(app, :sdk_payment_callbacks),
               left_join: goods_product_ids in assoc(goods, :product_ids),
+              left_join: forum in assoc(app, :forum),
+              left_join: mall in assoc(app, :mall),
               where: app.id == ^id,
               select: app,
               preload: [sdk_bindings: bindings,
+                        forum: forum,
+                        mall: mall,
                         goods: {goods, product_ids: goods_product_ids},
                         sdk_payment_callbacks: callbacks]
 
@@ -116,6 +122,8 @@ defmodule Acs.RedisApp do
           public_weixin_url: app.public_weixin_url,
           sdk_bindings: sdk_bindings,
           sdk_payment_callbacks: payment_callbacks,
+          forum_id: if is_nil(app.forum) do nil else app.forum.id end,
+          mall_id: if is_nil(app.mall) do nil else app.mall.id end,
           goods: goods
         }
 

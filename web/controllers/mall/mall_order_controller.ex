@@ -141,13 +141,14 @@ defmodule Acs.MallOrderController do
 
             Repo.transaction(fn ->
               # goods stock
-              MallGoods.changeset(goods, %{stock: goods.stock - quantity}) |> Repo.update()
+              MallGoods.changeset(goods, %{stock: goods.stock - quantity, sold: goods.sold + quantity}) |> Repo.update()
 
               # add order
+              {:ok, gd} = Poison.encode(goods)
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
-                      "app_id": goods.app_id, "user_id": user_id, "address": address}
+                      "app_id": goods.app_id, "user_id": user_id, "address": address, "snapshots": gd}
 
               {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
 

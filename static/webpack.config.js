@@ -6,7 +6,6 @@ var merge = require('webpack-merge')
 
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const projectRoot = path.resolve(__dirname, './')
@@ -168,16 +167,6 @@ module.exports = {
 
 if (isProduction()) {
   module.exports.plugins.push(
-    new OptimizeCssAssetsPlugin({
-      assetNameRegExp: /\.css$/g,
-      cssProcessor: require('cssnano'),
-      cssProcessorOptions: {
-        discardComments: {
-          removeAll: true
-        }
-      },
-      canPrint: true
-    }),
     new UglifyJSPlugin({
       sourceMap: true,
       compress: {

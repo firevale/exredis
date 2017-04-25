@@ -4,7 +4,7 @@
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.titleRegister') }}</p>
       </div>
-      <p class="code-tip"> {{ registerAccountIdPlaceholder }}: </p>
+      <p class="code-tip"> {{ registerAccountIdLabel }}: </p>
       <div class="row-login">
         <input type="text" maxlength="50" :placeholder="registerAccountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
           name="user" @input="handleValidation" />

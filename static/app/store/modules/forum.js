@@ -8,7 +8,7 @@ const state = {
   editingPostData: {
     title: '',
     content: '',
-    selectedSectionId: 1,
+    selectedSectionId: 0,
   },
 }
 

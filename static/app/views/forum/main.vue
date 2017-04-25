@@ -6,7 +6,7 @@
     </div>
     <nav class="nav">
       <div class="nav-left has-text-left">
-        <span v-show="canGoBack && inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
+        <span v-show="inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
       </div>
       <div class="nav-center">
       </div>

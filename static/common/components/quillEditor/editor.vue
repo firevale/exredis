@@ -137,7 +137,7 @@ export default {
           placeholder: this.placeholder,
           readOnly: false,
           theme: 'snow',
-          boundary: document.body
+          strict: false,
         }, self.config || {}))
 
         // set editor content

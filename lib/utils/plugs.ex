@@ -425,6 +425,10 @@ defmodule Acs.Plugs do
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
+                                     params: %{"forum_id" => "error"}} = conn, _options) do
+    conn |> put_private(:acs_is_forum_admin, false)
+  end
+  def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
                                      params: %{"forum_id" => forum_id}} = conn, _options) do
     _check_forum_manager(conn, user_id, forum_id)
   end

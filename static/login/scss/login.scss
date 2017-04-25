@@ -2,8 +2,6 @@
 @import "common/scss/mixins";
 @import "common/scss/reset";
 @import "common/scss/animation";
-
-
 html {
   font-size: $middle;
 }
@@ -26,7 +24,8 @@ body.wp8 {
   background: #000;
 }
 
-body.ios, body.android {
+body.ios,
+body.android {
   input {
     -webkit-appearance: none;
   }
@@ -106,6 +105,10 @@ hr {
   margin: 0 auto;
   width: 100%;
   height: 100%;
+  &.slide-right-enter-active,
+  &.slide-left-enter-active {
+    top: -100%;
+  }
   .account-list {
     position: absolute;
     z-index: 3;

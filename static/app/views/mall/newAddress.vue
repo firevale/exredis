@@ -34,13 +34,10 @@
         </div>
       </div>
       <div class="column is-12 has-text-centered">
-<<<<<<< HEAD
         <div class="tile is-full has-text-left" style="margin: 0.5rem" v-show="errorHint">
           <span class="icon is-sign">!</span>
           <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
         </div>
-=======
->>>>>>> bf239f8181a72fd20f4f95ad9b4ff31aabdaacd2
         <v-touch class="button is-info is-large is-fullwidth" :class="processing || $v.$invalid ? 'is-disabled' : ''"
           tag="a" @tap="handleSubmit">{{$t('common.save') }}</v-touch>
       </div>
@@ -157,7 +154,6 @@ export default {
           address: this.addressModel.address
         })
         if (result.success) {
-          console.log("------------------aaa")
           this.updateSelectedAddress(result.address)
           this.$router.back()
         }

@@ -20,16 +20,16 @@
       <div class="column is-parent is-one-third">
         <center>
           <figure class="image" style="display: block">
-            <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/256x256?text=未上传'" style="width:160px; height:160px;"></img>
+            <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/256x256?text=loading...'" style="width:160px; height:160px;"></img>
           </figure>
         </center>
       </div>
       <div class="column is-parent is-vertical">
         <article class="tile is-child">
           <p class="subtitle is-4">{{ goodsItem.goods.name}}</p>
-          <p class="subtitle is-4" style="color:#ff6600;">{{ getPrice(goodsItem.goods.price) }}</p>
+          <p class="subtitle is-4 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
           <p class="subtitle is-4">x {{ goodsItem.quantity }}</p>
-          <p class="subtitle is-4" style="color:#ff6600;">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
+          <p class="subtitle is-4 is-primary">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
             }}
           </p>
         </article>

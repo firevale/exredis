@@ -314,7 +314,7 @@ defmodule Acs.MallController do
   def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do
     query = from us in UserAddress,
               where: us.user_id == ^user_id,
-              order_by: [desc: us.inserted_at],
+              order_by: [desc: us.is_default, desc: us.inserted_at],
               select: map(us, [:id, :name, :mobile, :area, :area_code, :address, :is_default])
 
     addresses = Repo.all(query)
@@ -329,14 +329,42 @@ defmodule Acs.MallController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
       %UserAddress{} = address ->
-         case Repo.delete(address) do
-            {:ok, _} ->
-              conn |> json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
+        if(address.is_default)do
+          queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
+          count = Repo.one!(queryTotal)
+          if(count <= 1 )do
+            case Repo.delete(address) do
+              {:ok, _} ->
+                conn |> json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
+              {:error, %{errors: errors}} ->
+                conn |> json(%{success: false, message: translate_errors(errors)})
+            end          
+          else
+            queryLast = from us in UserAddress, 
+                        where: us.user_id == ^user_id and us.id != ^address_id,
+                        order_by: [desc: us.inserted_at],  
+                        limit: 1,
+                        select: map(us, [:id])
+            lastAddress = Repo.one(queryLast)
 
-            {:error, %{errors: errors}} ->
-              conn |> json(%{success: false, message: translate_errors(errors)})
+            Repo.transaction(fn ->
+            from(us in UserAddress, where: us.id == ^address_id) |> Repo.delete_all
+
+            from(us in UserAddress, 
+                where: us.id == ^lastAddress.id) 
+            |> Repo.update_all(set: [is_default: true])
+            end)
+            conn |>json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
           end
-          _ ->
+        else 
+          case Repo.delete(address) do
+              {:ok, _} ->
+                conn |> json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
+              {:error, %{errors: errors}} ->
+                conn |> json(%{success: false, message: translate_errors(errors)})
+            end
+        end         
+      _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
@@ -401,7 +429,12 @@ defmodule Acs.MallController do
                 "area" => area,
                 "address" => address,
                 "area_code" => area_code} = us_address)do
-    us_address = us_address |> Map.put("user_id", user_id) |> Map.put("is_default",false)
+    us_address = us_address |> Map.put("user_id", user_id)
+    queryCount = from us in UserAddress,select: count(1), where: us.user_id == ^user_id
+    count = Repo.one!(queryCount)
+    if(count == 0)do
+      us_address = us_address |> Map.put("is_default",true)
+    end
     case UserAddress.changeset(%UserAddress{}, us_address) |> Repo.insert do
         {:ok, new_address} ->
           conn |> json(%{success: true, i18n_message: "mall.address.addSuccess"})

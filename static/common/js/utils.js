@@ -1,7 +1,6 @@
 import './date'
 
-let emailRegex =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+let emailRegex = /^[^@]+@[^@]+$/
 
 let firevaleEmailRegex = /^\w+@firevale\.com$/
 
@@ -14,7 +13,7 @@ export const isValidFirevaleEmail = val => {
 }
 
 export const isValidMobileNumber = val => {
-  return /^1[34578]\d{9}$/.test(val)
+  return /^1\d{10}$/.test(val)
 }
 
 export const isValidAccountName = val => {

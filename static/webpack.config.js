@@ -168,16 +168,16 @@ module.exports = {
 
 if (isProduction()) {
   module.exports.plugins.push(
-    new OptimizeCssAssetsPlugin({
-      assetNameRegExp: /\.css$/g,
-      cssProcessor: require('cssnano'),
-      cssProcessorOptions: {
-        discardComments: {
-          removeAll: true
-        }
-      },
-      canPrint: true
-    }),
+    // new OptimizeCssAssetsPlugin({
+    //   assetNameRegExp: /\.optimize\.css$/g,
+    //   cssProcessor: require('cssnano'),
+    //   cssProcessorOptions: {
+    //     discardComments: {
+    //       removeAll: true
+    //     }
+    //   },
+    //   canPrint: true
+    // }),
     new UglifyJSPlugin({
       sourceMap: true,
       compress: {

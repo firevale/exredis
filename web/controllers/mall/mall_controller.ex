@@ -10,7 +10,7 @@ defmodule Acs.MallController do
   plug :fetch_session_user_id
   plug :fetch_session_user
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
-  plug :cache_page, [cache_seconds: 10] when action in [:fetch_malls, :fetch_goods, :get_active_goods_paged]
+  plug :cache_page, [cache_seconds: 10] when action in [:fetch_malls, :get_active_goods_paged]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
   plug :check_is_admin when action in [:update_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
 

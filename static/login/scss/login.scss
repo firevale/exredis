@@ -350,7 +350,7 @@ div.horizontal-stack-box {
   text-align: center;
   @include display-flex(row, space-around, center);
   .tile {
-    max-width: 25%;
+    max-width: 30%;
     overflow: hidden;
     .sdk-icon {
       cursor: pointer;

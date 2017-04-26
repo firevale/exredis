@@ -27,6 +27,7 @@ export default {
       menuHash: [],
       currentValue: undefined,
       barWidth: '100px',
+      resize: false
     }
   },
   mounted: function() {
@@ -38,6 +39,10 @@ export default {
     if (!this.currentValue && this.menus) {
       this.currentValue = this.menus[0].value
     }
+
+    window.addEventListener('resize', e => {
+      this.resize = true
+    })
 
     this.$on('select', value => {
       this.currentValue = value
@@ -51,9 +56,13 @@ export default {
       return this.barWidth + ' 0.8rem'
     },
     sliderPosition() {
+      if (this.resize)
+        this.resize = false
+
       if (this.selectedIndex == undefined) {
         return "0"
       }
+
       let element = this.$refs.navItem[this.selectedIndex]
       let bar = this.$refs.sliderBar
 

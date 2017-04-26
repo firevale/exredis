@@ -208,42 +208,65 @@ defmodule Acs.MallOrderController do
 
   end
   def update_order_payed(conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
-    order = Repo.get!(MallOrder,order_id)
-    
+    order = fetch_order_info(order_id)
     payedStatus = 1
-    MallOrder.changeset(order,%{transaction_id: transaction_id ,status: payedStatus}) |> Repo.update()
-    MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
-    Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
-    # MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: "A10000010",  status: 1, changed_status: 2, admin_user: "zhumingzhen@firevale.com" }) |> Repo.insert
-    
-    order = fetch_order_info(order_id)
-    conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
-  end
 
-  def refund_order(conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
-    orderRaw = Repo.get!(MallOrder,order_id)
-    order = fetch_order_info(order_id)
-    
-    refund_free = refund_money * 100
-    if refund_free > orderRaw.final_price do
-      conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
+    if order.status !=0 and order.status != -1 do
+      conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
     else
-      cancelStatus = -1
       result= Repo.transaction(fn ->
               Enum.each(order.details, fn(detail) ->
                 goods = Repo.get(MallGoods, detail.mall_goods_id)
-                MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-                RedisMall.refresh(goods)
-                MallOrder.changeset(orderRaw, %{status: cancelStatus}) |> Repo.update()
-                MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: orderRaw.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
+                if detail.amount>goods.stock do
+                  Repo.rollback("admin.mall.order.messages.stockOut")
+                else
+                  MallGoods.changeset(goods, %{stock: goods.stock - detail.amount, sold: goods.sold + detail.amount}) |> Repo.update()
+                  RedisMall.refresh(goods)
+                end
               end)
+
+              from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payedStatus ,transaction_id: transaction_id])
+              MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
+              Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
             end)
       case result do
         {:error, i18n_message} ->
           conn |>json(%{success: false, i18n_message: i18n_message})
         _ ->
-          conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
+          order = fetch_order_info(order_id)
+          conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
       end
+    end
+  end
+
+  def refund_order(conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
+    order = fetch_order_info(order_id)
+    refund_free = refund_money * 100
+
+    cond do
+      refund_free > order.final_price ->
+        conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
+      order.status !=2 ->
+        conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.onlyRecieving"})
+      true ->
+        cancelStatus = -1
+        result= Repo.transaction(fn ->
+                Enum.each(order.details, fn(detail) ->
+                  goods = Repo.get(MallGoods, detail.mall_goods_id)
+                  MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+                  RedisMall.refresh(goods)
+                end)
+
+                from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: cancelStatus])
+                MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
+              end)
+        case result do
+          {:error, i18n_message} ->
+            conn |>json(%{success: false, i18n_message: i18n_message})
+          _ ->
+            order = fetch_order_info(order_id)
+            conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
+        end
     end
   end
 

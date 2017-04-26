@@ -53,6 +53,8 @@ export default {
     messages: {
       opSuccess: '操作成功',
       opFailed: '操作失败',
+      onlyCancelOrUnpay:'仅订单状态为「取消」或者「待支付」可操作',
+      onlyRecieving: '仅订单状态为「待收货」可操作',
       refundMoneyOut:'退款金额不能大于用户支付价格',
       stockOut:'商品库存不足',
       confirmOrderPayed: '您确定订单:{orderId}状态修改为已付款',

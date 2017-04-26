@@ -3,7 +3,7 @@
    filesize: 'File size',
    progress: 'Progress',
    speed: 'Speed',
-   title: 'Title',
+   title: 'Upload',
    hint: 'Click here, or drag file to here',
    fileIsTooLarge: 'File size can not exceed {maxFileSize}',
    invalidFileType: 'Not corrent file type: {fileType}',

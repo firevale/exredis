@@ -111,8 +111,6 @@ export default {
           value: 'cancel',
         }]
 
-        let cameraAvailable = nativeApi.isMediaSourceTypeAvailable('camera')
-
         if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
           items.unshift({
             title: this.$t('common.photoLib'),
@@ -170,7 +168,7 @@ export default {
 
         progress.close()
 
-        if (upload_result) {
+        if (upload_result.success) {
           this.updateUserAvatar(upload_result.user.avatar_url)
         }
       }

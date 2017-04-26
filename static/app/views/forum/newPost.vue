@@ -51,10 +51,17 @@ import menuModal from '../../components/menuModal'
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
+import {
+  showMobileMenu
+} from 'common/components/mobileMenu'
+import {
+  showProgress
+} from 'common/components/progress'
 
 import scroller from 'common/components/scroller'
 import Toast from 'common/components/toast'
 
+import nativeApi from 'common/js/nativeApi'
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'
 
@@ -134,6 +141,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'resetPostEditingData'
+    ]),
+
     setEditor: function(editor) {
       this.editor = editor
     },
@@ -159,27 +170,90 @@ export default {
     },
 
     onInsertImage: function(editor) {
-      showFileUploadDialog(this.$i18n, {
-        postAction: '/forum_actions/upload_post_image',
-        accept: 'image/jpeg, image/png',
-        data: {
-          forum_id: this.$route.params.forumId
-        },
-        extensions: ['png', 'jpg', 'jpeg'],
-        callback: response => {
-          if (response.success) {
-            editor.focus()
-            let range = editor.getSelection()
-            editor.insertEmbed(range.index, 'image', response.link)
-          } else if (response.i18n_message) {
-            Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
-          } else if (response.message) {
-            Toast.show(response.message)
-          } else {
-            Toast.show(this.$t('error.server.networkError'))
+      if (window.acsConfig.inApp) {
+        let items = [{
+          title: this.$t('common.cancel'),
+          value: 'cancel',
+        }]
+
+        if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
+          items.unshift({
+            title: this.$t('common.photoLib'),
+            value: 'photoLib',
+          })
+        }
+
+        if (nativeApi.isMediaSourceTypeAvailable('camera')) {
+          items.unshift({
+            title: this.$t('common.camera'),
+            value: 'camera',
+          })
+        }
+
+        let menu = showMobileMenu({
+          visible: true,
+          items: items
+        })
+
+        menu.$on('item-selected', (item) => {
+          switch (item.value) {
+            case 'camera':
+              nativeApi.pickImageFrom('camera', result => this.handlePickImageResult(editor, result))
+              break;
+
+            case 'photoLib':
+              nativeApi.pickImageFrom('photoLib', result => this.handlePickImageResult(editor, result))
+              break;
           }
-        },
-      })
+        })
+      } else {
+        showFileUploadDialog(this.$i18n, {
+          postAction: '/forum_actions/upload_post_image',
+          accept: 'image/jpeg, image/png',
+          data: {
+            forum_id: this.$route.params.forumId
+          },
+          extensions: ['png', 'jpg', 'jpeg'],
+          callback: response => {
+            if (response.success) {
+              editor.focus()
+              let range = editor.getSelection()
+              editor.insertEmbed(range.index, 'image', response.link)
+            } else if (response.i18n_message) {
+              Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
+            } else if (response.message) {
+              Toast.show(response.message)
+            } else {
+              Toast.show(this.$t('error.server.networkError'))
+            }
+          },
+        })
+      }
+    },
+
+    handlePickImageResult: async function(editor, result) {
+      if (result.success) {
+        let progress = showProgress({
+          visible: true
+        })
+
+        let upload_result = await this.$acs.uploadPostImage({
+          file: {
+            base64_content: result.image
+          },
+          forum_id: this.$route.params.forumId
+        }, value => {
+          progress.setProgress(value)
+        })
+
+        progress.close()
+
+        if (upload_result.success) {
+          editor.focus()
+          let range = editor.getSelection()
+          editor.insertEmbed(range.index, 'image', upload_result.link)
+        }
+      }
     },
 
     showSelectSectionMenu() {
@@ -198,6 +272,7 @@ export default {
           this.editingPostData.title, this.editingPostData.content)
 
         if (result.success) {
+          this.resetPostEditingData()
           Toast.show(this.$t('forum.newPost.addSuccess'))
           this.$router.replace({
             name: 'postList'

@@ -108,7 +108,7 @@ defmodule Acs.MallOrderController do
               left_join: op_logs in assoc(o, :op_logs),
               select: map(o, [:id, :goods_name, :status, :price, :final_price, :address, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile, :email],
-                details: [:id, :goods_name, :goods_pic, :price, :amount],
+                details: [:id, :goods_name, :goods_pic, :price, :amount, :mall_goods_id],
                 op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),
               where: o.id ==^order_id,
               preload: [user: user, details: details, op_logs: op_logs]
@@ -221,25 +221,21 @@ defmodule Acs.MallOrderController do
   end
 
   def refund_order(conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
-    order = Repo.get!(MallOrder,order_id)
+    orderRaw = Repo.get!(MallOrder,order_id)
+    order = fetch_order_info(order_id)
+    
     refund_free = refund_money * 100
-    if refund_free > order.final_price do
+    if refund_free > orderRaw.final_price do
       conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
     else
       cancelStatus = -1
-      order = fetch_order_info(order_id)
-
       result= Repo.transaction(fn ->
               Enum.each(order.details, fn(detail) ->
                 goods = Repo.get(MallGoods, detail.mall_goods_id)
-                if(goods.stock <detail.amount) do
-                  Repo.rollback("admin.mall.order.messages.stockOut")
-                else
-                  MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-                  RedisMall.refresh(goods)
-                  MallOrder.changeset(order,%{status: cancelStatus}) |> Repo.update()
-                  MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
-                end
+                MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+                RedisMall.refresh(goods)
+                MallOrder.changeset(orderRaw, %{status: cancelStatus}) |> Repo.update()
+                MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: orderRaw.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
               end)
             end)
       case result do

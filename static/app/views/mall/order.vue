@@ -157,7 +157,7 @@ export default {
       let result = await this.$acs.getGoodsStock(this.goodsItem.goodsId)
       if (result.success) {
         let stock = result.stock
-        if (stock <= this.goodsItem.quantity) {
+        if (this.goodsItem.quantity > stock) {
           Toast.show(this.$t('mall.order.stockOut'))
           this.loading = false
         } else {

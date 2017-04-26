@@ -121,6 +121,8 @@ export default {
         this.quantity = 99
       else if (this.quantity <= 0)
         this.quantity = 1
+      else if (this.goods.stock <= this.quantity)
+        this.quantity = this.goods.stock
     },
     buyNow: function() {
       acs.checkMallIsLogin(_ => {

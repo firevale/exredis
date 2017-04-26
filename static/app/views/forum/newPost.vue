@@ -141,6 +141,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'resetPostEditingData'
+    ]),
+
     setEditor: function(editor) {
       this.editor = editor
     },
@@ -268,6 +272,7 @@ export default {
           this.editingPostData.title, this.editingPostData.content)
 
         if (result.success) {
+          this.resetPostEditingData()
           Toast.show(this.$t('forum.newPost.addSuccess'))
           this.$router.replace({
             name: 'postList'

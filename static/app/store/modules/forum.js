@@ -27,6 +27,11 @@ const mutations = {
 
   [types.UPDATE_FORUM_INFO](state, forum) {
     state.info = forum
+  },
+
+  [types.RESET_POST_EDITING_DATA](state) {
+    state.editingPostData.title = ''
+    state.content = ''
   }
 }
 

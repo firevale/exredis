@@ -81,6 +81,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'resetPostEditingData'
+    ]),
+
     close: function() {
       window.history.go(-1)
     },
@@ -93,6 +97,7 @@ export default {
           this.title, this.content)
 
         if (result.success) {
+          this.resetPostEditingData()
           Toast.show(this.$t('forum.newPost.addSuccess'))
           this.$router.replace({
             name: 'postList'

@@ -5,7 +5,7 @@ defmodule Acs.MallOrderController do
   require Floki
 
   plug :fetch_app_id
-  plug :fetch_access_token 
+  plug :fetch_access_token
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :fetch_device_id
@@ -19,7 +19,7 @@ defmodule Acs.MallOrderController do
     fetch_order_list(conn,'','', 1, 100)
   end
   defp fetch_order_list(conn, app_id, keyword,  page, records_per_page) do
-     {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)      
+     {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)
 
     queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
@@ -32,7 +32,7 @@ defmodule Acs.MallOrderController do
               left_join: details in assoc(order, :details),
               left_join: user in assoc(order, :user),
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
-                user: [:id, :nickname, :mobile], 
+                user: [:id, :nickname, :mobile],
                 details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
               where: order.app_id == ^app_id,
               order_by: [desc: order.inserted_at],
@@ -97,10 +97,11 @@ defmodule Acs.MallOrderController do
   end
 
   def fetch_order(conn, %{"order_id" => order_id }) do
-    fetch_order_info(conn,order_id)
+    order = fetch_order_info(order_id)
+    conn |> json(%{success: true, order: order})
   end
 
-  defp fetch_order_info(conn, order_id) do
+  defp fetch_order_info( order_id) do
     query = from o in MallOrder,
               left_join: details in assoc(o, :details),
               left_join: user in assoc(o, :user),
@@ -108,11 +109,10 @@ defmodule Acs.MallOrderController do
               select: map(o, [:id, :goods_name, :status, :price, :final_price, :address, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
                 user: [:id, :nickname, :mobile, :email],
                 details: [:id, :goods_name, :goods_pic, :price, :amount],
-                op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),                
+                op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),
               where: o.id ==^order_id,
               preload: [user: user, details: details, op_logs: op_logs]
-    order = Repo.one(query)
-    conn |> json(%{success: true, order: order})
+    Repo.one(query)
   end
 
   # create_mall_order
@@ -145,20 +145,20 @@ defmodule Acs.MallOrderController do
 
               # add order
               {:ok, gd} = Poison.encode(goods)
-              order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address, 
-                      "goods_name": goods.name, "price": goods.price, "postage": goods.postage, 
+              order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
+                      "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
                       "app_id": goods.app_id, "user_id": user_id, "address": address, "snapshots": gd}
 
               {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
 
               # add order detail
-              order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price, 
+              order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price,
                             "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
 
               {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
             end)
-            conn |>json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})          
+            conn |>json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
           end
         end
       else
@@ -177,7 +177,7 @@ defmodule Acs.MallOrderController do
     end
     order_id
   end
-  
+
   def fetch_my_orders(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
       %{"page" => page, "records_per_page" => records_per_page}) do
     fetch_my_orders(conn,user_id, page, records_per_page)
@@ -193,7 +193,7 @@ defmodule Acs.MallOrderController do
               left_join: details in assoc(order, :details),
               left_join: user in assoc(order, :user),
               select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
-                user: [:id, :nickname, :mobile], 
+                user: [:id, :nickname, :mobile],
                 details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
               order_by: [desc: order.inserted_at],
               limit: ^records_per_page,
@@ -201,6 +201,37 @@ defmodule Acs.MallOrderController do
               preload: [user: user, details: details]
     orders = Repo.all(query)
     conn |> json(%{success: true, orders: orders, total: total_page})
+  end
+
+  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}) do
+
+  end
+  def update_order_payed(conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
+    order = Repo.get!(MallOrder,order_id)
+    
+    payedStatus = 1
+    MallOrder.changeset(order,%{transaction_id: transaction_id ,status: payedStatus}) |> Repo.update()
+    MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
+    Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
+    # MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: "A10000010",  status: 1, changed_status: 2, admin_user: "zhumingzhen@firevale.com" }) |> Repo.insert
+    
+    order=fetch_order_info(order_id)
+    conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
+  end
+
+  def refund_order(conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
+    order = Repo.get!(MallOrder,order_id)
+    refund_free = refund_money * 100
+    if refund_free > order.final_price do
+      conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
+    else
+      cancelStatus = -1
+      MallOrder.changeset(order,%{status: cancelStatus}) |> Repo.update()
+      MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
+    
+      order=fetch_order_info(order_id)
+      conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
+    end
   end
 
 end

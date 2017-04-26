@@ -29,9 +29,9 @@
             </p>
           </div>
         </div>
-        <div class="columns is-multiline is-mobile has-text-centered is-marginless is-paddingless">
+        <div class="columns is-multiline is-mobile is-marginless is-paddingless">
           <div style="margin-top:0.7rem;" class="column is-12">
-            <p class="title is-5 is-normal">
+            <p class="title is-5 is-normal has-text-centered">
               {{$t('mall.goods.description') }}
             </p>
           </div>

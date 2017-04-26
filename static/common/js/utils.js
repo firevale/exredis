@@ -13,7 +13,7 @@ export const isValidFirevaleEmail = val => {
 }
 
 export const isValidMobileNumber = val => {
-  return /^1\d{10}$/.test(val)
+  return /^1[3|4|5|8][0-9]\d{4,8}$/.test(val)
 }
 
 export const isValidAccountName = val => {

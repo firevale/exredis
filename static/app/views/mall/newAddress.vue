@@ -59,7 +59,8 @@ import {
 } from 'vuelidate/lib/validators'
 import {
   minLength,
-  maxLength
+  maxLength,
+  isValidMobileNumber
 } from 'common/js/utils'
 
 export default {
@@ -79,6 +80,8 @@ export default {
         return this.$t('mall.address.mobilePlaceholder')
       } else if (!this.$v.addressModel.mobile.maxLength) {
         return this.$t('mall.address.mobilePlaceholder')
+      } else if (!this.$v.addressModel.mobile.isValidMobileNumber) {
+        return this.$t('mall.address.mobileFormatError')
       } else if (!this.$v.addressModel.area.required) {
         return this.$t('mall.address.areaPlaceholder')
       } else if (!this.$v.addressModel.address.required) {
@@ -119,6 +122,7 @@ export default {
       },
       mobile: {
         required,
+        isValidMobileNumber,
         minLength: minLength(11),
         maxLength: maxLength(11)
       },

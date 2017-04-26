@@ -76,6 +76,7 @@ export default {
     updateSuccess: '地址更新成功',
     namePlaceholder: '不超过15个字符',
     mobilePlaceholder: '请输入11位手机号码',
+    mobileFormatError: '手机号码格式不正确',
     areaPlaceholder: '请选择地区',
     addressPlaceholder: '不超过50个字符',
     fields: {

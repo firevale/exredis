@@ -45,7 +45,18 @@ export default {
     back: '返回',
   },
   order: {
-    viewDetail: '查看详情',
+    buttons: {
+      viewDetail: '查看详情',
+      payed: '己付款',
+      refund: '取消并退款',
+    },
+    messages: {
+      opSuccess: '操作成功',
+      opFailed: '操作失败',
+      refundMoneyOut:'退款金额不能大于用户支付价格',
+      confirmOrderPayed: '您确定订单:{orderId}状态修改为已付款',
+      confirmRefundOrder: '您确定订单:{orderId}己线下处理好退款'
+    },
     fields: {
       id: '订单号',
       postage: '邮费',
@@ -63,6 +74,7 @@ export default {
         mobile: '电话',
         address: '地址',
       },
+      refundMoney: '退款金额'
     },
     status: {
       '-3': '已退款',

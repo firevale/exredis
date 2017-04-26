@@ -171,6 +171,12 @@ export default {
 
       fetchMallOrder(params) {
         return post(Vue, '/mall_actions/fetch_order', params)
+      },
+      updateOrderPayed(params) {
+        return post(Vue, '/mall_actions/update_order_payed', params)
+      },
+      refundOrder(params) {
+        return post(Vue, '/mall_actions/refund_order', params)
       }
     }
   }

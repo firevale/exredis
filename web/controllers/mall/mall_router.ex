@@ -46,6 +46,8 @@ defmodule Acs.MallRouter do
     post "/fetch_order_list", MallOrderController, :fetch_order_list
     post "/fetch_order", MallOrderController, :fetch_order
     post "/fetch_my_orders", MallOrderController, :fetch_my_orders
+    post "/refund_order", MallOrderController, :refund_order
+    post "/update_order_payed", MallOrderController, :update_order_payed
 
     post "/get_goods_stock", MallController, :get_goods_stock
   end

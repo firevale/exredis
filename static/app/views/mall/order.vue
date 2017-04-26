@@ -1,7 +1,7 @@
 <template>
-  <div class="place-order is-marginless is-paddingless">
+  <div class="place-order">
     <div class="card is-mobile">
-      <v-touch class="card-header" tag="header" @tap="selectAddress()">
+      <v-touch class="card-header is-mobile" tag="header" @tap="selectAddress()">
         <article v-if="this.selectedAddress.id > 0" class="tile is-vertical">
           <p class="title is-5 is-thickness">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
           <p class="title is-5 is-thickness">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
@@ -23,7 +23,7 @@
             </p>
           </div>
           <div class="media-content is-marginless is-paddingless">
-            <p class="title is-thickness is-5">{{ goodsItem.goods.name}}</p>
+            <p class="title is-normal is-5">{{ goodsItem.goods.name}}</p>
             <p class="title is-normal is-5 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
             <p class="title is-normal is-5">X{{ goodsItem.quantity }}</p>
           </div>
@@ -144,28 +144,34 @@ export default {
     },
     onPrepay: async function(payType) {
       //check address
-      this.loading = true
       if (this.selectedAddress.id == 0) {
         Toast.show(this.$t('mall.order.addressPlaceholder'))
         return;
       }
+      this.loading = true
       //check stock
       this.checkStock(payType)
+
     },
     checkStock: async function(payType) {
       let result = await this.$acs.getGoodsStock(this.goodsItem.goodsId)
       if (result.success) {
         let stock = result.stock
-        if (stock <= this.goodsItem.quantity) {
+        if (this.goodsItem.quantity > stock) {
           Toast.show(this.$t('mall.order.stockOut'))
+          this.loading = false
         } else {
           this.prepay(payType)
+
+          setInterval(() => {
+            this.loading = false
+          }, 3500)
         }
       }
-      this.loading = true
     },
     prepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity,
+      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, parseInt(this.goodsItem
+          .quantity),
         payType, this.selectedAddress)
       if (result.success) {
         this.orderId = result.order_id

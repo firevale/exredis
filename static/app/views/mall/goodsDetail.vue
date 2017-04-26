@@ -18,9 +18,9 @@
           </div>
           <div class="column is-12">
             <p class="title is-5 is-primary is-normal">
-              <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
+              <label class="currency" :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
               <label>（{{$t('mall.goods.postage')}}：</label>
-              <label :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
+              <label class="currency" :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
             </p>
           </div>
           <div style="margin-bottom:0.7rem;" class="column is-12">

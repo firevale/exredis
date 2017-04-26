@@ -78,4 +78,17 @@ defmodule Acs.CronController do
     end)
   end
 
+  def finish_mall_order(conn, params) do 
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 1 and
+                order.inserted_at <= ago(15, "day")
+
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: 4, confirm_at: now, memo: "auto finish over 15 days"}) |> Repo.update()
+        d "-------- auto finish order: #{order.id}"
+    end)
+    conn |> json(%{success: true, message: "done"})
+  end
 end

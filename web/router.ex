@@ -115,6 +115,7 @@ defmodule Acs.Router do
     get "/notify_cp", CronController, :notify_cp
     get "/report_sms_amount", CronController, :report_sms_amount
     get "/cancel_mall_order", CronController, :cancel_mall_order
+    get "/finish_mall_order", CronController, :finish_mall_order
   end
 
   scope path: "/admin_actions", alias: Acs do

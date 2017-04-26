@@ -196,7 +196,7 @@ defmodule Acs.MallController do
           case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              RedisMall.refresh(goods)
+              RedisMall.refreshById(id)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
@@ -212,7 +212,7 @@ defmodule Acs.MallController do
           %MallGoods{} = mg ->
             goods = goods |> Map.put("user_id", user_id)
             MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
-            RedisMall.refresh(goods)
+            RedisMall.refreshById(id)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
     end

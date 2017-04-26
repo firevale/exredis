@@ -36,6 +36,28 @@
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.paid_type.label')}}:{{$t('admin.mall.order.fields.paid_type.'+orderInfo.paid_type)}}</span>
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>
       </div>
+      <div v-if="orderInfo.status==0 || orderInfo.status==-1" class="tile is-child">
+        <div class="field is-grouped">
+          <h6 style="align-self:center;"> {{$t('admin.mall.order.fields.transaction_id')}}： </h6>
+          <p class="control is-expanded">
+            <input class="input" type="text" v-model.trim="orderInfo.transaction_id">
+          </p>
+          <p class="control">
+            <button class="button is-info" :disabled="!orderInfo.transaction_id" @click.prevent="updateOrderPayed">{{$t('admin.mall.order.buttons.payed')}}</button>
+          </p>
+        </div>
+      </div>
+      <div v-if="orderInfo.status==2" class="tile is-child">
+        <div class="field is-grouped">
+          <h6 style="align-self:center;"> {{$t('admin.mall.order.fields.refundMoney')}}： </h6>
+          <p class="control">
+            <input class="input" type="text" style="width:100px" v-model.trim="refundMoney">
+          </p>
+          <p class="control">
+            <button class="button is-info" :disabled="!refundMoney" @click.prevent="refundOrder">{{$t('admin.mall.order.buttons.refund')}}</button>
+          </p>
+        </div>
+      </div>
     </div>
     <div class="tile is-parent is-vertical">
       <h6 class="subtitle is-6">历史记录:</h6>
@@ -64,18 +86,14 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import imgUpload from "vue-image-crop-upload/upload-2.vue"
-
 import {
-  showFileUploadDialog
-} from 'common/components/fileUpload'
+  showMessageBox
+} from 'admin/components/dialog/messageBox'
 
 const touchMap = new WeakMap()
 
 export default {
-  components: {
-    imgUpload,
-  },
+  components: {},
 
   mounted: async function() {
     let result = await this.$acs.fetchMallOrder({
@@ -90,6 +108,7 @@ export default {
   data() {
     return {
       orderInfo: undefined,
+      refundMoney: '',
     }
   },
   watch: {
@@ -104,62 +123,49 @@ export default {
         return user;
       }
     },
-    getPrice: function(price) {
-      if (price)
-        return parseFloat(price / 100).toFixed(2)
-      else
-        return 0
+    isNull: function() {
+      return orderInfo.transaction_id == ""
     },
 
-    onDelete: function() {
-      // 点击删除按钮，需判断该商品是否已有销量，销量不为0的商品不可删除，需文字提示：该商品已销售不可删除；
-      // 商品销量为0，则可删除，仍需有二次文字信息提示：请确认是否删除该商品？
-      // 选择确认，则成功在前后端删除，返回商品管理页；
-      // 选择取消，则不删除，返回商品详情页；
-    },
-
-    onPublish: function() {
-      // 点击发布按钮，判断必填项是否为空或都按规则填写； // 全部正确填写，则成功发布，发布按钮变为取消按钮，可在前端显示并搜索到该商品； // 为空或未按规则填写，则需分别报错提示： // 请上传正确的商品图片；
-      // 请正确填写商品名称/单价／邮费/库存/商品详情； // 点击取消按钮，取消按钮变为发布按钮，不可在前端显示并搜索到该商品；
-    },
-
-    onSave: function() {
-      if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price.length ==
-        0 ||
-        this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.id.length ==
-        0) {
-        openNotification({
-          title: this.$t('admin.titles.warning'),
-          message: this.$t('admin.mall.goods.pleaseFill'),
-          type: 'danger',
-          duration: 4500,
-          container: '.notifications',
-        })
-        return;
-      }
-
-      this.handleSubmit()
-    },
-
-    handleSubmit: async function() {
-      this.saving = true
-      let result = await this.$acs.updateGoods({
-        id: this.goods.id,
-        app_id: this.goods.app_id,
-        name: this.goods.name,
-        pic: this.goods.pic,
-        description: this.goods.description,
-        price: this.goods.price,
-        postage: this.goods.postage,
-        stock: this.goods.stock,
-        currency: this.goods.currency,
-        is_new: this.isNew
+    updateOrderPayed: function() {
+      showMessageBox({
+        visible: true,
+        title: this.$t('admin.titles.warning'),
+        message: this.$t('admin.mall.order.messages.confirmOrderPayed', {
+          orderId: this.orderInfo.id
+        }),
+        type: 'danger',
+        onOK: async _ => {
+          let result = await this.$acs.updateOrderPayed({
+            order_id: this.orderInfo.id,
+            transaction_id: this.orderInfo.transaction_id
+          })
+          if (result.success) {
+            this.orderInfo = result.order
+          }
+        },
       })
-      if (result.success) {
-        this.$router.go(-1)
-      }
-      this.saving = false
     },
+
+    refundOrder: function() {
+      showMessageBox({
+        visible: true,
+        title: this.$t('admin.titles.warning'),
+        message: this.$t('admin.mall.order.messages.confirmRefundOrder', {
+          orderId: this.orderInfo.id
+        }),
+        type: 'danger',
+        onOK: async _ => {
+          let result = await this.$acs.refundOrder({
+            order_id: this.orderInfo.id,
+            refund_money: parseFloat(this.refundMoney)
+          })
+          if (result.success) {
+            this.orderInfo = result.order
+          }
+        },
+      })
+    }
   }
 }
 </script>
@@ -168,7 +174,7 @@ export default {
   margin-bottom: .8rem;
 }
 
-.media-content > .subtitle:not(:last-child) {
+.media-content>.subtitle:not(:last-child) {
   margin-bottom: .5rem;
 }
 

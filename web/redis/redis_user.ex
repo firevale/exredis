@@ -122,7 +122,7 @@ defmodule Acs.RedisUser do
   # anonymous user identified by device_id
   def fetch_anonymous_user(device_id) do
     case find(device_id) do
-      %{email: nil, mobile: nil} = anonymous_user ->
+      %{encrypted_password: nil, device_id: ^device_id} = anonymous_user ->
         anonymous_user
 
       _ ->
@@ -299,10 +299,10 @@ defmodule Acs.RedisUser do
     end
   end
 
-  def refresh(:device, account_id) do
+  def refresh(:device, device_id) do
     query = from user in User,
             left_join: bindings in assoc(user, :sdk_bindings),
-            where: user.device_id == ^account_id,
+            where: user.device_id == ^device_id,
             select: user,
             preload: [sdk_bindings: bindings]
 

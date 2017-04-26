@@ -224,15 +224,16 @@ defmodule Acs.MallOrderController do
                   RedisMall.refresh(goods)
                 end
               end)
-
+              
               from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payedStatus ,transaction_id: transaction_id])
               MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
-              Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
             end)
+
       case result do
         {:error, i18n_message} ->
           conn |>json(%{success: false, i18n_message: i18n_message})
         _ ->
+          Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
           order = fetch_order_info(order_id)
           conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
       end

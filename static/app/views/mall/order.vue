@@ -151,6 +151,7 @@ export default {
       this.loading = true
       //check stock
       this.checkStock(payType)
+
     },
     checkStock: async function(payType) {
       let result = await this.$acs.getGoodsStock(this.goodsItem.goodsId)
@@ -158,14 +159,19 @@ export default {
         let stock = result.stock
         if (stock <= this.goodsItem.quantity) {
           Toast.show(this.$t('mall.order.stockOut'))
+          this.loading = false
         } else {
           this.prepay(payType)
+
+          setInterval(() => {
+            this.loading = false
+          }, 3500)
         }
       }
-      this.loading = false
     },
     prepay: async function(payType) {
-      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity,
+      let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, parseInt(this.goodsItem
+          .quantity),
         payType, this.selectedAddress)
       if (result.success) {
         this.orderId = result.order_id

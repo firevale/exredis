@@ -5,7 +5,6 @@ defmodule Acs.RedisMall do
   alias   Acs.Repo
   import  Ecto.Query
 
-  alias   Acs.Mall
   alias   Acs.MallGoods
 
   require Logger
@@ -33,7 +32,7 @@ defmodule Acs.RedisMall do
 
     case Redis.get(redis_key) do
       :undefined ->
-        refresh(id)
+        refreshById(id)
       raw ->
         raw |> from_json
     end
@@ -60,14 +59,14 @@ defmodule Acs.RedisMall do
     cache
   end
 
-  def refresh(id)  do
+  def refreshById(id)  do
     query = from g in MallGoods,
               where: g.id == ^id,
               select: map(g, [:id, :name, :currency, :description, :pic, :price, :postage, :stock, :sold, :reads, :app_id, :active])
 
     case Repo.one(query) do
       nil -> nil
-      %MallGoods{} = goods -> refresh(goods)
+      goods -> refresh(goods)
     end
   end
 

@@ -1,7 +1,7 @@
 defmodule Acs.MallController do
   use Acs.Web, :controller
 
-  # alias   Acs.RedisMall
+  alias   Acs.RedisMall
   import  Acs.UploadImagePlugs
   require Floki
 
@@ -152,6 +152,7 @@ defmodule Acs.MallController do
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         pic_url = static_url(conn, image_path)
         MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+        RedisMall.refresh(goods)
         conn |> json(%{success: true, pic_url: pic_url})
 
       _ ->
@@ -195,6 +196,7 @@ defmodule Acs.MallController do
           case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+              RedisMall.refresh(goods)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
@@ -210,6 +212,7 @@ defmodule Acs.MallController do
           %MallGoods{} = mg ->
             goods = goods |> Map.put("user_id", user_id)
             MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
+            RedisMall.refresh(goods)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
     end
@@ -245,6 +248,7 @@ defmodule Acs.MallController do
         else
           case Repo.delete(goods) do
             {:ok, _} ->
+              RedisMall.delete(goods_id)
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
             {:error, %{errors: errors}} ->
@@ -279,7 +283,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
-    case Repo.get(MallGoods, goods_id) do
+    case RedisMall.find(goods_id) do
       %MallGoods{} = goods ->
         conn |> json(%{success: true, stock: goods.stock})
       _ ->
@@ -299,7 +303,7 @@ defmodule Acs.MallController do
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = Repo.one(from g in MallGoods, select: map(g, [:id, :app_id, :currency, :name, :description, :price, :postage, :pic, :stock, :sold, :active]), where: g.id == ^goods_id)
+    goods = RedisMall.find(goods_id)
     add_goods_click(goods_id,1)
     conn |> json(%{success: true, goods: goods})
   end
@@ -309,6 +313,7 @@ defmodule Acs.MallController do
   defp add_goods_click(goods_id, click) do
     goods = Repo.get(MallGoods, goods_id)
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
+    RedisMall.refresh(goods)
   end
 
   def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do

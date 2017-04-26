@@ -1,7 +1,7 @@
 defmodule Acs.MallOrderController do
   use Acs.Web, :controller
 
-  # alias   Acs.RedisMall
+  alias   Acs.RedisMall
   require Floki
 
   plug :fetch_app_id
@@ -124,7 +124,7 @@ defmodule Acs.MallOrderController do
                       "pay_type" => pay_type,
                       "address" => address}) do
 
-      with %MallGoods{} = goods <- Repo.get(MallGoods, goods_id),
+      with %MallGoods{} = goods <- RedisMall.find(goods_id),
         order_id <- _create_order_id(user_id, pay_type)
       do
         final_price = goods.price * quantity + goods.postage
@@ -142,6 +142,7 @@ defmodule Acs.MallOrderController do
             Repo.transaction(fn ->
               # goods stock
               MallGoods.changeset(goods, %{stock: goods.stock - quantity, sold: goods.sold + quantity}) |> Repo.update()
+              RedisMall.refresh(goods)
 
               # add order
               {:ok, gd} = Poison.encode(goods)

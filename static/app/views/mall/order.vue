@@ -1,30 +1,31 @@
 <template>
-  <div class="is-marginless is-paddingless">
+  <div class="place-order is-marginless is-paddingless">
     <div class="card is-mobile">
       <v-touch class="card-header" tag="header" @tap="selectAddress()">
-        <article v-if="this.selectedAddress.id > 0" class="tile is-vertical" style="padding: 1.5rem;">
-          <p class="title is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
-          <p class="title is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
-          <p class="title is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.selectedAddress.area.replace(/-/g," ") }} {{this.selectedAddress.address}}</p>
+        <article v-if="this.selectedAddress.id > 0" class="tile is-vertical">
+          <p class="title is-5 is-thickness">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
+          <p class="title is-5 is-thickness">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
+          <p class="title is-5 is-thickness">{{$t('mall.address.fields.address') }}：{{this.selectedAddress.area.replace(/-/g," ") }} {{this.selectedAddress.address}}</p>
         </article>
         <p v-else class="card-header-title">
-          <span class="subtitle is-5 is-normal">{{$t('mall.order.addressPlaceholder') }}</span>
+          <span class="icon nav-icon icon-pen"></span>
+          <span class="subtitle is-5 is-thickness">{{$t('mall.order.addressPlaceholder') }}</span>
         </p>
-        <p class="card-header-icon" style="margin-right: 1.5rem;">
+        <p class="card-header-icon">
           >
         </p>
       </v-touch>
       <div class="card-content">
         <div class="media">
           <div class="media-left">
-            <p class="image is-64x64">
+            <p class="image is-64x64" style="overflow:hidden">
               <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/64x64?text=loading...'">
             </p>
           </div>
           <div class="media-content is-marginless is-paddingless">
-            <p style="margin-bottom:0.8rem;" class="title is-normal is-5">{{ goodsItem.goods.name}}</p>
-            <p style="margin-bottom:0.8rem;" class="title is-normal is-5 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
-            <p style="margin-bottom:0rem;" class="title is-normal is-5">X{{ goodsItem.quantity }}</p>
+            <p class="title is-thickness is-5">{{ goodsItem.goods.name}}</p>
+            <p class="title is-normal is-5 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
+            <p class="title is-normal is-5">X{{ goodsItem.quantity }}</p>
           </div>
         </div>
       </div>
@@ -35,60 +36,15 @@
         </p>
       </div>
     </div>
-    <div style="margin-top:1rem;">
+    <div class="order-bottom">
       <div class="is-fullwidth" v-if="this.isSupportWechat()">
-        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" :class="loading?'is-loading':''" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
       </div>
       <div class="is-fullwidth">
-        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" :class="loading?'is-loading':''" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
       </div>
     </div>
   </div>
-  <!--<div class="columns is-vertical">
-    <v-touch class="card-header" tag="header" @tap="selectAddress()">
-      <div class="card-header-title">
-        <article v-if="this.selectedAddress.id > 0" class="tile is-vertical">
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.name') }}：{{this.selectedAddress.name}}</p>
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.mobile') }}：{{this.selectedAddress.mobile}}</p>
-          <p class="subtitle is-5 is-normal">{{$t('mall.address.fields.address') }}：{{this.selectedAddress.area.replace(/-/g," ") }} {{this.selectedAddress.address}}</p>
-        </article>
-        <div v-else class="level-left" style="padding: 2rem;">
-          <span class="level-item icon nav-icon pull-left icon-pen"></span>
-          <span class="level-item subtitle is-4 is-normal">{{$t('mall.order.addressPlaceholder') }}</span>
-        </div>
-      </div>
-      <div class="card-header-icon">
-        <h5 class="subtitle is-4">></h5>
-      </div>
-    </v-touch>
-    <div class="columns" v-if="goodsItem.goods" style="padding-top:2rem;">
-      <div class="column is-parent is-one-third">
-        <center>
-          <figure class="image" style="display: block">
-            <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/256x256?text=loading...'" style="width:160px; height:160px;"></img>
-          </figure>
-        </center>
-      </div>
-      <div class="column is-parent is-vertical">
-        <article class="tile is-child">
-          <p class="subtitle is-4">{{ goodsItem.goods.name}}</p>
-          <p class="subtitle is-4 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
-          <p class="subtitle is-4">x {{ goodsItem.quantity }}</p>
-          <p class="subtitle is-4 is-primary">{{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
-            }}
-          </p>
-        </article>
-      </div>
-    </div>
-    <div class="tile">
-      <div class="tile" style="padding: 1rem;" v-if="this.isSupportWechat()">
-        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('wechat')">{{$t('mall.order.wechatPay')}}</v-touch>
-      </div>
-      <div class="tile" style="padding: 1rem;">
-        <v-touch class="button is-info is-large is-fullwidth" @tap="onPrepay('alipay')">{{$t('mall.order.aliPay')}}</v-touch>
-      </div>
-    </div>
-  </div>-->
 </template>
 <script>
 import Vue from '../../vue-installed'
@@ -137,6 +93,7 @@ export default {
         quantity: 1,
         goods: {},
       },
+      loading: false,
       totalPrice: "0",
       orderId: "",
     }
@@ -187,6 +144,7 @@ export default {
     },
     onPrepay: async function(payType) {
       //check address
+      this.loading = true
       if (this.selectedAddress.id == 0) {
         Toast.show(this.$t('mall.order.addressPlaceholder'))
         return;
@@ -204,6 +162,7 @@ export default {
           this.prepay(payType)
         }
       }
+      this.loading = true
     },
     prepay: async function(payType) {
       let result = await this.$acs.createMallOrder(this.goodsItem.goodsId, this.goodsItem.quantity,

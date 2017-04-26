@@ -3,6 +3,7 @@ defmodule Acs.CronController do
   alias   Acs.PaymentHelper
   alias   Acs.MeishengSmsSender
   alias   Acs.ChaoxinNotifier
+  alias   Acs.RedisMall
   use     Timex
 
   def notify_cp(conn, params) do
@@ -71,8 +72,9 @@ defmodule Acs.CronController do
                   select: od,
                   where: od.mall_order_id == ^order_id
     Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = Repo.get(MallGoods, detail.mall_goods_id) 
+      goods = RedisMall.find(detail.mall_goods_id) 
       MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+      RedisMall.refresh(goods)
     end)
   end
 

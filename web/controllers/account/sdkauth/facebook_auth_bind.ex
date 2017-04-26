@@ -18,7 +18,6 @@ defmodule Acs.FacebookAuthBind do
                                        sdk_user_id: facebook_user_id, 
                                        email: email,
                                        nickname: facebook_nickname,
-                                       device_id: device_id,
                                        mobile: nil,
                                        avatar_url: nil}) do 
           {:ok, user} ->

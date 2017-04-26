@@ -216,7 +216,7 @@ defmodule Acs.MallOrderController do
     Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
     # MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: "A10000010",  status: 1, changed_status: 2, admin_user: "zhumingzhen@firevale.com" }) |> Repo.insert
     
-    order=fetch_order_info(order_id)
+    order = fetch_order_info(order_id)
     conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
   end
 
@@ -227,11 +227,27 @@ defmodule Acs.MallOrderController do
       conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
     else
       cancelStatus = -1
-      MallOrder.changeset(order,%{status: cancelStatus}) |> Repo.update()
-      MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
-    
-      order=fetch_order_info(order_id)
-      conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
+      order = fetch_order_info(order_id)
+
+      result= Repo.transaction(fn ->
+              Enum.each(order.details, fn(detail) ->
+                goods = Repo.get(MallGoods, detail.mall_goods_id)
+                if(goods.stock <detail.amount) do
+                  Repo.rollback("admin.mall.order.messages.stockOut")
+                else
+                  MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+                  RedisMall.refresh(goods)
+                  MallOrder.changeset(order,%{status: cancelStatus}) |> Repo.update()
+                  MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
+                end
+              end)
+            end)
+      case result do
+        {:error, i18n_message} ->
+          conn |>json(%{success: false, i18n_message: i18n_message})
+        _ ->
+          conn |>json(%{success: true, order: order, i18n_message: "admin.mall.order.opSuccess"})
+      end
     end
   end
 

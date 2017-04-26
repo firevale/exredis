@@ -36,7 +36,7 @@
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.paid_type.label')}}:{{$t('admin.mall.order.fields.paid_type.'+orderInfo.paid_type)}}</span>
         <span class="subtitle is-6">{{$t('admin.mall.order.fields.transaction_id')}}:{{orderInfo.transaction_id}}</span>
       </div>
-      <div v-if="orderInfo.status==0 ||orderInfo.status==-1" class="tile is-child">
+      <div v-if="true" class="tile is-child">
         <div class="field is-grouped">
           <h6 style="align-self:center;"> {{$t('admin.mall.order.fields.transaction_id')}}： </h6>
           <p class="control is-expanded">
@@ -47,7 +47,7 @@
           </p>
         </div>
       </div>
-      <div v-if="orderInfo.status==2" class="tile is-child">
+      <div v-if="true" class="tile is-child">
         <div class="field is-grouped">
           <h6 style="align-self:center;"> {{$t('admin.mall.order.fields.refundMoney')}}： </h6>
           <p class="control">

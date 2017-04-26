@@ -5,7 +5,8 @@
         <div class="card-header-title is-vertical">
           <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{order.address.name}} </p>
           <p class="is-thickness"> {{$t('mall.order.fields.address.mobile') }}：{{order.address.mobile}} </p>
-          <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{order.address.area}}{{order.address.address}} </p>
+          <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{order.address.area}}{{order.address.address}}
+          </p>
         </div>
         <p class="card-header-icon">
           >
@@ -45,9 +46,14 @@
       </footer>
     </div>
     <div>
-      <button v-if="order.status==0" class="button is-fullwidth is-info is-medium">
-        {{$t('mall.order.wechatPay') }}
-      </button>
+      <template v-if="order.status==0">
+        <button v-if="this.isSupportWechat()" class="button is-fullwidth is-info is-medium">
+          {{$t('mall.order.wechatPay') }}
+        </button>
+        <button class="button is-fullwidth is-info is-medium">
+          {{$t('mall.order.aliPay')}}
+        </button>
+      </template>
       <button v-if="order.status==2" class="button is-fullwidth is-info is-medium">
         {{$t('mall.order.reciept') }}
       </button>
@@ -84,7 +90,9 @@ export default {
 
   computed: {},
   methods: {
-
+    isSupportWechat: function() {
+      return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
+    },
   }
 }
 </script>

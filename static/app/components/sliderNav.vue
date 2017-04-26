@@ -2,9 +2,10 @@
   <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <a class="nav-item is-tab has-right-line" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
-          @click.prevent="switchMenu(item,index)">{{item.text}}</a>
-        <div class="slider-bar" :style="{'background-position':sliderPosition}"></div>
+        <a class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
+          @click.prevent="switchMenu(item,index,$event)" ref="navItem">{{item.text}}</a>
+        <div class="slider-bar" :style="{'left':sliderPosition,'width':barWidth,'background-size':sliderBackgroundSize}"
+          ref="sliderBar" style="display: flex;"></div>
       </div>
     </div>
   </div>
@@ -25,6 +26,7 @@ export default {
     return {
       menuHash: [],
       currentValue: undefined,
+      barWidth: '100px',
     }
   },
   mounted: function() {
@@ -45,15 +47,34 @@ export default {
     selectedIndex() {
       return this.menuHash[this.currentValue]
     },
+    sliderBackgroundSize() {
+      return this.barWidth + ' 0.8rem'
+    },
     sliderPosition() {
-      let itemWidth = 13.2
-      let barOffset = 0.175
-      return this.selectedIndex * itemWidth + itemWidth * barOffset + "rem bottom"
+      if (this.selectedIndex == undefined) {
+        return "0"
+      }
+      let element = this.$refs.navItem[this.selectedIndex]
+      let bar = this.$refs.sliderBar
+
+      let offsetLeft = element.offsetLeft;
+      let offsetWidth = element.offsetWidth;
+
+      if (offsetWidth < bar.offsetWidth) {
+        this.barWidth = offsetWidth + "px"
+      } else {
+        this.barWidth = "100px"
+      }
+
+      let left = element.offsetLeft + ((offsetWidth - 100) / 2)
+      return left + "px"
+
     },
   },
   methods: {
-    switchMenu: function(item, index) {
+    switchMenu: function(item, index, event) {
       this.currentValue = item.value
+
       this.$emit('onSelect',
         item,
         index
@@ -67,31 +88,37 @@ export default {
 @import "../scss/variables";
 .slider-nav {
   .nav {
-    $item-width:13.2rem;
+    $item-width: 13.2rem;
+    $item-min-width: 8rem;
     margin-bottom: .5rem;
     border-bottom: .5rem solid $bottom-line-light;
     height: 4.8rem;
     .nav-center {
       position: relative;
+      margin: 0;
+      flex-grow: 1;
       .slider-bar {
         position: absolute;
         bottom: -.8rem;
         content: "";
-        width: 100%;
         height: 1rem;
         left: 0;
         background-image: url("~assets/nav-narrow@3x.png");
         background-repeat: no-repeat;
-        background-size: 9rem 0.8rem;
-        transition: background-position 0.3s;
+        background-size: 100px 0.8rem;
+        background-position: 0 bottom;
+        transition: left 0.3s;
         transition-timing-function: ease;
       }
       .nav-item {
         color: $black;
+        justify-content: center;
         /*padding: 1rem 2rem;*/
         /*margin: auto 2rem;*/
         font-size: 1.3rem;
-        width: $item-width;
+        max-width: $item-width;
+        flex-grow: 1;
+        flex-shrink: 1;
         &.is-tab {
           padding: 0;
           border-bottom-width: 0;

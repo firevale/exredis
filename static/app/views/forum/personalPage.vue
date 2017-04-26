@@ -8,31 +8,27 @@
       </figure>
       <div class="media-content">
         <p>
-          {{ $t('forum.personal.nickname') }} <span>{{ this.userInfo.nickname }}</span>
+          {{ $t('forum.personal.nickname') }}
+          <span>{{ this.userInfo.nickname }}</span>
         </p>
         <p>
-          {{ $t('forum.personal.postCount') }} <span>{{ this.userInfo.post_count}}</span>
+          {{ $t('forum.personal.postCount') }}
+          <span>{{ this.userInfo.post_count}}</span>
         </p>
         <p>
-          {{ $t('forum.personal.registerTime') }}<span>{{ this.userInfo.inserted_at | formatServerDateTime }}</span>
+          {{ $t('forum.personal.registerTime') }}
+          <span>{{ this.userInfo.inserted_at | formatServerDateTime }}</span>
         </p>
       </div>
     </article>
-    <nav class="nav flex-fixed-size">
-      <div class="nav-center">
-        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myPosts'}" @click="switchMenu('myPosts')">{{ $t('forum.personal.myPosts') }}</a>
-        <a class="nav-item is-tab has-right-line" :class="{'is-active': type == 'myComments'}" @click="switchMenu('myComments')">{{ $t('forum.personal.myComments') }}</a>
-        <a class="nav-item is-tab" :class="{'is-active': type == 'myFavor'}" @click="switchMenu('myFavor')">{{ $t('forum.personal.myFavor') }}</a>
-        <div class="slider" :style="{'background-position':sliderPosition}" />
-      </div>
-    </nav>
+    <slider-nav class="flex-fixed-size" :menus="menus"  @onSelect="switchMenu" ref="nav"></slider-nav>
     <div class="content flex-take-rest" style="position: relative">
       <scroller :on-load-more="loadmore" ref="scroller">
-        <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
-          :item-index="index"></my-post-list-item>
+        <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
+          @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
         <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
-        <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id" :item-data="item" @item-deleted="onItemDelete"
-          :item-index="index"></my-favorite-list-item>
+        <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id"
+          :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-favorite-list-item>
       </scroller>
     </div>
   </div>
@@ -49,7 +45,7 @@ import {
 
 import Vue from 'vue'
 import scroller from 'common/components/scroller'
-
+import sliderNav from '../../components/sliderNav'
 import myPostListItem from "../../components/myPostListItem"
 import myFavoriteListItem from "../../components/myFavoriteListItem"
 import myCommentListItem from "../../components/myCommentListItem"
@@ -59,6 +55,7 @@ import CropUploadDialog from 'common/components/imageCropUpload'
 export default {
   components: {
     scroller,
+    sliderNav,
     myPostListItem,
     myFavoriteListItem,
     myCommentListItem,
@@ -87,6 +84,18 @@ export default {
   data() {
     return {
       type: 'myPosts',
+      menus: [{
+          text: this.$t('forum.personal.myPosts'),
+          value: 'myPosts'
+        }, {
+          text: this.$t('forum.personal.myComments'),
+          value: 'myComments'
+        },
+        {
+          text: this.$t('forum.personal.myFavor'),
+          value: 'myFavor'
+        }
+      ],
       postList: [],
       commentList: [],
       favoriteList: [],
@@ -111,15 +120,15 @@ export default {
       'setUserProfile', 'updateUserPostCount', 'decrUserPostCount'
     ]),
 
-    switchMenu: function(menu) {
-      if (menu != this.type) {
-        this.type = menu
-        this.resetScroller();
-      }
+    switchMenu: function(item, index) {
+      this.type = item.value
+      this.resetScroller();
     },
 
     onShowMyProfile: function() {
-      this.$router.push({path: '/account/my_profile'})
+      this.$router.push({
+        path: '/account/my_profile'
+      })
     },
 
     resetScroller: function() {
@@ -176,7 +185,8 @@ export default {
     },
 
     getCommentPage: async function() {
-      let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1,
+        this.recordsPerPage)
 
       if (result.success) {
         this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
@@ -190,7 +200,8 @@ export default {
     },
 
     getFavoritePage: async function() {
-      let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1, this.recordsPerPage)
+      let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1,
+        this.recordsPerPage)
 
       if (result.success) {
         this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)

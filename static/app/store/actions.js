@@ -26,6 +26,12 @@ export const addSearchHistory = ({
   commit(types.ADD_SEARCH_HISTORY, key)
 }
 
+export const resetPostEditingData = ({
+  commit
+}) => {
+  commit(types.RESET_POST_EDITING_DATA)
+}
+
 export const clearSearchHistory = ({
   commit
 }, key) => {

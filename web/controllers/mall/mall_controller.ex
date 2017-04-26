@@ -284,7 +284,7 @@ defmodule Acs.MallController do
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
     case RedisMall.find(goods_id) do
-      %MallGoods{} = goods ->
+      goods ->
         conn |> json(%{success: true, stock: goods.stock})
       _ ->
         conn |> json(%{success: true, stock: 0})

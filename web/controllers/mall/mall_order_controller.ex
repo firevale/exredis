@@ -124,7 +124,7 @@ defmodule Acs.MallOrderController do
                       "pay_type" => pay_type,
                       "address" => address}) do
 
-      with %MallGoods{} = goods <- RedisMall.find(goods_id),
+      with %MallGoods{} = goods <- Repo.get(MallGoods, goods_id),
         order_id <- _create_order_id(user_id, pay_type)
       do
         final_price = goods.price * quantity + goods.postage

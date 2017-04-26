@@ -309,6 +309,10 @@ export default {
         return post(Vue, "/user/update_avatar", params, onProgress)
       },
 
+      uploadPostImage(params, onProgress) {
+        return post(Vue, "/forum_actions/upload_post_image", params, onProgress)
+      },
+
       fetchMyOrders(type, page, records_per_page) {
         return post(Vue, '/mall_actions/fetch_my_orders', {
           type,

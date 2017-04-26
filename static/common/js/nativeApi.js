@@ -39,6 +39,17 @@ export default {
     }
   },
 
+  pickImageFrom: function(type, callback) {
+    if (typeof AndroidNativeAPI === 'object' &&
+      typeof AndroidNativeAPI.pickImageFrom === 'function') {
+    } else if (typeof IOSNativeAPI === 'object' &&
+      typeof IOSNativeAPI.pickImageFromCallback === 'function') {
+      IOSNativeAPI.pickImageFromCallback(type, callback) 
+    } else {
+      console.error('native function isMediaSourceTypeAvailable is not available')
+    }
+  },
+
   showAlertDialog: function(title, message, cancelBtnTitle, okBtnTitle, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.showAlertDialog === 'function') {
       window.showAlertDialogCallback = callback

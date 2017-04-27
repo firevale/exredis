@@ -182,13 +182,14 @@ defmodule Acs.MallOrderController do
   end
 
   def fetch_my_orders(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-      %{"page" => page, "records_per_page" => records_per_page}) do
-    fetch_my_orders(conn,user_id, page, records_per_page)
+      %{"type" => type, "page" => page, "records_per_page" => records_per_page}) 
+      when type in ["all","waitPay","waitConfirm"] do
+    fetch_my_orders(conn,user_id, type, page, records_per_page)
   end
   def fetch_my_orders(conn, _params) do
     conn |>json(%{success: false, i18n_message: "mall.order.messages.illegal"})
   end
-  defp fetch_my_orders(conn, user_id, page, records_per_page) do
+  defp fetch_my_orders(conn, user_id, type, page, records_per_page) do
     total = Repo.one!(from order in MallOrder, select: count(1))
     total_page = round(Float.ceil(total / records_per_page))
 
@@ -202,6 +203,14 @@ defmodule Acs.MallOrderController do
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               preload: [user: user, details: details]
+      query = case type  do
+              "waitPay" ->
+                 query |> where([o], o.status == 0)
+              "waitConfirm" ->
+                 query |> where([o], o.status == 2)
+                _ ->
+                 query
+              end
     orders = Repo.all(query)
     conn |> json(%{success: true, orders: orders, total: total_page})
   end

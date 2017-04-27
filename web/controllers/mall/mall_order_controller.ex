@@ -186,7 +186,7 @@ defmodule Acs.MallOrderController do
     fetch_my_orders(conn,user_id, page, records_per_page)
   end
   def fetch_my_orders(conn, _params) do
-    fetch_my_orders(conn,0, 1, 100)
+    conn |>json(%{success: false, i18n_message: "mall.order.messages.illegal"})
   end
   defp fetch_my_orders(conn, user_id, page, records_per_page) do
     total = Repo.one!(from order in MallOrder, select: count(1))
@@ -206,12 +206,27 @@ defmodule Acs.MallOrderController do
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
 
-  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}) do
+  def confirm_recieved(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"order_id" => order_id}) do
+    order = Repo.get!(MallOrder, order_id)
+    cond  do
+      order.status != 2 ->
+        conn |>json(%{success: false, i18n_message: "mall.order.messages.repeatRecieved"})
+      order.user_id != user_id ->
+        conn |>json(%{success: false, i18n_message: "mall.order.messages.illegal"})
+      true ->
+        finish_status = 4
+        from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: finish_status])
+        new_order = Map.put(order, :status, finish_status)
+        conn |>json(%{success: true, order: new_order, i18n_message: "mall.order.messages.recievedSuccess"})
+    end
+  end
 
+  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}) do
+    conn |>json(%{success: false, i18n_message: "mall.order.messages.illegal"})
   end
   def update_order_payed(conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
     order = fetch_order_info(order_id)
-    payedStatus = 1
+    payed_status = 1
 
     if order.status !=0 and order.status != -1 do
       conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
@@ -227,8 +242,8 @@ defmodule Acs.MallOrderController do
                 end
               end)
 
-              from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payedStatus ,transaction_id: transaction_id])
-              MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
+              from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payed_status ,transaction_id: transaction_id])
+              MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payed_status, content: %{ transaction_id: transaction_id} }) |> Repo.insert
             end)
 
       case result do
@@ -252,7 +267,7 @@ defmodule Acs.MallOrderController do
       order.status !=2 ->
         conn |>json(%{success: false, i18n_message: "admin.mall.order.messages.onlyRecieving"})
       true ->
-        cancelStatus = -1
+        cancel_status = -1
         result= Repo.transaction(fn ->
                 Enum.each(order.details, fn(detail) ->
                   goods = Repo.get(MallGoods, detail.mall_goods_id)
@@ -260,8 +275,8 @@ defmodule Acs.MallOrderController do
                   RedisMall.refresh(goods)
                 end)
 
-                from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: cancelStatus])
-                MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancelStatus, content: %{ refund_money: refund_free} }) |> Repo.insert
+                from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: cancel_status])
+                MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancel_status, content: %{ refund_money: refund_free} }) |> Repo.insert
               end)
         case result do
           {:error, i18n_message} ->

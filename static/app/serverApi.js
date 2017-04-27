@@ -40,7 +40,7 @@ const post = async(Vue, uri, params, onProgress) => {
           if (typeof onProgress === 'function') {
             onProgress(Math.abs(e.loaded / e.total))
           }
-        }        
+        }
       }
     })
     return processResponse(Vue, response)
@@ -321,6 +321,10 @@ export default {
         })
       },
 
+      confirmRecieved(params) {
+        return post(Vue, '/mall_actions/confirm_recieved', params)
+      },
+
       fetchMallOrder(params) {
         return post(Vue, '/mall_actions/fetch_order', params)
       },
@@ -356,7 +360,6 @@ export default {
       updateAddress(params) {
         return post(Vue, '/mall_actions/update_address', params)
       },
-
     }
   }
 }

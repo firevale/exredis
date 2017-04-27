@@ -103,6 +103,7 @@ defmodule Acs.RedisUser do
     case find("#{bkey}.#{sdk_user_id}") || find(mobile) || find(email) do
       nil ->
         user =  %__MODULE__{
+                    email: email,
                     nickname: gen_nickname(),
                     avatar_url: avatar_url,
                     bindings: Map.put(%{}, bkey, sdk_user_id)

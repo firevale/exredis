@@ -1,3 +1,4 @@
+<% user = @conn.private[:acs_session_user] %>
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -27,6 +28,19 @@
         accessToken: '<%= @conn.private[:acs_access_token] %>',     
         acsUser: <%= raw JSON.encode!(@conn.private[:acs_session_user]) %>,
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
+        <%= if !is_nil(user) do %>
+        user: {
+          id: <%= user.id %>,
+          nickname: '<%= user.nickname %>',
+          email: '<%= user.email %>',
+          mobile: '<%= user.mobile %>',
+          gender: '<%= user.gender %>',
+          resident_id: '<%= user.resident_id %>',
+          resident_name: '<%= user.resident_name %>',
+          avatar_url: '<%= user.avatar_url %>',
+          nil_password: <%= is_nil(user.encrypted_password) %>,
+        },
+        <% end %>
       }
     </script>
     <script src="<%= static_url(@conn, "/js/app_commons.js") %>"></script>

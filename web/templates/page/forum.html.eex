@@ -1,4 +1,4 @@
-<% session_user = @conn.private[:acs_session_user] %>
+<% user = @conn.private[:acs_session_user] %>
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -27,17 +27,17 @@
         deviceId: '<%= @conn.private[:acs_device_id] %>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,
-        <%= if !is_nil(@user) do %>
+        <%= if !is_nil(user) do %>
         user: {
-          id: <%= @user.id %>,
-          nickname: '<%= @user.nickname %>',
-          email: '<%= @user.email %>',
-          mobile: '<%= @user.mobile %>',
-          gender: '<%= @user.gender %>',
-          resident_id: '<%= @user.resident_id %>',
-          resident_name: '<%= @user.resident_name %>',
-          avatar_url: '<%= @user.avatar_url %>',
-          is_anonymous: <%= !is_nil(@user.device_id) %>,
+          id: <%= user.id %>,
+          nickname: '<%= user.nickname %>',
+          email: '<%= user.email %>',
+          mobile: '<%= user.mobile %>',
+          gender: '<%= user.gender %>',
+          resident_id: '<%= user.resident_id %>',
+          resident_name: '<%= user.resident_name %>',
+          avatar_url: '<%= user.avatar_url %>',
+          nil_password: <%= is_nil(user.encrypted_password) %>,
         },
         <% end %>
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',

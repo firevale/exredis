@@ -41,16 +41,8 @@ defmodule Acs.PageController do
 
   # 用户中心
   def show_account_page(conn, _params) do
-    user =
-      case RedisAccessToken.find(conn.private[:acs_access_token]) do
-        nil -> nil
-        token ->
-          RedisUser.find(token.user_id)
-      end
-
     conn |> put_layout(false)
-         |> render("account.html", user: user,
-                                   is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("account.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   def show_app_forum(%Plug.Conn{private: %{acs_app: %{forum_id: nil}}} = conn, _params) do 
@@ -74,18 +66,9 @@ defmodule Acs.PageController do
     conn |> send_resp(500, gettext("app not found"))
   end
 
-
   def show_forum_page(conn, _params) do
-    user =
-      case RedisAccessToken.find(conn.private[:acs_access_token]) do
-        nil -> nil
-        token ->
-          RedisUser.find(token.user_id)
-      end
-
     conn |> put_layout(false)
-         |> render("forum.html", user: user,
-                                 is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
 

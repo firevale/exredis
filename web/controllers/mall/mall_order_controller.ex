@@ -98,7 +98,14 @@ defmodule Acs.MallOrderController do
 
   def fetch_order(conn, %{"order_id" => order_id }) do
     order = fetch_order_info(order_id)
-    conn |> json(%{success: true, order: order})
+    result = Poison.decode(order.snapshots)
+    case result do
+      {:ok, snapshots} ->
+         update_in(order.snapshots,fn snap -> snapshots end)
+         conn |> json(%{success: true, order: order})
+      _ ->
+         conn |> json(%{success: false})
+    end
   end
 
   defp fetch_order_info( order_id) do
@@ -106,7 +113,7 @@ defmodule Acs.MallOrderController do
               left_join: details in assoc(o, :details),
               left_join: user in assoc(o, :user),
               left_join: op_logs in assoc(o, :op_logs),
-              select: map(o, [:id, :goods_name, :status, :price, :final_price, :address, :currency, :paid_type, :transaction_id, :postage, :inserted_at,
+              select: map(o, [:id, :goods_name, :status, :price, :final_price, :address, :currency, :paid_type, :transaction_id, :postage, :inserted_at, :snapshots,
                 user: [:id, :nickname, :mobile, :email],
                 details: [:id, :goods_name, :goods_pic, :price, :amount, :mall_goods_id],
                 op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),
@@ -145,7 +152,7 @@ defmodule Acs.MallOrderController do
               RedisMall.refresh(goods)
 
               # add order
-              {:ok, gd} = Poison.encode(goods)
+              {:ok, gd} = Poison.encode(Map.put(%{}, goods_id, goods))
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,

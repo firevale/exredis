@@ -36,12 +36,12 @@ export default {
           text: this.$t('mall.mine.myOrder.tabs.all'),
           value: 'all'
         }, {
-          text: this.$t('mall.mine.myOrder.tabs.unPay'),
-          value: 'unPay'
+          text: this.$t('mall.mine.myOrder.tabs.waitPay'),
+          value: 'waitPay'
         },
         {
-          text: this.$t('mall.mine.myOrder.tabs.unReceived'),
-          value: 'unReceived'
+          text: this.$t('mall.mine.myOrder.tabs.waitConfirm'),
+          value: 'waitConfirm'
         }
       ],
       type: 'all',

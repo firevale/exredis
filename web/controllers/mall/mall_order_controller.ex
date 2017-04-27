@@ -2,6 +2,7 @@ defmodule Acs.MallOrderController do
   use Acs.Web, :controller
 
   alias   Acs.RedisMall
+  alias   Utils.JSON
   require Floki
 
   plug :fetch_app_id
@@ -98,14 +99,7 @@ defmodule Acs.MallOrderController do
 
   def fetch_order(conn, %{"order_id" => order_id }) do
     order = fetch_order_info(order_id)
-    result = Poison.decode(order.snapshots)
-    case result do
-      {:ok, snapshots} ->
-         update_in(order.snapshots,fn snap -> snapshots end)
-         conn |> json(%{success: true, order: order})
-      _ ->
-         conn |> json(%{success: false})
-    end
+    conn |> json(%{success: true, order: order})
   end
 
   defp fetch_order_info( order_id) do
@@ -152,7 +146,7 @@ defmodule Acs.MallOrderController do
               RedisMall.refresh(goods)
 
               # add order
-              {:ok, gd} = Poison.encode(Map.put(%{}, goods_id, goods))
+              {:ok, gd} = Map.put(%{}, goods_id, goods)
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
@@ -231,7 +225,7 @@ defmodule Acs.MallOrderController do
                   RedisMall.refresh(goods)
                 end
               end)
-              
+
               from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payedStatus ,transaction_id: transaction_id])
               MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payedStatus, content: %{ transaction_id: transaction_id} }) |> Repo.insert
             end)

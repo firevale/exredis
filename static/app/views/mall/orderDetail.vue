@@ -14,7 +14,7 @@
       </header>
       <div class="card-content has-bottom-line">
         <div class="columns is-mobile is-multiline" style="margin:0;">
-          <div v-for="detail in order.details" class="column is-narrow">
+          <div v-for="detail in order.details" class="column is-narrow" @click.prevent="viewSnapshot(detail.mall_goods_id)">
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
@@ -90,6 +90,16 @@ export default {
   methods: {
     isSupportWechat: function() {
       return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
+    },
+    viewSnapshot(goodsId) {
+      let snapshot = this.order.snapshots[goodsId]
+      debugger
+      this.$router.push({
+        name: 'goodsSnapshots',
+        params: {
+          goods: snapshot,
+        },
+      })
     },
     onReOrder: function() {
       this.$router.push({

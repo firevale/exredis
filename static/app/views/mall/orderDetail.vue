@@ -93,7 +93,6 @@ export default {
     },
     viewSnapshot(goodsId) {
       let snapshot = this.order.snapshots[goodsId]
-      debugger
       this.$router.push({
         name: 'goodsSnapshots',
         params: {

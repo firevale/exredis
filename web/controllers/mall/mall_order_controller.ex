@@ -146,11 +146,12 @@ defmodule Acs.MallOrderController do
               RedisMall.refresh(goods)
 
               # add order
-              {:ok, gd} = Map.put(%{}, goods_id, goods)
+              mapGoods= Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
+              snapshots = Map.put(%{}, goods_id, mapGoods)
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
-                      "app_id": goods.app_id, "user_id": user_id, "address": address, "snapshots": gd}
+                      "app_id": goods.app_id, "user_id": user_id, "address": address, "snapshots": snapshots}
 
               {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
 

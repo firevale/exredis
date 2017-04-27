@@ -34,7 +34,7 @@ defmodule Acs.MallOrder do
     field :deliver_at, :utc_datetime #递送时间
     field :close_at, :utc_datetime #关闭时间(手动／自动关闭)
     field :status, :integer, default: 0  #订单状态 -3已退款 -2已退货 -1已关闭 0待支付 1已支付 2待收货 3待确认 4已完成
-    field :snapshots, :binary     #订单快照
+    field :snapshots, :map     #订单快照
     field :paid_result, :binary   #支付结果
     field :memo, :string   #备注
     field :address, :map   #地址 json格式

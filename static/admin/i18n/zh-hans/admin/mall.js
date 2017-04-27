@@ -70,7 +70,7 @@ export default {
       paid_type: {
         label: '支付渠道',
         wechat: '微信',
-        alipay: '微信'
+        alipay: '支付宝'
       },
       transaction_id: '支付单号',
       address: {

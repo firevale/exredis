@@ -53,6 +53,9 @@
   &.icon-trash {
     background-image: url("~assets/icon-trash@2x.png");
   }
+  &.icon-remove {
+    background-image: url("~assets/icon-remove@2x.png");
+  }
   &.icon-edit {
     background-image: url("~assets/icon-edit@2x.png");
   }
@@ -83,6 +86,12 @@
   }
   &.icon-edit {
     background-image: url("~assets/edit@2x.png");
+  }
+  &.icon-solid {
+    background-image: url("~assets/icon-solid@2x.png");
+  }
+  &.icon-select {
+    background-image: url("~assets/icon-select@2x.png");
   }
   &.icon-circle {
     background-image: url("data:image/svg+xml;utf8,<svg width=\"1792\" height=\"1792\" viewBox=\"0 0 1792 1792\" \
@@ -163,6 +172,15 @@ only screen and (min-resolution: 2dppx) {
     &.icon-trash {
       background-image: url("~assets/icon-trash@3x.png");
     }
+    &.icon-remove {
+      background-image: url("~assets/icon-remove@3x.png");
+    }
+    &.icon-circle {
+      background-image: url("~assets/icon-circle@3x.png");
+    }
+    &.icon-solid {
+      background-image: url("~assets/icon-solid@3x.png");
+    }
     &.icon-edit {
       background-image: url("~assets/icon-edit@3x.png");
     }
@@ -192,6 +210,9 @@ only screen and (min-resolution: 2dppx) {
     }
     &.icon-edit {
       background-image: url("~assets/edit@3x.png");
+    }
+    &.icon-select {
+      background-image: url("~assets/icon-select@3x.png");
     }
   }
 }

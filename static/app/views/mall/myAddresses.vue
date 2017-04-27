@@ -17,16 +17,20 @@
           </v-touch>
           <div class="card-content">
             <div class="columns is-mobile">
-              <div class="column is-8-mobile is-11-tablet is-11-desktop is-paddingless">
+              <div class="column is-9-mobile is-11-tablet is-11-desktop is-paddingless">
                 <label class="radio">
-                  <input v-if="item.is_default" type="radio" name="is_default" checked>
-                  <input v-else type="radio" name="is_default">
-                  <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span">{{$t('mall.address.fields.is_default') }}</v-touch>
-                  <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">{{$t('mall.address.setDefault') }}</v-touch>
+                  <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span">
+                    <i style="margin-right:0.5rem" class="icon image-icon icon-solid has-text-center"> <i style="width:1rem;" class="icon image-icon icon-select"></i></i>
+                    {{$t('mall.address.fields.is_default') }}</v-touch>
+                  <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">
+                    <i style="margin-right:0.5rem" class="icon image-icon icon-circle"></i>{{$t('mall.address.setDefault')
+                    }}</v-touch>
                 </label>
               </div>
               <div class="column is-paddingless">
-                <v-touch class="subtitle is-5 is-normal" tag="span" @tap="deleteAddress(item.id)">{{$t('common.delete') }}</v-touch>
+                <v-touch class="subtitle is-5 is-normal" tag="span" @tap="deleteAddress(item.id)"> <i style="margin-right:0.5rem; margin-top:0.1rem;" class="icon image-icon icon-remove"></i>{{$t('common.delete')
+                  }}
+                </v-touch>
               </div>
             </div>
           </div>

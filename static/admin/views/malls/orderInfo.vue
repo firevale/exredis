@@ -18,7 +18,7 @@
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
-                  <img :src="detail.goods_pic">
+                  <img :src="detail.goods_pic" style="width: 64px;height:64px">
                 </p>
               </figure>
               <div class="media-content">

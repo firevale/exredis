@@ -32,7 +32,7 @@
           </div>
         </div>
         <div v-show="loading && addressesList.length==0" class="loading-layer">
-          <label>没有更多数据啦</label>
+          <label>{{$t('common.noMoreData') }}</label>
         </div>
       </scroller>
     </div>

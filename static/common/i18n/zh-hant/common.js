@@ -11,4 +11,5 @@ export default {   
   camera: '拍照',
   photoLib: '從照片庫選取',
   upload: '上傳',
+  noMoreData: '沒有更多數據啦'
 }

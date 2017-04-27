@@ -399,7 +399,7 @@ defmodule Acs.UserController do
 
   defp _update_avatar(conn, user, image_file_path) do 
     {:ok, avatar_path} = Utils.deploy_image_file(from: image_file_path, to: "user_avatars")
-    new_user = RedisUser.save(%{user | avatar_url: static_url(conn, avatar_path)})
+    new_user = RedisUser.save(%{user | avatar_url: avatar_path})
     conn |> json(%{success: true, user: %{
       id: new_user.id,
       nickname: new_user.nickname,

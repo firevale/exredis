@@ -170,9 +170,8 @@ defmodule Acs.GamesController do
 
       %AppNews{} = news ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{news_id}")
-        pic_url = static_url(conn, image_path)
-        AppNews.changeset(news, %{pic: pic_url}) |> Repo.update!
-        conn |> json(%{success: true, pic: pic_url})
+        AppNews.changeset(news, %{pic: image_path}) |> Repo.update!
+        conn |> json(%{success: true, pic: image_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -188,7 +187,7 @@ defmodule Acs.GamesController do
     ] when action == :update_news_pic
   def update_news_pic(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{app_id}")
-    conn |> json(%{success: true, link: static_url(conn, image_path)})
+    conn |> json(%{success: true, link: image_path})
   end
   def update_news_pic(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})

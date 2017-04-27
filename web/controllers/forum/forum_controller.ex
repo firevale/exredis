@@ -50,10 +50,9 @@ defmodule Acs.ForumController do
 
       %Forum{} = forum ->
         {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_icons")
-        icon_url = static_url(conn, icon_path)
-        Forum.changeset(forum, %{icon: icon_url}) |> Repo.update!
+        Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
         RedisForum.refresh(forum_id)
-        conn |> json(%{success: true, icon_url: icon_url})
+        conn |> json(%{success: true, icon_url: icon_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -653,11 +652,11 @@ defmodule Acs.ForumController do
     resize_to_limit: [width: 600, height: 600]] when action == :upload_post_image
   def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_#{forum_id}/posts/")
-    conn |> json(%{success: true, link: static_url(conn, image_path)})
+    conn |> json(%{success: true, link: image_path})
   end
   def upload_post_image(%Plug.Conn{private: %{image_file_path: image_file_path}} = conn, %{"forum_id" => forum_id}) do 
     {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_#{forum_id}/posts/")
-    conn |> json(%{success: true, link: static_url(conn, image_path)})
+    conn |> json(%{success: true, link: image_path})
   end
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,

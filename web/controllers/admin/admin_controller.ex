@@ -154,9 +154,9 @@ defmodule Acs.AdminController do
 
       %App{} = app ->
         {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "app_icons")
-        App.changeset(app, %{icon: static_url(conn, icon_path)}) |> Repo.update!
+        App.changeset(app, %{icon: icon_path}) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, icon_url: static_url(conn, icon_path)})
+        conn |> json(%{success: true, icon_url: icon_path})
 
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -178,10 +178,9 @@ defmodule Acs.AdminController do
 
       %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
-        icon_url = static_url(conn, image_path)
-        AppGoods.changeset(goods, %{icon: icon_url}) |> Repo.update!
+        AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
         RedisApp.refresh(app_id)
-        conn |> json(%{success: true, icon_url: icon_url})
+        conn |> json(%{success: true, icon_url: image_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end

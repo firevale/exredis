@@ -52,7 +52,7 @@
           {{$t('mall.order.buttons.aliPay')}}
         </v-touch>
       </template>
-      <v-touch v-if="order.status==2" class="button is-fullwidth is-info is-medium" @tap="confirmRecieved">
+      <v-touch v-if="order.status==1 || order.status==2" class="button is-fullwidth is-info is-medium" @tap="confirmRecieved">
         {{$t('mall.order.buttons.reciept') }}
       </v-touch>
       <v-touch v-if="order.status==-1 || order.status==4" class="button is-fullwidth is-info is-medium" @tap="onReOrder()">

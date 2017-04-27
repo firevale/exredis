@@ -48,17 +48,17 @@
     <div>
       <template v-if="order.status==0">
         <button v-if="this.isSupportWechat()" class="button is-fullwidth is-info is-medium">
-          {{$t('mall.order.wechatPay') }}
+          {{$t('mall.order.buttons.wechatPay')}}
         </button>
         <button class="button is-fullwidth is-info is-medium">
-          {{$t('mall.order.aliPay')}}
+          {{$t('mall.order.buttons.aliPay')}}
         </button>
       </template>
       <button v-if="order.status==2" class="button is-fullwidth is-info is-medium">
-        {{$t('mall.order.reciept') }}
+        {{$t('mall.order.buttons.reciept') }}
       </button>
       <button v-if="order.status==1 || order.status==4" class="button is-fullwidth is-info is-medium">
-        {{$t('mall.order.reOrder') }}
+        {{$t('mall.order.buttons.reOrder') }}
       </button>
     </div>
   </div>

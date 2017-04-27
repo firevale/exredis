@@ -12,6 +12,7 @@ export default {
     stockOut: '该商品已售罄',
     totalPrice: '合计：{price}（含邮费 {postage}）',
     addSuccess: '订单添加成功',
+    snapshotsPlaceholder: '当前页面内容为订单快照，包含订单创建时的商品描述和下单信息，在发生交易争议时，该页面作为判定依据。',
     buttons: {
       wechatPay: '微信支付 ',
       aliPay: '支付宝',

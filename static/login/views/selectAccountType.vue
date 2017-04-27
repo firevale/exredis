@@ -63,6 +63,7 @@ export default {
         this.$t('account.alert.cancel'),
         this.$t('account.types.anonymous'),
         async result => {
+          console.log('anonymous login, show alert dialog result', result)
           if (result == 'ok') {
             this.processing = true
             try {

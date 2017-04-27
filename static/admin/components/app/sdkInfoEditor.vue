@@ -1,6 +1,6 @@
 <template>
   <div class="box columns is-multiline">
-    <div class="column is-1 has-text-centered" v-for="sdk in app.sdk_bindings">
+    <div class="column is-1 has-text-centered" style="width: 10%" v-for="sdk in app.sdk_bindings">
       <div class="sdk-icon" :class="sdk.sdk" @click.prevent="editSdkInfo(sdk)">
       </div>
       <h6 class="subtitle is-6">{{$t(`admin.sdks.${sdk.sdk}`)}} </h6>

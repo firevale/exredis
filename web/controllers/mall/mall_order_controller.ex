@@ -152,7 +152,7 @@ defmodule Acs.MallOrderController do
               RedisMall.refresh(goods)
 
               # add order
-              {:ok, gd} = Poison.encode(goods)
+              {:ok, gd} = Poison.encode(Map.put(%{}, goods_id, goods))
               order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
                       "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,

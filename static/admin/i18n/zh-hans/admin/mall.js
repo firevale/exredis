@@ -69,7 +69,8 @@ export default {
       email: '用户帐号',
       paid_type: {
         label: '支付渠道',
-        wechat: '微信'
+        wechat: '微信',
+        aliPay: '微信'
       },
       transaction_id: '支付单号',
       address: {

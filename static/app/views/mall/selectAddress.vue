@@ -16,6 +16,9 @@
             </div>
           </v-touch>
         </div>
+        <div v-show="loading && addressesList.length==0" class="loading-layer">
+          <label>{{$t('common.noMoreData') }}</label>
+        </div>
       </scroller>
     </div>
     <div class="flex-fixed-size addresses-bottom has-text-center">
@@ -42,6 +45,8 @@ export default {
   },
   data: function() {
     return {
+
+      loading: false,
       canGoBack: false,
       inApp: window.acsConfig.inApp,
       addressesList: [],
@@ -56,6 +61,7 @@ export default {
       if (result.success) {
         this.addressesList = result.addresses
       }
+      this.loading = true
     },
     selectAddress: function(index) {
       this.updateSelectedAddress(this.addressesList[index])

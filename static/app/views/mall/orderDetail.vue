@@ -1,6 +1,6 @@
 <template>
-  <div class="my-orders" v-if="order">
-    <div class="card">
+  <div class="my-orders">
+    <div class="card" v-if="order">
       <header class="card-header has-bottom-line">
         <div class="card-header-title is-vertical">
           <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{order.address.name}} </p>
@@ -8,9 +8,9 @@
           <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{order.address.area}}{{order.address.address}}
           </p>
         </div>
-        <p class="card-header-icon">
+        <!--<p class="card-header-icon">
           >
-        </p>
+        </p>-->
       </header>
       <div class="card-content has-bottom-line">
         <div class="columns is-mobile is-multiline" style="margin:0;">
@@ -52,7 +52,7 @@
           {{$t('mall.order.buttons.aliPay')}}
         </v-touch>
       </template>
-      <v-touch v-if="order.status==2" class="button is-fullwidth is-info is-medium">
+      <v-touch v-if="order.status==2" class="button is-fullwidth is-info is-medium" @tap="confirmRecieved">
         {{$t('mall.order.buttons.reciept') }}
       </v-touch>
       <v-touch v-if="order.status==-1 || order.status==4" class="button is-fullwidth is-info is-medium" @tap="onReOrder()">
@@ -162,6 +162,14 @@ export default {
         window.location = result.redirect_uri
       }
     },
+    confirmRecieved: async function() {
+      let result = await this.$acs.confirmRecieved({
+        order_id: this.order.id
+      })
+      if (result.success) {
+        this.order = result.order
+      }
+    }
   },
 }
 </script>

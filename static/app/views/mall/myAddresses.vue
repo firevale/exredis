@@ -31,6 +31,9 @@
             </div>
           </div>
         </div>
+        <div v-show="loading && addressesList.length==0" class="loading-layer">
+          <label>{{$t('common.noMoreData') }}</label>
+        </div>
       </scroller>
     </div>
     <div class="flex-fixed-size addresses-bottom has-text-center">
@@ -52,6 +55,7 @@ export default {
   },
   data: function() {
     return {
+      loading: false,
       processing: false,
       canGoBack: false,
       inApp: window.acsConfig.inApp,
@@ -63,6 +67,7 @@ export default {
       let result = await this.$acs.getUserAddresses()
       if (result.success) {
         this.addressesList = result.addresses
+        this.loading = true
       }
     },
     showAddressDetail: function(addressId) {

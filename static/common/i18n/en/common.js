@@ -10,4 +10,5 @@
    camera: 'Take pictures',
    photoLib: 'Select from photo library',
    upload: 'Upload',
+   noMoreData: 'No more data'
  }

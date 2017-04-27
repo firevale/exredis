@@ -10,4 +10,5 @@
    camera: '拍照',
    photoLib: '从照片库选取',
    upload: '上传',
+   noMoreData: '没有更多数据啦'
  }

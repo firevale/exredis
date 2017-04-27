@@ -296,7 +296,8 @@ defmodule Acs.Plugs do
         case RedisAccessToken.find(access_token) do 
           nil -> conn
           %RedisAccessToken{} -> 
-            conn |> put_private(:acs_access_token, access_token)
+            conn |> put_session(:access_token, access_token) 
+                 |> put_private(:acs_access_token, access_token)
         end
     end
   end

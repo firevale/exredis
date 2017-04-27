@@ -20,7 +20,7 @@
             </v-touch>
           </p>
         </div>
-        <div class="field" v-if="userInfo.is_anonymous">
+        <div class="field" v-if="userInfo.nil_password">
           <p class="control has-icons-left has-icons-right">
             <input ref="password" class="input" type="password" v-model.trim="password" :placeholder="$t('account.placeholder.inputPassword')"
             />
@@ -89,7 +89,7 @@ export default {
       minLength: utils.minLength(6),
       maxLength: utils.maxLength(20)
     }
-    if (this.userInfo.is_anonymous) {
+    if (this.userInfo.nil_password) {
       return {
         email,
         password,

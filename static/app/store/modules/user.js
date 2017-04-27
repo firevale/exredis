@@ -9,7 +9,7 @@ const state = {
   mobile: '',
   resident_id: '',
   resident_name: '',
-  is_anonymous: false,
+  nil_password: false,
   post_count: 0
 }
 
@@ -20,7 +20,7 @@ const mutations = {
     state.nickname = user.nickname
     state.avatar_url = user.avatar_url
     state.inserted_at = user.inserted_at
-    state.is_anonymous = user.is_anonymous
+    state.nil_password = user.nil_password
     
     if (user.mobile)
       state.mobile = user.mobile

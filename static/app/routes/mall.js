@@ -47,6 +47,10 @@ export default [{
       path: 'address/edit/:addressId',
       name: 'editAddress',
       component: require('../views/mall/editAddress.vue')
+    }, {
+      path: 'order/goodsSnapshots/:goods',
+      name: 'goodsSnapshots',
+      component: require('../views/mall/goodsSnapshots.vue')
     }
   ]
 }]

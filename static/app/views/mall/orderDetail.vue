@@ -14,7 +14,7 @@
       </header>
       <div class="card-content has-bottom-line">
         <div class="columns is-mobile is-multiline" style="margin:0;">
-          <div v-for="detail in order.details" class="column is-narrow">
+          <div v-for="detail in order.details" class="column is-narrow" @click.prevent="viewSnapshot(detail.mall_goods_id)">
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
@@ -30,10 +30,8 @@
           </div>
           <p class="column is-12 has-text-right is-primary">
             {{$t('mall.order.fields.total') }}:
-            <span :class="['currency', order.currency]">{{order.price | formatPrice}}</span>
-            ({{$t('mall.order.fields.with_postage')}}
-            <span :class="['currency', order.currency]">{{order.postage | formatPrice}}</span>
-            )
+            <span :class="['currency', order.currency]">{{order.price | formatPrice}}</span> ({{$t('mall.order.fields.with_postage')}}
+            <span :class="['currency', order.currency]">{{order.postage | formatPrice}}</span> )
           </p>
         </div>
       </div>
@@ -47,19 +45,19 @@
     </div>
     <div>
       <template v-if="order.status==0">
-        <button v-if="this.isSupportWechat()" class="button is-fullwidth is-info is-medium">
-          {{$t('mall.order.wechatPay') }}
-        </button>
-        <button class="button is-fullwidth is-info is-medium">
-          {{$t('mall.order.aliPay')}}
-        </button>
+        <v-touch v-if="this.isSupportWechat()" class="button is-fullwidth is-info is-medium" @tap="onPrepay('wechat')">
+          {{$t('mall.order.buttons.wechatPay')}}
+        </v-touch>
+        <v-touch class="button is-fullwidth is-info is-medium" @tap="onPrepay('alipay')">
+          {{$t('mall.order.buttons.aliPay')}}
+        </v-touch>
       </template>
-      <button v-if="order.status==2" class="button is-fullwidth is-info is-medium">
-        {{$t('mall.order.reciept') }}
-      </button>
-      <button v-if="order.status==1 || order.status==4" class="button is-fullwidth is-info is-medium">
-        {{$t('mall.order.reOrder') }}
-      </button>
+      <v-touch v-if="order.status==2" class="button is-fullwidth is-info is-medium">
+        {{$t('mall.order.buttons.reciept') }}
+      </v-touch>
+      <v-touch v-if="order.status==-1 || order.status==4" class="button is-fullwidth is-info is-medium" @tap="onReOrder()">
+        {{$t('mall.order.buttons.reOrder') }}
+      </v-touch>
     </div>
   </div>
 </template>
@@ -93,6 +91,77 @@ export default {
     isSupportWechat: function() {
       return window.acsConfig.inApp && nativeApi.isWechatPaySupport()
     },
-  }
+    viewSnapshot(goodsId) {
+      let snapshot = this.order.snapshots[goodsId]
+      this.$router.push({
+        name: 'goodsSnapshots',
+        params: {
+          goods: snapshot,
+        },
+      })
+    },
+    onReOrder: function() {
+      this.$router.push({
+        name: 'mallOrder',
+        params: {
+          goodsId: this.order.details[0].mall_goods_id,
+          quantity: this.order.details[0].amount
+        },
+      })
+    },
+    onPrepay: async function(payType) {
+      this.loading = true
+      //check stock
+      this.checkStock(payType)
+    },
+    checkStock: async function(payType) {
+      let result = await this.$acs.getGoodsStock(this.order.details[0].mall_goods_id)
+      if (result.success) {
+        let stock = result.stock
+        if (this.order.details[0].amount > stock) {
+          Toast.show(this.$t('mall.order.stockOut'))
+          this.loading = false
+        } else {
+          switch (payType) {
+            case 'alipay':
+              this.alipayRedirect(this.order.id)
+              break;
+            case 'wechat':
+              this.wechatPay(this.order.id)
+              break;
+          }
+          setInterval(() => {
+            this.loading = false
+          }, 3500)
+        }
+      }
+    },
+    wechatPay: async function(order_id) {
+      let result = await this.$acs.wechatMallPrepay(order_id)
+      if (result.success) {
+        nativeApi.openWechatPayWithCallback(JSON.stringify(result),
+          async rst => {
+            if (order_id) {
+              this.$router.push({
+                name: 'myOrderDetail',
+                params: {
+                  orderId: order_id
+                },
+              })
+            }
+          })
+      }
+    },
+    alipayRedirect: async function(order_id) {
+      let result = await this.$acs.alipayMallRedirect(order_id,
+        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}?merchant_order_id=${order_id}`,
+        `${window.location.protocol}//${window.location.hostname}${window.location.pathname}`,
+        `${window.location.protocol}//${window.location.hostname}/api/pay/alipay/mall_notify`
+      )
+      if (result.success) {
+        window.location = result.redirect_uri
+      }
+    },
+  },
 }
 </script>

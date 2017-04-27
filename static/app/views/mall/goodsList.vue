@@ -13,7 +13,7 @@
                 {{item.name}}
               </p>
               <p class="subtitle is-marginless is-5 is-normal is-primary price">
-                <label :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
+                <label class="currency" :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
               </p>
             </div>
           </v-touch>

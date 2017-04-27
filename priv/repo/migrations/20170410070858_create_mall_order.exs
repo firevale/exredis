@@ -20,7 +20,7 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :deliver_at, :utc_datetime #递送时间
       add :close_at, :utc_datetime #关闭时间(手动／自动关闭)
       add :status, :integer, default: 0  #订单状态 -3已退款 -2已退货 -1已关闭 0待支付 1已支付 2待收货 3待确认 4已完成
-      add :snapshots, :binary     #订单快照
+      add :snapshots, :map     #订单快照
       add :paid_result, :binary   #支付结果
       add :memo, :string   #备注
       add :address, :map   #地址 json格式

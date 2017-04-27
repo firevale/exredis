@@ -11,11 +11,14 @@ export default {
     addressPlaceholder: '请填写收货地址',
     stockOut: '该商品已售罄',
     totalPrice: '合计：{price}（含邮费 {postage}）',
-    wechatPay: '微信支付',
-    aliPay: '支付宝',
-    reciept: '确认收货',
     addSuccess: '订单添加成功',
-    reOrder: '再来一单',
+    snapshotsPlaceholder: '当前页面内容为订单快照，包含订单创建时的商品描述和下单信息，在发生交易争议时，该页面作为判定依据。',
+    buttons: {
+      wechatPay: '微信支付 ',
+      aliPay: '支付宝',
+      reciept: '确认收货',
+      reOrder: '再来一单',
+    },
     fields: {
       id: '订单号',
       postage: '邮费',
@@ -50,8 +53,8 @@ export default {
     myOrder: {
       tabs: {
         all: '全部',
-        unPay: '待付款',
-        unReceived: '未收货'
+        waitPay: '待付款',
+        waitConfirm: '待收货'
       }
     }
   },
@@ -76,6 +79,7 @@ export default {
     updateSuccess: '地址更新成功',
     namePlaceholder: '不超过15个字符',
     mobilePlaceholder: '请输入11位手机号码',
+    mobileFormatError: '手机号码格式不正确',
     areaPlaceholder: '请选择地区',
     addressPlaceholder: '不超过50个字符',
     fields: {

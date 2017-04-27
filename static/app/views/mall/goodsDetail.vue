@@ -11,32 +11,28 @@
               </figure>
             </div>
           </div>
-          <div style="margin-top:0.2rem;" class="column is-12">
+          <div class="column is-12 goods-item">
             <p class="title is-5 is-normal">
               {{goods.name}}
             </p>
-          </div>
-          <div class="column is-12">
             <p class="title is-5 is-primary is-normal">
-              <label :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
+              <label class="currency" :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
               <label>（{{$t('mall.goods.postage')}}：</label>
-              <label :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
+              <label class="currency" :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
             </p>
-          </div>
-          <div style="margin-bottom:0.7rem;" class="column is-12">
             <p class="title is-5 is-normal">
               {{$t('mall.goods.stock') }}：{{goods.stock}}
             </p>
           </div>
         </div>
-        <div class="columns is-multiline is-mobile has-text-centered is-marginless is-paddingless">
-          <div style="margin-top:0.7rem;" class="column is-12">
-            <p class="title is-5 is-normal">
+        <div class="columns is-multiline is-mobile is-marginless is-paddingless">
+          <div class="column is-12 goods-description">
+            <p class="title is-5 is-normal has-text-centered">
               {{$t('mall.goods.description') }}
             </p>
           </div>
           <div class="column is-12">
-            <div v-html="goods.description">
+            <div class="ql-editor" v-html="goods.description">
             </div>
           </div>
         </div>

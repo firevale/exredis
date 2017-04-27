@@ -12,7 +12,7 @@
               </article>
             </div>
             <div class="card-header-icon">
-              <h5 class="subtitle is-4">></h5>
+             <i class="icon image-icon icon-right"></i>
             </div>
           </v-touch>
           <div class="card-content">

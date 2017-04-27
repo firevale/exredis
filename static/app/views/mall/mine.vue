@@ -5,7 +5,7 @@
         <h5 class="subtitle is-5">{{$t('mall.titles.myOrders')}}</h5>
       </div>
       <div class="level-right">
-        <h5 class="subtitle is-4">></h5>
+        <i class="icon image-icon icon-right"></i>
       </div>
     </router-link>
     <router-link class="level is-mobile has-bottom-line" :to="{name: 'myAddresses'}" tag="div">
@@ -13,7 +13,7 @@
         <h5 class="subtitle is-5">{{$t('mall.titles.myAddresses')}}</h5>
       </div>
       <div class="level-right">
-        <h5 class="subtitle is-4">></h5>
+        <i class="icon image-icon icon-right"></i>
       </div>
     </router-link>
   </div>

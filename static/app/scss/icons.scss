@@ -123,6 +123,9 @@
   	<path d=\"M386.775 97.362c7.7-7.68 20.142-7.68 27.822 0v0c7.7 7.68 7.7 20.183 0.021 27.863l-68.322 68.311c-7.68 7.68-20.163 7.68-27.843-0.020v0c-7.68-7.68-7.68-20.162 0-27.822l68.322-68.332z\" fill=\"#cacaca\" /> \
     </svg>");
   }
+  &.icon-right {
+    background-image: url("~assets/icon-right@3x.png");
+  }
 } // @2x resources
 @media only screen and (-o-min-device-pixel-ratio: 5/4),
 only screen and (-webkit-min-device-pixel-ratio: 1.25),
@@ -213,6 +216,9 @@ only screen and (min-resolution: 2dppx) {
     }
     &.icon-select {
       background-image: url("~assets/icon-select@3x.png");
+    }
+    &.icon-right {
+      background-image: url("~assets/icon-right@3x.png");
     }
   }
 }

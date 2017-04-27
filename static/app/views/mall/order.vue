@@ -72,7 +72,7 @@ export default {
     if (this.goodsItem.goodsId && this.goodsItem.quantity) {
       this.getGoodsDetail()
     } else {
-      this.$router.push({
+      this.$router.replace({
         name: 'goodsIndex',
         params: {
           appId: this.$route.params.appId

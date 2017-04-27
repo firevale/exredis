@@ -36,7 +36,7 @@
             </p>
           </div>
           <div class="column is-12">
-            <div v-html="goods.description">
+            <div class="ql-editor" v-html="goods.description">
             </div>
           </div>
         </div>

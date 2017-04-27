@@ -49,9 +49,8 @@ defmodule Acs.MallController do
 
       %Mall{} = mall ->
         {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "mall_icons")
-        icon_url = static_url(conn, icon_path)
-        Mall.changeset(mall, %{icon: icon_url}) |> Repo.update!
-        conn |> json(%{success: true, icon_url: icon_url})
+        Mall.changeset(mall, %{icon: icon_path}) |> Repo.update!
+        conn |> json(%{success: true, icon_url: icon_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -150,10 +149,9 @@ defmodule Acs.MallController do
 
       %MallGoods{} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
-        pic_url = static_url(conn, image_path)
-        MallGoods.changeset(goods, %{pic: pic_url}) |> Repo.update!
+        MallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         RedisMall.refresh(goods)
-        conn |> json(%{success: true, pic_url: pic_url})
+        conn |> json(%{success: true, pic_url: image_path})
 
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -170,7 +168,7 @@ defmodule Acs.MallController do
   ] when action == :update_goods_content_pic
   def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_pics/#{goods_id}")
-    conn |> json(%{success: true, link: static_url(conn, image_path)})
+    conn |> json(%{success: true, link: image_path})
   end
 
   # update_goods

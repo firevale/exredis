@@ -303,9 +303,10 @@ defmodule Utils do
     end
     d "deploy image file, #{inspect (Mogrify.open(from) |> Mogrify.verbose), pretty: true}, ext: #{ext}"
     relative_path = Path.join("/images", "/#{to}")
+    url_path = Path.join("/img", "/#{to}")
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
-    path = Path.join(relative_path, "/#{dest_file_name}")    
+    path = Path.join(url_path, "/#{dest_file_name}")    
     {:ok, path}
   end
 

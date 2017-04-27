@@ -51,6 +51,8 @@ defmodule Acs.Router do
     get  "/account/*path", PageController, :show_account_page
     get  "/payment/*path", PageController, :show_payment_page
 
+    get  "/img/*path", ImageController, :get_image
+
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha
     post "/send_mobile_register_verify_code", VerifyCodeController, :send_mobile_register_verify_code

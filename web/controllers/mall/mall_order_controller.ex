@@ -207,7 +207,7 @@ defmodule Acs.MallOrderController do
               "waitPay" ->
                  query |> where([o], o.status == 0)
               "waitConfirm" ->
-                 query |> where([o], o.status == 2)
+                 query |> where([o], o.status in [1,2])
                 _ ->
                  query
               end
@@ -218,7 +218,7 @@ defmodule Acs.MallOrderController do
   def confirm_recieved(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"order_id" => order_id}) do
     order = Repo.get!(MallOrder, order_id)
     cond  do
-      order.status != 2 ->
+      not order.status in [1,2]  ->
         conn |>json(%{success: false, i18n_message: "mall.order.messages.repeatRecieved"})
       order.user_id != user_id ->
         conn |>json(%{success: false, i18n_message: "mall.order.messages.illegal"})

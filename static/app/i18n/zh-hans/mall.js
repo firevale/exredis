@@ -52,8 +52,8 @@ export default {
     myOrder: {
       tabs: {
         all: '全部',
-        unPay: '待付款',
-        unReceived: '未收货'
+        waitPay: '待付款',
+        waitConfirm: '待收货'
       }
     }
   },

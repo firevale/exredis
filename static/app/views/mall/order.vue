@@ -12,7 +12,7 @@
           <span class="subtitle is-5 is-thickness">{{$t('mall.order.addressPlaceholder') }}</span>
         </p>
         <p class="card-header-icon">
-          >
+          <i class="icon image-icon icon-right"></i>
         </p>
       </v-touch>
       <div class="card-content">

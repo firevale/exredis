@@ -1,5 +1,5 @@
 <template>
-  <v-touch class="card" @tap="viewOrderDetail(order.id)">
+  <v-touch class="card" @tap="viewOrderDetail(order)">
     <header class="card-header">
       <p class="card-header-title">
         {{$t('mall.order.fields.id') }}:{{order.id}}
@@ -14,7 +14,7 @@
           <div class="media is-mobile" style="margin-right:1rem;">
             <figure class="media-left">
               <p class="image is-64x64">
-                <img :src="detail.goods_pic">
+                <img :src="detail.goods_pic.split('|')[0]">
               </p>
             </figure>
             <div class="media-content">
@@ -38,6 +38,10 @@
 </template>
 <script>
 import * as filter from 'common/js/filters'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
 export default {
   props: {
@@ -47,11 +51,26 @@ export default {
     },
   },
   methods: {
-    viewOrderDetail: function(orderId) {
+    ...mapActions([
+      'updateSelectedOrder'
+    ]),
+    viewOrderDetail: function(order) {
+      let orderItem = {}
+      orderItem.id = order.id
+      orderItem.price = order.price
+      orderItem.final_price = order.final_price
+      orderItem.currency = order.currency
+      orderItem.status = order.status
+      orderItem.postage = order.postage
+      orderItem.inserted_at = order.inserted_at
+      orderItem.address = order.address
+      orderItem.details = order.details
+
+      this.updateSelectedOrder(orderItem)
       this.$router.push({
         name: 'myOrderDetail',
         params: {
-          orderId: orderId
+          orderId: order.id
         }
       })
     }

@@ -289,11 +289,12 @@ defmodule Acs.MallOrderController do
           Repo.transaction(fn ->
             Enum.each(order.details, fn(detail) ->
               goods = Repo.get(MallGoods, detail.mall_goods_id)
-              MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+              |> MallGoods.changeset(%{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) 
+              |> Repo.update()
               RedisMall.refresh(goods)
             end)
 
-            from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: cancel_status])
+            from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])
             MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancel_status, content: %{ refund_money: refund_free} }) |> Repo.insert
          end)
         case result do

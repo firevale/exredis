@@ -307,3 +307,13 @@ only screen and (min-resolution: 1.25dppx) {
     min-width: 5rem;
   }
 }
+
+.avatar-image {
+  margin: auto;
+  border-radius: 50%;
+  border: none;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}

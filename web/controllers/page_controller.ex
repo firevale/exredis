@@ -41,7 +41,7 @@ defmodule Acs.PageController do
 
   # 用户中心
   def show_account_page(conn, _params) do
-    conn |> put_layout(false)
+    conn |> put_layout(:app)
          |> render("account.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
@@ -67,27 +67,27 @@ defmodule Acs.PageController do
   end
 
   def show_forum_page(conn, _params) do
-    conn |> put_layout(false)
+    conn |> put_layout(:app)
          |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
 
    # 问题反馈
   def show_customer_service_page(conn, _params) do
-    conn |> put_layout(false)
-         |> render("customer_service.html")
+    conn |> put_layout(:app)
+         |> render("customer_service.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   # 活动
   def show_games_page(conn, _params) do
-    conn |> put_layout(false)
-         |> render("games.html")
+    conn |> put_layout(:app)
+         |> render("games.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   # 商城
   def show_mall_page(conn, _params) do
-    conn |> put_layout(false)
-         |> render("mall.html")
+    conn |> put_layout(:app)
+         |> render("mall.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
   # 购买商品页面, 兼容旧版本
@@ -134,8 +134,9 @@ defmodule Acs.PageController do
       %AppOrder{} = x -> x
     end
 
-    conn |> put_layout(false)
+    conn |> put_layout(:app)
          |> render("payment.html", platform: app_order.platform,
+                                   is_mobile_account_supported: @is_mobile_account_supported,
                                    app_id: app.id,
                                    order_id: app_order.id,
                                    goods_id: goods_id,
@@ -177,8 +178,9 @@ defmodule Acs.PageController do
                        %{icon: nil} -> nil
                        %{icon: v} -> v
                      end
-        conn |> put_layout(false)
+        conn |> put_layout(:app)
              |> render("payment.html", platform: app_order.platform,
+                                       is_mobile_account_supported: @is_mobile_account_supported,
                                        app_id: app_order.app_id,
                                        order_id: app_order.id,
                                        goods_name: app_order.goods_name,

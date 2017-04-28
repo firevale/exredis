@@ -114,3 +114,8 @@ export const updateSelectedGoods = ({
 }, goods) => {
   commit(types.UPDATE_SELECTED_GOODS, goods)
 }
+export const updateSelectedOrder = ({
+  commit
+}, order) => {
+  commit(types.UPDATE_SELECTED_ORDER, order)
+}

@@ -7,7 +7,7 @@ defmodule Acs.MallGoods do
   schema "mall_goods" do
     field :id, :string, primary_key: true
     field :name, :string
-    field :pic, :string
+    field :pic, :string, size: 800
     field :description, :binary
 
     field :price, :integer

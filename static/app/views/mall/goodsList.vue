@@ -6,7 +6,7 @@
           <v-touch class="tile goods-item" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item)">
             <div>
               <figure class="image is-40vwx40vw">
-                <img v-if="item.pic" :src="item.pic">
+                <img v-if="item.pic" :src="item.pic.split('|')[0]">
                 <img v-else src="https://placehold.it/300x300?text=400x400">
               </figure>
               <p class="subtitle is-marginless is-5 is-normal name">

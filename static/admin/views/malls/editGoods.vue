@@ -57,8 +57,8 @@
         <div class="tile is-parent">
           <article class="tile is-child">
             <center style="padding:0 4rem 0 4rem;">
-              <div class="columns is-multiline">
-                <div class="column is-4" v-for="(pic, index) in pics">
+              <div v-dragula="pics" :bag="bagId" class="columns is-multiline">
+                <div class="column is-4" v-for="(pic, index) in pics" :key="index">
                   <figure class="image" style="display: block" @click="onShowImageUpload(index)">
                     <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400'" style="width:120px; height:120px;"></img>
                   </figure>
@@ -94,6 +94,7 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
 import {
   required,
   minLength,
@@ -180,7 +181,31 @@ export default {
       editor: undefined,
       realPrice: 0.00,
       realPostage: 0.00,
+      bagId: "picBag",
     }
+  },
+
+  created: function() {
+    Vue.vueDragula.options(this.bagId, {
+      direction: 'horizontal',
+    })
+  },
+
+  ready: function() {
+    Vue.vueDragula.eventBus.$on(
+      'drop',
+      function(args) {
+        console.log('drop: ' + args[0])
+        console.log(this.pics)
+      }
+    )
+    Vue.vueDragula.eventBus.$on(
+      'dropModel',
+      function(args) {
+        console.log('dropModel: ' + args)
+        console.log(this.pics)
+      }
+    )
   },
 
   watch: {
@@ -226,7 +251,7 @@ export default {
             square: true,
             minWidth: 400,
           },
-          callback: response => this.pics.splice(index,1,response.pic_url),
+          callback: response => this.pics.splice(index, 1, response.pic_url),
         })
       } else {
         this.showWarning(this.$t('admin.mall.goods.saveFirst'))
@@ -241,7 +266,8 @@ export default {
       if (result.success) {
         this.goods = result.goods
         if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
-        if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(2)
+        if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
+          2)
         this.pics = this.goods.pic.split('|')
         this.pics.length = 6
       }

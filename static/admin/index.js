@@ -7,6 +7,7 @@ import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
 import VueI18n from 'vue-i18n'
 import Vuelidate from 'vuelidate'
+import VueDragula from 'vue-dragula'
 
 import App from './App.vue'
 import router from './router'
@@ -26,6 +27,7 @@ Vue.use(Vuelidate)
 Vue.use(Resource)
 Vue.use(NProgress)
 Vue.use(ServerApi)
+Vue.use(VueDragula)
 Vue.use(VueQuillEditor)
 
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken

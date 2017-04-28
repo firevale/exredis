@@ -132,7 +132,7 @@ defmodule Acs.MallOrderController do
       do
         final_price = goods.price * quantity + goods.postage
         if(quantity <= 0 or final_price < 0) do
-          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+          json(conn, %{success: false, i18n_message: "error.server.badRequestParams"})
         else
           if(goods.stock == 0 or goods.stock < quantity) do
             json(conn, %{success: false, i18n_message: "mall.order.stockOut"})
@@ -168,7 +168,7 @@ defmodule Acs.MallOrderController do
         end
       else
         nil ->
-          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+          json(conn, %{success: false, i18n_message: "error.server.illegal"})
       end
   end
   def create_mall_order(conn, _),
@@ -208,9 +208,9 @@ defmodule Acs.MallOrderController do
       query =
         case type  do
           "waitPay" ->
-            query |> where([o], o.status == 0)
+            where(query, [o], o.status == 0)
           "waitConfirm" ->
-            query |> where([o], o.status in [1,2])
+            where(query, [o], o.status in [1,2])
           _ ->
             query
         end

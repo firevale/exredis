@@ -27,7 +27,7 @@ defmodule Acs.PageController do
                      v -> v |> Base.url_decode64!
                    end
 
-    conn |> put_layout(false)
+    conn |> put_layout(:login)
          |> put_session(:locale, conn.private[:acs_locale])
          |> render("login.html", redirect_uri: redirect_uri,
                                  is_mobile_account_supported: @is_mobile_account_supported)
@@ -35,7 +35,7 @@ defmodule Acs.PageController do
 
   # 管理后台
   def show_admin_page(conn, _params) do
-    conn |> put_layout(false)
+    conn |> put_layout(:admin)
          |> render("admin.html")
   end
 

@@ -2,32 +2,24 @@
   <div class="box">
     <form name="goods" @submit.prevent="handleSubmit" v-if="goods">
       <div class="tile">
-        <div class="field-label">
-          <label class="label">{{ $t('admin.mall.goods.name') }}</label>
-        </div>
-        <div class="field-body">
-          <input class="input" :placeholder="$t('admin.mall.goods.namePlaceholder')" type="text" v-model.trim="goods.name">
-        </div>
-        <div class="field-label">
-          <label class="label">{{ $t('admin.mall.goods.id') }}</label>
-        </div>
-        <div class="field-body">
-          <input class="input" type="text" v-model.trim="goods.id" :disabled="!isNew">
-        </div>
-      </div>
-      <div class="tile">
-        <div class="tile is-parent">
-          <article class="tile is-child">
-            <center>
-              <figure class="image" style="display: block" @click="onShowImageUpload">
-                <img :src="goods.pic ? goods.pic: 'https://placehold.it/256x256?text=400X400'" style="width:160px; height:160px;"></img>
-              </figure>
-              <p class="help">{{ $t('admin.mall.goods.picPlaceholder') }}</p>
-            </center>
-          </article>
-        </div>
         <div class="tile is-parent is-vertical">
           <article class="tile is-child">
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.name') }}</label>
+              </div>
+              <div class="field-body">
+                <input class="input" :placeholder="$t('admin.mall.goods.namePlaceholder')" type="text" v-model.trim="goods.name">
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.id') }}</label>
+              </div>
+              <div class="field-body">
+                <input class="input" type="text" v-model.trim="goods.id" :disabled="!isNew">
+              </div>
+            </div>
             <div class="field is-horizontal">
               <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.currency') }}</label>
@@ -62,6 +54,20 @@
             </div>
           </article>
         </div>
+        <div class="tile is-parent">
+          <article class="tile is-child">
+            <center style="padding:0 4rem 0 4rem;">
+              <div v-dragula="pics" :bag="bagId" class="columns is-multiline">
+                <div class="column is-4" v-for="(pic, index) in pics" :key="index">
+                  <figure class="image" style="display: block" @click="onShowImageUpload(index)">
+                    <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400'" style="width:120px; height:120px;"></img>
+                  </figure>
+                </div>
+              </div>
+              <p class="help">{{ $t('admin.mall.goods.picPlaceholder') }}</p>
+            </center>
+          </article>
+        </div>
       </div>
       <div>
         <label> {{ $t('admin.mall.goods.description') }} </label>
@@ -88,6 +94,7 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
 import {
   required,
   minLength,
@@ -129,6 +136,7 @@ export default {
         currency: currency,
         app_id: this.$route.params.appId,
       }
+      this.pics = new Array(6);
     }
   },
 
@@ -163,10 +171,8 @@ export default {
 
   data() {
     return {
-      goods: {
-        name: '',
-        description: '',
-      },
+      goods: {},
+      pics: [],
       loading: false,
       deleting: false,
       saving: false,
@@ -175,7 +181,31 @@ export default {
       editor: undefined,
       realPrice: 0.00,
       realPostage: 0.00,
+      bagId: "picBag",
     }
+  },
+
+  created: function() {
+    Vue.vueDragula.options(this.bagId, {
+      direction: 'horizontal',
+    })
+  },
+
+  ready: function() {
+    Vue.vueDragula.eventBus.$on(
+      'drop',
+      function(args) {
+        console.log('drop: ' + args[0])
+        console.log(this.pics)
+      }
+    )
+    Vue.vueDragula.eventBus.$on(
+      'dropModel',
+      function(args) {
+        console.log('dropModel: ' + args)
+        console.log(this.pics)
+      }
+    )
   },
 
   watch: {
@@ -207,7 +237,7 @@ export default {
       touchMap.set($v, setTimeout($v.$touch(), 2000))
     },
 
-    onShowImageUpload: function() {
+    onShowImageUpload: function(index) {
       if (this.goods.id.length > 0) {
         showFileUploadDialog(this.$i18n, {
           postAction: '/mall_actions/update_goods_pic',
@@ -221,7 +251,7 @@ export default {
             square: true,
             minWidth: 400,
           },
-          callback: response => this.goods.pic = response.pic_url,
+          callback: response => this.pics.splice(index, 1, response.pic_url),
         })
       } else {
         this.showWarning(this.$t('admin.mall.goods.saveFirst'))
@@ -238,6 +268,8 @@ export default {
         if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
         if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
           2)
+        this.pics = this.goods.pic.split('|')
+        this.pics.length = 6
       }
       this.loading = false
     },
@@ -367,7 +399,7 @@ export default {
         id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,
-        pic: this.goods.pic,
+        pic: this.pics.join("|"),
         description: this.goods.description,
         price: this.goods.price,
         postage: this.goods.postage,

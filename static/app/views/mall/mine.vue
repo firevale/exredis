@@ -2,7 +2,7 @@
   <div class="mall-mine">
     <router-link class="level is-mobile has-bottom-line" :to="{name: 'myOrders'}" tag="div">
       <div class="level-left">
-        <h5 class="subtitle is-5">{{$t('mall.titles.myOrders')}}</h5>
+        <h5 class="subtitle is-5"><i style="margin-right:0.8rem; margin-top:-.2rem;" class="icon image-icon icon-shopping-cart"></i>{{$t('mall.titles.myOrders')}}</h5>
       </div>
       <div class="level-right">
         <i class="icon image-icon icon-right"></i>
@@ -10,6 +10,7 @@
     </router-link>
     <router-link class="level is-mobile has-bottom-line" :to="{name: 'myAddresses'}" tag="div">
       <div class="level-left">
+        <i style="margin-right:0.8rem; margin-top:-.2rem;" class="icon image-icon icon-address"></i>
         <h5 class="subtitle is-5">{{$t('mall.titles.myAddresses')}}</h5>
       </div>
       <div class="level-right">

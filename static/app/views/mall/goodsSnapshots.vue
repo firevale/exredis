@@ -13,7 +13,7 @@
           <div class="column is-12">
             <div class="card-image">
               <figure class="image is-400x400">
-                <img v-if="goods.pic" :src="goods.pic">
+                <img v-if="goods.pic" :src="goods.pic.split('|')[0]">
                 <img v-else src="https://placehold.it/300x300?text=400x400">
               </figure>
             </div>

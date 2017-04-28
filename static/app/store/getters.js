@@ -11,6 +11,8 @@ const currentPostTitle = state => state.forum.currentPostTitle
 const editingPostData = state => state.forum.editingPostData
 const shoppingCart = state => state.mall.shoppingCart
 const selectedAddress = state => state.mall.selectedAddress
+const selectedGoods = state => state.mall.selectedGoods
+const selectedOrder = state => state.mall.selectedOrder
 
 export {
   transitionName,
@@ -24,4 +26,6 @@ export {
   editingPostData,
   shoppingCart,
   selectedAddress,
+  selectedGoods,
+  selectedOrder
 }

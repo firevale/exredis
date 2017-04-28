@@ -1,27 +1,27 @@
 <template>
-  <div v-if="goods" class="goods-detail is-marginless is-paddingless">
+  <div class="goods-detail is-marginless is-paddingless">
     <div class="flex-take-rest goods-content">
-      <scroller ref="scroller">
+      <scroller v-if="this.selectedGoods" ref="scroller">
         <div class="columns is-multiline is-mobile has-text-centered has-bottom-line is-marginless is-paddingless">
           <div class="column is-12">
             <div class="card-image">
               <figure class="image is-400x400">
-                <img v-if="goods.pic" :src="goods.pic">
+                <img v-if="this.selectedGoods.pic" :src="this.selectedGoods.pic.split('|')[0]">
                 <img v-else src="https://placehold.it/300x300?text=400x400">
               </figure>
             </div>
           </div>
           <div class="column is-12 goods-item">
             <p class="title is-5 is-normal">
-              {{goods.name}}
+              {{this.selectedGoods.name}}
             </p>
             <p class="title is-5 is-primary is-normal">
-              <label class="currency" :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
+              <label class="currency" :class="this.selectedGoods.currency">{{(this.selectedGoods.price / 100).toFixed(2)}}</label>
               <label>（{{$t('mall.goods.postage')}}：</label>
-              <label class="currency" :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
+              <label class="currency" :class="this.selectedGoods.currency">{{(this.selectedGoods.postage / 100).toFixed(2)}}</label>）
             </p>
             <p class="title is-5 is-normal">
-              {{$t('mall.goods.stock') }}：{{goods.stock}}
+              {{$t('mall.goods.stock') }}：{{this.selectedGoods.stock}}
             </p>
           </div>
         </div>
@@ -32,13 +32,13 @@
             </p>
           </div>
           <div class="column is-12">
-            <div class="ql-editor" v-html="goods.description">
+            <div class="ql-editor" v-html="this.selectedGoods.description">
             </div>
           </div>
         </div>
       </scroller>
     </div>
-    <div v-if="goods.stock>0" class="flex-fixed-size goods-bottom">
+    <div v-if="this.selectedGoods.stock>0" class="flex-fixed-size goods-bottom">
       <div class="columns is-multiline is-mobile">
         <div class="column is-6 bottom-left">
           <div class="left-content">
@@ -65,23 +65,44 @@ import Vue from '../../vue-installed'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
 import scroller from 'common/components/scroller'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
 export default {
   components: {
     scroller
   },
+  computed: {
+    ...mapGetters([
+      'selectedGoods'
+    ]),
+  },
   mounted: async function() {
-    await this.getGoodsDetail()
+    if (this.selectedGoods.id == 0) {
+      await this.getGoodsDetail()
+    }
   },
   data: function() {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
-      quantity: 1,
-      goods: undefined
+      quantity: 1
     }
   },
   methods: {
+    ...mapActions([
+      'updateSelectedGoods'
+    ]),
+    getGoodsDetail: async function() {
+      let goodsId = this.$router.currentRoute.params.goodsId
+      let result = await this.$acs.getGoodsDetail(goodsId)
+      if (result.success) {
+        debugger
+        this.updateSelectedGoods(result.goods)
+      }
+    },
     onBtnBackClicked: function() {
       if (this.canGoBack) {
         this.$router.back()
@@ -91,13 +112,6 @@ export default {
         })
       }
     },
-    getGoodsDetail: async function() {
-      let goodsId = this.$router.currentRoute.params.goodsId
-      let result = await this.$acs.getGoodsDetail(goodsId)
-      if (result.success) {
-        this.goods = result.goods
-      }
-    },
     quantityPlus: function() {
       if (this.quantity <= 1)
         this.quantity = 1
@@ -105,8 +119,8 @@ export default {
         this.quantity = this.quantity - 1
     },
     quantityReduce: function() {
-      if (this.goods.stock <= this.quantity)
-        this.quantity = this.goods.stock
+      if (this.selectedGoods.stock <= this.quantity)
+        this.quantity = this.selectedGoods.stock
       else if (this.quantity >= 99)
         this.quantity = 99
       else
@@ -117,15 +131,15 @@ export default {
         this.quantity = 99
       else if (this.quantity <= 0)
         this.quantity = 1
-      else if (this.goods.stock <= this.quantity)
-        this.quantity = this.goods.stock
+      else if (this.selectedGoods.stock <= this.quantity)
+        this.quantity = this.selectedGoods.stock
     },
     buyNow: function() {
       acs.checkIsLogin(_ => {
         this.$router.push({
           name: 'mallOrder',
           params: {
-            goodsId: this.goods.id,
+            goodsId: this.selectedGoods.id,
             quantity: this.quantity
           },
         })

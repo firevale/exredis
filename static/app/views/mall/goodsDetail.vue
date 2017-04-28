@@ -121,7 +121,7 @@ export default {
         this.quantity = this.goods.stock
     },
     buyNow: function() {
-      acs.checkMallIsLogin(_ => {
+      acs.checkIsLogin(_ => {
         this.$router.push({
           name: 'mallOrder',
           params: {

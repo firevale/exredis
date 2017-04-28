@@ -29,11 +29,3 @@ export const checkIsLogin = (callback) => {
     callback()
   }
 }
-
-export const checkMallIsLogin = (callback) => {
-  if (!window.acsConfig.acsSessionUserId) {
-    window.location.href = '/login?redirect_uri=' + btoa(window.location.href);
-  } else {
-    callback()
-  }
-}

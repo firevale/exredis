@@ -4,7 +4,7 @@
       <div class="columns is-mobile is-multiline is-paddingless is-marginless">
         <div class="column is-3">
           <v-touch tag="figure" class="image is-64x64 avatar-image is-clickable" style="margin: 1rem auto;" @tap="onUpdateAvatar">
-            <img :src="avatarUrl"></img>
+            <img :src="avatarUrl | imageStaticUrl"></img>
           </v-touch>
           <div class="level is-mobile is-paddingless">
             <p class="level-center level-item has-text-right"> {{ $t('account.userId') }}: {{ userInfo.id }}</p>

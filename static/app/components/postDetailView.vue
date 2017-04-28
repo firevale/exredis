@@ -2,8 +2,7 @@
   <div class="post-detail has-bottom-line">
     <article class="media" :class="isManager ? 'has-bottom-line' : ''">
       <div class="media-left" style="margin: 0 1rem 0 0">
-        <figure class="image is-32x32 avatar-image">
-          <img :src="avatarUrl"></img>
+        <figure class="image is-32x32 avatar-image" v-lazy:background-image="avatarUrl">
         </figure>
         <div class="has-text-centered" style="margin-top: 0.5rem">
           <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ $t('forum.detail.author') }}</h6>
@@ -110,7 +109,11 @@ export default {
     },
 
     avatarUrl() {
-      return this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl
+      return {
+        src: filter.imageStaticUrl(this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl),
+        error: window.acsConfig.defaultAvatarUrl,
+        loading: window.acsConfig.defaultAvatarUrl
+      }
     },
 
     filterContent() {

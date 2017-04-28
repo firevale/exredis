@@ -3,8 +3,7 @@
    v-on:tap="showPostDetail">
   <article class="media">
     <div class="media-left" style="margin: 0.3rem 0.8rem 0 0">
-      <figure class="image is-32x32 avatar-image">
-        <img :src="avatarUrl"></img>
+      <figure class="image is-32x32 avatar-image" v-lazy:background-image="avatarUrl">
       </figure>
     </div>
     <div class="media-content">
@@ -53,9 +52,14 @@ export default {
     },
   },
   computed: {
-    avatarUrl: function() {
-      return this.postInfo.user.avatar_url || window.acsConfig.defaultAvatarUrl
+    avatarUrl() {
+      return {
+        src: filter.imageStaticUrl(this.postInfo.user.avatar_url || window.acsConfig.defaultAvatarUrl),
+        error: window.acsConfig.defaultAvatarUrl,
+        loading: window.acsConfig.defaultAvatarUrl
+      }
     },
+
     strenghtenKeywordTitle() {
       return this.searchKeyword ?
         filter.filterKeyword(this.postInfo.title).replace(new RegExp(this.searchKeyword, 'g'),

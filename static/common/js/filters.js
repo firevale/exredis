@@ -1,7 +1,7 @@
 import './date'
 import * as filter from './keywordFilter'
 
-import { emailMask, mobileMask } from './utils'
+import { emailMask, mobileMask, concatAndResolveUrl } from './utils'
 
 export { emailMask, mobileMask }
 
@@ -85,4 +85,9 @@ export const filterKeyword = val => {
   } else {
     return ''
   }
+}
+
+export const imageStaticUrl = val => {
+  let base = window.acsConfig.imagesUrl
+  return /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
 }

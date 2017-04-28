@@ -80,9 +80,9 @@ export const isValidResidentId = residentId => {
   if (city[residentId.substr(0, 2)] === undefined) return false
   if (time >= currentTime || birthday !== newBirthday) return false
   for (i = 0; i < 17; i++) {
-    sum += residentId.substr(i, 1) * arrInt[i];
+    sum += residentId.substr(i, 1) * arrInt[i]
   }
-  residue = arrCh[sum % 11];
+  residue = arrCh[sum % 11]
   if (residue !== residentId.substr(17, 1)) return false
 
   return true
@@ -98,9 +98,9 @@ export const mobileMask = val => {
 
 export const guid = _ => {
   const s4 = _ => {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
   }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
 
 export const nowFromServer = _ => {
@@ -109,36 +109,36 @@ export const nowFromServer = _ => {
 
 export const chunkify = (a, n, balanced) => {
   if (n < 2)
-    return [a];
+    return [a]
 
   var len = a.length,
     out = [],
     i = 0,
-    size;
+    size
 
   if (len % n === 0) {
-    size = Math.floor(len / n);
+    size = Math.floor(len / n)
     while (i < len) {
-      out.push(a.slice(i, i += size));
+      out.push(a.slice(i, i += size))
     }
   } else if (balanced) {
     while (i < len) {
-      size = Math.ceil((len - i) / n--);
-      out.push(a.slice(i, i += size));
+      size = Math.ceil((len - i) / n--)
+      out.push(a.slice(i, i += size))
     }
   } else {
 
-    n--;
-    size = Math.floor(len / n);
+    n--
+    size = Math.floor(len / n)
     if (len % size === 0)
-      size--;
+      size--
     while (i < size * n) {
-      out.push(a.slice(i, i += size));
+      out.push(a.slice(i, i += size))
     }
-    out.push(a.slice(size * n));
+    out.push(a.slice(size * n))
   }
 
-  return out;
+  return out
 }
 
 export const formatEmojiChars = val => {
@@ -173,4 +173,29 @@ export const maxLength = length => {
       return false
     }
   }
+}
+
+export const concatAndResolveUrl = (url, concat) => {
+  let url1 = url.replace(/\/$/, '').split('/')
+  let url2 = concat.replace(/^\//, '').split('/')
+  let url3 = []
+  for (let i = 0, l = url1.length; i < l; i++) {
+    if (url1[i] == '..') {
+      url3.pop()
+    } else if (url1[i] == '.') {
+      continue
+    } else {
+      url3.push(url1[i])
+    }
+  }
+  for (let i = 0, l = url2.length; i < l; i++) {
+    if (url2[i] == '..') {
+      url3.pop()
+    } else if (url2[i] == '.') {
+      continue
+    } else {
+      url3.push(url2[i])
+    }
+  }
+  return url3.join('/')
 }

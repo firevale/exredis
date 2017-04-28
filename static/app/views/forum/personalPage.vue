@@ -2,8 +2,7 @@
   <div class="person">
     <article class="media info flex-fixed-size">
       <figure class="media-left is-clickable" @click="onShowMyProfile">
-        <p class="image is-64x64 avatar-image">
-          <img :src="avatarUrl"></img>
+        <p class="image is-64x64 avatar-image" v-lazy:background-image="avatarUrl">
         </p>
       </figure>
       <div class="media-content">
@@ -49,8 +48,8 @@ import sliderNav from '../../components/sliderNav'
 import myPostListItem from "../../components/myPostListItem"
 import myFavoriteListItem from "../../components/myFavoriteListItem"
 import myCommentListItem from "../../components/myCommentListItem"
-
 import CropUploadDialog from 'common/components/imageCropUpload'
+import * as filter from 'common/js/filters'
 
 export default {
   components: {
@@ -77,8 +76,12 @@ export default {
       }
     },
     avatarUrl() {
-      return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
-    }
+      return {
+        src: filter.imageStaticUrl(this.userInfo.avatar_url || window.acsConfig.defaultAvatarUrl),
+        error: window.acsConfig.defaultAvatarUrl,
+        loading: window.acsConfig.defaultAvatarUrl
+      }
+    },
   },
 
   data() {

@@ -1,32 +1,52 @@
+<% user = @conn.private[:acs_session_user] %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cmn-Hans">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Hello Acs!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <meta charset="utf-8"/>
+    <title> <%= gettext("Firevale Forum") %> </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
+    <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
   </head>
-
-  <body>
-    <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
-      </header>
-
-      <main role="main">
+  <body class="<%= @conn.private[:acs_body_class] %>">
+    <div id="app">
+      <router-view></router-view>
+    </div>
+    <script>
+      window.acsConfig = {
+        csrfToken: '<%= get_csrf_token() %>',
+        inApp: <%= @conn.private[:acs_browser] == "webview" || @conn.private[:acs_platform] == "wp8" %>,
+        platform: '<%= @conn.private[:acs_platform] %>',
+        locale: '<%= @conn.private[:acs_locale] %>',
+        appId: '<%= @conn.private[:acs_app_id] %>',
+        deviceId: '<%= @conn.private[:acs_device_id] %>',
+        accessToken: '<%= @conn.private[:acs_access_token] %>',
+        <%= if !is_nil(user) do %>
+        user: {
+          id: <%= user.id %>,
+          nickname: '<%= user.nickname %>',
+          email: '<%= user.email %>',
+          mobile: '<%= user.mobile %>',
+          gender: '<%= user.gender %>',
+          resident_id: '<%= user.resident_id %>',
+          resident_name: '<%= user.resident_name %>',
+          avatar_url: '<%= user.avatar_url %>',
+          nil_password: <%= is_nil(user.encrypted_password) %>,
+        },
+        <% end %>
+        imagesUrl: '<%= static_url(@conn, "/images/") %>',
+        defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
+        isMobileAccountSupported: <%= @is_mobile_account_supported %>,
         <%= render @view_module, @view_template, assigns %>
-      </main>
-
-    </div> <!-- /container -->
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+      }
+    </script>
+    <script src="<%= static_url(@conn, "/js/app_commons.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
+

@@ -88,6 +88,10 @@ export const filterKeyword = val => {
 }
 
 export const imageStaticUrl = val => {
-  let base = window.acsConfig.imagesUrl
-  return /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
+  if (typeof val === 'string' && !/^https?:\/\//.test(val)) {
+      let base = window.acsConfig.imagesUrl
+      return /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
+  }
+  
+  return val
 }

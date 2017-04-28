@@ -13,14 +13,12 @@ defmodule Acs.MallOrderController do
   plug :check_is_admin when action in [:delete_goods]
 
   # fetch_malls
-  def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
-    fetch_order_list(conn,app_id, keyword, page, records_per_page)
-  end
-  def fetch_order_list(conn, _params) do
-    fetch_order_list(conn,'','', 1, 100)
-  end
+  def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
+    do: fetch_order_list(conn,app_id, keyword, page, records_per_page)
+  def fetch_order_list(conn, _params),
+    do: fetch_order_list(conn,'','', 1, 100)
   defp fetch_order_list(conn, app_id, keyword,  page, records_per_page) do
-     {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)
+    {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)
 
     queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
@@ -137,7 +135,7 @@ defmodule Acs.MallOrderController do
           conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
         else
           if(goods.stock == 0 or goods.stock < quantity) do
-            conn |> json(%{success: false, i18n_message: "mall.order.stockOut"})
+            json(conn, %{success: false, i18n_message: "mall.order.stockOut"})
           else
             ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
               [val | _] -> val
@@ -186,10 +184,9 @@ defmodule Acs.MallOrderController do
   end
 
   def fetch_my_orders(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-      %{"type" => type, "page" => page, "records_per_page" => records_per_page})
-      when type in ["all","waitPay","waitConfirm"] do
-    fetch_my_orders(conn,user_id, type, page, records_per_page)
-  end
+                      %{"type" => type, "page" => page, "records_per_page" => records_per_page})
+    when type in ["all","waitPay","waitConfirm"],
+      do: fetch_my_orders(conn,user_id, type, page, records_per_page)
   def fetch_my_orders(conn, _params) do
     conn |> json(%{success: false, i18n_message: "mall.order.messages.illegal"})
   end
@@ -222,7 +219,8 @@ defmodule Acs.MallOrderController do
     conn |> json(%{success: true, orders: orders, total: total_page})
   end
 
-  def confirm_recieved(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"order_id" => order_id}) do
+  def confirm_recieved(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, 
+                        %{"order_id" => order_id}) do
     order = Repo.get!(MallOrder, order_id)
     cond  do
       not order.status in [1,2]  ->
@@ -237,9 +235,8 @@ defmodule Acs.MallOrderController do
     end
   end
 
-  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}) do
-    conn |> json(%{success: false, i18n_message: "mall.order.messages.illegal"})
-  end
+  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}),
+    do: json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
   def update_order_payed(conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
     order = fetch_order_info(order_id)
     payed_status = 1
@@ -289,13 +286,12 @@ defmodule Acs.MallOrderController do
           Repo.transaction(fn ->
             Enum.each(order.details, fn(detail) ->
               goods = Repo.get(MallGoods, detail.mall_goods_id)
-              |> MallGoods.changeset(%{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) 
-              |> Repo.update()
+              MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
               RedisMall.refresh(goods)
             end)
 
             from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])
-            MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: cancel_status, content: %{ refund_money: refund_free} }) |> Repo.insert
+            MallOPLog.changeset(%MallOPLog{},%{mall_order_id: order_id,  status: order.status, changed_status: cancel_status, content: %{refund_money: refund_free} }) |> Repo.insert
          end)
         case result do
           {:error, i18n_message} ->

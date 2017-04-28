@@ -124,7 +124,13 @@
     </svg>");
   }
   &.icon-right {
-    background-image: url("~assets/icon-right@3x.png");
+    background-image: url("~assets/icon-right@2x.png");
+  }
+  &.icon-address {
+    background-image: url("~assets/icon-address@2x.png");
+  }
+  &.icon-shopping-cart {
+    background-image: url("~assets/icon-shopping-cart@2x.png");
   }
 } // @2x resources
 @media only screen and (-o-min-device-pixel-ratio: 5/4),
@@ -219,6 +225,12 @@ only screen and (min-resolution: 2dppx) {
     }
     &.icon-right {
       background-image: url("~assets/icon-right@3x.png");
+    }
+    &.icon-address {
+      background-image: url("~assets/icon-address@3x.png");
+    }
+    &.icon-shopping-cart {
+      background-image: url("~assets/icon-shopping-cart@3x.png");
     }
   }
 }

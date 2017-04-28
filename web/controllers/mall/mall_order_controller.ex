@@ -175,10 +175,11 @@ defmodule Acs.MallOrderController do
     do: json(conn, %{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   defp _create_order_id(user_id, pay_type) do
     order_id = Integer.to_string(Utils.unix_timestamp) <> String.slice(Integer.to_string(user_id), -4, 4)
-    order_id = case pay_type do
-      "wechat" -> "w" <> order_id
-      "alipay" -> "a" <> order_id
-    end
+    order_id = 
+      case pay_type do
+        "wechat" -> "w" <> order_id
+        "alipay" -> "a" <> order_id
+      end
     order_id
   end
 

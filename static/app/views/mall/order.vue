@@ -19,7 +19,7 @@
         <div class="media">
           <div class="media-left">
             <p class="image is-64x64" style="overflow:hidden">
-              <img :src="goodsItem.goods.pic ? goodsItem.goods.pic: 'https://placehold.it/64x64?text=loading...'">
+              <img :src="goodsItem.goods.pic.split('|')[0] ? goodsItem.goods.pic.split('|')[0]: 'https://placehold.it/64x64?text=loading...'">
             </p>
           </div>
           <div class="media-content is-marginless is-paddingless">

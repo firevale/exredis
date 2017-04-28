@@ -18,13 +18,13 @@ defmodule Acs.MallOrderController do
   def fetch_order_list(conn, _params),
     do: fetch_order_list(conn,'','', 1, 100)
   defp fetch_order_list(conn, app_id, keyword,  page, records_per_page) do
-    {:ok,searchTotal,ids} =search_orders(app_id, keyword,page,records_per_page)
+    {:ok,searchTotal,ids} = search_orders(app_id, keyword,page,records_per_page)
 
     queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
 
     if total == 0 do
-      conn |> json(%{success: true, total: 0, orders: []})
+      json(conn, %{success: true, total: 0, orders: []})
     else
       total_page = round(Float.ceil(total / records_per_page))
       query = 
@@ -42,13 +42,13 @@ defmodule Acs.MallOrderController do
 
        query =
          if(String.length(keyword)>0) do
-            query |> where([o], o.id in ^ids)
-          else
-            query
-          end
+          where(query, [o], o.id in ^ids)
+         else
+          query
+         end
 
       orders = Repo.all(query)
-      conn |> json(%{success: true, orders: orders, total: total_page})
+      json(conn, %{success: true, orders: orders, total: total_page})
     end
   end
 
@@ -100,7 +100,7 @@ defmodule Acs.MallOrderController do
 
   def fetch_order(conn, %{"order_id" => order_id }) do
     order = fetch_order_info(order_id)
-    conn |> json(%{success: true, order: order})
+    json(conn, %{success: true, order: order})
   end
 
   defp fetch_order_info( order_id) do
@@ -163,7 +163,7 @@ defmodule Acs.MallOrderController do
 
               {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
             end)
-            conn |> json(%{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
+            json(conn, %{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
           end
         end
       else
@@ -171,9 +171,8 @@ defmodule Acs.MallOrderController do
           conn |> json(%{success: false, i18n_message: "error.server.illegal"})
       end
   end
-  def create_mall_order(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
-  end
+  def create_mall_order(conn, _),
+    do: json(conn, %{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   defp _create_order_id(user_id, pay_type) do
     order_id = Integer.to_string(Utils.unix_timestamp) <> String.slice(Integer.to_string(user_id), -4, 4)
     order_id = case pay_type do
@@ -188,7 +187,7 @@ defmodule Acs.MallOrderController do
     when type in ["all","waitPay","waitConfirm"],
       do: fetch_my_orders(conn,user_id, type, page, records_per_page)
   def fetch_my_orders(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "mall.order.messages.illegal"})
+    json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
   end
   defp fetch_my_orders(conn, user_id, type, page, records_per_page) do
     total = Repo.one!(from order in MallOrder, select: count(1))
@@ -209,14 +208,14 @@ defmodule Acs.MallOrderController do
       query =
         case type  do
           "waitPay" ->
-              query |> where([o], o.status == 0)
+            query |> where([o], o.status == 0)
           "waitConfirm" ->
-              query |> where([o], o.status in [1,2])
-            _ ->
-              query
+            query |> where([o], o.status in [1,2])
+          _ ->
+            query
         end
     orders = Repo.all(query)
-    conn |> json(%{success: true, orders: orders, total: total_page})
+    json(conn, %{success: true, orders: orders, total: total_page})
   end
 
   def confirm_recieved(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, 
@@ -224,14 +223,14 @@ defmodule Acs.MallOrderController do
     order = Repo.get!(MallOrder, order_id)
     cond  do
       not order.status in [1,2]  ->
-        conn |> json(%{success: false, i18n_message: "mall.order.messages.repeatRecieved"})
+        json(conn, %{success: false, i18n_message: "mall.order.messages.repeatRecieved"})
       order.user_id != user_id ->
-        conn |> json(%{success: false, i18n_message: "mall.order.messages.illegal"})
+        json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
       true ->
         finish_status = 4
         from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: finish_status])
         new_order = Map.put(order, :status, finish_status)
-        conn |> json(%{success: true, order: new_order, i18n_message: "mall.order.messages.recievedSuccess"})
+        json(conn, %{success: true, order: new_order, i18n_message: "mall.order.messages.recievedSuccess"})
     end
   end
 
@@ -242,7 +241,7 @@ defmodule Acs.MallOrderController do
     payed_status = 1
 
     if order.status !=0 and order.status != -1 do
-      conn |> json(%{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
+      json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
     else
       result = 
         Repo.transaction(fn ->
@@ -262,11 +261,11 @@ defmodule Acs.MallOrderController do
 
       case result do
         {:error, i18n_message} ->
-          conn |> json(%{success: false, i18n_message: i18n_message})
+          json(conn, %{success: false, i18n_message: i18n_message})
         _ ->
           Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
           order = fetch_order_info(order_id)
-          conn |> json(%{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
+          json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
       end
     end
   end
@@ -277,9 +276,9 @@ defmodule Acs.MallOrderController do
 
     cond do
       refund_free > order.final_price ->
-        conn |> json(%{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
+        json(conn, %{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
       order.status !=2 ->
-        conn |> json(%{success: false, i18n_message: "admin.mall.order.messages.onlyRecieving"})
+        json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyRecieving"})
       true ->
         cancel_status = -1
         result = 
@@ -295,10 +294,10 @@ defmodule Acs.MallOrderController do
          end)
         case result do
           {:error, i18n_message} ->
-            conn |> json(%{success: false, i18n_message: i18n_message})
+            json(conn, %{success: false, i18n_message: i18n_message})
           _ ->
             order = fetch_order_info(order_id)
-            conn |> json(%{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
+            json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
         end
     end
   end

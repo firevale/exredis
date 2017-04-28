@@ -14,6 +14,15 @@ const state = {
     address: "",
     area_code: ""
   },
+  selectedGoods: {
+    id: 0,
+    name: "",
+    description: "",
+    price: 0,
+    currency: "",
+    postage: 0,
+    stock: 0
+  }
 }
 
 const mutations = {
@@ -27,6 +36,11 @@ const mutations = {
   [types.UPDATE_SELECTED_ADDRESS](state, addressItem) {
     if (addressItem) {
       state.selectedAddress = addressItem
+    }
+  },
+  [types.UPDATE_SELECTED_GOODS](state, goodsItem) {
+    if (goodsItem) {
+      state.selectedGoods = goodsItem
     }
   },
 }

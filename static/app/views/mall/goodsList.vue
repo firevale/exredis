@@ -3,7 +3,7 @@
     <scroller :on-load-more="loadmore" ref="scroller">
       <div class="content-goods">
         <div class="is-multiline is-marginless has-text-centered goods-list is-mobile">
-          <v-touch class="tile goods-item" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item.id)">
+          <v-touch class="tile goods-item" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item)">
             <div>
               <figure class="image is-40vwx40vw">
                 <img v-if="item.pic" :src="item.pic">
@@ -25,6 +25,10 @@
 <script>
 import Vue from '../../vue-installed'
 import scroller from 'common/components/scroller'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
 export default {
   components: {
@@ -42,6 +46,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'updateSelectedGoods'
+    ]),
     resetScroller: function() {
       this.page = 0
       this.total = 1
@@ -64,11 +71,12 @@ export default {
         }
       }
     },
-    showGoodsDetail: function(goodsId) {
+    showGoodsDetail: function(goods) {
+      this.updateSelectedGoods(goods)
       this.$router.push({
         name: 'goodsDetail',
         params: {
-          goodsId: goodsId
+          goodsId: goods.id
         },
       })
     }

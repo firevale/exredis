@@ -109,3 +109,8 @@ export const updateSelectedAddress = ({
 }, userAddress) => {
   commit(types.UPDATE_SELECTED_ADDRESS, userAddress)
 }
+export const updateSelectedGoods = ({
+  commit
+}, goods) => {
+  commit(types.UPDATE_SELECTED_GOODS, goods)
+}

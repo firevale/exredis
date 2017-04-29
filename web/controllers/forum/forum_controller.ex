@@ -644,19 +644,18 @@ defmodule Acs.ForumController do
     end
   end
 
-  plug :convert_base64_image, [param_name: "file"] when action == :upload_post_image
   plug :check_upload_image, [
     param_name: "file", 
     format: ["jpg", "jpeg", "png"],
-    reformat: "jpg",
-    resize_to_limit: [width: 600, height: 600]] when action == :upload_post_image
+    resize_to_limit: [width: 640, height: 1136]] when action == :upload_post_image
+  plug :convert_base64_image, [param_name: "file"] when action == :upload_post_image
   def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_#{forum_id}/posts/")
-    conn |> json(%{success: true, link: image_path})
+    {:ok, image_path, width, height} = Utils.deploy_image_file_return_size(from: image_file_path, to: "forum_#{forum_id}/posts/")
+    conn |> json(%{success: true, link: image_path, width: width, height: height})
   end
   def upload_post_image(%Plug.Conn{private: %{image_file_path: image_file_path}} = conn, %{"forum_id" => forum_id}) do 
-    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_#{forum_id}/posts/")
-    conn |> json(%{success: true, link: image_path})
+    {:ok, image_path, width, height} = Utils.deploy_image_file_return_size(from: image_file_path, to: "forum_#{forum_id}/posts/")
+    conn |> json(%{success: true, link: image_path, width: width, height: height})
   end
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
@@ -666,6 +665,5 @@ defmodule Acs.ForumController do
                       where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
     conn |> json(%{success: true, post_count: total}) 
   end
-
  
 end

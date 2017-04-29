@@ -294,12 +294,12 @@ defmodule Utils do
     end
   end
 
-  def deploy_image_file(from: from, to: to) do 
-    ext = case Mogrify.open(from) |> Mogrify.verbose do 
-      %Mogrify.Image{format: "png"} -> "png"
-      %Mogrify.Image{format: "jpeg"} -> "jpg"
-      %Mogrify.Image{format: "jpg"} -> "jpg" 
-      %Mogrify.Image{format: "gif"} -> "gif"
+  def deploy_image_file_return_size(from: from, to: to) do 
+    {ext, width, height} = case Mogrify.open(from) |> Mogrify.verbose do 
+      %Mogrify.Image{format: "png", width: width, height: height} -> {"png", width, height}
+      %Mogrify.Image{format: "jpeg", width: width, height: height} -> {"jpg", width, height}
+      %Mogrify.Image{format: "jpg", width: width, height: height} -> {"jpg", width, height}
+      %Mogrify.Image{format: "gif", width: width, height: height} -> {"gif", width, height}
     end
     d "deploy image file, #{inspect (Mogrify.open(from) |> Mogrify.verbose), pretty: true}, ext: #{ext}"
     relative_path = Path.join("/images", "/#{to}")
@@ -307,6 +307,11 @@ defmodule Utils do
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
     path = Path.join(url_path, "/#{dest_file_name}")    
+    {:ok, path, width, height}
+  end
+
+  def deploy_image_file(from: from, to: to) do 
+    {:ok, {path, _width, _height}} = deploy_image_file_return_size(from: from, to: to)
     {:ok, path}
   end
 

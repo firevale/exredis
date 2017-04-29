@@ -62,7 +62,6 @@ defmodule Acs.UploadImagePlugs do
                 conn
             end
           _ -> 
-            error "[plug] check upload image: param #{param_name} don't has path value in it, dont know how to check uploaded image"
             conn
         end
       _ -> 
@@ -176,7 +175,17 @@ defmodule Acs.UploadImagePlugs do
   defp resize_image(image_file, _), do: {:ok, image_file}
 
   defp resize_to_limit_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
-    case image_file |> Mogrify.resize_to_limit("#{width}x#{height}") |> Mogrify.save(in_place: true) do 
+    resize_command = if image_file.width > image_file.height and width > height do 
+                       "#{width}x#{height}"
+                      else
+                        if image_file.width < image_file.height and width < height do 
+                          "#{width}x#{height}"
+                        else
+                          "#{height}x#{width}"
+                        end
+                      end
+    
+    case image_file |> Mogrify.resize_to_limit(resize_command) |> Mogrify.save(in_place: true) do 
       %{path: ^path} = new_image_file -> 
         {:ok, new_image_file}
       _ ->

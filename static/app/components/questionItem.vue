@@ -1,5 +1,5 @@
 <template>
-  <div @click="selectedId==question.id?selectedId='':selectedId=question.id">
+  <div @click="selectedId == question.id ? selectedId = '' : selectedId = question.id">
     <div class="level-content">
       <nav class="level is-mobile">
         <div class="level-left">

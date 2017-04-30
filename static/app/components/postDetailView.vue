@@ -31,7 +31,8 @@
           <span class="is-primary">{{ postData.user.nickname }}</span>
         </p>
         <div class="post-content">
-          <div class="ql-editor" v-html="filterContent">
+          <div class="ql-editor">
+            <quill-content :content="filterContent"></quill-content>
           </div>
         </div>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
@@ -77,6 +78,7 @@ import {
 } from 'vuex'
 
 import Toast from 'common/components/toast'
+import quillContent from 'common/components/quillContent'
 import * as acs from 'common/js/acs'
 import * as filter from 'common/js/filters'
 
@@ -177,6 +179,10 @@ export default {
         }
       }
     },
+  },
+
+  components: {
+    quillContent
   }
 }
 </script>

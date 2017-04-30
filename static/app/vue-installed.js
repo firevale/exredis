@@ -15,6 +15,7 @@ Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(VueQuillEditor)
+
 Vue.use(VueLazyLoad, {
   listenEvents: [ 'scroll' ]
 })

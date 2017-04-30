@@ -67,7 +67,7 @@ export default {
 
     avatarUrl() {
       return {
-        src: filter.imageStaticUrl(this.postData.user.avatar_url || window.acsConfig.defaultAvatarUrl),
+        src: filter.imageStaticUrl(this.commentData.user.avatar_url || window.acsConfig.defaultAvatarUrl),
         error: window.acsConfig.defaultAvatarUrl,
         loading: window.acsConfig.defaultAvatarUrl
       }

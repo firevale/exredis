@@ -4,10 +4,13 @@
 <script>
 import EmptyView from './quillEmpty'
 import quillImage from './quillImage'
-import VueDynamic from '../vue-dynamic' 
+import VueDynamic from '../vue-dynamic'
 import Vue from 'vue'
 
-Vue.use(VueDynamic, {name: 'dynamic'})
+Vue.use(VueDynamic, {
+  name: 'dynamic'
+})
+
 Vue.component('quill-image', quillImage)
 
 export default {
@@ -21,7 +24,7 @@ export default {
   data() {
     return {
       comps: [{
-        template: this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/, '<quill-image $1></quill-image>'),
+        template: `<div>${this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/, '<quill-image $1></quill-image>')}</div>`,
       }],
       emptyView: EmptyView
     }

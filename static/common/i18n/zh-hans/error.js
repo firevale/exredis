@@ -1,5 +1,6 @@
  export default {
    pageTitle: '糟糕， 出错了',
+   invalidImage: '外链图片',
 
    // errors replied from acs server
    server: {

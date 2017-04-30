@@ -647,6 +647,7 @@ defmodule Acs.ForumController do
   plug :check_upload_image, [
     param_name: "file", 
     format: ["jpg", "jpeg", "png"],
+    reformat: "jpg",
     resize_to_limit: [width: 640, height: 1136]] when action == :upload_post_image
   plug :convert_base64_image, [param_name: "file"] when action == :upload_post_image
   def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do

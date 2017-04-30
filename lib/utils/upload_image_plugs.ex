@@ -199,7 +199,7 @@ defmodule Acs.UploadImagePlugs do
     if format == new_format do  
       {:ok, image_file}
     else 
-      {_, 0} = System.cmd("mogrify", ["-format", new_format, path])
+      {_, 0} = System.cmd("mogrify", ["-background", "white", "-alpha", "remove", "-quality", "80", "-format", new_format, path])
       new_file_name = Path.rootname(path, Path.extname(path)) <> ".#{new_format}"
 
       if File.exists?(new_file_name) do 

@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       comps: [{
-        template: `<div>${this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/, '<quill-image $1></quill-image>')}</div>`,
+        template: `<div class="ql-editor">${this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/, '<quill-image $1></quill-image>')}</div>`,
       }],
       emptyView: EmptyView
     }

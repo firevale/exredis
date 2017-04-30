@@ -30,11 +30,7 @@
           </span>
           <span class="is-primary">{{ postData.user.nickname }}</span>
         </p>
-        <div class="post-content">
-          <div class="ql-editor">
-            <quill-content :content="filterContent"></quill-content>
-          </div>
-        </div>
+        <quill-content class="post-content" :content="filterContent"></quill-content>
         <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
           <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
           <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"

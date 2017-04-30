@@ -294,7 +294,10 @@ defmodule Utils do
     end
   end
 
-  def deploy_image_file_return_size(from: from, to: to) do 
+  def deploy_image_file_return_size(opts) do 
+    from = opts[:from]
+    to = opts[:to]
+
     {ext, width, height} = case Mogrify.open(from) |> Mogrify.verbose do 
       %Mogrify.Image{format: "png", width: width, height: height} -> {"png", width, height}
       %Mogrify.Image{format: "jpeg", width: width, height: height} -> {"jpg", width, height}
@@ -306,6 +309,14 @@ defmodule Utils do
     url_path = Path.join("/img", "/#{to}")
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
+
+    if opts[:low_quality] do 
+      dest_file_full_name = Path.join(Path.join(static_path, relative_path), dest_file_name)
+      low_quality_file_name = Path.rootname(dest_file_full_name) <> ".lq.jpg" 
+      File.cp!(dest_file_full_name, low_quality_file_name)
+      {_, 0} = System.cmd("mogrify", ["-background", "white", "-alpha", "remove", "-quality", "5", "-format", "jpg", low_quality_file_name])
+    end
+
     path = Path.join(url_path, "/#{dest_file_name}")    
     {:ok, path, width, height}
   end

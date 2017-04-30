@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isValidImage">
-      <img :src="src | imageStaticUrl" :width="width" :height="height"/>
+      <progressive-img :src="src | imageStaticUrl" :placeholder="src | imageStaticUrl | imageLowQualityUrl" blur="30"/>
     </div>
     <div v-else class="invalid-image">
       <p>{{$t('error.invalidImage')}}</p>
@@ -10,6 +10,12 @@
 </template>
 
 <script>
+
+import * as utils from 'common/js/filters.js'
+
+import Vue from 'vue'
+import VueProgressiveImage from 'vue-progressive-image'
+Vue.use(VueProgressiveImage)
 
 export default {
   props: {
@@ -25,7 +31,7 @@ export default {
 
     isSizeSpecified() {
       return /^\d+/.test(this.width) && /^\d+/.test(this.height)
-    }
+    },
   },
 
   methods: {

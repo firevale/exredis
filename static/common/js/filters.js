@@ -95,3 +95,7 @@ export const imageStaticUrl = val => {
   
   return val
 }
+
+export const imageLowQualityUrl = val => {
+  return val.replace(/\.jpg(\?.*)?$/, '.lq.jpg$1')
+}

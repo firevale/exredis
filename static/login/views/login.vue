@@ -83,6 +83,7 @@
         if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           try {
+            
             let result = await this.$acs.createToken(this.accountId, this.password)
             this.processing = false
 

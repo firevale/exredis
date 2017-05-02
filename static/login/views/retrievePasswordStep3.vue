@@ -9,7 +9,7 @@
       </p>
       <div class="row-login">
         <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
-          autocomplete="off" name="password" @input="handleValidation($v.password)" />
+          autocomplete="off" name="password" @keyup="handleValidation($v.password)" />
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>

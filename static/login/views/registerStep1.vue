@@ -7,7 +7,7 @@
       <p class="code-tip"> {{ registerAccountIdLabel }}: </p>
       <div class="row-login">
         <input type="text" maxlength="50" :placeholder="registerAccountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
-          name="user" @input="handleValidation($v.accountId)" />
+          name="user" @keyup="handleValidation($v.accountId)" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <p class="errors">

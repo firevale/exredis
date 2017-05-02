@@ -6,11 +6,11 @@
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
         <input type="text" maxlength="50" 
-        v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off" @input="handleValidation($v.accountId)" />
+        v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off" @keyup="handleValidation($v.accountId)" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <div class="row-login">
-        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleValidation($v.password)" />
+        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @keyup="handleValidation($v.password)" />
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
@@ -85,7 +85,6 @@
           try {
             let result = await this.$acs.createToken(this.accountId, this.password)
             this.processing = false
-
             console.log('create token result: ', result)
 
             if (result.success) {
@@ -101,9 +100,12 @@
                 }
               }
             } else {
-              this.setErrorMessage(this.$t(result.i18n_message))
+              console.error('create token failed with error: ', this.$t(result.i18n_message, result.i18n_object))
+              this.setErrorMessage(this.$t(result.i18n_message, result.i18n_object))
             }
-          } catch (_) {
+          } catch (e) {
+            console.error('create token failed with exception: ', e)
+            this.processing = false
             this.setErrorMessage(this.$t('error.server.networkError'))
           }
           this.processing = false

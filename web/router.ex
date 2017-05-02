@@ -5,30 +5,6 @@ defmodule Acs.Router do
     use Plugsnag
   end
 
-  import  Acs.Plugs
-
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug :parse_user_agent
-    plug :fetch_user_id
-    plug :fetch_user
-    plug :fetch_device_id
-    plug :fetch_locale
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
-    plug :fetch_session
-    plug :parse_user_agent
-    plug :fetch_user_id
-    plug :fetch_user
-    plug :fetch_device_id
-    plug :fetch_locale
-  end
-
   if Mix.env == :dev do
     forward "/sent_emails", Bamboo.EmailPreviewPlug
   end

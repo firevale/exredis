@@ -76,6 +76,8 @@
      maxResidentNameLength: 'Redident name is too long',
      minResidentIdLength: 'Resident ID is too short',
      maxResidentIdLength: 'Resident ID is too long',
+     minAddressLength: 'Address is too short',
+     maxAddressLength: 'Address is too long',
      emailNotChanged: 'Already bind this email number',
      postContentRequired: 'Please input post content',
      postTitleMinLength: 'Post title is too short',

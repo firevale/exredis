@@ -25,6 +25,7 @@ export default {
       if (this.passwordIcon == 'eye') {
         this.passwordIcon = 'eye-slash'
         this.$refs.password.type = 'password'
+
       } else {
         this.passwordIcon = 'eye'
         this.$refs.password.type = 'text'
@@ -35,47 +36,53 @@ export default {
   mounted() {
     this.$watch('$v.accountId', v => {
       console.log('validation $v.accountId is changed', v, this.errorMessage)
-      if (!this.errorMessage && !v.$pending && v.$invalid) {
-        if (!v.required) {
-          if (window.acsConfig.isMobileAccountSupported) {
-            if (this.$route.name == 'registerStep1') {
-              this.errorMessage = this.$t('error.validation.requireMobile')
+      this.$nextTick(_ => {
+        if (!this.errorMessage && !v.$pending && v.$invalid) {
+          if (!v.required) {
+            if (window.acsConfig.isMobileAccountSupported) {
+              if (this.$route.name == 'registerStep1') {
+                this.errorMessage = this.$t('error.validation.requireMobile')
+              } else {
+                this.errorMessage = this.$t('error.validation.requireAccountId')
+              }
             } else {
-              this.errorMessage = this.$t('error.validation.requireAccountId')
+              this.errorMessage = this.$t('error.validation.requireEmail')
             }
-          } else {
-            this.errorMessage = this.$t('error.validation.requireEmail')
+          } else if (!v.valid) {
+            this.errorMessage = this.invalidAccountIdErrorMessage
           }
-        } else if (!v.valid) {
-          this.errorMessage = this.invalidAccountIdErrorMessage
         }
-      }
+      })
     })
 
     this.$watch('$v.password', v => {
       console.log('validation $v.password is changed', v, this.errorMessage)
-      if (!this.errorMessage && !v.$pending && v.$invalid) {
-        if (!v.required) {
-          this.errorMessage = this.$t('error.validation.requirePassword')
-        } else if (!v.minLength) {
-          this.errorMessage = this.$t('error.validation.minPasswordLength')
-        } else if (!v.maxLength) {
-          this.errorMessage = this.$t('error.validation.maxPasswordLength')
+      this.$nextTick(_ => {
+        if (!this.errorMessage && !v.$pending && v.$invalid) {
+          if (!v.required) {
+            this.errorMessage = this.$t('error.validation.requirePassword')
+          } else if (!v.minLength) {
+            this.errorMessage = this.$t('error.validation.minPasswordLength')
+          } else if (!v.maxLength) {
+            this.errorMessage = this.$t('error.validation.maxPasswordLength')
+          }
         }
-      }
+      })
     })
 
     this.$watch('$v.verifyCode', v => {
       console.log('validation $v.verifyCode is changed', v, this.errorMessage)
-      if (!this.errorMessage && !v.$pending && v.$invalid) {
-        if (!v.required) {
-          this.errorMessage = this.$t('error.validation.requireVerifyCode')
-        } else if (!v.minLength) {
-          this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
-        } else if (!v.maxLength) {
-          this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+      this.$nextTick(_ => {
+        if (!this.errorMessage && !v.$pending && v.$invalid) {
+          if (!v.required) {
+            this.errorMessage = this.$t('error.validation.requireVerifyCode')
+          } else if (!v.minLength) {
+            this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+          } else if (!v.maxLength) {
+            this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+          }
         }
-      }
+      })
     })
   },
 

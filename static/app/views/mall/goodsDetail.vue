@@ -7,7 +7,8 @@
             <div class="card-image">
               <swiper :options="swiperOption" ref="goodsSwiper" v-if="this.selectedGoods.pic">
                 <swiper-slide v-for="item in this.selectedGoods.pic.split('|')">
-                  <img style="margin:0px auto" class="image is-400x400" :src="item?item:'https://placehold.it/400x400?text=400x400'">
+                  <img v-if="item" :src="item" style="margin:0px auto" class="image is-400x400">
+                  <img v-else src="https://placehold.it/400x400?text=400x400">
                 </swiper-slide>
               </swiper>
             </div>
@@ -100,13 +101,12 @@ export default {
       inApp: window.acsConfig.inApp,
       quantity: 1,
       swiperOption: {
-        notNextTick: true,
         autoplay: 5000,
+        notNextTick: true,
         slidesPerView: 'auto',
         centeredSlides: true,
         paginationClickable: true,
-        spaceBetween: 30,
-        effect: 'flip'
+        spaceBetween: 30
       }
     }
   },

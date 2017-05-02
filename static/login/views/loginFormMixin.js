@@ -7,7 +7,8 @@ export default {
       }, 5000)
     },
 
-    handleValidation: function() {
+    handleValidation: function(e) {
+      console.log('handleValidation: ', e)
       this.$v.$touch()
       this.errorMessage = ''
     },

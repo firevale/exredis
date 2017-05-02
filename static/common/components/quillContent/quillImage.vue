@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isValidImage">
-      <progressive-img :src="src | imageStaticUrl" :placeholder="src | imageStaticUrl | imageLowQualityUrl" blur="30"/>
+      <progressive-img :src="src | imageStaticUrl" :placeholder="src | imageStaticUrl | imageLowQualityUrl" :blur="30"/>
     </div>
     <div v-else class="invalid-image">
       <p>{{$t('error.invalidImage')}}</p>

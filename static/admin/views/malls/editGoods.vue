@@ -407,7 +407,7 @@ export default {
         id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,
-        pic: this.pics.join("|"),
+        pic: this.pics.filter(t => t!="").join("|"),
         description: this.goods.description,
         price: this.goods.price,
         postage: this.goods.postage,

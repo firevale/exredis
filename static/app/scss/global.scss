@@ -28,7 +28,8 @@ body.in-app *:not(input) {
 }
 
 body.in-app {
-  .ql-editor, .ql-editor * {
+  .ql-editor,
+  .ql-editor * {
     user-select: text;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
@@ -181,15 +182,14 @@ input.input:focus {
   }
   &.slide-right-enter-active,
   &.slide-right-leave-active,
-  &.slide-left-enter-active, 
+  &.slide-left-enter-active,
   &.slide-left-leave-active {
-    flex-basis: calc(100% - 5rem); 
+    flex-basis: calc(100% - 5rem);
   }
   &.slide-right-enter-active,
   &.slide-left-enter-active {
     top: calc(5rem - 100%);
   }
-
 }
 
 .flex-fixed-size {
@@ -316,4 +316,9 @@ only screen and (min-resolution: 1.25dppx) {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+}
+
+.is-400x400 {
+  height: 400px;
+  width: 400px;
 }

@@ -57,7 +57,7 @@
         <div class="tile is-parent">
           <article class="tile is-child">
             <center style="padding:0 4rem 0 4rem;">
-              <div v-dragula="pics" :bag="bagId" class="columns is-multiline">
+              <div v-dragula="pics" :bag="bagId" class="columns is-multiline container2">
                 <div class="column is-4" v-for="(pic, index) in pics" :key="index">
                   <figure class="image" style="display: block" @click="onShowImageUpload(index)">
                     <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400'" style="width:120px; height:120px;"></img>
@@ -82,13 +82,21 @@
       </div>
       <div style="margin-top: 15px">
         <a class="button is-white" @click.prevent="onBack">
-          <span class="icon is-small"><i class="fa fa-backward"></i></span><span>{{ $t('admin.mall.goods.back') }}</span></a>
+          <span class="icon is-small"><i class="fa fa-backward"></i></span>
+          <span>{{ $t('admin.mall.goods.back') }}</span>
+        </a>
         <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': deleting}" @click.prevent="onDelete">
-          <span class="icon is-small"><i class="fa fa-close"></i></span><span>{{ $t('admin.mall.goods.delete') }}</span></a>
+          <span class="icon is-small"><i class="fa fa-close"></i></span>
+          <span>{{ $t('admin.mall.goods.delete') }}</span>
+        </a>
         <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': publishing}" @click.prevent="onPublish">
-          <span class="icon is-small"><i class="fa " :class="goods.active==true? ' fa-level-down' : ' fa-level-up'"></i></span><span>{{ goods.active==true? $t('admin.mall.goods.unPublish') : $t('admin.mall.goods.publish') }}</span></a>
+          <span class="icon is-small"><i class="fa " :class="goods.active==true? ' fa-level-down' : ' fa-level-up'"></i></span>
+          <span>{{ goods.active==true? $t('admin.mall.goods.unPublish') : $t('admin.mall.goods.publish') }}</span>
+        </a>
         <a class="button is-primary" :class="{'is-loading': saving}" @click.prevent="onSave">
-          <span class="icon is-small"><i class="fa fa-save"></i></span><span>{{ $t('admin.mall.goods.save') }}</span></a>
+          <span class="icon is-small"><i class="fa fa-save"></i></span>
+          <span>{{ $t('admin.mall.goods.save') }}</span>
+        </a>
       </div>
     </form>
   </div>
@@ -181,13 +189,13 @@ export default {
       editor: undefined,
       realPrice: 0.00,
       realPostage: 0.00,
-      bagId: "picBag",
+      bagId: "picBag"
     }
   },
 
   created: function() {
     Vue.vueDragula.options(this.bagId, {
-      direction: 'horizontal',
+      // direction: 'horizontal',
     })
   },
 
@@ -415,3 +423,27 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+}
+.gu-hide {
+  display: none !important;
+}
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+</style>

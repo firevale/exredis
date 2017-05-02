@@ -4,6 +4,13 @@ defmodule Acs.MallRouter do
 
   scope "/", Acs do
     pipe_through :mall
+    
+    scope "admin/", Acs do
+       pipe_through :admin
+
+       post "/refund_order", MallOrderController, :refund_order
+       post "/update_order_payed", MallOrderController, :update_order_payed
+    end
 
     get   "/fetch_malls", MallController, :fetch_malls
     post  "/update_mall_icon", MallController, :update_mall_icon
@@ -36,8 +43,7 @@ defmodule Acs.MallRouter do
     post "/fetch_order", MallOrderController, :fetch_order
     post "/fetch_my_orders", MallOrderController, :fetch_my_orders
     post "/confirm_recieved", MallOrderController, :confirm_recieved
-    post "/refund_order", MallOrderController, :refund_order
-    post "/update_order_payed", MallOrderController, :update_order_payed
+   
 
     post "/get_goods_stock", MallController, :get_goods_stock
   end

@@ -18,7 +18,7 @@ export default {
   isMediaSourceTypeAvailable: function(type) {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.isMediaSourceTypeAvailable === 'function') {
-      return false
+      return AndroidNativeAPI.isMediaSourceTypeAvailable(type) == 1
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.isMediaSourceTypeAvailable === 'function') {
       return IOSNativeAPI.isMediaSourceTypeAvailable(type) == 1
@@ -42,6 +42,8 @@ export default {
   pickImageFrom: function(type, callback) {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.pickImageFrom === 'function') {
+      window.pickImageFromCallback = callback
+      AndroidNativeAPI.pickImageFrom(type)
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.pickImageFromCallback === 'function') {
       IOSNativeAPI.pickImageFromCallback(type, callback) 

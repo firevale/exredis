@@ -40,6 +40,7 @@ export default {
     websiteName: '主页名称',
     websiteUrl: '主页链接',
     appHasForum: '是否启用论坛',
+    appHasMall: '是否启用商城',
     csPhoneNumber: '客服电话',
     cpOrderId: 'CP订单号',
     transactionId: '交易ID',

@@ -99,7 +99,6 @@ export default {
       let goodsId = this.$router.currentRoute.params.goodsId
       let result = await this.$acs.getGoodsDetail(goodsId)
       if (result.success) {
-        debugger
         this.updateSelectedGoods(result.goods)
       }
     },

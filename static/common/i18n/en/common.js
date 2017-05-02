@@ -10,5 +10,6 @@
    camera: 'Take pictures',
    photoLib: 'Select from photo library',
    upload: 'Upload',
-   noMoreData: 'No more data'
+   noMoreData: 'No more data',
+   confirmDelete: 'Confirm delete'
  }

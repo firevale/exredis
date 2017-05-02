@@ -1,3 +1,5 @@
+const touchMap = new WeakMap()
+
 export default {
   methods: {
     setErrorMessage: function(val) {
@@ -7,12 +9,13 @@ export default {
       }, 5000)
     },
 
-    handleValidation: function(e) {
-      console.log('handleValidation: ', e)
-      console.log('password:', this.password)
-      this.$v.$touch()
+    handleValidation: function($v) {
+      $v.$reset()
       this.errorMessage = ''
-      console.log('validation:', this.$v)
+      if (touchMap.has($v)) {
+        clearTimeout(touchMap.get($v))
+      }
+      touchMap.set($v, setTimeout($v.$touch, 500))
     },
 
     togglePasswordVisibility: function() {
@@ -26,39 +29,51 @@ export default {
     },
   },
 
-  computed: {
-    errorHint: function() {
-      if (typeof this.$v == 'object' && this.$v.$error) {
-        if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
+  mounted() {
+    this.$watch('$v.accountId', v => {
+      if (!this.errorMessage && !v.$pending && v.$invalid) {
+        if (!v.required) {
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {
-              return this.$t('error.validation.requireMobile')
+              this.errorMessage = this.$t('error.validation.requireMobile')
             } else {
-              return this.$t('error.validation.requireAccountId')
+              this.errorMessage = this.$t('error.validation.requireAccountId')
             }
           } else {
-            return this.$t('error.validation.requireEmail')
+            this.errorMessage = this.$t('error.validation.requireEmail')
           }
-        } else if (typeof this.$v.accountId == 'object' && !this.$v.accountId.valid) {
-          return this.invalidAccountIdErrorMessage
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.required) {
-          return this.$t('error.validation.requirePassword')
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.minLength) {
-          return this.$t('error.validation.minPasswordLength')
-        } else if (typeof this.$v.password == 'object' && !this.$v.password.maxLength) {
-          return this.$t('error.validation.maxPasswordLength')
-        } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.required) {
-          return this.$t('error.validation.requireVerifyCode')
-        } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.minLength) {
-          return this.$t('error.validation.invalidVerifyCodeLength')
-        } else if (typeof this.$v.verifyCode == 'object' && !this.$v.verifyCode.maxLength) {
-          return this.$t('error.validation.invalidVerifyCodeLength')
+        } else if (!v.valid) {
+          this.errorMessage = this.invalidAccountIdErrorMessage
         }
-      } else {
-        return this.errorMessage
       }
-    },
+    })
 
+    this.$watch('$v.password', v => {
+      if (!this.errorMessage && !v.$pending && v.$invalid) {
+        if (!v.required) {
+          this.errorMessage = this.$t('error.validation.requirePassword')
+        } else if (!v.minLength) {
+          this.errorMessage = this.$t('error.validation.minPasswordLength')
+        } else if (!v.maxLength) {
+          this.errorMessage = this.$t('error.validation.maxPasswordLength')
+        }
+      }
+    })
+
+    this.$watch('$v.verifyCode', v => {
+      if (!this.errorMessage && !v.$pending && v.$invalid) {
+        if (!v.required) {
+          this.errorMessage = this.$t('error.validation.requireVerifyCode')
+        } else if (!v.minLength) {
+          this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+        } else if (!v.maxLength) {
+          this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+        }
+      }
+    })
+  },
+
+  computed: {
     registerAccountIdLabel: function() {
       if (window.acsConfig.isMobileAccountSupported) {
         return this.$t('account.loginPage.userMobileLabel')

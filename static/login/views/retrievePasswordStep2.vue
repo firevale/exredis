@@ -7,14 +7,14 @@
       <p class="code-tip" v-html="verifyCodeSentHint"> </p>
       <div class="row-login">
         <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
-          class="outsideText" name="verifyCode" @input="handleValidation" />
+          class="outsideText" name="verifyCode" @input="handleValidation($v.verifyCode)" />
         <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex" @click.prevent="sendVerifyCode">
         </input>
         <span class="icon addon-icon icon-check"></span>
       </div>
       <p class="errors">
-        <span v-if="errorHint" class="icon error-sign"></span>
-        <span>{{ errorHint }}</span>
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <button type="submit" class="button" :class="{'is-loading': processing}">

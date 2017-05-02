@@ -8,7 +8,7 @@
       <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
       <div class="row-login">
         <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
-          maxlength="10" class="outsideText" name="verifyCode" @input="handleValidation" />
+          maxlength="10" class="outsideText" name="verifyCode" @input="handleValidation($v.verifyCode)" />
         <div v-if="!isMobileAccount" class="captchaBox">
           <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
         </div>
@@ -18,8 +18,8 @@
         <span class="icon addon-icon icon-check"></span>
       </div>
       <p class="errors">
-        <span v-if="errorHint" class="icon error-sign"></span>
-        <span>{{ errorHint }}</span>
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <button type="submit" class="button" :class="{'is-loading': processing}">

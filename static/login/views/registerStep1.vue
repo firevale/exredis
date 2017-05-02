@@ -7,12 +7,12 @@
       <p class="code-tip"> {{ registerAccountIdLabel }}: </p>
       <div class="row-login">
         <input type="text" maxlength="50" :placeholder="registerAccountIdPlaceholder" v-model.trim="accountId" autocomplete="off"
-          name="user" @input="handleValidation" />
+          name="user" @input="handleValidation($v.accountId)" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <p class="errors">
-        <span v-if="errorHint" class="icon error-sign"></span>
-        <span>{{ errorHint }}</span>
+        <span v-if="errorMessage" class="icon error-sign"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
         <button type="submit" class="button" :class="{'is-loading': processing}">

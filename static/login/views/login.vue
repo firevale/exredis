@@ -5,20 +5,21 @@
     </div>
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
-        <input type="text" maxlength="50" v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off" @input="handleValidation" />
+        <input type="text" maxlength="50" 
+        v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off" @input="handleValidation($v.accountId)" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <div class="row-login">
-        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleValidation" />
+        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @input="handleValidation($v.password)" />
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
       <p class="errors">
-        <span class="icon error-sign" v-if="errorHint"></span>
-        <span>{{ errorHint }}</span>
+        <span class="icon error-sign" v-if="errorMessage"></span>
+        <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <button type="submit" class="button" :class="{'is-loading': processing}">
+        <button type="submit" class="button" :class="{'is-loading': processing, 'is-disabled': $v.$invalid}">
           {{ $t('account.loginPage.btnSubmit') }}
         </button>
       </div>

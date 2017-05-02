@@ -5,10 +5,12 @@
         <div class="columns is-multiline is-mobile has-text-centered has-bottom-line is-marginless is-paddingless">
           <div class="column is-12">
             <div class="card-image">
-              <figure class="image is-400x400">
-                <img v-if="this.selectedGoods.pic" :src="this.selectedGoods.pic.split('|')[0]">
-                <img v-else src="https://placehold.it/300x300?text=400x400">
-              </figure>
+              <swiper :options="swiperOption" ref="goodsSwiper" v-if="this.selectedGoods.pic">
+                <swiper-slide v-for="item in this.selectedGoods.pic.split('|')">
+                  <img v-if="item" :src="item" style="margin:0px auto" class="image is-400x400">
+                  <img v-else src="https://placehold.it/400x400?text=400x400">
+                </swiper-slide>
+              </swiper>
             </div>
           </div>
           <div class="column is-12 goods-item">
@@ -66,18 +68,27 @@ import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
 import scroller from 'common/components/scroller'
 import {
+  swiper,
+  swiperSlide
+} from 'vue-awesome-swiper'
+import {
   mapGetters,
   mapActions
 } from 'vuex'
 
 export default {
   components: {
-    scroller
+    scroller,
+    swiper,
+    swiperSlide
   },
   computed: {
     ...mapGetters([
       'selectedGoods'
     ]),
+    swiper() {
+      return this.$refs.goodsSwiper.swiper;
+    }
   },
   mounted: async function() {
     if (this.selectedGoods.id == 0) {
@@ -88,7 +99,15 @@ export default {
     return {
       canGoBack: false,
       inApp: window.acsConfig.inApp,
-      quantity: 1
+      quantity: 1,
+      swiperOption: {
+        autoplay: 5000,
+        notNextTick: true,
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        paginationClickable: true,
+        spaceBetween: 30
+      }
     }
   },
   methods: {

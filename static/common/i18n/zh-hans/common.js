@@ -11,4 +11,5 @@
    photoLib: '从照片库选取',
    upload: '上传',
    noMoreData: '没有更多数据啦',
+   confirmDelete: '是否确认删除'
  }

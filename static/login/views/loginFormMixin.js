@@ -9,8 +9,10 @@ export default {
 
     handleValidation: function(e) {
       console.log('handleValidation: ', e)
+      console.log('password:', this.password)
       this.$v.$touch()
       this.errorMessage = ''
+      console.log('validation:', this.$v)
     },
 
     togglePasswordVisibility: function() {

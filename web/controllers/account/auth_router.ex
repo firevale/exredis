@@ -2,15 +2,6 @@
 defmodule Acs.AuthApiRouter do
   use Acs.Web, :router
 
-  import  Acs.Plugs
-
-  pipeline :auth do 
-    plug :fetch_app_id
-    plug :fetch_app
-    plug :fetch_user_id
-    plug :fetch_user
-  end
-
   # "/api/auth forward from main router"
   scope "/", Acs do
     pipe_through :auth
@@ -99,16 +90,9 @@ end
 defmodule Acs.UserApiRouter do
   use Acs.Web, :router
 
-  import  Acs.Plugs
-
-  pipeline :auth do 
-    plug :fetch_app_id
-    plug :fetch_app
-  end
-
   # "/api/user forward from main router"
   scope "/", Acs do
-    pipe_through :auth
+    pipe_through :auth_user_api
 
     # 兼容旧fvsdk
     get  "/check_user_exists", UserController, :is_account_exists

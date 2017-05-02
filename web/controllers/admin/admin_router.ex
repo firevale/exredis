@@ -2,18 +2,6 @@ defmodule Acs.AdminRouter do
   use Acs.Web, :router
   use LogAlias
 
-  import  Acs.Plugs
-
-  pipeline :admin do
-    plug :accepts, ["json"]
-    plug :fetch_session
-    plug :parse_user_agent
-    plug :fetch_user_id
-    plug :fetch_locale
-    plug :fetch_access_token
-    plug :check_admin_access
-  end
-
   scope "/", Acs do
     pipe_through :admin
 

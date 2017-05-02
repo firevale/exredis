@@ -1,20 +1,6 @@
 defmodule Acs.PayRouter do
   use Acs.Web, :router
 
-  import  Acs.Plugs
-
-  pipeline :sdkpay do
-    plug :accepts, ["json"]
-    plug :fetch_session
-    plug :parse_user_agent
-    plug :fetch_user_id
-    plug :fetch_user
-    plug :fetch_device_id
-    plug :fetch_locale
-    plug :fetch_app_id
-    plug :fetch_app
-  end
-
   scope "/", Acs do
     pipe_through :sdkpay
 

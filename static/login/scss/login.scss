@@ -31,8 +31,10 @@ body.android {
   }
 }
 
-body.in-app *:not(input) {
-  user-select: none;
+body.in-app {
+  a, button, span, label, h1, h2, h3, h4, h5, h6 {
+    user-select: none;
+  }
 }
 
 $form-height: 230px;
@@ -150,6 +152,7 @@ hr {
       padding-left: 2rem;
       font-size: .6rem;
       flex: 1;
+      user-select: contain;
     }
     input[name=password].sibling:not(:focus) {
       border-top: none;

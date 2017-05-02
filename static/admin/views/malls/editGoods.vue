@@ -60,7 +60,7 @@
               <div v-dragula="pics" :bag="bagId" class="columns is-multiline container2">
                 <div class="column is-4" v-for="(pic, index) in pics" :key="pic">
                   <figure class="image" style="display: block" @click="onShowImageUpload(index)">
-                    <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400'" style="width:120px; height:120px;"></img>
+                    <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400' | imageStaticUrl" style="width:120px; height:120px;"></img>
                   </figure>
                 </div>
               </div>

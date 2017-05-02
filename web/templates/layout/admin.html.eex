@@ -50,7 +50,9 @@
         nil_password: <%= is_nil(user.encrypted_password) %>,
       },
       <% end %>
+      imagesUrl: '<%= static_url(@conn, "/images/") %>',
     }
+    
   </script>
   <script src="<%= static_url(@conn, "/js/admin_commons.js") %>"></script>
   <script src="<%= static_url(@conn, "/js/admin.js") %>"></script>

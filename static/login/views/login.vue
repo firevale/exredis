@@ -84,6 +84,7 @@
           this.processing = true
           try {
             let result = await this.$acs.createToken(this.accountId, this.password)
+            this.processing = false
 
             console.log('create token result: ', result)
 
@@ -92,6 +93,7 @@
               this.setLoginAccountId(this.accountId)
 
               if (window.acsConfig.inApp) {
+                console.log('close webview with result: ', result)
                 nativeApi.closeWebviewWithResult(result)
               } else {
                 if (this.redirectUri) {
@@ -101,7 +103,7 @@
             } else {
               this.setErrorMessage(this.$t(result.i18n_message))
             }
-          } catch (error) {
+          } catch (_) {
             this.setErrorMessage(this.$t('error.server.networkError'))
           }
           this.processing = false

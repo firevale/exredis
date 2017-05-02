@@ -15,7 +15,10 @@ export default {
       if (touchMap.has($v)) {
         clearTimeout(touchMap.get($v))
       }
-      touchMap.set($v, setTimeout($v.$touch, 500))
+      touchMap.set($v, setTimeout(_ => {
+        console.log('touch validation after timeout', $v)
+        $v.$touch()
+      }), 1000)
     },
 
     togglePasswordVisibility: function() {
@@ -31,6 +34,7 @@ export default {
 
   mounted() {
     this.$watch('$v.accountId', v => {
+      console.log('validation $v.accountId is changed', v, this.errorMessage)
       if (!this.errorMessage && !v.$pending && v.$invalid) {
         if (!v.required) {
           if (window.acsConfig.isMobileAccountSupported) {
@@ -49,6 +53,7 @@ export default {
     })
 
     this.$watch('$v.password', v => {
+      console.log('validation $v.password is changed', v, this.errorMessage)
       if (!this.errorMessage && !v.$pending && v.$invalid) {
         if (!v.required) {
           this.errorMessage = this.$t('error.validation.requirePassword')
@@ -61,6 +66,7 @@ export default {
     })
 
     this.$watch('$v.verifyCode', v => {
+      console.log('validation $v.verifyCode is changed', v, this.errorMessage)
       if (!this.errorMessage && !v.$pending && v.$invalid) {
         if (!v.required) {
           this.errorMessage = this.$t('error.validation.requireVerifyCode')
@@ -71,6 +77,12 @@ export default {
         }
       }
     })
+  },
+
+  watch: {
+    errorMessage: function(newMessage) {
+      console.log('error messsage is set to: ', newMessage)
+    }
   },
 
   computed: {

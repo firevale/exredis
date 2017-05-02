@@ -322,7 +322,7 @@ defmodule Utils do
   end
 
   def deploy_image_file(from: from, to: to) do 
-    {:ok, {path, _width, _height}} = deploy_image_file_return_size(from: from, to: to)
+    {:ok, path, _width, _height} = deploy_image_file_return_size(from: from, to: to)
     {:ok, path}
   end
 

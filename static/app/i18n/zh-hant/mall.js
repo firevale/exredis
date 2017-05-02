@@ -74,6 +74,10 @@ export default {
     setDefaultSuccess: '設置默認地址成功',
     addSuccess: '地址添加成功',
     updateSuccess: '地址更新成功',
+    namePlaceholder: '請輸入您的大名',
+    mobilePlaceholder: '請輸入您的手機號碼',
+    areaPlaceholder: '請選擇您所在的地區',
+    addressPlaceholder: '請輸入您的地址',
     fields: {
       name: '姓名',
       mobile: '手機',

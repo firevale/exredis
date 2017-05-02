@@ -79,6 +79,8 @@
      maxResidentNameLength: '姓名太长了',
      minResidentIdLength: '身份证号码至少15位',
      maxResidentIdLength: '身份证号码最长18位',
+     minAddressLength: '地址太短了',
+     maxAddressLength: '地址太长了',
      emailNotChanged: '当前已绑定此电子邮箱',
      postContentRequired: '帖子内容不能为空',
      postTitleMinLength: '标题文字太短了',

@@ -155,6 +155,9 @@ export default {
     ]),
 
     handleSubmit: async function() {
+      if (this.app.has_forum) {
+        if (!this.app.forum_name) this.app.forum_name = this.app.name
+      }
       this.processing = true
 
       let result = await this.$acs.updateAppInfo({

@@ -78,10 +78,13 @@
       ]),
 
       handleSubmit: async function() {
+        console.log('handle submit, validation: ', this.$v.$invalid, 'processing: ', this.processing)
         if (!this.$v.$invalid && !this.processing) {
           this.processing = true
           try {
             let result = await this.$acs.createToken(this.accountId, this.password)
+
+            console.log('create token result: ', result)
 
             if (result.success) {
               this.addLoginnedAccount(result)

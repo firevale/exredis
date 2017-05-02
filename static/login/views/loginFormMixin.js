@@ -32,10 +32,8 @@ export default {
         if (typeof this.$v.accountId == 'object' && !this.$v.accountId.required) {
           if (window.acsConfig.isMobileAccountSupported) {
             if (this.$route.name == 'registerStep1') {
-              console.log('require mobile number')
               return this.$t('error.validation.requireMobile')
             } else {
-              console.log('require account id')
               return this.$t('error.validation.requireAccountId')
             }
           } else {

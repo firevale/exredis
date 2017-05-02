@@ -78,6 +78,8 @@ export default {
     maxResidentNameLength: '姓名太長了',
     minResidentIdLength: '身份證號碼至少15位',
     maxResidentIdLength: '身份證號碼最長18位',
+    minAddressLength: '地址太短了',
+    maxAddressLength: '地址太長了',
     emailNotChanged: '當前已綁定此電子郵箱',
     postContentRequired: '帖子內容不能為空',
     postTitleMinLength: '標題文字太短了',

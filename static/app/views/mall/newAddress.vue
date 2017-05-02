@@ -71,23 +71,23 @@ export default {
   computed: {
     errorHint: function() {
       if (!this.$v.addressModel.name.required) {
-        return this.$t('mall.address.fields.name') + this.$t('mall.address.namePlaceholder')
+        return this.$t('mall.address.namePlaceholder')
+      } else if (!this.$v.addressModel.name.minLength) {
+        return this.$t('error.validation.minResidentNameLength')
       } else if (!this.$v.addressModel.name.maxLength) {
-        return this.$t('mall.address.fields.name') + this.$t('mall.address.namePlaceholder')
+        return this.$t('error.validation.maxResidentNameLength')
       } else if (!this.$v.addressModel.mobile.required) {
         return this.$t('mall.address.mobilePlaceholder')
-      } else if (!this.$v.addressModel.mobile.minLength) {
-        return this.$t('mall.address.mobilePlaceholder')
-      } else if (!this.$v.addressModel.mobile.maxLength) {
-        return this.$t('mall.address.mobilePlaceholder')
       } else if (!this.$v.addressModel.mobile.isValidMobileNumber) {
-        return this.$t('mall.address.mobileFormatError')
+        return this.$t('error.validation.invalidMobileNumber')
       } else if (!this.$v.addressModel.area.required) {
         return this.$t('mall.address.areaPlaceholder')
       } else if (!this.$v.addressModel.address.required) {
-        return this.$t('mall.address.fields.address') + this.$t('mall.address.addressPlaceholder')
+        return this.$t('mall.address.addressPlaceholder')
+      } else if (!this.$v.addressModel.address.minLength) {
+        return this.$t('error.validation.minAddressLength')
       } else if (!this.$v.addressModel.address.maxLength) {
-        return this.$t('mall.address.fields.address') + this.$t('mall.address.addressPlaceholder')
+        return this.$t('error.validation.maxAddressLength')
       }
 
       return ''
@@ -117,19 +117,17 @@ export default {
     addressModel: {
       name: {
         required,
-        minLength: minLength(2),
-        maxLength: maxLength(45)
+        minLength: minLength(4),
+        maxLength: maxLength(50)
       },
       mobile: {
         required,
-        isValidMobileNumber,
-        minLength: minLength(11),
-        maxLength: maxLength(11)
+        isValidMobileNumber
       },
       address: {
         required,
-        minLength: minLength(5),
-        maxLength: maxLength(150)
+        minLength: minLength(10),
+        maxLength: maxLength(250)
       },
       area: {
         required,

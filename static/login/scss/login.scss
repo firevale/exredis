@@ -31,8 +31,14 @@ body.android {
   }
 }
 
-body.in-app *:not(input) {
-  user-select: none;
+body.in-app {
+  * {
+    user-select: none;
+  }
+
+  input {
+    user-select: text;
+  }
 }
 
 $form-height: 230px;

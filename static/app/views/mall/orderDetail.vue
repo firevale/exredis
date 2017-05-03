@@ -72,6 +72,7 @@ import {
 } from 'vuex'
 
 import * as utils from 'common/js/utils'
+import * as acs from 'common/js/acs'
 
 export default {
   components: {},
@@ -81,6 +82,7 @@ export default {
     ]),
   },
   mounted: async function() {
+    acs.checkIsLogin(_ => {})
     if (this.selectedOrder.id == "") {
       let result = await this.$acs.fetchMallOrder({
         order_id: this.$route.params.orderId

@@ -51,12 +51,14 @@ import Vue from '../../vue-installed'
 import scroller from 'common/components/scroller'
 import Toast from 'common/components/toast'
 import AlertDialog from 'common/components/alertDialog'
+import * as acs from 'common/js/acs'
 
 export default {
   components: {
     scroller
   },
   mounted: async function() {
+    acs.checkIsLogin(_ => {})
     await this.loadAddress()
   },
   data: function() {

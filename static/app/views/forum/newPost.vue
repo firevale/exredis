@@ -169,21 +169,23 @@ export default {
       })
     },
 
-    onInsertImage: function(editor) {
+    onInsertImage: async function(editor) {
       if (window.acsConfig.inApp) {
         let items = [{
           title: this.$t('common.cancel'),
           value: 'cancel',
         }]
 
-        if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
+        let isPhotoLibAvailable = await nativeApi.isMediaSourceTypeAvailable('photoLib')
+        if (isPhotoLibAvailable) {
           items.unshift({
             title: this.$t('common.photoLib'),
             value: 'photoLib',
           })
         }
 
-        if (nativeApi.isMediaSourceTypeAvailable('camera')) {
+        let isCameraLibAvailable = await nativeApi.isMediaSourceTypeAvailable('camera')
+        if (isCameraLibAvailable) {
           items.unshift({
             title: this.$t('common.camera'),
             value: 'camera',

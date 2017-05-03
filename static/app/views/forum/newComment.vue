@@ -112,21 +112,23 @@ export default {
       touchMap.set($v, setTimeout($v.$touch(), 2000))
     },
 
-    onInsertImage: function(editor) {
+    onInsertImage: async function(editor) {
       if (window.acsConfig.inApp) {
         let items = [{
           title: this.$t('common.cancel'),
           value: 'cancel',
         }]
 
-        if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
+        let isPhotoLibAvailable = await nativeApi.isMediaSourceTypeAvailable('photoLib')
+        if (isPhotoLibAvailable) {
           items.unshift({
             title: this.$t('common.photoLib'),
             value: 'photoLib',
           })
         }
 
-        if (nativeApi.isMediaSourceTypeAvailable('camera')) {
+        let isCameraAvailable = await nativeApi.isMediaSourceTypeAvailable('camera')
+        if (isCameraAvailable) {
           items.unshift({
             title: this.$t('common.camera'),
             value: 'camera',

@@ -28,7 +28,7 @@ export default {
       window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'isMediaSourceTypeAvailable', params: type })
       return new Promise(function(resolve, reject) {
         window.acsConfig.isMediaSourceTypeAvailableCallback = (result) => {
-          window.acsConfig.isMediaSourceTypeAvailableCallback = null
+          window.acsConfig.isMediaSourceTypeAvailableCallback = undefined
           resolve(result)
         }
       })
@@ -39,20 +39,32 @@ export default {
   },
 
   pickAvatarFrom: function(type, callback) {
-    if (typeof AndroidNativeAPI === 'object' &&
-      typeof AndroidNativeAPI.pickAvatarFrom === 'function') {} else if (typeof IOSNativeAPI === 'object' &&
-      typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.pickAvatarFrom === 'function') {
+
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
       IOSNativeAPI.pickAvatarFromCallback(type, callback)
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.acsConfig.pickImageCallback = result => {
+        window.acsConfig.pickImageCallback = undefined
+        callback(JSON.parse(result))
+      }
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'pickAvatarFrom', params: type })
     } else {
       console.error('native function isMediaSourceTypeAvailable is not available')
     }
   },
 
   pickImageFrom: function(type, callback) {
-    if (typeof AndroidNativeAPI === 'object' &&
-      typeof AndroidNativeAPI.pickImageFrom === 'function') {} else if (typeof IOSNativeAPI === 'object' &&
-      typeof IOSNativeAPI.pickImageFromCallback === 'function') {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.pickImageFrom === 'function') {
+
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.pickImageFromCallback === 'function') {
       IOSNativeAPI.pickImageFromCallback(type, callback)
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.acsConfig.pickImageCallback = result => {
+        window.acsConfig.pickImageCallback = undefined
+        callback(JSON.parse(result))
+      }
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'pickImageFrom', params: type })
     } else {
       console.error('native function isMediaSourceTypeAvailable is not available')
     }
@@ -68,7 +80,7 @@ export default {
         message, cancelBtnTitle, okBtnTitle, callback)
     } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
       window.acsConfig.showAlertDialogCallback = result => {
-        window.acsConfig.showAlertDialogCallback = null
+        window.acsConfig.showAlertDialogCallback = undefined
         callback(result)
       }
       window.webkit.messageHandlers.IOSNativeAPI.postMessage({
@@ -88,12 +100,20 @@ export default {
   getActiveSession: function() {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.getActiveSession === 'function') {
-      return JSON.parse(AndroidNativeAPI.getActiveSession())
+      return Promise.resolve(JSON.parse(AndroidNativeAPI.getActiveSession()))
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.getActiveSession === 'function') {
-      return IOSNativeAPI.getActiveSession()
+      return Promise.resolve(IOSNativeAPI.getActiveSession())
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'getActiveSession' })
+      return new Promise(function(resolve, reject) {
+        window.acsConfig.getActiveSessionCallback = (result) => {
+          window.acsConfig.getActiveSessionCallback = undefined
+          resolve(result)
+        }
+      })
     } else {
-      return undefined
+      return Promise.reject({ success: false })
     }
   },
 

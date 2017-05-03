@@ -142,7 +142,7 @@ export default {
       },
 
       updateMallInfo(params, successMessage) {
-        return post(Vue, '/mall_actions/update_mall_info', params, successMessage)
+        return post(Vue, '/admin_actions/mall/update_mall_info', params, successMessage)
       },
 
       fetchGoods(params) {
@@ -150,15 +150,15 @@ export default {
       },
 
       updateGoods(params) {
-        return post(Vue, '/mall_actions/update_goods', params)
+        return post(Vue, '/admin_actions/mall/update_goods', params)
       },
 
       toggleGoodsStatus(params) {
-        return post(Vue, '/mall_actions/toggle_goods_status', params)
+        return post(Vue, '/admin_actions/mall/toggle_goods_status', params)
       },
 
       deleteMallGoods(params) {
-        return post(Vue, '/mall_actions/delete_goods', params)
+        return post(Vue, '/admin_actions/mall/delete_goods', params)
       },
 
       getGoodsDetail(params) {
@@ -173,10 +173,10 @@ export default {
         return post(Vue, '/mall_actions/fetch_order', params)
       },
       updateOrderPayed(params) {
-        return post(Vue, '/mall_actions/update_order_payed', params)
+        return post(Vue, '/admin_actions/mall/update_order_payed', params)
       },
       refundOrder(params) {
-        return post(Vue, '/mall_actions/refund_order', params)
+        return post(Vue, '/admin_actions/mall/refund_order', params)
       }
     }
   }

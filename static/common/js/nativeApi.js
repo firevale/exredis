@@ -7,6 +7,8 @@ export default {
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.closeWebviewWithResult === 'function') {
       IOSNativeAPI.closeWebviewWithResult(result)
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'closeWebviewWithResult', params: result })
     } else if (window.acsConfig.platform == 'wp8') {
       let jsonStr = JSON.stringify(result)
       window.external.notify(jsonStr)
@@ -18,22 +20,29 @@ export default {
   isMediaSourceTypeAvailable: function(type) {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.isMediaSourceTypeAvailable === 'function') {
-      return false
+      return Promise.resolve(false)
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.isMediaSourceTypeAvailable === 'function') {
-      return IOSNativeAPI.isMediaSourceTypeAvailable(type) == 1
+      return Promise.resolve(IOSNativeAPI.isMediaSourceTypeAvailable(type) == 1)
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'isMediaSourceTypeAvailable', params: type })
+      return new Promise(function(resolve, reject) {
+        window.acsConfig.isMediaSourceTypeAvailableCallback = (result) => {
+          window.acsConfig.isMediaSourceTypeAvailableCallback = null
+          resolve(result)
+        }
+      })
     } else {
       console.error('native function isMediaSourceTypeAvailable is not available')
     }
-    return false
+    return Promise.resolve(false)
   },
 
   pickAvatarFrom: function(type, callback) {
     if (typeof AndroidNativeAPI === 'object' &&
-      typeof AndroidNativeAPI.pickAvatarFrom === 'function') {
-    } else if (typeof IOSNativeAPI === 'object' &&
+      typeof AndroidNativeAPI.pickAvatarFrom === 'function') {} else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
-      IOSNativeAPI.pickAvatarFromCallback(type, callback) 
+      IOSNativeAPI.pickAvatarFromCallback(type, callback)
     } else {
       console.error('native function isMediaSourceTypeAvailable is not available')
     }
@@ -41,10 +50,9 @@ export default {
 
   pickImageFrom: function(type, callback) {
     if (typeof AndroidNativeAPI === 'object' &&
-      typeof AndroidNativeAPI.pickImageFrom === 'function') {
-    } else if (typeof IOSNativeAPI === 'object' &&
+      typeof AndroidNativeAPI.pickImageFrom === 'function') {} else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.pickImageFromCallback === 'function') {
-      IOSNativeAPI.pickImageFromCallback(type, callback) 
+      IOSNativeAPI.pickImageFromCallback(type, callback)
     } else {
       console.error('native function isMediaSourceTypeAvailable is not available')
     }
@@ -58,6 +66,20 @@ export default {
       typeof IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback === 'function') {
       IOSNativeAPI.showAlertDialogMessageCancelTitleOkTitleCallback(title,
         message, cancelBtnTitle, okBtnTitle, callback)
+    } else if (typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.acsConfig.showAlertDialogCallback = result => {
+        window.acsConfig.showAlertDialogCallback = null
+        callback(result)
+      }
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({
+        method: 'showAlertDialog',
+        params: {
+          title,
+          message,
+          cancelBtnTitle,
+          okBtnTitle
+        }
+      })
     } else {
       console.error('dont know how to show alert dialog')
     }

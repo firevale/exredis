@@ -28,7 +28,19 @@ defmodule Acs.AdminRouter do
     post  "/update_setting", AdminSettingController, :update_setting
     post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
 
-    
-  end
+    scope "mall/" do
+      post  "/update_mall_icon", MallController, :update_mall_icon
+      post  "/update_mall_info", MallController, :update_mall_info
 
+      post  "/update_goods_pic", MallController, :update_goods_pic
+      post  "/update_goods_content_pic", MallController, :update_goods_content_pic
+      post  "/update_goods", MallController, :update_goods
+      post  "/delete_goods", MallController, :delete_goods
+      post  "/toggle_goods_status", MallController, :toggle_goods_status
+
+      post "/refund_order", MallOrderController, :refund_order
+      post "/update_order_payed", MallOrderController, :update_order_payed
+    end
+
+  end
 end

@@ -10,7 +10,7 @@ defmodule Acs.MallOrderController do
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :fetch_device_id
-  plug :check_is_admin when action in [:delete_goods]
+  plug :check_is_admin when action in [:delete_goods, :update_order_payed, :refund_order]
 
   # fetch_malls
   def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
@@ -237,9 +237,10 @@ defmodule Acs.MallOrderController do
 
   def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}),
     do: json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
-  def update_order_payed(conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
+  def update_order_payed(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
     order = fetch_order_info(order_id)
     payed_status = 1
+    admin_user = RedisUser.find(admin_user_id)
 
     if order.status !=0 and order.status != -1 do
       json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
@@ -257,7 +258,7 @@ defmodule Acs.MallOrderController do
           end)
 
           from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payed_status ,transaction_id: transaction_id])
-          MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payed_status, content: %{ transaction_id: transaction_id} }) |> Repo.insert
+          MallOPLog.changeset(%MallOPLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payed_status, admin_user: admin_user.email, content: %{ transaction_id: transaction_id} }) |> Repo.insert
         end)
 
       case result do
@@ -271,10 +272,10 @@ defmodule Acs.MallOrderController do
     end
   end
 
-  def refund_order(conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
+  def refund_order(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
     order = fetch_order_info(order_id)
     refund_free = refund_money * 100
-
+    admin_user = RedisUser.find(admin_user_id)
     cond do
       refund_free > order.final_price ->
         json(conn, %{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
@@ -291,7 +292,7 @@ defmodule Acs.MallOrderController do
             end)
 
             from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])
-            MallOPLog.changeset(%MallOPLog{},%{mall_order_id: order_id,  status: order.status, changed_status: cancel_status, content: %{refund_money: refund_free} }) |> Repo.insert
+            MallOPLog.changeset(%MallOPLog{},%{mall_order_id: order_id,  status: order.status, changed_status: cancel_status, admin_user: admin_user.email, content: %{refund_money: refund_free} }) |> Repo.insert
          end)
         case result do
           {:error, i18n_message} ->

@@ -4,6 +4,7 @@ defmodule Acs.UserController do
 
   plug :fetch_app_id
   plug :fetch_app
+  plug :fetch_user_id
   plug :fetch_session_user_id  
   plug :fetch_session_user
   plug :no_emoji, [param_name: "nickname"] when action == :update_nickname
@@ -26,7 +27,7 @@ defmodule Acs.UserController do
     conn |> json(%{success: false, message: "invalid account id"})
   end
   # 兼容旧fvsdk
-  def create_token(conn, %{"user_key" => account_id, "password" => password} = params) do
+  def create_token(conn, %{"user_key" => account_id, "password" => password}) do
     create_token(conn, %{"account_id" => account_id, "password" => password})
   end
   def create_token(%Plug.Conn{private: %{acs_app_id: app_id,
@@ -70,7 +71,7 @@ defmodule Acs.UserController do
   def bind_anonymous(%Plug.Conn{private: %{acs_app_id: app_id,
                                            acs_device_id: device_id,
                                            acs_platform: platform}} = conn,
-                   %{"email" => account_id, "password" => password} = params) do
+                   %{"email" => account_id, "password" => password}) do
     if RedisUser.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
@@ -87,7 +88,7 @@ defmodule Acs.UserController do
   def email_regist(%Plug.Conn{private: %{acs_app_id: app_id,
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
-                   %{"email" => account_id, "password" => password} = params) do
+                   %{"email" => account_id, "password" => password}) do
     if RedisUser.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
@@ -107,7 +108,7 @@ defmodule Acs.UserController do
   def create_user(%Plug.Conn{private: %{acs_app_id: app_id,
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn,
-                   %{"account_id" => account_id, "password" => password, "verify_code" => verify_code} = params) do
+                   %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do
     if RedisUser.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
@@ -159,7 +160,7 @@ defmodule Acs.UserController do
   end
 
   def update_mobile(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
-                    %{"mobile" => mobile, "verify_code" => verify_code} = params) do
+                    %{"mobile" => mobile, "verify_code" => verify_code}) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
         case RedisUser.find(mobile) do 
@@ -188,7 +189,7 @@ defmodule Acs.UserController do
   end
 
   def update_email(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
-                   %{"email" => email, "verify_code" => verify_code} = params) do
+                   %{"email" => email, "verify_code" => verify_code}) do
     case get_session(conn, :bind_email_verify_code) do
       ^verify_code ->
         case RedisUser.find(email) do 
@@ -217,7 +218,7 @@ defmodule Acs.UserController do
   end
 
   def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
-                      %{"nickname" => nickname} = params) do
+                      %{"nickname" => nickname}) do
                 
     query = from u in Acs.User,
             select: count(1),
@@ -237,7 +238,7 @@ defmodule Acs.UserController do
   end
 
   def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
-                           %{"resident_id" => resident_id, "resident_name" => resident_name} = params) do
+                           %{"resident_id" => resident_id, "resident_name" => resident_name}) do
     user = %{user | resident_id: resident_id, resident_name: resident_name}
     RedisUser.save!(user)
     conn |> json(%{success: true})

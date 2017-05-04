@@ -1,6 +1,6 @@
 <template>
-  <div v-if="address.id>0" class="edit-address columns is-multiline is-mobile">
-    <form @submit.prevent="handleSubmit">
+  <div class="edit-address columns is-multiline is-mobile">
+    <form v-if="address.id>0" @submit.prevent="handleSubmit">
       <div class="column is-12 has-bottom-line">
         <div class="level is-mobile">
           <div class="level-item">

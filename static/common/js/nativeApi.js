@@ -31,6 +31,8 @@ export default {
   pickAvatarFrom: function(type, callback) {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.pickAvatarFrom === 'function') {
+      window.pickAvatarFromCallback = callback
+      AndroidNativeAPI.pickAvatarFrom(type)
     } else if (typeof IOSNativeAPI === 'object' &&
       typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
       IOSNativeAPI.pickAvatarFromCallback(type, callback) 

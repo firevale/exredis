@@ -36,7 +36,9 @@ export default {
   components: {
     sliderNav
   },
-  mounted: async function() {},
+  mounted: function() {
+    acs.checkIsLogin(_ => {})
+  },
   data: function() {
     return {
       menus: [{

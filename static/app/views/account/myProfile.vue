@@ -104,21 +104,23 @@ export default {
       'updateUserAvatar'
     ]),
 
-    onUpdateAvatar: function() {
+    onUpdateAvatar: async function() {
       if (window.acsConfig.inApp) {
         let items = [{
           title: this.$t('common.cancel'),
           value: 'cancel',
         }]
 
-        if (nativeApi.isMediaSourceTypeAvailable('photoLib')) {
+        let isPhotoLibAvailable = await nativeApi.isMediaSourceTypeAvailable('photoLib')
+        if (isPhotoLibAvailable) {
           items.unshift({
             title: this.$t('common.photoLib'),
             value: 'photoLib',
           })
         }
 
-        if (nativeApi.isMediaSourceTypeAvailable('camera')) {
+        let isCameraAvailable = await nativeApi.isMediaSourceTypeAvailable('camera')
+        if (isCameraAvailable) {
           items.unshift({
             title: this.$t('common.camera'),
             value: 'camera',

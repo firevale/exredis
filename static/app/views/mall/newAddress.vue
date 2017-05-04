@@ -68,6 +68,9 @@ export default {
     scroller,
     citySelect
   },
+  mounted: function() {
+    acs.checkIsLogin(_ => {})
+  },
   computed: {
     errorHint: function() {
       if (!this.$v.addressModel.name.required) {

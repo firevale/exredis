@@ -85,7 +85,7 @@
           try {
             let result = await this.$acs.createToken(this.accountId, this.password)
             this.processing = false
-            console.log('create token result: ', result)
+            console.info('create token result: ', result)
 
             if (result.success) {
               this.addLoginnedAccount(result)

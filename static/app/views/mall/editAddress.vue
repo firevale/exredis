@@ -68,6 +68,7 @@ export default {
     citySelect
   },
   mounted: async function() {
+    acs.checkIsLogin(_ => {})
     await this.getAddressDetail()
   },
   computed: {

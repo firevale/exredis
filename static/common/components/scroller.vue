@@ -93,6 +93,7 @@ export default {
         scrollX: false,
         scrollY: true,
         probeType: 2,
+        tap: true,
       })
       this.iscroll.on('scrollStart', this.scrollStart)
       this.iscroll.on('scrollCancel', this.scrollCancel)

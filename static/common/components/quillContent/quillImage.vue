@@ -10,8 +10,6 @@
   </div>
 </template>
 <script>
-import * as utils from 'common/js/filters.js'
-
 import Vue from 'vue'
 import VueProgressiveImage from 'vue-progressive-image'
 Vue.use(VueProgressiveImage, {
@@ -32,6 +30,10 @@ export default {
     }
   },
 
+  created() {
+    this.$emit('add', this.src)
+  },
+
   mounted() {
     this.maxWidth = this.$refs.container.clientWidth
     this.onResize = window.addEventListener('resize', _ => {
@@ -39,6 +41,9 @@ export default {
         this.maxWidth = this.$refs.container.clientWidth
       })
     })
+    this.$el.addEventListener('tap', _ => {
+      this.$emit('tap', this.src)
+    }, false)
   },
 
   destroyed() {

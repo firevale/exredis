@@ -45,8 +45,8 @@
   export default {
     mixins: [loginFormMixin],
 
-    beforeMount: function() {
-      let activeSession = nativeApi.getActiveSession()
+    beforeMount: async function() {
+      let activeSession = await nativeApi.getActiveSession()
       if (activeSession) {
         this.addLoginnedAccount(activeSession)
       }

@@ -117,7 +117,8 @@ export default {
       return new Promise(function(resolve, reject) {
         window.acsConfig.getActiveSessionCallback = (result) => {
           window.acsConfig.getActiveSessionCallback = undefined
-          resolve(result)
+          console.log('get active session: ', result)
+          resolve(JSON.parse(result))
         }
       })
     } else {

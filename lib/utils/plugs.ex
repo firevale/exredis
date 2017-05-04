@@ -164,6 +164,13 @@ defmodule Acs.Plugs do
     end
   end
   def fetch_session_user(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _options) do
+    _fetch_session_user(conn, user_id)
+  end
+  def fetch_session_user(%Plug.Conn{private: %{acs_user_id: user_id}} = conn, _options) do
+    _fetch_session_user(conn, user_id)
+  end
+  def fetch_session_user(%Plug.Conn{} = conn, _options), do: conn
+  defp _fetch_session_user(conn, user_id) do
     case RedisUser.find(String.to_integer("#{user_id}")) do
       nil -> conn
       _ = user ->
@@ -175,7 +182,6 @@ defmodule Acs.Plugs do
         end
     end
   end
-  def fetch_session_user(%Plug.Conn{} = conn, _options), do: conn
 
   def fetch_user_id(%Plug.Conn{} = conn, _options) do
     case _fetch_header_user_id(conn) || _fetch_params_user_id(conn) do

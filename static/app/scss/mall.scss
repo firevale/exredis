@@ -23,15 +23,16 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    figure.image.is-40vwx40vw {
-      width: 36vw;
-      height: 36vw;
+    margin-top: 0.5rem;
+    .image.is-40vwx40vw {
+      width: 40vw;
+      height: 40vw;
       img {
         width: 100%;
         height: 100%;
         display: block;
         margin: 0;
-        padding: 0.35rem;
+        padding: 0.25rem;
         border: 1px $grey solid;
       }
     }
@@ -39,8 +40,9 @@
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
-      padding: 0 8vw;
+      padding: 0 5vw;
       .goods-item {
+        width: 41vw;
         flex-grow: 0;
         flex-shrink: 1;
         flex-basis: auto;

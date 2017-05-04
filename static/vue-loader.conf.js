@@ -9,7 +9,7 @@ module.exports = {
   }),
   postcss: [
     require('autoprefixer')({
-      browsers: ['last 3 versions', 'iOS >= 8', 'Safari >= 8']
+      browsers: ['last 3 versions', 'iOS >= 8', 'Safari >= 8', 'Android >= 4.4']
     })
   ]
 }

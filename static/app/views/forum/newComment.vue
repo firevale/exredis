@@ -164,6 +164,8 @@ export default {
               editor.focus()
               let range = editor.getSelection()
               editor.insertEmbed(range.index, 'image', response.link)
+              editor.formatText(range.index, 1, 'width', response.width)
+              editor.formatText(range.index, 1, 'height', response.height)
             } else if (response.i18n_message) {
               Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
             } else if (response.message) {
@@ -197,6 +199,8 @@ export default {
           editor.focus()
           let range = editor.getSelection()
           editor.insertEmbed(range.index, 'image', upload_result.link)
+          editor.formatText(range.index, 1, 'width', upload_result.width)
+          editor.formatText(range.index, 1, 'height', upload_result.height)
         }
       }
     },

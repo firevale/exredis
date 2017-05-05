@@ -4,11 +4,9 @@ import {
 } from 'admin/miscellaneous'
 
 import { i18n } from './vue-i18n'
+import axios from 'axios'
 
-
-const processResponse = async(Vue, response, successMessage) => {
-  let result = await response.json()
-
+const processResponse = (result, successMessage) => {
   if (!result.success) {
     processAjaxError(result)
   } else if (successMessage) {
@@ -27,85 +25,84 @@ const processResponse = async(Vue, response, successMessage) => {
     })
   }
 
-  return result
+  return Promise.resolve(result)
 }
 
-const post = async(Vue, uri, params, successMessage) => {
-  try {
-    let response = await Vue.http.post(uri, params)
-    return processResponse(Vue, response, successMessage)
-  } catch (_) {
-    openNotification({
-      title: i18n.t('admin.notification.title.failed'),
-      message: i18n.t('admin.notification.message.unknownError'),
-      type: 'danger',
-      duration: 4500,
+const post = (uri, params, successMessage) => {
+  return axios.post(uri, params)
+    .then(response => processResponse(response.data, successMessage))
+    .catch(e => {
+      openNotification({
+        title: i18n.t('admin.notification.title.failed'),
+        message: i18n.t('admin.notification.message.unknownError'),
+        type: 'danger',
+        duration: 4500,
+      })
+      return Promise.resolve({ success: false })
     })
-    return { success: false }
-  }
 }
 
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
       updateAppInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_app_info', params, successMessage)
+        return post('/admin_actions/update_app_info', params, successMessage)
       },
 
       updateAppSdkInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_app_sdk_info', params, successMessage)
+        return post('/admin_actions/update_app_sdk_info', params, successMessage)
       },
 
       updateAppGoodsInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/update_app_goods_info', params, successMessage)
+        return post('/admin_actions/update_app_goods_info', params, successMessage)
       },
 
       updateAppGoodsProductId(params, successMessage) {
-        return post(Vue, '/admin_actions/update_app_goods_product_id', params, successMessage)
+        return post('/admin_actions/update_app_goods_product_id', params, successMessage)
       },
 
       deleteAppGoods(params, successMessage) {
-        return post(Vue, '/admin_actions/delete_app_goods', params, successMessage)
+        return post('/admin_actions/delete_app_goods', params, successMessage)
       },
 
       generateDummySdkInfo(params) {
-        return post(Vue, '/admin_actions/generate_dummy_sdk_info', params)
+        return post('/admin_actions/generate_dummy_sdk_info', params)
       },
 
       fetchOrders(params) {
-        return post(Vue, '/admin_actions/fetch_orders', params)
+        return post('/admin_actions/fetch_orders', params)
       },
 
       searchOrders(params) {
-        return post(Vue, '/admin_actions/search_orders', params)
+        return post('/admin_actions/search_orders', params)
       },
 
       updateForumInfo(params, successMessage) {
-        return post(Vue, '/forum_actions/update_forum_info', params, successMessage)
+        return post('/forum_actions/update_forum_info', params, successMessage)
       },
 
       updateForumSectionInfo(params, successMessage) {
-        return post(Vue, '/forum_actions/update_section_info', params, successMessage)
+        return post('/forum_actions/update_section_info', params, successMessage)
       },
 
       getSetting(params) {
-        return post(Vue, '/admin_actions/get_setting', params)
+        return post('/admin_actions/get_setting', params)
       },
 
       getSettingsByGroup(params) {
-        return post(Vue, '/admin_actions/get_settings_by_group', params)
+        return post('/admin_actions/get_settings_by_group', params)
       },
 
       updateSettingByName(params, successMessage) {
-        return post(Vue, '/admin_actions/update_setting_by_name', params, successMessage)
+        return post('/admin_actions/update_setting_by_name', params, successMessage)
       },
 
       deleteSettingByName(params, successMessage) {
-        return post(Vue, '/admin_actions/delete_setting', params, successMessage)
+        return post('/admin_actions/delete_setting', params, successMessage)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {
-        return post(Vue, '/games_actions/get_paged_news_admin', {
+        return post('/games_actions/get_paged_news_admin', {
           app_id,
           group,
           page,
@@ -114,7 +111,7 @@ export default {
       },
 
       getPagedQuestions(app_id, page, records_per_page) {
-        return post(Vue, '/customer_service_actions/get_paged_questions', {
+        return post('/customer_service_actions/get_paged_questions', {
           app_id,
           page,
           records_per_page
@@ -122,61 +119,63 @@ export default {
       },
 
       updateQuestion(params, successMessage) {
-        return post(Vue, '/customer_service_actions/update_question', params, successMessage)
+        return post('/customer_service_actions/update_question', params, successMessage)
       },
 
       deleteQuestion(params, successMessage) {
-        return post(Vue, '/customer_service_actions/delete_question', params, successMessage)
+        return post('/customer_service_actions/delete_question', params, successMessage)
       },
 
       getNewsDetail(news_id) {
-        return post(Vue, '/games_actions/get_news_detail', { news_id })
+        return post('/games_actions/get_news_detail', { news_id })
       },
 
       updateNews(params) {
-        return post(Vue, '/games_actions/update_news', params)
+        return post('/games_actions/update_news', params)
       },
 
       toggleStatus(params, successMessage) {
-        return post(Vue, '/games_actions/toggle_news_status', params, successMessage)
+        return post('/games_actions/toggle_news_status', params, successMessage)
       },
 
       updateMallInfo(params, successMessage) {
-        return post(Vue, '/admin_actions/mall/update_mall_info', params, successMessage)
+        return post('/admin_actions/mall/update_mall_info', params, successMessage)
       },
 
       fetchGoods(params) {
-        return post(Vue, '/mall_actions/fetch_goods', params)
+        return post('/mall_actions/fetch_goods', params)
       },
 
       updateGoods(params) {
-        return post(Vue, '/admin_actions/mall/update_goods', params)
+        return post('/admin_actions/mall/update_goods', params)
       },
 
       toggleGoodsStatus(params) {
-        return post(Vue, '/admin_actions/mall/toggle_goods_status', params)
+        return post('/admin_actions/mall/toggle_goods_status', params)
       },
 
       deleteMallGoods(params) {
-        return post(Vue, '/admin_actions/mall/delete_goods', params)
+        return post('/admin_actions/mall/delete_goods', params)
       },
 
       getGoodsDetail(params) {
-        return post(Vue, '/mall_actions/get_goods_detail', params)
+        return post('/mall_actions/get_goods_detail', params)
       },
 
       fetchMallOrders(params) {
-        return post(Vue, '/mall_actions/fetch_order_list', params)
+        return post('/mall_actions/fetch_order_list', params)
       },
 
       fetchMallOrder(params) {
-        return post(Vue, '/mall_actions/fetch_order', params)
+        return post('/mall_actions/fetch_order', params)
       },
+
       updateOrderPayed(params) {
-        return post(Vue, '/admin_actions/mall/update_order_payed', params)
+        return post('/admin_actions/mall/update_order_payed', params)
       },
+
       refundOrder(params) {
-        return post(Vue, '/admin_actions/mall/refund_order', params)
+        return post('/admin_actions/mall/refund_order', params)
       }
     }
   }

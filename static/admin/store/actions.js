@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import Vue from 'vue'
+import axios from 'axios'
 
 import {
   processAjaxError
@@ -33,8 +33,8 @@ export const switchEffect = ({
 export const fetchPlatformApps = ({
   commit
 }) => {
-  Vue.http.get('/admin_actions/fetch_apps', {})
-    .then(res => res.json())
+  axios.get('/admin_actions/fetch_apps', {})
+    .then(res => res.data)
     .then(result => {
       if (result.success) {
         commit(types.UPDATE_APPS, result.apps)
@@ -47,8 +47,8 @@ export const fetchPlatformApps = ({
 export const fetchSupportedSdks = ({
   commit
 }) => {
-  Vue.http.get('/admin_actions/fetch_supported_sdks', {})
-    .then(res => res.json())
+  axios.get('/admin_actions/fetch_supported_sdks', {})
+    .then(res => res.data)
     .then(result => {
       if (result.success) {
         commit(types.UPDATE_SDKS, result.sdks)
@@ -73,8 +73,8 @@ export const addForum = ({
 export const fetchForums = ({
   commit
 }) => {
-  Vue.http.get('/forum_actions/fetch_forums', {})
-    .then(res => res.json())
+  axios.get('/forum_actions/fetch_forums', {})
+    .then(res => res.data)
     .then(result => {
       if (result.success) {
         commit(types.UPDATE_FORUMS, result.forums)
@@ -87,8 +87,8 @@ export const fetchForums = ({
 export const fetchMalls = ({
   commit
 }) => {
-  Vue.http.get('/mall_actions/fetch_malls', {})
-    .then(res => res.json())
+  axios.get('/mall_actions/fetch_malls', {})
+    .then(res => res.data)
     .then(result => {
       if (result.success) {
         commit(types.UPDATE_MALLS, result.malls)

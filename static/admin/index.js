@@ -2,7 +2,8 @@ import 'babel-polyfill'
 
 import Vue from 'vue'
 import {i18n} from 'admin/vue-i18n'
-import Resource from 'vue-resource'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import NProgress from 'vue-nprogress'
 import { sync } from 'vuex-router-sync'
 import VueI18n from 'vue-i18n'
@@ -24,13 +25,13 @@ require('admin/scss/admin.scss')
 
 Vue.use(VueI18n)
 Vue.use(Vuelidate)
-Vue.use(Resource)
+Vue.use(VueAxios, axios)
 Vue.use(NProgress)
 Vue.use(ServerApi)
 Vue.use(VueDragula)
 Vue.use(VueQuillEditor)
 
-Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
+axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 
 sync(store, router)
 

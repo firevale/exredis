@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import VueTimeago from 'vue-timeago'
 import VueI18n from 'vue-i18n'
 import Vuelidate from 'vuelidate'
@@ -11,7 +12,6 @@ import VueQuillEditor from 'common/components/quillEditor'
 import * as acs from 'common/js/acs'
 
 Vue.use(Vuelidate)
-Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(VueQuillEditor)
@@ -20,6 +20,7 @@ Vue.use(VueLazyLoad, {
   listenEvents: [ 'scroll' ]
 })
 Vue.use(VueTouch, {name: 'v-touch'})
+Vue.use(VueAxios, axios)
 Vue.use(ServerApi)
 Vue.use(VueTimeago, {
   locale: 'zh-CN',
@@ -31,8 +32,8 @@ Vue.use(VueTimeago, {
 import quillContent from 'common/components/quillContent'
 Vue.component('quill-content', quillContent)
 
-Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
-Vue.http.headers.common['acs-app-id'] = acs.getAppId()
-Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()
+axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
+axios.defaults.headers.common['acs-app-id'] = acs.getAppId()
+axios.defaults.headers.common['acs-device-id'] = acs.getDeviceId()
 
 export default Vue

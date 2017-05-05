@@ -158,14 +158,9 @@ export default {
     },
 
     preview: function() {
+      this.editingPostData.sectionTitle = this.sectionMenuItems[this.editingPostData.selectedSectionId].title
       this.$router.push({
-        name: 'preview',
-        params: {
-          content: this.editingPostData.content,
-          section: this.sectionMenuItems[this.editingPostData.selectedSectionId].title,
-          title: this.editingPostData.title,
-          selectedSectionId: this.editingPostData.selectedSectionId
-        },
+        name: 'preview'
       })
     },
 
@@ -256,8 +251,8 @@ export default {
           editor.focus()
           let range = editor.getSelection()
           editor.insertEmbed(range.index, 'image', upload_result.link)
-          editor.formatText(index, 1, 'width', upload_result.width)
-          editor.formatText(index, 1, 'height', upload_result.height)
+          editor.formatText(range.index, 1, 'width', upload_result.width)
+          editor.formatText(range.index, 1, 'height', upload_result.height)
         }
       }
     },

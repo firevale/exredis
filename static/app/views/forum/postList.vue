@@ -5,12 +5,11 @@
         <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
         <span class="seperator"></span>
         <div class="tile">
-          <v-touch @tap="loading || setCurrentSectionId(0)" class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'"
-            tag="a">
+          <v-touch @tap="setCurrentSectionId(0)" class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" tag="a">
             {{ $t('forum.postList.all') }}
           </v-touch>
-          <v-touch v-for="section in forumInfo.sections" @tap="loading || setCurrentSectionId(section.id)" class="button" :key="section.id"
-            :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'" tag="a">
+          <v-touch v-for="section in forumInfo.sections" @tap="setCurrentSectionId(section.id)" class="button" :key="section.id" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
+            tag="a">
             {{ section.title }}
           </v-touch>
         </div>
@@ -42,7 +41,9 @@ export default {
 
   watch: {
     'currentSectionId' (newVal, oldVal) {
-      this.resetScroller()
+      if (oldVal != newVal) {
+        this.$nextTick(_ => this.resetScroller())
+      }
     }
   },
 
@@ -115,8 +116,16 @@ export default {
     loadmore: async function() {
       this.loading = true
 
-      let result = await this.$acs.getPagedPost(this.page + 1, this.recordsPerPage, this.postsOrderByField,
-        this.currentSectionId, this.$router.currentRoute.params.forumId)
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetPagedPost()
+
+      let result = await this.$acs.getPagedPost({
+        page: this.page + 1,
+        records_per_page: this.recordsPerPage,
+        order: this.postsOrderByField,
+        section_id: this.currentSectionId,
+        forum_id: this.$router.currentRoute.params.forumId
+      })
 
       if (result.success) {
         this.postList = (this.page == 0 ? (result.posts || []) : this.postList.concat(result.posts))
@@ -126,6 +135,9 @@ export default {
         if (this.$refs.scroller && this.page >= this.total) {
           this.$refs.scroller.$emit('all-loaded')
         }
+      } else {
+        // canceled or network error
+        this.$refs.scroller.$emit('all-loaded')
       }
 
       this.loading = false

@@ -203,9 +203,6 @@ export default {
             this.needRefresh = false
           }, 100)
         }
-        this.$nextTick(_ => {
-          if (!this.allLoaded) this.checkLoadMore()
-        })
       }
     },
   },

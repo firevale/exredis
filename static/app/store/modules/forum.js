@@ -9,6 +9,7 @@ const state = {
     title: '',
     content: '',
     selectedSectionId: 0,
+    sectionTitle: '',
   },
 }
 
@@ -31,7 +32,9 @@ const mutations = {
 
   [types.RESET_POST_EDITING_DATA](state) {
     state.editingPostData.title = ''
-    state.content = ''
+    state.editingPostData.content = ''
+    state.editingPostData.selectedSectionId = 0
+    state.editingPostData.sectionTitle = '' 
   }
 }
 

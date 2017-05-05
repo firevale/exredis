@@ -51,10 +51,9 @@ export default {
 
   beforeRouteEnter: async function(to, from, next) {
     try {
-      let response = await Vue.http.post('/forum_actions/get_forum_info_with_keyword', {
+      let result = await Vue.axios.post('/forum_actions/get_forum_info_with_keyword', {
         forum_id: to.params.forumId
-      })
-      let result = await response.json()
+      }).then(response => response.data)
 
       if (result.success) {
         next(vm => {

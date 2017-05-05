@@ -27,13 +27,12 @@ export default {
   data() {
     return {
       comps: [{
-        template: `<div class="ql-editor">${this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/g, (_, $1) => `<quill-image @tap="onShowSlide" @add="onAddImage" ${$1}></quill-image>`)}</div>`,
+        template: `<div class="quill-editor ql-container ql-snow"><div class="ql-editor">${this.content.replace(/<img ([^>]*)\/?>(<\/img>)?/g, (_, $1) => `<quill-image @tap="onShowSlide" @add="onAddImage" ${$1}></quill-image>`)}</div></div>`,
         methods: {
           onAddImage: function(url) {
             this.imageUrls.push(filters.imageStaticUrl(url))
           },
           onShowSlide: function(showingImageUrl) {
-            console.log('on show slide, ', this.imageUrls, showingImageUrl)
             nativeApi.slideShowPhotos(this.imageUrls, filters.imageStaticUrl(showingImageUrl))
           }
         },

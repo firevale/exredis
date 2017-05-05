@@ -21,6 +21,7 @@ export default {
     src: String,
     width: String,
     height: String,
+    alt: String,
   },
 
   data() {
@@ -31,7 +32,8 @@ export default {
   },
 
   created() {
-    this.$emit('add', this.src)
+    if (this.isValidImage)
+      this.$emit('add', this.src)
   },
 
   mounted() {
@@ -41,9 +43,10 @@ export default {
         this.maxWidth = this.$refs.container.clientWidth
       })
     })
-    this.$el.addEventListener('tap', _ => {
-      this.$emit('tap', this.src)
-    }, false)
+    if (this.isValidImage)
+      this.$el.addEventListener('tap', _ => {
+        this.$emit('tap', this.src)
+      }, false)
   },
 
   destroyed() {
@@ -67,7 +70,7 @@ export default {
         return {
           width: this.width + 'px',
           height: this.height + 'px'
-        } 
+        }
       } else {
         return {
           width: '100%',
@@ -86,8 +89,9 @@ export default {
 <style lang="scss">
 .ql-editor {
   .invalid-image {
-    width: 20rem;
+    width: 15rem;
     height: 10rem;
+    margin: 0.5rem auto;
     background: #979797;
     color: #f2f2f2;
     user-select: none;

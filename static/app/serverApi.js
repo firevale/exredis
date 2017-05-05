@@ -1,9 +1,9 @@
 import Toast from 'common/components/toast'
 import { i18n } from './vue-i18n'
 
-const processResponse = async(Vue, response) => {
-  let result = await response.json()
+import axios from 'axios'
 
+const processResponse = (result) => {
   if (result.success) {
     return result
   } else {
@@ -15,68 +15,72 @@ const processResponse = async(Vue, response) => {
 
     switch (result.action) {
       case 'login':
-        Vue.nextTick(_ => {
-          window.location = `/login?redirect_uri=${btoa(window.location.href)}`
-        });
+        window.location = `/login?redirect_uri=${btoa(window.location.href)}`
         break;
+
       default:
         break;
     }
 
-    return {
+    return Promise.resolve({
       success: false,
       i18n_message: result.i18n_message,
       i18n_message_object: result.i18n_message_object,
       message: result.message
-    }
+    })
   }
 }
 
-const post = async(Vue, uri, params, onProgress) => {
-  try {
-    let response = await Vue.http.post(uri, params, {
-      progress(e) {
-        if (e.lengthComputable) {
-          if (typeof onProgress === 'function') {
-            onProgress(Math.abs(e.loaded / e.total))
-          }
+const post = (uri, params, onProgress, cancelToken) => {
+  return axios.post(uri, params, {
+    onUploadProgress(e) {
+      if (e.lengthComputable) {
+        if (typeof onProgress === 'function') {
+          onProgress(Math.abs(e.loaded / e.total))
         }
       }
-    })
-    return processResponse(Vue, response)
-  } catch (_) {
-    Toast.show(i18n.t('error.server.networkError'))
-    return {
-      success: false
+    },
+    cancelToken,
+  }).then(response => processResponse(response.data)).catch(e => {
+    if (axios.isCancel(e)) {
+      console.log(`Request canceled, uri: ${uri}`)
+    } else {
+      Toast.show(i18n.t('error.server.networkError'))
     }
-  }
+    return Promise.resolve({
+      success: false
+    })
+  })
 }
 
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
+      tokens: {},
+
       getPagedForums() {
-        return post(Vue, '/forum_actions/get_paged_forums', {})
+        return post('/forum_actions/get_paged_forums', {})
       },
 
-      getPagedPost(page, records_per_page, order, section_id, forum_id) {
-        return post(Vue, '/forum_actions/get_paged_post', {
-          page,
-          records_per_page,
-          order,
-          section_id,
-          forum_id
-        })
+      cancelGetPagedPost: function() {
+        if (typeof this.tokens.getPagedPost === 'function') {
+          this.tokens.getPagedPost()
+        }
+      },
+
+      getPagedPost: function(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getPagedPost = c)
+        return post('/forum_actions/get_paged_post', params, undefined, cancelToken)
       },
 
       getForumInfo(forum_id) {
-        return post(Vue, '/forum_actions/get_forum_info', {
+        return post('/forum_actions/get_forum_info', {
           forum_id
         })
       },
 
       addPost(forum_id, section_id, title, content) {
-        return post(Vue, '/forum_actions/add_post', {
+        return post('/forum_actions/add_post', {
           forum_id,
           section_id,
           title,
@@ -85,37 +89,37 @@ export default {
       },
 
       addComment(post_id, content) {
-        return post(Vue, '/forum_actions/add_comment', {
+        return post('/forum_actions/add_comment', {
           post_id,
           content
         })
       },
 
       getPostDetail(post_id) {
-        return post(Vue, '/forum_actions/get_post_detail', {
+        return post('/forum_actions/get_post_detail', {
           post_id
         })
       },
 
       deleteComment(comment_id, forum_id) {
-        return post(Vue, '/forum_actions/delete_comment', {
+        return post('/forum_actions/delete_comment', {
           comment_id,
           forum_id
         })
       },
 
       togglePostFavorite(post_id) {
-        return post(Vue, '/forum_actions/toggle_post_favorite', {
+        return post('/forum_actions/toggle_post_favorite', {
           post_id
         })
       },
 
       togglePostStatus(params) {
-        return post(Vue, '/forum_actions/toggle_post_status', params)
+        return post('/forum_actions/toggle_post_status', params)
       },
 
       getPostComments(post_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_post_comments', {
+        return post('/forum_actions/get_post_comments', {
           post_id,
           page,
           records_per_page
@@ -123,13 +127,13 @@ export default {
       },
 
       getUserPostCount(forum_id) {
-        return post(Vue, '/forum_actions/get_user_post_count', {
+        return post('/forum_actions/get_user_post_count', {
           forum_id
         })
       },
 
       getUserPagedPost(forum_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_user_paged_post', {
+        return post('/forum_actions/get_user_paged_post', {
           forum_id,
           page,
           records_per_page
@@ -137,7 +141,7 @@ export default {
       },
 
       getUserPostComments(forum_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_user_post_comments', {
+        return post('/forum_actions/get_user_post_comments', {
           forum_id,
           page,
           records_per_page
@@ -145,7 +149,7 @@ export default {
       },
 
       getUserPostFavorites(forum_id, page, records_per_page) {
-        return post(Vue, '/forum_actions/get_user_favorites', {
+        return post('/forum_actions/get_user_favorites', {
           forum_id,
           page,
           records_per_page
@@ -153,7 +157,7 @@ export default {
       },
 
       search(forum_id, keyword, page, records_per_page) {
-        return post(Vue, '/forum_actions/search', {
+        return post('/forum_actions/search', {
           forum_id,
           keyword,
           page,
@@ -162,14 +166,14 @@ export default {
       },
 
       addContact(app_id, title) {
-        return post(Vue, '/customer_service_actions/add_contact', {
+        return post('/customer_service_actions/add_contact', {
           app_id,
           title
         })
       },
 
       alipayRedirect(payment_order_id, merchant_url, callback_url) {
-        return post(Vue, '/api/pay/alipay/redirect', {
+        return post('/api/pay/alipay/redirect', {
           payment_order_id,
           merchant_url,
           callback_url
@@ -177,7 +181,7 @@ export default {
       },
 
       alipayMallRedirect(payment_order_id, merchant_url, callback_url, notify_url) {
-        return post(Vue, '/api/pay/alipay/mall_redirect', {
+        return post('/api/pay/alipay/mall_redirect', {
           payment_order_id,
           merchant_url,
           callback_url,
@@ -186,19 +190,19 @@ export default {
       },
 
       wechatPrepay(payment_order_id) {
-        return post(Vue, '/api/pay/wechat/prepay', {
+        return post('/api/pay/wechat/prepay', {
           payment_order_id
         })
       },
 
       wechatMallPrepay(payment_order_id) {
-        return post(Vue, '/api/pay/wechat/mallprepay', {
+        return post('/api/pay/wechat/mallprepay', {
           payment_order_id
         })
       },
 
       getPagedNews(app_id, group, page, records_per_page) {
-        return post(Vue, '/games_actions/get_paged_news', {
+        return post('/games_actions/get_paged_news', {
           app_id,
           group,
           page,
@@ -207,24 +211,24 @@ export default {
       },
 
       getNewsDetail(news_id) {
-        return post(Vue, '/games_actions/get_news_detail', {
+        return post('/games_actions/get_news_detail', {
           news_id
         })
       },
 
       getTopNews(app_id, limit) {
-        return post(Vue, '/games_actions/get_top_news', {
+        return post('/games_actions/get_top_news', {
           app_id,
           limit
         })
       },
 
       getApps() {
-        return post(Vue, '/games_actions/fetch_apps', {})
+        return post('/games_actions/fetch_apps', {})
       },
 
       getServicePaged(app_id, page, records_per_page) {
-        return post(Vue, '/customer_service_actions/get_paged_services', {
+        return post('/customer_service_actions/get_paged_services', {
           app_id: app_id,
           page,
           records_per_page
@@ -232,13 +236,13 @@ export default {
       },
 
       getCommonIssues(app_id) {
-        return post(Vue, '/customer_service_actions/get_common_issues', {
+        return post('/customer_service_actions/get_common_issues', {
           app_id: app_id
         })
       },
 
       searchQuestion(app_id, keyword, page, records_per_page) {
-        return post(Vue, '/customer_service_actions/search', {
+        return post('/customer_service_actions/search', {
           app_id,
           keyword,
           page,
@@ -247,13 +251,13 @@ export default {
       },
 
       getAppDetail(app_id) {
-        return post(Vue, '/customer_service_actions/get_app_detail', {
+        return post('/customer_service_actions/get_app_detail', {
           app_id: app_id
         })
       },
 
       getActiveGoodsPaged(app_id, page, records_per_page) {
-        return post(Vue, '/mall_actions/get_active_goods_paged', {
+        return post('/mall_actions/get_active_goods_paged', {
           app_id,
           page,
           records_per_page
@@ -261,23 +265,23 @@ export default {
       },
 
       getMallDetail(app_id) {
-        return post(Vue, '/mall_actions/get_mall_detail', {
+        return post('/mall_actions/get_mall_detail', {
           app_id
         })
       },
 
       getGoodsDetail(goods_id) {
-        return post(Vue, '/mall_actions/get_goods_detail', {
+        return post('/mall_actions/get_goods_detail', {
           goods_id
         })
       },
 
       sendBindMobileVerifyCode(mobile) {
-        return post(Vue, "/send_mobile_bind_verify_code", { mobile })
+        return post("/send_mobile_bind_verify_code", { mobile })
       },
 
       createMallOrder(goods_id, quantity, pay_type, address) {
-        return post(Vue, '/mall_actions/create_mall_order', {
+        return post('/mall_actions/create_mall_order', {
           goods_id,
           quantity,
           pay_type,
@@ -286,35 +290,35 @@ export default {
       },
 
       updateUserMobileNumber(params) {
-        return post(Vue, "/user/update_mobile", params)
+        return post("/user/update_mobile", params)
       },
 
       sendBindEmailVerifyCode(email) {
-        return post(Vue, "/send_email_bind_verify_code", { email })
+        return post("/send_email_bind_verify_code", { email })
       },
 
       updateUserEmail(params) {
-        return post(Vue, "/user/update_email", params)
+        return post("/user/update_email", params)
       },
 
       updateUserNickname(params) {
-        return post(Vue, "/user/update_nickname", params)
+        return post("/user/update_nickname", params)
       },
 
       updateUserResidentInfo(params) {
-        return post(Vue, "/user/update_resident_info", params)
+        return post("/user/update_resident_info", params)
       },
 
       updateUserAvatar(params, onProgress) {
-        return post(Vue, "/user/update_avatar", params, onProgress)
+        return post("/user/update_avatar", params, onProgress)
       },
 
       uploadPostImage(params, onProgress) {
-        return post(Vue, "/forum_actions/upload_post_image", params, onProgress)
+        return post("/forum_actions/upload_post_image", params, onProgress)
       },
 
       fetchMyOrders(type, page, records_per_page) {
-        return post(Vue, '/mall_actions/fetch_my_orders', {
+        return post('/mall_actions/fetch_my_orders', {
           type,
           page,
           records_per_page
@@ -322,43 +326,49 @@ export default {
       },
 
       confirmRecieved(params) {
-        return post(Vue, '/mall_actions/confirm_recieved', params)
+        return post('/mall_actions/confirm_recieved', params)
       },
 
       fetchMallOrder(params) {
-        return post(Vue, '/mall_actions/fetch_order', params)
+        return post('/mall_actions/fetch_order', params)
       },
 
       getGoodsStock(goods_id) {
-        return post(Vue, '/mall_actions/get_goods_stock', { goods_id })
+        return post('/mall_actions/get_goods_stock', { goods_id })
       },
 
       getUserAddresses() {
-        return post(Vue, '/mall_actions/get_user_addresses', {})
+        return post('/mall_actions/get_user_addresses', {})
       },
+
       deleteAddress(address_id) {
-        return post(Vue, '/mall_actions/delete_address', {
+        return post('/mall_actions/delete_address', {
           address_id
         })
       },
+
       setDefaultAddress(address_id) {
-        return post(Vue, '/mall_actions/set_default_address', {
+        return post('/mall_actions/set_default_address', {
           address_id
         })
       },
+
       getAddressDetail(address_id) {
-        return post(Vue, '/mall_actions/get_address_detail', {
+        return post('/mall_actions/get_address_detail', {
           address_id
         })
       },
+
       getDefaultAddress() {
-        return post(Vue, '/mall_actions/get_default_address', {})
+        return post('/mall_actions/get_default_address', {})
       },
+
       insertAddress(params) {
-        return post(Vue, '/mall_actions/insert_address', params)
+        return post('/mall_actions/insert_address', params)
       },
+
       updateAddress(params) {
-        return post(Vue, '/mall_actions/update_address', params)
+        return post('/mall_actions/update_address', params)
       },
     }
   }

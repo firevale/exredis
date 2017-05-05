@@ -2,7 +2,8 @@ import 'babel-polyfill'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import VueI18n from 'vue-i18n'
 import Vuelidate from 'vuelidate'
 
@@ -17,14 +18,14 @@ import * as acs from 'common/js/acs'
 require('login/scss/login.scss')
 
 Vue.use(Vuelidate)
-Vue.use(VueResource)
+Vue.use(VueAxios, axios)
 Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(ServerApi)
 
-Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
-Vue.http.headers.common['acs-app-id'] = acs.getAppId()
-Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()
+axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
+axios.defaults.headers.common['acs-app-id'] = acs.getAppId()
+axios.defaults.headers.common['acs-device-id'] = acs.getDeviceId()
 
 const i18n = new VueI18n({
   locale: window.acsConfig.locale || 'zh-hans',

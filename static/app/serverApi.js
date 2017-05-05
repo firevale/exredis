@@ -31,7 +31,7 @@ const processResponse = (result) => {
   }
 }
 
-const post = (uri, params, onProgress) => {
+const post = (uri, params, onProgress, cancelToken) => {
   return axios.post(uri, params, {
     onUploadProgress(e) {
       if (e.lengthComputable) {
@@ -40,6 +40,7 @@ const post = (uri, params, onProgress) => {
         }
       }
     },
+    cancelToken,
   }).then(response => processResponse(response.data)).catch(e => {
     if (axios.isCancel(e)) {
       console.log(`Request canceled, uri: ${uri}`)
@@ -55,37 +56,27 @@ const post = (uri, params, onProgress) => {
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
-      cancel: {},
+      tokens: {},
 
       getPagedForums() {
         return post('/forum_actions/get_paged_forums', {})
       },
 
       cancelGetPagedPost: function() {
-        if (typeof this.cancel.getPagedPost === 'function') {
-          this.cancel.getPagedPost()
+        if (typeof this.tokens.getPagedPost === 'function') {
+          this.tokens.getPagedPost()
         }
       },
 
       getPagedPost: function(page, records_per_page, order, section_id, forum_id) {
-        return axios.post('/forum_actions/get_paged_post', {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getPagedPost = c)
+        return post('/forum_actions/get_paged_post', {
           page,
           records_per_page,
           order,
           section_id,
           forum_id
-        }, {
-          cancelToken: new axios.CancelToken(c => this.cancel.getPagedPost = c)
-        }).then(response => {
-          return processResponse(response.data)
-        }).catch(e => {
-          if (!axios.isCancel(e)) {
-            Toast.show(i18n.t('error.server.networkError'))
-          }
-          return Promise.resolve({
-            success: false
-          })
-        })
+        }, undefined, cancelToken)
       },
 
       getForumInfo(forum_id) {

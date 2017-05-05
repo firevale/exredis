@@ -19,42 +19,31 @@
 .mall-index {
   position: relative;
   margin: 1rem;
-  .content-goods {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 0.5rem;
-    .image.is-40vwx40vw {
-      width: 40vw;
-      height: 40vw;
-      img {
+  .goods-content {
+    width: 96%;
+    margin: -.5rem auto 0rem auto;
+    .goods-item {
+      width: 100%;
+      height: 100%;
+      figure {
         width: 100%;
         height: 100%;
-        display: block;
-        margin: 0;
-        padding: 0.25rem;
-        border: 1px $grey solid;
+      }
+      img {
+        width: 100%;
+        height: auto;
+        padding: 0.15rem;
+        border: 1px #cccccc solid;
+      }
+      .name {
+        padding-top: 1.0rem;
+        line-height: 2rem;
+      }
+      .price {
+        padding-top: 0.56rem;
+        line-height: 2rem;
       }
     }
-    .goods-list {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-between;
-      padding: 0 5vw;
-      .goods-item {
-        width: 41vw;
-        flex-grow: 0;
-        flex-shrink: 1;
-        flex-basis: auto;
-        margin-bottom: 0.8rem;
-      }
-    }
-  }
-  .content-goods .name {
-    padding-top: 1.0rem;
-  }
-  .content-goods .price {
-    padding-top: 0.56rem;
   }
 }
 
@@ -71,8 +60,8 @@
     margin-top: -.2rem;
     margin-bottom: 0.6rem
   }
-  .goods-description{
-    margin-top:0.5rem;
+  .goods-description {
+    margin-top: 0.5rem;
   }
   .goods-bottom {
     height: 4.3rem;

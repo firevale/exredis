@@ -321,6 +321,11 @@ defmodule Acs.UserController do
                user_mobile: user.mobile || "",
                nick_name: user.nickname,
                is_anonymous: is_anonymous,
+               avatar_url: case user.avatar_url do 
+                             nil -> nil
+                             "/" <> _ -> static_url(conn, user.avatar_url)
+                             "http" <> _ -> user.avatar_url
+                           end,
                sdk: :firevale,
                binding: %{},
                bindings: %{}, # 兼容旧的SDK

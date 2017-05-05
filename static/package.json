@@ -23,6 +23,8 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "animejs": "^2.0.1",
+    "axios": "^0.16.1",
+    "axios-cancel": "^0.2.2",
     "bulma": "^0.4.0",
     "font-awesome": "4.7.0",
     "iscroll": "5.2.0",
@@ -34,6 +36,7 @@
     "vue": "^2.3.2",
     "vue-awesome": "^2.2.5",
     "vue-awesome-swiper": "^2.4.0",
+    "vue-axios": "^2.0.2",
     "vue-bulma-breadcrumb": "^1.0.1",
     "vue-bulma-chartist": "^1.1.0",
     "vue-bulma-chartjs": "^1.0.4",

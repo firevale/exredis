@@ -158,14 +158,9 @@ export default {
     },
 
     preview: function() {
+      this.editingPostData.sectionTitle = this.sectionMenuItems[this.editingPostData.selectedSectionId].title
       this.$router.push({
-        name: 'preview',
-        params: {
-          content: this.editingPostData.content,
-          section: this.sectionMenuItems[this.editingPostData.selectedSectionId].title,
-          title: this.editingPostData.title,
-          selectedSectionId: this.editingPostData.selectedSectionId
-        },
+        name: 'preview'
       })
     },
 

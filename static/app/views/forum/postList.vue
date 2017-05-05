@@ -119,8 +119,13 @@ export default {
       // cancel last get paged post if we're requesting 
       this.$acs.cancelGetPagedPost()
 
-      let result = await this.$acs.getPagedPost(this.page + 1, this.recordsPerPage, this.postsOrderByField,
-        this.currentSectionId, this.$router.currentRoute.params.forumId)
+      let result = await this.$acs.getPagedPost({
+        page: this.page + 1,
+        records_per_page: this.recordsPerPage,
+        order: this.postsOrderByField,
+        section_id: this.currentSectionId,
+        forum_id: this.$router.currentRoute.params.forumId
+      })
 
       if (result.success) {
         this.postList = (this.page == 0 ? (result.posts || []) : this.postList.concat(result.posts))

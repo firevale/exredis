@@ -68,15 +68,9 @@ export default {
         }
       },
 
-      getPagedPost: function(page, records_per_page, order, section_id, forum_id) {
+      getPagedPost: function(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.getPagedPost = c)
-        return post('/forum_actions/get_paged_post', {
-          page,
-          records_per_page,
-          order,
-          section_id,
-          forum_id
-        }, undefined, cancelToken)
+        return post('/forum_actions/get_paged_post', params, undefined, cancelToken)
       },
 
       getForumInfo(forum_id) {

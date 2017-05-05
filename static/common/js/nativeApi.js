@@ -42,7 +42,7 @@ export default {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.pickAvatarFrom === 'function') {
       window.acsConfig.pickAvatarFromCallback = result => {
         window.acsConfig.pickAvatarFromCallback = undefined
-        callback(result)
+        callback(JSON.parse(result))
       }
       AndroidNativeAPI.pickAvatarFrom(type)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.pickAvatarFromCallback === 'function') {
@@ -62,7 +62,7 @@ export default {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.pickImageFrom === 'function') {
       window.acsConfig.pickImageFromCallback = result => {
         window.acsConfig.pickImageFromCallback = undefined
-        callback(result)
+        callback(JSON.parse(result))
       }
       AndroidNativeAPI.pickImageFrom(type)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.pickImageFromCallback === 'function') {

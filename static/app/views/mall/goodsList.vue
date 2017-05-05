@@ -1,30 +1,27 @@
 <template>
   <div class="mall-index">
     <scroller :on-load-more="loadmore" ref="scroller">
-      <div class="content-goods">
-        <div class="goods-list">
-          <v-touch class="tile is-ancestor goods-item has-text-centered is-mobile" v-for="item in goodsList" tag="div"
-            @tap="showGoodsDetail(item)">
-            <div class="tile is-vertical is-parent">
-              <div class="tile" >
-                <figure class="image is-40vwx40vw">
-                  <img v-if="item.pic" :src="item.pic.split('|')[0]">
-                  <img v-else src="https://placehold.it/300x300?text=400x400">
-                </figure>
-              </div>
-               <div class="tile">
-                <article class="tile is-child">
-                  <p class="subtitle is-marginless is-5 is-normal name">
-                    {{item.name}}
-                  </p>
-                  <p class="subtitle is-marginless is-5 is-normal is-primary price">
-                    <label class="currency" :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
-                  </p>
-                </article>
-              </div>
+      <div class="columns is-multiline is-mobile goods-content">
+        <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item)">
+          <div class="tile is-vertical is-parent">
+            <div class="tile">
+              <figure>
+                <img v-if="item.pic" :src="item.pic.split('|')[0]">
+                <img v-else src="https://placehold.it/400x400?text=400x400">
+              </figure>
             </div>
-          </v-touch>
-        </div>
+            <div class="tile ">
+              <article class="tile is-child">
+                <p class="subtitle is-marginless is-paddingless is-5 is-normal name">
+                  {{item.name}}
+                </p>
+                <p class="subtitle is-marginless is-paddingless is-5 is-normal is-primary price">
+                  <label class="currency" :class="item.currency">{{(item.price / 100).toFixed(2)}}</label>
+                </p>
+              </article>
+            </div>
+          </div>
+        </v-touch>
       </div>
     </scroller>
   </div>

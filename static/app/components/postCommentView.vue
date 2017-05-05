@@ -18,13 +18,10 @@
         </div>
         <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
-          <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> 删除 </span>
+          <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
         </div>
       </nav>
-      <div class="post-content">
-        <div class="ql-editor" v-html="filterContent">
-        </div>
-      </div>
+      <quill-content class="post-content" :content="filterContent"></quill-content>
     </div>
   </article>
 </div>

@@ -12,7 +12,7 @@
           <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
           <div class="level-item">
             <h5 class="title is-5" style="margin-bottom: 0; margin-right: 0.2rem"> [{{postInfo.section.title}}] </h5>
-            <h5 class="title is-5" v-html="strenghtenKeywordTitle"></h5>
+            <h5 class="title is-5">{{strenghtenKeywordTitle}}</h5>
           </div>
           <span v-if="postInfo.has_pic" class="level-item tag image-tag has-picture"></span>
           <span v-if="postInfo.is_vote" class="level-item tag is-essence">{{ $t('forum.postList.essence') }}</span>

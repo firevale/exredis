@@ -94,6 +94,8 @@ export default {
         scrollY: true,
         probeType: 2,
         tap: true,
+        momentum: false,
+        bounceEasing: 'quadratic'
       })
       this.iscroll.on('scrollStart', this.scrollStart)
       this.iscroll.on('scrollCancel', this.scrollCancel)

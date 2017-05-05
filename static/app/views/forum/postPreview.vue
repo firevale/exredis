@@ -22,10 +22,7 @@
           </span>
           <span class="is-primary">{{ userInfo.nickname }}</span>
         </p>
-        <div class="post-content">
-          <div class="ql-editor" v-html="filterContent">
-          </div>
-        </div>
+        <quill-content class="post-content" :content="filterContent"></quill-content>
       </div>
     </article>
     <div class="tile is-full has-text-centered">

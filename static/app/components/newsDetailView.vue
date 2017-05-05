@@ -3,8 +3,8 @@
     <div class="has-text-centered" style="padding: 1rem;">
       <h4 class="title is-4">{{ itemData.title }}</h4>
     </div>
-    <div class="subtitle is-5" style='line-height:150%;' v-html="itemData.content">
-    </div>
+    <quill-content class="subtitle is-5" style='line-height:150%;' :content="itemData.content">
+    </quill-content>
     <div class="has-text-centered" style="padding: 2rem;">
       <a class="button is-primary is-large" @click.prevent="goBack()">{{ $t('games.buttons.back') }}</a>
     </div>
@@ -21,7 +21,6 @@ export default {
 
   methods: {
     goBack() {
-      console.log("---------------------------")
       this.$emit('goBack')
     },
   }

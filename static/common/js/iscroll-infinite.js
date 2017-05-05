@@ -710,7 +710,7 @@
         return false;
       }
 
-			this._execEvent('bounceStart')
+      this._execEvent('bounceStart')
       this.scrollTo(x, y, time, this.options.bounceEasing);
 
       return true;

@@ -34,8 +34,7 @@
             </p>
           </div>
           <div class="column is-12">
-            <div class="ql-editor" v-html="this.selectedGoods.description">
-            </div>
+            <quill-content :content="this.selectedGoods.description"></quill-content>
           </div>
         </div>
       </scroller>

@@ -28,6 +28,9 @@ Vue.use(VueTimeago, {
   },
 })
 
+import quillContent from 'common/components/quillContent'
+Vue.component('quill-content', quillContent)
+
 Vue.http.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 Vue.http.headers.common['acs-app-id'] = acs.getAppId()
 Vue.http.headers.common['acs-device-id'] = acs.getDeviceId()

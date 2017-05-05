@@ -74,7 +74,6 @@ import {
 } from 'vuex'
 
 import Toast from 'common/components/toast'
-import quillContent from 'common/components/quillContent'
 import * as acs from 'common/js/acs'
 import * as filter from 'common/js/filters'
 
@@ -176,9 +175,5 @@ export default {
       }
     },
   },
-
-  components: {
-    quillContent
-  }
 }
 </script>

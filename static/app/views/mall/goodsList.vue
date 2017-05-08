@@ -5,7 +5,7 @@
         <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item)">
           <div class="tile is-vertical is-parent">
             <div class="tile">
-              <figure>
+              <figure class="has-hairline-border">
                 <img v-if="item.pic" :src="item.pic.split('|')[0]">
                 <img v-else src="https://placehold.it/400x400?text=400x400">
               </figure>

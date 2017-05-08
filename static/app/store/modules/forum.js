@@ -6,6 +6,7 @@ const state = {
   currentPostTitle: '',
   postsOrderByField: 'inserted_at',
   editingPostData: {
+    id: undefined,
     title: '',
     content: '',
     selectedSectionId: 0,
@@ -31,6 +32,7 @@ const mutations = {
   },
 
   [types.RESET_POST_EDITING_DATA](state) {
+    state.editingPostData.id = null
     state.editingPostData.title = ''
     state.editingPostData.content = ''
     state.editingPostData.selectedSectionId = 0

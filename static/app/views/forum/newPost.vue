@@ -208,7 +208,9 @@ export default {
           postAction: '/forum_actions/upload_post_image',
           accept: 'image/jpeg, image/png',
           data: {
-            forum_id: this.$route.params.forumId
+            id: this.editingPostData.id, 
+            forum_id: this.$route.params.forumId,
+            section_id: this.editingPostData.selectedSectionId,
           },
           extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
@@ -218,6 +220,7 @@ export default {
               editor.insertEmbed(index, 'image', response.link)
               editor.formatText(index, 1, 'width', response.width)
               editor.formatText(index, 1, 'height', response.height)
+              this.editingPostData.id = response.post_id
             } else if (response.i18n_message) {
               Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
             } else if (response.message) {
@@ -240,7 +243,9 @@ export default {
           file: {
             base64_content: result.image
           },
-          forum_id: this.$route.params.forumId
+          id: this.editingPostData.id,
+          forum_id: this.$route.params.forumId,
+          section_id: this.editingPostData.selectedSectionId,
         }, value => {
           progress.setProgress(value)
         })
@@ -253,6 +258,7 @@ export default {
           editor.insertEmbed(range.index, 'image', upload_result.link)
           editor.formatText(range.index, 1, 'width', upload_result.width)
           editor.formatText(range.index, 1, 'height', upload_result.height)
+          this.editingPostData.id = upload_result.post_id
         }
       }
     },
@@ -269,8 +275,12 @@ export default {
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true
         let forumId = this.$router.currentRoute.params.forumId
-        let result = await this.$acs.addPost(forumId, this.editingPostData.selectedSectionId,
-          this.editingPostData.title, this.editingPostData.content)
+        let result = await this.$acs.addPost({
+          forum_id: forumId, 
+          section_id: this.editingPostData.selectedSectionId,
+          id: this.editingPostData.id,
+          title: this.editingPostData.title, 
+          content: this.editingPostData.content})
 
         if (result.success) {
           this.resetPostEditingData()

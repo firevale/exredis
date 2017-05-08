@@ -13,6 +13,7 @@ defmodule Acs.ForumController do
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
   plug :no_emoji, [param_name: "title"] when action == :add_post
+  plug :fetch_post when action in [:add_post, :upload_post_image]
 
   # fetch_forums
   def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -253,60 +254,45 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
 
-  # add_post
-  def add_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
-                "forum_id" => forum_id,
-                "title" => title,
-                "content" => content,
-                "section_id" => section_id} = post) do
+  # add_post (forum post is created by fetch_post plug)
+  def add_post(%Plug.Conn{private: %{forum_post: forum_post}} = conn, 
+               %{"title" => title,
+                 "content" => content} = post) do
 
       post = case Floki.find(content, "img") do
-               [] -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", false)
-               _ -> post |> Map.put("user_id", user_id) |> Map.put("has_pic", true)
+               [] -> post |> Map.put("has_pic", false) |> Map.put("active", true)
+               _  -> post |> Map.put("has_pic", true) |> Map.put("active", true)
              end
       
-      query = from f in Forum,
-              join: s in assoc(f, :sections),
-              where: f.id == ^forum_id and s.id == ^section_id,
-              preload: [sections: s]
+      {:ok, new_post} = ForumPost.changeset(forum_post, post) |> Repo.update
 
-      with %Forum{} <- Repo.one(query),
-        {:ok, new_post} <- ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
-      do
-          Elasticsearch.index(%{
-            index: "forum",
-            type: "posts",
-            doc: %{
-              forum_id: forum_id,
-              section_id: section_id,
-              user_id: user_id,
-              title: title,
-              content: content,
-              is_top: false,
-              is_hot: false,
-              is_vote: false,
-              active: true,
-              has_pic: post["has_pic"],
-              reads: 0,
-              comms: 0,
-              inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-              last_reply_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-            },
-            params: nil,
-            id: new_post.id
-          })
+      Elasticsearch.index(%{
+        index: "forum",
+        type: "posts",
+        doc: %{
+          forum_id: new_post.forum_id,
+          section_id: new_post.section_id,
+          user_id: new_post.user_id,
+          title: title,
+          content: content,
+          is_top: false,
+          is_hot: false,
+          is_vote: false,
+          active: true,
+          has_pic: new_post.has_pic,
+          reads: 0,
+          comms: 0,
+          inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+          last_reply_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+        },
+        params: nil,
+        id: new_post.id
+      })
 
-          conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
-      else
-        nil ->
-            conn |> json(%{success: false, message: "error.server.illegal"})
-        {:error, %{errors: errors}} ->
-          d "errs: #{inspect errors, pretty: true}"
-          conn |> json(%{success: false, message: "error.server.networkError"})
-      end
+    conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
   end
   def add_post(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_post_detail
@@ -644,19 +630,65 @@ defmodule Acs.ForumController do
     end
   end
 
+  # fetch_post (create if not exists) 
+  defp fetch_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
+    with %{"forum_id" => forum_id,
+           "section_id" => section_id} = post <- conn.params,
+          forum_id <- String.to_integer(forum_id),
+          %{sections: sections} <- RedisForum.find(forum_id),
+          %{id: _} <- sections["#{section_id}" |> String.to_atom]
+    do 
+      case post["id"] do 
+        x when x in [nil, "undefined", "null"] ->
+          post = post 
+            |> Map.put("user_id", user_id) 
+            |> Map.put("title", "not set yet") 
+            |> Map.put("content", "net set yet")
+            |> Map.put("active", false)
+
+          {:ok, forum_post} = ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
+
+          d "forum_post: #{inspect forum_post, pretty: true}"
+
+          conn |> put_private(:forum_post, forum_post)
+
+        post_id -> 
+          case Repo.get(ForumPost, post_id) do 
+            %ForumPost{} = forum_post -> 
+              conn |> put_private(:forum_post, forum_post)
+            _ -> 
+              conn
+          end
+      end
+    else 
+      _ -> 
+        d "fetch_post, params: #{inspect conn.params, pretty: true}"
+        conn
+    end
+  end
+
   plug :check_upload_image, [
     param_name: "file", 
     format: ["jpg", "jpeg", "png"],
     reformat: "jpg",
     resize_to_limit: [width: 640, height: 1136]] when action == :upload_post_image
   plug :convert_base64_image, [param_name: "file"] when action == :upload_post_image
-  def upload_post_image(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path, width, height} = Utils.deploy_image_file_return_size(from: image_file_path, to: "forum_#{forum_id}/posts/", low_quality: true)
-    conn |> json(%{success: true, link: image_path, width: width, height: height})
+  def upload_post_image(%Plug.Conn{private: %{forum_post: forum_post}} = conn, 
+                         %{"file" => %{path: image_file_path}}) do
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(from: image_file_path, 
+        to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
+        low_quality: true)
+    conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
   end
-  def upload_post_image(%Plug.Conn{private: %{image_file_path: image_file_path}} = conn, %{"forum_id" => forum_id}) do 
-    {:ok, image_path, width, height} = Utils.deploy_image_file_return_size(from: image_file_path, to: "forum_#{forum_id}/posts/", low_quality: true)
-    conn |> json(%{success: true, link: image_path, width: width, height: height})
+  def upload_post_image(%Plug.Conn{private: %{image_file_path: image_file_path,
+                                              forum_post: forum_post}} = conn, 
+                        _) do 
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(from: image_file_path, 
+        to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
+        low_quality: true)
+    conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
   end
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,

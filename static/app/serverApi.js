@@ -79,13 +79,8 @@ export default {
         })
       },
 
-      addPost(forum_id, section_id, title, content) {
-        return post('/forum_actions/add_post', {
-          forum_id,
-          section_id,
-          title,
-          content
-        })
+      addPost(params) {
+        return post('/forum_actions/add_post', params)
       },
 
       addComment(post_id, content) {

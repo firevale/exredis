@@ -132,6 +132,9 @@
   &.icon-shopping-cart {
     background-image: url("~assets/icon-shopping-cart@2x.png");
   }
+  &.icon-border {
+    background-image: url("~assets/border@2x.png");
+  }
 } // @2x resources
 @media only screen and (-o-min-device-pixel-ratio: 5/4),
 only screen and (-webkit-min-device-pixel-ratio: 1.25),
@@ -231,6 +234,9 @@ only screen and (min-resolution: 2dppx) {
     }
     &.icon-shopping-cart {
       background-image: url("~assets/icon-shopping-cart@3x.png");
+    }
+    &.icon-border {
+      background-image: url("~assets/border@3x.png");
     }
   }
 }

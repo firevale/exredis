@@ -14,6 +14,7 @@ defmodule Acs.ForumController do
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
   plug :no_emoji, [param_name: "title"] when action == :add_post
   plug :fetch_post when action in [:add_post, :upload_post_image]
+  plug :fetch_comment when action in [:add_comment, :upload_comment_image]
 
   # fetch_forums
   def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -54,6 +55,7 @@ defmodule Acs.ForumController do
         Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
         RedisForum.refresh(forum_id)
         conn |> json(%{success: true, icon_url: icon_path})
+
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
@@ -384,7 +386,7 @@ defmodule Acs.ForumController do
 
   # delete_comment
   def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                          acs_is_forum_admin: is_admin}} = conn,
+                                           acs_is_forum_admin: is_admin}} = conn,
                      %{"comment_id" => comment_id}) do
     case Repo.get(ForumComment, comment_id) do
       nil ->
@@ -478,36 +480,36 @@ defmodule Acs.ForumController do
   end
 
   # add_comment
-  def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                    %{"content" => content,
-                      "post_id" => post_id} = comment) do
+  def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id,
+                                        forum_post: forum_post,
+                                        forum_comment: forum_comment}} = conn,
+                    %{"content" => content}) do
 
-      with  comment <- comment |> Map.put("user_id", user_id),
-            {:ok, comment} <- ForumComment.changeset(%ForumComment{}, comment) |> Repo.insert
-      do
-        post = Repo.get(ForumPost, post_id)
-        now_time = DateTime.utc_now()
-        ForumPost.changeset(post, %{comms: post.comms+1, last_reply_at: now_time}) |> Repo.update()
+    {:ok, comment} = ForumComment.changeset(forum_comment, %{
+      content: content,
+      active: true
+    }) |> Repo.update
 
-        # check is hot
-        hot_hours = RedisSetting.find("forum_post_hot_hours")
-        if(hot_hours != nil) do
-          hot_hours = String.to_integer(hot_hours)
-          if(hot_hours > 0) do
-            before_time = Timex.shift(now_time, hours: -hot_hours)
-            query = from c in ForumComment, select: count(1), where: c.post_id == ^post_id and c.active == true and c.inserted_at >= ^before_time
-            total = Repo.one!(query)
-            RedisForum.checkIsHot(post_id, total)
-          end
-        end
+    utc_now = DateTime.utc_now()
+    ForumPost.changeset(forum_post, %{
+      comms: forum_post.comms + 1, 
+      last_reply_at: utc_now}) |> Repo.update()
 
-        conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
-      else
-        nil ->
-          conn |> json(%{success: false, i18n_message: "error.server.illegal"})
-        {:error, %{errors: errors}} ->
-          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+    # check is hot
+    hot_hours = RedisSetting.find("forum_post_hot_hours")
+    if hot_hours != nil do
+      hot_hours = String.to_integer(hot_hours)
+      if hot_hours > 0 do
+        before_time = Timex.shift(utc_now, hours: -hot_hours)
+        query = from c in ForumComment, 
+                select: count(1), 
+                where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
+        total = Repo.one!(query)
+        RedisForum.checkIsHot(forum_post.id, total)
       end
+    end
+
+    conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
   end
   def add_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
@@ -638,17 +640,15 @@ defmodule Acs.ForumController do
           %{sections: sections} <- RedisForum.find(forum_id),
           %{id: _} <- sections["#{section_id}" |> String.to_atom]
     do 
-      case post["id"] do 
+      case post["post_id"] do 
         x when x in [nil, "undefined", "null"] ->
           post = post 
             |> Map.put("user_id", user_id) 
-            |> Map.put("title", "not set yet") 
-            |> Map.put("content", "net set yet")
+            |> Map.put("title", "placeholder") 
+            |> Map.put("content", "placeholder")
             |> Map.put("active", false)
 
           {:ok, forum_post} = ForumPost.changeset(%ForumPost{}, post) |> Repo.insert
-
-          d "forum_post: #{inspect forum_post, pretty: true}"
 
           conn |> put_private(:forum_post, forum_post)
 
@@ -671,8 +671,8 @@ defmodule Acs.ForumController do
     param_name: "file", 
     format: ["jpg", "jpeg", "png"],
     reformat: "jpg",
-    resize_to_limit: [width: 640, height: 1136]] when action == :upload_post_image
-  plug :convert_base64_image, [param_name: "file"] when action == :upload_post_image
+    resize_to_limit: [width: 640, height: 1136]] when action in [:upload_post_image, :upload_comment_image]
+  plug :convert_base64_image, [param_name: "file"] when action in [:upload_post_image, :upload_comment_image]
   def upload_post_image(%Plug.Conn{private: %{forum_post: forum_post}} = conn, 
                          %{"file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} = 
@@ -690,6 +690,65 @@ defmodule Acs.ForumController do
         low_quality: true)
     conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
   end
+
+  # fetch_comment (create if not exists) 
+  defp fetch_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
+    with %{"post_id" => post_id} = params <- conn.params,
+          forum_post = %ForumPost{} <- Repo.get(ForumPost, post_id)
+    do 
+      case params["comment_id"] do 
+        x when x in [nil, "undefined", "null"] ->
+          {:ok, forum_comment} = ForumComment.changeset(%ForumComment{}, %{
+            content: "placeholder",
+            active: false,
+            post_id: forum_post.id,
+            user_id: user_id,
+          }) |> Repo.insert
+
+          conn |> put_private(:forum_comment, forum_comment)
+               |> put_private(:forum_post, forum_post)
+
+        comment_id -> 
+          case Repo.get(ForumComment, comment_id) do 
+            %ForumComment{} = forum_comment -> 
+              conn |> put_private(:forum_comment, forum_comment)
+                   |> put_private(:forum_post, forum_post)
+            _ -> conn
+          end
+      end
+    else 
+      _ -> conn
+    end
+  end
+
+  def upload_comment_image(%Plug.Conn{private: %{forum_post: forum_post, 
+                                                 forum_comment: forum_comment}} = conn, 
+                         %{"file" => %{path: image_file_path}}) do
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(from: image_file_path, 
+        to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
+        low_quality: true)
+    conn |> json(%{success: true, 
+                   comment_id: forum_comment.id, 
+                   link: image_path, 
+                   width: width, 
+                   height: height})
+  end
+  def upload_comment_image(%Plug.Conn{private: %{image_file_path: image_file_path,
+                                                 forum_post: forum_post,
+                                                 forum_comment: forum_comment}} = conn, 
+                        _) do 
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(from: image_file_path, 
+        to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
+        low_quality: true)
+    conn |> json(%{success: true, 
+                   comment_id: forum_comment.id, 
+                   link: image_path, 
+                   width: width, 
+                   height: height})
+  end
+
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                            %{"forum_id" => forum_id}) do 

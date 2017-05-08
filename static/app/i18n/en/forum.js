@@ -85,7 +85,7 @@ export default {
     myComments: '我的回复',
     myFavor: '我的收藏',
     cancelFavor: '取消收藏',
-    newComment: '新回复',
+    newComment: 'Comment',
     deleteBtn: '删除',
     reply: '回复：',
     originalPost: '原帖：'

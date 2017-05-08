@@ -208,9 +208,9 @@ export default {
           postAction: '/forum_actions/upload_post_image',
           accept: 'image/jpeg, image/png',
           data: {
-            id: this.editingPostData.id, 
             forum_id: this.$route.params.forumId,
             section_id: this.editingPostData.selectedSectionId,
+            post_id: this.editingPostData.id, 
           },
           extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
@@ -243,7 +243,7 @@ export default {
           file: {
             base64_content: result.image
           },
-          id: this.editingPostData.id,
+          post_id: this.editingPostData.id,
           forum_id: this.$route.params.forumId,
           section_id: this.editingPostData.selectedSectionId,
         }, value => {
@@ -278,7 +278,7 @@ export default {
         let result = await this.$acs.addPost({
           forum_id: forumId, 
           section_id: this.editingPostData.selectedSectionId,
-          id: this.editingPostData.id,
+          post_id: this.editingPostData.id,
           title: this.editingPostData.title, 
           content: this.editingPostData.content})
 

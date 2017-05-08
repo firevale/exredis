@@ -35,6 +35,7 @@ defmodule Acs.ForumRouter do
     post  "/search", ForumController, :search
 
     post  "/upload_post_image", ForumController, :upload_post_image
+    post  "/upload_comment_image", ForumController, :upload_comment_image
   end
 
 end

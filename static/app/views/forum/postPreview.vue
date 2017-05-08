@@ -87,7 +87,7 @@ export default {
         let result = await this.$acs.addPost({
           forum_id: forumId, 
           section_id: this.editingPostData.selectedSectionId,
-          id: this.editingPostData.id,
+          post_id: this.editingPostData.id,
           title: this.editingPostData.title, 
           content: this.editingPostData.content})
 

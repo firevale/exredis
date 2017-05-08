@@ -104,7 +104,7 @@
     }
   }
 
-  @media screen and (max-width: 425px) {
+  @media all and (orientation: portrait) and (max-width: 425px) {
     .account-info {
       .columns.is-mobile>.column.is-3 {
         width: 100%;

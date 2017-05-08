@@ -84,8 +84,12 @@ export default {
       if (!this.processing) {
         this.processing = true
         let forumId = this.$router.currentRoute.params.forumId
-        let result = await this.$acs.addPost(forumId, this.selectedSectionId,
-          this.title, this.content)
+        let result = await this.$acs.addPost({
+          forum_id: forumId, 
+          section_id: this.editingPostData.selectedSectionId,
+          id: this.editingPostData.id,
+          title: this.editingPostData.title, 
+          content: this.editingPostData.content})
 
         if (result.success) {
           this.resetPostEditingData()

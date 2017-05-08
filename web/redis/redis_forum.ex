@@ -42,7 +42,7 @@ defmodule Acs.RedisForum do
 
     query = from forum in Forum,
               left_join: section in assoc(forum, :sections),
-              where: forum.id == ^id,
+              where: forum.id == ^id and section.active == true and forum.active == true,
               preload: [sections: section]
 
     case Repo.one(query) do
@@ -54,7 +54,9 @@ defmodule Acs.RedisForum do
           active: forum.active,
           inserted_at: forum.inserted_at,
           icon: forum.icon,
-          sections: forum.sections
+          sections: forum.sections |> Enum.map(fn(%{id: id, sort: sort, title: title}) -> 
+            {id, %{id: id, sort: sort, title: title}} 
+          end) |> Enum.into(%{})
         }
 
         Redis.set(redis_key, to_json(cache))

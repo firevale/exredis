@@ -82,6 +82,7 @@ export default {
   data() {
     return {
       content: '',
+      id: undefined,
       editor: undefined,
       errorMessage: '',
       processing: false,
@@ -153,10 +154,12 @@ export default {
         })
       } else {
         showFileUploadDialog(this.$i18n, {
-          postAction: '/forum_actions/upload_post_image',
+          postAction: '/forum_actions/upload_comment_image',
           accept: 'image/jpeg, image/png',
           data: {
-            forum_id: this.$route.params.forumId
+            forum_id: this.$route.params.forumId,
+            post_id: this.$route.params.postId,
+            comment_id: this.id,
           },
           extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
@@ -166,6 +169,7 @@ export default {
               editor.insertEmbed(range.index, 'image', response.link)
               editor.formatText(range.index, 1, 'width', response.width)
               editor.formatText(range.index, 1, 'height', response.height)
+              this.id = response.comment_id
             } else if (response.i18n_message) {
               Toast.show(this.$t(response.i18n_message, response.i18n_message_object))
             } else if (response.message) {
@@ -186,7 +190,9 @@ export default {
 
         let upload_result = await this.$acs.uploadPostImage({
           file: {
-            base64_content: result.image
+            base64_content: result.image,
+            post_id: this.$route.params.postId,
+            comment_id: this.id,
           },
           forum_id: this.$route.params.forumId
         }, value => {
@@ -209,7 +215,10 @@ export default {
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true
         let postId = this.$route.params.postId
-        let result = await this.$acs.addComment(postId, this.content)
+        let result = await this.$acs.addComment({
+          comment_id: this.id,
+          post_id: postId, 
+          content: this.content})
         if (result.success) {
           Toast.show(this.$t('forum.writeComment.addSuccess'))
           this.$router.replace({

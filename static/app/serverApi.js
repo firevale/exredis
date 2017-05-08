@@ -83,11 +83,8 @@ export default {
         return post('/forum_actions/add_post', params)
       },
 
-      addComment(post_id, content) {
-        return post('/forum_actions/add_comment', {
-          post_id,
-          content
-        })
+      addComment(params) {
+        return post('/forum_actions/add_comment', params)
       },
 
       getPostDetail(post_id) {

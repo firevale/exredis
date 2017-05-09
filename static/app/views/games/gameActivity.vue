@@ -13,7 +13,7 @@
 </template>
 <script>
 import scroller from 'common/components/scroller'
-import newsDetailView from './newsDetailView'
+import newsDetailView from '../../components/newsDetailView'
 
 export default {
   mounted: function() {

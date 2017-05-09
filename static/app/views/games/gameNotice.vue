@@ -26,7 +26,6 @@ import scroller from 'common/components/scroller'
 export default {
   mounted: function() {
     this.loaddata()
-    console.log("---------------------")
   },
 
   components: {

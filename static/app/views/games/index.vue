@@ -50,7 +50,7 @@ export default {
     switchMenu: function(menu) {
       if (menu != this.type) {
         this.type = menu.value
-        this.resetScroller();
+        this.resetScroller()
       }
     },
 

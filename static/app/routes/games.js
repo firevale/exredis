@@ -6,8 +6,25 @@ export default [{
   path: '/games/list',
   name: 'gamesList',
   component: require('../views/games/list.vue')
-},{
+}, {
   path: '/games/:app_id',
   name: 'gamesIndex',
-  component: require('../views/games/index.vue')
+  component: require('../views/games/main.vue'),
+  children: [{
+    path: 'activity',
+    name: 'gameActivity',
+    component: require('../views/games/gameActivity.vue')
+  }, {
+    path: 'notice',
+    name: 'gameNotice',
+    component: require('../views/games/gameNotice.vue')
+  }, {
+    path: 'news',
+    name: 'gameNews',
+    component: require('../views/games/gameNews.vue')
+  }, {
+    path: '*',
+    redirect: 'activity'
+  }
+ ]
 }]

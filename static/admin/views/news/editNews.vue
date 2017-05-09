@@ -75,8 +75,8 @@ export default {
 
     onInsertImage: function(editor) {
       showFileUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/update_news_pic',
-        accept: 'image/jpeg, image/png',
+        postAction: '/games_actions/upload_news_pic',
+        accept: 'image/jpg, image/jpeg, image/png',
         data: {
           app_id: this.news.app_id
         },
@@ -86,6 +86,8 @@ export default {
             editor.focus()
             let range = editor.getSelection()
             editor.insertEmbed(range.index, 'image', response.link)
+            editor.formatText(range.index, 1, 'width', response.width)
+            editor.formatText(range.index, 1, 'height', response.height)
           } else if (response.i18n_message) {
             message.showMsg(this.$t(response.i18n_message, response.i18n_message_object))
           } else if (response.message) {

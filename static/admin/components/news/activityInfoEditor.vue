@@ -154,11 +154,11 @@ export default {
     updateNewsPic: function(news) {
       showFileUploadDialog(this.$i18n, {
         postAction: '/games_actions/update_news_title_picture',
-        accept: 'image/jpg, image/jpeg',
+        accept: 'image/jpg, image/jpeg, image/png',
         data: {
           news_id: news.id
         },
-        extensions: ['jpg'],
+        extensions: ['jpg', 'png'],
         imageValidator: {
           minWidth: 640,
           minHeight: 260,

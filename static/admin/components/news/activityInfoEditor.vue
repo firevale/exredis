@@ -11,8 +11,8 @@
           group: 'activity',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
-            $t('admin.news.activity.add') }}
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.activity.add')
+            }}
           </router-link>
         </div>
       </article>
@@ -71,6 +71,11 @@ import {
 import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
+
+import {
+  processAjaxError,
+  openNotification,
+} from 'admin/miscellaneous'
 
 import {
   showMessageBox
@@ -149,13 +154,24 @@ export default {
     updateNewsPic: function(news) {
       showFileUploadDialog(this.$i18n, {
         postAction: '/games_actions/update_news_title_picture',
-        accept: 'image/png',
+        accept: 'image/jpg, image/jpeg',
         data: {
           news_id: news.id
         },
-        extensions: ['png'],
+        extensions: ['jpg'],
+        imageValidator: {
+          minWidth: 640,
+          minHeight: 260,
+          ratio: 0.41,
+        },
         title: this.$t('admin.titles.uploadNewsPic'),
-        callback: response => news.pic = response.pic,
+        callback: response => {
+          if (response.success) {
+            news.pic = response.pic
+          } else {
+            processAjaxError(response)
+          }
+        }
       })
     },
 

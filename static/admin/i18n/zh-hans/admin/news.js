@@ -17,7 +17,6 @@ export default {
   created_at: '创建时间',
   active: '是否启用',
   operate: '操作',
-  active: '状态',
   addSuccess: '添加成功',
   titlePlaceholder: '请填写标题～～',
   textAreaPlaceHolder: '请填写内容～～',

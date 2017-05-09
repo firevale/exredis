@@ -9,5 +9,6 @@
    invalidFileType: '错误的文件类型: {fileType}',
    imgShouldBeSquare: '图片必须为正方形',
    imgWidthShouldGreaterThan: '图片的宽度不得小于{minWidth}',
+   invalidImageRatio: '图片的长宽比为: {ratio}, 要求的长宽比为: {requiredRatio}',
    uploadImage: '上传图片',
  }

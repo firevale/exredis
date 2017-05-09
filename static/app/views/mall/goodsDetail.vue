@@ -1,8 +1,8 @@
 <template>
-  <div class="goods-detail is-marginless is-paddingless">
+  <div class="goods-detail">
     <div class="flex-take-rest goods-content">
-      <scroller v-if="this.selectedGoods" ref="scroller">
-        <div class="columns is-multiline is-mobile has-text-centered has-bottom-line is-marginless is-paddingless">
+      <scroller ref="scroller">
+        <div class="columns is-multiline is-mobile has-text-centered has-bottom-line">
           <div class="column is-12">
             <div class="card-image">
               <swiper :options="swiperOption" ref="goodsSwiper" v-if="this.selectedGoods.pic">
@@ -27,36 +27,34 @@
             </p>
           </div>
         </div>
-        <div class="columns is-multiline is-mobile is-marginless is-paddingless">
+        <div class="columns is-multiline is-mobile">
           <div class="column is-12 goods-description">
             <p class="title is-5 is-normal has-text-centered">
               {{$t('mall.goods.description') }}
             </p>
           </div>
           <div class="column is-12">
-            <quill-content :content="this.selectedGoods.description"></quill-content>
+            <quill-content :content="this.selectedGoods.description" style="border:none;"></quill-content>
           </div>
         </div>
       </scroller>
     </div>
-    <div v-if="this.selectedGoods.stock>0" class="flex-fixed-size goods-bottom">
-      <div class="columns is-multiline is-mobile">
-        <div class="column is-6 bottom-left">
+    <div class="flex-fixed-size goods-bottom">
+      <div v-if="this.selectedGoods.stock<=0" class="goods-sellOut has-text-centered">
+        <div class="title is-5 is-normal">{{$t('mall.goods.soldOut')}}</div>
+      </div>
+      <div v-else class="columns is-multiline is-mobile">
+        <div class="column is-6 border-right">
           <div class="left-content">
-            <a class="button is-large content-item" @click.prevent="quantityPlus">-</a>
-            <input v-model.trim="quantity" class="input is-large has-text-centered content-item" style="width:3.9rem;"
-              @blur.prevent="quantityChange" type="number" :value="quantity">
-            <a class="button is-large content-item" @click.prevent="quantityReduce">+</a>
+            <a class="button is-large has-hairline-border content-item" @click.prevent="quantityPlus">-</a>
+            <input v-model.trim="quantity" class="input is-large has-text-centered has-hairline-border content-item"
+              style="width:4rem;" @blur.prevent="quantityChange" type="number" :value="quantity">
+            <a class="button is-large has-hairline-border content-item" @click.prevent="quantityReduce">+</a>
           </div>
         </div>
         <div class="column is-6">
           <a class="button is-info is-large is-fullwidth goods-buyNow" @click.prevent="buyNow">{{$t('mall.goods.buyNow')}}</a>
         </div>
-      </div>
-    </div>
-    <div v-else class="flex-fixed-size goods-bottom">
-      <div class="goods-sellOut">
-        <div class="title is-5 has-text-centered">{{$t('mall.goods.soldOut')}}</div>
       </div>
     </div>
   </div>

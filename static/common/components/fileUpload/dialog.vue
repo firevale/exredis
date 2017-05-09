@@ -149,8 +149,19 @@ export default {
                 let img = new Image()
                 img.onload = _ => {
                   if (this.imageValidator && this.imageValidator.square) {
-                    if (img.width != img.height) {
+                    if (Math.abs(img.height / img.width - 1.0) > 0.01) {
                       this.errorMessage = this.$t('upload.imgShouldBeSquare')
+                      this.upload.clear()
+                      return
+                    }
+                  }
+
+                  if (this.imageValidator && this.imageValidator.ratio) {
+                    if (Math.abs(img.height / img.width - this.imageValidator.ratio) > 0.01) {
+                      this.errorMessage = this.$t('upload.invalidImageRatio', {
+                        ratio: (img.height / img.width).toFixed(2), 
+                        requiredRatio: this.imageValidator.ratio.toFixed(2)
+                      })
                       this.upload.clear()
                       return
                     }
@@ -165,6 +176,17 @@ export default {
                       return
                     }
                   }
+
+                  if (this.imageValidator && this.imageValidator.minHeight) {
+                    if (img.height < this.imageValidator.minHeight) {
+                      this.errorMessage = this.$t('upload.imgHeightShouldGreaterThan', {
+                        minHeight: this.imageValidator.minHeight
+                      })
+                      this.upload.clear()
+                      return
+                    }
+                  }
+
                   this.file = file
                   this.upload.$el.style.backgroundImage = `url(${reader.result})`
                 }

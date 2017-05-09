@@ -94,7 +94,7 @@ export default {
     editActivityInfo: '编辑活动信息',
     editNoticeInfo: '编辑公告信息',
     editNewsInfo: '编辑新闻信息',
-    uploadNewsPic: '修改题图(640X260大小的png图)',
+    uploadNewsPic: '修改题图(640X260, JPG或PNG)',
     uploadGoodsPic: '修改商品题图(400X400大小的png图)',
     yes: '是',
     no: '否',

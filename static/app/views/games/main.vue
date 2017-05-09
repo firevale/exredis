@@ -1,9 +1,9 @@
 <template>
-  <div class="tile is-ancestor is-vertical root-container">
-    <div class="flex-take-rest games">
-      <span slot="left" class="icon image-icon icon-close" @click="onBtnBackClicked"></span>
-      <slider-nav :menus="menus" @onSelect="switchMenu">
-      </slider-nav>
+  <div class="tile is-ancestor is-vertical root-container games">
+    <span class="icon image-icon icon-close" @click="onBtnBackClicked"></span>
+    <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu">
+    </slider-nav>
+    <div class="flex-take-rest" style="position: relative">
       <transition :name="transitionName">
         <router-view> </router-view>
       </transition>

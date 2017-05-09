@@ -30,7 +30,10 @@ Vue.use(VueTimeago, {
 })
 
 import quillContent from 'common/components/quillContent'
+import scroller from 'common/components/scroller'
+
 Vue.component('quill-content', quillContent)
+Vue.component('scroller', scroller)
 
 axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 axios.defaults.headers.common['acs-app-id'] = acs.getAppId()

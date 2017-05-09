@@ -53,7 +53,7 @@ defmodule Acs.PageController do
   end
 
   def show_app_games(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 
-    conn |> redirect(to: "/games/#{app_id}")
+    conn |> redirect(to: "/games/#{app_id}/")
   end
   def show_app_games(conn, _params) do 
     conn |> send_resp(500, gettext("app not found"))

@@ -2,10 +2,11 @@
   <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <a class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
-          @click.prevent="switchMenu(item,index,$event)" ref="navItem">{{item.text}}</a>
-        <div class="slider-bar" :style="{'left':sliderPosition,'width':barWidth,'background-size':sliderBackgroundSize}"
-          ref="sliderBar" style="display: flex;"></div>
+        <v-touch tag="a" class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
+          @tap="switchMenu(item,index,$event)" ref="navItem">{{item.text}}</v-touch>
+        <div class="slider-bar" :style="{'left': sliderPosition, 'width': barWidth, 'background-size': sliderBackgroundSize}" ref="sliderBar"
+          style="display: flex;">
+        </div>
       </div>
     </div>
   </div>
@@ -30,6 +31,7 @@ export default {
       resize: false
     }
   },
+
   mounted: function() {
     for (let i = 0; i < this.menus.length; i++) {
       this.menuHash[this.menus[i].value] = i
@@ -52,9 +54,11 @@ export default {
     selectedIndex() {
       return this.menuHash[this.currentValue]
     },
+
     sliderBackgroundSize() {
       return this.barWidth + ' 0.8rem'
     },
+
     sliderPosition() {
       if (this.resize)
         this.resize = false
@@ -63,7 +67,7 @@ export default {
         return "0"
       }
 
-      let element = this.$refs.navItem[this.selectedIndex]
+      let element = this.$refs.navItem[this.selectedIndex].$el
       let bar = this.$refs.sliderBar
 
       let offsetLeft = element.offsetLeft;
@@ -77,7 +81,6 @@ export default {
 
       let left = element.offsetLeft + ((offsetWidth - 100) / 2)
       return left + "px"
-
     },
   },
   methods: {
@@ -97,8 +100,7 @@ export default {
 @import "../scss/variables";
 .slider-nav {
   .nav {
-    $item-width: 13.2rem;
-    $item-min-width: 8rem;
+    // $item-width: 13.2rem;
     margin-bottom: .5rem;
     border-bottom: .5rem solid $bottom-line-light;
     height: 4.8rem;
@@ -122,10 +124,8 @@ export default {
       .nav-item {
         color: $black;
         justify-content: center;
-        /*padding: 1rem 2rem;*/
-        /*margin: auto 2rem;*/
         font-size: 1.3rem;
-        max-width: $item-width;
+        max-width: 13.2rem;
         flex-grow: 1;
         flex-shrink: 1;
         &.is-tab {
@@ -144,12 +144,18 @@ export default {
               position: absolute;
               width: 0;
               height: 1.5rem;
-              top: 1rem;
+              top: 1.3rem;
               right: 0rem;
               content: "";
               border-right: 0.12rem solid $bottom-line-light;
             }
           }
+        }
+      }
+
+      @media all and (max-width: 425px) {
+        .nav-item {
+          max-width: 8rem;
         }
       }
     }

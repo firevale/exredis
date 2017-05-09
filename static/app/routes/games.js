@@ -15,6 +15,9 @@ export default [{
     name: 'gameActivity',
     component: require('../views/games/gameActivity.vue')
   }, {
+    path: 'activity/:newsId(\\d+)',
+    component: require('../views/games/newsDetail.vue')
+  }, {
     path: 'notice',
     name: 'gameNotice',
     component: require('../views/games/gameNotice.vue')

@@ -1,8 +1,5 @@
 <template>
-  <scroller v-if="showDetail">
-    <news-detail-view :item-data="detail" @goBack="goBack"></news-detail-view>
-  </scroller>
-  <div v-else class="columns is-multiline is-mobile" style="margin:0 2rem">
+  <div class="columns is-multiline is-mobile" style="margin:0 2rem">
     <v-touch v-for="item in activityList" :key="item.id" class="column is-half" v-on:tap="showActivityDetail(item)">
       <center>
         <img v-if="item.pic" :src="item.pic" style="border-radius: .5rem;"></img>
@@ -12,31 +9,27 @@
   </div>
 </template>
 <script>
-import scroller from 'common/components/scroller'
-import newsDetailView from '../../components/newsDetailView'
 
 export default {
-  mounted: function() {
-    this.loaddata()
+  created: function() {
+    this.fetchData()
   },
 
-  components: {
-    scroller,
-    newsDetailView,
+  watch: {
+    '$route': 'fetchData'
   },
 
   data() {
     return {
       activityList: [],
       detail: Object,
-      showDetail: false,
     }
   },
 
   methods: {
-    loaddata: async function() {
-      let app_id = this.$router.currentRoute.params.app_id
-      let result = await this.$acs.getPagedNews(app_id, "activity", 1, 32)
+    fetchData: async function() {
+      let app_id = this.$route.params.app_id
+      let result = await this.$acs.getPagedNews(app_id, "activity", 1, 12)
 
       if (result.success) {
         this.activityList = result.news
@@ -44,12 +37,7 @@ export default {
     },
 
     showActivityDetail(item) {
-      this.detail = item
-      this.showDetail = true
-    },
-
-    goBack() {
-      this.showDetail = false
+      this.$router.push({path: `/games/${this.$route.params.app_id}/activity/${item.id}`})
     },
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="tile is-ancestor is-vertical root-container games">
-    <span class="icon image-icon icon-close" @click="onBtnBackClicked"></span>
+    <span class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
+    <span class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
     <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu">
     </slider-nav>
     <div class="flex-take-rest" style="position: relative">
@@ -59,13 +60,13 @@ export default {
     },
 
     onBtnBackClicked: function() {
-      if (this.canGoBack) {
-        this.$router.back()
-      } else if (this.inApp) {
-        nativeApi.closeWebviewWithResult({
-          success: false
-        })
-      }
+      this.$router.back()
+    },
+
+    onBtnCloseClicked: function() {
+      nativeApi.closeWebviewWithResult({
+        success: false
+      })
     },
   },
 
@@ -81,10 +82,20 @@ export default {
 }
 </script>
 <style lang="scss">
-.games .icon-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 99;
+.games {
+  .icon.icon-close,
+  .icon.icon-back {
+    position: absolute;
+    top: 1.5rem;
+    z-index: 99;
+  }
+
+  .icon.icon-close {
+    right: 1rem;
+  }
+
+  .icon.icon-back {
+    left: 1rem;
+  }
 }
 </style>

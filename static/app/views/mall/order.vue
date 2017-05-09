@@ -24,15 +24,16 @@
           </div>
           <div class="media-content is-marginless is-paddingless">
             <p class="title is-normal is-5">{{ goodsItem.goods.name}}</p>
-            <p class="title is-normal is-5 is-primary">{{ getPrice(goodsItem.goods.price) }}</p>
+            <p class="title is-normal is-5 is-primary currency" :class="goodsItem.goods.currency">{{ goodsItem.goods.price | formatPrice }}</p>
             <p class="title is-normal is-5">X{{ goodsItem.quantity }}</p>
           </div>
         </div>
       </div>
       <div class="content has-text-right">
         <p class="subtitle is-5 is-primary is-normal">
-          {{ $t('mall.order.totalPrice', {price: this.totalPrice, postage: getPrice(goodsItem.goods.postage)})
-          }}
+          {{$t('mall.order.fields.total') }}:
+          <span class="currency" :class="goodsItem.goods.currency">{{this.totalPrice | formatPrice}}</span> ({{$t('mall.order.fields.with_postage')}}
+          <span class="currency" :class="goodsItem.goods.currency">{{this.goodsItem.goods.postage | formatPrice}}</span> )
         </p>
       </div>
     </div>
@@ -142,8 +143,8 @@ export default {
       let result = await this.$acs.getGoodsDetail(this.goodsItem.goodsId)
       if (result.success) {
         this.goodsItem.goods = result.goods
-        this.totalPrice = "¥ " + parseFloat((this.goodsItem.goods.price * this.goodsItem.quantity +
-          this.goodsItem.goods.postage) / 100).toFixed(2)
+        this.totalPrice = parseFloat((this.goodsItem.goods.price * this.goodsItem.quantity +
+          this.goodsItem.goods.postage))
         this.updateShoppingCart(this.goodsItem)
       }
     },

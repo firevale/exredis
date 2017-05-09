@@ -18,9 +18,9 @@
               {{this.selectedGoods.name}}
             </p>
             <p class="title is-5 is-primary is-normal">
-              <label class="currency" :class="this.selectedGoods.currency">{{(this.selectedGoods.price / 100).toFixed(2)}}</label>
+              <label class="currency" :class="this.selectedGoods.currency">{{this.selectedGoods.price | formatPrice}}</label>
               <label>（{{$t('mall.goods.postage')}}：</label>
-              <label class="currency" :class="this.selectedGoods.currency">{{(this.selectedGoods.postage / 100).toFixed(2)}}</label>）
+              <label class="currency" :class="this.selectedGoods.currency">{{this.selectedGoods.postage | formatPrice}}</label>）
             </p>
             <p class="title is-5 is-normal">
               {{$t('mall.goods.stock') }}：{{this.selectedGoods.stock}}

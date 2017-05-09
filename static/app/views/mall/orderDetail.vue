@@ -1,16 +1,13 @@
 <template>
   <div class="my-orders">
-    <div class="card" style="min-height:60vh">
+    <div class="card">
       <header class="card-header has-bottom-line">
         <div class="card-header-title is-vertical">
           <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{this.selectedOrder.address.name}} </p>
           <p class="is-thickness"> {{$t('mall.order.fields.address.mobile') }}：{{this.selectedOrder.address.mobile}} </p>
-          <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{this.selectedOrder.address.area}}{{this.selectedOrder.address.address}}
+          <p style="width:90vw" class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{this.selectedOrder.address.area}}{{this.selectedOrder.address.address}}
           </p>
         </div>
-        <!--<p class="card-header-icon">
-          >
-        </p>-->
       </header>
       <div class="card-content has-bottom-line">
         <div class="columns is-mobile is-multiline" style="margin:0;">
@@ -40,19 +37,19 @@
           <p class="is-thickness">{{$t('mall.order.fields.id') }}：{{this.selectedOrder.id}} </p>
           <p class="is-thickness">{{$t('mall.order.fields.status') }}：{{$t('mall.order.status.'+this.selectedOrder.status) }}
           </p>
-          <p class="is-thickness">{{$t('mall.order.fields.inserted_at') }}：{{this.selectedOrder.inserted_at | formatServerDateTime}}
+          <p style="width:70vw" class="is-thickness">{{$t('mall.order.fields.inserted_at') }}：{{this.selectedOrder.inserted_at | formatServerDateTime}}
           </p>
         </div>
       </footer>
     </div>
-    <div>
+    <div class="order-bottom">
       <template v-if="this.selectedOrder.status==0">
-        <v-touch v-if="this.isSupportWechat()" :disabled="wechatPayDisabled" style="margin-top:0.5rem;margin-bottom:0.5rem"
-          :class="wechatPayLoading?'is-loading':''" class="button is-fullwidth is-info is-medium" @tap="onPrepay('wechat')">
+        <v-touch v-if="this.isSupportWechat()" :disabled="wechatPayDisabled" :class="wechatPayLoading?'is-loading':''"
+          class="button is-fullwidth is-info is-medium" @tap="onPrepay('wechat')">
           {{$t('mall.order.buttons.wechatPay')}}
         </v-touch>
-        <v-touch :class="aliPayLoading?'is-loading':''" :disabled="aliPayDisabled" style="margin-top:0.5rem;"
-          class="button is-fullwidth is-info is-medium" @tap="onPrepay('alipay')">
+        <v-touch :class="aliPayLoading?'is-loading':''" :disabled="aliPayDisabled" class="button is-fullwidth is-info is-medium"
+          @tap="onPrepay('alipay')">
           {{$t('mall.order.buttons.aliPay')}}
         </v-touch>
       </template>

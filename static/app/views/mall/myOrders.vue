@@ -75,6 +75,9 @@ export default {
       }
     },
     loadmore: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelfetchMyOrders()
+
       let result = await this.$acs.fetchMyOrders(this.type, this.page + 1, this.records_per_page)
 
       if (result.success) {

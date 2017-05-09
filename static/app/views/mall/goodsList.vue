@@ -45,7 +45,7 @@ export default {
       goodsList: [],
       page: 0,
       total: 1,
-      recordsPerPage: 12,
+      recordsPerPage: 8,
       postRecords: 0
     }
   },
@@ -62,6 +62,9 @@ export default {
       }
     },
     loadmore: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetActiveGoodsPaged()
+
       let appId = this.$router.currentRoute.params.appId
       let result = await this.$acs.getActiveGoodsPaged(appId, this.page + 1, this.recordsPerPage)
 

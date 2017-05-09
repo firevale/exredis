@@ -248,13 +248,21 @@ export default {
         })
       },
 
-      getActiveGoodsPaged(app_id, page, records_per_page) {
+      cancelGetActiveGoodsPaged: function() {
+        if (typeof this.tokens.getActiveGoodsPaged === 'function') {
+          this.tokens.getActiveGoodsPaged()
+        }
+      },
+
+      getActiveGoodsPaged: function(app_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getActiveGoodsPaged = c)
         return post('/mall_actions/get_active_goods_paged', {
           app_id,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
+
 
       getMallDetail(app_id) {
         return post('/mall_actions/get_mall_detail', {
@@ -309,12 +317,19 @@ export default {
         return post("/forum_actions/upload_post_image", params, onProgress)
       },
 
-      fetchMyOrders(type, page, records_per_page) {
+      cancelfetchMyOrders: function() {
+        if (typeof this.tokens.fetchMyOrders === 'function') {
+          this.tokens.fetchMyOrders()
+        }
+      },
+
+      fetchMyOrders: function(type, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.fetchMyOrders = c)
         return post('/mall_actions/fetch_my_orders', {
           type,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
       confirmRecieved(params) {

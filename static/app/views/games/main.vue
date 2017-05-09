@@ -2,7 +2,7 @@
   <div class="tile is-ancestor is-vertical root-container games">
     <span class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
     <span class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
-    <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu">
+    <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav">
     </slider-nav>
     <div class="flex-take-rest" style="position: relative">
       <transition :name="transitionName">
@@ -39,6 +39,7 @@ export default {
     }
   },
 
+
   computed: {
     ...mapGetters([
       'transitionName'
@@ -53,7 +54,7 @@ export default {
     switchMenu: function(menu) {
       if (menu.value != this.currentTab) {
         this.currentTab = menu.value
-        this.$router.replace({
+        this.$router.push({
           path: `/games/${this.$route.params.app_id}/${menu.value}`
         })
       }
@@ -73,6 +74,20 @@ export default {
   watch: {
     '$route' (to, from) {
       this.canGoBack = (history.state != null)
+      switch(to.name) {
+        case 'gameActivity':
+          this.$refs.nav && this.$refs.nav.$emit('select', 'activity')
+          this.currentTab = 'activity'
+          break;
+        case 'gameNotice':
+          this.$refs.nav && this.$refs.nav.$emit('select', 'notice')
+          this.currentTab = 'notice'
+          break;
+        case 'gameNews':
+          this.$refs.nav && this.$refs.nav.$emit('select', 'news')
+          this.currentTab = 'news'
+          break;
+      }
     }
   },
 

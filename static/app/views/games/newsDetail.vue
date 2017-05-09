@@ -1,6 +1,6 @@
 <template>
   <scroller>
-    <news-detail-view :item-data="news"></news-detail-view>
+    <news-detail-view v-if="news" :item-data="news"></news-detail-view>
   </scroller>
 </template>
 <script>

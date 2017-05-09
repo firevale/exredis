@@ -58,7 +58,6 @@
   .goods-content {
     position: relative;
     margin-top: 0.3rem;
-    min-height: 50vh;
   }
   .goods-item {
     margin-top: -.2rem;
@@ -143,6 +142,13 @@
       bottom: -.5rem;
     }
   }
+  .order-bottom {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    div {
+      margin-top: 0.5rem;
+    }
+  }
 }
 
 .my-addresses {
@@ -183,6 +189,13 @@
 }
 
 .place-order {
+  .card {
+    &:not(:last-child):after {
+      @include bottom-line(.5rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
+    }
+  }
   article {
     padding: 1.0rem;
     p {
@@ -216,7 +229,7 @@
   }
   .order-bottom {
     margin-top: 1rem;
-    div{
+    div {
       margin-top: 1rem;
     }
   }

@@ -41,10 +41,12 @@ defmodule Acs.GamesController do
 
   # get_paged_news
   def get_paged_news(conn, %{"app_id" => app_id,
-                          "group" => group,
-                          "page" => page, 
-                          "records_per_page" => records_per_page}) do
-    total = Repo.one!(from n in AppNews, select: count(1), where: n.app_id == ^app_id and n.group == ^group and n.active == true)
+                             "group" => group,
+                             "page" => page, 
+                             "records_per_page" => records_per_page}) do
+    total = Repo.one!(from n in AppNews, 
+                      select: count(1), 
+                      where: n.app_id == ^app_id and n.group == ^group and n.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from n in AppNews,
@@ -184,12 +186,16 @@ defmodule Acs.GamesController do
     param_name: "file", 
     format: ["png", "jpg", "jpeg"],
     reformat: "jpg"
-    ] when action == :update_news_pic
-  def update_news_pic(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{app_id}")
-    conn |> json(%{success: true, link: image_path})
+    ] when action == :upload_news_pic
+  def upload_news_pic(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(
+        from: image_file_path, 
+        to: "news_pics/#{app_id}", 
+        low_quality: true)
+    conn |> json(%{success: true, link: image_path, width: width, height: height})
   end
-  def update_news_pic(conn, _) do
+  def upload_news_pic(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

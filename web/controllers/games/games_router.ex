@@ -14,7 +14,7 @@ defmodule Acs.GamesRouter do
     post  "/get_paged_news_admin", GamesController, :get_paged_news_admin
     post  "/toggle_news_status", GamesController, :toggle_news_status
     post  "/update_news_title_picture", GamesController, :update_news_title_picture
-    post  "/update_news_pic", GamesController, :update_news_pic
+    post  "/upload_news_pic", GamesController, :upload_news_pic
 
   end
 

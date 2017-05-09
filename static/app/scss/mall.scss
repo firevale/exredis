@@ -57,6 +57,7 @@
   }
   .goods-content {
     position: relative;
+    margin-top: 0.3rem;
     min-height: 50vh;
   }
   .goods-item {
@@ -214,9 +215,9 @@
     }
   }
   .order-bottom {
-    padding-top: 1rem;
+    margin-top: 1rem;
     div{
-      padding-top: 1rem;
+      margin-top: 1rem;
     }
   }
 }

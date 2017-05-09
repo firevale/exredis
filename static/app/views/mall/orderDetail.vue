@@ -1,6 +1,6 @@
 <template>
   <div class="my-orders">
-    <div class="card">
+    <div class="card" style="min-height:60vh">
       <header class="card-header has-bottom-line">
         <div class="card-header-title is-vertical">
           <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{this.selectedOrder.address.name}} </p>
@@ -47,10 +47,12 @@
     </div>
     <div>
       <template v-if="this.selectedOrder.status==0">
-        <v-touch v-if="this.isSupportWechat()" class="button is-fullwidth is-info is-medium" @tap="onPrepay('wechat')">
+        <v-touch v-if="this.isSupportWechat()" :disabled="wechatPayDisabled" style="margin-top:0.5rem;margin-bottom:0.5rem"
+          :class="wechatPayLoading?'is-loading':''" class="button is-fullwidth is-info is-medium" @tap="onPrepay('wechat')">
           {{$t('mall.order.buttons.wechatPay')}}
         </v-touch>
-        <v-touch :class="loading?'is-loading':''" class="button is-fullwidth is-info is-medium" @tap="onPrepay('alipay')">
+        <v-touch :class="aliPayLoading?'is-loading':''" :disabled="aliPayDisabled" style="margin-top:0.5rem;"
+          class="button is-fullwidth is-info is-medium" @tap="onPrepay('alipay')">
           {{$t('mall.order.buttons.aliPay')}}
         </v-touch>
       </template>
@@ -73,6 +75,7 @@ import {
 
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'
+import nativeApi from 'common/js/nativeApi'
 
 export default {
   components: {},
@@ -95,7 +98,10 @@ export default {
   },
   data: function() {
     return {
-      loading: false
+      aliPayLoading: false,
+      aliPayDisabled: false,
+      wechatPayLoading: false,
+      wechatPayDisabled: false,
     }
   },
   methods: {
@@ -124,7 +130,16 @@ export default {
       })
     },
     onPrepay: async function(payType) {
-      this.loading = true
+      switch (payType) {
+        case 'alipay':
+          this.aliPayLoading = true
+          this.wechatPayDisabled = true
+          break;
+        case 'wechat':
+          this.wechatPayLoading = true
+          this.aliPayDisabled = true
+          break;
+      }
       //check stock
       this.checkStock(payType)
     },
@@ -134,7 +149,10 @@ export default {
         let stock = result.stock
         if (this.selectedOrder.details[0].amount > stock) {
           Toast.show(this.$t('mall.order.stockOut'))
-          this.loading = false
+          this.aliPayLoading = false
+          this.aliPayDisabled = false
+          this.wechatPayLoading = false
+          this.wechatPayDisabled = false
         } else {
           switch (payType) {
             case 'alipay':
@@ -145,7 +163,10 @@ export default {
               break;
           }
           setInterval(() => {
-            this.loading = false
+            this.aliPayLoading = false
+            this.aliPayDisabled = false
+            this.wechatPayLoading = false
+            this.wechatPayDisabled = false
           }, 3500)
         }
       }

@@ -38,10 +38,12 @@
     </div>
     <div class="order-bottom">
       <div class="is-fullwidth" v-if="this.isSupportWechat()">
-        <v-touch class="button is-info is-large is-fullwidth" :class="loading?'is-loading':''" @tap="onPrepay('wechat')">{{$t('mall.order.buttons.wechatPay')}}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" :disabled="wechatPayDisabled" :class="wechatPayLoading?'is-loading':''"
+          @tap="onPrepay('wechat')">{{$t('mall.order.buttons.wechatPay')}}</v-touch>
       </div>
       <div class="is-fullwidth">
-        <v-touch class="button is-info is-large is-fullwidth" :class="loading?'is-loading':''" @tap="onPrepay('alipay')">{{$t('mall.order.buttons.aliPay')}}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" :disabled="aliPayDisabled" :class="aliPayLoading?'is-loading':''"
+          @tap="onPrepay('alipay')">{{$t('mall.order.buttons.aliPay')}}</v-touch>
       </div>
     </div>
   </div>
@@ -93,7 +95,10 @@ export default {
         quantity: 1,
         goods: {},
       },
-      loading: false,
+      aliPayLoading: false,
+      aliPayDisabled: false,
+      wechatPayLoading: false,
+      wechatPayDisabled: false,
       totalPrice: "0",
       orderId: "",
     }
@@ -148,10 +153,19 @@ export default {
         Toast.show(this.$t('mall.order.addressPlaceholder'))
         return;
       }
-      this.loading = true
+      //loading
+      switch (payType) {
+        case 'alipay':
+          this.aliPayLoading = true
+          this.wechatPayDisabled = true
+          break;
+        case 'wechat':
+          this.wechatPayLoading = true
+          this.aliPayDisabled = true
+          break;
+      }
       //check stock
       this.checkStock(payType)
-
     },
     checkStock: async function(payType) {
       let result = await this.$acs.getGoodsStock(this.goodsItem.goodsId)
@@ -159,12 +173,18 @@ export default {
         let stock = result.stock
         if (this.goodsItem.quantity > stock) {
           Toast.show(this.$t('mall.order.stockOut'))
-          this.loading = false
+          this.aliPayLoading = false
+          this.aliPayDisabled = false
+          this.wechatPayLoading = false
+          this.wechatPayDisabled = false
         } else {
           this.prepay(payType)
 
           setInterval(() => {
-            this.loading = false
+            this.aliPayLoading = false
+            this.aliPayDisabled = false
+            this.wechatPayLoading = false
+            this.wechatPayDisabled = false
           }, 3500)
         }
       }

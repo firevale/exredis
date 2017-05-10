@@ -36,7 +36,6 @@
   </scroller>
 </template>
 <script>
-import scroller from 'common/components/scroller'
 import newsDetailView from '../../components/newsDetailView'
 
 export default {
@@ -45,7 +44,6 @@ export default {
   },
 
   components: {
-    scroller,
     newsDetailView,
   },
 

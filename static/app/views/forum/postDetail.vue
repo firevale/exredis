@@ -16,7 +16,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import scroller from 'common/components/scroller'
+
 import postDetailView from '../../components/postDetailView.vue'
 import postCommentView from '../../components/postCommentView.vue'
 
@@ -28,7 +28,6 @@ export default {
   components: {
     postDetailView,
     postCommentView,
-    scroller,
   },
   computed: {
     postId() {

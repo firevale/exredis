@@ -50,7 +50,6 @@
 import Vue from '../../vue-installed'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
-import scroller from 'common/components/scroller'
 import citySelect from 'common/components/citySelect/citySelect'
 import {
   required,
@@ -64,13 +63,14 @@ import {
 
 export default {
   components: {
-    scroller,
     citySelect
   },
+
   mounted: async function() {
     acs.checkIsLogin(_ => {})
     await this.getAddressDetail()
   },
+
   computed: {
     errorHint: function() {
       if (!this.$v.address.name.required) {
@@ -96,6 +96,7 @@ export default {
       return ''
     }
   },
+
   validations: {
     address: {
       name: {
@@ -124,6 +125,7 @@ export default {
       }
     }
   },
+
   data: function() {
     return {
       processing: false,
@@ -145,6 +147,7 @@ export default {
       districtCode: ''
     }
   },
+  
   methods: {
     handleSubmit: async function() {
       if (!this.processing) {

@@ -49,12 +49,8 @@
 import Vue from '../../vue-installed'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
-import scroller from 'common/components/scroller'
 
 export default {
-  components: {
-    scroller
-  },
   mounted: async function() {
     await this.getGoodsDetail()
   },

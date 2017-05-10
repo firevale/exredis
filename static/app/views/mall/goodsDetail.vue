@@ -63,7 +63,6 @@
 import Vue from '../../vue-installed'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
-import scroller from 'common/components/scroller'
 import {
   swiper,
   swiperSlide
@@ -75,7 +74,6 @@ import {
 
 export default {
   components: {
-    scroller,
     swiper,
     swiperSlide
   },

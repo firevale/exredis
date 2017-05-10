@@ -22,14 +22,21 @@ const mutations = {
     state.inserted_at = user.inserted_at
     state.nil_password = user.nil_password
     
-    if (user.mobile)
+    if (user.mobile) {
       state.mobile = user.mobile
-    if (user.email)
+    }
+
+    if (user.email) {
       state.email = user.email
-    if (user.resident_id)
+    }
+
+    if (user.resident_id) {
       state.resident_id = user.resident_id
-    if (user.resident_name)
+    }
+
+    if (user.resident_name) {
       state.resident_name = user.resident_name
+    }
   },
 
   [types.UPDATE_USER_MOBILE](state, mobile) {

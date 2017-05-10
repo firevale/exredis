@@ -42,13 +42,10 @@ import {
 } from 'vuex'
 
 import * as utils from 'common/js/utils'
-
-import scroller from 'common/components/scroller'
 import questionItem from '../../components/questionItem'
 
 export default {
   components: {
-    scroller,
     questionItem
   },
   data() {

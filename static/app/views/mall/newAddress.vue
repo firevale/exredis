@@ -52,7 +52,6 @@ import {
 } from 'vuex'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
-import scroller from 'common/components/scroller'
 import citySelect from 'common/components/citySelect/citySelect'
 import {
   required,
@@ -65,7 +64,6 @@ import {
 
 export default {
   components: {
-    scroller,
     citySelect
   },
   mounted: function() {

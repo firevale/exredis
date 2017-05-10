@@ -341,7 +341,7 @@ defmodule Acs.ForumController do
     query = from c in ForumComment,
             join: u in assoc(c, :user),
             order_by: [asc: c.id],
-            where: c.post_id == ^post_id,
+            where: c.post_id == ^post_id and c.active == true,
             select: map(c, [:id, :content, :active, :inserted_at, user: [:id, :nickname, :avatar_url]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),

@@ -49,12 +49,19 @@ defmodule Acs.GamesController do
                       where: n.app_id == ^app_id and n.group == ^group and n.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
+    fields = case group do 
+              "notice" -> 
+                [:id, :title, :content, :is_top, :active, :pic, :reads, :inserted_at]
+              _ ->
+                [:id, :title, :is_top, :active, :pic, :reads, :inserted_at]
+             end
+
     query = from n in AppNews,
               where: n.app_id == ^app_id and n.group == ^group and n.active == true,
               order_by: [desc: n.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(n, [:id, :title, :is_top, :active, :pic, :reads, :inserted_at])
+              select: map(n, ^fields)
 
     news = Repo.all(query)
     conn |> json(%{success: true, news: news, total: total_page, records: total})

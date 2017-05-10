@@ -39,14 +39,14 @@ export default {
   mounted() {
     this.maxWidth = this.$refs.container.clientWidth
     this.onResize = window.addEventListener('resize', _ => {
-      this.$nextTick(_ => {
-        this.maxWidth = this.$refs.container.clientWidth
-      })
+      this.maxWidth = this.$el.clientWidth
     })
-    if (this.isValidImage)
+
+    if (this.isValidImage) {
       this.$el.addEventListener('tap', _ => {
         this.$emit('tap', this.src)
       }, false)
+    }
   },
 
   destroyed() {

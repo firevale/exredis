@@ -1,15 +1,15 @@
 <template>
-  <div class="columns is-mobile" style="margin:0 2rem; height: calc(100vh - 10rem)">
-    <div class="column is-one-third">
-      <scroller style="height: calc(100vh - 10rem)">
+  <div class="notice-container">
+    <div class="notice-list">
+      <scroller>
         <v-touch v-for="item in notices" :key="item.id" v-on:tap="showNoticeDetail(item)">
-          <div class="column" style="border: 1px solid #ccc; padding: .8rem; margin: .5rem;">
+          <div class="column" style="border: 1px solid #ccc; padding: .8rem; margin: .5rem; cursor: pointer">
             <h5 class="title is-5" :class="{'is-primary' : selectedId == item.id}">{{ item.title }}</h5>
           </div>
         </v-touch>
       </scroller>
     </div>
-    <div class="column">
+    <div class="notice-detail">
       <scroller style="margin:.5rem; border:1px solid #ccc; height: calc(100vh - 10rem);">
         <div class="has-text-centered" style="padding: 1rem;">
           <h4 class="title is-4">{{ itemData.title }}</h4>
@@ -21,10 +21,13 @@
   </div>
 </template>
 <script>
-
 export default {
-  mounted: function() {
-    this.loaddata()
+  created: function() {
+    this.fetchData()
+  },
+
+  watch: {
+    '$route': 'fetchData'
   },
 
   data() {
@@ -41,7 +44,7 @@ export default {
       this.selectedId = item.id
     },
 
-    loaddata: async function() {
+    fetchData: async function() {
       let app_id = this.$router.currentRoute.params.app_id
       let result = await this.$acs.getPagedNews(app_id, "notice", 1, 30)
 
@@ -54,3 +57,29 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .notice-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .notice-list {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 1rem;
+      right: calc(66% + 1rem);
+    }
+
+    .notice-detail {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 33%;
+      right: 1rem;
+    }
+  }
+</style>

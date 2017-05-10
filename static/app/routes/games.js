@@ -26,6 +26,9 @@ export default [{
     name: 'gameNews',
     component: require('../views/games/gameNews.vue')
   }, {
+    path: 'news/:newsId(\\d+)',
+    component: require('../views/games/newsDetail.vue')
+  }, {
     path: '*',
     redirect: 'activity'
   }

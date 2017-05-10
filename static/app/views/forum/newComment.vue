@@ -187,13 +187,13 @@ export default {
           visible: true
         })
 
-        let upload_result = await this.$acs.uploadPostImage({
+        let upload_result = await this.$acs.uploadCommentImage({
           file: {
             base64_content: result.image,
-            post_id: this.$route.params.postId,
-            comment_id: this.id,
           },
-          forum_id: this.$route.params.forumId
+          forum_id: this.$route.params.forumId,
+          post_id: this.$route.params.postId,
+          comment_id: this.id,
         }, value => {
           progress.setProgress(value)
         })

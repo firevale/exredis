@@ -1,7 +1,7 @@
 <template>
   <div class="tile is-ancestor is-vertical root-container games">
-    <span class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
-    <span class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
+    <span v-if="inApp" class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
+    <span v-if="inApp" class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
     <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav">
     </slider-nav>
     <div class="flex-take-rest" style="position: relative">

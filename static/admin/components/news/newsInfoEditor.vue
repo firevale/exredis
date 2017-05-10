@@ -144,7 +144,7 @@ export default {
       let result = await this.$acs.toggleStatus({
           news_id: news.id
         },
-        news.active ? this.$t('admin.news.publishOk') : this.$t('admin.news.unPublishOK'))
+        news.active ? this.$t('admin.news.unPublishOk') : this.$t('admin.news.publishOk'))
       this.loading = false
       if (result.success) {
         news.active = !news.active

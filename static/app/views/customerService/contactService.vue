@@ -1,6 +1,6 @@
 <template>
   <div class="contact-service">
-    <form class="post" @submit.prevent="handleSubmit">
+    <form v-if="appDetail.cs_phone_number" class="post" @submit.prevent="handleSubmit">
       <div>
         <textarea class="textarea is-medium" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>

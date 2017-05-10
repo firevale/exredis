@@ -127,7 +127,7 @@ input.input:focus {
     top: 2rem;
     left: 35%;
     width: 30%;
-    z-index: 3;
+    z-index: 11;
     text-align: center;
     h4 {
       max-width: 100%;
@@ -208,7 +208,7 @@ input.input:focus {
   position: relative;
   z-index: 0;
   &:after {
-    z-index: 5;
+    z-index: 11;
     @include bottom-line(1px, rgba(203, 203, 203, 0.8));
   }
 }

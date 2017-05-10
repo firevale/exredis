@@ -17,8 +17,8 @@
           <span class="is-primary">{{ commentData.user.nickname }}</span>
         </div>
         <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
-          <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"> </span>
-          <span class="is-darkred is-clickable" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
+          <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"></span>
+          <span class="is-darkred is-clickable" style="padding-top:0.2rem" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
         </div>
       </nav>
       <quill-content class="quill-editor ql-container ql-snow post-content" :content="filterContent"></quill-content>
@@ -92,6 +92,8 @@ export default {
     confirmDeleteComment() {
       AlertDialog.show({
         visible: true,
+        okText: this.$t('common.ok'),
+        cancelText: this.$t('common.cancel'),
         message: this.$t('forum.detail.deleteTip', {
           nth: this.nth
         }),

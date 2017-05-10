@@ -70,8 +70,6 @@ import {
   showProgress
 } from 'common/components/progress'
 
-import scroller from 'common/components/scroller'
-
 import CropUploadDialog from 'common/components/imageCropUpload'
 
 export default {
@@ -175,10 +173,6 @@ export default {
         }
       }
     }
-  },
-
-  components: {
-    scroller,
   },
 }
 </script>

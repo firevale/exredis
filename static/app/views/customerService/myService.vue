@@ -7,12 +7,10 @@
   </div>
 </template>
 <script>
-  import scroller from 'common/components/scroller'
   import questionItem from '../../components/questionItem'
 
   export default {
     components: {
-      scroller,
       questionItem
     },
     data() {

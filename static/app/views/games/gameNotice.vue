@@ -21,15 +21,10 @@
   </div>
 </template>
 <script>
-import scroller from 'common/components/scroller'
 
 export default {
   mounted: function() {
     this.loaddata()
-  },
-
-  components: {
-    scroller,
   },
 
   data() {

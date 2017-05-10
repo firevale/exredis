@@ -28,16 +28,12 @@
 </template>
 <script>
 import Vue from '../../vue-installed'
-import scroller from 'common/components/scroller'
 import {
   mapGetters,
   mapActions
 } from 'vuex'
 
 export default {
-  components: {
-    scroller
-  },
   data: function() {
     return {
       canGoBack: false,

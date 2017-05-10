@@ -33,19 +33,14 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from 'common/components/scroller'
 import Toast from 'common/components/toast'
 
 export default {
-  components: {
-    scroller
-  },
   mounted: async function() {
     await this.loadAddress()
   },
   data: function() {
     return {
-
       loading: false,
       canGoBack: false,
       inApp: window.acsConfig.inApp,

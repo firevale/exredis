@@ -43,7 +43,6 @@ import {
   showProgress
 } from 'common/components/progress'
 
-import scroller from 'common/components/scroller'
 import Toast from 'common/components/toast'
 
 import nativeApi from 'common/js/nativeApi'
@@ -229,9 +228,5 @@ export default {
       }
     },
   },
-
-  components: {
-    scroller
-  }
 }
 </script>

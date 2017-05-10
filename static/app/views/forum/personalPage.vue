@@ -43,7 +43,6 @@ import {
 } from "common/components/mobileMenu"
 
 import Vue from 'vue'
-import scroller from 'common/components/scroller'
 import sliderNav from '../../components/sliderNav'
 import myPostListItem from "../../components/myPostListItem"
 import myFavoriteListItem from "../../components/myFavoriteListItem"
@@ -53,7 +52,6 @@ import * as filter from 'common/js/filters'
 
 export default {
   components: {
-    scroller,
     sliderNav,
     myPostListItem,
     myFavoriteListItem,

@@ -20,14 +20,11 @@ import nativeApi from 'common/js/nativeApi'
 import * as filter from 'common/js/filters'
 
 import sliderNav from '../../components/sliderNav'
-import scroller from 'common/components/scroller'
-
 import orderItem from '../../components/orderItem'
 
 export default {
   components: {
     sliderNav,
-    scroller,
     orderItem
   },
   mounted: function() {

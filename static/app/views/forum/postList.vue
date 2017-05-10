@@ -29,13 +29,11 @@ import {
   mapActions
 } from 'vuex'
 
-import scroller from 'common/components/scroller'
 import postListItem from '../../components/postListItem'
 import menuModal from '../../components/menuModal'
 
 export default {
   components: {
-    scroller,
     postListItem,
   },
 

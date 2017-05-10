@@ -84,7 +84,7 @@ export default {
 
   slideShowPhotos: function(imageUrls, showingImageUrl) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.slideShowPhotos === 'function') {
-      AndroidNativeAPI.slideShowPhoto(imageUrls, showingImageUrl)
+      AndroidNativeAPI.slideShowPhotos(JSON.stringify(imageUrls), showingImageUrl)
     } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
       typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
       window.webkit.messageHandlers.IOSNativeAPI.postMessage({

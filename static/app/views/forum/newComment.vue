@@ -187,7 +187,7 @@ export default {
           visible: true
         })
 
-        let upload_result = await this.$acs.uploadPostImage({
+        let upload_result = await this.$acs.uploadCommentImage({
           file: {
             base64_content: result.image,
             post_id: this.$route.params.postId,

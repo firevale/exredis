@@ -331,6 +331,10 @@ export default {
         return post("/forum_actions/upload_post_image", params, onProgress)
       },
 
+      uploadCommentImage(params, onProgress) {
+        return post("/forum_actions/upload_comment_image", params, onProgress)
+      },
+
       cancelfetchMyOrders: function() {
         if (typeof this.tokens.fetchMyOrders === 'function') {
           this.tokens.fetchMyOrders()

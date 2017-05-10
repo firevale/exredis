@@ -5,7 +5,7 @@
         <div class="card-header-title is-vertical">
           <p class="is-thickness"> {{$t('mall.order.fields.address.name') }}：{{this.selectedOrder.address.name}} </p>
           <p class="is-thickness"> {{$t('mall.order.fields.address.mobile') }}：{{this.selectedOrder.address.mobile}} </p>
-          <p style="width:90vw" class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{this.selectedOrder.address.area}}{{this.selectedOrder.address.address}}
+          <p class="is-thickness"> {{$t('mall.order.fields.address.address') }}：{{this.selectedOrder.address.area}}{{this.selectedOrder.address.address}}
           </p>
         </div>
       </header>
@@ -37,7 +37,7 @@
           <p class="is-thickness">{{$t('mall.order.fields.id') }}：{{this.selectedOrder.id}} </p>
           <p class="is-thickness">{{$t('mall.order.fields.status') }}：{{$t('mall.order.status.'+this.selectedOrder.status) }}
           </p>
-          <p style="width:70vw" class="is-thickness">{{$t('mall.order.fields.inserted_at') }}：{{this.selectedOrder.inserted_at | formatServerDateTime}}
+          <p class="is-thickness">{{$t('mall.order.fields.inserted_at') }}：{{this.selectedOrder.inserted_at | formatServerDateTime}}
           </p>
         </div>
       </footer>

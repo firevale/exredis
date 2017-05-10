@@ -2,7 +2,8 @@
   <div class="mall-index">
     <scroller :on-load-more="loadmore" ref="scroller">
       <div class="columns is-multiline is-mobile goods-content">
-        <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList" tag="div" @tap="showGoodsDetail(item)">
+        <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList" key="item.name" tag="div"
+          @tap="showGoodsDetail(item)">
           <div class="tile is-vertical is-parent">
             <div class="tile">
               <figure class="has-hairline-border">

@@ -5,7 +5,7 @@
       @afterLeave="afterLeave">
       <div class="-mobile-menu-wrapper" v-if="show">
         <div class="-mobile-menu">
-          <v-touch class="-mobile-menu-item" v-for="item in items" @tap="onItemSelected(item)">
+          <v-touch class="-mobile-menu-item" v-for="item in items" key="item.title" @tap="onItemSelected(item)">
             <span>{{ item.title }}</span>
           </v-touch>
         </div>

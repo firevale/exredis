@@ -2,8 +2,8 @@
   <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <v-touch tag="a" class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" :class="{'is-active': item.value == currentValue}"
-          @tap="switchMenu(item,index,$event)" ref="navItem">{{item.text}}</v-touch>
+        <v-touch tag="a" class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" key="item.value" :class="{'is-active': item.value == currentValue}"
+          @tap="switchMenu(item, index,$event)" ref="navItem">{{item.text}}</v-touch>
         <div class="slider-bar" :style="{'left': sliderPosition, 'width': barWidth, 'background-size': sliderBackgroundSize}" ref="sliderBar"
           style="display: flex;">
         </div>

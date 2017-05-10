@@ -1,7 +1,7 @@
 <template>
   <div class="my-service">
     <scroller :on-load-more="loadmore" ref="scroller">
-      <question-item class="row" v-for="item in questionList" :question="item">
+      <question-item class="row" v-for="item in questionList" key="item.id" :question="item">
       </question-item>
     </scroller>
   </div>

@@ -16,7 +16,7 @@
     </div>
     <div v-if="questions||searching" class="my-service flex-take-rest" style="position:relative;top:1rem;">
       <scroller :on-load-more="loadmore" ref="scroller">
-        <question-item class="row" v-for="item in questions" :question="item">
+        <question-item class="row" v-for="item in questions" key="item.id" :question="item">
         </question-item>
       </scroller>
     </div>

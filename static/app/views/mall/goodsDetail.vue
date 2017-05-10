@@ -6,7 +6,7 @@
           <div class="column is-12">
             <div class="card-image">
               <swiper :options="swiperOption" ref="goodsSwiper" v-if="this.selectedGoods.pic">
-                <swiper-slide v-for="item in this.selectedGoods.pic.split('|')">
+                <swiper-slide v-for="item in this.selectedGoods.pic.split('|')" key="item">
                   <img v-if="item" :src="item" style="margin:0px auto" class="image is-400x400">
                   <img v-else src="https://placehold.it/400x400?text=400x400">
                 </swiper-slide>

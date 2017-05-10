@@ -7,7 +7,7 @@
           <div class="tile is-vertical is-parent">
             <div class="tile">
               <figure class="has-hairline-border">
-                <img v-if="item.pic" :src="item.pic.split('|')[0]">
+                <img class="image is-400x400" v-if="item.pic" :src="item.pic.split('|')[0]">
                 <img v-else src="https://placehold.it/400x400?text=400x400">
               </figure>
             </div>

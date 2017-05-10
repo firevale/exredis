@@ -33,15 +33,10 @@
   </scroller>
 </template>
 <script>
-import newsDetailView from '../../components/newsDetailView'
 
 export default {
-  mounted: async function() {
+  created: async function() {
     await this.fetchTopNews()
-  },
-
-  components: {
-    newsDetailView,
   },
 
   data() {

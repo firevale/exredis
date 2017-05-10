@@ -10,12 +10,12 @@
       </scroller>
     </div>
     <div class="notice-detail">
-      <scroller style="margin:.5rem; border:1px solid #ccc; height: calc(100vh - 10rem);">
+      <scroller style="margin:.5rem; border:1px solid #ccc;">
         <div class="has-text-centered" style="padding: 1rem;">
           <h4 class="title is-4">{{ itemData.title }}</h4>
         </div>
-        <quill-content class="subtitle is-5" style='padding: 1rem; line-height:150%;' :content="itemData.content">
-        </quill-content>
+        <div class="subtitle is-5 quill-editor ql-snow" style='padding: 1rem; line-height:150%;' v-html="itemData.content">
+        </div>
       </scroller>
     </div>
   </div>
@@ -26,22 +26,18 @@ export default {
     this.fetchData()
   },
 
-  watch: {
-    '$route': 'fetchData'
-  },
-
   data() {
     return {
       notices: [],
-      itemData: Object,
+      itemData: {},
       selectedId: 0,
     }
   },
 
   methods: {
     showNoticeDetail(item) {
-      this.itemData = item
       this.selectedId = item.id
+      this.itemData = item
     },
 
     fetchData: async function() {
@@ -53,33 +49,31 @@ export default {
         this.notices && this.notices.length ? this.showNoticeDetail(this.notices[0]) : ''
       }
     },
-
   }
 }
 </script>
-
 <style lang="scss">
-  .notice-container {
+.notice-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .notice-list {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-
-    .notice-list {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 1rem;
-      right: calc(66% + 1rem);
-    }
-
-    .notice-detail {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 33%;
-      right: 1rem;
-    }
+    left: 1rem;
+    right: calc(66% + 1rem);
   }
+
+  .notice-detail {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 33%;
+    right: 1rem;
+  }
+}
 </style>

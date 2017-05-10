@@ -17,46 +17,10 @@ defmodule Acs.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Acs, []},
-     included_applications: [
-       :exsyslog,
-     ],
-     applications: [
-        :inets,
-        :poolboy,
-        :ssl,
-        :public_key,
-        :timex,
-        :des_ecb3,
-        :phoenix,
-        :phoenix_pubsub,
-        # :phoenix_pubsub_redis,
-        :mogrify,
-        :phoenix_html,
-        :cowboy,
-        :logger,
-        :logger_file_backend,
-        :gettext,
-        :phoenix_ecto,
-        :mariaex,
-        :exredis,
-        :redis_poolex,
-        :oauth2,
-        :oauther,
-        :comeonin,
-        :httpotion,
-        :pbkdf2,
-        :xmerl,
-        :sweet_xml,
-        :gen_smtp,
-        :bugsnag,
-        :bamboo,
-        :bamboo_smtp,
-        :plugsnag,
-        :floki,
-        :exmoji,
-        :mix,
-    ]]
+    [
+     mod: {Acs, []}, 
+     extra_applications: [:inets, :ssl, :public_key, :logger, :exsyslog]
+    ]
   end
 
   # Specifies which paths to compile per environment.
@@ -73,7 +37,7 @@ defmodule Acs.Mixfile do
      {:mariaex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:credo, "~> 0.5", only: :dev},
+     {:credo, "~> 0.5", only: :dev, rutime: false},
      {:ecto, "~> 2.1", override: true},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
@@ -96,7 +60,8 @@ defmodule Acs.Mixfile do
      {:bamboo_smtp, "~> 1.3"},
      {:floki, "~> 0.17"},
      {:exmoji, "~> 0.2"},
-     {:distillery, "~> 1.3"},
+     {:distillery, "~> 1.3", runtime: false},
+     {:cachex, "~> 2.1"},
     ]
   end
 

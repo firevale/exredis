@@ -31,6 +31,5 @@ export default [{
   }, {
     path: '*',
     redirect: 'activity'
-  }
- ]
+  }]
 }]

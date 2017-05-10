@@ -25,6 +25,7 @@ export default {
       default: '',
     },
   },
+
   data() {
     return {
       comps: [{

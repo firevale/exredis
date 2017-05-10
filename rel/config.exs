@@ -58,6 +58,7 @@ release :acs do
     :floki,
     :exmoji,
     :mix,
+    :cachex,
   ]
 
   set vm_args: "rel/vm.args"

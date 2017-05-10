@@ -13,6 +13,7 @@ defmodule Acs.Plugs do
   require Gettext
   require Redis
   require Exmoji.Scanner
+  require Cachex
 
   def no_cache(%Plug.Conn{} = conn, _options) do
     conn |> delete_resp_header("cache-control")
@@ -484,17 +485,17 @@ defmodule Acs.Plugs do
                             query_string: query_string,
                             body_params: body_params} = conn, opts) do 
     key = "#{request_path}?#{query_string}!#{URI.encode_query(body_params)}"
-    case Redis.get(key) do 
-      :undefined ->
+    case Cachex.get(:mem_cache, key) do 
+      {:ok, {resp_headers, resp_body}} -> 
+        %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
+
+      _ ->
         do_cache = fn(%Plug.Conn{resp_headers: resp_headers, 
                                  resp_body: resp_body} = conn) ->
-                     Redis.setex(key, Keyword.get(opts, :cache_seconds, 60), :erlang.term_to_binary({resp_headers, resp_body})) 
+                     Cachex.set(:mem_cache, key, {resp_headers, resp_body}, ttl: :timer.seconds(Keyword.get(opts, :cache_seconds, 60)), async: true)
                      conn
                    end
         %{conn | before_send: [do_cache | conn.before_send]}
-      raw -> 
-        {resp_headers, resp_body} = :erlang.binary_to_term(raw)
-        %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
     end
   end
 

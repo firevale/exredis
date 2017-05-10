@@ -7,10 +7,5 @@ module.exports = {
     sourceMap: false,
     extract: true,
   }),
-  postcss: [
-    require('autoprefixer')({
-      browsers: ['last 3 versions', 'iOS >= 8', 'Safari >= 8', 'Android >= 4.4']
-    })
-  ]
 }
 

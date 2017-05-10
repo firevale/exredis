@@ -3,6 +3,7 @@ defmodule Acs do
 
   require Ecto.Migrator
   require Elasticsearch
+  require Cachex
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -30,9 +31,18 @@ defmodule Acs do
       # worker(Acs.Worker, [arg1, arg2, arg3]),
       supervisor(Task.Supervisor, [[name: Acs.TaskSupervisor]]),
 
+      worker(Cachex, [:mem_cache, [
+        default_ttl: :timer.seconds(10), 
+        limit: %Cachex.Limit{limit: 100_000, policy: Cachex.Policy.LRW, reclaim: 0.5},
+        record_stats: true,
+        ttl_interval: :timer.seconds(5)
+        ]]),
+
       # start elasticsearch pool
       :poolboy.child_spec(:elasticsearch, pool_args, es_cfg[:connection]),
     ]
+
+    IO.inspect(children)
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

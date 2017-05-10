@@ -1,8 +1,8 @@
 <template>
-  <div v-if="goods" class="goods-detail is-marginless is-paddingless">
+  <div v-if="goods" class="goods-detail">
     <div class="flex-take-rest goods-content">
       <scroller ref="scroller">
-        <div class="columns is-multiline is-mobile has-text-centered has-bottom-line is-marginless is-paddingless">
+        <div class="columns is-multiline is-mobile has-text-centered has-bottom-line">
           <div class="column is-12">
             <article class="message is-primary is-fullwidth">
               <div class="message-header">
@@ -11,27 +11,25 @@
             </article>
           </div>
           <div class="column is-12">
-            <div class="card-image">
-              <figure class="image is-400x400">
-                <img v-if="goods.pic" :src="goods.pic.split('|')[0]">
-                <img v-else src="https://placehold.it/300x300?text=400x400">
-              </figure>
+            <div class="card-image has-text-centered">
+              <img style="width:400px" v-if="goods.pic" :src="goods.pic.split('|')[0]">
+              <img style="width:400px" v-else src="https://placehold.it/400x400?text=400x400">
             </div>
           </div>
-          <div style="margin-top:0.2rem;" class="column is-12">
+          <div style="margin-top:-.8rem;" class="column is-12">
             <p class="title is-5 is-normal">
               {{goods.name}}
             </p>
           </div>
           <div class="column is-12">
-            <p class="title is-5 is-primary is-normal">
-              <label class="currency" :class="goods.currency">{{(goods.price / 100).toFixed(2)}}</label>
+            <p style="margin-bottom:0.5rem;" class="title is-5 is-primary is-normal">
+              <label class="currency" :class="goods.currency">{{goods.price | formatPrice}}</label>
               <label>（{{$t('mall.goods.postage')}}：</label>
-              <label class="currency" :class="goods.currency">{{(goods.postage / 100).toFixed(2)}}</label>）
+              <label class="currency" :class="goods.currency">{{goods.postage | formatPrice}}</label>）
             </p>
           </div>
         </div>
-        <div class="columns is-multiline is-mobile is-marginless is-paddingless">
+        <div class="columns is-multiline is-mobile">
           <div style="margin-top:0.7rem;" class="column is-12">
             <p class="title is-5 is-normal has-text-centered">
               {{$t('mall.goods.description') }}

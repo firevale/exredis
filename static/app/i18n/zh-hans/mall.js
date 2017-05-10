@@ -68,12 +68,12 @@ export default {
     mallOrder: '订单详情',
     mine: '我的',
     myOrders: '我的订单',
-    myOrders: '我的订单',
     myOrderDetail: '订单详情',
     myAddresses: '我的地址',
     editAddress: '编辑地址',
     newAddress: '添加地址',
     selectAddress: '选择地址',
+    goodsSnapshots: '交易快照'
   },
   address: {
     add: '添加地址',

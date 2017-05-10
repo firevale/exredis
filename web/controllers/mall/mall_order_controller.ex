@@ -198,7 +198,7 @@ defmodule Acs.MallOrderController do
       from order in MallOrder,
         left_join: details in assoc(order, :details),
         left_join: user in assoc(order, :user),
-        select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at, :address,
+        select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :snapshots, :postage, :inserted_at, :address,
           user: [:id, :nickname, :mobile],
           details: [:id, :goods_name, :goods_pic, :price, :amount, :mall_goods_id] ]),
         order_by: [desc: order.inserted_at],

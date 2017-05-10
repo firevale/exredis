@@ -11,11 +11,19 @@ export default {
     addressPlaceholder: '請填寫收貨地址',
     stockOut: '該商品已售罄',
     totalPrice: '合計：{price}（含郵費 {postage}）',
-    wechatPay: '微信支付',
-    aliPay: '支付寶',
-    reciept: '確認收貨',
     addSuccess: '訂單添加成功',
-    reOrder: '再來一單',
+    snapshotsPlaceholder: '當前頁面內容爲訂單快照，包含訂單創建時的商品描述和下單信息，在發生交易爭議時，該頁面作爲判定依據。',
+    messages: {
+      illegal: '非法操作',
+      repeatRecieved: '請勿重複確認收貨',
+      recievedSuccess: '確認收貨成功'
+    },
+    buttons: {
+      wechatPay: '微信支付 ',
+      aliPay: '支付寶',
+      reciept: '確認收貨',
+      reOrder: '再來壹單',
+    },
     fields: {
       id: '訂單號',
       postage: '郵費',
@@ -50,8 +58,8 @@ export default {
     myOrder: {
       tabs: {
         all: '全部',
-        unPay: '待付款',
-        unReceived: '未收貨'
+        waitPay: '待付款',
+        waitConfirm: '待收貨'
       }
     }
   },
@@ -60,12 +68,12 @@ export default {
     mallOrder: '訂單詳情',
     mine: '我的',
     myOrders: '我的訂單',
-    myOrders: '我的訂單',
     myOrderDetail: '訂單詳情',
     myAddresses: '我的地址',
     editAddress: '編輯地址',
     newAddress: '添加地址',
     selectAddress: '選擇地址',
+    goodsSnapshots: '交易快照'
   },
   address: {
     add: '添加地址',

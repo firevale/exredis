@@ -32,7 +32,8 @@ const state = {
     status: 0,
     address: {},
     details: [],
-    inserted_at: ""
+    inserted_at: "",
+    snapshots: []
   }
 }
 

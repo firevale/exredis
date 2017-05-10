@@ -128,6 +128,9 @@ export default {
       }
     },
     loadmore: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelSearchQuestion()
+
       let result = await this.$acs.searchQuestion(this.$route.params.appId, this.keyword, this.page +
         1, this.records_per_page)
 

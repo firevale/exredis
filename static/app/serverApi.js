@@ -219,12 +219,19 @@ export default {
         return post('/games_actions/fetch_apps', {})
       },
 
-      getServicePaged(app_id, page, records_per_page) {
+      cancelGetServicePaged: function() {
+        if (typeof this.tokens.getServicePaged === 'function') {
+          this.tokens.getServicePaged()
+        }
+      },
+
+      getServicePaged: function(app_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getServicePaged = c)
         return post('/customer_service_actions/get_paged_services', {
           app_id: app_id,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
       getCommonIssues(app_id) {
@@ -233,13 +240,20 @@ export default {
         })
       },
 
-      searchQuestion(app_id, keyword, page, records_per_page) {
+      cancelSearchQuestion: function() {
+        if (typeof this.tokens.searchQuestion === 'function') {
+          this.tokens.searchQuestion()
+        }
+      },
+
+      searchQuestion: function(app_id, keyword, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.searchQuestion = c)
         return post('/customer_service_actions/search', {
           app_id,
           keyword,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
       getAppDetail(app_id) {

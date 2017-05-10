@@ -2,7 +2,7 @@
   <div :class="['modal', 'animated', visible ? 'is-active' : '']" :transition="transition" transition-mode="in-out">
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-card" style="border-radius: 5px; width: 30%;min-width: 220px;">
-      <section class="modal-card-body">
+      <section class="modal-card-body" style="border-radius:0;">
         <article class="media">
           <div class="media-content">
             <div class="content is-warning">

@@ -57,6 +57,7 @@ export default {
     viewOrderDetail: function(order) {
       let orderItem = {}
       orderItem.id = order.id
+      orderItem.snapshots=order.snapshots
       orderItem.price = order.price
       orderItem.final_price = order.final_price
       orderItem.currency = order.currency

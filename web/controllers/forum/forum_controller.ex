@@ -690,6 +690,9 @@ defmodule Acs.ForumController do
         low_quality: true)
     conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
   end
+  def upload_post_image(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
 
   # fetch_comment (create if not exists) 
   defp fetch_comment(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
@@ -747,6 +750,9 @@ defmodule Acs.ForumController do
                    link: image_path, 
                    width: width, 
                    height: height})
+  end
+  def upload_comment_image(conn, _params) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
 

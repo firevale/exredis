@@ -357,6 +357,9 @@ defmodule Acs.Plugs do
 
   defp _translate_locale("zh-Hans" <> _), do: "zh-hans"
   defp _translate_locale("zh-Hant" <> _), do: "zh-hant"
+  defp _translate_locale("zh-rCN" <> _), do: "zh-hans"
+  defp _translate_locale("zh-rTW" <> _), do: "zh-hant"
+  defp _translate_locale("zh-rHK" <> _), do: "zh-hant"
   defp _translate_locale("en" <> _), do: "en"
   defp _translate_locale(_), do: "zh-hans"
 

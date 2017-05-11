@@ -1,7 +1,7 @@
 <template>
   <div class="tile is-ancestor is-vertical root-container games">
-    <span v-if="inApp" class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
-    <span v-if="inApp" class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
+    <span v-show="inApp" class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
+    <span v-show="inApp" class="icon image-icon icon-close" @click="onBtnCloseClicked"></span>
     <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav">
     </slider-nav>
     <div class="flex-take-rest" style="position: relative">
@@ -102,7 +102,7 @@ export default {
   .icon.icon-back {
     position: absolute;
     top: 1.5rem;
-    z-index: 99;
+    z-index: 11;
   }
 
   .icon.icon-close {

@@ -51,7 +51,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'addMall'
+      'addMall',
+      'fetchPlatformApps'
     ]),
 
     handleSubmit: async function() {
@@ -59,13 +60,15 @@ export default {
       let result = await this.$acs.updateMallInfo({
         mall: this.mall
       }, this.$t('admin.notification.message.mallInfoUpdated'))
-
+      if (result.success) {
+        this.fetchPlatformApps()
+      }
       this.processing = false
       if (result.mall) {
         this.addMall(result.mall)
         this.$nextTick(_ => {
           this.$router.replace({
-            path: `/admin/malls/edit/${result.mall.id}`
+            path: '/admin/malls/edit/${result.mall.id}'
           })
         })
       }

@@ -30,6 +30,19 @@ config :acs, Acs.Endpoint,
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
+config :logger, :exsyslog_info,
+  level: :debug,
+  format: "$metadata -- $level --: $message \n",
+  metadata: [:module, :line, :function, :user_id, :device_id],
+  ident: "acs",
+  facility: :local3,
+  option: [:pid, :cons]
+
+config :logger,
+  backends: [
+    {ExSyslogger, :exsyslog_info},
+  ]
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

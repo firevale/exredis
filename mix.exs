@@ -19,7 +19,7 @@ defmodule Acs.Mixfile do
   def application do
     [
      mod: {Acs, []}, 
-     extra_applications: [:inets, :ssl, :public_key, :logger, :exsyslog, :syslog]
+     extra_applications: [:inets, :ssl, :public_key, :logger, :ex_syslogger]
     ]
   end
 
@@ -50,7 +50,7 @@ defmodule Acs.Mixfile do
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
-     {:exsyslog, "~> 1.0"},
+     {:ex_syslogger, "~> 1.3"},
      {:poison, "~> 3.1", override: true},
      {:sweet_xml, "~> 0.6"},
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},

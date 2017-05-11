@@ -24,7 +24,7 @@ end
 release :acs do
   set version: current_version(:acs)
   set applications: [        
-    :exsyslog,
+    :ex_syslogger,
     :inets,
     :poolboy,
     :ssl,

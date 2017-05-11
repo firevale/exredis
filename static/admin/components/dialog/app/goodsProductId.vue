@@ -48,12 +48,12 @@ export default {
     handleSubmit: async function() {
       this.processing = true
 
-      let result = await this.$acs.updateAppGoodsProductI({
+      let result = await this.$acs.updateAppGoodsProductId({
         product_id_info: this.productIdInfo,
         app_id: this.appId,
       }, this.$t('admin.notification.message.goodsProductIdUpdated', {
         goodsName: this.goodsName,
-        sdk: this.$t('admin.sdks.' + result.product_id_info.sdk)
+        sdk: this.$t('admin.sdks.' + this.productIdInfo.sdk)
       }))
 
       this.processing = false

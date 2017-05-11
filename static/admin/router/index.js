@@ -11,10 +11,21 @@ export default new Router({
     y: 0
   }),
   routes: [{
-    path: '/admin',
+    path: '/admin/index',
+    name: 'Index',
+    component: require('../views/Index'),
+  }, {
+    path: '/admin/Settings',
+    name: 'settings',
+    component: require('../views/Settings')
+  }, {
+    path: '/admin/NewApp',
+    name: 'NewApp',
+    component: require('../views/apps/newApp')
+  }, {
+    path: '/admin/:appId/',
     name: 'Home',
     component: require('../views/Home'),
-
     children: [{
         name: 'Dashboard',
         path: 'dashboard',
@@ -24,12 +35,8 @@ export default new Router({
         path: 'apps',
         component: require('../views/apps')
       }, {
-        name: 'NewApp',
-        path: 'apps/new',
-        component: require('../views/apps/newApp')
-      }, {
         name: 'EditApp',
-        path: 'apps/edit/:appId',
+        path: 'edit',
         component: require('../views/apps/editApp')
       }, {
         name: 'Users',
@@ -45,39 +52,33 @@ export default new Router({
         component: require('../views/forums/forums')
       }, {
         name: 'EditForum',
-        path: 'forums/edit/:forumId',
+        path: 'forums/:forumId/edit',
         component: require('../views/forums/editForum')
       }, {
         name: 'EditNews',
-        path: 'apps/news/edit',
+        path: 'news/edit',
         component: require('../views/news/editNews')
-      },
-      {
+      },{
         name: 'Malls',
         path: 'malls',
         component: require('../views/malls/malls')
-      },
-      {
+      },{
         name: 'EditMall',
-        path: 'malls/edit/:appId',
+        path: 'malls/edit',
         component: require('../views/malls/editMall')
       }, {
         name: 'EditGoods',
-        path: 'malls/edit/:appId/editGoods',
+        path: 'malls/editGoods',
         component: require('../views/malls/editGoods')
       },
       {
         name: 'MallOrderInfo',
         path: 'malls/order/:orderId',
         component: require('../views/malls/orderInfo')
-      }, {
-        name: 'Settings',
-        path: 'settings',
-        component: require('../views/Settings')
       }
     ],
   }, {
     path: '*',
-    redirect: '/admin/dashboard'
+    redirect: '/admin/index'
   }]
 })

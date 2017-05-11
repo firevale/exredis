@@ -11,4 +11,5 @@ export default {
   appOrders: '订单管理',
   appStats: '统计信息',
   settings: '系统设置',
+  appList: '应用列表',
 }

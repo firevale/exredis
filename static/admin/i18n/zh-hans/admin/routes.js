@@ -1,4 +1,5 @@
 export default {
+  Index: '请选择APP',
   Home: '首页',
   Dashboard: '概况',
   AppManage: '应用管理',
@@ -20,4 +21,5 @@ export default {
   MallOrderInfo: '订单详情',
   NewNews: '添加新内容',
   EditNews: '修改内容',
+  settings: '系统设置',
 }

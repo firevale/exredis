@@ -52,7 +52,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'addForum'
+      'addForum',
+      'fetchPlatformApps'
     ]),
 
     handleSubmit: async function() {
@@ -62,12 +63,15 @@ export default {
       }, this.$t('admin.notification.message.forumInfoUpdated', {
         forumName: this.forum.title
       }))
-
+      if (result.success) {
+        this.fetchPlatformApps()
+      }
+      this.processing = false
       if (result.forum) {
         this.addForum(result.forum)
         this.$nextTick(_ => {
           this.$router.replace({
-            path: `/admin/forums/edit/${result.forum.id}`
+            path: '/admin/forums/edit/${result.forum.id}'
           })
         })
       }

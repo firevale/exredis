@@ -1,4 +1,5 @@
 export default {
+  Index: '请选择APP',
   Home: '首页',
   Dashboard: '概况',
   AppManage: '应用管理',
@@ -6,7 +7,7 @@ export default {
   Orders: '订单管理',
   Forums: '论坛管理',
   Malls: '商城管理',
-  CustomerService: '客服管理',
+  CustomerService: '问题反馈',
   Settings: '系统设置',
   AppInfo: '应用基本信息',
   NewApp: '添加新应用',
@@ -20,4 +21,8 @@ export default {
   MallOrderInfo: '订单详情',
   NewNews: '添加新内容',
   EditNews: '修改内容',
+  settings: '系统设置',
+  Activity: '活动管理',
+  Notice: '公告管理',
+  News: '新闻管理',
 }

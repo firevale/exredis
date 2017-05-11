@@ -144,4 +144,14 @@ defmodule Acs.RedisApp do
     end
   end
 
+  def refreshForumActive(id, active) when is_bitstring(id) do
+    case Repo.get(App, id) do
+      nil -> :nil
+
+      %App{} = app ->
+        App.changeset(app, %{has_forum: active}) |> Repo.update!
+        refresh(id)
+        :ok
+    end
+  end
 end

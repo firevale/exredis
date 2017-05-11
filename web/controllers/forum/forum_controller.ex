@@ -70,6 +70,7 @@ defmodule Acs.ForumController do
       %Forum{} = forum ->
         Forum.changeset(forum, forum_info) |> Repo.update!
         RedisForum.refresh(forum_id)
+        RedisApp.refreshForumActive(forum.app_id,forum_info["active"])
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end

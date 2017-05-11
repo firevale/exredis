@@ -14,7 +14,7 @@ const mutations = {
     let hash = {}
     for (let index in forums) {
       let forum = forums[index]
-      hash[forum.id] = forum
+      hash[forum.app_id] = forum
       if (typeof forum.sections == 'object') {
         for (let j in forum.sections) {
           let section = forum.sections[j]
@@ -27,7 +27,7 @@ const mutations = {
 
   [types.ADD_FORUM](state, forum) {
     state.list.push(forum)
-    state.hash[forum.id] = forum
+    state.hash[forum.app_id] = forum
   }
 
 }

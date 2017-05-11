@@ -2,6 +2,7 @@ defmodule Acs.MallController do
   use Acs.Web, :controller
 
   alias   Acs.RedisMall
+  alias   Acs.RedisApp
   import  Acs.UploadImagePlugs
   require Floki
 
@@ -64,6 +65,7 @@ defmodule Acs.MallController do
 
       %Mall{} = mall ->
         Mall.changeset(mall, mall_info) |> Repo.update!
+        RedisApp.update(mall.app_id, mall.active)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
   end

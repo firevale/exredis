@@ -14,6 +14,7 @@ export default {
   admin: '管理后台',
   firevalePlatform: '火谷平台',
   showDetail: '查看详情',
+  enterManage: '进入管理',
   edit: '编辑',
   editConfig: '修改配置',
   submit: '提交修改',

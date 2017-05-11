@@ -19,7 +19,7 @@ defmodule Acs.Mixfile do
   def application do
     [
      mod: {Acs, []}, 
-     extra_applications: [:inets, :ssl, :public_key, :logger, :exsyslog]
+     extra_applications: [:inets, :ssl, :public_key, :logger, :ex_syslogger]
     ]
   end
 
@@ -37,7 +37,7 @@ defmodule Acs.Mixfile do
      {:mariaex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:credo, "~> 0.5", only: :dev, rutime: false},
+     {:credo, "~> 0.7", only: :dev, rutime: false},
      {:ecto, "~> 2.1", override: true},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
@@ -50,7 +50,7 @@ defmodule Acs.Mixfile do
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
-     {:exsyslog, "~> 1.0"},
+     {:ex_syslogger, "~> 1.3"},
      {:poison, "~> 3.1", override: true},
      {:sweet_xml, "~> 0.6"},
      {:oauth2, "~> 0.6", hex: :oauth2_erlang},

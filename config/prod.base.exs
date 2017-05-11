@@ -23,7 +23,7 @@ config :logger, :exsyslog_info,
 
 config :logger,
   backends: [
-    {ExSyslog, :exsyslog_info},
+    {ExSyslogger, :exsyslog_info},
   ]
 
 config :acs, allow_origin: "//*.firevale.com"

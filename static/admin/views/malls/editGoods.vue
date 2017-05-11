@@ -83,7 +83,7 @@
       <div style="margin-top: 15px">
         <a class="button is-white" @click.prevent="onBack">
           <span class="icon is-small"><i class="fa fa-backward"></i></span>
-          <span>{{ $t('admin.mall.goods.back') }}</span>
+          <span>{{ $t('common.return') }}</span>
         </a>
         <a class="button is-primary" v-if="!this.isNew" :class="{'is-loading': deleting}" @click.prevent="onDelete">
           <span class="icon is-small"><i class="fa fa-close"></i></span>
@@ -381,12 +381,7 @@ export default {
     },
 
     onBack: function() {
-      this.$router.replace({
-        name: 'EditMall',
-        params: {
-          appId: this.goods.app_id
-        }
-      })
+      this.$router.go(-1)
     },
 
     onSave: function() {
@@ -407,7 +402,7 @@ export default {
         id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,
-        pic: this.pics.filter(t => t!="").join("|"),
+        pic: this.pics.filter(t => t != "").join("|"),
         description: this.goods.description,
         price: this.goods.price,
         postage: this.goods.postage,
@@ -432,15 +427,18 @@ export default {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: alpha(opacity=80);
 }
+
 .gu-hide {
   display: none !important;
 }
+
 .gu-unselectable {
   -webkit-user-select: none !important;
   -moz-user-select: none !important;
   -ms-user-select: none !important;
   user-select: none !important;
 }
+
 .gu-transit {
   opacity: 0.2;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";

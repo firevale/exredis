@@ -7,11 +7,15 @@
       </p>
       <label class="label"> {{ $t('admin.news.content') }}: </label>
       <p class="control">
-        <quill-editor style="min-height: 200px" v-model.trim="news.content" :full-featured="true" @ready="setEditor" @input="handleValidation($v.news.content)"
-          @image="onInsertImage">
+        <quill-editor style="min-height: 200px" v-model.trim="news.content" :full-featured="true" @ready="setEditor"
+          @input="handleValidation($v.news.content)" @image="onInsertImage">
         </quill-editor>
       </p>
       <div class="has-text-centered" style="margin-top: 15px">
+        <a class="button is-white" @click.prevent="onBack">
+          <span class="icon is-small"><i class="fa fa-backward"></i></span>
+          <span>{{ $t('common.return') }}</span>
+        </a>
         <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="onSubmit">{{ $t('admin.submit') }}</a>
       </div>
     </form>
@@ -97,6 +101,10 @@ export default {
           }
         },
       })
+    },
+
+    onBack: function() {
+      this.$router.go(-1)
     },
 
     onSubmit: function() {

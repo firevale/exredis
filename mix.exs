@@ -19,7 +19,7 @@ defmodule Acs.Mixfile do
   def application do
     [
      mod: {Acs, []}, 
-     extra_applications: [:inets, :ssl, :public_key, :logger, :exsyslog]
+     extra_applications: [:inets, :ssl, :public_key, :logger, :exsyslog, :syslog]
     ]
   end
 

@@ -133,4 +133,15 @@ defmodule Acs.RedisApp do
     end
   end
 
+  def update(id, active) when is_bitstring(id) do
+    case Repo.get(App, id) do
+      nil -> :nil
+
+      %App{} = app ->
+        App.changeset(app, %{has_mall: active}) |> Repo.update!
+        refresh(id)
+        :ok
+    end
+  end
+
 end

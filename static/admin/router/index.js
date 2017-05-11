@@ -36,7 +36,7 @@ export default new Router({
         component: require('../views/apps')
       }, {
         name: 'EditApp',
-        path: 'edit',
+        path: 'editapp',
         component: require('../views/apps/editApp')
       }, {
         name: 'Users',
@@ -47,24 +47,16 @@ export default new Router({
         path: 'orders',
         component: require('../views/Orders')
       }, {
-        name: 'Forums',
-        path: 'forums',
-        component: require('../views/forums/forums')
-      }, {
         name: 'EditForum',
-        path: 'forums/:forumId/edit',
+        path: 'editforum',
         component: require('../views/forums/editForum')
       }, {
         name: 'EditNews',
         path: 'news/edit',
         component: require('../views/news/editNews')
       },{
-        name: 'Malls',
-        path: 'malls',
-        component: require('../views/malls/malls')
-      },{
         name: 'EditMall',
-        path: 'malls/edit',
+        path: 'editmall',
         component: require('../views/malls/editMall')
       }, {
         name: 'EditGoods',
@@ -75,7 +67,27 @@ export default new Router({
         name: 'MallOrderInfo',
         path: 'malls/order/:orderId',
         component: require('../views/malls/orderInfo')
-      }
+      },
+      {
+        name: 'Activity',
+        path: 'activity',
+        component: require('admin/components/news/activityInfoEditor')
+      },
+      {
+        name: 'Notice',
+        path: 'notice',
+        component: require('admin/components/news/noticeInfoEditor')
+      },
+      {
+        name: 'News',
+        path: 'news',
+        component: require('admin/components/news/newsInfoEditor')
+      },
+      {
+        name: 'CustomerService',
+        path: 'customerservice',
+        component: require('admin/components/customerService/questionEditor')
+      },
     ],
   }, {
     path: '*',

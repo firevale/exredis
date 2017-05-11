@@ -19,7 +19,7 @@ const state = {
       },
     }
   ],
-  
+
   items: [{
       name: i18n.t('admin.menu.dashboard'),
       path: '/admin/:appId/dashboard',
@@ -29,7 +29,7 @@ const state = {
     },
     {
       name: i18n.t('admin.menu.appManage'),
-      path: '/admin/:appId/apps/edit',
+      path: '/admin/:appId/editapp',
       meta: {
         icon: 'fa-bars',
       },
@@ -50,16 +50,44 @@ const state = {
     },
     {
       name: i18n.t('admin.menu.forumManage'),
-      path: '/admin/:appId/forums',
+      path: '/admin/:appId/editforum',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
       name: i18n.t('admin.menu.appMalls'),
-      path: '/admin/:appId/malls',
+      path: '/admin/:appId/editmall',
       meta: {
         icon: 'fa-shopping-bag'
+      },
+    },
+    {
+      name: i18n.t('admin.menu.activityInfo'),
+      path: '/admin/:appId/activity',
+      meta: {
+        icon: 'fa-joomla'
+      },
+    },
+    {
+      name: i18n.t('admin.menu.noticeInfo'),
+      path: '/admin/:appId/notice',
+      meta: {
+        icon: 'fa-bullhorn'
+      },
+    },
+    {
+      name: i18n.t('admin.menu.newsInfo'),
+      path: '/admin/:appId/news',
+      meta: {
+        icon: 'fa-newspaper-o'
+      },
+    },
+    {
+      name: i18n.t('admin.menu.customerService'),
+      path: '/admin/:appId/customerservice',
+      meta: {
+        icon: 'fa-comments'
       },
     },
   ]

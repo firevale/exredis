@@ -12,4 +12,8 @@ export default {
   appStats: '统计信息',
   settings: '系统设置',
   appList: '应用列表',
+  activityInfo: '活动管理',
+  noticeInfo: '公告管理',
+  newsInfo: '新闻管理',
+  customerService: '问题反馈',
 }

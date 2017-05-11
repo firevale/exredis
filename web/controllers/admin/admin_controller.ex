@@ -37,6 +37,7 @@ defmodule Acs.AdminController do
 
       %App{} = app ->
         App.changeset(app, app_info) |> Repo.update!
+        update_app_mall(app_info["has_mall"], app_id ,app_info["name"])
         case update_app_forum(app_info["has_forum"], app_id, app_info["forum_name"], app_info["forum_url"]) do
           {:ok, forum} ->
             RedisApp.refresh(app_id)
@@ -55,6 +56,7 @@ defmodule Acs.AdminController do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
       {:ok, app} ->
+        update_app_mall(app.has_mall, app.id, app_name)
         case update_app_forum(app.has_forum, app.id, app.forum_name, app.forum_url) do
           {:ok, forum} ->
             RedisApp.refresh(app.id)
@@ -98,6 +100,20 @@ defmodule Acs.AdminController do
             {:ok, result}
           {:error, %{errors: errors}} ->
             {:error,errors}
+        end
+    end
+  end
+
+  defp update_app_mall(has_mall, app_id, app_name)do
+    case Repo.get_by(Mall, app_id: app_id)do
+      nil ->
+        if(has_mall)do
+          Mall.changeset(%Mall{}, %{title: app_name, active: true, app_id: app_id}) |> Repo.insert
+          :ok
+        end
+      %Mall{} = mall ->
+        Mall.changeset(mall, %{active: has_mall }) |> Repo.update do
+          :ok
         end
     end
   end

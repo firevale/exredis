@@ -157,7 +157,9 @@ export default {
   methods: {
     ...mapActions([
       'addApp',
-      'addForum'
+      'addForum',
+      'fetchForums',
+      'fetchMalls'
     ]),
 
     handleSubmit: async function() {
@@ -173,6 +175,8 @@ export default {
       }))
 
       if (result.success) {
+        this.fetchForums()
+        this.fetchMalls()
         if (result.forum) {
           this.addForum(result.forum)
         }
@@ -181,7 +185,7 @@ export default {
           this.addApp(result.app)
           this.$nextTick(_ => {
             this.$router.replace({
-              path: `/admin/apps/edit/${result.app.id}`
+              path: '/admin/apps/edit/${result.app.id}'
             })
           })
         }

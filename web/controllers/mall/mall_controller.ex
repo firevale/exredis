@@ -65,7 +65,7 @@ defmodule Acs.MallController do
 
       %Mall{} = mall ->
         Mall.changeset(mall, mall_info) |> Repo.update!
-        RedisApp.update(mall.app_id, mall.active)
+        RedisApp.update(mall.app_id, mall_info["name"])
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
   end

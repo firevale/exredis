@@ -64,7 +64,7 @@ export default {
 
   watch: {
     price: function(val) {
-      this.goods.price = val * 100
+      this.goods.price = Math.round(val * 100)
     }
   },
 

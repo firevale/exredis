@@ -6,6 +6,8 @@
    close: 'Close',
    save: 'Save',
    update: 'Update',
+   return: 'Reutrn',
+   
    bind: 'Bind',
    camera: 'Take pictures',
    photoLib: 'Select from photo library',

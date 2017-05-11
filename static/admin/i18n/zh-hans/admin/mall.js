@@ -41,8 +41,7 @@ export default {
     stockList: '库存：{stock} / 销量: {sold}',
     saveFirst: '请先保存商品',
     up: '已上架',
-    down: '已下架',
-    back: '返回',
+    down: '已下架'
   },
   order: {
     buttons: {

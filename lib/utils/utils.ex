@@ -304,7 +304,6 @@ defmodule Utils do
       %Mogrify.Image{format: "jpg", width: width, height: height} -> {"jpg", width, height}
       %Mogrify.Image{format: "gif", width: width, height: height} -> {"gif", width, height}
     end
-    d "deploy image file, #{inspect (Mogrify.open(from) |> Mogrify.verbose), pretty: true}, ext: #{ext}"
     relative_path = Path.join("/images", "/#{to}")
     url_path = Path.join("/img", "/#{to}")
     static_path = Application.app_dir(:acs, "priv/static/") 

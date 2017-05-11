@@ -26,7 +26,7 @@ import sectionInfoEditor from 'admin/components/forum/sectionInfoEditor'
 
 export default {
   mounted() {
-    let forum = this.forumHash[this.$route.params.forumId]
+    let forum = this.forumHash[this.$route.params.appId]
 
     if (typeof forum == 'undefined') {
       this.$router.replace({

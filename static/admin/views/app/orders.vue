@@ -104,7 +104,7 @@ export default {
     return {
       keyword: "",
       searching: false,
-      loading: true,
+      loading: false,
       initing: false,
       orders: [],
       page: 1,

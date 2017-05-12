@@ -20,7 +20,7 @@
           </div>
           <div class="nav-right has-text-right" style="flex-glow: 0">
             <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">
-              {{$t('forum.detail.showAuthorOnly')}}
+              {{ this.showAuthorOnly ? $t('forum.detail.showAll') : $t('forum.detail.showAuthorOnly')}}
             </v-touch>
           </div>
         </nav>
@@ -49,19 +49,22 @@
       <v-touch class="nav-left has-text-left" @tap="toggleActive">
         <a class="button is-danger">
           <span class="icon image-icon icon-times">
-          </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}
+          </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost')
+          }}
         </a>
       </v-touch>
       <v-touch class="nav-center has-text-center" @tap="toggleEssence">
         <a class="button is-primary">
           <span class="icon image-icon icon-star">
-          </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}
+          </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost')
+          }}
         </a>
       </v-touch>
       <v-touch class="nav-right has-text-right" @tap="toggleUp">
         <a class="button is-info">
           <span class="icon image-icon icon-top">
-          </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}
+          </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost')
+          }}
         </a>
       </v-touch>
     </nav>
@@ -90,6 +93,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    onShowauthorOnly: {
+      type: Function,
+      default: undefined
+    }
   },
 
   data() {
@@ -120,6 +127,7 @@ export default {
 
   methods: {
     toggleShowAuthorOnly() {
+      this.onShowauthorOnly(!this.showAuthorOnly)
       this.showAuthorOnly = !this.showAuthorOnly
     },
 

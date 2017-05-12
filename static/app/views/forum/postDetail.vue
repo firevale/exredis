@@ -1,9 +1,9 @@
 <template>
   <div style="position: relative">
     <scroller ref="scroller" :on-load-more="loadmore">
-      <post-detail-view v-if="postDetail" :post-data="postDetail">
+      <post-detail-view v-if="postDetail" :post-data="postDetail" :on-showauthor-only="onShowAuthorOnly">
       </post-detail-view>
-      <post-comment-view v-for="(comment, index) in commentList" 
+      <post-comment-view v-for="(comment, index) in showAuthorOnly? commentList.filter(function (x) {return x.user.nickname == postDetail.user.nickname;}) : commentList" 
         :key="comment.id" :comment-data="comment" :item-index="index" :nth="index + 1" 
         :on-item-deleted="onItemDelete">
       </post-comment-view>
@@ -42,6 +42,7 @@ export default {
       total: 1,
       totalRecords: 0,
       recordsPerPage: 20,
+      showAuthorOnly: false,
     }
   },
 
@@ -53,6 +54,10 @@ export default {
     onItemDelete(index) {
       this.totalRecords--;
       this.commentList.splice(index, 1)
+    },
+
+    onShowAuthorOnly(isShowAuthor) {
+      this.showAuthorOnly = isShowAuthor
     },
 
     getPostDetail: async function() {

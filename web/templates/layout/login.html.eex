@@ -30,6 +30,7 @@
         redirectUri: '<%= @redirect_uri %>',
         inApp: <%= @conn.private[:acs_browser] == "webview" || @conn.private[:acs_platform] == "wp8" %>,
         platform: '<%= @conn.private[:acs_platform] %>',
+        browser: '<%= @conn.private[:acs_browser] %>',
         locale: '<%= @conn.private[:acs_locale] %>',
         appId: '<%= @conn.private[:acs_app_id] %>',
         deviceId: '<%= @conn.private[:acs_device_id] %>',

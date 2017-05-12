@@ -46,7 +46,7 @@
       <p class="is-danger">{{this.errorMessage}}</p>
       <div class="tile is-child is-full has-text-centered">
         <a class="button is-info" :class="{'is-disabled': !file || file.success || file.active, 
-                              'is-loading': upload && upload.active}" @click="upload.active = true">
+                              'is-loading': upload && upload.active}" @click="upload.active = true" :disabled="!file || file.success || file.active">
           <span class="icon image-icon icon-upload"></span>
           <span>{{ $t('upload.title') }}</span>
         </a>

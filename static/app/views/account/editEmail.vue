@@ -15,7 +15,7 @@
             <input class="input" type="number" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')" />
             <span class="icon image-icon icon-shield"></span>
             <v-touch tag="a" class="button is-primary" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
-             'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode">
+             'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
               {{ btnFetchVerifyCodeTitle }}
             </v-touch>
           </p>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <p v-show="errorHint" class="help is-danger"> <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
-      <v-touch tag="button" type="submit" class="button is-info is-submit" :class="{'is-disabled': $v.$invalid,
+      <v-touch tag="button" type="submit" class="button is-info is-submit" :disabled="$v.$invalid" :class="{'is-disabled': $v.$invalid,
         'is-loading': processing}">
         {{ $t('account.bind') }}
       </v-touch>

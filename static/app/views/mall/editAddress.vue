@@ -41,7 +41,7 @@
           <span class="icon is-sign">!</span>
           <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
         </div>
-        <v-touch class="button is-info is-large is-fullwidth" tag="a" @tap="handleSubmit" :class="processing || $v.$invalid ? 'is-disabled' : ''">{{$t('common.save') }}</v-touch>
+        <v-touch class="button is-info is-large is-fullwidth" tag="a" @tap="handleSubmit" :class="processing || $v.$invalid ? 'is-disabled' : ''" :disabled="$v.$invalid">{{$t('common.save') }}</v-touch>
       </div>
     </form>
   </div>

@@ -33,7 +33,7 @@
                 <label class="label">{{ $t('admin.mall.goods.price') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" v-model.trim="realPrice">
+                <input class="input" type="number" v-model.trim="realPrice">
               </div>
             </div>
             <div class="field is-horizontal">
@@ -41,7 +41,7 @@
                 <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" v-model.trim="realPostage">
+                <input class="input" type="number" v-model.trim="realPostage">
               </div>
             </div>
             <div class="field is-horizontal">
@@ -49,7 +49,7 @@
                 <label class="label">{{ $t('admin.mall.goods.stock') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" v-model.trim="goods.stock">
+                <input class="input" type="number" v-model.trim="goods.stock">
               </div>
             </div>
           </article>

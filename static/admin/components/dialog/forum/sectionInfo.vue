@@ -11,7 +11,7 @@
         </p>
         <label class="label"> {{ $t('admin.forum.section.sort') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="section.sort">
+          <input class="input" type="number" v-model.trim="section.sort">
         </p>
         <p class="control">
           <label class="checkbox">
@@ -56,9 +56,10 @@ export default {
       let result = await this.$acs.updateForumSectionInfo({
         section: this.section,
       }, this.$t('admin.notification.message.sectionInfoUpdated', {
-        sectionTitle: result.section.title
+        sectionTitle: this.section.title
       }))
 
+      this.processing = false
       if (result.success) {
         if (this.callback) {
           this.callback(result.section)

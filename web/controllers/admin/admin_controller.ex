@@ -25,6 +25,26 @@ defmodule Acs.AdminController do
     conn |> json(%{success: true, apps: apps})
   end
 
+  def fetch_app(conn, %{"app_id" => app_id} = params) do
+    query = from app in App,
+            left_join: sdk in assoc(app, :sdk_bindings),
+            left_join: goods in assoc(app, :goods),
+            left_join: product_ids in assoc(goods, :product_ids),
+            order_by: [desc: app.inserted_at, asc: sdk.inserted_at, asc: goods.inserted_at],
+            where: app.active == true and app.id == ^app_id,
+            select: app,
+            preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
+
+    app = Repo.one(query)
+    sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
+      binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding |> JSON.encode!() |> JSON.decode!(keys: :atoms))
+      Map.put(x, :binding, binding)
+    end)
+    Map.put(app, :sdk_bindings, sdk_bindings)
+
+    conn |> json(%{success: true, app: app})
+  end
+
   @sdks Application.get_env(:acs, :sdks)
   def fetch_supported_sdks(conn, params) do
     conn |> json(%{success: true, sdks: @sdks})

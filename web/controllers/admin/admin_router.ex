@@ -6,6 +6,7 @@ defmodule Acs.AdminRouter do
     pipe_through :admin
 
     get  "/fetch_apps", AdminController, :fetch_apps
+    post "/fetch_app", AdminController, :fetch_app
     get  "/fetch_supported_sdks", AdminController, :fetch_supported_sdks
     post "/update_app_info", AdminController, :update_app_info
 

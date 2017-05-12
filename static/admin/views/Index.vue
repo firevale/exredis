@@ -37,10 +37,18 @@ import {
 } from 'admin/miscellaneous'
 
 export default {
-  computed: {
-    ...mapGetters([
-      'appList'
-    ]),
+  data() {
+    return {
+      appList: undefined 
+    }
+  },
+
+  created: async function() {
+    console.log('created....')
+    let result = await this.$acs.fetchAppList()
+    if (result.success) {
+      this.appList = result.apps
+    }
   },
 
   methods: {

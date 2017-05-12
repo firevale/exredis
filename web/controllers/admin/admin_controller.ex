@@ -6,22 +6,11 @@ defmodule Acs.AdminController do
 
   def fetch_apps(conn, params) do
     query = from app in App,
-            left_join: sdk in assoc(app, :sdk_bindings),
-            left_join: goods in assoc(app, :goods),
-            left_join: product_ids in assoc(goods, :product_ids),
-            order_by: [desc: app.inserted_at, asc: sdk.inserted_at, asc: goods.inserted_at],
+            order_by: [desc: app.inserted_at],
             where: app.active == true,
-            select: app,
-            preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
+            select: map(app, [:id, :name, :icon])
 
-    apps = Repo.all(query) |> Enum.map(fn(app) ->
-      sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
-        binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding |> JSON.encode!() |> JSON.decode!(keys: :atoms))
-        Map.put(x, :binding, binding)
-      end)
-      Map.put(app, :sdk_bindings, sdk_bindings)
-    end)
-
+    apps = Repo.all(query)
     conn |> json(%{success: true, apps: apps})
   end
 

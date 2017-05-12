@@ -8,10 +8,6 @@
   import basicInfoEditor from 'admin/components/app/basicInfoEditor'
 
   export default {
-    mounted() {
-
-    },
-
     data() {
       return {
         app: {

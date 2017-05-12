@@ -27,10 +27,10 @@
         <div class="tile is-full has-text-centered">
           <p style="margin: 0 auto">
             <input type="button" style="min-width: 8rem; padding-bottom: 0.4em; padding-top: 0.35em; margin: 0.5rem 0; display: inline-block"
-              @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+              @click="preview" :value="$t('forum.newPost.preview')" class="button is-info" :disabled="$v.$invalid" :class="processing || $v.$invalid ? 'is-disabled' : ''"
             />
             <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('forum.newPost.btnTitle')" class="button is-primary"
-              :class="processing || $v.$invalid ? 'is-disabled' : ''" />
+              :class="processing || $v.$invalid ? 'is-disabled' : ''" :disabled="$v.$invalid" />
           </p>
         </div>
       </form>

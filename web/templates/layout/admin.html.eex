@@ -37,6 +37,7 @@
     window.acsConfig = {
       csrfToken: '<%= get_csrf_token() %>',
       accessToken: '<%= @conn.private[:acs_access_token] %>',
+      browser: '<%= @conn.private[:acs_browser] %>',
       <%= if !is_nil(user) do %>
       user: {
         id: <%= user.id %>,

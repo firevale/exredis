@@ -7,7 +7,7 @@
       <div class="contact-center">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
-            <input class="button is-info is-medium" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit"
+            <input class="button is-info is-medium" :disabled="$v.$invalid" :class="processing || $v.$invalid ? 'is-disabled' : ''" type="submit"
               :value="$t('customerService.submitBtn')"></input>
           </div>
         </nav>

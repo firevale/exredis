@@ -1,7 +1,7 @@
 <template>
   <nav v-show="pageCount > 1" class="pagination">
     <ul>
-      <li> <a class="button" @click.prevent="selectPage(currentPage - 1)" :class="{'is-disabled': currentPage == 1}">{{ $t('admin.previous') }}</a>							</li>
+      <li> <a class="button" @click.prevent="selectPage(currentPage - 1)" :disabled="currentPage == 1" :class="{'is-disabled': currentPage == 1}">{{ $t('admin.previous') }}</a>							</li>
       <li> <a class="button" @click.prevent="selectPage(1)" :class="{'is-primary': currentPage == 1}">1</a> </li>
       <template v-if="pageCount >= 5">
         <template v-if="currentPage < 3">
@@ -42,7 +42,7 @@
         </li>
       </template>
       <li> <a class="button" :class="{'is-primary': currentPage == pageCount}" @click.prevent="selectPage(pageCount)">{{ pageCount }}</a>							</li>
-      <li> <a class="button" :class="{'is-disabled': currentPage == pageCount}" @click.prevent="selectPage(currentPage + 1)">{{ $t('admin.next') }}</a>							</li>
+      <li> <a class="button" :disabled="currentPage == pageCount" :class="{'is-disabled': currentPage == pageCount}" @click.prevent="selectPage(currentPage + 1)">{{ $t('admin.next') }}</a>							</li>
     </ul>
   </nav>
 </template>

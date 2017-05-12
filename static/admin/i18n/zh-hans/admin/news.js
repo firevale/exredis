@@ -18,6 +18,7 @@ export default {
   active: '是否启用',
   operate: '操作',
   addSuccess: '添加成功',
+  picNeed: '请添加题图～～',
   titlePlaceholder: '请填写标题～～',
   textAreaPlaceHolder: '请填写内容～～',
   requireTitleContent: '请输入标题和内容',

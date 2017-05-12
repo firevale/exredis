@@ -87,15 +87,18 @@ export const filterKeyword = val => {
   }
 }
 
+const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.browser == 'webview' || window.acsConfig.inApp)
+
 export const imageStaticUrl = val => {
   if (typeof val === 'string' && !/^https?:\/\//.test(val)) {
       let base = window.acsConfig.imagesUrl
-      return /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
+      let url =  /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
+      return isWebpSupported ? `${url}.webp` : url
   }
   
   return val
 }
 
 export const imageLowQualityUrl = val => {
-  return val.replace(/\.jpg(\?.*)?$/, '.lq.jpg$1')
+  return val.replace(/\.jpg((\.webp)?(\?.*)?)$/, '.lq.jpg$1')
 }

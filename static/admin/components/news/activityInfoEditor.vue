@@ -11,8 +11,8 @@
           group: 'activity',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.activity.add')
-            }}
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
+            $t('admin.news.activity.add') }}
           </router-link>
         </div>
       </article>
@@ -127,6 +127,18 @@ export default {
     },
 
     toggleStatus: function(news) {
+      if (!news.active) {
+        if (!news.pic) {
+          openNotification({
+            title: this.$t('admin.titles.warning'),
+            message: this.$t('admin.news.picNeed'),
+            type: 'danger',
+            duration: 4500,
+            container: '.notifications',
+          })
+          return
+        }
+      }
       showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
@@ -143,7 +155,7 @@ export default {
       this.loading = true
       let result = await this.$acs.toggleStatus({
         news_id: news.id
-      }, news.active ? this.$t('admin.news.unPublishOk') : this.$t(
+      }, news.active ? this.$t('admin.news.unPublishOK') : this.$t(
         'admin.news.publishOk'))
       if (result.success) {
         news.active = !news.active

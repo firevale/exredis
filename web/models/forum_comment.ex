@@ -6,6 +6,7 @@ defmodule Acs.ForumComment do
   schema "forums_comments" do
     field :content, :binary
     field :active, :boolean, default: true
+    field :floor, :integer
 
     belongs_to :post, Acs.ForumPost, type: :integer
     belongs_to :user, Acs.User, type: :integer
@@ -19,7 +20,7 @@ defmodule Acs.ForumComment do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content, :active, :post_id, :user_id, :editer_id])
+    |> cast(params, [:content, :active, :floor, :post_id, :user_id, :editer_id])
     |> validate_required([:content, :active, :post_id, :user_id])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:post_id)

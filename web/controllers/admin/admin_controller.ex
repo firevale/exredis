@@ -45,18 +45,8 @@ defmodule Acs.AdminController do
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} = app ->
-        App.changeset(app, app_info) |> Repo.update!
-        update_app_mall(app_info["has_mall"], app_id ,app_info["name"])
-        case update_app_forum(app_info["has_forum"], app_id, app_info["forum_name"], app_info["forum_url"]) do
-          {:ok, forum} ->
-            RedisApp.refresh(app_id)
-            conn |> json(%{success: true, forum: forum, i18n_message: "admin.serverSuccess.appUpdated"})
-          nil ->
-            RedisApp.refresh(app_id)
-            conn |> json(%{success: true, i18n_message: "admin.serverSuccess.appUpdated"})
-          {:error, %{errors: errors}}->
-            conn |> json(%{success: false, message: translate_errors(errors)})
-        end
+        {:ok, new_app} = App.changeset(app, app_info) |> Repo.update
+        _update_app_features(conn, new_app)
     end
   end
   def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do
@@ -64,66 +54,82 @@ defmodule Acs.AdminController do
     case App.changeset(%App{}, app_info) |> Repo.insert do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
+
       {:ok, app} ->
-        update_app_mall(app.has_mall, app.id, app_name)
-        case update_app_forum(app.has_forum, app.id, app.forum_name, app.forum_url) do
-          {:ok, forum} ->
-            RedisApp.refresh(app.id)
-            conn |> json(%{success: true, forum: forum, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
-          nil ->
-            RedisApp.refresh(app.id)
-            conn |> json(%{success: true, app: app |> Repo.preload(:goods) |> Repo.preload(:sdk_bindings)})
-          {:error, %{errors: errors}}->
-            conn |> json(%{success: false, message: translate_errors(errors)})
-        end
+        _update_app_features(conn, app)
     end
   end
 
-  defp update_app_forum(has_forum, app_id, app_title, forum_url) do
+  defp _update_app_features(conn, app) do 
+    forum_name = case app.forum_name do 
+      x when x in [nil, ""] -> app.name
+      _ -> app.forum_name
+    end
+
+    _update_app_mall(app.has_mall, app.id, app.name)
+    case _update_app_forum(app.has_forum, app.id, forum_name, app.forum_url) do
+      {:ok, forum} ->
+        RedisApp.refresh(app.id)
+        conn |> json(%{success: true, 
+          forum: forum |> Repo.preload(:sections), 
+          app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
+
+      nil ->
+        RedisApp.refresh(app.id)
+        conn |> json(%{success: true, app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
+
+      {:error, %{errors: errors}}->
+        conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
+
+  defp _update_app_forum(has_forum, app_id, app_title, forum_url) do
     case Repo.get_by(Forum, app_id: app_id) do
       %Forum{} = forum ->
         case Forum.changeset(forum, %{title: app_title, active: has_forum}) |> Repo.update do
           {:ok, new_forum} -> 
-            result = Repo.one(from f in Forum, where: f.app_id == ^app_id, preload: [:sections])
             RedisApp.refresh(app_id)
-            {:ok, result}
+            RedisForum.refresh(new_forum.id)
+            {:ok, new_forum}
+
           {:error, %{errors: errors}} ->
-            {:error,errors}
+            {:error, errors}
         end
 
       nil -> 
-        case Forum.changeset(%Forum{}, %{title: app_title, active: true, app_id: app_id}) |> Repo.insert do
-          {:ok, forum} ->
-            ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, forum_id: forum.id}) |> Repo.insert
-            ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, forum_id: forum.id}) |> Repo.insert
-            ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, forum_id: forum.id}) |> Repo.insert
-            ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, forum_id: forum.id}) |> Repo.insert
-            ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, forum_id: forum.id}) |> Repo.insert
+        if has_forum do 
+          case Forum.changeset(%Forum{}, %{title: app_title, active: has_forum, app_id: app_id}) |> Repo.insert do
+            {:ok, forum} ->
+              ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, forum_id: forum.id}) |> Repo.insert
+              ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, forum_id: forum.id}) |> Repo.insert
 
-            query = from f in Forum,
-                    where: f.app_id == ^app_id,
-                    preload: [:sections]
-            result = Repo.one(query)
-            RedisForum.refresh(forum.id)
-            RedisApp.refresh(app_id)
-            {:ok, result}
-          {:error, %{errors: errors}} ->
-            {:error,errors}
+              query = from f in Forum,
+                      where: f.app_id == ^app_id,
+                      preload: [:sections]
+              result = Repo.one(query)
+              RedisForum.refresh(forum.id)
+              RedisApp.refresh(app_id)
+              {:ok, result}
+
+            {:error, %{errors: errors}} ->
+              {:error,errors}
+          end
         end
     end
   end
 
-  defp update_app_mall(has_mall, app_id, app_name)do
-    case Repo.get_by(Mall, app_id: app_id)do
+  defp _update_app_mall(has_mall, app_id, app_name) do
+    case Repo.get_by(Mall, app_id: app_id) do
       nil ->
-        if(has_mall)do
+        if has_mall do
           Mall.changeset(%Mall{}, %{title: app_name, active: true, app_id: app_id}) |> Repo.insert
-          :ok
         end
+
       %Mall{} = mall ->
-        Mall.changeset(mall, %{active: has_mall }) |> Repo.update do
-          :ok
-        end
+        Mall.changeset(mall, %{active: has_mall }) |> Repo.update 
     end
   end
 

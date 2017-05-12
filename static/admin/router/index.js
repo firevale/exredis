@@ -12,6 +12,7 @@ export default new Router({
   }),
   routes: [{
     path: '/admin',
+    component: require('../views/main'),
     children: [{
       path: 'index',
       name: 'Index',

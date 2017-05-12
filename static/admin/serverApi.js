@@ -45,6 +45,10 @@ const post = (uri, params, successMessage) => {
 export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
+      fetchAppList() {
+        return post('/admin_actions/fetch_apps', {})        
+      },
+
       updateAppInfo(params, successMessage) {
         return post('/admin_actions/update_app_info', params, successMessage)
       },

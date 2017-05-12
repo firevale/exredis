@@ -161,9 +161,8 @@ export default {
     },
 
     getAppCurrency: function(order) {
-      let app = this.appHash[order.app_id]
-      if (app && app.currency) {
-        return app.currency
+      if (this.app && this.app.currency) {
+        return this.app.currency
       } else {
         return ''
       }

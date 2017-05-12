@@ -30,26 +30,11 @@ export const switchEffect = ({
   }
 }
 
-export const fetchPlatformApps = ({
-  commit
-}) => {
-  axios.get('/admin_actions/fetch_apps', {})
-    .then(res => res.data)
-    .then(result => {
-      if (result.success) {
-        commit(types.UPDATE_APPS, result.apps)
-      } else {
-        return Promise.reject(result)
-      }
-    }).catch(e => processAjaxError(e))
-}
-
 export const updateSdks = ({
   commit
 }, sdks) => {
   commit(types.UPDATE_SDKS, sdks) 
 }
-
 
 export const addApp = ({
   commit

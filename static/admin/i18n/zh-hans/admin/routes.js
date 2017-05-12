@@ -1,7 +1,7 @@
 export default {
-  Index: '请选择APP',
+  Index: '我的应用',
   Home: '首页',
-  Dashboard: '概况',
+  AppDashboard: '概况',
   AppManage: '应用管理',
   Users: '账号管理',
   Orders: '订单管理',
@@ -25,4 +25,5 @@ export default {
   Activity: '活动管理',
   Notice: '公告管理',
   News: '新闻管理',
+  null: '',
 }

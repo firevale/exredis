@@ -30,7 +30,7 @@ export default new Router({
       component: require('../views/app/main'),
       children: [{
         path: 'dashboard',
-        name: 'Dashboard',
+        name: 'AppDashboard',
         component: require('../views/app/dashboard')
       }, {
         name: 'EditApp',

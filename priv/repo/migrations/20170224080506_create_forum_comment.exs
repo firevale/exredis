@@ -5,6 +5,7 @@ defmodule Acs.Repo.Migrations.CreateForumComment do
     create table(:forums_comments) do
       add :content, :binary
       add :active, :boolean, default: true
+      add :floor, :integer
 
       add :post_id, references(:forums_posts, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
@@ -15,6 +16,7 @@ defmodule Acs.Repo.Migrations.CreateForumComment do
 
     create index(:forums_comments, [:post_id])
     create index(:forums_comments, [:user_id])
+    create index(:forums_comments, [:post_id, :floor], unique: true)
 
   end
 end

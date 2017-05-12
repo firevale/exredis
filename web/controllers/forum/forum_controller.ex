@@ -488,7 +488,8 @@ defmodule Acs.ForumController do
 
     {:ok, comment} = ForumComment.changeset(forum_comment, %{
       content: content,
-      active: true
+      active: true,
+      floor: _get_max_floor(forum_post.id)
     }) |> Repo.update
 
     utc_now = DateTime.utc_now()
@@ -514,6 +515,9 @@ defmodule Acs.ForumController do
   end
   def add_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
+  end
+  defp _get_max_floor(post_id) do
+    Repo.one(from c in ForumComment, where: c.post_id == ^post_id, select: max(c.floor)) || 1
   end
 
   # get_user_favorites

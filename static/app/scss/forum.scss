@@ -44,6 +44,7 @@
     }
     .nav-right {
       flex-grow: 0;
+      flex-basis: auto;
       .level-button {
         min-width: 2rem;
         padding: 0 0.2rem;

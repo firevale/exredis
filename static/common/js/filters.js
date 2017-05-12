@@ -87,7 +87,7 @@ export const filterKeyword = val => {
   }
 }
 
-const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.browser == 'webview' || window.acsConfig.inApp)
+const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.platform == 'android')
 
 export const imageStaticUrl = val => {
   if (typeof val === 'string' && !/^https?:\/\//.test(val)) {

@@ -6,5 +6,8 @@
 
 <script>
 export default {
+  // beforeRouteEnter: async function(to, from, next) {
+  //   next()
+  // }
 }
 </script>

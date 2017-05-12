@@ -1,6 +1,6 @@
 <template>
   <div class="contact-service">
-    <form v-if="appDetail.cs_phone_number" class="post" @submit.prevent="handleSubmit">
+    <form  class="post" @submit.prevent="handleSubmit">
       <div>
         <textarea class="textarea is-medium" v-model="title" :placeholder="$t('customerService.contactPlaceHolder')"></textarea>
       </div>
@@ -12,7 +12,7 @@
           </div>
         </nav>
       </div>
-      <div>
+      <div v-if="appDetail.cs_phone_number">
         <nav class="level is-mobile">
           <div class="level-item has-text-centered">
             <div class="bottom-content">

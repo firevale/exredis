@@ -119,9 +119,14 @@ export default {
     ]),
   },
 
-  created: function() {
-    this.fetchOrders(this.app.id, this.page, this.recordsPerPage)
-    this.loading = true
+  watch: {
+    app: function(newVal) {
+      if (typeof newVal === 'object' && typeof newVal.id === 'string') {
+        this.page = 1
+        this.total = 1
+        this.fetchOrders(newVal.id, this.page, this.recordsPerPage)
+      }
+    }
   },
 
   methods: {
@@ -208,7 +213,7 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.fetchOrders(page, this.recordsPerPage)
+      this.fetchOrders(this.app.id, page, this.recordsPerPage)
     },
 
     onSearchBoxSubmit: function() {
@@ -219,9 +224,10 @@ export default {
       }
     },
 
-    fetchOrders: async function(page, recordsPerPage) {
+    fetchOrders: async function(app_id, page, recordsPerPage) {
       this.loading = true
       let result = await this.$acs.fetchOrders({
+        app_id, 
         page,
         records_per_page: recordsPerPage
       })
@@ -238,6 +244,7 @@ export default {
     searchOrders: async function(page) {
       this.searching = true
       let result = await this.$acs.searchOrders({
+        app_id: this.app.id,
         keyword: this.keyword,
         page: page,
         records_per_page: this.recordsPerPage

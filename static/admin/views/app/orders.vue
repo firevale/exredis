@@ -115,40 +115,26 @@ export default {
 
   computed: {
     ...mapGetters([
-      'appHash', 'goods'
+      'goods', 'app'
     ]),
   },
 
-  mounted: function() {
-    if (Object.keys(this.appHash).length > 0) {
-      this.fetchOrders(this.page, this.recordsPerPage)
-      this.loading = true
-    } else {
-      this.initing = true
-    }
-  },
-
-  watch: {
-    appHash: function() {
-      this.initing = false
-      this.loading = true
-      this.fetchOrders(this.page, this.recordsPerPage)
-    }
+  created: function() {
+    this.fetchOrders(this.app.id, this.page, this.recordsPerPage)
+    this.loading = true
   },
 
   methods: {
     getAppIcon: function(order) {
-      let app = this.appHash[order.app_id]
-      if (app && app.icon) {
-        return app.icon
+      if (this.app && this.app.icon) {
+        return this.app.icon
       } else {
-        return 'https://placehold.it/32x32?text=' + app.name
+        return 'https://placehold.it/32x32?text=' + this.app.name
       }
     },
 
     getAppName: function(order) {
-      let app = this.appHash[order.app_id]
-      return app.name
+      return this.app.name
     },
 
     getGoodsIcon: function(order) {

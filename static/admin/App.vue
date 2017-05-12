@@ -7,7 +7,6 @@
   </div>
 </template>
 <script>
-
 import NprogressContainer from 'vue-nprogress/src/NprogressContainer.vue'
 
 import {
@@ -21,6 +20,8 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+
+import axios from 'axios'
 
 export default {
   components: {
@@ -52,13 +53,6 @@ export default {
     window.addEventListener('resize', handler)
   },
 
-  mounted: function() {
-    this.fetchPlatformApps()
-    this.fetchSupportedSdks()
-    this.fetchForums()
-    this.fetchMalls()
-  },
-
   computed: mapGetters({
     sidebar: 'sidebar'
   }),
@@ -66,10 +60,6 @@ export default {
   methods: mapActions([
     'toggleDevice',
     'toggleSidebar',
-    'fetchPlatformApps',
-    'fetchSupportedSdks',
-    'fetchForums',
-    'fetchMalls',
   ])
 }
 </script>

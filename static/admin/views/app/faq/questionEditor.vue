@@ -86,8 +86,7 @@ const openDialog = (propsData = {
 
 import {
   showMessageBox
-} from '../dialog/messageBox'
-
+} from 'admin/components/dialog/messageBox'
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
 

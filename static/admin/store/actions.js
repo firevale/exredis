@@ -44,19 +44,12 @@ export const fetchPlatformApps = ({
     }).catch(e => processAjaxError(e))
 }
 
-export const fetchSupportedSdks = ({
+export const updateSdks = ({
   commit
-}) => {
-  axios.get('/admin_actions/fetch_supported_sdks', {})
-    .then(res => res.data)
-    .then(result => {
-      if (result.success) {
-        commit(types.UPDATE_SDKS, result.sdks)
-      } else {
-        return Promise.reject(result)
-      }
-    }).catch(e => processAjaxError(e))
+}, sdks) => {
+  commit(types.UPDATE_SDKS, sdks) 
 }
+
 
 export const addApp = ({
   commit

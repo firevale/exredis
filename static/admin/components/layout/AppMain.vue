@@ -19,6 +19,6 @@ import Levelbar from './Levelbar.vue'
 export default {
   components: {
     Levelbar
-  }
+  },
 }
 </script>

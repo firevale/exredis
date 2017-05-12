@@ -7,11 +7,11 @@
           news: {
           id: '',
           title: '',
-          group: 'notice',
           content: '',
+          group: 'news',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.notice.add')
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.news.news.add')
             }}
           </router-link>
         </div>
@@ -22,6 +22,7 @@
             <thead v-show="newses && newses.length > 0">
               <tr>
                 <th>{{ $t('admin.news.id') }}</th>
+                <th>{{ $t('admin.news.pic')}}</th>
                 <th>{{ $t('admin.news.title') }}</th>
                 <th>{{ $t('admin.news.created_at')}}</th>
                 <th>{{ $t('admin.news.active')}}</th>
@@ -32,6 +33,11 @@
             <tbody v-show="newses && newses.length > 0">
               <tr v-for="(news, index) in newses">
                 <td> {{ news.id }} </td>
+                <td class="is-icon">
+                  <figure class="image news-pic" @click="updateNewsPic(news)">
+                    <img :src="news.pic ? news.pic: 'https://placehold.it/172x70?text=640X260'" style="width:172px; height:70px;"></img>
+                  </figure>
+                </td>
                 <td> {{ news.title }} </td>
                 <td> {{ news.inserted_at | formatServerDateTime }} </td>
                 <td> {{ news.active ? $t('admin.news.publishEd') : $t('admin.news.unPublish') }} </td>
@@ -63,8 +69,17 @@ import {
 } from 'vuex'
 
 import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
+
+import {
+  showFileUploadDialog
+} from 'common/components/fileUpload'
+
+import {
   showMessageBox
-} from '../dialog/messageBox'
+} from 'admin/components/dialog/messageBox'
 
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
@@ -81,13 +96,13 @@ export default {
   },
 
   mounted: function() {
-    this.getNoticeInfo(this.page, this.recordsPerPage)
+    this.getNewsInfo(this.page, this.recordsPerPage)
     this.loading = true
   },
 
   methods: {
-    getNoticeInfo: async function(page, recordsPerPage) {
-      let result = await this.$acs.getPagedNews(this.$route.params.appId, "notice", page,
+    getNewsInfo: async function(page, recordsPerPage) {
+      let result = await this.$acs.getPagedNews(this.$route.params.appId, "news", page,
         recordsPerPage)
 
       if (result.success) {
@@ -98,7 +113,7 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getNoticeInfo(page, this.recordsPerPage)
+      this.getNewsInfo(page, this.recordsPerPage)
     },
 
     editNewsInfo: function(news, index) {
@@ -130,11 +145,25 @@ export default {
           news_id: news.id
         },
         news.active ? this.$t('admin.news.unPublishOK') : this.$t('admin.news.publishOk'))
+      this.loading = false
       if (result.success) {
         news.active = !news.active
       }
-      this.loading = false
     },
+
+    updateNewsPic: function(news) {
+      showFileUploadDialog(this.$i18n, {
+        postAction: '/admin_actions/update_news_title_picture',
+        accept: 'image/png',
+        data: {
+          news_id: news.id
+        },
+        extensions: ['png'],
+        title: this.$t('admin.titles.uploadNewsPic'),
+        callback: response => news.pic = response.pic,
+      })
+    },
+
   },
 
   components: {

@@ -68,7 +68,7 @@ import {
 
 import {
   showMessageBox
-} from '../dialog/messageBox'
+} from 'admin/components/dialog/messageBox'
 
 import {
   processAjaxError,

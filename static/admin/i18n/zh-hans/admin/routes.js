@@ -7,7 +7,7 @@ export default {
   Orders: '订单管理',
   Forums: '论坛管理',
   Malls: '商城管理',
-  CustomerService: '问题反馈',
+  Faq: '问题反馈',
   Settings: '系统设置',
   AppInfo: '应用基本信息',
   NewApp: '添加新应用',

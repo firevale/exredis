@@ -10,7 +10,7 @@
       <div class="column is-8">
         <label class="label"> {{ $t('admin.label.forumAppId')}}: </label>
         <p class="control">
-          <input class="input is-disabled" type="text" v-model.trim="forum.app_id">
+          <input class="input is-disabled" disabled type="text" v-model.trim="forum.app_id">
         </p>
       </div>
       <div class="column is-8">

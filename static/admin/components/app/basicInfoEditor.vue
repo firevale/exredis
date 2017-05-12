@@ -4,13 +4,13 @@
       <div class="column is-4" v-if="app.id">
         <label class="label"> {{ $t('admin.label.appId')}}: </label>
         <p class="control">
-          <input class="input is-disabled" type="text" v-model.trim="app.id">
+          <input class="input is-disabled" disabled type="text" v-model.trim="app.id">
         </p>
       </div>
       <div class="column is-8" v-if="app.id">
         <label class="label"> {{ $t('admin.label.appKey')}}: </label>
         <p class="control">
-          <input class="input is-disabled" type="text" v-model.trim="app.secret">
+          <input class="input is-disabled" disabled type="text" v-model.trim="app.secret">
         </p>
       </div>
       <div class="column is-4">

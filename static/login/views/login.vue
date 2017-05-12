@@ -19,7 +19,7 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login">
-        <button type="submit" class="button" :class="{'is-loading': processing, 'is-disabled': $v.$invalid}">
+        <button type="submit" class="button" :class="{'is-loading': processing, 'is-disabled': $v.$invalid}" :disabled="$v.$invalid">
           {{ $t('account.loginPage.btnSubmit') }}
         </button>
       </div>

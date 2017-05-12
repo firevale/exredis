@@ -58,6 +58,12 @@
           </p>
         </div>
       </div>
+      <div class="tile is-child">
+        <a class="button is-white" @click.prevent="onBack">
+          <span class="icon is-small"><i class="fa fa-backward"></i></span>
+          <span>{{ $t('common.return') }}</span>
+        </a>
+      </div>
     </div>
     <div class="tile is-parent is-vertical">
       <h6 class="subtitle is-6">历史记录:</h6>
@@ -126,7 +132,9 @@ export default {
     isNull: function() {
       return orderInfo.transaction_id == ""
     },
-
+    onBack: function() {
+      this.$router.go(-1)
+    },
     updateOrderPayed: function() {
       showMessageBox({
         visible: true,

@@ -27,8 +27,8 @@ const state = {
       },
     },
     {
-      name: i18n.t('admin.menu.editApp'),
-      path: '/admin/app/:appId/edit',
+      name: i18n.t('admin.menu.appConfig'),
+      path: '/admin/app/:appId/config',
       meta: {
         icon: 'fa-bars',
       },

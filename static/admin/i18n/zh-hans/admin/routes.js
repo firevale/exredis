@@ -2,7 +2,7 @@ export default {
   Index: '我的应用',
   Home: '首页',
   AppDashboard: '概况',
-  AppManage: '应用管理',
+  AppConfig: '修改应用配置',
   Users: '账号管理',
   Orders: '订单管理',
   Forums: '论坛管理',

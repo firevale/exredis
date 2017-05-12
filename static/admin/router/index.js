@@ -33,9 +33,9 @@ export default new Router({
         name: 'AppDashboard',
         component: require('../views/app/dashboard')
       }, {
-        name: 'EditApp',
-        path: 'edit',
-        component: require('../views/app/edit/main')
+        name: 'AppConfig',
+        path: 'config',
+        component: require('../views/app/config/main')
       }, {
         name: 'Users',
         path: 'users',

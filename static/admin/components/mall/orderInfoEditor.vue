@@ -100,7 +100,11 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+    ...mapGetters([
+      'app'
+    ])
+  },
 
   mounted: async function() {
     await this.fetchOrders()
@@ -110,9 +114,8 @@ export default {
 
   methods: {
     getAppIcon: function(order) {
-      let app = this.appHash[order.app_id]
-      if (app && app.icon) {
-        return app.icon
+      if (this.app && this.app.icon) {
+        return this.app.icon
       } else {
         return 'https://placehold.it/32x32?text=' + app.name
       }

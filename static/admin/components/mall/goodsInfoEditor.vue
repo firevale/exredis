@@ -105,14 +105,14 @@ export default {
 
   computed: {
     ...mapGetters([
-      'appHash'
+      'app'
     ]),
   },
 
-  mounted: function() {
-    this.appId = this.$route.params.appId
-    if (this.appId && this.appHash[this.appId]) {
-      this.currency = this.appHash[this.appId].currency
+  watch: {
+    app(newVal) {
+      this.appId = newVal.id
+      this.currency = newVal.currency
       this.fetchGoods(this.page, this.recordsPerPage)
     }
   },

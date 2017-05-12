@@ -3,7 +3,7 @@
     <scroller ref="scroller" :on-load-more="loadmore">
       <post-detail-view v-if="postDetail" :post-data="postDetail" :on-showauthor-only="onShowAuthorOnly">
       </post-detail-view>
-      <post-comment-view v-for="(comment, index) in showAuthorOnly? commentList.filter(function (x) {return x.user.nickname == postDetail.user.nickname;}) : commentList" 
+      <post-comment-view v-for="(comment, index) in commentList" 
         :key="comment.id" :comment-data="comment" :item-index="index" :nth="index + 1" 
         :on-item-deleted="onItemDelete">
       </post-comment-view>
@@ -58,6 +58,7 @@ export default {
 
     onShowAuthorOnly(isShowAuthor) {
       this.showAuthorOnly = isShowAuthor
+      this.refresh()
     },
 
     getPostDetail: async function() {
@@ -72,10 +73,13 @@ export default {
       this.page = 0
       this.total = 1
       this.commentList = []
+      await this.loadmore()
     },
 
     loadmore: async function() {
-      let result = await this.$acs.getPostComments(this.postId, this.page + 1, this.recordsPerPage)
+      let author_id = 0
+      if(this.showAuthorOnly) author_id = this.postDetail.user.id
+      let result = await this.$acs.getPostComments(this.postId, this.page + 1, author_id, this.recordsPerPage)
       if (result.success) {
         this.commentList = this.commentList.concat(result.comments)
         this.total = result.total

@@ -333,6 +333,7 @@ defmodule Acs.ForumController do
   # get_post_comments
   def get_post_comments(conn, %{"post_id" => post_id,
                                 "page" => page,
+                                "author_id" => author_id,
                                 "records_per_page" => records_per_page}) do
     total = Repo.one!(from c in ForumComment, 
                       select: count(1), 
@@ -348,6 +349,11 @@ defmodule Acs.ForumController do
             offset: ^((page - 1) * records_per_page),
             preload: [user: u]
 
+    query = if(author_id > 0) do
+      query |> where([p], p.user_id == ^author_id)
+    else
+      query
+    end
     comments = Repo.all(query)
 
     conn |> json(%{success: true, comments: comments, total: total_page, records: total})

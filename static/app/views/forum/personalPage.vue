@@ -20,7 +20,7 @@
         </p>
       </div>
     </article>
-    <slider-nav class="flex-fixed-size" :menus="menus"  @onSelect="switchMenu" ref="nav"></slider-nav>
+    <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div class="content flex-take-rest" style="position: relative">
       <scroller :on-load-more="loadmore" ref="scroller">
         <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
@@ -171,6 +171,11 @@ export default {
     },
 
     getPostPage: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetUserPagedPost()
+      this.$acs.cancelGetUserPostComments()
+      this.$acs.cancelGetUserPostFavorites()
+
       let result = await this.$acs.getUserPagedPost(this.$route.params.forumId,
         this.page + 1, this.recordsPerPage)
 
@@ -186,6 +191,11 @@ export default {
     },
 
     getCommentPage: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetUserPagedPost()
+      this.$acs.cancelGetUserPostComments()
+      this.$acs.cancelGetUserPostFavorites()
+
       let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1,
         this.recordsPerPage)
 
@@ -201,6 +211,11 @@ export default {
     },
 
     getFavoritePage: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetUserPagedPost()
+      this.$acs.cancelGetUserPostComments()
+      this.$acs.cancelGetUserPostFavorites()
+
       let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1,
         this.recordsPerPage)
 

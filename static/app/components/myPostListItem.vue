@@ -57,7 +57,9 @@ export default {
     confirmDeletePost(e) {
       AlertDialog.show({
         visible: true,
-        message: this.$t('forum.detail.deletePostTip'),
+        okText: this.$t('common.ok'),
+        cancelText: this.$t('common.cancel'),
+        message: this.$t('common.confirmDelete'),
         onOk: async _ => {
           let result = await this.$acs.togglePostStatus({
             forum_id: this.$route.params.forumId,

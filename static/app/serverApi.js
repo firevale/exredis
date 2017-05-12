@@ -124,28 +124,49 @@ export default {
         })
       },
 
-      getUserPagedPost(forum_id, page, records_per_page) {
+      cancelGetUserPagedPost: function() {
+        if (typeof this.tokens.getUserPagedPost === 'function') {
+          this.tokens.getUserPagedPost()
+        }
+      },
+
+      getUserPagedPost: function(forum_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getUserPagedPost = c)
         return post('/forum_actions/get_user_paged_post', {
           forum_id,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
-      getUserPostComments(forum_id, page, records_per_page) {
+      cancelGetUserPostComments: function() {
+        if (typeof this.tokens.getUserPostComments === 'function') {
+          this.tokens.getUserPostComments()
+        }
+      },
+
+      getUserPostComments: function(forum_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getUserPostComments = c)
         return post('/forum_actions/get_user_post_comments', {
           forum_id,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
-      getUserPostFavorites(forum_id, page, records_per_page) {
+      cancelGetUserPostFavorites: function() {
+        if (typeof this.tokens.getUserPostFavorites === 'function') {
+          this.tokens.getUserPostFavorites()
+        }
+      },
+
+      getUserPostFavorites: function(forum_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getUserPostFavorites = c)
         return post('/forum_actions/get_user_favorites', {
           forum_id,
           page,
           records_per_page
-        })
+        }, undefined, cancelToken)
       },
 
       search(forum_id, keyword, page, records_per_page) {

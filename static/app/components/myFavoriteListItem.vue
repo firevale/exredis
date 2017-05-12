@@ -56,7 +56,9 @@ export default {
     confirmDeleteFavorite() {
       AlertDialog.show({
         visible: true,
-        message: this.$t('forum.writeComment.deleteTip'),
+        okText: this.$t('common.ok'),
+        cancelText: this.$t('common.cancel'),
+        message: this.$t('common.confirmDelete'),
         onOk: async _ => {
           let result = await this.$acs.togglePostFavorite(this.itemData.post.id)
           if (result.success) {

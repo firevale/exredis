@@ -29,27 +29,9 @@ import sdkInfoEditor from 'admin/components/app/sdkInfoEditor'
 import goodsInfoEditor from 'admin/components/app/goodsInfoEditor'
 
 export default {
-  mounted() {
-    let app = this.appHash[this.$route.params.appId]
-
-    if (typeof app == 'undefined') {
-      this.$router.replace({
-        name: 'AppManage'
-      })
-    } else {
-      this.app = app
-    }
-  },
-
-  data() {
-    return {
-      app: {},
-    }
-  },
-
   computed: {
     ...mapGetters([
-      'appHash', 'sdks'
+      'app', 'sdks'
     ]),
   },
 

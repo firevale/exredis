@@ -1,7 +1,6 @@
 const main = state => state.main
+const app = state => state.apps.app
 const sdks = state => state.apps.sdks
-const appList = state => state.apps.list
-const appHash = state => state.apps.hash
 const goods = state => state.apps.goods
 const device = state => state.main.device
 const sidebar = state => state.main.sidebar
@@ -16,9 +15,8 @@ const mallHash = state => state.mall.hash
 
 export {
   main,
+  app,
   sdks,
-  appList,
-  appHash,
   goods,
   device,
   sidebar,

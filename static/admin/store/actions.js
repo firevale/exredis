@@ -36,10 +36,10 @@ export const updateSdks = ({
   commit(types.UPDATE_SDKS, sdks) 
 }
 
-export const addApp = ({
+export const setApp = ({
   commit
 }, app) => {
-  commit(types.ADD_APP, app)
+  commit(types.SET_APP, app)
 }
 
 export const addForum = ({

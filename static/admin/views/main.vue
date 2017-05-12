@@ -6,13 +6,11 @@
 <script>
 import axios from 'axios'
 import {
-  mapGetters,
   mapActions
 } from 'vuex'
 
 export default {
   beforeRouteEnter: function(to, from, next) {
-
     axios.post('/admin_actions/fetch_supported_sdks')
       .then(response => response.data)
       .then(result => {
@@ -22,12 +20,12 @@ export default {
           })
         } else {
           next({
-            path: 'error'
+            path: '/admin/error'
           })
         }
       }).catch(e => {
         next({
-          path: 'error'
+          path: '/admin/error'
         })
       })
   },

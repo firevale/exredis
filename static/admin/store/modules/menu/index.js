@@ -1,7 +1,6 @@
 import { i18n } from 'admin/vue-i18n'
 
 import * as types from '../../mutation-types'
-import x from './apps.js'
 
 const state = {
   indexItems: [{
@@ -22,70 +21,70 @@ const state = {
 
   items: [{
       name: i18n.t('admin.menu.dashboard'),
-      path: '/admin/:appId/dashboard',
+      path: '/admin/app/:appId/dashboard',
       meta: {
         icon: 'fa-tachometer'
       },
     },
     {
-      name: i18n.t('admin.menu.appManage'),
-      path: '/admin/:appId/editapp',
+      name: i18n.t('admin.menu.editApp'),
+      path: '/admin/app/:appId/edit',
       meta: {
         icon: 'fa-bars',
       },
     },
     {
       name: i18n.t('admin.menu.userManage'),
-      path: '/admin/:appId/users',
+      path: '/admin/app/:appId/users',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
       name: i18n.t('admin.menu.orderManage'),
-      path: '/admin/:appId/orders',
+      path: '/admin/app/:appId/orders',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
       name: i18n.t('admin.menu.forumManage'),
-      path: '/admin/:appId/editforum',
+      path: '/admin/app/:appId/editforum',
       meta: {
         icon: 'fa-user-circle'
       },
     },
     {
       name: i18n.t('admin.menu.appMalls'),
-      path: '/admin/:appId/editmall',
+      path: '/admin/app/:appId/editmall',
       meta: {
         icon: 'fa-shopping-bag'
       },
     },
     {
       name: i18n.t('admin.menu.activityInfo'),
-      path: '/admin/:appId/activity',
+      path: '/admin/app/:appId/activity',
       meta: {
         icon: 'fa-joomla'
       },
     },
     {
       name: i18n.t('admin.menu.noticeInfo'),
-      path: '/admin/:appId/notice',
+      path: '/admin/app/:appId/notice',
       meta: {
         icon: 'fa-bullhorn'
       },
     },
     {
       name: i18n.t('admin.menu.newsInfo'),
-      path: '/admin/:appId/news',
+      path: '/admin/app/:appId/news',
       meta: {
         icon: 'fa-newspaper-o'
       },
     },
     {
       name: i18n.t('admin.menu.customerService'),
-      path: '/admin/:appId/customerservice',
+      path: '/admin/app/:appId/customerservice',
       meta: {
         icon: 'fa-comments'
       },

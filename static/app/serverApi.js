@@ -110,10 +110,11 @@ export default {
         return post('/forum_actions/toggle_post_status', params)
       },
 
-      getPostComments(post_id, page, records_per_page) {
+      getPostComments(post_id, page, author_id, records_per_page) {
         return post('/forum_actions/get_post_comments', {
           post_id,
           page,
+          author_id,
           records_per_page
         })
       },

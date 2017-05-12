@@ -138,7 +138,10 @@ import {
 
 export default {
   props: {
-    app: Object,
+    app: {
+      type: Object, 
+      required: true,
+    }
   },
 
   data() {

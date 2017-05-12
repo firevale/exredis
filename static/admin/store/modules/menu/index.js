@@ -28,7 +28,7 @@ const state = {
     },
     {
       name: i18n.t('admin.menu.appConfig'),
-      path: '/admin/app/:appId/config',
+      path: '/admin/app/:appId/config/',
       meta: {
         icon: 'fa-bars',
       },
@@ -84,7 +84,7 @@ const state = {
     },
     {
       name: i18n.t('admin.menu.customerService'),
-      path: '/admin/app/:appId/customerservice',
+      path: '/admin/app/:appId/faq/',
       meta: {
         icon: 'fa-comments'
       },

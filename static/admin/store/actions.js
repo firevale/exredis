@@ -33,7 +33,7 @@ export const switchEffect = ({
 export const updateSdks = ({
   commit
 }, sdks) => {
-  commit(types.UPDATE_SDKS, sdks) 
+  commit(types.UPDATE_SDKS, sdks)
 }
 
 export const setApp = ({
@@ -50,8 +50,8 @@ export const addForum = ({
 
 export const fetchForums = ({
   commit
-}) => {
-  axios.get('/forum_actions/fetch_forums', {})
+}, app_id) => {
+  axios.get('/forum_actions/fetch_forums', { app_id: app_id })
     .then(res => res.data)
     .then(result => {
       if (result.success) {
@@ -64,8 +64,8 @@ export const fetchForums = ({
 
 export const fetchMalls = ({
   commit
-}) => {
-  axios.get('/mall_actions/fetch_malls', {})
+}, app_id) => {
+  axios.get('/mall_actions/fetch_malls', { app_id: app_id })
     .then(res => res.data)
     .then(result => {
       if (result.success) {

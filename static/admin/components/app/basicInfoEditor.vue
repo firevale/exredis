@@ -178,8 +178,8 @@ export default {
       }))
 
       if (result.success) {
-        this.fetchMalls()
-        this.fetchForums()
+        this.fetchMalls(this.$router.appId)
+        this.fetchForums(this.$router.appId)
         
         if (result.forum) {
           this.addForum(result.forum)

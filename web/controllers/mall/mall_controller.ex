@@ -35,6 +35,15 @@ defmodule Acs.MallController do
     malls = Repo.all(query)
     conn |> json(%{success: true, malls: malls, total: total_page})
   end
+  def fetch_malls(conn, %{"app_id" => app_id} = params) do
+    query = from m in Mall,
+              order_by: [desc: m.inserted_at],
+              where: m.active == true and m.app_id == ^app_id,
+              select: map(m, [:id, :title, :active, :icon, :app_id, :inserted_at])
+
+    malls = Repo.all(query)
+    conn |> json(%{success: true, malls: malls})
+  end
 
   # update_mall_icon
   plug :check_upload_image, [

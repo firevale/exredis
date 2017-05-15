@@ -37,8 +37,8 @@ export default {
     sidebar: 'sidebar'
   }),
   created: function() {
-    this.fetchMalls()
-    this.fetchForums()
+    this.fetchMalls(this.$router.appId)
+    this.fetchForums(this.$router.appId)
   },
   methods: {
     ...mapActions([

@@ -38,6 +38,17 @@ defmodule Acs.ForumController do
     forums = Repo.all(query)
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
+  def fetch_forums(conn, %{"app_id" => app_id} = params) do
+    query = from forum in Forum,
+              left_join: sections in assoc(forum, :sections),
+              order_by: [desc: forum.id, desc: sections.sort],
+              where: forum.active == true and forum.app_id == ^app_id,
+              select: forum,
+              preload: [sections: sections]
+
+    forums = Repo.all(query)
+    conn |> json(%{success: true, forums: forums})
+  end
 
   plug :check_upload_image, [
     param_name: "file", 

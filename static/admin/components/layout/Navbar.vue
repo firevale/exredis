@@ -11,7 +11,7 @@
           <a class="nav-item hero-brand">
             <img src="/images/logo.png">
             <div class="is-hidden-mobile">
-              <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin">{{ $t('admin.admin') }}</strong>
+              <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin" @click="goIndex">{{ $t('admin.admin') }}{{appShowName}}</strong>
             </div>
           </a>
         </div>
@@ -33,9 +33,19 @@ export default {
   props: {
     show: Boolean
   },
-  computed: mapGetters({
-    sidebar: 'sidebar'
-  }),
+  computed: {
+    ...mapGetters({
+      sidebar: 'sidebar',
+      app: 'app',
+    }),
+    appShowName: function() {
+      if (this.app) {
+        return "  - " + this.app.name
+      }else{
+        return ""
+      }
+    }
+  },
   created: function() {
     this.fetchMalls(this.$router.appId)
     this.fetchForums(this.$router.appId)
@@ -45,7 +55,10 @@ export default {
       'toggleSidebar',
       'fetchMalls',
       'fetchForums'
-    ])
+    ]),
+    goIndex: function() {
+      this.$router.push({name:'Index' })
+    }
   }
 }
 </script>

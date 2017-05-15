@@ -4,7 +4,7 @@ defmodule Acs.AdminController do
   import  Acs.UploadImagePlugs
   alias   Acs.SdkInfoGenerator
 
-  def fetch_apps(conn, params) do
+  def fetch_apps(conn, _params) do
     query = from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
@@ -14,7 +14,7 @@ defmodule Acs.AdminController do
     conn |> json(%{success: true, apps: apps})
   end
 
-  def fetch_app(conn, %{"app_id" => app_id} = params) do
+  def fetch_app(conn, %{"app_id" => app_id}) do
     query = from app in App,
             left_join: sdk in assoc(app, :sdk_bindings),
             left_join: goods in assoc(app, :goods),
@@ -35,7 +35,7 @@ defmodule Acs.AdminController do
   end
 
   @sdks Application.get_env(:acs, :sdks)
-  def fetch_supported_sdks(conn, params) do
+  def fetch_supported_sdks(conn, _params) do
     conn |> json(%{success: true, sdks: @sdks})
   end
 
@@ -49,7 +49,7 @@ defmodule Acs.AdminController do
         _update_app_features(conn, new_app)
     end
   end
-  def update_app_info(conn, %{"app" => %{"name" => app_name} = app_info}) do
+  def update_app_info(conn, %{"app" => %{"name" => _app_name} = app_info}) do
     app_info = Map.put(app_info, "id", Utils.generate_token(16)) |> Map.put("secret", Utils.generate_token())
     case App.changeset(%App{}, app_info) |> Repo.insert do
       {:error, %{errors: errors}} ->
@@ -83,7 +83,7 @@ defmodule Acs.AdminController do
     end
   end
 
-  defp _update_app_forum(has_forum, app_id, app_title, forum_url) do
+  defp _update_app_forum(has_forum, app_id, app_title, _forum_url) do
     case Repo.get_by(Forum, app_id: app_id) do
       %Forum{} = forum ->
         case Forum.changeset(forum, %{title: app_title, active: has_forum}) |> Repo.update do
@@ -149,7 +149,7 @@ defmodule Acs.AdminController do
       "id" => goods_id,
       "name" => _,
       "description" => _,
-      "price" => goods_price,
+      "price" => _goods_price,
       "app_id" => _,
     } = goods}) do
     if goods["price"] < 0 do
@@ -185,7 +185,7 @@ defmodule Acs.AdminController do
     min_width: 128,
     format: "png",
     resize_to_limit: [width: 128, height: 128]] when action == :update_app_icon
-  def update_app_icon(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}} = params) do
+  def update_app_icon(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
@@ -207,14 +207,14 @@ defmodule Acs.AdminController do
     min_width: 128,
     format: "png",
     resize_to_limit: [width: 128, height: 128]] when action == :update_goods_icon
-  def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{path: image_file_path}} = params) do
+  def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{path: image_file_path}}) do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
                        i18n_message: "error.server.goodsNotFound",
                        i18n_message_object: %{goods_id: goods_id}})
 
-      %AppGoods{app_id: ^app_id, icon: icon_url} = goods ->
+      %AppGoods{app_id: ^app_id, icon: _icon_url} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
         AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
         RedisApp.refresh(app_id)

@@ -3,7 +3,11 @@ defmodule Acs.AdminUser do
 
   schema "admin_users" do
     field :account_id, :string
+    field :active, :boolean, default: true
+    field :admin_level, :integer, default: 0
 
+    belongs_to :app, Acs.App, type: :string
+    
     timestamps()
   end
 

@@ -11,6 +11,13 @@ const state = {
       },
     },
     {
+      name: i18n.t('admin.menu.userManage'),
+      path: '/admin/users',
+      meta: {
+        icon: 'fa-user-circle'
+      },
+    },
+    {
       name: i18n.t('admin.menu.settings'),
       path: '/admin/settings',
       meta: {
@@ -31,13 +38,6 @@ const state = {
       path: '/admin/app/:appId/config/',
       meta: {
         icon: 'fa-bars',
-      },
-    },
-    {
-      name: i18n.t('admin.menu.userManage'),
-      path: '/admin/app/:appId/users',
-      meta: {
-        icon: 'fa-user-circle'
       },
     },
     {

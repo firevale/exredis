@@ -18,6 +18,10 @@ export default new Router({
       name: 'Index',
       component: require('../views/Index'),
     }, {
+      name: 'Users',
+      path: 'users',
+      component: require('../views/app/users')
+    }, {
       path: 'settings',
       name: 'Settings',
       component: require('../views/Settings')
@@ -36,10 +40,6 @@ export default new Router({
         name: 'AppConfig',
         path: 'config',
         component: require('../views/app/config/main')
-      }, {
-        name: 'Users',
-        path: 'users',
-        component: require('../views/app/users')
       }, {
         name: 'Orders',
         path: 'orders',

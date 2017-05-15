@@ -33,6 +33,7 @@
   </form>
 </template>
 <script>
+import axios from 'axios'
 import {
   mapGetters,
   mapActions
@@ -52,7 +53,7 @@ export default {
   methods: {
     ...mapActions([
       'addMall',
-      'fetchPlatformApps'
+      'setApp'
     ]),
 
     handleSubmit: async function() {
@@ -61,7 +62,15 @@ export default {
         mall: this.mall
       }, this.$t('admin.notification.message.mallInfoUpdated'))
       if (result.success) {
-        this.fetchPlatformApps()
+        axios.post('/admin_actions/fetch_app', {
+            app_id: this.mall.app_id
+          })
+          .then(response => response.data)
+          .then(result => {
+            if (result.success) {
+              this.setApp(result.app)
+            }
+          })
       }
       this.processing = false
       if (result.mall) {

@@ -9,7 +9,7 @@
         </div>
         <div class="nav-center">
           <a class="nav-item hero-brand">
-            <img src="/images/logo.png" >
+            <img src="/images/logo.png">
             <div class="is-hidden-mobile">
               <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin">{{ $t('admin.admin') }}</strong>
             </div>
@@ -20,25 +20,32 @@
     </div>
   </section>
 </template>
-
 <script>
-  import Tooltip from 'vue-bulma-tooltip'
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
-  export default {
-    components: {
-      Tooltip
-    },
-    props: {
-      show: Boolean
-    },
-    computed: mapGetters({
-      sidebar: 'sidebar'
-    }),
-    methods: mapActions([
-      'toggleSidebar'
+import Tooltip from 'vue-bulma-tooltip'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+export default {
+  components: {
+    Tooltip
+  },
+  props: {
+    show: Boolean
+  },
+  computed: mapGetters({
+    sidebar: 'sidebar'
+  }),
+  created: function() {
+    this.fetchMalls()
+    this.fetchForums()
+  },
+  methods: {
+    ...mapActions([
+      'toggleSidebar',
+      'fetchMalls',
+      'fetchForums'
     ])
   }
+}
 </script>

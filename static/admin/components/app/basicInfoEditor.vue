@@ -139,7 +139,7 @@ import {
 export default {
   props: {
     app: {
-      type: Object, 
+      type: Object,
       required: true,
     }
   },
@@ -161,6 +161,8 @@ export default {
     ...mapActions([
       'setApp',
       'addForum',
+      'fetchMalls',
+      'fetchForums'
     ]),
 
     handleSubmit: async function() {
@@ -176,6 +178,9 @@ export default {
       }))
 
       if (result.success) {
+        this.fetchMalls()
+        this.fetchForums()
+        
         if (result.forum) {
           this.addForum(result.forum)
         }

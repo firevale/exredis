@@ -8,10 +8,10 @@
           </a>
         </div>
         <div class="nav-center">
-          <a class="nav-item hero-brand">
+          <a class="nav-item hero-brand" @click="goIndex">
             <img src="/images/logo.png">
             <div class="is-hidden-mobile">
-              <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin" @click="goIndex">{{ $t('admin.admin') }}{{appShowName}}</strong>
+              <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin" >{{ $t('admin.admin') }}{{appShowName}}</strong>
             </div>
           </a>
         </div>
@@ -39,9 +39,9 @@ export default {
       app: 'app',
     }),
     appShowName: function() {
-      if (this.app) {
+      if (this.$route.params.appId && this.app) {
         return "  - " + this.app.name
-      }else{
+      } else {
         return ""
       }
     }
@@ -57,7 +57,9 @@ export default {
       'fetchForums'
     ]),
     goIndex: function() {
-      this.$router.push({name:'Index' })
+      this.$router.push({
+        name: 'Index'
+      })
     }
   }
 }

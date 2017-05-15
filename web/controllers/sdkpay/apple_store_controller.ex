@@ -3,11 +3,8 @@ defmodule Acs.AppleStoreController do
 
   require SDKApple
 
-  plug :fetch_zone_id
-  plug :fetch_user
-
   # 兼容旧版本fvsdk
-  def add_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
+  def add_order(%Plug.Conn{private: %{acs_session_user: %RedisUser{} = user,
                                       acs_app: %RedisApp{} = app,
                                       acs_platform: "ios",
                                       acs_device_id: device_id}} = conn, 
@@ -22,53 +19,41 @@ defmodule Acs.AppleStoreController do
       %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
-            case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
-              %AppOrder{cp_order_id: ^cp_order_id} = order ->
-                  conn |> json(%{success: true})
+            _deliver_apple_store_order(conn: conn, 
+              cp_order_id: cp_order_id,
+              transaction_id: transaction_id, 
+              receipt_type: receipt_type,
+              product_id: product_id,
+              goods_id: goods_id, 
+              goods_name: goods_name,
+              amount: amount,
+              currency: currency,
+              app: app, 
+              user: user, 
+              device_id: device_id, 
+              zone_id: params["zone_id"] || "0")
 
-              %AppOrder{} = order ->
-                Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
-                ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}")
-                conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
-
-              nil ->
-                app_user = case params["zone_id"] do 
-                             nil -> nil
-                             zone_id ->
-                               Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
-                            end
-
-                order_info = %{
-                  id: Utils.generate_token(16),
-                  app_id: app.id, 
-                  user_id: user.id, 
-                  app_user_id: app_user && app_user.id,
-                  zone_id: params["zone_id"],
-                  platform: "ios",
-                  device_id: device_id,
-                  sdk: "firevale",
-                  cp_order_id: cp_order_id, 
-                  status: AppOrder.Status.paid(),
-                  price: String.to_integer(amount),
-                  fee:  case receipt_type do 
-                          "ProductionSandbox" -> 0
-                          _ -> String.to_integer(amount)
-                        end,
-                  paid_channel: "applestore",
-                  paid_at: DateTime.utc_now(),
-                  market: "applestore",
-                  currency: app.currency,
-                  goods_id: goods_id,
+          {:ok, %{in_app: in_app, receipt_type: receipt_type} = what} -> 
+            case Enum.find(in_app, fn(x) -> Map.get(x, "product_id") == product_id and Map.get(x, "original_transaction_id") == transaction_id end) do 
+              %{"product_id" => ^product_id, "original_transaction_id" => ^transaction_id} ->
+                _deliver_apple_store_order(conn: conn, 
+                  cp_order_id: cp_order_id,
+                  transaction_id: transaction_id, 
+                  receipt_type: receipt_type,
+                  product_id: product_id,
+                  goods_id: goods_id, 
                   goods_name: goods_name,
-                  transaction_id: "applestore." <> transaction_id,
-                  transaction_currency: currency,
-                  transaction_status: "FINISHED",
-                  debug_mode: receipt_type == "ProductionSandbox",
-                }
+                  amount: amount,
+                  currency: currency,
+                  app: app, 
+                  user: user, 
+                  device_id: device_id, 
+                  zone_id: params["zone_id"] || "0")           
 
-                AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert!
-
-                conn |> json(%{success: true})
+              _ ->
+                Logger.error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
+                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
+                conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
@@ -80,12 +65,12 @@ defmodule Acs.AppleStoreController do
         end
       _ -> 
         Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id")
+        ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
   def add_order(conn, params) do 
-    d "acs_user: #{inspect conn.private[:acs_user], pretty: true}, params: #{inspect params, pretty: true}"
+    d "acs_user: #{inspect conn.private[:acs_session_user], pretty: true}, params: #{inspect params, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 
@@ -118,7 +103,7 @@ defmodule Acs.AppleStoreController do
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 
-  def verify_and_deliver(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
+  def verify_and_deliver(%Plug.Conn{private: %{acs_session_user: %RedisUser{} = user,
                                                acs_app: %RedisApp{} = app,
                                                acs_zone_id: zone_id, 
                                                acs_platform: "ios",
@@ -133,67 +118,46 @@ defmodule Acs.AppleStoreController do
       %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
-            case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
-              %AppOrder{cp_order_id: ^cp_order_id} = order ->
-                if order.status > 0 do 
-                  d "order already exists, deliver it"
-                  PaymentHelper.notify_cp(order)
-                  conn |> json(%{success: true})
-                else 
-                  Logger.error "order already delivered"
-                  conn |> json(%{success: false, reason: "delivered"})
-                end
+            _deliver_apple_store_order(conn: conn, 
+              cp_order_id: cp_order_id,
+              transaction_id: transaction_id, 
+              receipt_type: receipt_type,
+              product_id: product_id,
+              goods_id: goods_id, 
+              goods_name: goods_name,
+              amount: amount,
+              currency: currency,
+              app: app, 
+              user: user, 
+              device_id: device_id, 
+              zone_id: zone_id)
 
-              %AppOrder{} = order ->
-                Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
-                ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}")
-                conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
-
-              nil ->
-                app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
-
-                order_info = %{
-                  id: Utils.generate_token(16),
-                  app_id: app.id, 
-                  user_id: user.id, 
-                  app_user_id: app_user && app_user.id,
-                  platform: "ios",
-                  device_id: device_id,
-                  sdk: "firevale",
-                  cp_order_id: cp_order_id, 
-                  status: AppOrder.Status.paid(),
-                  price: String.to_integer(amount),
-                  fee: case receipt_type do 
-                          "ProductionSandbox" -> 0
-                          _ -> String.to_integer(amount)
-                        end,
-                  paid_channel: "applestore",
-                  paid_at: DateTime.utc_now(),
-                  market: "applestore",
-                  currency: app.currency,
-                  goods_id: goods_id,
+          {:ok, %{in_app: in_app, receipt_type: receipt_type} = what} -> 
+            case Enum.find(in_app, fn(x) -> Map.get(x, "product_id") == product_id and Map.get(x, "original_transaction_id") == transaction_id end) do 
+              %{"product_id" => ^product_id, "original_transaction_id" => ^transaction_id} ->
+                _deliver_apple_store_order(conn: conn, 
+                  cp_order_id: cp_order_id,
+                  transaction_id: transaction_id, 
+                  receipt_type: receipt_type,
+                  product_id: product_id,
+                  goods_id: goods_id, 
                   goods_name: goods_name,
-                  transaction_id: "applestore." <> transaction_id,
-                  transaction_currency: currency,
-                  transaction_status: "FINISHED",
-                  debug_mode: receipt_type == "ProductionSandbox",
-                }
+                  amount: amount,
+                  currency: currency,
+                  app: app, 
+                  user: user, 
+                  device_id: device_id, 
+                  zone_id: zone_id)           
 
-                order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-                              nil -> order_info 
-                              %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
-                            end
-
-                {:ok, order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert 
-
-                PaymentHelper.notify_cp(order)
-
-                conn |> json(%{success: true})
+              _ ->
+                Logger.error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
+                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
+                conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
             Logger.error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
-            ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect x}, 购买商品: #{goods_name}")
+            ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
           {:error, reason} ->
@@ -202,9 +166,81 @@ defmodule Acs.AppleStoreController do
 
       _ -> 
         Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        ChaoxinNotifier.send_text_msg(app, "[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id")
+        ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         # set reason to network force client don't finish transaction 
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
+    end
+  end
+
+  defp _deliver_apple_store_order(conn: conn, 
+    cp_order_id: cp_order_id, 
+    transaction_id: transaction_id, 
+    receipt_type: receipt_type,
+    product_id: product_id, 
+    goods_id: goods_id,
+    goods_name: goods_name,
+    amount: amount,
+    currency: currency,
+    app: app, 
+    user: user, 
+    device_id: device_id, 
+    zone_id: zone_id) do 
+    case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
+      %AppOrder{cp_order_id: ^cp_order_id} = order ->
+        if order.status > 0 do 
+          d "order already exists, deliver it"
+          PaymentHelper.notify_cp(order)
+          conn |> json(%{success: true})
+        else 
+          Logger.error "order already delivered"
+          conn |> json(%{success: false, reason: "delivered"})
+        end
+
+      %AppOrder{} = order ->
+        Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
+        ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}", app)
+        conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
+
+      nil ->
+        app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+
+        order_info = %{
+          id: Utils.generate_token(16),
+          app_id: app.id, 
+          user_id: user.id, 
+          app_user_id: app_user && app_user.id,
+          platform: "ios",
+          device_id: device_id,
+          sdk: "firevale",
+          cp_order_id: cp_order_id, 
+          status: AppOrder.Status.paid(),
+          price: String.to_integer(amount),
+          fee: case receipt_type do 
+                  "ProductionSandbox" -> 0
+                  _ -> String.to_integer(amount)
+                end,
+          paid_channel: "applestore",
+          paid_at: DateTime.utc_now(),
+          market: "applestore",
+          currency: app.currency,
+          goods_id: goods_id,
+          goods_name: goods_name,
+          transaction_id: "applestore." <> transaction_id,
+          transaction_currency: currency,
+          transaction_status: "FINISHED",
+          debug_mode: receipt_type == "ProductionSandbox",
+        }
+
+        order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
+                      nil -> order_info 
+                      %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
+                    end
+
+        {:ok, order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert 
+
+        PaymentHelper.notify_cp(order)
+
+        conn |> json(%{success: true})
     end
   end
 

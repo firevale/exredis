@@ -7,6 +7,9 @@ defmodule Acs.PlugsPipeline do
         plug :protect_from_forgery
         plug :put_secure_browser_headers
         plug :parse_user_agent
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
         plug :fetch_user_id
         plug :fetch_user
         plug :fetch_device_id
@@ -20,6 +23,9 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_user_id
         plug :fetch_user
         plug :fetch_device_id
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
         plug :fetch_locale
     end
 
@@ -28,8 +34,10 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_session
         plug :parse_user_agent
         plug :fetch_user_id
-        plug :fetch_locale
         plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
+        plug :fetch_locale
         plug :check_admin_access
     end
 
@@ -38,23 +46,31 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_app
         plug :fetch_user_id
         plug :fetch_user
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
     end
 
     pipeline :auth_user_api do 
         plug :fetch_app_id
         plug :fetch_app
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
     end
 
      pipeline :sdkpay do
         plug :accepts, ["json"]
         plug :fetch_session
         plug :parse_user_agent
-        plug :fetch_user_id
-        plug :fetch_user
         plug :fetch_device_id
         plug :fetch_locale
         plug :fetch_app_id
         plug :fetch_app
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
+        plug :fetch_zone_id
     end
 
     pipeline :games do
@@ -70,6 +86,9 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_session
         plug :parse_user_agent
         plug :fetch_user_id
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
         plug :fetch_locale
     end
 
@@ -78,6 +97,9 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_session
         plug :parse_user_agent
         plug :fetch_user_id
+        plug :fetch_access_token
+        plug :fetch_session_user_id
+        plug :fetch_session_user
         plug :fetch_locale
     end
 end

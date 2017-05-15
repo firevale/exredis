@@ -116,7 +116,7 @@ defmodule Acs.Web do
   def router do
     quote do
       use Phoenix.Router
-      import  Acs.Plugs
+      import Acs.Plugs
       import Acs.PlugsPipeline
     end
   end

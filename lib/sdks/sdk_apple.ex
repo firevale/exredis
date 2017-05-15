@@ -1,5 +1,6 @@
 defmodule SDKApple do 
   require Logger
+  use     LogAlias 
   alias   Utils.Httpc
   alias   Utils.JSON 
 
@@ -33,7 +34,9 @@ defmodule SDKApple do
       response_json = JSON.decode!(response.body)
 
       case response_json["status"] do 
-        0 -> {:ok, translate_apple_response(response_json)}
+        0 -> 
+          d "response_json: #{inspect response_json, pretty: true}"
+          {:ok, translate_apple_response(response_json)}
         code -> 
           Logger.error "verify apple store sandbox receipt failed: #{code}"
           {:error, :invalid_receipt}
@@ -59,21 +62,9 @@ defmodule SDKApple do
       receipt_type: "Production"}
   end
   defp translate_apple_response(%{"receipt" => %{
-    "in_app" => [%{
-      "product_id" => product_id,
-      "original_transaction_id" => transaction_id}],
+    "in_app" => in_app,
     "receipt_type" => receipt_type}}) do 
-    %{product_id: product_id, 
-      transaction_id: transaction_id, 
-      receipt_type: receipt_type}
-  end
-  defp translate_apple_response(%{"receipt" => %{
-    "in_app" => [%{
-      "product_id" => product_id,
-      "transaction_id" => transaction_id}],
-    "receipt_type" => receipt_type}}) do 
-    %{product_id: product_id, 
-      transaction_id: transaction_id, 
+    %{in_app: in_app,
       receipt_type: receipt_type}
   end
   defp translate_apple_response(_), do: %{}

@@ -18,11 +18,11 @@ defmodule SDKApple do
         21002 -> verify_sandbox_receipt(receipt) # somehow 21002 also success via sandbox purchase
         21007 -> verify_sandbox_receipt(receipt)
         code -> # other status
-          Logger.error "verify result: #{code} invalid receipt #{inspect response_json, pretty: true}"
+          error "verify result: #{code} invalid receipt #{inspect response_json, pretty: true}"
           {:error, :invalid_receipt}
       end
     else
-      Logger.error "verify apple store receipt failed, http response: #{inspect response, pretty: true}"
+      error "verify apple store receipt failed, http response: #{inspect response, pretty: true}"
       {:error, :network}     
     end
   end
@@ -38,11 +38,11 @@ defmodule SDKApple do
           d "response_json: #{inspect response_json, pretty: true}"
           {:ok, translate_apple_response(response_json)}
         code -> 
-          Logger.error "verify apple store sandbox receipt failed: #{code}"
+          error "verify apple store sandbox receipt failed: #{code}"
           {:error, :invalid_receipt}
       end
     else 
-      Logger.error "verify apple store sandbox receipt failed, http response: #{inspect response, pretty: true}"
+      error "verify apple store sandbox receipt failed, http response: #{inspect response, pretty: true}"
       {:error, :network}
     end
   end

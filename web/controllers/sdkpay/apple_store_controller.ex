@@ -51,20 +51,20 @@ defmodule Acs.AppleStoreController do
                   zone_id: params["zone_id"] || "0")           
 
               _ ->
-                Logger.error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
+                error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
                 ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
-            Logger.error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
+            error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
           {:error, reason} ->
             conn |> json(%{success: false, reason: reason})
         end
       _ -> 
-        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
         ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
@@ -87,10 +87,10 @@ defmodule Acs.AppleStoreController do
             PaymentHelper.notify_cp(order)
 
           order.status == AppOrder.Status.cheat() -> 
-            Logger.error "won't deliver cheat order #{inspect order, pretty: true}"
+            error "won't deliver cheat order #{inspect order, pretty: true}"
 
           true ->
-            Logger.error "invalid order #{inspect order, pretty: true}"
+            error "invalid order #{inspect order, pretty: true}"
         end
               
         conn |> json(%{success: true, 
@@ -150,13 +150,13 @@ defmodule Acs.AppleStoreController do
                   zone_id: zone_id)           
 
               _ ->
-                Logger.error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
+                error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
                 ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
-            Logger.error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
+            error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
             ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
@@ -165,7 +165,7 @@ defmodule Acs.AppleStoreController do
         end
 
       _ -> 
-        Logger.error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
+        error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
         ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         # set reason to network force client don't finish transaction 
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
@@ -192,12 +192,12 @@ defmodule Acs.AppleStoreController do
           PaymentHelper.notify_cp(order)
           conn |> json(%{success: true})
         else 
-          Logger.error "order already delivered"
+          error "order already delivered"
           conn |> json(%{success: false, reason: "delivered"})
         end
 
       %AppOrder{} = order ->
-        Logger.error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
+        error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
         ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}", app)
         conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 

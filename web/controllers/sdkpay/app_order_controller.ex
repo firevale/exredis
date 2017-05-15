@@ -107,25 +107,25 @@ defmodule Acs.SdkPay.AppOrderController do
                                  orderAmount: res["orderAmount"],
                                  signature: res["signature"]})
                 else
-                  Logger.error "create vivo order failed, res: #{inspect res, pretty: true}"
+                  error "create vivo order failed, res: #{inspect res, pretty: true}"
                   conn |> json(%{success: false, message: "VIVO create order failed, respCode == #{res["respCode"]}"})
                 end
               _ ->
-                Logger.error "create vivo order failed, res: #{resp_string}"
+                error "create vivo order failed, res: #{resp_string}"
                 conn |> json(%{success: false, message: "VIVO create order failed, respString == #{resp_string}"})
             end
           else
-            Logger.error "create vivo order failed, response: #{inspect response, pretty: true}"
+            error "create vivo order failed, response: #{inspect response, pretty: true}"
             conn |> json(%{success: false, message: "http request VIVO create order failed"})
           end
         catch
           :error, e ->
-            Logger.error "create vivo order exception, #{inspect e}"
+            error "create vivo order exception, #{inspect e}"
             conn |> json(%{success: false, message: "http request VIVO create order exception"})
         end
 
       x ->
-        Logger.error "invalid vivo binding data structure: #{inspect x, pretty: true}"
+        error "invalid vivo binding data structure: #{inspect x, pretty: true}"
         conn |> send_resp(500, "server internal error")
     end
   end
@@ -135,7 +135,7 @@ defmodule Acs.SdkPay.AppOrderController do
                       %{"product_id" => product_id} = params) do
     case app.sdk_bindings.meizu do
       nil ->
-        Logger.error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
+        error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application meizu binding not set"})
 
       %{"app_id" => meizu_app_id, "app_key" => _meizu_app_key, "app_secret" => meizu_app_secret} ->
@@ -165,7 +165,7 @@ defmodule Acs.SdkPay.AppOrderController do
         conn |> json(%{success: true, params: meizu_params})
 
       x ->
-        Logger.error "invalid vivo binding data structure: #{inspect x, pretty: true}"
+        error "invalid vivo binding data structure: #{inspect x, pretty: true}"
         conn |> send_resp(500, "server internal error")
     end
   end

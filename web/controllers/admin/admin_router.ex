@@ -43,5 +43,9 @@ defmodule Acs.AdminRouter do
       post "/update_order_payed", MallOrderController, :update_order_payed
     end
 
+    scope "/user" do
+      post  "/add_user", AdminUserController, :add_user
+    end
+
   end
 end

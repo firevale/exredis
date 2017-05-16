@@ -4,6 +4,7 @@ import news from './news'
 import menu from './menu'
 import forum from './forum'
 import mall from './mall'
+import user from './user'
 import routes from './routes'
 import setting from './setting'
 import customerService from './customerService'
@@ -78,6 +79,7 @@ export default {
     editGoodsInfo: '编辑应用『{appName}』商品信息',
     editSectionInfo: '编辑论坛版块信息',
     editSettingInfo: '编辑配置信息',
+    addAppManager: '添加应用管理员',
     deleteSuccess: '删除成功',
     uploadGoodsIcon: '拖动正方形PNG图片到此(边长 >= 128)',
     uploadAppIcon: '拖动正方形PNG图片到此(边长 >= 128)',
@@ -129,6 +131,7 @@ export default {
   menu,
   forum,
   mall,
+  user,
   news,
   sdks,
   setting,

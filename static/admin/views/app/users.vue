@@ -27,7 +27,7 @@
                 <strong>{{ $t('admin.label.appManager')}}</strong>
               </p>
               <p class="card-header-icon">
-                <a class="button is-info">{{$t('common.add')}}</a>
+                <a @click="addAppManager" class="button is-info">{{$t('common.add')}}</a>
               </p>
             </header>
             <div class="card-content">
@@ -83,6 +83,23 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
+import {
+  i18n
+} from 'admin/vue-i18n'
+
+import sectionInfoDialog from 'admin/components/dialog/user/sectionInfo'
+const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
+
+const openSectionInfoDialog = (propsData = {
+  visible: true
+}) => {
+  return new sectionInfoDialogComponent({
+    i18n,
+    el: document.createElement('div'),
+    propsData
+  })
+}
 export default {
   data() {
     return {
@@ -101,6 +118,26 @@ export default {
   methods: {
     showUsers: function(app) {
       this.selectedId = app.id
+    },
+    addAppManager: function() {
+      openSectionInfoDialog({
+        section: {
+          id: '',
+          age: 0,
+          email: '',
+          mobile: '',
+          admin_level: 2,
+          encrypted_password: '',
+          nickname: '',
+          active: false,
+          device_id: 'device_id',
+          app_id: this.selectedId
+        },
+        visible: true,
+        callback: section => {
+          alert()
+        },
+      })
     }
   }
 }

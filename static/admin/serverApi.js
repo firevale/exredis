@@ -46,7 +46,7 @@ export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
       fetchAppList() {
-        return post('/admin_actions/fetch_apps', {})        
+        return post('/admin_actions/fetch_apps', {})
       },
 
       updateAppInfo(params, successMessage) {
@@ -180,6 +180,10 @@ export default {
 
       refundOrder(params) {
         return post('/admin_actions/mall/refund_order', params)
+      },
+
+      addUser(params) {
+        return post('/admin_actions/user/add_user', params)
       }
     }
   }

@@ -16,7 +16,7 @@ defmodule Acs.AdminUser do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:account_id])
+    |> cast(params, [:account_id, :active, :admin_level, :app_id])
     |> validate_required([:account_id])
     |> validate_format(:account_id, ~r/[^@]+@firevale\.com/)
   end

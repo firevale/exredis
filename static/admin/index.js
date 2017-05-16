@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 
 import Vue from 'vue'
-import {i18n} from 'admin/vue-i18n'
+import { i18n } from 'admin/vue-i18n'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import NProgress from 'vue-nprogress'
@@ -42,6 +42,11 @@ const { state } = store
 router.beforeEach((route, redirect, next) => {
   if (state.main.device.isMobile && state.main.sidebar.opened) {
     store.commit(TOGGLE_SIDEBAR, false)
+  }
+  if (route.params && route.params.appId) {
+    axios.defaults.headers.common['acs-app-id'] = route.params.appId
+  } else if (axios.defaults.headers.common['acs-app-id']) {
+    delete axios.defaults.headers.common['acs-app-id']
   }
   next()
 })

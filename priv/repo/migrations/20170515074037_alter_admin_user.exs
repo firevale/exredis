@@ -6,9 +6,10 @@ defmodule Acs.Repo.Migrations.AlterAdminUser do
       add :active, :boolean, default: true
       add :admin_level, :integer, default: 0
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
+      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
     end
     
     drop index(:admin_users, [:account_id])
-    create index(:admin_users, [:app_id, :account_id], unique: true)
+    create index(:admin_users, [:app_id, :user_id], unique: true)
   end
 end

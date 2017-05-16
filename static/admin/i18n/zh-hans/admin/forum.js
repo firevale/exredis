@@ -11,6 +11,7 @@ export default {
   delete: '删除',
   created_at: '创建时间',
   active: '是否启用',
+  not_open: '论坛尚未开通, 请联系系统管理员',
 
   section: {
     title: '版块名称',

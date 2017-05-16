@@ -81,6 +81,10 @@ export default {
         return post('/admin_actions/search_orders', params)
       },
 
+      fetchForum(params) {
+        return post('/forum_actions/fetch_forum', params)
+      },
+
       updateForumInfo(params, successMessage) {
         return post('/forum_actions/update_forum_info', params, successMessage)
       },

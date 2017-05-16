@@ -162,13 +162,13 @@ export default {
       'setApp',
       'addForum',
       'fetchMalls',
-      'fetchForums'
     ]),
 
     handleSubmit: async function() {
       if (this.app.has_forum) {
         if (!this.app.forum_name) this.app.forum_name = this.app.name
       }
+
       this.processing = true
 
       let result = await this.$acs.updateAppInfo({
@@ -179,11 +179,6 @@ export default {
 
       if (result.success) {
         this.fetchMalls(this.$router.appId)
-        this.fetchForums(this.$router.appId)
-        
-        if (result.forum) {
-          this.addForum(result.forum)
-        }
 
         if (result.app) {
           this.setApp(result.app)

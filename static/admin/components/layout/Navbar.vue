@@ -21,11 +21,13 @@
   </section>
 </template>
 <script>
+
 import Tooltip from 'vue-bulma-tooltip'
 import {
   mapGetters,
   mapActions
 } from 'vuex'
+
 export default {
   components: {
     Tooltip
@@ -44,20 +46,19 @@ export default {
       } else {
         return ""
       }
-
-
     }
   },
+
   created: function() {
     this.fetchMalls(this.$router.appId)
-    this.fetchForums(this.$router.appId)
   },
+
   methods: {
     ...mapActions([
       'toggleSidebar',
       'fetchMalls',
-      'fetchForums'
     ]),
+
     goIndex: function() {
       this.$router.push({
         name: 'Index'

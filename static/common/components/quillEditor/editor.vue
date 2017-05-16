@@ -79,7 +79,24 @@
   </div>
 </template>
 <script>
+
 import Quill from 'quill'
+let Text = Quill.import('blots/text')
+
+class TextBlot extends Text {
+  static create(value) {
+    if (!value) {
+      value = '\u200B'
+    }
+
+    return document.createTextNode(value)
+  }
+}
+
+let Block = Quill.import('blots/block')
+Block.defaultChild = 'text'
+Quill.register('blots/text', TextBlot)
+Quill.register('blots/block', Block)
 
 require('quill/assets/snow.styl')
 require('quill/assets/core.styl')
@@ -175,8 +192,10 @@ export default {
   },
   watch: {
     'content' (newVal, oldVal) {
+      console.log('quill content', newVal, oldVal)
       if (this.quillEditor) {
         if (!!newVal && newVal !== this._content) {
+          console.log('set content', newVal)
           this._content = newVal
           this.quillEditor.pasteHTML(newVal)
         } else if (!newVal) {
@@ -186,7 +205,8 @@ export default {
     },
     'value' (newVal, oldVal) {
       if (this.quillEditor) {
-        if (newVal !== this._content) {
+        if (!!newVal && newVal !== this._content) {
+          console.log('quill content', newVal, oldVal)
           this._content = newVal
           this.quillEditor.pasteHTML(newVal)
         } else if (!newVal) {

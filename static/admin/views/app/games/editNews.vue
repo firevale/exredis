@@ -79,7 +79,7 @@ export default {
 
     onInsertImage: function(editor) {
       showFileUploadDialog(this.$i18n, {
-        postAction: '/games_actions/upload_news_pic',
+        postAction: '/admin_actions/games/upload_news_pic',
         accept: 'image/jpg, image/jpeg, image/png',
         data: {
           app_id: this.news.app_id

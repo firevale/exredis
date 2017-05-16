@@ -21,13 +21,15 @@ defmodule Acs.AdminRouter do
     post "/fetch_orders", AdminController, :fetch_orders
     post "/search_orders", AdminController, :search_orders
 
-    post  "/get_setting", AdminSettingController, :get_setting
-    post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
-    post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
-    post  "/delete_setting", AdminSettingController, :delete_setting
-    post  "/add_setting", AdminSettingController, :add_setting
-    post  "/update_setting", AdminSettingController, :update_setting
-    post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+    scope "/setting" do
+      post  "/get_setting", AdminSettingController, :get_setting
+      post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
+      post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
+      post  "/delete_setting", AdminSettingController, :delete_setting
+      post  "/add_setting", AdminSettingController, :add_setting
+      post  "/update_setting", AdminSettingController, :update_setting
+      post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+    end
 
     scope "/mall" do
       post  "/update_mall_icon", MallController, :update_mall_icon
@@ -41,6 +43,20 @@ defmodule Acs.AdminRouter do
 
       post "/refund_order", MallOrderController, :refund_order
       post "/update_order_payed", MallOrderController, :update_order_payed
+    end
+
+    scope "/forum" do
+      post "/update_forum_icon", ForumController, :update_forum_icon
+      post "/update_forum_info", ForumController, :update_forum_info
+      post "/update_section_info", ForumController, :update_section_info  
+    end
+
+    scope "/games" do
+      post  "/update_news", GamesController, :update_news
+      post  "/toggle_news_status", GamesController, :toggle_news_status
+      post  "/get_paged_news_admin", GamesController, :get_paged_news_admin
+      post  "/update_news_title_picture", GamesController, :update_news_title_picture
+      post  "/upload_news_pic", GamesController, :upload_news_pic
     end
 
   end

@@ -86,31 +86,31 @@ export default {
       },
 
       updateForumInfo(params, successMessage) {
-        return post('/forum_actions/update_forum_info', params, successMessage)
+        return post('/admin_actions/forum/update_forum_info', params, successMessage)
       },
 
       updateForumSectionInfo(params, successMessage) {
-        return post('/forum_actions/update_section_info', params, successMessage)
+        return post('/admin_actions/forum/update_section_info', params, successMessage)
       },
 
       getSetting(params) {
-        return post('/admin_actions/get_setting', params)
+        return post('/admin_actions/setting/get_setting', params)
       },
 
       getSettingsByGroup(params) {
-        return post('/admin_actions/get_settings_by_group', params)
+        return post('/admin_actions/setting/get_settings_by_group', params)
       },
 
       updateSettingByName(params, successMessage) {
-        return post('/admin_actions/update_setting_by_name', params, successMessage)
+        return post('/admin_actions/setting/update_setting_by_name', params, successMessage)
       },
 
       deleteSettingByName(params, successMessage) {
-        return post('/admin_actions/delete_setting', params, successMessage)
+        return post('/admin_actions/setting/delete_setting', params, successMessage)
       },
 
       getPagedNews(app_id, group, page, records_per_page) {
-        return post('/games_actions/get_paged_news_admin', {
+        return post('/admin_actions/games/get_paged_news_admin', {
           app_id,
           group,
           page,
@@ -139,11 +139,11 @@ export default {
       },
 
       updateNews(params) {
-        return post('/games_actions/update_news', params)
+        return post('/admin_actions/games/update_news', params)
       },
 
       toggleStatus(params, successMessage) {
-        return post('/games_actions/toggle_news_status', params, successMessage)
+        return post('/admin_actions/games/toggle_news_status', params, successMessage)
       },
 
       updateMallInfo(params, successMessage) {

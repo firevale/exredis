@@ -427,6 +427,7 @@ defmodule Acs.Plugs do
             case admin_user do
               nil -> conn
               _ -> conn |> put_private(:acs_admin_id, user_id)
+                        |> put_private(:acs_admin_level, admin_user.admin_level)
             end
         end
     end

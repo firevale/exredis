@@ -119,6 +119,12 @@ export default {
     ]),
   },
 
+  mounted: function() {
+    if (this.app) {
+      this.fetchOrders(this.app.id, this.page, this.recordsPerPage)
+    }
+  },
+
   watch: {
     app: function(newVal) {
       if (typeof newVal === 'object' && typeof newVal.id === 'string') {
@@ -226,7 +232,7 @@ export default {
     fetchOrders: async function(app_id, page, recordsPerPage) {
       this.loading = true
       let result = await this.$acs.fetchOrders({
-        app_id, 
+        app_id,
         page,
         records_per_page: recordsPerPage
       })

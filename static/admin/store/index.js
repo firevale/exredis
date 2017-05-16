@@ -6,7 +6,6 @@ import * as getters from './getters'
 import main from './modules/main'
 import apps from './modules/apps'
 import menu from './modules/menu'
-import forums from './modules/forums'
 import mall from './modules/mall'
 
 Vue.use(Vuex)
@@ -19,7 +18,6 @@ const store = new Vuex.Store({
     main,
     menu,
     apps,
-    forums,
     mall
   },
   state: {

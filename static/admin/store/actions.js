@@ -48,20 +48,6 @@ export const addForum = ({
   commit(types.ADD_FORUM, forum)
 }
 
-export const fetchForums = ({
-  commit
-}, app_id) => {
-  axios.get('/forum_actions/fetch_forums',{ params: { app_id: app_id } })
-    .then(res => res.data)
-    .then(result => {
-      if (result.success) {
-        commit(types.UPDATE_FORUMS, result.forums)
-      } else {
-        return Promise.reject(result)
-      }
-    }).catch(e => processAjaxError(e))
-}
-
 export const fetchMalls = ({
   commit
 }, app_id) => {

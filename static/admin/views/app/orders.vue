@@ -19,9 +19,9 @@
                       <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
                     </td>
                     <td class="is-icon" rowspan="2">
-                      <tooltip :label="getAppName(order)" placement="top">
+                      <tooltip :label="app.name" placement="top">
                         <figure class="image is-32x32" style="display: block">
-                          <img :src="getAppIcon(order)"></img>
+                          <img :src="appIcon"></img>
                         </figure>
                       </tooltip>
                     </td>
@@ -117,6 +117,23 @@ export default {
     ...mapGetters([
       'goods', 'app'
     ]),
+
+    appIcon: function() {
+      if (this.app && this.app.icon) {
+        return this.app.icon
+      } else {
+        return 'https://placehold.it/32x32?text=' + this.app.name
+      }
+    },
+
+    currency: function() {
+      if (this.app && this.app.currency) {
+        return this.app.currency
+      } else {
+        return ''
+      }
+    },
+
   },
 
   mounted: function() {
@@ -136,18 +153,6 @@ export default {
   },
 
   methods: {
-    getAppIcon: function(order) {
-      if (this.app && this.app.icon) {
-        return this.app.icon
-      } else {
-        return 'https://placehold.it/32x32?text=' + this.app.name
-      }
-    },
-
-    getAppName: function(order) {
-      return this.app.name
-    },
-
     getGoodsIcon: function(order) {
       let goodsInfo = this.goods[`${order.app_id}-${order.goods_id}`]
       if (goodsInfo && goodsInfo.icon) {
@@ -163,14 +168,6 @@ export default {
         return goodsInfo.name
       } else {
         return order.goods_name
-      }
-    },
-
-    getAppCurrency: function(order) {
-      if (this.app && this.app.currency) {
-        return this.app.currency
-      } else {
-        return ''
       }
     },
 

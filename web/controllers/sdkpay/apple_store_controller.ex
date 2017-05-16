@@ -229,6 +229,7 @@ defmodule Acs.AppleStoreController do
           transaction_currency: currency,
           transaction_status: "FINISHED",
           debug_mode: receipt_type == "ProductionSandbox",
+          zone_id: zone_id,
         }
 
         order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 

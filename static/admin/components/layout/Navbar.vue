@@ -44,8 +44,6 @@ export default {
       } else {
         return ""
       }
-
-
     }
   },
   created: function() {

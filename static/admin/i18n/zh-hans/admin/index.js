@@ -27,6 +27,8 @@ export default {
     appId: '应用ID(APP ID)',
     appKey: '应用秘钥(APP KEY)',
     appName: '应用名称',
+    appManager: '应用管理员',
+    appCustomerService: '应用客服',
     currency: '商品定价货币',
     chaoxinGroupId: '超信运营群号',
     paymentCallbackUrl: '充值回调地址',
@@ -112,7 +114,7 @@ export default {
     confirmUnPublishNews: '您确定要取消发布该内容么?',
     confirmDeleteMallGoods: '您确定要删除该商品么?',
     confirmPublishGoods: '您确定要发布该商品么?',
-    confirmUnPublishGoods: '您确定要下架该商品么?',    
+    confirmUnPublishGoods: '您确定要下架该商品么?',
   },
 
   serverSuccess: {

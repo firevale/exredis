@@ -45,13 +45,6 @@ ImportFvacModel.import_fvac_client(data)
 app = Repo.get!(App, "F577FCEE9B0616A421096AA3A4E9F2AC")
 app |> App.changeset(%{payment_callback: "http://127.0.0.1:4000/api/sdkpay/default_callback"}) |> Repo.update!
 
-AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com", admin_level: 1}) |> Repo.insert
-AdminUser.changeset(%AdminUser{}, %{account_id: "zhangshiqing@firevale.com", admin_level: 1}) |> Repo.insert
-AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxiaobin@firevale.com", admin_level: 1}) |> Repo.insert
-AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxb@firevale.com", admin_level: 1}) |> Repo.insert
-AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com", admin_level: 1}) |> Repo.insert
-AdminUser.changeset(%AdminUser{}, %{account_id: "xiebing@firevale.com", admin_level: 1}) |> Repo.insert
-
 %RedisUser{email: "zhongxiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA", nickname: "zhongxiaobin", gender: "male", age: 1} |> RedisUser.save!
 %RedisUser{email: "zhumingzhen@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$c4oGViAQf4ANOPDYAjAnTg$KCikauke6I4K7BSB3Iy9KYwTrFxwaAIdLIv.p.eUsEy62fiIuPYcm4ZT14X5wNToFPpidVeW4oPfTWfTBz9MPw", nickname: "zhumingzhen", gender: "male", age: 1} |> RedisUser.save!
 %RedisUser{email: "xiaobin@firevale.com", encrypted_password: "$pbkdf2-sha512$160000$ofJOLH.3vbHuma7t/DGQmQ$0wRciGKFbmyb6U077Flruk/LStLBa167Q5ejgZNXYxeEIquCTPfYr0AkapEQNWVOjtJ5rTu9n2bWJyLKXJsnKw", nickname: "逍遥", gender: "male", age: 1} |> RedisUser.save!
@@ -146,3 +139,9 @@ Elasticsearch.index(%{ index: "mall",type: "orders",
             params: nil,
             id: "A10000012"
           })
+
+
+AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com", user_id: 100003, admin_level: 1}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxiaobin@firevale.com", user_id: 100001, admin_level: 1}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com", user_id: 100002, admin_level: 1}) |> Repo.insert
+AdminUser.changeset(%AdminUser{}, %{account_id: "xiebing@firevale.com", user_id: 100004, admin_level: 1}) |> Repo.insert

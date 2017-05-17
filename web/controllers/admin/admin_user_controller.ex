@@ -44,4 +44,22 @@ defmodule Acs.AdminUserController do
     users = Repo.all(query)
     conn |> json(%{success: true, users: users})
   end
+
+  def delete_admin_user(conn, %{"admin_user_id" => admin_user_id}) do
+    case Repo.get(AdminUser, admin_user_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.commentNotFound"})
+      %AdminUser{} = user ->
+        case Repo.delete(user) do
+          {:ok, _} ->
+            conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end   
+    end
+  end
+  def delete_admin_user(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
 end

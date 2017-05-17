@@ -192,6 +192,10 @@ export default {
 
       getUsersByApp(params) {
         return post('/admin_actions/user/get_users_by_app', params)
+      },
+
+      deleteAdminUser(params) {
+        return post('/admin_actions/user/delete_admin_user', params)
       }
     }
   }

@@ -1,20 +1,12 @@
 defmodule Acs.AdminUserController do
   use Acs.Web, :controller
   alias Acs.AdminUser
+  plug :fetch_device_id
 
-  def add_user(conn, %{"user" => %{
-                "nickname" => nickname,
-                "email" => email,
-                "device_id" => device_id,
-                "encrypted_password" => encrypted_password,
-                "mobile" => mobile,
-                "age" => age} = user}
-                #  %{"admin" => %{
-                # "app_id" => app_id,
-                # "active" => active,
-                # "account_id" => account_id,
-                # "admin_level" => admin_level} = admin}
-                )do
+  def add_user(conn,%{"account_id" => account_id, "level" => level, "active" => active, 
+                 "app_id" => app_id, "nickname" => nickname, "email" => email, "device_id" => device_id,
+                 "password" => password, "mobile" => mobile, "age" => age})do
+
     queryCount = from us in User,select: count(1), where: us.email == ^email
     case Repo.one!(queryCount) do
       1 ->
@@ -26,14 +18,13 @@ defmodule Acs.AdminUserController do
                     select: map(us, [:id])
         lastUser = Repo.one(queryLast)
 
-        user = user |> Map.put("id", lastUser.id + 1)
-        # admin = admin |> Map.put("user_id", lastUser.id + 1)  |> Map.put("account_id", email)
         Repo.transaction(fn ->
-            User.changeset(%User{}, user) |> Repo.insert
-            AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com", user_id: 100003, admin_level: 1}) |> Repo.insert
-            # AdminUser.changeset(%AdminUser{}, admin) |> Repo.insert
+          # add user
+          User.changeset(%User{}, %{id: lastUser.id + 1, email: email, mobile: mobile, device_id: device_id, encrypted_password: password, nickname: nickname, age: age }) |> Repo.insert
+          # add adminuser
+          AdminUser.changeset(%AdminUser{}, %{user_id: lastUser.id + 1, account_id: account_id, admin_level: level, active: active, app_id: app_id}) |> Repo.insert
         end)
-        conn |>json(%{success: true, i18n_message: ""})
+        conn |>json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
     end
   end
   def add_user(conn, para) do

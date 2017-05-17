@@ -122,20 +122,18 @@ export default {
     addAppManager: function() {
       openSectionInfoDialog({
         section: {
-          id: '',
           age: 0,
           email: '',
           mobile: '',
-          admin_level: 2,
-          encrypted_password: '',
+          password: '',
           nickname: '',
+          level: 2,
           active: false,
-          device_id: 'device_id',
+          device_id: '',
           app_id: this.selectedId
         },
         visible: true,
         callback: section => {
-          alert()
         },
       })
     }

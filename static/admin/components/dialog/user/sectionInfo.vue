@@ -15,7 +15,7 @@
         </p>
         <label class="label"> {{ $t('admin.user.fields.password') }}: </label>
         <p class="control">
-          <input class="input" type="number" v-model.trim="section.encrypted_password">
+          <input class="input" type="number" v-model.trim="section.password">
         </p>
         <label class="label"> {{ $t('admin.user.fields.mobile') }}: </label>
         <p class="control">
@@ -60,13 +60,19 @@ export default {
 
   methods: {
     handleSubmit: async function() {
-      debugger
       this.processing = true
-      if (!this.section.id) {
-        this.section.id = 0
-      }
+
       let result = await this.$acs.addUser({
-        user: this.section
+        nickname: this.section.nickname,
+        email: this.section.email,
+        device_id: this.section.device_id,
+        password: this.section.password,
+        mobile: this.section.mobile,
+        age: this.section.age,
+        app_id: this.section.app_id,
+        active: this.section.active,
+        level: this.section.level,
+        account_id: this.section.email
       })
 
       this.processing = false

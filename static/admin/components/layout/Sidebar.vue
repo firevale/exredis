@@ -50,6 +50,7 @@ export default {
   data() {
     return {
       isReady: false,
+      adminLevel: 1,
     }
   },
 
@@ -67,7 +68,7 @@ export default {
     ]),
 
     menu: function() {
-      return this.$route.params.appId ? this.menuitems : this.indexMenuitems
+      return (this.$route.params.appId ? this.menuitems : this.indexMenuitems).filter(this.checkPower)
     }
   },
 
@@ -80,8 +81,17 @@ export default {
       return item.meta.expanded
     },
 
+<<<<<<< HEAD
+    checkPower(item) {
+      return item.meta.level.indexOf(this.adminLevel+",") >= 0
+    },
+
+    getPath(path){
+      if(this.$route.params.appId)
+=======
     getPath(path) {
       if (this.$route.params.appId){
+>>>>>>> 0985ca92f6ddee9917c1a69d99055ff8c0925249
         return path.replace(":appId", this.$route.params.appId)
       }
       else {

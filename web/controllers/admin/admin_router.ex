@@ -1,6 +1,17 @@
 defmodule Acs.AdminRouter do
   use Acs.Web, :router
   use LogAlias
+  pipeline :admin_super do
+    plug :check_authorization, [admin_level: 1]
+  end
+  
+  pipeline :admin_app do
+    plug :check_authorization, [admin_level: 2]
+  end
+  
+  pipeline :admin_customer_service do
+    plug :check_authorization, [admin_level: 3]
+  end
 
   scope "/", Acs do
     pipe_through :admin
@@ -22,6 +33,7 @@ defmodule Acs.AdminRouter do
     post "/search_orders", AdminController, :search_orders
 
     scope "/setting" do
+      pipe_through :admin_super
       post  "/get_setting", AdminSettingController, :get_setting
       post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
       post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
@@ -32,6 +44,7 @@ defmodule Acs.AdminRouter do
     end
 
     scope "/mall" do
+      pipe_through :admin_app
       post  "/update_mall_icon", MallController, :update_mall_icon
       post  "/update_mall_info", MallController, :update_mall_info
 
@@ -46,12 +59,14 @@ defmodule Acs.AdminRouter do
     end
 
     scope "/forum" do
+      pipe_through :admin_app
       post "/update_forum_icon", ForumController, :update_forum_icon
       post "/update_forum_info", ForumController, :update_forum_info
       post "/update_section_info", ForumController, :update_section_info  
     end
 
     scope "/games" do
+      pipe_through :admin_app
       post  "/update_news", GamesController, :update_news
       post  "/toggle_news_status", GamesController, :toggle_news_status
       post  "/get_paged_news_admin", GamesController, :get_paged_news_admin
@@ -60,7 +75,10 @@ defmodule Acs.AdminRouter do
     end
 
     scope "/user" do
+      pipe_through :admin_app
       post  "/add_user", AdminUserController, :add_user
+      post  "/get_users_by_app", AdminUserController, :get_users_by_app
+      post  "/delete_admin_user", AdminUserController, :delete_admin_user
     end
   end
 end

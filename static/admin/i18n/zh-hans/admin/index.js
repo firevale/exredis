@@ -118,6 +118,8 @@ export default {
     confirmDeleteMallGoods: '您确定要删除该商品么?',
     confirmPublishGoods: '您确定要发布该商品么?',
     confirmUnPublishGoods: '您确定要下架该商品么?',
+    confirmDeleteAppManager: '您确定要删除应用管理员『{nickName}』么?',
+    confirmDeleteCustomerService: '您确定要删除应用客服『{nickName}』么?',
   },
 
   serverSuccess: {

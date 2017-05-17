@@ -3,12 +3,21 @@ defmodule Acs.AdminController do
 
   import  Acs.UploadImagePlugs
   alias   Acs.SdkInfoGenerator
+  alias   Acs.RedisAdminUser
 
-  def fetch_apps(conn, _params) do
-    query = from app in App,
+  def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
+    admin_level = RedisAdminUser.get_admin_level(user_id)
+    query =  from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
             select: map(app, [:id, :name, :icon])
+    query =
+      if admin_level >1  do
+        appids = RedisAdminUser.get_admin_appids(user_id)
+        where(query,[app], app.id in(^appids))
+      else
+        query
+      end
 
     apps = Repo.all(query)
     conn |> json(%{success: true, apps: apps})

@@ -31,6 +31,16 @@ defmodule Acs.RedisAdminUser do
     end
   end
 
+  # only when admin_level > 1
+  def get_admin_appids(admin_user_id)  when is_integer(admin_user_id) do
+    query = 
+      from au in AdminUser,
+      where: au.user_id == ^admin_user_id and au.active == true and au.admin_level>0,
+      select: au.app_id
+
+    Repo.all(query)
+  end
+
   def refresh(admin_user_id, app_id \\ nil)  do
     redis_key = get_redis_key(admin_user_id, app_id)
     query = 
@@ -41,14 +51,17 @@ defmodule Acs.RedisAdminUser do
       if app_id  do
         where(query,[admin], admin.app_id == ^app_id)
       else
-        query
+        select(query,[admin], min(admin.level) )
       end
 
     case Repo.one(query) do
       nil -> nil
         Redis.set(redis_key, 0)
         0
-      admin_user ->
+      level when is_integer(level) ->
+        Redis.set(redis_key, level)
+        level
+      %AdminUser{} = admin_user ->
         Redis.set(redis_key, admin_user.admin_level)
         admin_user.admin_level
     end

@@ -32,6 +32,7 @@ defmodule Acs.AdminRouter do
     end
 
     scope "/mall" do
+      plug :check_authorization, 2
       post  "/update_mall_icon", MallController, :update_mall_icon
       post  "/update_mall_info", MallController, :update_mall_info
 

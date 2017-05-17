@@ -5,6 +5,7 @@ export default {
   },
   message: {
     unknownError: '未知错误，请联系管理员',
+    forbidden: '操作权限不足',
     sdkInfoUpdated: '{sdk}接入参数的修改已成功保存',
     appInfoUpdated: '{appName}配置已成功更新',
     goodsInfoUpdated: '商品『{goodsName}』信息已成功更新',

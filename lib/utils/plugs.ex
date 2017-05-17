@@ -364,13 +364,13 @@ defmodule Acs.Plugs do
   defp _translate_locale("en" <> _), do: "en"
   defp _translate_locale(_), do: "zh-hans"
 
-  def check_admin_access(%Plug.Conn{private: %{acs_access_token: nil}} = conn, _options) do
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: nil}} = conn, _options) do
     _response_admin_access_failed(conn)
   end
-  def check_admin_access(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do
     _response_admin_access_failed(conn)
   end
-  def check_admin_access(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do
     case RedisAccessToken.find(access_token) do
       nil -> _response_admin_access_failed(conn)
 
@@ -386,50 +386,13 @@ defmodule Acs.Plugs do
 
             case Repo.one!(query) do
               0 -> _response_admin_access_failed(conn)
-              _ -> conn
-            end
-        end
-    end
-  end
-  def check_admin_access(%Plug.Conn{} = conn, _options) do
-    _response_admin_access_failed(conn)
-  end
-
-  def check_is_admin(%Plug.Conn{private: %{acs_access_token: nil}} = conn, _options) do
-    conn
-  end
-  def check_is_admin(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do
-    conn
-  end
-  def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do
-    case RedisAccessToken.find(access_token) do
-      nil -> conn
-
-      %RedisAccessToken{user_id: user_id, app_id: app_id, device_id: device_id} = token ->
-        case RedisUser.find(user_id) do
-          nil -> conn
-
-          %RedisUser{} = user ->
-            admin_user = unless is_nil(user.email) do
-                           Repo.get_by(AdminUser, account_id: user.email)
-                         end
-
-            admin_user = if is_nil(admin_user) and !is_nil(user.mobile) do
-              Repo.get_by(AdminUser, account_id: user.mobile)
-            else
-              admin_user
-            end
-
-            case admin_user do
-              nil -> conn
-              _ -> conn |> put_private(:acs_admin_id, user_id)
-                        |> put_private(:acs_admin_level, admin_user.admin_level)
+              _ -> conn |> put_private(:acs_admin_id, user.id)
             end
         end
     end
   end
   def check_is_admin(%Plug.Conn{} = conn, _options) do
-    conn
+    _response_admin_access_failed(conn)
   end
 
  def allow_access?(admin_level, user_admin_level) do
@@ -455,17 +418,13 @@ defmodule Acs.Plugs do
  end
 
  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
-   with app_id_header  <- get_req_header(conn, "acs-app-id"),
+   with app_id_header <- get_req_header(conn, "acs-app-id") || Map.get(conn.params, "app_id"),
         {:ok, admin_level, user_admin_level} <- get_user_admin_level(user_id, app_id_header),
         true <- allow_access?(admin_level, user_admin_level) do 
      conn
    else
-     false ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
-     _ ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
+     _ -> _response_admin_access_failed(conn)
    end
-    
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
@@ -552,11 +511,13 @@ defmodule Acs.Plugs do
     end
   end
 
-  defp _response_admin_access_failed(%Plug.Conn{private: %{phoenix_format: "json"}} = conn) do
-    conn |> Phoenix.Controller.json(%{success: false, need_authentication: true}) |> halt
-  end
-  defp _response_admin_access_failed(%Plug.Conn{} = conn) do
-    conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
+  defp _response_admin_access_failed(conn) do
+    case get_req_header(conn, "x-csrf-token") do 
+      [] -> 
+        conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
+      y -> 
+        conn |> Phoenix.Controller.json(%{success: false, action: "login", message: "current user is not an admin user"}) |> halt
+    end
   end
 
   defp _base_encoded_path(%Plug.Conn{path_info: path_info}) do

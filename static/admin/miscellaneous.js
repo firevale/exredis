@@ -19,7 +19,7 @@ export const openNotification = (propsData = {
 }
 
 export const processAjaxError = e => {
-  if (e.need_authentication) {
+  if (e.action == 'login') {
     window.location = `/login?redirect_uri=${btoa(window.location.href)}`
   } else {
     let message = i18n.t('admin.notification.message.unknownError')

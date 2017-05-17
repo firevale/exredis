@@ -9,7 +9,8 @@ defmodule Acs.PageController do
   plug :fetch_session_user
   plug :fetch_zone_id
   plug :fetch_body_class
-  plug :check_is_admin when action == :show_admin_page
+  plug :check_is_admin when action in  [:show_admin_page, :show_admin_app_page]
+  # plug :check_authorization when action == :show_admin_app_page
   plug :check_forum_manager when action == :show_forum_page
 
   @sm_provider                  Application.get_env(:acs, :sm_provider)
@@ -35,6 +36,11 @@ defmodule Acs.PageController do
 
   # 管理后台
   def show_admin_page(conn, _params) do
+    conn |> put_layout(:admin)
+         |> render("admin.html")
+  end
+
+  def show_admin_app_page(conn, _params) do
     conn |> put_layout(:admin)
          |> render("admin.html")
   end

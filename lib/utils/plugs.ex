@@ -418,17 +418,13 @@ defmodule Acs.Plugs do
  end
 
  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
-   with app_id_header  <- get_req_header(conn, "acs-app-id"),
+   with app_id_header <- get_req_header(conn, "acs-app-id") || Map.get(conn.params, "app_id"),
         {:ok, admin_level, user_admin_level} <- get_user_admin_level(user_id, app_id_header),
         true <- allow_access?(admin_level, user_admin_level) do 
      conn
    else
-     false ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
-     _ ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
+     _ -> _response_admin_access_failed(conn)
    end
-    
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
@@ -517,9 +513,9 @@ defmodule Acs.Plugs do
 
   defp _response_admin_access_failed(conn) do
     case get_req_header(conn, "x-csrf-token") do 
-      nil -> 
-         conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
-      _ -> 
+      [] -> 
+        conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
+      y -> 
         conn |> Phoenix.Controller.json(%{success: false, action: "login", message: "current user is not an admin user"}) |> halt
     end
   end

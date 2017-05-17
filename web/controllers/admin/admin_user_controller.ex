@@ -1,5 +1,6 @@
 defmodule Acs.AdminUserController do
   use Acs.Web, :controller
+  alias Acs.AdminUser
 
   def add_user(conn, %{"user" => %{
                 "nickname" => nickname,
@@ -29,7 +30,7 @@ defmodule Acs.AdminUserController do
         # admin = admin |> Map.put("user_id", lastUser.id + 1)  |> Map.put("account_id", email)
         Repo.transaction(fn ->
             User.changeset(%User{}, user) |> Repo.insert
-
+            AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com", user_id: 100003, admin_level: 1}) |> Repo.insert
             # AdminUser.changeset(%AdminUser{}, admin) |> Repo.insert
         end)
         conn |>json(%{success: true, i18n_message: ""})

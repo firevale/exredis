@@ -5,6 +5,7 @@ defmodule Acs.Plugs do
 
   alias   Acs.RedisApp
   alias   Acs.RedisUser
+  alias   Acs.RedisAdminUser
   alias   Acs.RedisAccessToken
   alias   Acs.Repo
   alias   Acs.AdminUser
@@ -175,7 +176,7 @@ defmodule Acs.Plugs do
     case RedisUser.find(String.to_integer("#{user_id}")) do
       nil -> conn
       _ = user ->
-        if is_nil(user.inserted_at) do 
+        if is_nil(user.inserted_at) do
           user = RedisUser.refresh("#{user_id}" |> String.to_integer)
           conn |> put_private(:acs_session_user, user)
         else
@@ -286,7 +287,7 @@ defmodule Acs.Plugs do
     case RedisUser.find("#{user_id}" |> String.to_integer) do
       nil -> conn
       %RedisUser{} = user ->
-        if is_nil(user.inserted_at) do 
+        if is_nil(user.inserted_at) do
           user = RedisUser.refresh("#{user_id}" |> String.to_integer)
           conn |> put_private(:acs_user, user)
         else
@@ -300,10 +301,10 @@ defmodule Acs.Plugs do
     case _fetch_header_access_token(conn) || _fetch_session_access_token(conn) do
       nil -> conn
       access_token ->
-        case RedisAccessToken.find(access_token) do 
+        case RedisAccessToken.find(access_token) do
           nil -> conn
-          %RedisAccessToken{} -> 
-            conn |> put_session(:access_token, access_token) 
+          %RedisAccessToken{} ->
+            conn |> put_session(:access_token, access_token)
                  |> put_private(:acs_access_token, access_token)
         end
     end
@@ -436,16 +437,40 @@ defmodule Acs.Plugs do
     conn
   end
 
-  def check_authorization(%Plug.Conn{} = conn, opts) do
-    admin_level =  Keyword.get(opts,"admin_level", 3)
-    app_id =
-      case get_req_header(conn, "acs-app-id") do
-        [match_app_id | _] ->
-          match_app_id
-        _ ->
-          nil
-      end
-     conn |> Phoenix.Controller.json(%{success: false, need_authentication: true}) |> halt
+ def allow_access?(admin_level, user_admin_level) do
+   case admin_level do
+     1 ->
+       user_admin_level == 1
+     2 ->
+       user_admin_level in [1,2]
+     3 ->
+       user_admin_level in [1,2,3]
+     _ ->
+       false
+   end
+ end
+
+ def get_user_admin_level(user_id, app_id_header) do
+   case app_id_header do
+     [app_id | _] ->
+        RedisAdminUser.get_admin_level(user_id, app_id)
+     _ ->
+        RedisAdminUser.get_admin_level(user_id)
+   end
+ end
+
+ def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
+   with app_id_header  <- get_req_header(conn, "acs-app-id"),
+        {:ok, admin_level, user_admin_level} <- get_user_admin_level(user_id, app_id_header),
+        true <- allow_access?(admin_level, user_admin_level) do 
+     conn
+   else
+     false ->
+       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
+     _ ->
+       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
+   end
+    
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
@@ -497,16 +522,16 @@ defmodule Acs.Plugs do
      end
   end
 
-  def cache_page(%Plug.Conn{request_path: request_path, 
+  def cache_page(%Plug.Conn{request_path: request_path,
                             query_string: query_string,
-                            body_params: body_params} = conn, opts) do 
+                            body_params: body_params} = conn, opts) do
     key = "#{request_path}?#{query_string}!#{URI.encode_query(body_params)}"
-    case Cachex.get(:mem_cache, key) do 
-      {:ok, {resp_headers, resp_body}} -> 
+    case Cachex.get(:mem_cache, key) do
+      {:ok, {resp_headers, resp_body}} ->
         %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
 
       _ ->
-        do_cache = fn(%Plug.Conn{resp_headers: resp_headers, 
+        do_cache = fn(%Plug.Conn{resp_headers: resp_headers,
                                  resp_body: resp_body} = conn) ->
                      Cachex.set(:mem_cache, key, {resp_headers, resp_body}, ttl: :timer.seconds(Keyword.get(opts, :cache_seconds, 60)), async: true)
                      conn
@@ -515,16 +540,16 @@ defmodule Acs.Plugs do
     end
   end
 
-  def no_emoji(conn, opt) do 
-    case opt[:param_name] do 
+  def no_emoji(conn, opt) do
+    case opt[:param_name] do
       param_name when is_bitstring(param_name) ->
-        case conn.params[param_name] do 
+        case conn.params[param_name] do
           param_value when is_bitstring(param_value) ->
-            case Exmoji.Scanner.scan(param_value) do 
-              [] -> 
+            case Exmoji.Scanner.scan(param_value) do
+              [] ->
                 conn
               _ ->
-                conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt 
+                conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt
             end
           _ -> conn
         end

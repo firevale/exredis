@@ -420,11 +420,11 @@ defmodule Acs.Plugs do
  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
    with admin_level <- Keyword.get(opts, :admin_level, 1),
         app_id_header <- get_req_header(conn, "acs-app-id") || Map.get(conn.params, "app_id"),
-         user_admin_level <- _get_user_admin_level(user_id, app_id_header),
+        user_admin_level <- _get_user_admin_level(user_id, app_id_header),
         true <- _allow_access?(admin_level, user_admin_level) do
      conn
    else
-     _ -> _response_admin_access_failed(conn)
+     _ -> Phoenix.Controller.json(conn, %{success: false, action: "notifyLogin",  i18n_message: "admin.notification.message.forbidden"}) |> halt
    end
   end
 

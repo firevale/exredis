@@ -1,12 +1,14 @@
 defmodule Acs.AdminUserController do
   use Acs.Web, :controller
   alias Acs.AdminUser
-  plug :fetch_device_id
 
   def add_user(conn,%{"account_id" => account_id, "level" => level, "active" => active, 
                  "app_id" => app_id, "nickname" => nickname, "email" => email, "device_id" => device_id,
                  "password" => password, "mobile" => mobile, "age" => age})do
 
+    if(level == 1)do
+      conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+    end                  
     queryCount = from us in User,select: count(1), where: us.email == ^email
     case Repo.one!(queryCount) do
       1 ->
@@ -27,7 +29,7 @@ defmodule Acs.AdminUserController do
         conn |>json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
     end
   end
-  def add_user(conn, para) do
+  def add_user(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 end

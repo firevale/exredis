@@ -59,6 +59,7 @@ defmodule Acs.Web do
       alias  Acs.RedisForum
 
       alias  Acs.App
+      alias  Acs.AdminUser
       alias  Acs.User
       alias  Acs.UserFavoritePost
       alias  Acs.UserAddress

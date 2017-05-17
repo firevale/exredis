@@ -17,6 +17,7 @@ export default {
         if (result.success) {
           next(vm => {
             vm.updateSdks(result.sdks)
+            vm.updateAdminLevel(result.admin_level)
           })
         } else {
           next({
@@ -32,7 +33,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'updateSdks'
+      'updateSdks',
+      'updateAdminLevel'
     ])
   }
 }

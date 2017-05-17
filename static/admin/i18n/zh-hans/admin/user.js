@@ -6,5 +6,9 @@ export default {
     mobile: '移动电话',
     age: '年龄',
     active: '是否启用'
+  },
+  messages: {
+    opSuccess: '操作成功',
+    opFailed: '操作失败'
   }
 }

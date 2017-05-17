@@ -11,7 +11,8 @@ const state = {
   },
   effect: {
     translate3d: true
-  }
+  },
+  adminLevel: 0,
 }
 
 const mutations = {
@@ -26,6 +27,10 @@ const mutations = {
     } else {
       state.sidebar.opened = true
     }
+  },
+
+  [types.UPDATE_ADMIN_LEVEL] (state, level) {
+    state.adminLevel = level
   },
 
   [types.SWITCH_EFFECT] (state, effectItem) {

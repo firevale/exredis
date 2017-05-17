@@ -50,7 +50,6 @@ export default {
   data() {
     return {
       isReady: false,
-      adminLevel: 1,
     }
   },
 
@@ -64,7 +63,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'indexMenuitems', 'menuitems'
+      'indexMenuitems', 'menuitems', 'adminLevel'
     ]),
 
     menu: function() {

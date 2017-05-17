@@ -2,7 +2,7 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.titles.addAppManager') }}</h5>
+        <h5 class="title is-5">{{ section.level==2? $t('admin.titles.addAppManager'):$t('admin.titles.addAppCustomerService') }}</h5>
       </div>
       <form name="section" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.user.fields.nickname') }}: </label>
@@ -15,7 +15,7 @@
         </p>
         <label class="label"> {{ $t('admin.user.fields.password') }}: </label>
         <p class="control">
-          <input class="input" type="number" v-model.trim="section.encrypted_password">
+          <input class="input" type="number" v-model.trim="section.password">
         </p>
         <label class="label"> {{ $t('admin.user.fields.mobile') }}: </label>
         <p class="control">
@@ -60,13 +60,19 @@ export default {
 
   methods: {
     handleSubmit: async function() {
-      debugger
       this.processing = true
-      if (!this.section.id) {
-        this.section.id = 0
-      }
+
       let result = await this.$acs.addUser({
-        user: this.section
+        nickname: this.section.nickname,
+        email: this.section.email,
+        device_id: this.section.device_id,
+        password: this.section.password,
+        mobile: this.section.mobile,
+        age: this.section.age,
+        app_id: this.section.app_id,
+        active: this.section.active,
+        level: this.section.level,
+        account_id: this.section.email
       })
 
       this.processing = false

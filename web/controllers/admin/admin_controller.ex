@@ -35,8 +35,9 @@ defmodule Acs.AdminController do
   end
 
   @sdks Application.get_env(:acs, :sdks)
-  def fetch_supported_sdks(conn, _params) do
-    conn |> json(%{success: true, sdks: @sdks})
+  def fetch_supported_sdks(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
+    admin_level = Repo.one(from au in AdminUser, where: au.user_id == ^user_id and au.admin_level > 0, select: min(au.admin_level)) || 0
+    conn |> json(%{success: true, sdks: @sdks, admin_level: admin_level})
   end
 
   def update_app_info(conn, %{"app" => %{"id" => app_id} = app_info}) do

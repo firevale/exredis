@@ -190,12 +190,16 @@ export default {
         return post('/admin_actions/user/add_user', params)
       },
 
-      getUsersByApp(params) {
-        return post('/admin_actions/user/get_users_by_app', params)
+      getAdminUserByApp(params) {
+        return post('/admin_actions/user/get_admin_user_by_app', params)
       },
 
       deleteAdminUser(params) {
         return post('/admin_actions/user/delete_admin_user', params)
+      },
+
+      getUserFromRedis(user_id) {
+        return post('/admin_actions/user/get_user_from_redis', { user_id })
       }
     }
   }

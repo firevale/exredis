@@ -81,7 +81,7 @@ const openSectionInfoDialog = (propsData = {
 }
 export default {
   mounted: async function() {
-    await this.getUsers()
+    await this.getAdminUser()
   },
   data() {
     return {
@@ -90,10 +90,10 @@ export default {
   },
 
   methods: {
-    getUsers: async function() {
+    getAdminUser: async function() {
       let par = new Object()
       par.app_id = "53A993ABE3A1CB110E1DC59AE557F5C9"
-      let result = await this.$acs.getUsersByApp(par)
+      let result = await this.$acs.getAdminUserByApp(par)
       if (result.success) {
         this.users = result.users
       }
@@ -115,8 +115,15 @@ export default {
         callback: section => {},
       })
     },
+    showUser: async function(user) {
+      let par = new Object()
+      par.user_id = user.user.id
+      let result = await this.$acs.getUserFromRedis(par)
+      if (result.success) {
+
+      }
+    },
     deleteUsers: function(users) {
-      debugger
       let confirmMessage = users.admin_level == 2 ? this.$t(
         'admin.messages.confirmDeleteAppManager', {
           nickName: users.user.nickname
@@ -138,8 +145,7 @@ export default {
           let result = await this.$acs.deleteAdminUser({
             admin_user_id: users.id
           }, deletedMessage)
-          if (result.success) {
-          }
+          if (result.success) {}
         },
       })
     }

@@ -1,6 +1,7 @@
 defmodule Acs.AdminUserController do
   use Acs.Web, :controller
   alias Acs.AdminUser
+  alias Acs.RedisUser
 
   def add_user(conn,%{"account_id" => account_id, "level" => level, "active" => active, 
                  "app_id" => app_id, "nickname" => nickname, "email" => email, "device_id" => device_id,
@@ -33,7 +34,7 @@ defmodule Acs.AdminUserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def get_users_by_app(conn, %{"app_id" =>app_id})do
+  def get_admin_user_by_app(conn, %{"app_id" =>app_id})do
     query = from au in AdminUser,
             left_join: user in assoc(au, :user),
             select: map(au, [:id, :account_id, :admin_level, :app_id, :inserted_at,
@@ -61,5 +62,13 @@ defmodule Acs.AdminUserController do
   def delete_admin_user(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-
+  
+  def get_user_from_redis(conn, %{"user_id" => user_id}) do
+    case RedisUser.find(user_id) do
+    user ->
+      conn |> json(%{success: true, user: user})
+    _ ->
+      conn |> json(%{success: false})
+    end
+  end
 end

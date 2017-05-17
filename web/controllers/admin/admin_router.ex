@@ -77,8 +77,9 @@ defmodule Acs.AdminRouter do
     scope "/user" do
       pipe_through :admin_app
       post  "/add_user", AdminUserController, :add_user
-      post  "/get_users_by_app", AdminUserController, :get_users_by_app
+      post  "/get_admin_user_by_app", AdminUserController, :get_admin_user_by_app
       post  "/delete_admin_user", AdminUserController, :delete_admin_user
+      post  "/get_user_from_redis", AdminUserController, :get_user_from_redis
     end
   end
 end

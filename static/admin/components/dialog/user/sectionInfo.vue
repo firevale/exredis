@@ -2,7 +2,7 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.titles.addAppManager') }}</h5>
+        <h5 class="title is-5">{{ section.level==2? $t('admin.titles.addAppManager'):$t('admin.titles.addAppCustomerService') }}</h5>
       </div>
       <form name="section" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.user.fields.nickname') }}: </label>

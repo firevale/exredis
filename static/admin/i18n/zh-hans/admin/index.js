@@ -80,6 +80,7 @@ export default {
     editSectionInfo: '编辑论坛版块信息',
     editSettingInfo: '编辑配置信息',
     addAppManager: '添加应用管理员',
+    addAppCustomerService: '添加应用客服',
     deleteSuccess: '删除成功',
     uploadGoodsIcon: '拖动正方形PNG图片到此(边长 >= 128)',
     uploadAppIcon: '拖动正方形PNG图片到此(边长 >= 128)',

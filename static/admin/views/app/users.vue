@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" v-if="users">
     <div class="card">
       <header class="card-header">
         <p class="card-header-title">
@@ -12,9 +12,9 @@
       <div class="card-content">
         <nav class="level">
           <div class="level-left">
-            <a class="level-item">
+            <a v-for="item in users" class="level-item" v-if="item.admin_level==2">
               <span class="tag is-info is-medium">
-                张三
+                {{item.user.nickname}}
                 <button class="delete is-small"></button>
               </span>
             </a>
@@ -34,9 +34,9 @@
       <div class="card-content">
         <nav class="level">
           <div class="level-left">
-            <a class="level-item">
+            <a v-for="item in users" class="level-item" v-if="item.admin_level==3">
               <span class="tag is-info is-medium">
-                张三
+                {{item.user.nickname}}
                 <button class="delete is-small"></button>
               </span>
             </a>
@@ -45,7 +45,7 @@
       </div>
     </div>
   </div>
-  <!--<div class="box">
+  <div class="box" v-else>
     <div class="hero-body has-text-centered">
       <div class="container">
         <span class="icon is-large">
@@ -56,7 +56,7 @@
           </h2>
       </div>
     </div>
-  </div>-->
+  </div>
 </template>
 <script>
 import Vue from 'vue'
@@ -77,11 +77,24 @@ const openSectionInfoDialog = (propsData = {
   })
 }
 export default {
+  mounted: async function() {
+    await this.getUsers()
+  },
   data() {
-    return {}
+    return {
+      users: undefined
+    }
   },
 
   methods: {
+    getUsers: async function() {
+      let par = new Object()
+      par.app_id = "53A993ABE3A1CB110E1DC59AE557F5C9"
+      let result = await this.$acs.getUsersByApp(par)
+      if (result.success) {
+        this.users = result.users
+      }
+    },
     addManager: function(level) {
       openSectionInfoDialog({
         section: {

@@ -61,6 +61,7 @@ defmodule Acs.AdminRouter do
 
     scope "/user" do
       post  "/add_user", AdminUserController, :add_user
+      post  "/get_users_by_app", AdminUserController, :get_users_by_app
     end
   end
 end

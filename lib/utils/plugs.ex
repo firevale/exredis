@@ -436,6 +436,18 @@ defmodule Acs.Plugs do
     conn
   end
 
+  def check_authorization(%Plug.Conn{} = conn, opts) do
+    admin_level =  Keyword.get(opts,"admin_level", 3)
+    app_id =
+      case get_req_header(conn, "acs-app-id") do
+        [match_app_id | _] ->
+          match_app_id
+        _ ->
+          nil
+      end
+     conn |> Phoenix.Controller.json(%{success: false, need_authentication: true}) |> halt
+  end
+
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
                                      params: %{"forum_id" => "error"}} = conn, _options) do
     conn |> put_private(:acs_is_forum_admin, false)

@@ -52,6 +52,7 @@ export default {
   data() {
     return {
       isReady: false,
+      adminLevel: 1,
     }
   },
 
@@ -69,7 +70,7 @@ export default {
     ]),
 
     menu: function() {
-      return this.$route.params.appId ? this.menuitems : this.indexMenuitems
+      return (this.$route.params.appId ? this.menuitems : this.indexMenuitems).filter(this.checkPower)
     }
   },
 
@@ -80,6 +81,10 @@ export default {
 
     isExpanded(item) {
       return item.meta.expanded
+    },
+
+    checkPower(item) {
+      return item.meta.level.indexOf(this.adminLevel+",") >= 0
     },
 
     getPath(path){

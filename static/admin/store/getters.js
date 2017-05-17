@@ -9,6 +9,7 @@ const menuitems = state => state.menu.items
 const indexMenuitems = state => state.menu.indexItems
 const mallList = state => state.mall.list
 const mallHash = state => state.mall.hash
+const adminLevel = state => state.main.adminLevel
 
 export {
   main,
@@ -22,4 +23,5 @@ export {
   indexMenuitems,
   mallList,
   mallHash,
+  adminLevel,
 }

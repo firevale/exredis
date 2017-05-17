@@ -36,6 +36,12 @@ export const updateSdks = ({
   commit(types.UPDATE_SDKS, sdks)
 }
 
+export const updateAdminLevel = ({
+  commit
+}, level) => {
+  commit(types.UPDATE_ADMIN_LEVEL, level)
+}
+
 export const setApp = ({
   commit
 }, app) => {

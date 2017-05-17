@@ -38,7 +38,7 @@ defmodule Acs.PlugsPipeline do
         plug :fetch_session_user_id
         plug :fetch_session_user
         plug :fetch_locale
-        plug :check_admin_access
+        plug :check_is_admin
     end
 
     pipeline :auth do 

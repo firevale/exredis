@@ -9,7 +9,7 @@ defmodule Acs.PageController do
   plug :fetch_session_user
   plug :fetch_zone_id
   plug :fetch_body_class
-  plug :check_admin_access when action == :show_admin_page
+  plug :check_is_admin when action == :show_admin_page
   plug :check_forum_manager when action == :show_forum_page
 
   @sm_provider                  Application.get_env(:acs, :sm_provider)

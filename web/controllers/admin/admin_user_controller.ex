@@ -32,4 +32,16 @@ defmodule Acs.AdminUserController do
   def add_user(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
+
+  def get_users_by_app(conn, %{"app_id" =>app_id})do
+    query = from au in AdminUser,
+            left_join: user in assoc(au, :user),
+            select: map(au, [:id, :account_id, :admin_level, :app_id, :inserted_at,
+            user: [:id, :nickname, :mobile] ]),
+            where: is_nil(au.app_id) == false and au.admin_level != 1 and au.app_id == ^app_id,
+            order_by: [desc: au.inserted_at],
+            preload: [user: user]
+    users = Repo.all(query)
+    conn |> json(%{success: true, users: users})
+  end
 end

@@ -188,6 +188,10 @@ export default {
 
       addUser(params) {
         return post('/admin_actions/user/add_user', params)
+      },
+
+      getUsersByApp(params) {
+        return post('/admin_actions/user/get_users_by_app', params)
       }
     }
   }

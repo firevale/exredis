@@ -1,7 +1,7 @@
 export default {
   dashboard: '概况',
   appConfig: '应用配置',
-  userManage: '账号管理',
+  userManage: '用户管理',
   orderManage: '订单管理',
   forumManage: '论坛管理',
   customerServiceManage: '客服管理',

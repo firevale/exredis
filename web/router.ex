@@ -14,6 +14,7 @@ defmodule Acs.Router do
 
     get  "/", PageController, :index
     get  "/login/*path", PageController, :show_login_page
+    get  "/admin/app/:app_id/*path", PageController, :show_admin_app_page
     get  "/admin/*path", PageController, :show_admin_page
     get  "/forum", PageController, :show_forum_page
     get  "/forum/index", PageController, :show_forum_page

@@ -1,7 +1,9 @@
 <template>
   <div class="box">
-    <router-link class="button is-primary pull-right" style="position: absolute; top: 20px; right: 20px;" :to="{name: 'NewApp'}">
-      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.app.add') }}
+    <router-link v-if="this.adminLevel==1" class="button is-primary pull-right" style="position: absolute; top: 20px; right: 20px;"
+      :to="{name: 'NewApp'}">
+      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.app.add')
+      }}
     </router-link>
     <div class="columns is-multiline">
       <article class="column is-3" v-for="app in appList">
@@ -39,7 +41,7 @@ import {
 export default {
   data() {
     return {
-      appList: undefined 
+      appList: undefined
     }
   },
 
@@ -50,39 +52,47 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters([
+      'adminLevel'
+    ]),
+  },
+
   methods: {
     updateAppIcon: function(app) {
-      showFileUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/update_app_icon',
-        accept: 'image/png',
-        data: {
-          app_id: app.id,
-        },
-        extensions: ['png'],
-        title: this.$t('admin.titles.uploadAppIcon', {
-          appName: app.name
-        }),
-        imageValidator: {
-          square: true,
-          minWidth: 128,
-        },
-        callback: response => {
-          if (response.success) {
-            app.icon = response.icon_url
-            openNotification({
-              title: this.$t('admin.notification.title.success'),
-              message: this.$t('admin.app.message.appIconUpdated', {
-                appName: app.name
-              }),
-              type: 'success',
-              duration: 4500,
-              container: '.notifications',
-            })
-          } else {
-            processAjaxError(response)
-          }
-        },
-      })
+      if (this.adminLevel < 3) {
+        showFileUploadDialog(this.$i18n, {
+          postAction: '/admin_actions/update_app_icon',
+          accept: 'image/png',
+          data: {
+            app_id: app.id,
+          },
+          extensions: ['png'],
+          title: this.$t('admin.titles.uploadAppIcon', {
+            appName: app.name
+          }),
+          imageValidator: {
+            square: true,
+            minWidth: 128,
+          },
+          callback: response => {
+            if (response.success) {
+              app.icon = response.icon_url
+              openNotification({
+                title: this.$t('admin.notification.title.success'),
+                message: this.$t('admin.app.message.appIconUpdated', {
+                  appName: app.name
+                }),
+                type: 'success',
+                duration: 4500,
+                container: '.notifications',
+              })
+            } else {
+              processAjaxError(response)
+            }
+          },
+        })
+      }
     },
   }
 }

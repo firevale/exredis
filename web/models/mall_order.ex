@@ -78,7 +78,7 @@ defmodule Acs.MallOrder do
          mapping = %{
            properties: %{
              id: %{type: :keyword},
-             goods_name: %{type: :text, analyzer: :smartcn},
+             goods_name: %{type: :text, analyzer: :ik_smart},
              app_id: %{type: :keyword},
              platform: %{type: :keyword},
              device_id: %{type: :keyword},
@@ -86,13 +86,13 @@ defmodule Acs.MallOrder do
              user_id: %{type: :integer},
              currency: %{type: :keyword},
              paid_type: %{type: :keyword},
-             memo: %{type: :text, analyzer: :smartcn},
+             memo: %{type: :text, analyzer: :ik_smart},
              address: %{
                properties: %{
                   name: %{type: :keyword},
                   mobile: %{type: :keyword},
-                  address: %{type: :text, analyzer: :smartcn},
-                  area: %{type: :text, analyzer: :smartcn},                 
+                  address: %{type: :text, analyzer: :ik_smart},
+                  area: %{type: :text, analyzer: :ik_smart},                 
                   area_code: %{type: :keyword}
                 }
              },

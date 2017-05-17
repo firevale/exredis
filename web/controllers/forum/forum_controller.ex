@@ -605,7 +605,7 @@ defmodule Acs.ForumController do
             forum_id: forum_id,
              section_id: section_id}
             } = hit) ->
-              
+
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
                     user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
@@ -625,7 +625,7 @@ defmodule Acs.ForumController do
                   end
 
           section = if forum && forum.sections && section_id  do
-                      forum.sections |> Enum.find(&(&1.id == section_id))
+                      forum.sections[section_id |> to_string |> String.to_atom]
                     end
           %{
             id: hit._id,

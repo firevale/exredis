@@ -42,8 +42,8 @@ defmodule Acs.MallGoods do
             properties: %{
               id: %{type: :keyword},
               app_id: %{type: :keyword},
-              name: %{type: :text, analyzer: :smartcn},
-              description:  %{type: :text, analyzer: :smartcn},
+              name: %{type: :text, analyzer: :ik_smart},
+              description:  %{type: :text, analyzer: :ik_smart},
               user_id: %{type: :integer},
               active: %{type: :boolean},
               inserted_at: %{type: :date}

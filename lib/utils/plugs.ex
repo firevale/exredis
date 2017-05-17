@@ -395,7 +395,7 @@ defmodule Acs.Plugs do
     _response_admin_access_failed(conn)
   end
 
- def allow_access?(admin_level, user_admin_level) do
+ def _allow_access?(admin_level, user_admin_level) do
    case admin_level do
      1 ->
        user_admin_level == 1
@@ -408,7 +408,7 @@ defmodule Acs.Plugs do
    end
  end
 
- def get_user_admin_level(user_id, app_id_header) do
+ defp _get_user_admin_level(user_id, app_id_header) do
    case app_id_header do
      [app_id | _] ->
         RedisAdminUser.get_admin_level(user_id, app_id)
@@ -418,17 +418,14 @@ defmodule Acs.Plugs do
  end
 
  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
-   with app_id_header  <- get_req_header(conn, "acs-app-id"),
-        {:ok, admin_level, user_admin_level} <- get_user_admin_level(user_id, app_id_header),
-        true <- allow_access?(admin_level, user_admin_level) do 
+   with admin_level <- Keyword.get(opts, :admin_level, 1),
+        app_id_header <- get_req_header(conn, "acs-app-id") || Map.get(conn.params, "app_id"),
+        user_admin_level <- _get_user_admin_level(user_id, app_id_header),
+        true <- _allow_access?(admin_level, user_admin_level) do
      conn
    else
-     false ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
-     _ ->
-       Phoenix.Controller.json(conn,%{success: false, need_authentication: true}) |> halt
+     _ -> Phoenix.Controller.json(conn, %{success: false, action: "notifyLogin",  i18n_message: "admin.notification.message.forbidden"}) |> halt
    end
-    
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
@@ -516,10 +513,10 @@ defmodule Acs.Plugs do
   end
 
   defp _response_admin_access_failed(conn) do
-    case get_req_header(conn, "x-csrf-token") do 
-      nil -> 
-         conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
-      _ -> 
+    case get_req_header(conn, "x-csrf-token") do
+      [] ->
+        conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
+      y ->
         conn |> Phoenix.Controller.json(%{success: false, action: "login", message: "current user is not an admin user"}) |> halt
     end
   end

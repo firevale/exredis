@@ -593,7 +593,7 @@ defmodule Acs.ForumController do
         }
       },
       from: ((page - 1) * records_per_page),
-      size: if records_per_page>30 do 30 else records_per_page end
+      size: min(30, records_per_page)
     }
 
     case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
@@ -605,6 +605,7 @@ defmodule Acs.ForumController do
             forum_id: forum_id,
              section_id: section_id}
             } = hit) ->
+              
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
                     user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])

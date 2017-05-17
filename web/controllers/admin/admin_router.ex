@@ -59,5 +59,8 @@ defmodule Acs.AdminRouter do
       post  "/upload_news_pic", GamesController, :upload_news_pic
     end
 
+    scope "/user" do
+      post  "/add_user", AdminUserController, :add_user
+    end
   end
 end

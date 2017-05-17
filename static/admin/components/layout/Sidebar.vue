@@ -7,15 +7,13 @@
       <li v-for="(item, index) in menu">
         <router-link :to="getPath(item.path)" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path"
           @click.native="toggle(index, item)">
-          <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label
-          || item.name }}
+          <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label || item.name }}
           <span class="icon is-small is-angle" v-if="item.children && item.children.length">
             <i class="fa fa-angle-down"></i>
           </span>
         </router-link>
         <a :aria-expanded="isExpanded(item)" v-else @click="toggle(index, item)">
-          <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label
-          || item.name }}
+          <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label || item.name }}
           <span class="icon is-small is-angle" v-if="item.children && item.children.length">
             <i class="fa fa-angle-down"></i>
           </span>
@@ -83,15 +81,22 @@ export default {
       return item.meta.expanded
     },
 
+<<<<<<< HEAD
     checkPower(item) {
       return item.meta.level.indexOf(this.adminLevel+",") >= 0
     },
 
     getPath(path){
       if(this.$route.params.appId)
+=======
+    getPath(path) {
+      if (this.$route.params.appId){
+>>>>>>> 0985ca92f6ddee9917c1a69d99055ff8c0925249
         return path.replace(":appId", this.$route.params.appId)
-      else
-        return path;
+      }
+      else {
+        return path
+      }
     },
 
     toggle(index, item) {

@@ -12,14 +12,6 @@ const state = {
       },
     },
     {
-      name: i18n.t('admin.menu.userManage'),
-      path: '/admin/users',
-      meta: {
-        icon: 'fa-user-circle',
-        level: '1,2,',
-      },
-    },
-    {
       name: i18n.t('admin.menu.settings'),
       path: '/admin/settings',
       meta: {
@@ -28,7 +20,6 @@ const state = {
       },
     }
   ],
-
   items: [{
       name: i18n.t('admin.menu.dashboard'),
       path: '/admin/app/:appId/dashboard',
@@ -42,6 +33,14 @@ const state = {
       path: '/admin/app/:appId/config/',
       meta: {
         icon: 'fa-bars',
+        level: '1,2,',
+      },
+    },
+    {
+      name: i18n.t('admin.menu.userManage'),
+      path: '/admin/app/:appId/users',
+      meta: {
+        icon: 'fa-user-circle',
         level: '1,2,',
       },
     },

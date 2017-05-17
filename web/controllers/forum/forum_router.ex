@@ -6,6 +6,7 @@ defmodule Acs.ForumRouter do
     pipe_through :forum
 
     get  "/fetch_forums", ForumController, :fetch_forums
+    post "/fetch_forum", ForumController, :fetch_forum
     get  "/get_forum_info", ForumController, :get_forum_info
     post "/get_forum_info", ForumController, :get_forum_info
     post "/get_paged_forums", ForumController, :get_paged_forums

@@ -37,7 +37,7 @@ defmodule UFile do
     rescue 
       e ->
         Logger.error "exception encountered: #{inspect e, pretty: true}"
-        {:error, :nil}
+        {:error, nil}
     end
   end
 
@@ -48,7 +48,7 @@ defmodule UFile do
     rescue 
       e ->
         Logger.error "exception encountered: #{inspect e, pretty: true}"
-        {:error, :nil}
+        {:error, nil}
     end
   end
 
@@ -59,7 +59,7 @@ defmodule UFile do
     rescue 
       e ->
         Logger.error "exception encountered: #{inspect e, pretty: true}"
-        {:error, :nil}
+        {:error, nil}
     end
   end
 

@@ -57,7 +57,6 @@ export default {
   methods: {
     getUsers: async function() {
       let par = new Object()
-      par.app_id = this.section.app_id
       par.level = this.section.level
       let result = await this.$acs.getUsersByLevel(par)
       if (result.success) {
@@ -69,21 +68,21 @@ export default {
       this.selectUserAccountId = user.email
     },
     handleSubmit: async function() {
-      this.processing = true
+      if (this.selectUserId) {
+        this.processing = true
+        let result = await this.$acs.addAdminUser({
+          level: this.section.level,
+          admin_id: this.selectUserId,
+          account_id: this.selectUserAccountId
+        })
 
-      let result = await this.$acs.addAdminUser({
-        level: this.section.level,
-        admin_id: this.selectUserId,
-        account_id: this.selectUserAccountId,
-        app_id: this.section.app_id
-      })
-
-      this.processing = false
-      if (result.success) {
-        if (this.callback) {
-          this.callback(result)
+        this.processing = false
+        if (result.success) {
+          if (this.callback) {
+            this.callback(result)
+          }
+          this.visible = false
         }
-        this.visible = false
       }
     }
   },

@@ -91,9 +91,7 @@ export default {
 
   methods: {
     getAdminUser: async function() {
-      let par = new Object()
-      par.app_id = "53A993ABE3A1CB110E1DC59AE557F5C9"
-      let result = await this.$acs.getAdminUserByApp(par)
+      let result = await this.$acs.getAdminUserByApp()
       if (result.success) {
         this.users = result.users
       }
@@ -108,8 +106,7 @@ export default {
           nickname: '',
           level: level,
           active: false,
-          device_id: '',
-          app_id: '53A993ABE3A1CB110E1DC59AE557F5C9'
+          device_id: ''
         },
         visible: true,
         callback: section => {},
@@ -118,8 +115,7 @@ export default {
     addAdminUser: function(level) {
       openSectionInfoDialog({
         section: {
-          level: level,
-          app_id: '53A993ABE3A1CB110E1DC59AE557F5C9'
+          level: level
         },
         visible: true,
         callback: section => {

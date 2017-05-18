@@ -37,10 +37,10 @@ defmodule Acs.AppOrder do
     field :transaction_id, :string
     field :transaction_status, :string
     field :cp_result, :string
+    field :app_user_id, :integer
 
     belongs_to :app,  Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer
-    belongs_to :app_user, Acs.AppUser
     belongs_to :goods, Acs.Goods, type: :string
 
     timestamps()

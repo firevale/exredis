@@ -202,7 +202,7 @@ defmodule Acs.AppleStoreController do
         conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
       nil ->
-        app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+        app_user = StatsRepo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
 
         order_info = %{
           id: Utils.generate_token(16),
@@ -231,11 +231,6 @@ defmodule Acs.AppleStoreController do
           debug_mode: receipt_type == "ProductionSandbox",
           zone_id: zone_id,
         }
-
-        order_info = case Repo.get_by(AppUser, app_id: app.id, user_id: user.id) do 
-                      nil -> order_info 
-                      %AppUser{id: app_user_id} -> %{order_info | app_user_id: app_user_id}
-                    end
 
         {:ok, order} = AppOrder.changeset(%AppOrder{}, order_info) |> Repo.insert 
 

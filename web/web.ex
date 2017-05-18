@@ -26,6 +26,7 @@ defmodule Acs.Web do
       import Ecto.Query
 
       alias  Acs.Repo
+      alias  Acs.StatsRepo 
     end
   end
 
@@ -51,6 +52,8 @@ defmodule Acs.Web do
       alias   Utils.Httpc
 
       alias  Acs.Repo
+      alias  Acs.StatsRepo 
+
       alias  Acs.RedisApp
       alias  Acs.RedisAppOrder
       alias  Acs.RedisUser
@@ -128,6 +131,8 @@ defmodule Acs.Web do
       use LogAlias
 
       alias Acs.Repo
+      alias Acs.StatsRepo 
+
       import Ecto
       import Ecto.Query
       import Acs.Gettext

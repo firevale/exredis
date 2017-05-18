@@ -6,7 +6,7 @@
 use Mix.Config
 
 # General application configuration
-config :acs, ecto_repos: [Acs.Repo]
+config :acs, ecto_repos: [Acs.Repo, Acs.StatsRepo]
   
 # Configures the endpoint
 config :acs, Acs.Endpoint,

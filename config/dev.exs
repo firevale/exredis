@@ -47,6 +47,14 @@ config :acs, Acs.Repo,
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
   pool_size: 10
 
+config :acs, Acs.StatsRepo,
+  adapter: Ecto.Adapters.MySQL,
+  username: System.get_env("ACS_MYSQL_USER") || "root",
+  password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
+  database: "acs_stats_dev",
+  hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
+  pool_size: 10
+
 config :acs, :elasticsearch,
   pool: [size: 10, max_overflow: 20],
   connection: [host: System.get_env("ACS_ELASTICSEARCH_HOSTNAME") || "localhost", port: 9200]

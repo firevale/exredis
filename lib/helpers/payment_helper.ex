@@ -22,7 +22,7 @@ defmodule Acs.PaymentHelper do
 
   def notify_cp(order = %AppOrder{}) do
     case RedisApp.find(order.app_id) do
-      :nil ->
+      nil ->
         error "app id [#{order.app_id}] in order #{order.id} not exists"
         {:error, :app_not_found}
 

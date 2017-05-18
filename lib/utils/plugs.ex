@@ -408,23 +408,23 @@ defmodule Acs.Plugs do
    end
  end
 
- defp _get_user_admin_level(user_id, app_id_header) do
-   case app_id_header do
-     [app_id | _] ->
-        RedisAdminUser.get_admin_level(user_id, app_id)
-     _ ->
-        RedisAdminUser.get_admin_level(user_id)
+ defp _get_user_admin_level(user_id, app_id) do
+   if app_id do
+     RedisAdminUser.get_admin_level(user_id, app_id)
+   else
+     RedisAdminUser.get_admin_level(user_id)
    end
  end
 
  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
    with admin_level <- Keyword.get(opts, :admin_level, 1),
-        app_id_header <- get_req_header(conn, "acs-app-id") || Map.get(conn.params, "app_id"),
-        user_admin_level <- _get_user_admin_level(user_id, app_id_header),
+        app_id <- _fetch_header_app_id(conn) || Map.get(conn.params, "app_id"),
+        user_admin_level <- _get_user_admin_level(user_id, app_id),
         true <- _allow_access?(admin_level, user_admin_level) do
+     put_private(conn, :acs_app_id, app_id)
      conn
    else
-     _ -> Phoenix.Controller.json(conn, %{success: false, action: "notifyLogin",  i18n_message: "admin.notification.message.forbidden"}) |> halt
+     _ -> Phoenix.Controller.json(conn, %{success: false, action: "forbiddenAccess",  i18n_message: "admin.notification.message.forbidden"}) |> halt
    end
   end
 

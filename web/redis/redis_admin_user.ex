@@ -49,7 +49,7 @@ defmodule Acs.RedisAdminUser do
     
     query =
       if app_id  do
-        where(query,[admin], admin.app_id == ^app_id)
+        where(query,[admin], admin.admin_level == 1 or admin.app_id == ^app_id)
       else
         select(query,[admin], min(admin.admin_level) )
       end

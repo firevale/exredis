@@ -424,7 +424,7 @@ defmodule Acs.Plugs do
         true <- _allow_access?(admin_level, user_admin_level) do
      conn
    else
-     _ -> Phoenix.Controller.json(conn, %{success: false, action: "notifyLogin",  i18n_message: "admin.notification.message.forbidden"}) |> halt
+     _ -> Phoenix.Controller.json(conn, %{success: false, action: "forbiddenAccess",  i18n_message: "admin.notification.message.forbidden"}) |> halt
    end
   end
 

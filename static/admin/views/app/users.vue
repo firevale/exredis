@@ -6,7 +6,7 @@
           <strong>{{ $t('admin.label.appManager')}}</strong>
         </p>
         <p class="card-header-icon">
-          <a @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
+          <a v-if="level==1" @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
         </p>
       </header>
       <div class="card-content">
@@ -15,7 +15,7 @@
             <a v-for="item in users" class="level-item" v-if="item.admin_level==2">
               <span class="tag is-info is-medium">
                 {{item.user.nickname}}
-                <button @click="deleteUsers(item)" class="delete is-small"></button>
+                <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
               </span>
             </a>
           </div>
@@ -81,15 +81,23 @@ const openSectionInfoDialog = (propsData = {
 }
 export default {
   mounted: async function() {
+    await this.getLevel()
     await this.getAdminUser()
   },
   data() {
     return {
-      users: undefined
+      users: undefined,
+      level: 0
     }
   },
 
   methods: {
+    getLevel: async function() {
+      let result = await this.$acs.getCurrentUserLevel()
+      if (result.success) {
+        this.level = result.level
+      }
+    },
     getAdminUser: async function() {
       let result = await this.$acs.getAdminUserByApp()
       if (result.success) {
@@ -132,6 +140,7 @@ export default {
       }
     },
     deleteUsers: function(users) {
+      debugger
       let confirmMessage = users.admin_level == 2 ? this.$t(
         'admin.messages.confirmDeleteAppManager', {
           nickName: users.user.nickname

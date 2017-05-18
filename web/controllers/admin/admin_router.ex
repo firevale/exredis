@@ -88,6 +88,7 @@ defmodule Acs.AdminRouter do
       post  "/get_user_from_redis", AdminUserController, :get_user_from_redis
       post  "/get_users_by_level", AdminUserController, :get_users_by_level
       post  "/add_admin_user", AdminUserController, :add_admin_user
+      post  "/get_current_user_level", AdminUserController, :get_current_user_level
     end
   end
 end

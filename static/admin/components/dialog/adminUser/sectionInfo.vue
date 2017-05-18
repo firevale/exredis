@@ -11,7 +11,7 @@
           </ul>
         </aside>
         <div class="has-text-centered" style="margin-top: 15px">
-          <a class="button is-primary is-fullwidth" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('common.add') }}</a>
+          <a class="button is-primary is-fullwidth" :class="{'is-loading': processing}" @click.prevent="handleSubmit" :disabled="!this.selectUserId">{{ $t('common.add') }}</a>
         </div>
       </form>
     </div>

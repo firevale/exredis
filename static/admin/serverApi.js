@@ -205,9 +205,13 @@ export default {
       getUsersByLevel(params) {
         return post('/admin_actions/user/get_users_by_level', params)
       },
-      
+
       addAdminUser(params) {
         return post('/admin_actions/user/add_admin_user', params)
+      },
+
+      getCurrentUserLevel(params) {
+        return post('/admin_actions/user/get_current_user_level', params)
       }
     }
   }

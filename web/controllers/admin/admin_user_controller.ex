@@ -18,6 +18,15 @@ defmodule Acs.AdminUserController do
     conn |> json(%{success: true, users: users})
   end
 
+  def get_current_user_level(%Plug.Conn{private: %{ acs_admin_id: acs_admin_id}} = conn, _) do
+    case RedisAdminUser.get_admin_level(acs_admin_id, nil) do
+    level ->
+      conn |> json(%{success: true, level: level})
+    _ ->
+      conn |> json(%{success: false, level: 0})
+    end
+  end
+
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
     if(level == 1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})

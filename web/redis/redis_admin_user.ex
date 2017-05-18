@@ -51,7 +51,7 @@ defmodule Acs.RedisAdminUser do
       if app_id  do
         where(query,[admin], admin.app_id == ^app_id)
       else
-        select(query,[admin], min(admin.level) )
+        select(query,[admin], min(admin.admin_level) )
       end
 
     case Repo.one(query) do

@@ -24,6 +24,7 @@ defmodule Acs do
     children = [
       # Start the Ecto repository
       supervisor(Acs.Repo, []),
+      supervisor(Acs.StatsRepo, []),
       # Start the endpoint when the application starts
       supervisor(Acs.Endpoint, []),
 
@@ -50,6 +51,7 @@ defmodule Acs do
     res = Supervisor.start_link(children, opts)
     # run migration when app startup
     Ecto.Migrator.run Acs.Repo, Path.join(["#{:code.priv_dir(:acs)}", "repo", "migrations"]), :up, all: true
+    Ecto.Migrator.run Acs.StatsRepo, Path.join(["#{:code.priv_dir(:acs)}", "stats_repo", "migrations"]), :up, all: true
     # this line will fail if elasticsearch is not correctly configured
     init_elasticsearch_mappings()
     # return res

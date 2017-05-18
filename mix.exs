@@ -72,8 +72,8 @@ defmodule Acs.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate --quiet", "test"]]
+    ["ecto.setup": ["ecto.create -r Acs.Repo", "ecto.migrate -r Acs.Repo", "ecto.create -r Acs.StatsRepo", "ecto.migrate -r Acs.StatsRepo", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop -r Acs.Repo", "ecto.drop -r Acs.StatsRepo", "ecto.setup"],
+     "test": ["ecto.create --quiet -r Acs.Repo", "ecto.migrate --quiet -r Acs.Repo", "ecto.create --quiet -r Acs.StatsRepo", "ecto.migrate --quiet -r Acs.StatsRepo", "test"]]
   end
 end

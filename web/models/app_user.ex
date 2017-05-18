@@ -6,6 +6,8 @@ defmodule Acs.AppUser do
     field :app_user_name, :string
     field :app_user_level, :integer, default: 1
 
+    field :app_id, :string
+    field :user_id, :integer
     field :zone_id, :string, default: "0"
 
     field :active_seconds, :integer, default: 0
@@ -13,9 +15,6 @@ defmodule Acs.AppUser do
     field :reg_date, :date
     field :last_paid_at, :utc_datetime
     field :last_active_at, :utc_datetime
-
-    belongs_to :app, Acs.App, type: :string
-    belongs_to :user, Acs.User, type: :integer
 
     timestamps()
   end
@@ -29,7 +28,5 @@ defmodule Acs.AppUser do
                      :last_paid_at, :last_active_at, :app_id, :user_id])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
-    |> foreign_key_constraint(:app_id)
-    |> foreign_key_constraint(:user_id)
   end
 end

@@ -13,7 +13,7 @@ defmodule Acs.SdkPay.AppOrderController do
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do
 
-    app_user = Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+    app_user = StatsRepo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
 
     order_info = %{
       id: Utils.generate_token(16),

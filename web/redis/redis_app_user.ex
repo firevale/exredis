@@ -9,14 +9,14 @@ defmodule Acs.RedisAppUser do
 
   @app_user_cache_key     "fvac.app_user_cache"
 
-  def find(app_id, user_id) do 
+  def find(app_id, zone_id, user_id) do 
     redis_key = "#{@app_user_cache_key}.#{app_id}.#{user_id}"
 
     case Redis.get(redis_key) do 
       :undefined ->
-        case Repo.get_by(AppUser, app_id: app_id, user_id: user_id) do 
+        case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 
           nil ->  
-            {:ok, appUser} = AppUser.changeset(%AppUser{}, %{app_id: app_id, user_id: user_id}) |> Repo.insert
+            {:ok, appUser} = AppUser.changeset(%AppUser{}, %{app_id: app_id, user_id: user_id, zone_id: zone_id}) |> StatsRepo.insert
             Redis.set(redis_key, appUser |> :erlang.term_to_binary |> Base.encode64)
             appUser
 

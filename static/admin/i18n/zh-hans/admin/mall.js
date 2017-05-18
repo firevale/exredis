@@ -2,6 +2,7 @@ export default {
   basicInfo: '基本信息',
   goodsInfo: '商品管理',
   orderInfo: '订单管理',
+  not_open: '商城尚未开通, 请联系系统管理员',
 
   id: '编号',
   title: '标题',

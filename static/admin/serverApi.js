@@ -127,11 +127,11 @@ export default {
       },
 
       updateQuestion(params, successMessage) {
-        return post('/customer_service_actions/update_question', params, successMessage)
+        return post('/admin_actions/customer_service/update_question', params, successMessage)
       },
 
       deleteQuestion(params, successMessage) {
-        return post('/customer_service_actions/delete_question', params, successMessage)
+        return post('/admin_actions/customer_service/delete_question', params, successMessage)
       },
 
       getNewsDetail(news_id) {

@@ -74,6 +74,12 @@ defmodule Acs.AdminRouter do
       post  "/upload_news_pic", GamesController, :upload_news_pic
     end
 
+    scope "/customer_service" do
+      pipe_through :admin_customer_service
+      post  "/update_question", CustomerServiceController, :update_question
+      post  "/delete_question", CustomerServiceController, :delete_question
+    end
+
     scope "/user" do
       pipe_through :admin_app
       post  "/add_user", AdminUserController, :add_user

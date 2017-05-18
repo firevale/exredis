@@ -1,16 +1,23 @@
 <template>
   <div>
-    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false" ref="tab" @tab-selected="tabSelected">
-      <tab-pane icon="fa fa-clone" :label="$t('admin.mall.basicInfo')">
-        <basic-info-editor v-if="mall" :mall="mall"></basic-info-editor>
-      </tab-pane>
-      <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.mall.goodsInfo')">
-        <goods-info-editor v-if="mall" :mall="mall"></goods-info-editor>
-      </tab-pane>
-      <tab-pane icon="fa fa-star" :label="$t('admin.mall.orderInfo')">
-        <order-info-editor v-if="mall" :mall="mall"></order-info-editor>
-      </tab-pane>
-    </tabs>
+    <template v-if="mall">
+      <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false" ref="tab" @tab-selected="tabSelected">
+        <tab-pane icon="fa fa-clone" :label="$t('admin.mall.basicInfo')">
+          <basic-info-editor v-if="mall" :mall="mall"></basic-info-editor>
+        </tab-pane>
+        <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.mall.goodsInfo')">
+          <goods-info-editor v-if="mall" :mall="mall"></goods-info-editor>
+        </tab-pane>
+        <tab-pane icon="fa fa-star" :label="$t('admin.mall.orderInfo')">
+          <order-info-editor v-if="mall" :mall="mall"></order-info-editor>
+        </tab-pane>
+      </tabs>
+    </template>
+    <template v-else>
+      <p>
+        {{ $t('admin.mall.not_open') }}
+      </p>
+    </template>
   </div>
 </template>
 <script>
@@ -30,19 +37,10 @@ import orderInfoEditor from 'admin/components/mall/orderInfoEditor'
 
 export default {
   mounted() {
-    let mall = this.mallHash[this.$route.params.appId]
-
-    if (typeof mall == 'undefined') {
-      this.$router.replace({
-        name: 'Malls'
-      })
-    } else {
-      this.mall = mall
-    }
+    this.mall = this.mallHash[this.$route.params.appId]
 
     if (this.$route.query && this.$route.query.tabIndex)
       this.$refs.tab.select(parseInt(this.$route.query.tabIndex))
-
   },
 
   data() {

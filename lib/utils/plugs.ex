@@ -422,7 +422,6 @@ defmodule Acs.Plugs do
         user_admin_level <- _get_user_admin_level(user_id, app_id),
         true <- _allow_access?(admin_level, user_admin_level) do
      put_private(conn, :acs_app_id, app_id)
-     conn
    else
      _ -> Phoenix.Controller.json(conn, %{success: false, action: "forbiddenAccess",  i18n_message: "admin.notification.message.forbidden"}) |> halt
    end

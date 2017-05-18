@@ -67,8 +67,8 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, issues: questions})
   end
 
-  def update_question(conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot}) do
-    with %Question{} = question <- Repo.get(Question,id),
+  def update_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot}) do
+    with %Question{} = question <- Repo.get_by(Question,id: id, app_id: app_id),
          {:ok, question} <- Question.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |> Repo.update
     do
          Elasticsearch.update(%{
@@ -89,8 +89,8 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def delete_question(conn,%{"id" => id})  do
-    with %Question{id: ^id} = question <- Repo.get(Question, id),
+  def delete_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,%{"id" => id})  do
+    with %Question{id: ^id} = question <- Repo.get_by(Question, id: id, app_id: app_id),
          {:ok, _}  <- Repo.delete(question)
     do
         Elasticsearch.delete(%{

@@ -1,7 +1,7 @@
 defmodule Acs.RedisAppUser do
   require Redis
 
-  alias   Acs.Repo
+  alias   Acs.StatsRepo
   # import  Ecto
   # import  Ecto.Query
 

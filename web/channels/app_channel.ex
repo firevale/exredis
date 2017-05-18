@@ -38,13 +38,13 @@ defmodule Acs.AppChannel do
                    |> assign(:today, today)
       }
     else
-      Logger.error "received unauthorized payload: #{inspect payload, pretty: true}"
+      error "received unauthorized payload: #{inspect payload, pretty: true}"
       {:error, %{reason: "unauthorized"}}
     end
   end
 
   def join(_channel, payload, _socket) do
-    Logger.error "can't handle join with payload: #{inspect payload}"
+    error "can't handle join with payload: #{inspect payload}"
     {:error, %{reason: "unknown payload"}}
   end
 
@@ -118,7 +118,7 @@ defmodule Acs.AppChannel do
                         "zone_name" => zone_name}, today, socket) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
-    app_user = case Repo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do
+    app_user = case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do
                 nil ->
                   AppUser.changeset(%AppUser{}, %{app_user_id: app_user_id,
                                                   app_user_name: app_user_name,
@@ -129,50 +129,50 @@ defmodule Acs.AppChannel do
                                                   create_date: today,
                                                   last_active_at: utc_now,
                                                   app_id: app_id,
-                                                  user_id: user_id}) |> Repo.insert!
+                                                  user_id: user_id}) |> StatsRepo.insert!
                 %AppUser{} = app_user ->
                   AppUser.changeset(app_user, %{app_user_name: app_user_name,
                                                 app_user_id: app_user_id,
                                                 last_active_at: utc_now,
-                                                app_user_level: app_user_level}) |> Repo.update!
+                                                app_user_level: app_user_level}) |> StatsRepo.update!
 
               end
 
-    app_user_daily_activity = case Repo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
+    app_user_daily_activity = case StatsRepo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
                                 nil ->
                                   AppUserDailyActivity.changeset(%AppUserDailyActivity{},
                                    %{date: today,
                                      app_user_id: app_user.id,
                                      active_seconds: 0}
-                                  ) |> Repo.insert!
+                                  ) |> StatsRepo.insert!
                                 v -> v
                               end
 
-    if Repo.get(Device, device_id) == nil do
+    if StatsRepo.get(Device, device_id) == nil do
       Device.changeset(%Device{}, %{
         id: device_id,
         model: device_model,
         platform: platform,
-        os: os}) |> Repo.insert!
+        os: os}) |> StatsRepo.insert!
     end
 
-    app_device = case Repo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do
+    app_device = case StatsRepo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do
                    nil ->
                      AppDevice.changeset(%AppDevice{}, %{app_id: app_id,
                                                          device_id: device_id,
                                                          zone_id: zone_id,
-                                                         create_date: today}) |> Repo.insert!
+                                                         create_date: today}) |> StatsRepo.insert!
 
                    %AppDevice{} = app_device ->
                      app_device
                  end
 
-    app_device_daily_activity = case Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
+    app_device_daily_activity = case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
                                   nil ->
                                     AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
                                       date: today,
                                       app_device_id: app_device.id,
-                                      active_seconds: 0}) |> Repo.insert!
+                                      active_seconds: 0}) |> StatsRepo.insert!
                                   v -> v
                                 end
 
@@ -200,19 +200,19 @@ defmodule Acs.AppChannel do
     if active_seconds > 30 do
       AppUser.changeset(app_user, %{
         active_seconds: app_user.active_seconds + active_seconds
-      }) |> Repo.update!
+      }) |> StatsRepo.update!
 
       AppDevice.changeset(app_device, %{
         active_seconds: app_device.active_seconds + active_seconds
-      }) |> Repo.update!
+      }) |> StatsRepo.update!
 
       AppUserDailyActivity.changeset(app_user_daily_activity, %{
         active_seconds: app_user_daily_activity.active_seconds + active_seconds
-      }) |> Repo.update!
+      }) |> StatsRepo.update!
 
       AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
         active_seconds: app_device_daily_activity.active_seconds + active_seconds
-      }) |> Repo.update!
+      }) |> StatsRepo.update!
     end
   end
   defp do_stat(_socket), do: :ok

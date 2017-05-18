@@ -135,7 +135,7 @@ defmodule Acs.RedisApp do
 
   def update(id, active) when is_bitstring(id) do
     case Repo.get(App, id) do
-      nil -> :nil
+      nil -> nil
 
       %App{} = app ->
         App.changeset(app, %{has_mall: active}) |> Repo.update!
@@ -146,7 +146,7 @@ defmodule Acs.RedisApp do
 
   def refreshForumActive(id, active) when is_bitstring(id) do
     case Repo.get(App, id) do
-      nil -> :nil
+      nil -> nil
 
       %App{} = app ->
         App.changeset(app, %{has_forum: active}) |> Repo.update!

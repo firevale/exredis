@@ -9,6 +9,7 @@ export default {
   },
   messages: {
     opSuccess: '操作成功',
-    opFailed: '操作失败'
+    opFailed: '操作失败',
+    appAccountExists: '账号已添加到应用中'
   }
 }

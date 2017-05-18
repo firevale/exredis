@@ -6,7 +6,7 @@
           <strong>{{ $t('admin.label.appManager')}}</strong>
         </p>
         <p class="card-header-icon">
-          <a @click="addUsers(2)" class="button is-info">{{$t('common.add')}}</a>
+          <a @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
         </p>
       </header>
       <div class="card-content">
@@ -28,7 +28,7 @@
           <strong>{{ $t('admin.label.appCustomerService')}}</strong>
         </p>
         <p class="card-header-icon">
-          <a @click="addUsers(3)" class="button is-info">{{$t('common.add')}}</a>
+          <a @click="addAdminUser(3)" class="button is-info">{{$t('common.add')}}</a>
         </p>
       </header>
       <div class="card-content">
@@ -67,7 +67,7 @@ import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
-import sectionInfoDialog from 'admin/components/dialog/user/sectionInfo'
+import sectionInfoDialog from 'admin/components/dialog/adminUser/sectionInfo'
 const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
 
 const openSectionInfoDialog = (propsData = {
@@ -98,7 +98,7 @@ export default {
         this.users = result.users
       }
     },
-    addUsers: function(level) {
+    addUser: function(level) {
       openSectionInfoDialog({
         section: {
           age: 0,
@@ -113,6 +113,18 @@ export default {
         },
         visible: true,
         callback: section => {},
+      })
+    },
+    addAdminUser: function(level) {
+      openSectionInfoDialog({
+        section: {
+          level: level,
+          app_id: '53A993ABE3A1CB110E1DC59AE557F5C9'
+        },
+        visible: true,
+        callback: section => {
+          this.getAdminUser()
+        },
       })
     },
     showUser: async function(user) {
@@ -145,7 +157,9 @@ export default {
           let result = await this.$acs.deleteAdminUser({
             admin_user_id: users.id
           }, deletedMessage)
-          if (result.success) {}
+          if (result.success) {
+            this.getAdminUser()
+          }
         },
       })
     }

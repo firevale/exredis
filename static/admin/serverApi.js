@@ -198,8 +198,16 @@ export default {
         return post('/admin_actions/user/delete_admin_user', params)
       },
 
-      getUserFromRedis(user_id) {
-        return post('/admin_actions/user/get_user_from_redis', { user_id })
+      getUserFromRedis(params) {
+        return post('/admin_actions/user/get_user_from_redis', params)
+      },
+
+      getUsersByLevel(params) {
+        return post('/admin_actions/user/get_users_by_level', params)
+      },
+      
+      addAdminUser(params) {
+        return post('/admin_actions/user/add_admin_user', params)
       }
     }
   }

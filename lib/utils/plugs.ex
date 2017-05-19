@@ -10,6 +10,7 @@ defmodule Acs.Plugs do
   alias   Acs.Repo
   alias   Acs.AdminUser
   alias   Acs.ForumManager
+  alias   Acs.Forum
 
   require Gettext
   require Redis
@@ -462,26 +463,23 @@ defmodule Acs.Plugs do
 
        %RedisUser{} = user ->
          # check is admin user
-         admin_user = unless is_nil(user.email) do
-                        Repo.get_by(AdminUser, account_id: user.email)
-                      end
+        case Repo.get(Forum, forum_id) do
+          nil -> conn |> put_private(:acs_is_forum_admin, false)
 
-         admin_user = if is_nil(admin_user) and !is_nil(user.mobile) do
-           Repo.get_by(AdminUser, account_id: user.mobile)
-         else
-           admin_user
-         end
+          %Forum{} = forum ->
+            app_id = forum.app_id
+            admins = Repo.one(from au in AdminUser, where: au.user_id == ^user_id and (au.admin_level == 1 or (au.admin_level == 2 and au.app_id == ^app_id)), select: count(1)) || 0
+            case admins do
+              0 -> 
+                # check is forum manager
+                case Repo.get_by(ForumManager, forum_id: forum_id, user_id: user_id) do
+                  nil -> conn |> put_private(:acs_is_forum_admin, false)
+                  %ForumManager{} -> conn |> put_private(:acs_is_forum_admin, true)
+                end
 
-         case admin_user do
-           nil ->
-             # check is forum manager
-            case Repo.get_by(ForumManager, forum_id: forum_id, user_id: user_id) do
-              nil -> conn |> put_private(:acs_is_forum_admin, false)
-              %ForumManager{} -> conn |> put_private(:acs_is_forum_admin, true)
+              _ -> conn |> put_private(:acs_is_forum_admin, true)
             end
-
-           _ -> conn |> put_private(:acs_is_forum_admin, true)
-         end
+        end
      end
   end
 

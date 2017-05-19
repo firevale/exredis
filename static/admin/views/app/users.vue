@@ -140,7 +140,6 @@ export default {
       }
     },
     deleteUsers: function(users) {
-      debugger
       let confirmMessage = users.admin_level == 2 ? this.$t(
         'admin.messages.confirmDeleteAppManager', {
           nickName: users.user.nickname

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="mall">
+    <template v-if="app && app.has_mall">
       <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false" ref="tab" @tab-selected="tabSelected">
         <tab-pane icon="fa fa-clone" :label="$t('admin.mall.basicInfo')">
           <basic-info-editor v-if="mall" :mall="mall"></basic-info-editor>
@@ -63,7 +63,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      'mallHash'
+      'mallHash',
+      'app'
     ]),
   },
   components: {

@@ -48,7 +48,7 @@ const state = {
       name: i18n.t('admin.menu.userManage'),
       path: '/admin/app/:appId/users',
       meta: {
-        icon: 'fa-user-circle',
+        icon: 'fa-user',
         level: '1,2,',
       },
     },
@@ -56,7 +56,7 @@ const state = {
       name: i18n.t('admin.menu.orderManage'),
       path: '/admin/app/:appId/orders',
       meta: {
-        icon: 'fa-user-circle',
+        icon: 'fa-star',
         level: '1,2,',
       },
     },
@@ -64,7 +64,7 @@ const state = {
       name: i18n.t('admin.menu.forumManage'),
       path: '/admin/app/:appId/editforum',
       meta: {
-        icon: 'fa-user-circle',
+        icon: 'fa-twitch',
         level: '1,2,',
       },
     },

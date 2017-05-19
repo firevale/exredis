@@ -465,3 +465,11 @@ label.file-upload {
     </svg>");
   }
 } // @2x resources
+.admin-user {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  div {
+    padding: 0.3rem;
+  }
+}

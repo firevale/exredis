@@ -5,7 +5,7 @@
         <h5 class="title is-5">{{ section.level==2? $t('admin.titles.addAppManager'):$t('admin.titles.addAppCustomerService') }}</h5>
       </div>
       <div style="margin-bottom:0.5rem" class="control has-icon has-icon-left">
-        <input type="text" class="input" @keyup.enter="getUsers" :placeholder="$t('admin.titles.searchUsers')"
+        <input type="text" class="input" @keyup.enter="getUsers" :placeholder="$t('admin.titles.searchAdminUsers')"
           v-model.trim="keyword">
         <span class="icon is-small">
           <i v-if="searching" class="fa fa-spinner fa-spin"></i>

@@ -212,7 +212,11 @@ export default {
 
       getCurrentUserLevel(params) {
         return post('/admin_actions/user/get_current_user_level', params)
-      }
+      },
+
+      searchUsers(params) {
+        return post('/admin_actions/user/search_users', params)
+      },
     }
   }
 }

@@ -413,4 +413,15 @@ defmodule Acs.UserController do
       inserted_at: new_user.inserted_at
     }})
   end
+
+  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"keyword" => keyword,  
+                      "page" => page, "records_per_page" => records_per_page}) do
+    query = from u in User,
+              select: map(u, [:id, :email, :mobile, :nickname, :gender, :age, :avatar_url, :inserted_at])
+              # where:  u.app_id == ^app_id
+    
+    users = Repo.all(query)
+
+    conn |> json(%{success: true, users: users})
+  end
 end

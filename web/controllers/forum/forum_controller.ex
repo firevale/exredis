@@ -74,8 +74,8 @@ defmodule Acs.ForumController do
   end
 
   # update_forum_info
-  def update_forum_info(conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
-    case Repo.get(Forum, forum_id) do
+  def update_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
+    case Repo.get_by(Forum, id: forum_id, app_id: app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound"})
 

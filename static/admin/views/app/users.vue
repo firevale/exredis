@@ -12,16 +12,16 @@
       <div class="tile is-parent is-vertical">
         <article class="tile is-child is-12">
           <div class="table-responsive">
-            <table class="table is-narrow goods-table">
+            <table class="table is-narrow">
               <thead>
                 <tr>
-                  <th>{{ $t('admin.user.fields.avatar') }}</th>
-                  <th>{{ $t('admin.user.fields.nickname') }}</th>
-                  <th>{{ $t('admin.user.fields.email') }}</th>
-                  <th>{{ $t('admin.user.fields.gender') }}</th>
-                  <th>{{ $t('admin.user.fields.age')}}</th>
-                  <th>{{ $t('admin.user.fields.insertedAt')}}</th>
-                  <th></th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.avatar') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.nickname') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.email') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.gender') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.age')}}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.insertedAt')}}</th>
+                  <th class="has-text-left"></th>
                 </tr>
               </thead>
               <tbody>
@@ -34,7 +34,7 @@
                     </td>
                     <td> {{ user.nickname }}</td>
                     <td> {{ user.email }}</td>
-                    <td> {{ user.gender =='male' ? $t('admin.titles.yes') : $t('admin.titles.no') }} </td>
+                    <td> {{ user.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale') }} </td>
                     <td> {{ user.age }}</td>
                     <td> {{ user.inserted_at | formatServerDateTime }} </td>
                     <td class="is-icon">
@@ -196,3 +196,5 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+</style>

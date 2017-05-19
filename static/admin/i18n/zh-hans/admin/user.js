@@ -11,6 +11,10 @@ export default {
     active: '是否启用',
     insertedAt: '添加时间',
   },
+  gender: {
+    male: '男',
+    famale: '女'
+  },
   messages: {
     opSuccess: '操作成功',
     opFailed: '操作失败',

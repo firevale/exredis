@@ -89,11 +89,13 @@ export default {
     },
 
     email() {
-      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t('account.notBound')
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t(
+        'account.notBound')
     },
 
     mobile() {
-      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t('account.notBound')
+      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t(
+        'account.notBound')
     }
   },
 
@@ -137,7 +139,8 @@ export default {
               break;
 
             case 'photoLib':
-              nativeApi.pickAvatarFrom('photoLib', result => this.handlePickAvatarResult(result))
+              nativeApi.pickAvatarFrom('photoLib', result => this.handlePickAvatarResult(
+                result))
               break;
           }
         })
@@ -148,6 +151,7 @@ export default {
           callback: result => {
             if (result.success) {
               this.updateUserAvatar(result.user.avatar_url)
+              window.acsConfig.user.avatar_url = result.user.avatar_url
             }
           }
         })
@@ -156,7 +160,9 @@ export default {
 
     handlePickAvatarResult: async function(result) {
       if (result.success) {
-        let progress = showProgress({visible: true})
+        let progress = showProgress({
+          visible: true
+        })
 
         let upload_result = await this.$acs.updateUserAvatar({
           file: {

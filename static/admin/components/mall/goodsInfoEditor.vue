@@ -197,7 +197,6 @@ export default {
       this.searching = true
       let result = await this.$acs.fetchGoods({
         keyword: this.keyword,
-        app_id: this.appId,
         page: page,
         records_per_page: this.recordsPerPage
       })

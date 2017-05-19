@@ -7,7 +7,7 @@ defmodule Acs.AdminUserController do
   def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => level}) do
     queryAdminUser = from au in AdminUser,
                      select: au.user_id,
-                     where: au.admin_level ==1 or au.admin_level ==^level and au.app_id == ^app_id
+                     where: au.admin_level ==1 or au.app_id == ^app_id
     adminUsers = Repo.all(queryAdminUser)
 
     query = from user in User,

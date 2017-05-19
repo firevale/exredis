@@ -18,7 +18,7 @@ config :acs, Acs.Repo,
   hostname: "10.10.235.154",
   pool_size: 10
 
-config :acs, Acs.Repo,
+config :acs, Acs.StatsRepo,
   adapter: Ecto.Adapters.MySQL,
   username: "acs",
   password: "A2m#x@8#Y%jVPv7*",

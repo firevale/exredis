@@ -4,15 +4,15 @@ defmodule Acs.AdminUserController do
   alias Acs.RedisUser
   alias Acs.RedisAdminUser
 
-  def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => level}) do
+  def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => level, "keyword" => keyword}) do
     queryAdminUser = from au in AdminUser,
                      select: au.user_id,
-                     where: au.admin_level ==1 or au.app_id == ^app_id
+                     where: au.admin_level == 1 or au.app_id == ^app_id
     adminUsers = Repo.all(queryAdminUser)
 
     query = from user in User,
             select: map(user, [:id, :nickname, :email, :inserted_at]),
-            where: user.id in (^adminUsers) == false,
+            where: not user.id in (^adminUsers) and (like(user.email, ^"%#{keyword}%") or like(user.mobile, ^"%#{keyword}%")),
             order_by: [desc: user.inserted_at]
     users = Repo.all(query)
     conn |> json(%{success: true, users: users})
@@ -89,7 +89,7 @@ defmodule Acs.AdminUserController do
             left_join: user in assoc(au, :user),
             select: map(au, [:id, :account_id, :admin_level, :app_id, :inserted_at,
             user: [:id, :nickname, :mobile] ]),
-            where: is_nil(au.app_id) == false and au.admin_level != 1 and au.app_id == ^app_id,
+            where: not is_nil(au.app_id) and au.admin_level != 1 and au.app_id == ^app_id,
             order_by: [desc: au.inserted_at],
             preload: [user: user]
     users = Repo.all(query)

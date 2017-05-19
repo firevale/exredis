@@ -67,8 +67,8 @@ defmodule Acs.MallController do
   end
 
   # update_mall_info
-  def update_mall_info(conn, %{"mall" => %{"id" => mall_id} = mall_info}) do
-    case Repo.get(Mall, mall_id) do
+  def update_mall_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"mall" => %{"id" => mall_id} = mall_info}) do
+    case Repo.get_by(Mall, id: mall_id, app_id: app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound"})
 

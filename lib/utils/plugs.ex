@@ -425,7 +425,7 @@ defmodule Acs.Plugs do
     end
   end
 
-  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
+  def check_admin_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
     with admin_level <- Keyword.get(opts, :admin_level, 1),
       app_id <- _fetch_header_app_id(conn) || Map.get(conn.params, "app_id"),
       user_admin_level <- _get_user_admin_level(user_id, app_id),

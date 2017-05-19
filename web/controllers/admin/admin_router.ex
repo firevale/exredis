@@ -2,15 +2,15 @@ defmodule Acs.AdminRouter do
   use Acs.Web, :router
   use LogAlias
   pipeline :admin_super do
-    plug :check_authorization, [admin_level: 1]
+    plug :check_admin_authorization, [admin_level: 1]
   end
   
   pipeline :admin_app do
-    plug :check_authorization, [admin_level: 2]
+    plug :check_admin_authorization, [admin_level: 2]
   end
   
   pipeline :admin_customer_service do
-    plug :check_authorization, [admin_level: 3]
+    plug :check_admin_authorization, [admin_level: 3]
   end
 
   scope "/", Acs do

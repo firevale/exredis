@@ -38,6 +38,11 @@ export default new Router({
           component: require('../views/app/config/main')
         },
         {
+          name: 'AdminUsers',
+          path: 'adminusers',
+          component: require('../views/app/adminUsers')
+        },
+        {
           name: 'Users',
           path: 'users',
           component: require('../views/app/users')

@@ -50,27 +50,27 @@ export default {
       },
 
       updateAppInfo(params, successMessage) {
-        return post('/admin_actions/update_app_info', params, successMessage)
+        return post('/admin_actions/app/update_app_info', params, successMessage)
       },
 
       updateAppSdkInfo(params, successMessage) {
-        return post('/admin_actions/update_app_sdk_info', params, successMessage)
+        return post('/admin_actions/app/update_app_sdk_info', params, successMessage)
       },
 
       updateAppGoodsInfo(params, successMessage) {
-        return post('/admin_actions/update_app_goods_info', params, successMessage)
+        return post('/admin_actions/app/update_app_goods_info', params, successMessage)
       },
 
       updateAppGoodsProductId(params, successMessage) {
-        return post('/admin_actions/update_app_goods_product_id', params, successMessage)
+        return post('/admin_actions/app/update_app_goods_product_id', params, successMessage)
       },
 
       deleteAppGoods(params, successMessage) {
-        return post('/admin_actions/delete_app_goods', params, successMessage)
+        return post('/admin_actions/app/delete_app_goods', params, successMessage)
       },
 
       generateDummySdkInfo(params) {
-        return post('/admin_actions/generate_dummy_sdk_info', params)
+        return post('/admin_actions/app/generate_dummy_sdk_info', params)
       },
 
       fetchOrders(params) {

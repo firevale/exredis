@@ -19,16 +19,6 @@ defmodule Acs.AdminRouter do
     post "/fetch_apps", AdminController, :fetch_apps
     post "/fetch_app", AdminController, :fetch_app
     post "/fetch_supported_sdks", AdminController, :fetch_supported_sdks
-    post "/update_app_info", AdminController, :update_app_info
-
-    post "/generate_dummy_sdk_info", AppSdkInfoController, :generate_dummy_sdk_info
-    post "/update_app_sdk_info", AppSdkInfoController, :update_app_sdk_info
-    post "/update_goods_icon", AdminController, :update_goods_icon
-    post "/update_app_goods_info", AdminController, :update_app_goods_info
-    post "/update_app_goods_product_id", AdminController, :update_app_goods_product_id
-    post "/delete_app_goods", AdminController, :delete_app_goods
-    post "/update_app_icon", AdminController, :update_app_icon
-
     post "/fetch_orders", AdminController, :fetch_orders
     post "/search_orders", AdminController, :search_orders
 
@@ -41,6 +31,18 @@ defmodule Acs.AdminRouter do
       post  "/add_setting", AdminSettingController, :add_setting
       post  "/update_setting", AdminSettingController, :update_setting
       post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+    end
+
+    scope "/app" do
+      pipe_through :admin_app
+      post "/update_app_sdk_info", AppSdkInfoController, :update_app_sdk_info
+      post "/generate_dummy_sdk_info", AppSdkInfoController, :generate_dummy_sdk_info
+      post "/update_app_icon", AdminController, :update_app_icon
+      post "/update_app_info", AdminController, :update_app_info
+      post "/update_goods_icon", AdminController, :update_goods_icon
+      post "/update_app_goods_info", AdminController, :update_app_goods_info
+      post "/update_app_goods_product_id", AdminController, :update_app_goods_product_id
+      post "/delete_app_goods", AdminController, :delete_app_goods
     end
 
     scope "/mall" do

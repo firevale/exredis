@@ -1,5 +1,65 @@
 <template>
-  <div class="card" v-if="users">
+  <div v-if="users">
+    <div class="columns is-multiline">
+      <div class="column is-6">
+        <div class="card" style="min-height:15rem;">
+          <header class="card-header">
+            <p class="card-header-title">
+              <strong>{{ $t('admin.label.appManager')}}</strong>
+            </p>
+            <p class="card-header-icon">
+              <a v-if="level==1" @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="admin-user">
+              <div v-for="item in users" v-if="item.admin_level==2">
+                <span class="tag is-info is-medium">
+                  {{item.user.nickname}}
+                  <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div style="min-height:15rem" class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              <strong>{{ $t('admin.label.appCustomerService')}}</strong>
+            </p>
+            <p class="card-header-icon">
+              <a @click="addAdminUser(3)" class="button is-info">{{$t('common.add')}}</a>
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="admin-user">
+              <div v-for="item in users" class="level-item" v-if="item.admin_level==3">
+                <span class="tag is-info is-medium">
+                  {{item.user.nickname}}
+                  <button @click="deleteUsers(item)" class="delete is-small"></button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box" v-else>
+    <div class="hero-body has-text-centered">
+      <div class="container">
+        <span class="icon is-large">
+          <i class="fa fa-spinner fa-spin"></i>
+        </span>
+        <h2 class="subtitle" style="margin-top: 20px">
+            {{ $t('admin.titles.loading') }}
+          </h2>
+      </div>
+    </div>
+  </div>
+  <!--<div class="card" v-if="users">
     <div class="card">
       <header class="card-header">
         <p class="card-header-title">
@@ -56,7 +116,7 @@
           </h2>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>
 <script>
 import Vue from 'vue'

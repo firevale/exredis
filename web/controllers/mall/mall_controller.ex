@@ -80,8 +80,8 @@ defmodule Acs.MallController do
   end
 
   # fetch_goods
-  def fetch_goods(conn, %{"page" => page, "records_per_page" => records_per_page,
-   "keyword" => keyword, "app_id" => app_id}) do
+  def fetch_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, "records_per_page" => records_per_page,
+   "keyword" => keyword}) do
 
     {:ok,searchTotal,ids} =search_goods(app_id, keyword,page,records_per_page)
 

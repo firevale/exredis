@@ -19,6 +19,14 @@ config :acs, Acs.Repo,
   hostname: "10.8.21.135",
   pool_size: 10
 
+config :acs, Acs.StatsRepo,
+  adapter: Ecto.Adapters.MySQL,
+  username: "acs",
+  password: "*0!pAPjFkXeMSd3r",
+  database: "acs_stats",
+  hostname: "10.8.21.135",
+  pool_size: 10
+
 config :acs, :elasticsearch, 
   pool: [size: 10, max_overflow: 20],
   connection: [host: {:system, "ACS_ELASTICSEARCH_HOSTNAME"}, port: {:system, "ACS_ELASTICSEARCH_PORT"}]

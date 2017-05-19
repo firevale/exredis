@@ -1,172 +1,198 @@
 <template>
-  <div class="card" v-if="users">
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">
-          <strong>{{ $t('admin.label.appManager')}}</strong>
-        </p>
-        <p class="card-header-icon">
-          <a v-if="level==1" @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
-        </p>
-      </header>
-      <div class="card-content">
-        <nav class="level">
-          <div class="level-left">
-            <a v-for="item in users" class="level-item" v-if="item.admin_level==2">
-              <span class="tag is-info is-medium">
-                {{item.user.nickname}}
-                <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
-              </span>
-            </a>
+  <div>
+    <div class="control has-icon has-icon-left">
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchUsers')"
+        v-model="keyword">
+      <span class="icon is-small">
+        <i v-if="searching" class="fa fa-spinner fa-spin"></i>
+        <i v-else class="fa fa-search"></i>
+      </span>
+    </div>
+    <div class="tile is-ancestor" v-if="!initing && users.length > 0">
+      <div class="tile is-parent is-vertical">
+        <article class="tile is-child is-12">
+          <div class="table-responsive">
+            <table class="table is-narrow goods-table">
+              <thead>
+                <tr>
+                  <th>{{ $t('admin.user.fields.avatar') }}</th>
+                  <th>{{ $t('admin.user.fields.nickname') }}</th>
+                  <th>{{ $t('admin.user.fields.email') }}</th>
+                  <th>{{ $t('admin.user.fields.gender') }}</th>
+                  <th>{{ $t('admin.user.fields.age')}}</th>
+                  <th>{{ $t('admin.user.fields.insertedAt')}}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="user in users">
+                  <tr>
+                    <td class="is-icon">
+                      <figure class="image is-48x48">
+                        <img :src="user.avatar_url ? user.avatar_url: 'https://placehold.it/48x48'"></img>
+                      </figure>
+                    </td>
+                    <td> {{ user.nickname }}</td>
+                    <td> {{ user.email }}</td>
+                    <td> {{ user.gender =='male' ? $t('admin.titles.yes') : $t('admin.titles.no') }} </td>
+                    <td> {{ user.age }}</td>
+                    <td> {{ user.inserted_at | formatServerDateTime }} </td>
+                    <td class="is-icon">
+                      <a @click.prevent="searchUsers">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
-        </nav>
+        </article>
+        <article class="tile is-child is-12">
+          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+        </article>
       </div>
     </div>
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">
-          <strong>{{ $t('admin.label.appCustomerService')}}</strong>
-        </p>
-        <p class="card-header-icon">
-          <a @click="addAdminUser(3)" class="button is-info">{{$t('common.add')}}</a>
-        </p>
-      </header>
-      <div class="card-content">
-        <nav class="level">
-          <div class="level-left">
-            <a v-for="item in users" class="level-item" v-if="item.admin_level==3">
-              <span class="tag is-info is-medium">
-                {{item.user.nickname}}
-                <button @click="deleteUsers(item)" class="delete is-small"></button>
-              </span>
-            </a>
-          </div>
-        </nav>
-      </div>
-    </div>
-  </div>
-  <div class="box" v-else>
-    <div class="hero-body has-text-centered">
-      <div class="container">
-        <span class="icon is-large">
-          <i class="fa fa-spinner fa-spin"></i>
-        </span>
-        <h2 class="subtitle" style="margin-top: 20px">
+    <div class="box" v-else>
+      <div class="hero-body has-text-centered">
+        <div v-if="loading || initing" class="container">
+          <span class="icon is-large">
+            <i class="fa fa-spinner fa-spin"></i>
+          </span>
+          <h2 class="subtitle" style="margin-top: 20px">
             {{ $t('admin.titles.loading') }}
           </h2>
+        </div>
+        <div v-else class="container">
+          <h1 class="title">
+            {{ $t('admin.titles.oops') }}
+          </h1>
+          <h2 class="subtitle">
+            {{ $t('admin.titles.noUserToDisplay') }}
+          </h2>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import Vue from 'vue'
 import {
-  i18n
-} from 'admin/vue-i18n'
+  processAjaxError
+} from 'admin/miscellaneous'
+
 import {
-  showMessageBox
-} from 'admin/components/dialog/messageBox'
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-import sectionInfoDialog from 'admin/components/dialog/adminUser/sectionInfo'
-const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
+import * as getters from 'admin/store/getters'
+import Pagination from 'admin/components/Pagination'
+import Tooltip from 'vue-bulma-tooltip'
 
-const openSectionInfoDialog = (propsData = {
-  visible: true
-}) => {
-  return new sectionInfoDialogComponent({
-    i18n,
-    el: document.createElement('div'),
-    propsData
-  })
-}
 export default {
-  mounted: async function() {
-    await this.getLevel()
-    await this.getAdminUser()
-  },
-  data() {
+  data: function() {
     return {
-      users: undefined,
-      level: 0
+      keyword: "",
+      searching: false,
+      loading: false,
+      initing: true,
+      users: [],
+      page: 0,
+      total: 1,
+      recordsPerPage: 10,
     }
+  },
+
+  computed: {
+    appIcon: function() {
+      if (this.app && this.app.icon) {
+        return this.app.icon
+      } else {
+        return 'https://placehold.it/32x32?text=' + this.app.name
+      }
+    },
+
+    currency: function() {
+      if (this.app && this.app.currency) {
+        return this.app.currency
+      } else {
+        return ''
+      }
+    },
+
+  },
+
+  mounted: async function() {
+    await this.searchUsers()
+    this.initing = false
   },
 
   methods: {
-    getLevel: async function() {
-      let result = await this.$acs.getCurrentUserLevel()
-      if (result.success) {
-        this.level = result.level
+    getOrderPlatformIcon: function(user) {
+      let result = 'fa fa-'
+      switch (user.platform) {
+        case 'android':
+          result = result + 'android'
+          break
+        case 'ios':
+          result = result + 'apple '
+          break
+        case 'wp8':
+          result = result + 'windows '
+          break
+        default:
+          result = result + 'apple '
+          break
       }
+
+      switch (user.status) {
+        case 0:
+          result = result + ' is-primary'
+          break;
+        case 1:
+          result = result + ' is-info'
+          break;
+        case 2:
+          result = result + ' is-success'
+          break;
+        case 3:
+          result = result + ' is-danger'
+          break;
+      }
+
+      return result
     },
-    getAdminUser: async function() {
-      let result = await this.$acs.getAdminUserByApp()
+
+    onPageChange: async function(page) {
+      this.page = page
+      await this.searchUsers()
+    },
+
+    onSearchBoxSubmit: async function() {
+      this.page = 0
+      await this.searchUsers()
+    },
+
+    searchUsers: async function() {
+      this.searching = true
+      let result = await this.$acs.searchUsers({
+        keyword: this.keyword,
+        page: this.page + 1,
+        records_per_page: this.recordsPerPage
+      })
       if (result.success) {
+        this.total = result.total
         this.users = result.users
-      }
-    },
-    addUser: function(level) {
-      openSectionInfoDialog({
-        section: {
-          age: 0,
-          email: '',
-          mobile: '',
-          password: '',
-          nickname: '',
-          level: level,
-          active: false,
-          device_id: ''
-        },
-        visible: true,
-        callback: section => {},
-      })
-    },
-    addAdminUser: function(level) {
-      openSectionInfoDialog({
-        section: {
-          level: level
-        },
-        visible: true,
-        callback: section => {
-          this.getAdminUser()
-        },
-      })
-    },
-    showUser: async function(user) {
-      let par = new Object()
-      par.user_id = user.user.id
-      let result = await this.$acs.getUserFromRedis(par)
-      if (result.success) {
+        this.page = result.page
 
       }
+      this.searching = false
     },
-    deleteUsers: function(users) {
-      let confirmMessage = users.admin_level == 2 ? this.$t(
-        'admin.messages.confirmDeleteAppManager', {
-          nickName: users.user.nickname
-        }) : this.$t('admin.messages.confirmDeleteCustomerService', {
-        nickName: users.user.nickname
-      })
-      let deletedMessage = users.admin_level == 2 ? this.$t(
-        'admin.notification.message.appManagerDeleted', {
-          nickName: users.user.nickname
-        }) : this.$t('admin.notification.message.appCustomerServiceDeleted', {
-        nickName: users.user.nickname
-      })
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: confirmMessage,
-        type: 'danger',
-        onOK: async _ => {
-          let result = await this.$acs.deleteAdminUser({
-            admin_user_id: users.id
-          }, deletedMessage)
-          if (result.success) {
-            this.getAdminUser()
-          }
-        },
-      })
-    }
+  },
+
+  components: {
+    Pagination,
+    Tooltip
   }
 }
 </script>

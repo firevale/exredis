@@ -1,11 +1,15 @@
 export default {
   fields: {
+    id: '编号',
+    avatar: '头像',
     nickname: '昵称',
     email: '账号',
     password: '密码',
     mobile: '移动电话',
+    gender: '性别',
     age: '年龄',
-    active: '是否启用'
+    active: '是否启用',
+    insertedAt: '添加时间',
   },
   messages: {
     opSuccess: '操作成功',

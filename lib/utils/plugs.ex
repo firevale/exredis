@@ -416,15 +416,24 @@ defmodule Acs.Plugs do
    end
  end
 
- def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
-   with admin_level <- Keyword.get(opts, :admin_level, 1),
-        app_id <- _fetch_header_app_id(conn) || Map.get(conn.params, "app_id"),
-        user_admin_level <- _get_user_admin_level(user_id, app_id),
-        true <- _allow_access?(admin_level, user_admin_level) do
-     put_private(conn, :acs_app_id, app_id)
-   else
-     _ -> Phoenix.Controller.json(conn, %{success: false, action: "forbiddenAccess",  i18n_message: "admin.notification.message.forbidden"}) |> halt
-   end
+  defp _response_authorization_failed(conn) do
+    case get_req_header(conn, "x-csrf-token") do
+      [] ->
+        conn |> Phoenix.Controller.redirect(to: "/admin/index") |> halt
+      _ -> 
+        Phoenix.Controller.json(conn, %{success: false, action: "forbiddenAccess",  i18n_message: "admin.notification.message.forbidden"}) |> halt
+    end
+  end
+
+  def check_authorization(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, opts) do
+    with admin_level <- Keyword.get(opts, :admin_level, 1),
+      app_id <- _fetch_header_app_id(conn) || Map.get(conn.params, "app_id"),
+      user_admin_level <- _get_user_admin_level(user_id, app_id),
+      true <- _allow_access?(admin_level, user_admin_level) do
+      put_private(conn, :acs_app_id, app_id)
+    else
+      _ -> _response_authorization_failed(conn)
+    end
   end
 
   def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},

@@ -21,7 +21,7 @@
           <span class="is-darkred is-clickable" style="padding-top:0.2rem" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
         </div>
       </nav>
-      <quill-content class="quill-editor ql-container ql-snow post-content" :content="filterContent"></quill-content>
+      <quill-content class="quill-editor ql-snow post-content" :content="filterContent"></quill-content>
     </div>
   </article>
 </div>

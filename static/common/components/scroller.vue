@@ -93,6 +93,7 @@ export default {
         scrollX: false,
         scrollY: true,
         probeType: 2,
+        eventPassthrough: 'horizontal',
         tap: true,
         momentum: false,
         bounceEasing: 'quadratic'

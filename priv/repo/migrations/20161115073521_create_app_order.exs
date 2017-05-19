@@ -26,10 +26,10 @@ defmodule Acs.Repo.Migrations.CreateAppOrder do
       add :transaction_id, :string
       add :transaction_status, :string, size: 20
       add :cp_result, :text
+      add :app_user_id, :integer
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing)
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
-      add :app_user_id, references(:app_users, on_delete: :nothing)
       add :goods_id, references(:app_goods, type: :string, on_delete: :nothing)
 
       timestamps()

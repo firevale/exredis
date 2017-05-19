@@ -176,6 +176,7 @@ export default {
 
         if (upload_result.success) {
           this.updateUserAvatar(upload_result.user.avatar_url)
+          window.acsConfig.user.avatar_url = result.user.avatar_url
         }
       }
     }

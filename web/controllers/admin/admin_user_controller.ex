@@ -7,7 +7,7 @@ defmodule Acs.AdminUserController do
   def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => level}) do
     queryAdminUser = from au in AdminUser,
                      select: au.user_id,
-                     where: au.admin_level in [^level, 1]  and au.app_id == ^app_id
+                     where: au.admin_level ==1 or au.admin_level ==^level and au.app_id == ^app_id
     adminUsers = Repo.all(queryAdminUser)
 
     query = from user in User,
@@ -28,7 +28,7 @@ defmodule Acs.AdminUserController do
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
-    if(level == 1) do
+    if(RedisAdminUser.get_admin_level(admin_id, nil) == 1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
     if(level == 2 and RedisAdminUser.get_admin_level(acs_admin_id, nil) !=1) do

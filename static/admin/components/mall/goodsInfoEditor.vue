@@ -180,7 +180,6 @@ export default {
       this.loading = true
       let result = await this.$acs.fetchGoods({
         keyword: "",
-        app_id: this.appId,
         page: page,
         records_per_page: recordsPerPage
       })

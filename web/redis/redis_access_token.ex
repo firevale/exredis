@@ -20,7 +20,7 @@ defmodule Acs.RedisAccessToken do
       app_id: app_id,
       user_id: user_id,
       device_id: device_id,
-      platform: platform,
+      platform: _platform,
       ttl: ttl,
       binding: binding
     }) when is_bitstring(device_id) do
@@ -116,9 +116,9 @@ defmodule Acs.RedisAccessToken do
   defp device_key(%__MODULE__{} = token) do
     "#{@device_index_key}.#{token.app_id}.#{token.device_id}"
   end
-  defp device_key(app_id, device_id) do
-    "#{@device_index_key}.#{app_id}.#{device_id}"
-  end
+  # defp device_key(app_id, device_id) do
+  #   "#{@device_index_key}.#{app_id}.#{device_id}"
+  # end
 
   defp device_id(idfa, idfv, android_id) do
     cond do

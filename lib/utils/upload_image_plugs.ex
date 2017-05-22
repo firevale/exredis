@@ -8,7 +8,7 @@ defmodule Acs.UploadImagePlugs do
     case opt[:param_name] do 
       param_name when is_bitstring(param_name) ->
         case conn.params[param_name] do 
-          %{"base64_content" => base64_content} = file_param ->
+          %{"base64_content" => base64_content} ->
             with image_data <- Base.decode64!(base64_content),
                  file_name <- Path.join("/tmp", Utils.md5_sign(base64_content)),
                  {:ok, file} <- File.open(file_name, [:write]),
@@ -87,7 +87,7 @@ defmodule Acs.UploadImagePlugs do
                  i18n_message_object: format}}
     end
   end
-  defp check_image_format(image_file, _), do: :ok
+  defp check_image_format(_image_file, _), do: :ok
 
   defp check_image_square(image_file, true) do
     if image_file.width == image_file.height do 
@@ -99,7 +99,7 @@ defmodule Acs.UploadImagePlugs do
                                         height: image_file.height}}}
     end
   end
-  defp check_image_square(image_file, _), do: :ok
+  defp check_image_square(_image_file, _), do: :ok
   
   defp check_image_ratio(image_file, ratio) when is_integer(ratio) or is_float(ratio) do
     image_ratio = image_file.height / image_file.width
@@ -113,7 +113,7 @@ defmodule Acs.UploadImagePlugs do
                                         ratio: ratio}}}
     end
   end
-  defp check_image_ratio(image_file, _), do: :ok 
+  defp check_image_ratio(_image_file, _), do: :ok 
 
   defp check_image_min_width(image_file, min_width) when is_integer(min_width) do
     if image_file.width >= min_width do 
@@ -125,7 +125,7 @@ defmodule Acs.UploadImagePlugs do
                                         min_width: min_width}}}
     end
   end
-  defp check_image_min_width(image_file, _), do: :ok
+  defp check_image_min_width(_image_file, _), do: :ok
 
   defp check_image_max_width(image_file, max_width) when is_integer(max_width) do
     if image_file.width <= max_width do 
@@ -137,7 +137,7 @@ defmodule Acs.UploadImagePlugs do
                                         min_width: max_width}}}
     end
   end
-  defp check_image_max_width(image_file, _), do: :ok
+  defp check_image_max_width(_image_file, _), do: :ok
 
   defp check_image_min_height(image_file, min_height) when is_integer(min_height) do
     if image_file.height >= min_height do 
@@ -149,7 +149,7 @@ defmodule Acs.UploadImagePlugs do
                                         min_height: min_height}}}
     end
   end
-  defp check_image_min_height(image_file, _), do: :ok
+  defp check_image_min_height(_image_file, _), do: :ok
 
   defp check_image_max_height(image_file, max_height) when is_integer(max_height) do
     if image_file.height <= max_height do 
@@ -161,7 +161,7 @@ defmodule Acs.UploadImagePlugs do
                                         min_height: max_height}}}
     end
   end
-  defp check_image_max_height(image_file, _), do: :ok
+  defp check_image_max_height(_image_file, _), do: :ok
 
   defp resize_image(%{path: path} = image_file, [width: width, height: height]) when is_integer(width) and is_integer(height) do
     case image_file |> Mogrify.resize("#{width}x#{height}") |> Mogrify.save(in_place: true) do 

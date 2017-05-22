@@ -3,8 +3,6 @@ defmodule Acs.CustomerServiceController do
 
 
   alias   Acs.RedisForum
-  alias   Acs.RedisSetting
-  alias   Acs.RedisForum
   alias   Acs.Question
   require Floki
 
@@ -13,7 +11,7 @@ defmodule Acs.CustomerServiceController do
   plug :fetch_session_user
 
   def add_contact(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
-                    %{"title" => title,
+                    %{"title" => _title,
                       "app_id" => app_id} = contact)do
       with  contact <- contact |> Map.put("user_id", user_id) |> Map.put("app_id", app_id),
             {:ok, contact} <- Question.changeset(%Question{}, contact) |> Repo.insert
@@ -29,7 +27,7 @@ defmodule Acs.CustomerServiceController do
       else
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.illegal"})
-        {:error, %{errors: errors}} ->
+        {:error, %{errors: _errors}} ->
           conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       end
   end
@@ -81,7 +79,7 @@ defmodule Acs.CustomerServiceController do
         conn |> json(%{success: true, question: question,i18n_message: "admin.serverSuccess.updated"})
     else
       nil -> conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-      {:error, %{errors: errors}} -> conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+      {:error, %{errors: _errors}} -> conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
 
   end
@@ -124,7 +122,7 @@ defmodule Acs.CustomerServiceController do
     conn |> json(%{success: true, questions: questions, total: total_page})
   end
 
-  def search(conn, %{"app_id" => forum_id,
+  def search(conn, %{"app_id" => _forum_id,
                      "keyword" => keyword,
                      "page" => page,
                      "records_per_page" => records_per_page}) do
@@ -145,7 +143,7 @@ defmodule Acs.CustomerServiceController do
     case Elasticsearch.search(%{index: "customer_service", type: "questions", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         questions = Enum.map(hits, fn(%{
-          _id: id,
+          _id: _id,
         } = hit) ->
           %{
             id: hit._source.id,
@@ -164,7 +162,7 @@ defmodule Acs.CustomerServiceController do
     end
   end
 
-  def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"app_id" =>app_id})do
+  def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: _user_id}} = conn, %{"app_id" => app_id}) do
      app = RedisApp.find(app_id) |> Map.take([:id, :cs_phone_number, :baidu_tieba_name, :weibo_name, :website_url, :public_weixin_name, :forum_url])
 
      conn |> json(%{success: true, app: app})

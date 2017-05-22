@@ -57,7 +57,7 @@ defmodule Acs.AdminSettingController do
   # add setting
   def add_setting(conn, %{"setting_name" => setting_name, 
                         "setting_value" => setting_value,
-                        "group" => group} = params) do
+                        "group" => _group} = params) do
     with setting <- params |> Map.put("active", true) |> Map.put("name", setting_name) |> Map.put("value", setting_value),
       {:ok, setting} <- AdminSetting.changeset(%AdminSetting{}, setting) |> Repo.insert
     do
@@ -79,7 +79,7 @@ defmodule Acs.AdminSettingController do
   # update setting
   def update_setting_by_name(conn, %{"setting_name" => setting_name,
                             "setting_value" => setting_value,
-                            "group" => group,
+                            "group" => _group,
                             "active" => active} = setting) do
     case Repo.get_by(AdminSetting, name: setting_name) do
       nil ->
@@ -111,7 +111,7 @@ defmodule Acs.AdminSettingController do
   end
   def update_setting(conn, %{"setting_id" => setting_id,
                             "setting_value" => setting_value,
-                            "active" => active} = setting) do
+                            "active" => active}) do
 
     with %AdminSetting{} = setting <- Repo.get(AdminSetting, setting_id),
       {:ok, _} <- AdminSetting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update()

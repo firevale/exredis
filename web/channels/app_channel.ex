@@ -54,9 +54,9 @@ defmodule Acs.AppChannel do
                            "user_id" => user_id,
                            "app_user_id" => app_user_id,
                            "app_user_name" => app_user_name,
-                           "app_user_level" => app_user_level,
+                           "app_user_level" => _app_user_level,
                            "zone_id" => zone_id,
-                           "zone_name" => zone_name
+                           "zone_name" => _zone_name
                           } = payload, socket) do
       d "receive reset channel request with payload: #{inspect payload, pretty: true}"
       Logger.metadata(user_id: user_id)
@@ -103,7 +103,7 @@ defmodule Acs.AppChannel do
   end
   def terminate(_reason, _socket), do: :ok
 
-  defp init_stat_data(%{"access_token" => access_token,
+  defp init_stat_data(%{"access_token" => _access_token,
                         "user_id" => user_id,
                         "app_id" => app_id,
                         "device_id" => device_id,
@@ -115,7 +115,7 @@ defmodule Acs.AppChannel do
                         "app_user_name" => app_user_name,
                         "app_user_level" => app_user_level,
                         "zone_id" => zone_id,
-                        "zone_name" => zone_name}, today, socket) do
+                        "zone_name" => _zone_name}, today, socket) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do
@@ -223,7 +223,7 @@ defmodule Acs.AppChannel do
                      "user_id" => user_id}) do
     user_id = String.to_integer(user_id)
     case RedisAccessToken.find(access_token_id) do
-      %{device_id: ^device_id, user_id: ^user_id} = token -> true
+      %{device_id: ^device_id, user_id: ^user_id} -> true
       _ -> false
     end
   end

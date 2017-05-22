@@ -16,10 +16,11 @@
               <thead>
                 <tr>
                   <th class="has-text-left">{{ $t('admin.user.fields.avatar') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.id') }}</th>
                   <th class="has-text-left">{{ $t('admin.user.fields.nickname') }}</th>
+                  <th class="has-text-left">{{ $t('admin.user.fields.appUserName') }}</th>
                   <th class="has-text-left">{{ $t('admin.user.fields.email') }}</th>
                   <th class="has-text-left">{{ $t('admin.user.fields.gender') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.age')}}</th>
                   <th class="has-text-left">{{ $t('admin.user.fields.insertedAt')}}</th>
                   <th class="has-text-left"></th>
                 </tr>
@@ -29,19 +30,16 @@
                   <tr>
                     <td class="is-icon">
                       <figure class="image is-48x48">
-                        <img :src="user.avatar_url ? user.avatar_url: 'https://placehold.it/48x48'"></img>
+                        <img :src="user.avatar_url ? user.avatar_url : 'https://placehold.it/48x48' | imageStaticUrl"></img>
                       </figure>
+                      <td> {{ user.user_id }}</td>
                     </td>
                     <td> {{ user.nickname }}</td>
+                    <td> {{ user.app_user_name }}</td>
                     <td> {{ user.email }}</td>
-                    <td> {{ user.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale') }} </td>
-                    <td> {{ user.age }}</td>
+                    <td> {{ user.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale')
+                      }} </td>
                     <td> {{ user.inserted_at | formatServerDateTime }} </td>
-                    <td class="is-icon">
-                      <a @click.prevent="searchUsers">
-                        <i class="fa fa-pencil"></i>
-                      </a>
-                    </td>
                   </tr>
                 </template>
               </tbody>
@@ -197,4 +195,14 @@ export default {
 }
 </script>
 <style lang="scss">
+.control {
+  padding-bottom: 1rem;
+}
+.table {
+  tbody {
+    td {
+      vertical-align: middle;
+    }
+  }
+}
 </style>

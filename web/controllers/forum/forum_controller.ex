@@ -355,7 +355,7 @@ defmodule Acs.ForumController do
     query = from c in ForumComment,
             join: u in assoc(c, :user),
             order_by: [asc: c.id],
-            where: c.post_id == ^post_id and c.active == true,
+            where: c.post_id == ^post_id,
             select: map(c, [:id, :content, :floor, :active, :inserted_at, user: [:id, :nickname, :avatar_url]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -382,7 +382,7 @@ defmodule Acs.ForumController do
     total = Repo.one!(from c in ForumComment, 
                       join: p in assoc(c, :post), 
                       select: count(1), 
-                      where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true)
+                      where: p.forum_id == ^forum_id and c.user_id == ^user_id and p.active == true)
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from c in ForumComment,

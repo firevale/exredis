@@ -20,10 +20,7 @@ defmodule ImportFvacModel do
   alias   Acs.AppDeviceDailyActivity
 
   alias   Acs.RedisApp
-  alias   Acs.RedisUser
 
-
-  import  Ecto
   import  Ecto.Query
   alias   Ecto.Adapters.SQL
   alias   Acs.Repo
@@ -164,7 +161,7 @@ defmodule ImportFvacModel do
           {:error, %{errors: [email: _ ]}} ->
             IO.puts "user email #{inspect user, pretty: true} is invalid, not imported"
 
-          {:error, %{errors: [device_id: error]}} ->
+          {:error, %{errors: [device_id: _error]}} ->
             case Repo.get_by(User, device_id: device_id) do 
               nil ->
                 IO.puts "user device #{inspect user, pretty: true} is existing, not imported"
@@ -203,7 +200,7 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+        {:ok, %{ _scroll_id: _res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all orders imported"
 
@@ -343,7 +340,7 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+        {:ok, %{ _scroll_id: _res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all devices imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: devices}}} ->
@@ -435,7 +432,7 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+        {:ok, %{ _scroll_id: _res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "all app users imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: app_users}}} ->
@@ -538,7 +535,7 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+        {:ok, %{ _scroll_id: _res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "#{date} all app user activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->
@@ -627,7 +624,7 @@ defmodule ImportFvacModel do
 
     if Httpc.success?(response) do 
       case JSON.decode(response.body, keys: :atoms) do 
-        {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: []}}} ->
+        {:ok, %{ _scroll_id: _res_scroll_id, hits: %{hits: []}}} ->
           Httpc.delete("http://10.10.134.58:9200/_search/scroll/_all")
           IO.puts "#{date} all app device activities imported"
         {:ok, %{ _scroll_id: res_scroll_id, hits: %{hits: array}}} ->

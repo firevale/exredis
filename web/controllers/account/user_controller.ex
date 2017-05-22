@@ -237,7 +237,7 @@ defmodule Acs.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn, 
                            %{"resident_id" => resident_id, "resident_name" => resident_name}) do
     user = %{user | resident_id: resident_id, resident_name: resident_name}
     RedisUser.save!(user)

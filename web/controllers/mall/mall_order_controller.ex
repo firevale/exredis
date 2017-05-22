@@ -2,7 +2,6 @@ defmodule Acs.MallOrderController do
   use Acs.Web, :controller
 
   alias   Acs.RedisMall
-  alias   Utils.JSON
   require Floki
 
   plug :fetch_app_id
@@ -155,13 +154,13 @@ defmodule Acs.MallOrderController do
                       "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": pay_type,
                       "app_id": goods.app_id, "user_id": user_id, "address": address, "snapshots": snapshots}
 
-              {:ok, mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
+              {:ok, _mall_order} = MallOrder.changeset(%MallOrder{}, order) |> Repo.insert
 
               # add order detail
               order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price,
                             "amount": quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
 
-              {:ok, mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
+              {:ok, _mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
             end)
             json(conn, %{success: true, order_id: order_id, i18n_message: "mall.order.addSuccess"})
           end
@@ -190,7 +189,7 @@ defmodule Acs.MallOrderController do
   def fetch_my_orders(conn, _params) do
     json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
   end
-  defp fetch_my_orders(conn, user_id, type, page, records_per_page) do
+  defp fetch_my_orders(conn, _user_id, type, page, records_per_page) do
     total = Repo.one!(from order in MallOrder, select: count(1))
     total_page = round(Float.ceil(total / records_per_page))
 

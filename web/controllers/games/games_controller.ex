@@ -9,7 +9,7 @@ defmodule Acs.GamesController do
   plug :check_is_admin when action in [:update_news, :toggle_news_status, :get_paged_news_admin, :update_news_pic]
 
   # fetch_apps
-  def fetch_apps(conn, params) do
+  def fetch_apps(conn, _params) do
     query = from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
@@ -18,9 +18,6 @@ defmodule Acs.GamesController do
     apps = Repo.all(query)
 
     conn |> json(%{success: true, apps: apps})
-  end
-  def fetch_apps(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_top_news
@@ -70,7 +67,7 @@ defmodule Acs.GamesController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def get_paged_news_admin(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, 
+  def get_paged_news_admin(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn, 
                           %{"app_id" => app_id,
                           "group" => group,
                           "page" => page, 
@@ -120,10 +117,10 @@ defmodule Acs.GamesController do
   # update_news
   def update_news(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
                   "news_id" => news_id,
-                  "app_id" => app_id,
+                  "app_id" => _app_id,
                   "title" => title,
                   "content" => content,
-                  "group" => group,
+                  "group" => _group,
                   "is_top" => is_top} = news) do
     case Repo.get(AppNews, news_id) do
       nil ->
@@ -133,7 +130,7 @@ defmodule Acs.GamesController do
           {:ok, new_news} ->
             news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
             conn |> json(%{success: true, news: news, i18n_message: "admin.news.addSuccess"})
-          {:error, %{errors: errors}} ->
+          {:error, %{errors: _errors}} ->
             conn |> json(%{success: false, message: "admin.error.networkError"})
         end
         

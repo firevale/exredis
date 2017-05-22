@@ -19,6 +19,15 @@ defmodule Acs.MallController do
   def fetch_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do
     fetch_malls(conn, page, records_per_page)
   end
+  def fetch_malls(conn, %{"app_id" => app_id}) do
+    query = from m in Mall,
+              order_by: [desc: m.inserted_at],
+              where: m.active == true and m.app_id == ^app_id,
+              select: map(m, [:id, :title, :active, :icon, :app_id, :inserted_at])
+
+    malls = Repo.all(query)
+    conn |> json(%{success: true, malls: malls})
+  end  
   def fetch_malls(conn, _params) do
     fetch_malls(conn, 1, 100)
   end
@@ -34,15 +43,6 @@ defmodule Acs.MallController do
 
     malls = Repo.all(query)
     conn |> json(%{success: true, malls: malls, total: total_page})
-  end
-  def fetch_malls(conn, %{"app_id" => app_id} = params) do
-    query = from m in Mall,
-              order_by: [desc: m.inserted_at],
-              where: m.active == true and m.app_id == ^app_id,
-              select: map(m, [:id, :title, :active, :icon, :app_id, :inserted_at])
-
-    malls = Repo.all(query)
-    conn |> json(%{success: true, malls: malls})
   end
 
   # update_mall_icon
@@ -113,7 +113,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  defp search_goods(app_id, keyword,page,records_per_page) do
+  defp search_goods(_app_id, keyword, page, records_per_page) do
     if String.length(keyword)>0 do
           query = %{
             query: %{
@@ -153,7 +153,7 @@ defmodule Acs.MallController do
     format: ["png", "jpeg", "jpg"],
     reformat: "jpg",
     resize_to_limit: [width: 400, height: 400]] when action == :update_goods_pic
-  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path} = upload_file}) do
+  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
    case Repo.get(MallGoods, goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
@@ -190,7 +190,7 @@ defmodule Acs.MallController do
                 "pic" => pic,
                 "description" => description,
                 "price" => price,
-                "currency" => currency,
+                "currency" => _currency,
                 "postage" => postage,
                 "stock" => stock,
                 "is_new" => is_new} = goods) do
@@ -207,7 +207,7 @@ defmodule Acs.MallController do
               goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               RedisMall.refreshById(id)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
-            {:error, %{errors: errors}} ->
+            {:error, %{errors: _errors}} ->
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           end
         end
@@ -292,12 +292,8 @@ defmodule Acs.MallController do
   end
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
-    case RedisMall.find(goods_id) do
-      goods ->
-        conn |> json(%{success: true, stock: goods.stock})
-      _ ->
-        conn |> json(%{success: true, stock: 0})
-    end
+    goods = RedisMall.find(goods_id)
+    conn |> json(%{success: true, stock: goods.stock})
   end
   def get_goods_stock(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -422,7 +418,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def get_address_detail(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do
+  def get_address_detail(%Plug.Conn{private: %{acs_session_user_id: _user_id}} = conn,%{"address_id" => address_id}) do
     query = from ads in UserAddress,
             select: map(ads,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),
             where: ads.id == ^address_id
@@ -438,11 +434,11 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def insert_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
-                "name" => name,
-                "mobile" => mobile,
-                "area" => area,
-                "address" => address,
-                "area_code" => area_code} = us_address)do
+                "name" => _name,
+                "mobile" => _mobile,
+                "area" => _area,
+                "address" => _address,
+                "area_code" => _area_code} = us_address)do
     us_address = us_address |> Map.put("user_id", user_id)
     queryCount = from us in UserAddress,select: count(1), where: us.user_id == ^user_id
     count = Repo.one!(queryCount)
@@ -453,7 +449,7 @@ defmodule Acs.MallController do
         {:ok, new_address} ->
           us_address = us_address |> Map.put("id", new_address.id)
           conn |> json(%{success: true, address: us_address, i18n_message: "mall.address.addSuccess"})
-        {:error, %{errors: errors}} ->
+        {:error, %{errors: _errors}} ->
           conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
   end
@@ -467,7 +463,7 @@ defmodule Acs.MallController do
                 "area" => area,
                 "address" => address,
                 "area_code" => area_code,
-                "is_default" => is_default} = us_address)do
+                "is_default" => is_default})do
 
     case Repo.get(UserAddress, id) do
         nil ->

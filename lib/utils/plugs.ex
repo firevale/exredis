@@ -371,11 +371,11 @@ defmodule Acs.Plugs do
   def check_is_admin(%Plug.Conn{private: %{acs_access_token: ""}} = conn, _options) do
     _response_admin_access_failed(conn)
   end
-  def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: platform}} = conn, _options) do
+  def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: _platform}} = conn, _options) do
     case RedisAccessToken.find(access_token) do
       nil -> _response_admin_access_failed(conn)
 
-      %RedisAccessToken{user_id: user_id, app_id: app_id, device_id: device_id} = token ->
+      %RedisAccessToken{user_id: user_id, app_id: _app_id, device_id: _device_id} ->
         case RedisUser.find(user_id) do
           nil -> _response_admin_access_failed(conn)
 
@@ -437,7 +437,7 @@ defmodule Acs.Plugs do
     end
   end
 
-  def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: user_id},
+  def check_forum_manager(%Plug.Conn{private: %{acs_session_user_id: _user_id},
                                      params: %{"forum_id" => "error"}} = conn, _options) do
     conn |> put_private(:acs_is_forum_admin, false)
   end
@@ -461,7 +461,7 @@ defmodule Acs.Plugs do
      case RedisUser.find(user_id) do
        nil -> conn |> put_private(:acs_is_forum_admin, false)
 
-       %RedisUser{} = user ->
+       %RedisUser{} ->
          # check is admin user
         case Repo.get(Forum, forum_id) do
           nil -> conn |> put_private(:acs_is_forum_admin, false)
@@ -522,7 +522,7 @@ defmodule Acs.Plugs do
     case get_req_header(conn, "x-csrf-token") do
       [] ->
         conn |> Phoenix.Controller.redirect(to: "/login?redirect_uri=#{_base_encoded_path(conn)}") |> halt
-      y ->
+      _ ->
         conn |> Phoenix.Controller.json(%{success: false, action: "login", message: "current user is not an admin user"}) |> halt
     end
   end

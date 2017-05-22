@@ -33,7 +33,7 @@ defmodule Acs.FVSdkController do
     conn |> json(%{success: false, message: "bad request params"})
   end
 
-  def default_callback(conn, params) do
+  def default_callback(conn, _params) do
     case :rand.uniform(10) do
       1 -> conn |> text("ok")
       _ -> conn |> text("failed")
@@ -49,7 +49,7 @@ defmodule Acs.FVSdkController do
                        "app_user_id" => app_user_id,
                        "app_user_name" => app_user_name,
                        "osver" => os,
-                       "channel" => sdk,
+                       "channel" => _sdk,
                        "zone_id" => zone_id} = params) do
     today = Timex.today
 
@@ -134,7 +134,7 @@ defmodule Acs.FVSdkController do
 
     conn |> json(%{success: true})
   end
-  def report_activity(conn, params) do
+  def report_activity(conn, _params) do
     conn |> json(%{success: true})
   end
 

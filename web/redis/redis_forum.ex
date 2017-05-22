@@ -6,9 +6,7 @@ defmodule Acs.RedisForum do
   import  Ecto.Query
 
   alias   Acs.Forum
-  alias   Acs.ForumSection
   alias   Acs.RedisSetting
-  alias   Acs.AdminSetting
 
   require Logger
 
@@ -107,7 +105,7 @@ defmodule Acs.RedisForum do
           end
       end)
       
-      posts = Enum.reverse(ps)
+      Enum.reverse(ps)
     end
   end
 

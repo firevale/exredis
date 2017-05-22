@@ -6,7 +6,7 @@ defmodule Acs.CronController do
   alias   Acs.RedisMall
   use     Timex
 
-  def notify_cp(conn, params) do
+  def notify_cp(conn, _params) do
     now = DateTime.utc_now()
     query = from order in AppOrder,
               select: order,
@@ -46,14 +46,14 @@ defmodule Acs.CronController do
     end)
   end
 
-  def report_sms_amount(conn, params) do 
+  def report_sms_amount(conn, _params) do 
     {:ok, amount} = MeishengSmsSender.get_amount()
     {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
     ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
   end
 
-  def cancel_mall_order(conn, params) do 
+  def cancel_mall_order(conn, _params) do 
     now = DateTime.utc_now()
     query = from order in MallOrder,
               select: order,
@@ -78,7 +78,7 @@ defmodule Acs.CronController do
     end)
   end
 
-  def finish_mall_order(conn, params) do 
+  def finish_mall_order(conn, _params) do 
     now = DateTime.utc_now()
     query = from order in MallOrder,
               select: order,

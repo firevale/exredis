@@ -52,10 +52,10 @@ defmodule Acs.RedisUser do
   end
 
   @user_base_key       "acs.user."
-  @email_index_key     "acs.indexes.user_email."
+  # @email_index_key     "acs.indexes.user_email."
   @binding_index_key   "acs.indexes.sdk_binding."
-  @mobile_index_key    "acs.indexes.user_mobile."
-  @device_index_key    "acs.indexes.user_device."
+  # @mobile_index_key    "acs.indexes.user_mobile."
+  # @device_index_key    "acs.indexes.user_device."
 
   def create!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
     if not exists?(account_id) do

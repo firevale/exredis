@@ -4,7 +4,7 @@ defmodule Acs.AdminUserController do
   alias Acs.RedisUser
   alias Acs.RedisAdminUser
 
-  def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => level, "keyword" => keyword}) do
+  def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
     queryAdminUser = from au in AdminUser,
                      select: au.user_id,
                      where: au.admin_level == 1 or au.app_id == ^app_id
@@ -19,12 +19,8 @@ defmodule Acs.AdminUserController do
   end
 
   def get_current_user_level(%Plug.Conn{private: %{ acs_admin_id: acs_admin_id}} = conn, _) do
-    case RedisAdminUser.get_admin_level(acs_admin_id, nil) do
-    level ->
-      conn |> json(%{success: true, level: level})
-    _ ->
-      conn |> json(%{success: false, level: 0})
-    end
+    level = RedisAdminUser.get_admin_level(acs_admin_id, nil) 
+    conn |> json(%{success: true, level: level})
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
@@ -40,10 +36,10 @@ defmodule Acs.AdminUserController do
           conn |> json(%{success: false, i18n_message: "admin.user.messages.appAccountExists"})
         _ ->
           case AdminUser.changeset(%AdminUser{}, %{user_id: admin_id, account_id: account_id, admin_level: level, active: true, app_id: app_id}) |> Repo.insert do
-              {:ok, new_admin_user} ->
+              {:ok, _new_admin_user} ->
                 RedisAdminUser.refresh(admin_id, app_id)
                 conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
-              {:error, %{errors: errors}} ->
+              {:error, %{errors: _errors}} ->
                 conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           end
       end
@@ -122,11 +118,7 @@ defmodule Acs.AdminUserController do
   end
   
   def get_user_from_redis(conn, %{"user_id" => user_id}) do
-    case RedisUser.find(user_id) do
-    user ->
-      conn |> json(%{success: true, user: user})
-    _ ->
-      conn |> json(%{success: false})
-    end
+    user = RedisUser.find(user_id) 
+    conn |> json(%{success: true, user: user})
   end
 end

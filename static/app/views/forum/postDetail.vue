@@ -3,9 +3,8 @@
     <scroller ref="scroller" :on-load-more="loadmore">
       <post-detail-view v-if="postDetail" :post-data="postDetail" :on-showauthor-only="onShowAuthorOnly">
       </post-detail-view>
-      <post-comment-view v-for="(comment, index) in commentList" 
-        :key="comment.id" :comment-data="comment" :item-index="index" :nth="index + 1" 
-        :on-item-deleted="onItemDelete">
+      <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" :comment-data="comment"
+        :item-index="index" :nth="index + 1" :on-item-deleted="onItemDelete">
       </post-comment-view>
     </scroller>
   </div>
@@ -33,6 +32,9 @@ export default {
     postId() {
       return this.$route.params.postId
     },
+    isManager() {
+      return window.acsConfig.isAdmin == true
+    }
   },
   data() {
     return {
@@ -66,6 +68,12 @@ export default {
       if (result.success) {
         this.setCurrentPostTitle(result.detail.title)
         this.postDetail = result.detail
+
+        if (!this.isManager && !this.postDetail.active) {
+          this.$router.push({
+            name: "postList"
+          })
+        }
       }
     },
 
@@ -78,7 +86,7 @@ export default {
 
     loadmore: async function() {
       let author_id = 0
-      if(this.showAuthorOnly) author_id = this.postDetail.user.id
+      if (this.showAuthorOnly) author_id = this.postDetail.user.id
       let result = await this.$acs.getPostComments(this.postId, this.page + 1, author_id, this.recordsPerPage)
       if (result.success) {
         this.commentList = this.commentList.concat(result.comments)

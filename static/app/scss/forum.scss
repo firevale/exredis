@@ -32,9 +32,9 @@
   .nav {
     min-height: 2rem;
     .post-title {
-      min-height: 1.25rem;
+      min-height: 1.35rem;
       line-height: 1.5rem;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 400;
       white-space: normal;
       margin-right: 0.5rem;
@@ -62,6 +62,13 @@
       }
     }
   }
+  .favoriting {
+    padding: 0rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
   h6.title {
     font-size: 1.25rem;
   }
@@ -71,7 +78,6 @@
     &.ql-container.ql-snow {
       padding: 1rem;
     }
-    
     .ql-editor {
       padding: 0;
       p {
@@ -81,7 +87,7 @@
   }
   span.icon,
   span.is-grey {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     margin-right: 0.5rem;
   }
   .post-manage-bar {
@@ -333,4 +339,13 @@ form.post {
 
 .ql-container {
   min-height: 15rem;
+}
+
+.top-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  a {
+    margin-left: 0.5rem;
+  }
 }

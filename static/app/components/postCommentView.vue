@@ -14,14 +14,14 @@
           <span class="is-grey" style="margin-right: 0.5rem">
             <timeago :since="(commentData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ commentData.user.nickname }}</span>
+          <span class="is-primary" style="font-size:1.1rem">{{ commentData.user.nickname }}</span>
         </div>
         <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
           <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"></span>
           <span class="is-darkred is-clickable" style="padding-top:0.2rem" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
         </div>
       </nav>
-      <quill-content class="quill-editor ql-snow post-content" :content="filterContent"></quill-content>
+      <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
     </div>
   </article>
 </div>

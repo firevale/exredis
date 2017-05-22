@@ -389,7 +389,7 @@ defmodule Acs.ForumController do
             join: p in assoc(c, :post),
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
-            where: p.forum_id == ^forum_id and c.user_id == ^user_id and c.active == true and p.active == true,
+            where: p.forum_id == ^forum_id and c.user_id == ^user_id and p.active == true,
             select: map(c, [:id, :content, :floor, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),

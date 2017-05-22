@@ -237,7 +237,7 @@ defmodule Acs.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn, 
                            %{"resident_id" => resident_id, "resident_name" => resident_name}) do
     user = %{user | resident_id: resident_id, resident_name: resident_name}
     RedisUser.save!(user)
@@ -414,8 +414,8 @@ defmodule Acs.UserController do
     }})
   end
 
-  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"keyword" => keyword,  
-                      "page" => page, "records_per_page" => records_per_page}) do
+  def search_users(%Plug.Conn{private: %{acs_app_id: _app_id}} = conn, %{"keyword" => _keyword,  
+                      "page" => _page, "records_per_page" => _records_per_page}) do
     query = from u in User,
               select: map(u, [:id, :email, :mobile, :nickname, :gender, :age, :avatar_url, :inserted_at])
               # where:  u.app_id == ^app_id

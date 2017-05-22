@@ -39,7 +39,7 @@ defmodule Acs.ForumController do
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
 
-  def fetch_forum(conn, %{"app_id" => app_id} = params) do
+  def fetch_forum(conn, %{"app_id" => app_id} = _params) do
     query = from forum in Forum,
               left_join: sections in assoc(forum, :sections),
               order_by: [desc: forum.id, desc: sections.sort],
@@ -57,7 +57,7 @@ defmodule Acs.ForumController do
     min_width: 128,
     format: "png",
     resize: [width: 128, height: 128]] when action == :update_forum_icon
-  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}} = params) do
+  def update_forum_icon(conn, %{"forum_id" => forum_id, "file" => %{path: image_file_path}} = _params) do
     case Repo.get(Forum, forum_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
@@ -96,10 +96,10 @@ defmodule Acs.ForumController do
   end
   def update_section_info(conn, %{"section" => %{
       "id" => id,
-      "title" => title,
-      "sort" => sort,
-      "active" => active,
-      "forum_id" => forum_id,
+      "title" => _title,
+      "sort" => _sort,
+      "active" => _active,
+      "forum_id" => _forum_id,
     } = section}) do
     case Repo.get(ForumSection, id) do
       nil ->
@@ -485,7 +485,7 @@ defmodule Acs.ForumController do
         do
           conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
         else
-          {:error, %{errors: errors}} ->
+          {:error, %{errors: _errors}} ->
             conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           _ ->
             conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -499,12 +499,12 @@ defmodule Acs.ForumController do
   end
 
   # add_comment
-  def add_comment(%Plug.Conn{private: %{acs_session_user_id: user_id,
+  def add_comment(%Plug.Conn{private: %{acs_session_user_id: _user_id,
                                         forum_post: forum_post,
                                         forum_comment: forum_comment}} = conn,
                     %{"content" => content}) do
 
-    {:ok, comment} = ForumComment.changeset(forum_comment, %{
+    {:ok, _comment} = ForumComment.changeset(forum_comment, %{
       content: content,
       active: true,
       floor: _get_max_floor(forum_post.id) + 1
@@ -578,7 +578,7 @@ defmodule Acs.ForumController do
     end
   end
 
-  def search(conn, %{"forum_id" => forum_id,
+  def search(conn, %{"forum_id" => _forum_id,
                      "keyword" => keyword,
                      "page" => page,
                      "records_per_page" => records_per_page}) do
@@ -599,7 +599,7 @@ defmodule Acs.ForumController do
     case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         postList = Enum.map(hits, fn(%{
-          _id: id,
+          _id: _id,
           _source: %{
             user_id: user_id,
             forum_id: forum_id,

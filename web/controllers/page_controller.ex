@@ -151,16 +151,16 @@ defmodule Acs.PageController do
                                    price: price,
                                    currency: app_order.currency)
   end
-  def show_payment_page(conn, %{"order_id" => order_id, "version" => "3"} = params) do
+  def show_payment_page(conn, %{"order_id" => order_id, "version" => "3"}) do
     show_payment_page_by_order_id(conn, order_id)
   end
-  def show_payment_page(conn, %{"out_trade_no" => order_id} = params) do
+  def show_payment_page(conn, %{"out_trade_no" => order_id}) do
     show_payment_page_by_order_id(conn, order_id)
   end
-  def show_payment_page(conn, %{"merchant_order_id" => order_id} = params) do
+  def show_payment_page(conn, %{"merchant_order_id" => order_id}) do
     show_payment_page_by_order_id(conn, order_id)
   end
-  def show_payment_page(conn, params) do
+  def show_payment_page(conn, _params) do
     conn |> put_resp_content_type("application/json")
          |> send_resp(500, JSON.encode!(%{
               success: false,

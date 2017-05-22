@@ -86,7 +86,7 @@ defmodule Acs.FVSdkView do
   end
 
   defp transform_goods(goods, sdk) do 
-    goods |> Enum.map(fn({id, g}) ->
+    goods |> Enum.map(fn({_id, g}) ->
       {g.id, %{id: g.id,
                name: g.name,
                description: g.description || "",

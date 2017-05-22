@@ -16,7 +16,7 @@ defmodule Acs.AppleStoreController do
                   "currency_code" => currency,
                   "version" => "2"} = params) do 
     case app.goods[goods_id |> String.to_atom] do 
-      %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
+      %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
             _deliver_apple_store_order(conn: conn, 
@@ -113,9 +113,9 @@ defmodule Acs.AppleStoreController do
                   "goods_id" => goods_id,
                   "price_in_cent" => amount,
                   "cp_order_id" => cp_order_id,
-                  "currency_code" => currency} = params) do 
+                  "currency_code" => currency}) do 
     case app.goods[goods_id |> String.to_atom] do 
-      %{product_ids: %{applestore: product_id}, price: price, name: goods_name} -> 
+      %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
             _deliver_apple_store_order(conn: conn, 
@@ -176,7 +176,7 @@ defmodule Acs.AppleStoreController do
     cp_order_id: cp_order_id, 
     transaction_id: transaction_id, 
     receipt_type: receipt_type,
-    product_id: product_id, 
+    product_id: _product_id, 
     goods_id: goods_id,
     goods_name: goods_name,
     amount: amount,

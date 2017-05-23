@@ -209,7 +209,7 @@ defmodule Acs.RedisUser do
           end
         end)
 
-        {:ok, redis_user}
+        redis_user
       end)
 
     case result do

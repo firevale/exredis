@@ -10,7 +10,7 @@
       </div>
       <div class="media-content">
         <nav class="nav">
-          <div class="nav-left has-text-left">
+          <div class="nav-left has-text-left flex-take-rest">
             <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
             <span class="post-title">
               [{{postData.section.title}}] {{postData.title | filterKeyword}}
@@ -18,7 +18,7 @@
             <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
           </div>
-          <div class="nav-right has-text-right" style="flex-glow: 0">
+          <div class="nav-right has-text-right flex-fixed-size" style="min-width:5rem">
             <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">
               {{ this.showAuthorOnly ? $t('forum.detail.showAll') : $t('forum.detail.showAuthorOnly')}}
             </v-touch>

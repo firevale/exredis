@@ -18,11 +18,10 @@
           </div>
           <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="display: flex;flex-basis: 5rem; align-items:center;">
             <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"></span>
-            <span class="is-darkred is-clickable" style="margin-top: 0.25rem; margin-left:0.1rem" @click.prevent="confirmDeleteComment">
-              {{ $t('common.delete') }} </span>
+          <span class="is-darkred is-clickable" style="margin-top: 0.25rem; margin-left:0.1rem" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
           </div>
         </nav>
-        <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
+        <quill-content class="quill-editor ql-snow post-content" :key="filterContent" :content="filterContent" style="font-size:1.1rem"></quill-content>
       </div>
     </article>
   </div>
@@ -57,7 +56,6 @@ export default {
       default: undefined
     }
   },
-
   computed: {
     isManager() {
       return window.acsConfig.isAdmin == true
@@ -99,12 +97,7 @@ export default {
           nth: this.nth
         }),
         onOk: async _ => {
-          let result = await this.$acs.deleteComment(this.commentData.id, this.$route.params.forumId)
-          if (result.success) {
-            Toast.show(this.$t(result.i18n_message))
-            if (this.onItemDeleted)
-              this.onItemDeleted(this.itemIndex)
-          }
+           this.$emit('on-item-deleted', this.itemIndex);
         },
       })
     },

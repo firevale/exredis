@@ -4,7 +4,7 @@
       <post-detail-view v-if="postDetail" :post-data="postDetail" :on-showauthor-only="onShowAuthorOnly">
       </post-detail-view>
       <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" :comment-data="comment"
-        :item-index="index" :nth="index + 1" :on-item-deleted="onItemDelete">
+        :item-index="index" :nth="index + 1" @on-item-deleted="onItemDelete">
       </post-comment-view>
     </scroller>
   </div>

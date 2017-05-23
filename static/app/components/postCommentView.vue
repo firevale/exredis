@@ -1,30 +1,31 @@
 <template>
-<div class="post-detail has-bottom-line">
-  <article class="media">
-    <div class="media-left" style="margin: 0 1rem 0 0">
-      <figure class="image is-32x32 avatar-image" v-lazy:background-image="avatarUrl">
-      </figure>
-      <div class="has-text-centered" style="margin-top: 0.5rem">
-        <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ nthName }}</h6>
+  <div class="post-detail has-bottom-line">
+    <article class="media">
+      <div class="media-left" style="margin: 0 1rem 0 0">
+        <figure class="image is-32x32 avatar-image" v-lazy:background-image="avatarUrl">
+        </figure>
+        <div class="has-text-centered" style="margin-top: 0.5rem">
+          <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ nthName }}</h6>
+        </div>
       </div>
-    </div>
-    <div class="media-content">
-      <nav class="nav">
-        <div class="nav-left has-text-left">
-          <span class="is-grey" style="margin-right: 0.5rem">
-            <timeago :since="(commentData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
-          </span>
-          <span class="is-primary" style="font-size:1.1rem">{{ commentData.user.nickname }}</span>
-        </div>
-        <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="flex-glow: 0; flex-basis: 5rem; align-items: center">
-          <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"></span>
-          <span class="is-darkred is-clickable" style="padding-top:0.2rem" @click.prevent="confirmDeleteComment"> {{ $t('common.delete') }} </span>
-        </div>
-      </nav>
-      <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
-    </div>
-  </article>
-</div>
+      <div class="media-content">
+        <nav class="nav">
+          <div class="nav-left has-text-left">
+            <span class="is-grey" style="margin-right: 0.5rem; margin-top:0.65rem">
+              <timeago :since="(commentData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
+            </span>
+            <span class="is-primary" style="font-size:1.1rem;margin-top:0.65rem">{{ commentData.user.nickname }}</span>
+          </div>
+          <div v-if="isManager && commentData.active" class="nav-right has-text-right" style="display: flex;flex-basis: 5rem; align-items:center;">
+            <span class="icon image-icon icon-trash is-clickable" @click.prevent="confirmDeleteComment"></span>
+            <span class="is-darkred is-clickable" style="margin-top: 0.25rem; margin-left:0.1rem" @click.prevent="confirmDeleteComment">
+              {{ $t('common.delete') }} </span>
+          </div>
+        </nav>
+        <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
+      </div>
+    </article>
+  </div>
 </template>
 <script>
 import {

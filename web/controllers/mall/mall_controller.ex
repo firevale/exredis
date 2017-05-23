@@ -442,9 +442,11 @@ defmodule Acs.MallController do
     us_address = us_address |> Map.put("user_id", user_id)
     queryCount = from us in UserAddress,select: count(1), where: us.user_id == ^user_id
     count = Repo.one!(queryCount)
-    if(count == 0)do
-      us_address = us_address |> Map.put("is_default",true)
+    us_address = case count do
+      0 -> us_address |> Map.put("is_default",true)
+      _ -> us_address
     end
+
     case UserAddress.changeset(%UserAddress{}, us_address) |> Repo.insert do
         {:ok, new_address} ->
           us_address = us_address |> Map.put("id", new_address.id)

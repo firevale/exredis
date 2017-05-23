@@ -5,7 +5,7 @@
         <p class="image is-64x64 avatar-image" v-lazy:background-image="avatarUrl">
         </p>
       </figure>
-      <div class="media-content">
+      <div >
         <p>
           {{ $t('forum.personal.nickname') }}
           <span>{{ this.userInfo.nickname }}</span>
@@ -22,7 +22,7 @@
     </article>
     <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div class="content flex-take-rest" style="position: relative">
-      <scroller :on-load-more="loadmore" ref="scroller">
+      <scroller :on-load-more="loadmogire" ref="scroller">
         <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
           @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
         <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>

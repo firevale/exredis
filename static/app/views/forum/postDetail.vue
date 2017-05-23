@@ -54,8 +54,9 @@ export default {
     ]),
 
     onItemDelete(index) {
-      this.totalRecords--;
-      this.commentList.splice(index, 1)
+      //this.totalRecords--;
+      this.commentList[index].content = "回复已被删除"
+      this.commentList[index].active = false
     },
 
     onShowAuthorOnly(isShowAuthor) {

@@ -7,7 +7,7 @@ defmodule SDKAlipay do
   require XmlUtils
 
   @verify_gateway_ssl "https://mapi.alipay.com/gateway.do?service=notify_verify"
-  @verify_gateway     "http://notify.alipay.com/trade/notify_query.do"
+  # @verify_gateway     "http://notify.alipay.com/trade/notify_query.do"
 
   @alipay_config      Application.get_env(:acs, :alipay)
   @key_root           @alipay_config[:certs_root]

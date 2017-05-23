@@ -3,19 +3,19 @@ defmodule Acs.AppChannel do
 
   require Utils
 
-  def join("app:" <> _, %{"access_token" => access_token,
+  def join("app:" <> _, %{"access_token" => _access_token,
                           "user_id" => user_id,
                           "app_id" => app_id,
                           "device_id" => device_id,
-                          "device_model" => device_model,
-                          "os_ver" => os_ver,
+                          "device_model" => _device_model,
+                          "os_ver" => _os_ver,
                           "platform" => platform,
                           "sdk" => sdk,
-                          "app_user_id" => app_user_id,
-                          "app_user_name" => app_user_name,
-                          "app_user_level" => app_user_level,
+                          "app_user_id" => _app_user_id,
+                          "app_user_name" => _app_user_name,
+                          "app_user_level" => _app_user_level,
                           "zone_id" => zone_id,
-                          "zone_name" => zone_name} = payload, socket) do
+                          "zone_name" => _zone_name} = payload, socket) do
     d "receive channel join request, payload: #{inspect payload, pretty: true}"
     if authorized?(payload) do
       Logger.metadata(user_id: user_id)
@@ -50,10 +50,10 @@ defmodule Acs.AppChannel do
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
-  def handle_in("reset", %{"access_token" => access_token,
+  def handle_in("reset", %{"access_token" => _access_token,
                            "user_id" => user_id,
-                           "app_user_id" => app_user_id,
-                           "app_user_name" => app_user_name,
+                           "app_user_id" => _app_user_id,
+                           "app_user_name" => _app_user_name,
                            "app_user_level" => _app_user_level,
                            "zone_id" => zone_id,
                            "zone_name" => _zone_name

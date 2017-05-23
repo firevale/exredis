@@ -6,9 +6,7 @@ defmodule Acs.PaymentHelper do
   alias   Utils.Httpc
   alias   Acs.Repo
 
-  alias   Acs.App
   alias   Acs.AppOrder
-  alias   Acs.AppSdkPaymentCallback
 
   alias   Acs.RedisApp
   alias   Acs.ChaoxinNotifier

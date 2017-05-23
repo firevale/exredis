@@ -272,7 +272,7 @@ defmodule Utils do
                0x4630, 0x4631, 0x4632, 0x4633, 0x4634, 0x4635, 0x4636, 0x4637, 0x4638, 0x4639, 0x4641, 0x4642, 0x4643, 0x4644, 0x4645, 0x4646]
 
   for {h, i} <- Enum.with_index(hex_table) do 
-    @inline true
+    # @inline true
     defp hex_(unquote(i)), do: unquote(h)
   end
 

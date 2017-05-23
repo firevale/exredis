@@ -3,8 +3,8 @@ defmodule Acs.CaptchaGenerator do
 
   def generate(value) do 
     image_file = Path.join(System.tmp_dir, "#{value}.png")
-    params = "-size 80x20 xc:none #{style_param} -gravity center -pointsize 16 -implode 0.4 \
-              -font Candice -annotate #{annotate_param} #{value} -wave -#{distortion_param} \
+    params = "-size 80x20 xc:none #{style_param()} -gravity center -pointsize 16 -implode 0.4 \
+              -font Candice -annotate #{annotate_param()} #{value} -wave -#{distortion_param()} \
               #{image_file}" |> String.split 
 
     d "params: #{inspect params}"

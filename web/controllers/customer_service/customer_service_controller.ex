@@ -1,8 +1,6 @@
 defmodule Acs.CustomerServiceController do
   use Acs.Web, :controller
 
-
-  alias   Acs.RedisForum
   alias   Acs.Question
   require Floki
 

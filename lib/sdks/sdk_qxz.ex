@@ -6,7 +6,7 @@ defmodule SDKQxz do
   # alias   Utils.JSON
   require Utils
 
-  @baseUrl  "http://api.appchina.com/appchina-usersdk/user/v2/get.json"
+  # @baseUrl  "http://api.appchina.com/appchina-usersdk/user/v2/get.json"
 
   def validate_session(_appid, _appkey, _user_id) do 	 
     # no validate method provided

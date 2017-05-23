@@ -426,11 +426,11 @@ defmodule Acs.ForumController do
                     limit: 1,
                     select: map(c, [:inserted_at])
             lastComment = Repo.one(queryLast)
-            utc_now = nil
-            if(lastComment != nil)do
-              utc_now = lastComment.inserted_at
-            end
-
+            utc_now = case lastComment do
+              nil -> nil
+              _ -> lastComment.inserted_at
+            end 
+            
             post = Repo.get(ForumPost, post_id)
             ForumPost.changeset(post, %{last_reply_at: utc_now}) |> Repo.update()
 

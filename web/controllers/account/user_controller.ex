@@ -415,7 +415,7 @@ defmodule Acs.UserController do
   end
 
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"keyword" => keyword,  
-                      "page" => page, "records_per_page" => records_per_page}) do
+                      "page" => _page, "records_per_page" => _records_per_page}) do
     # query = from app_user in "acs_stats_dev.app_users",
     #           left_join: u in Acs.User, on: u.id == app_user.user_id,
     #           where: app_user.app_id == ^app_id,

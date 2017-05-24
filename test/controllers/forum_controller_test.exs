@@ -3,6 +3,7 @@ defmodule Acs.ForumControllerTest do
 
   alias Acs.Repo
   alias Acs.User
+  alias Acs.RedisUser
   alias Acs.Forum
   alias Acs.ForumComment
   alias Acs.ForumPost
@@ -15,14 +16,14 @@ defmodule Acs.ForumControllerTest do
   require Utils
 
 setup %{conn: conn} = tags do
+    app_id = "978A7D84040FE589ED0C76295131E43D"
+    device_id = "idfa.#{Utils.generate_token()}"
+    platform = "ios"
+
     conn =
       conn
       |> recycle()
       |> set_acs_header(app_id, device_id, platform)
-
-    app_id = "978A7D84040FE589ED0C76295131E43D"
-    device_id = "idfa.#{Utils.generate_token()}"
-    platform = "ios"
 
     user = User.changeset(%User{}, %{
       id: 100001,
@@ -57,7 +58,7 @@ setup %{conn: conn} = tags do
   end
 
   test "update forum info", context do
-
+    
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       id: 1,
       title: "test",

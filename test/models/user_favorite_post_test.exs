@@ -3,8 +3,8 @@ defmodule Acs.UserFavoritePostTest do
 
   alias Acs.UserFavoritePost
 
-  @valid_attrs %{name: "some content"}
-  @invalid_attrs %{}
+  @valid_attrs %{user_id: 100001, post_id: 1}
+  @invalid_attrs %{user_id: 1}
 
   test "changeset with valid attributes" do
     changeset = UserFavoritePost.changeset(%UserFavoritePost{}, @valid_attrs)

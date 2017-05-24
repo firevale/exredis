@@ -3,7 +3,6 @@ defmodule Acs.RedisTest do
 
   require Redis
   require Utils
-  alias   Utils.JSON
   alias   Acs.RedisUser
 
   setup_all do 

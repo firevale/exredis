@@ -8,7 +8,6 @@ defmodule Acs.RedisAppTest do
   alias   Acs.AppSdkBinding
   alias   Acs.AppGoods
   alias   Acs.AppGoodsProductId
-  alias   Utils.JSON
   alias   Acs.RedisApp
 
   test "import fvac client" do

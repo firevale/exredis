@@ -21,7 +21,7 @@ defmodule Acs.AlipayTest do
         payment_callback: "http://localhost:4001/",
       }) |> Repo.insert!(on_conflict: :nothing)
 
-    goods = AppGoods.changeset(%AppGoods{}, %{
+    AppGoods.changeset(%AppGoods{}, %{
       id: "alipay.test.goods.001",
       app_id: app.id,
       name: "一小袋金币",
@@ -37,7 +37,7 @@ defmodule Acs.AlipayTest do
       encrypted_password: "xxxxxx"
       }) |> Repo.insert!(on_conflict: :nothing)
 
-    redis_user = RedisUser.refresh(user.id)
+    RedisUser.refresh(user.id)
 
     {:ok, %{tags | conn: set_acs_header(conn, app, user)}
     }

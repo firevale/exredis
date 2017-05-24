@@ -9,7 +9,7 @@
         </div>
         <div class="nav-center">
           <a class="nav-item hero-brand" @click="goIndex">
-            <img src="/images/logo.png">
+            <img class="logo" src="/images/logo.svg">
             <div class="is-hidden-mobile">
               <span class="vue">{{ $t('admin.firevalePlatform') }}</span><strong class="admin">{{ $t('admin.admin') }}{{appShowName}}</strong>
             </div>

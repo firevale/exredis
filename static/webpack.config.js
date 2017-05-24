@@ -26,15 +26,7 @@ var plugins = [
   new webpack.DefinePlugin(consts.defines({
     isProduction: isProduction(),
   })),
-  // new webpack.LoaderOptionsPlugin({
-  //   options: {
-  //     postcss: [
-  //       require('autoprefixer')({
-  //         browsers: ['last 3 version', 'iOS >= 8', 'Safari >= 8', 'Android >= 4.4']
-  //       }),
-  //     ]
-  //   }
-  // }),
+
   new webpack.optimize.CommonsChunkPlugin({
     name: "admin_commons",
     filename: 'js/admin_commons.js',
@@ -66,8 +58,9 @@ var plugins = [
   new ExtractTextPlugin('css/[name].css'),
 
   new CopyWebpackPlugin([{
-    from: 'assets/*',
-    to: 'images/',
+    from: 'assets',
+    to: 'images',
+    toType: 'dir',
   }]),
 ];
 

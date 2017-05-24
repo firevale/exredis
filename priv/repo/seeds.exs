@@ -20,7 +20,6 @@ alias Acs.Forum
 alias Acs.ForumSection
 alias Acs.ForumPost
 alias Acs.ForumComment
-alias Acs.User
 alias Acs.ForumManager
 alias Acs.AdminSetting
 alias Acs.Mall

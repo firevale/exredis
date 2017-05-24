@@ -92,6 +92,8 @@ export default {
             resident_id: this.residentId,
             resident_name: this.residentName,
           })
+          window.acsConfig.user.resident_id = this.residentId
+          window.acsConfig.user.resident_name = this.residentName
 
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.residentInfoUpdateds'))

@@ -140,6 +140,7 @@ export default {
         })
         if (result.success) {
           this.updateUserEmail(this.email)
+          window.acsConfig.user.email = this.email
 
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.emailBindSuccess', {

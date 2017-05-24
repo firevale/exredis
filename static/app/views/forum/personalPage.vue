@@ -118,7 +118,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setUserProfile', 'updateUserPostCount', 'decrUserPostCount'
+      'updateUserPostCount', 'decrUserPostCount'
     ]),
 
     switchMenu: function(item, index) {

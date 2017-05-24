@@ -75,6 +75,11 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
+.nav-item img.logo {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
 .hero-brand {
   .vue {
     margin-left: 10px;

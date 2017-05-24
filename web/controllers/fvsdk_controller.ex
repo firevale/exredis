@@ -29,7 +29,7 @@ defmodule Acs.FVSdkController do
         Device.changeset(%Device{}, %{id: device_id, 
           model: device_model, 
           platform: platform, 
-          os: os_ver}) |> StatsRepo.insert!  
+          os: os_ver}) |> StatsRepo.insert  
       
       device -> 
         Device.changeset(device, %{os: os_ver}) |> StatsRepo.update

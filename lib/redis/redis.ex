@@ -283,7 +283,7 @@ defmodule Redis do
   end
 
   defp lock_key(key), do: "__redis__:__lock__:#{key}"
-  defp lock_value(ttl), do: {Utils.unix_timestamp + ttl, self} |> :erlang.term_to_binary |> Base.encode64
+  defp lock_value(ttl), do: {Utils.unix_timestamp + ttl, self()} |> :erlang.term_to_binary |> Base.encode64
 
 end
 

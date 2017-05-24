@@ -3,7 +3,7 @@ defmodule Acs.AdminSettingTest do
 
   alias Acs.AdminSetting
 
-  @valid_attrs %{name: "some content"}
+  @valid_attrs %{name: "some content" ,value: "Setting Value", active: true, memo: "memo",  group: "group"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

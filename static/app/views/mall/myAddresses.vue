@@ -19,17 +19,18 @@
             <div class="columns is-mobile">
               <div class="column is-9-mobile is-11-tablet is-11-desktop is-paddingless">
                 <label class="radio">
-                  <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span">
+                  <v-touch v-if="item.is_default" class="subtitle is-5 is-primary is-normal" tag="span" style="display:flex;align-items:center;">
                     <i style="margin-right:0.5rem" class="icon image-icon icon-solid has-text-center"> <i style="width:1rem;" class="icon image-icon icon-select"></i></i>
                     {{$t('mall.address.fields.is_default') }}</v-touch>
-                  <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)">
+                  <v-touch v-else class="subtitle is-5 is-normal" tag="span" @tap="setDefaultAddress(item.id)" style="display:flex;align-items:center;">
                     <i style="margin-right:0.5rem" class="icon image-icon icon-circle"></i>{{$t('mall.address.setDefault')
                     }}
                   </v-touch>
                 </label>
               </div>
               <div class="column is-paddingless">
-                <v-touch class="subtitle is-5 is-normal" tag="a" @tap="deleteAddress(item.id)"> <i style="margin-right:0.5rem; margin-top:0.1rem;" class="icon image-icon icon-remove"></i>{{$t('common.delete')
+                <v-touch class="subtitle is-5 is-normal" tag="a" @tap="deleteAddress(item.id)" style="display:flex;align-items:center;">
+                <i style="margin-right:0.5rem; margin-top:0.1rem;" class="icon image-icon icon-remove"></i>{{$t('common.delete')
                   }}
                 </v-touch>
               </div>

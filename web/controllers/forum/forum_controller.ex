@@ -420,8 +420,19 @@ defmodule Acs.ForumController do
                                               content: "回复已被删除",
                                               editer_id: user_id }) |> Repo.update()
           do
+            queryLast = from c in ForumComment, 
+                    order_by: [desc: c.inserted_at],  
+                    where: c.post_id == ^comment.post_id and c.active == true,
+                    limit: 1,
+                    select: map(c, [:inserted_at])
+            lastComment = Repo.one(queryLast)
+            utc_now = case lastComment do
+              nil -> nil
+              _ -> lastComment.inserted_at
+            end 
+            
             post = Repo.get(ForumPost, post_id)
-            ForumPost.changeset(post, %{comms: post.comms-1}) |> Repo.update()
+            ForumPost.changeset(post, %{last_reply_at: utc_now}) |> Repo.update()
 
             conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
           else

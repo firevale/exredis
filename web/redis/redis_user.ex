@@ -174,43 +174,50 @@ defmodule Acs.RedisUser do
                                 nil -> gen_nickname()
                                 v when is_bitstring(v) -> v
                               end}
-    
-    Repo.transaction(fn ->
-      # ecto's upset is not stable for now
-      case Repo.get(User, user.id) do
-        nil ->
-          {:ok, db_user} = User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert
-          user = %{user | inserted_at: db_user.inserted_at}
-          "ok" = Scripts.save_user([], [to_json(user), user.id, user.email, user.mobile, user.device_id])
+   result = 
+      Repo.transaction(fn ->
+        # ecto's upset is not stable for now
+        redis_user =
+          case Repo.get(User, user.id) do
+            nil ->
+              {:ok, db_user} = User.changeset(%User{}, Map.from_struct(user)) |> Repo.insert
+              redis_user = %{user | inserted_at: db_user.inserted_at}
+              "ok" = Scripts.save_user([], [to_json(redis_user), user.id, user.email, user.mobile, user.device_id])
+              redis_user
+            %User{} = old_user ->
+              User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
+              redis_user = %{user | inserted_at: old_user.inserted_at}
+              "ok" = Scripts.save_user([], [to_json(redis_user),
+                                    user.id,
+                                    user.email,
+                                    user.mobile,
+                                    user.device_id,
+                                    old_user.email,
+                                    old_user.mobile,
+                                    old_user.device_id])
+              redis_user
+          end
 
-        %User{} = old_user ->
-          User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
-          user = %{user | inserted_at: old_user.inserted_at}
-          "ok" = Scripts.save_user([], [to_json(user),
-                                 user.id,
-                                 user.email,
-                                 user.mobile,
-                                 user.device_id,
-                                 old_user.email,
-                                 old_user.mobile,
-                                 old_user.device_id])
-      end
+        user.bindings |> Enum.each(fn({k, v}) ->
+          Redis.set(@binding_index_key <> "#{k}.#{v}", user.id)
+          [sdk, app_id] = String.split(to_string(k), ".", parts: 2, trim: true)
+          case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do
+            nil ->
+              UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.insert!
+            %UserSdkBinding{} = binding ->
+              UserSdkBinding.changeset(binding, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.update!
+          end
+        end)
 
-      user.bindings |> Enum.each(fn({k, v}) ->
-        Redis.set(@binding_index_key <> "#{k}.#{v}", user.id)
-        [sdk, app_id] = String.split(to_string(k), ".", parts: 2, trim: true)
-        case Repo.get_by(UserSdkBinding, sdk: sdk, app_id: app_id, sdk_user_id: v) do
-          nil ->
-            UserSdkBinding.changeset(%UserSdkBinding{}, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.insert!
-          %UserSdkBinding{} = binding ->
-            UserSdkBinding.changeset(binding, %{sdk: sdk, sdk_user_id: v, app_id: app_id, user_id: user.id}) |> Repo.update!
-        end
+        redis_user
       end)
 
-      :ok
-    end)
-
-    user
+    case result do
+      {:ok, new_user} ->
+        new_user
+      _ ->
+        user
+    end
   end
 
   def save!(%__MODULE__{} = user) do

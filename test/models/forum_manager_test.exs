@@ -3,7 +3,7 @@ defmodule Acs.ForumManagerTest do
 
   alias Acs.ForumManager
 
-  @valid_attrs %{logins: 42}
+  @valid_attrs %{forum_id: 1, user_id: 100002}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -2,8 +2,6 @@ defmodule Acs.UserSocket do
   use Phoenix.Socket
   use LogAlias
 
-  alias Acs.RedisAccessToken
-  alias Acs.RedisUser
   alias Acs.RedisApp
 
   ## Channels
@@ -28,7 +26,7 @@ defmodule Acs.UserSocket do
 
   def connect(%{"app_id" => app_id}, socket) do 
     case RedisApp.find(app_id) do 
-      %{id: ^app_id} = app ->
+      %{id: ^app_id} = _app ->
         {:ok, socket |> assign(:app_id, app_id)}
       _ ->
         :error
@@ -53,7 +51,7 @@ defmodule Acs.UserSocket do
   #   end
   # end
 
-  def connect(params, socket) do
+  def connect(params, _socket) do
     d "websocket connection params: #{inspect params, pretty: true}"
     :error
   end

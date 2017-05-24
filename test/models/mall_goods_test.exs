@@ -3,7 +3,8 @@ defmodule Acs.MallGoodsTest do
 
   alias Acs.MallGoods
 
-  @valid_attrs %{title: "some content"}
+  @valid_attrs %{id: "good_id", name: "some content", description: "description", price: 100, 
+  postage: 100, app_id: "app_id", user_id: 100002}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

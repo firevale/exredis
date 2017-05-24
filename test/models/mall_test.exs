@@ -3,8 +3,8 @@ defmodule Acs.MallTest do
 
   alias Acs.Mall
 
-  @valid_attrs %{title: "some content"}
-  @invalid_attrs %{}
+  @valid_attrs %{title: "mall", active: true, app_id: "978A7D84040FE589ED0C76295131E43D"}
+  @invalid_attrs %{title: "mall", active: true}
 
   test "changeset with valid attributes" do
     changeset = Mall.changeset(%Mall{}, @valid_attrs)

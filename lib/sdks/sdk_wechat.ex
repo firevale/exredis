@@ -6,17 +6,16 @@ defmodule SDKWechat do
   alias Acs.Repo
   alias Acs.AppOrder
   alias Acs.MallOrder
-  alias Acs.RedisApp
 
   @wechat_config      Application.get_env(:acs, :wechat)
   @prepay_url         @wechat_config[:prepay_url]
-  @check_url          @wechat_config[:check_url]
-  @close_url          @wechat_config[:close_url]
-  @refund_url         @wechat_confi[:refund_url]
-  @refundquery_url    @wechat_confi[:refundquery_url]
+  # @check_url          @wechat_config[:check_url]
+  # @close_url          @wechat_config[:close_url]
+  # @refund_url         @wechat_config[:refund_url]
+  # @refundquery_url    @wechat_config[:refundquery_url]
   @trade_type         "APP"
 
-  @status_paid AppOrder.Status.paid()
+  # @status_paid AppOrder.Status.paid()
 
   def mallprepay(order_id, wechat_info, ip_address, notify_url) do
     case Repo.get(MallOrder, order_id) do

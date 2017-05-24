@@ -3,7 +3,6 @@ defmodule Acs.SendCloudMailer do
   alias   Utils.Httpc
   alias   Utils.JSON
 
-  alias   Acs.RedisUser
   import  Acs.Gettext
   require Logger
 

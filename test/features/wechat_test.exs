@@ -24,7 +24,7 @@ defmodule Acs.WechatTest do
         payment_callback: "http://localhost:4001/",
       }) |> Repo.insert!(on_conflict: :nothing)
 
-    goods = AppGoods.changeset(%AppGoods{}, %{
+    AppGoods.changeset(%AppGoods{}, %{
       id: "wechatpay.test.goods.001",
       app_id: app.id,
       name: "天神月卡",
@@ -32,7 +32,7 @@ defmodule Acs.WechatTest do
       price: 1
       }) |> Repo.insert!(on_conflict: :nothing)
 
-    wechat = AppSdkBinding.changeset(%AppSdkBinding{}, %{
+    AppSdkBinding.changeset(%AppSdkBinding{}, %{
       app_id: "wechatpay.test.app.001",
       sdk: "wechat",
       binding: %{
@@ -52,7 +52,7 @@ defmodule Acs.WechatTest do
       encrypted_password: "xxxxxx"
       }) |> Repo.insert!(on_conflict: :nothing)
 
-    redis_user = RedisUser.refresh(user.id)
+    RedisUser.refresh(user.id)
 
     {:ok, %{tags | conn: set_acs_header(conn, app, user)}
     }

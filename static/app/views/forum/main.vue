@@ -10,7 +10,7 @@
       </div>
       <div class="nav-center">
       </div>
-      <div class="nav-right has-text-right">
+      <div class="nav-right has-text-right top-icon">
         <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
         <a v-if="$route.name == 'postList'" class="icon image-icon icon-user" @click.prevent="showPage('personalPage')"></a>
         <a v-if="$route.name == 'postList'" class="button level-button is-info" @click.prevent="showPage('newPost')">{{$t('forum.postList.newPost')}}</a>

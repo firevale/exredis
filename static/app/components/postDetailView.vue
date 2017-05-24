@@ -5,12 +5,12 @@
         <figure class="image is-32x32 avatar-image" v-lazy:background-image="avatarUrl">
         </figure>
         <div class="has-text-centered" style="margin-top: 0.5rem">
-          <h6 class="title is-6 is-lightred" style="font-weight: 400; font-size: 1rem">{{ $t('forum.detail.author') }}</h6>
+          <h6 class="title is-6 is-lightred is-normal" style="font-size: 1rem">{{ $t('forum.detail.author') }}</h6>
         </div>
       </div>
       <div class="media-content">
         <nav class="nav">
-          <div class="nav-left has-text-left">
+          <div class="nav-left has-text-left flex-take-rest">
             <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
             <span class="post-title">
               [{{postData.section.title}}] {{postData.title | filterKeyword}}
@@ -18,7 +18,7 @@
             <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
           </div>
-          <div class="nav-right has-text-right" style="flex-glow: 0">
+          <div class="nav-right has-text-right flex-fixed-size" style="min-width:5rem">
             <v-touch tag="a" class="button level-button is-primary" @tap="toggleShowAuthorOnly">
               {{ this.showAuthorOnly ? $t('forum.detail.showAll') : $t('forum.detail.showAuthorOnly')}}
             </v-touch>
@@ -28,18 +28,18 @@
           <span class="is-grey">
             <timeago :since="(postData.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </span>
-          <span class="is-primary">{{ postData.user.nickname }}</span>
+          <span class="is-primary" style="font-size:1.1rem">{{ postData.user.nickname }}</span>
         </p>
-        <quill-content class="quill-editor  ql-snow post-content" :content="filterContent"></quill-content>
-        <div class="tile" style="margin-bottom: 0.5rem; align-items: center">
-          <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-right: 0.1rem"></span>
+        <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
+        <div class="tile favoriting">
+          <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-left: 0.1rem"></span>
           <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
-            style="margin-right: 0.1rem" @tap="toggleFavorite">
+            style="margin-left: 0.1rem" @tap="toggleFavorite">
           </v-touch>
-          <span v-if="favoriting" class="is-grey">
+          <span v-if="favoriting" class="is-grey" style="margin-top:0.08rem">
             {{ $t('forum.detail.favoriting') }}
           </span>
-          <v-touch v-else tag="span" class="is-grey is-clickable" @tap="toggleFavorite">
+          <v-touch v-else tag="span" class="is-grey is-clickable" @tap="toggleFavorite" style="margin-top:0.08rem">
             {{ postData.is_favorite? $t('forum.detail.removeFromFavorites'): $t('forum.detail.addToFavorite') }}
           </v-touch>
         </div>
@@ -49,22 +49,19 @@
       <v-touch class="nav-left has-text-left" @tap="toggleActive">
         <a class="button is-danger">
           <span class="icon image-icon icon-times">
-          </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost')
-          }}
+          </span> {{ postData.active? $t('forum.detail.closePost'): $t('forum.detail.openPost') }}
         </a>
       </v-touch>
       <v-touch class="nav-center has-text-center" @tap="toggleEssence">
         <a class="button is-primary">
           <span class="icon image-icon icon-star">
-          </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost')
-          }}
+          </span> {{ postData.is_vote? $t('forum.detail.unEssencePost'): $t('forum.detail.essencePost') }}
         </a>
       </v-touch>
       <v-touch class="nav-right has-text-right" @tap="toggleUp">
         <a class="button is-info">
           <span class="icon image-icon icon-top">
-          </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost')
-          }}
+          </span> {{ postData.is_top? $t('forum.detail.unUpPost'): $t('forum.detail.upPost') }}
         </a>
       </v-touch>
     </nav>

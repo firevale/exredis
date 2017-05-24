@@ -9,9 +9,9 @@ defmodule UFile do
                                                   bucket: "", 
                                                   cdn_domain: "",
                                                   cdn_scheme: "http"])
-  @public_key  @ufile_cfg[:public_key] 
-  @private_key @ufile_cfg[:private_key] 
-  @bucket      @ufile_cfg[:bucket]
+  # @public_key  @ufile_cfg[:public_key] 
+  # @private_key @ufile_cfg[:private_key] 
+  # @bucket      @ufile_cfg[:bucket]
   @cdn_scheme  @ufile_cfg[:cdn_scheme]
   @cdn_domain  @ufile_cfg[:cdn_domain]
 

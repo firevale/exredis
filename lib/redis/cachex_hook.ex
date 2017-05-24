@@ -1,6 +1,7 @@
 defmodule Acs.CachexHook do
-  use Cachex.Hook
+  use     Cachex.Hook
   require Redis
+  use     LogAlias
 
   @moduledoc """
   A very small example hook which simply logs all actions to stdout and keeps
@@ -12,7 +13,7 @@ defmodule Acs.CachexHook do
   your hook registration. This is the same as any old GenServer init phase. The
   value you return in the tuple will be the state of your hook.
   """
-  def init(options \\ []) do
+  def init(_options \\ []) do
     {:ok, nil}
   end
 

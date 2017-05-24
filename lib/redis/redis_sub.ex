@@ -44,4 +44,9 @@ defmodule Acs.RedisSubscriber do
     {:noreply, state}
   end
 
+  def terminate(reason, state) do 
+    info "redis_sub terminated with reason: #{inspect reason}, state: #{inspect state}"
+    {:shutdown, reason}
+  end
+
 end

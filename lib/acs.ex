@@ -38,7 +38,7 @@ defmodule Acs do
         default_ttl: :timer.seconds(60), 
         limit: %Cachex.Limit{limit: 100_000, policy: Cachex.Policy.LRW, reclaim: 0.5},
         record_stats: true,
-        ttl_interval: :timer.seconds(5),
+        ttl_interval: :timer.seconds(1800),
         hooks: [%Cachex.Hook{
           module: Acs.CachexHook,
           server_args: [name: Acs.CachexHook]

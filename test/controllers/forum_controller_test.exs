@@ -42,7 +42,7 @@ setup %{conn: conn} = tags do
                             binding: %{}
                           })
 
-    conn  |> put_session(:access_token, access_token.id)
+    conn = conn |> put_session(:access_token, access_token.id)
           |> put_session(:platform, platform)
           |> put_session(:device_id, device_id)
 
@@ -55,10 +55,11 @@ setup %{conn: conn} = tags do
          |> put_req_header("acs-locale", "zh-Hans")
          |> put_req_header("acs-zone-id", "1")
          |> put_private(:acs_device_id, device_id)
+         |> put_private(:acs_session_user_id, 100001)
   end
 
   test "update forum info", context do
-    
+
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       id: 1,
       title: "test",
@@ -81,17 +82,34 @@ setup %{conn: conn} = tags do
 
   # end
 
-  # test "get forum info with keyword" do
-    
-    
+  test "get forum info with keyword", context do
+    resp = post(context.conn, "/forum_actions/get_forum_info_with_keyword", %{
+      forum_id: 1
+    })
 
-  # end
+    IO.inspect resp.resp_body
+    # result = JSON.decode!(resp.resp_body, keys: :atoms)
+    # IO.inspect result
 
-  # test "get user paged post" do
-    
-    
+    assert resp.status == 200
+    # assert result.success
+  end
 
-  # end
+  test "get user paged post", context do
+    resp = post(context.conn, "/forum_actions/get_user_paged_post", %{
+      forum_id: 1,
+      page: 1,
+      records_per_page: 10
+    })
+
+    IO.inspect resp.resp_body
+    # result = JSON.decode!(resp.resp_body, keys: :atoms)
+    # IO.inspect result
+
+    assert resp.status == 200
+    # assert result.success
+
+  end
 
   # test "add post" do
     

@@ -3,7 +3,7 @@ defmodule Acs.MallOPLogTest do
 
   alias Acs.MallOPLog
 
-  @valid_attrs %{content: "some content"}
+  @valid_attrs %{status: 1, changed_status: 3, mall_order_id: "order_id"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

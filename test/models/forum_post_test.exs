@@ -3,7 +3,7 @@ defmodule Acs.ForumPostTest do
 
   alias Acs.ForumPost
 
-  @valid_attrs %{content: "some content", is_hot: true, is_top: true, is_vote: true, last_reply_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, title: "some content"}
+  @valid_attrs %{content: "some content",  title: "some content", active: true, forum_id: 1, section_id: 1, user_id: 100002}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

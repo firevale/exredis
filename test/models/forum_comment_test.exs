@@ -3,7 +3,7 @@ defmodule Acs.ForumCommentTest do
 
   alias Acs.ForumComment
 
-  @valid_attrs %{content: "some content"}
+  @valid_attrs %{content: "some content", active: true, post_id: 1, user_id: 100002}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

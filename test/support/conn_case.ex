@@ -19,6 +19,7 @@ defmodule Acs.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      use     Phoenix.Controller
 
       alias Acs.Repo
       import Ecto
@@ -26,6 +27,8 @@ defmodule Acs.ConnCase do
       import Ecto.Query
 
       import Acs.Router.Helpers
+
+      import  Acs.Plugs
 
       # The default endpoint for testing
       @endpoint Acs.Endpoint

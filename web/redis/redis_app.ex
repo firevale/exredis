@@ -50,19 +50,18 @@ defmodule Acs.RedisApp do
 
     Cachex.get!(:mem_cache, key, fallback: fn(redis_key) ->    
       case Redis.get(redis_key) do
-        :undefined ->
-          refresh(id)
-        raw ->
-          raw |> from_json
+        :undefined -> refresh(id, false)
+        raw -> raw |> from_json
       end
     end)
   end
 
-  def refresh(id) when is_bitstring(id) do
+  def refresh(id, force_update \\ true) when is_bitstring(id) do
     redis_key = "#{@app_cache_key}.#{id}"
 
-    # delete cached key, force cachex to fetch from redis next time
-    Cachex.del(:mem_cache, redis_key)
+    if force_update do 
+      Cachex.del(:mem_cache, redis_key)
+    end
 
     query = from app in App,
               left_join: bindings in assoc(app, :sdk_bindings),

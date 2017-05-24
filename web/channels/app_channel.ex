@@ -5,6 +5,8 @@ defmodule Acs.AppChannel do
   alias   Acs.RedisAppUser
   alias   Acs.RedisDevice
   alias   Acs.RedisAppDevice
+  alias   Acs.RedisAppUserDailyActivity
+  alias   Acs.RedisAppDeviceDailyActivity
 
   def join("app:" <> _, %{"access_token" => _access_token,
                           "user_id" => user_id,
@@ -79,7 +81,7 @@ defmodule Acs.AppChannel do
 
   def handle_in("pause", _payload, socket) do
       d "channel paused"
-      do_stat(socket)
+      do_stat(socket) 
       {:noreply, socket |> assign(:active, false) }
   end
 
@@ -122,20 +124,12 @@ defmodule Acs.AppChannel do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id)
-    AppUser.changeset(app_user, %{app_user_name: app_user_name,
-                                  app_user_id: app_user_id,
-                                  last_active_at: utc_now,
-                                  app_user_level: app_user_level}) |> StatsRepo.update!    
+    app_user = %{app_user | app_user_name: app_user_name,
+                            app_user_id: app_user_id,
+                            last_active_at: utc_now,
+                            app_user_level: app_user_level}
 
-    app_user_daily_activity = case StatsRepo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
-                                nil ->
-                                  AppUserDailyActivity.changeset(%AppUserDailyActivity{},
-                                   %{date: today,
-                                     app_user_id: app_user.id,
-                                     active_seconds: 0}
-                                  ) |> StatsRepo.insert!
-                                v -> v
-                              end
+    app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
 
     if is_nil(RedisDevice.find(device_id)) do
       Device.changeset(%Device{}, %{
@@ -146,15 +140,7 @@ defmodule Acs.AppChannel do
     end
 
     app_device = RedisAppDevice.find(app_id, zone_id, device_id)
-
-    app_device_daily_activity = case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
-                                  nil ->
-                                    AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
-                                      date: today,
-                                      app_device_id: app_device.id,
-                                      active_seconds: 0}) |> StatsRepo.insert!
-                                  v -> v
-                                end
+    app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
 
     socket |> assign(:app_user, app_user)
            |> assign(:app_device, app_device)
@@ -178,20 +164,26 @@ defmodule Acs.AppChannel do
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
     if active_seconds > 0 do
+      utc_now = DateTime.utc_now()
+
       AppUser.changeset(app_user, %{
-        active_seconds: app_user.active_seconds + active_seconds
+        active_seconds: app_user.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppDevice.changeset(app_device, %{
-        active_seconds: app_device.active_seconds + active_seconds
+        active_seconds: app_device.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppUserDailyActivity.changeset(app_user_daily_activity, %{
-        active_seconds: app_user_daily_activity.active_seconds + active_seconds
+        active_seconds: app_user_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
-        active_seconds: app_device_daily_activity.active_seconds + active_seconds
+        active_seconds: app_device_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
     end
   end

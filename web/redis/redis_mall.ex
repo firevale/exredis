@@ -2,16 +2,6 @@ defmodule Acs.RedisMall do
   require Redis
   use     LogAlias
 
-  alias   Acs.Repo
-  import  Ecto.Query
-
-  alias   Acs.MallGoods
-
-  use     Utils.Jsonable
-  require Cachex
-
-  require Logger
-
   ########################################
   defstruct id: "",
             name: "",
@@ -25,6 +15,18 @@ defmodule Acs.RedisMall do
             reads: 0,
             active: true,
             app_id: ""
+
+  alias   Acs.Repo
+  import  Ecto.Query
+
+  alias   Acs.MallGoods
+
+  use     Utils.Jsonable
+  require Cachex
+
+  require Logger
+
+
 
 
   @mall_cache_key      "fvac.mall_cache"

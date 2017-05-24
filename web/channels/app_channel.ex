@@ -2,6 +2,9 @@ defmodule Acs.AppChannel do
   use Acs.Web, :channel
 
   require Utils
+  alias   Acs.RedisAppUser
+  alias   Acs.RedisDevice
+  alias   Acs.RedisAppDevice
 
   def join("app:" <> _, %{"access_token" => _access_token,
                           "user_id" => user_id,
@@ -118,25 +121,11 @@ defmodule Acs.AppChannel do
                         "zone_name" => _zone_name}, today, socket) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
-    app_user = case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do
-                nil ->
-                  AppUser.changeset(%AppUser{}, %{app_user_id: app_user_id,
-                                                  app_user_name: app_user_name,
-                                                  app_user_level: app_user_level,
-                                                  zone_id: zone_id,
-                                                  sdk: sdk,
-                                                  active_seconds: 0,
-                                                  create_date: today,
-                                                  last_active_at: utc_now,
-                                                  app_id: app_id,
-                                                  user_id: user_id}) |> StatsRepo.insert!
-                %AppUser{} = app_user ->
-                  AppUser.changeset(app_user, %{app_user_name: app_user_name,
-                                                app_user_id: app_user_id,
-                                                last_active_at: utc_now,
-                                                app_user_level: app_user_level}) |> StatsRepo.update!
-
-              end
+    app_user = RedisAppUser.find(app_id, zone_id, user_id)
+    AppUser.changeset(app_user, %{app_user_name: app_user_name,
+                                  app_user_id: app_user_id,
+                                  last_active_at: utc_now,
+                                  app_user_level: app_user_level}) |> StatsRepo.update!    
 
     app_user_daily_activity = case StatsRepo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
                                 nil ->
@@ -148,7 +137,7 @@ defmodule Acs.AppChannel do
                                 v -> v
                               end
 
-    if StatsRepo.get(Device, device_id) == nil do
+    if is_nil(RedisDevice.find(device_id)) do
       Device.changeset(%Device{}, %{
         id: device_id,
         model: device_model,
@@ -156,16 +145,7 @@ defmodule Acs.AppChannel do
         os: os}) |> StatsRepo.insert!
     end
 
-    app_device = case StatsRepo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do
-                   nil ->
-                     AppDevice.changeset(%AppDevice{}, %{app_id: app_id,
-                                                         device_id: device_id,
-                                                         zone_id: zone_id,
-                                                         create_date: today}) |> StatsRepo.insert!
-
-                   %AppDevice{} = app_device ->
-                     app_device
-                 end
+    app_device = RedisAppDevice.find(app_id, zone_id, device_id)
 
     app_device_daily_activity = case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
                                   nil ->

@@ -2,6 +2,7 @@ defmodule Acs.RedisApp do
   require Redis
 
   alias   Acs.Repo
+  alias   LogAlias
   import  Ecto.Query
 
   alias   Acs.App
@@ -10,7 +11,7 @@ defmodule Acs.RedisApp do
   alias   Acs.AppGoodsProductId
   alias   Acs.AppSdkPaymentCallback
 
-  require Logger
+  require Cachex
 
   ########################################
   defstruct id: 0,
@@ -45,18 +46,23 @@ defmodule Acs.RedisApp do
   @app_cache_key     "fvac.app_cache"
 
   def find(id) when is_bitstring(id) do
-    redis_key = "#{@app_cache_key}.#{id}"
+    key = "#{@app_cache_key}.#{id}"
 
-    case Redis.get(redis_key) do
-      :undefined ->
-        refresh(id)
-      raw ->
-        raw |> from_json
-    end
+    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) ->    
+      case Redis.get(redis_key) do
+        :undefined ->
+          refresh(id)
+        raw ->
+          raw |> from_json
+      end
+    end)
   end
 
   def refresh(id) when is_bitstring(id) do
     redis_key = "#{@app_cache_key}.#{id}"
+
+    # delete cached key, force cachex to fetch from redis next time
+    Cachex.del(:mem_cache, redis_key)
 
     query = from app in App,
               left_join: bindings in assoc(app, :sdk_bindings),

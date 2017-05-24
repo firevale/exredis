@@ -2,9 +2,40 @@ defmodule Acs.FVSdkController do
   use     Acs.Web, :controller
   use     Timex
 
+  alias   Acs.StatsRepo 
+  alias   Acs.RedisDevice 
+  alias   Acs.Device
+
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version
+  plug :record_device_info when action == :get_app_info
+
+  defp record_device_info(%Plug.Conn{private: %{
+    acs_device_id: device_id, 
+    acs_platform: platform}} = conn, _options) do
+    os_ver = case get_req_header(conn, "acs-os-ver") do 
+      [] -> nil
+      [v | _] -> v
+    end
+
+    case RedisDevice.find(device_id) do 
+      nil -> 
+        device_model = case get_req_header(conn, "acs-device-model") do 
+          [] -> nil
+          [v | _] -> v
+        end
+
+        Device.changeset(%Device{}, %{id: device_id, model: device_model, platform: platform, os: os_ver}) |> StatsRepo.insert!  
+      
+      device -> 
+        d "device: #{inspect device}"
+        Device.changeset(device, %{os: os_ver}) |> StatsRepo.update
+    end
+
+    conn
+  end
+  defp record_device_info(conn, _options), do: conn
 
   def get_app_info(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
                                          acs_platform: "ios",

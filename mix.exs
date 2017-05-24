@@ -31,16 +31,16 @@ defmodule Acs.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
+    [{:phoenix, "~> 1.2.4"},
      {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
+     {:phoenix_ecto, "~> 3.2"},
      {:mariaex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.6"},
+     {:phoenix_html, "~> 2.9"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:credo, "~> 0.7", only: :dev, rutime: false},
      {:ecto, "~> 2.1", override: true},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
+     {:gettext, "~> 0.13"},
+     {:cowboy, "~> 1.1"},
      {:httpotion, "~> 3.0"},
      {:redis_poolex, ">= 0.0.6"},
      {:poolboy, "~> 1.5"},

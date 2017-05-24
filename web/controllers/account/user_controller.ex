@@ -433,7 +433,7 @@ defmodule Acs.UserController do
             if String.length(keyword) >0 do
               query_user =  
                 from u in User,
-                where: like(u.nickname, ^"%#{keyword}%"),
+                where: like(u.nickname, ^"%#{keyword}%") or u.email == ^keyword,
                 select: u.id
               ids = Repo.all(query_user)
               where(query, [au], like(au.app_user_name, ^"%#{keyword}%") or au.user_id in ^ids)

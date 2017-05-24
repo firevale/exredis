@@ -77,6 +77,7 @@ export default {
         })
         if (result.success) {
           this.updateUserNickname(this.nickname)
+          window.acsConfig.user.nickname = this.nickname
 
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.nicknameUpdated', {

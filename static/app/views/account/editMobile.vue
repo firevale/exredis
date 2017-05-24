@@ -141,6 +141,7 @@ export default {
         })
         if (result.success) {
           this.updateUserMobile(this.mobile)
+          window.acsConfig.user.mobile = this.mobile
 
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.mobileBindSuccess', {

@@ -5,7 +5,7 @@ defmodule Acs.RedisAdminUser do
   alias   Acs.Repo
   import  Ecto.Query
   alias   Acs.AdminUser
-  require Logger
+  require Cachex 
 
   @admin_cache_key      "acs.adminuser.level"
   def get_redis_key(admin_user_id, app_id \\ nil)  when is_integer(admin_user_id) do
@@ -17,18 +17,17 @@ defmodule Acs.RedisAdminUser do
   end
 
   def get_admin_level(admin_user_id, app_id \\ nil)  when is_integer(admin_user_id) do
-     redis_key = get_redis_key(admin_user_id, app_id)
-    case Redis.get(redis_key) do
-      :undefined ->
-        refresh(admin_user_id, app_id)
-      raw ->
-         case Integer.parse(raw) do
-          {level,""} ->
-            level
-          _ ->
-            0
+    key = get_redis_key(admin_user_id, app_id)
+    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+      case Redis.get(redis_key) do
+        :undefined -> refresh(admin_user_id, app_id)
+        raw ->
+          case Integer.parse(raw) do
+            {level, ""} -> level
+            _ -> 0
           end
-    end
+      end
+    end)
   end
 
   # only when admin_level > 1
@@ -43,6 +42,9 @@ defmodule Acs.RedisAdminUser do
 
   def refresh(admin_user_id, app_id \\ nil)  do
     redis_key = get_redis_key(admin_user_id, app_id)
+
+    Cachex.del(:mem_cache, redis_key)
+
     query = 
       from admin in AdminUser,
       where: admin.user_id == ^admin_user_id and admin.active == true

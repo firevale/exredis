@@ -9,8 +9,10 @@ defmodule Acs.RedisAccessToken do
             binding: %{}
 
   require Redis
-  require Logger
+  require Cachex
   use     Utils.Jsonable
+  use     LogAlias
+  
 
   @access_token_key          "acs.keys.access_token"
   @device_index_key          "acs.keys.access_token_index.device"
@@ -40,32 +42,19 @@ defmodule Acs.RedisAccessToken do
 
   def save(%__MODULE__{} = token) do
     Redis.setex(key(token), token.ttl, to_json(token))
-    # case token.device_id do
-    #   nil -> :do_nothing
-    #   _ -> Redis.setex(device_key(token), token.ttl, token.id)
-    # end
   end
 
   def find(nil), do: nil
   def find(token_id) when is_bitstring(token_id) do
-    case Redis.get(key(token_id)) do
-      :undefined ->
-        find_fvac_token(token_id)
-      json ->
-        from_json(json)
-    end
+    Cachex.get!(:mem_cache, key(token_id), fn(key) -> 
+      case Redis.get(key) do
+        :undefined ->
+          find_fvac_token(token_id)
+        json ->
+          from_json(json)
+      end
+    end)
   end
-
-  # def find_by_device(app_id, platform, device_id) do
-  #   case Redis.get(device_key(app_id, device_id)) do
-  #     :undefined ->
-  #       case Redis.hget("fvac.keys.access_token_index.device", "#{app_id}.#{platform}.#{device_id}") do
-  #         :undefined -> nil
-  #         fvac_token_id -> find_fvac_token(fvac_token_id)
-  #       end
-  #     tid -> find(tid)
-  #   end
-  # end
 
   defp find_fvac_token(token_id) when is_bitstring(token_id) do
     case Redis.get(fvac_token_key(token_id)) do

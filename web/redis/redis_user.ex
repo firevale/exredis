@@ -251,6 +251,7 @@ defmodule Acs.RedisUser do
         end
     end
   end
+  
   def find!(id) when is_integer(id) do
     case find(id) do
       nil ->

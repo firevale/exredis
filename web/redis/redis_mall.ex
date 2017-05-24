@@ -7,6 +7,9 @@ defmodule Acs.RedisMall do
 
   alias   Acs.MallGoods
 
+  use     Utils.Jsonable
+  require Cachex
+
   require Logger
 
   ########################################
@@ -23,23 +26,24 @@ defmodule Acs.RedisMall do
             active: true,
             app_id: ""
 
-  use   Utils.Jsonable
 
   @mall_cache_key      "fvac.mall_cache"
 
   def find(id)  do
-    redis_key = "#{@mall_cache_key}.#{id}"
-
-    case Redis.get(redis_key) do
-      :undefined ->
-        refreshById(id)
-      raw ->
-        raw |> from_json
-    end
+    key = "#{@mall_cache_key}.#{id}"
+    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+      case Redis.get(redis_key) do
+        :undefined ->
+          refreshById(id)
+        raw ->
+          raw |> from_json
+      end
+    end)
   end
 
   def refresh(goods)  do
     redis_key = "#{@mall_cache_key}.#{goods.id}"
+    Cachex.del(:mem_cache, redis_key)
     cache = %__MODULE__{
       id: goods.id,
       name: goods.name,

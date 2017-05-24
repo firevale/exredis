@@ -79,7 +79,7 @@ defmodule Acs.AppChannel do
 
   def handle_in("pause", _payload, socket) do
       d "channel paused"
-      do_stat(socket)
+      do_stat(socket) 
       {:noreply, socket |> assign(:active, false) }
   end
 
@@ -178,20 +178,26 @@ defmodule Acs.AppChannel do
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
     if active_seconds > 0 do
+      utc_now = DateTime.utc_now()
+
       AppUser.changeset(app_user, %{
-        active_seconds: app_user.active_seconds + active_seconds
+        active_seconds: app_user.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppDevice.changeset(app_device, %{
-        active_seconds: app_device.active_seconds + active_seconds
+        active_seconds: app_device.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppUserDailyActivity.changeset(app_user_daily_activity, %{
-        active_seconds: app_user_daily_activity.active_seconds + active_seconds
+        active_seconds: app_user_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
 
       AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
-        active_seconds: app_device_daily_activity.active_seconds + active_seconds
+        active_seconds: app_device_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
       }) |> StatsRepo.update!
     end
   end

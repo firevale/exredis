@@ -84,6 +84,7 @@ export default {
     myPosts: '我的帖子',
     myComments: '我的回复',
     myFavor: '我的收藏',
+    myBan: '我的封禁',
     cancelFavor: '取消收藏',
     newComment: '新回复',
     deleteBtn: '删除',

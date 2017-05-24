@@ -5,7 +5,7 @@
         <p class="image is-64x64 avatar-image" v-lazy:background-image="avatarUrl">
         </p>
       </figure>
-      <div >
+      <div>
         <p>
           {{ $t('forum.personal.nickname') }}
           <span>{{ this.userInfo.nickname }}</span>
@@ -22,12 +22,14 @@
     </article>
     <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
     <div class="content flex-take-rest" style="position: relative">
-      <scroller :on-load-more="loadmogire" ref="scroller">
+      <scroller :on-load-more="loadmore" ref="scroller">
         <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
           @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
         <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
         <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id"
           :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-favorite-list-item>
+        <my-post-list-item v-if="type == 'myBan' && isManager" v-for="(item, index) in banList" :key="item.id"
+          :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
       </scroller>
     </div>
   </div>
@@ -59,6 +61,10 @@ export default {
   },
 
   computed: {
+
+    isManager() {
+      return window.acsConfig.isAdmin == true
+    },
     ...mapGetters([
       'userInfo'
     ]),
@@ -85,7 +91,22 @@ export default {
   data() {
     return {
       type: 'myPosts',
-      menus: [{
+      menus: window.acsConfig.isAdmin == true ? [{
+          text: this.$t('forum.personal.myPosts'),
+          value: 'myPosts'
+        }, {
+          text: this.$t('forum.personal.myComments'),
+          value: 'myComments'
+        },
+        {
+          text: this.$t('forum.personal.myFavor'),
+          value: 'myFavor'
+        },
+        {
+          text: this.$t('forum.personal.myBan'),
+          value: 'myBan'
+        }
+      ] : [{
           text: this.$t('forum.personal.myPosts'),
           value: 'myPosts'
         }, {
@@ -100,6 +121,7 @@ export default {
       postList: [],
       commentList: [],
       favoriteList: [],
+      banList: [],
       page: 0,
       total: 1,
       recordsPerPage: 10,
@@ -118,7 +140,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setUserProfile', 'updateUserPostCount', 'decrUserPostCount'
+      'updateUserPostCount', 'decrUserPostCount'
     ]),
 
     switchMenu: function(item, index) {
@@ -138,6 +160,7 @@ export default {
       this.postList = []
       this.commentList = []
       this.favoriteList = []
+      this.banList = []
       if (this.$refs.scroller) {
         this.$refs.scroller.$emit('reset')
       }
@@ -153,6 +176,9 @@ export default {
           break;
         case "myFavor":
           await this.getFavoritePage()
+          break;
+        case "myBan":
+          await this.getBanPage()
           break;
       }
     },
@@ -229,6 +255,26 @@ export default {
         }
       }
     },
+
+    getBanPage: async function() {
+      // cancel last get paged post if we're requesting 
+      this.$acs.cancelGetUserPagedPost()
+      this.$acs.cancelGetUserPostComments()
+      this.$acs.cancelGetUserPostFavorites()
+
+      let result = await this.$acs.getPagedBanPost(this.$route.params.forumId, this.page + 1,
+        this.recordsPerPage)
+
+      if (result.success) {
+        this.banList = this.page == 0 ? result.posts : this.banList.concat(result.posts)
+        this.total = result.total
+        this.page = this.page + 1
+
+        if (this.$refs.scroller && this.page >= this.total) {
+          this.$refs.scroller.$emit('all-loaded')
+        }
+      }
+    }
   },
 }
 </script>

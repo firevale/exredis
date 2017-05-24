@@ -13,6 +13,7 @@ defmodule Acs.ForumRouter do
     post "/get_forum_info_with_keyword", ForumController, :get_forum_info_with_keyword
     get   "/get_paged_post", ForumController, :get_paged_post
     post  "/get_paged_post", ForumController, :get_paged_post
+    post  "/get_paged_ban_post", ForumController, :get_paged_ban_post
     post  "/add_post", ForumController, :add_post
     post  "/get_post_detail", ForumController, :get_post_detail
     post  "/get_post_comments", ForumController, :get_post_comments

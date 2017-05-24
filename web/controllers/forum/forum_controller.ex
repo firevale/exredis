@@ -9,7 +9,7 @@ defmodule Acs.ForumController do
   plug :fetch_app_id
   plug :fetch_session_user_id  
   plug :fetch_session_user
-  plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
+  plug :check_forum_manager when action in [:delete_comment, :toggle_post_status, :get_paged_ban_post]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
   plug :no_emoji, [param_name: "title"] when action == :add_post
@@ -267,6 +267,37 @@ defmodule Acs.ForumController do
     posts = Repo.all(query) |> RedisForum.filterHotList
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
+  end
+
+  #get_paged_ban_post
+  def get_paged_ban_post(%Plug.Conn{private: %{acs_is_forum_admin: is_admin}} = conn,
+                            %{"forum_id" => forum_id,
+                             "page" => page,
+                             "records_per_page" => records_per_page}) do
+    queryTotal = from p in ForumPost, select: count(1), where: p.forum_id == ^forum_id and p.active == false
+    
+    total = Repo.one!(queryTotal)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from p in ForumPost,
+              join: u in assoc(p, :user),
+              join: s in assoc(p, :section),
+              join: f in assoc(p, :forum),
+              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
+                              :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], 
+                              section: [:id, :title], forum: [:id]]),
+              limit: ^records_per_page,
+              where: p.forum_id == ^forum_id and p.active == false,
+              offset: ^((page - 1) * records_per_page),
+              preload: [user: u, section: s, forum: f],
+              order_by: [{:desc, p.is_top}, {:desc, p.inserted_at}]
+
+    posts = Repo.all(query) |> RedisForum.filterHotList
+    
+    conn |> json(%{success: true, posts: posts, total: total_page, records: total})
+  end
+  def get_paged_ban_post(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # add_post (forum post is created by fetch_post plug)

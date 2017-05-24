@@ -170,6 +170,21 @@ export default {
         }, undefined, cancelToken)
       },
 
+      cancelGetPagedBanPost: function() {
+        if (typeof this.tokens.getPagedBanPost === 'function') {
+          this.tokens.getPagedBanPost()
+        }
+      },
+
+      getPagedBanPost: function(forum_id, page, records_per_page) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.getPagedBanPost = c)
+        return post('/forum_actions/get_paged_ban_post', {
+          forum_id,
+          page,
+          records_per_page
+        }, undefined, cancelToken)
+      },
+
       search(forum_id, keyword, page, records_per_page) {
         return post('/forum_actions/search', {
           forum_id,

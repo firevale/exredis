@@ -3,7 +3,8 @@ defmodule Acs.MallOrderDetailTest do
 
   alias Acs.MallOrderDetail
 
-  @valid_attrs %{amount: 42, good_name: "some content", goods_pic: "some content", price: 42}
+  @valid_attrs %{amount: 42, good_name: "some content", goods_pic: "some content", 
+                price: 42, mall_goods_id: "1010001", mall_order_id: "A10000010"}
   @invalid_attrs %{amount: 42}
 
   test "changeset with valid attributes" do

@@ -15,6 +15,8 @@ defmodule Acs.ForumControllerTest do
 
   require Utils
 
+  alias Plug.Conn
+
 setup %{conn: conn} = tags do
     app_id = "978A7D84040FE589ED0C76295131E43D"
     device_id = "idfa.#{Utils.generate_token()}"
@@ -59,7 +61,7 @@ setup %{conn: conn} = tags do
   end
 
   test "update forum info", context do
-
+    Conn.fetch_session(context.conn)
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       id: 1,
       title: "test",

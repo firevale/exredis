@@ -57,7 +57,7 @@ defmodule Acs.ForumControllerTest do
       str = resp.resp_body |> String.replace("'", "\"") |> Poison.decode!
       token = str["access_token"]
       session = %{"access_token" => token}
-      
+
       conn = conn
       |> Plug.Test.init_test_session(session) 
       |> put_req_header("acs-access-token", token)
@@ -95,17 +95,41 @@ defmodule Acs.ForumControllerTest do
       } })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect result
 
     assert resp.status == 200
     assert result.success
   end
 
-  # test "update section info" do
+  test "update section info", context do
     
-    
+    forum = Forum.changeset(%Forum{}, %{
+        title: "orig title",
+        active: true,
+        icon: "orig icon",
+        app_id: "978A7D84040FE589ED0C76295131E43D"
+        }) |> Repo.insert!(on_conflict: :nothing)
 
-  # end
+    section = ForumSection.changeset(%ForumSection{}, %{
+        title: "orig title",
+        active: true,
+        sort: 1,
+        forum_id: forum.id
+        }) |> Repo.insert!(on_conflict: :nothing)
+
+    resp = post(context.conn, "/admin_actions/forum/update_section_info", %{
+      "section" => %{
+        "id" => section.id,
+        "title" => "test",
+        "active" => true,
+        "sort" => 1,
+        "forum_id" => forum.id
+      } })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+
+    assert resp.status == 200
+    assert result.success
+  end
 
   # test "get forum info with keyword", context do
   #   resp = post(context.conn, "/forum_actions/get_forum_info_with_keyword", %{

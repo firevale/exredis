@@ -1,8 +1,10 @@
 defmodule Acs.ForumControllerTest do
   use Acs.ConnCase
 
+  alias Acs.App
   alias Acs.Repo
   alias Acs.User
+  alias Acs.AdminUser
   alias Acs.RedisUser
   alias Acs.Forum
   alias Acs.ForumComment
@@ -24,6 +26,14 @@ defmodule Acs.ForumControllerTest do
         |> recycle()
         |> set_acs_header(app_id, device_id, platform)
 
+      app = App.changeset(%App{}, %{
+            id: app_id,
+            secret: Utils.generate_token(),
+            name: "Test App",
+            currency: "CNY",
+            payment_callback: "http://localhost:4001/",
+          }) |> Repo.insert!(on_conflict: :nothing)
+
       user = User.changeset(%User{}, %{
         id: 100001,
         email: "zhongxiaobin@firevale.com",
@@ -32,6 +42,13 @@ defmodule Acs.ForumControllerTest do
 
       RedisUser.refresh(user.id)
 
+      admin_user = AdminUser.changeset(%AdminUser{}, %{
+        account_id: user.email,
+        active: true,
+        admin_level: 1,
+        user_id: user.id
+        }) |> Repo.insert!(on_conflict: :nothing)
+
       resp = post(conn, "/user/create_token", %{
         account_id: user.email,
         password: "smilezh"
@@ -39,12 +56,12 @@ defmodule Acs.ForumControllerTest do
 
       str = resp.resp_body |> String.replace("'", "\"") |> Poison.decode!
       token = str["access_token"]
-      IO.inspect token
-
-      conn = conn 
+      session = %{"access_token" => token}
+      
+      conn = conn
+      |> Plug.Test.init_test_session(session) 
       |> put_req_header("acs-access-token", token)
       |> put_private(:acs_access_token, token)
-      |> put_private(:plug_session_fetch, :done)
 
       {:ok, %{tags | conn: conn}}
     end
@@ -61,7 +78,12 @@ defmodule Acs.ForumControllerTest do
 
   test "update forum info", context do
 
-    IO.inspect context.conn
+    forum = Forum.changeset(%Forum{}, %{
+        title: "orig title",
+        active: true,
+        icon: "orig icon",
+        app_id: "978A7D84040FE589ED0C76295131E43D"
+        }) |> Repo.insert!(on_conflict: :nothing)
 
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       "forum" => %{
@@ -72,12 +94,11 @@ defmodule Acs.ForumControllerTest do
         "app_id" => "978A7D84040FE589ED0C76295131E43D"
       } })
 
-    IO.inspect resp.resp_body
-    # result = JSON.decode!(resp.resp_body, keys: :atoms)
-    # IO.inspect result
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect result
 
     assert resp.status == 200
-    # assert result.success
+    assert result.success
   end
 
   # test "update section info" do

@@ -4,7 +4,7 @@ defmodule Acs.AuthApiRouter do
 
   # "/api/auth forward from main router"
   scope "/", Acs do
-    pipe_through :auth
+    pipe_through :auth_user_api
 
     get "/bind/anzhi", AnzhiAuthBind, :bind
     get "/bind/baidu", BaiduAuthBind, :bind
@@ -92,7 +92,7 @@ defmodule Acs.UserApiRouter do
 
   # "/api/user forward from main router"
   scope "/", Acs do
-    pipe_through :auth_user_api
+    pipe_through :auth
 
     # 兼容旧fvsdk
     get  "/check_user_exists", UserController, :is_account_exists

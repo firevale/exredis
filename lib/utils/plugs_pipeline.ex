@@ -32,6 +32,7 @@ defmodule Acs.PlugsPipeline do
     pipeline :admin do
         plug :accepts, ["json"]
         plug :fetch_session
+        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_user_id
         plug :fetch_access_token
@@ -62,6 +63,7 @@ defmodule Acs.PlugsPipeline do
      pipeline :sdkpay do
         plug :accepts, ["json"]
         plug :fetch_session
+        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_device_id
         plug :fetch_locale
@@ -76,6 +78,7 @@ defmodule Acs.PlugsPipeline do
     pipeline :games do
         plug :accepts, ["json"]
         plug :fetch_session
+        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_user_id
         plug :fetch_locale
@@ -84,6 +87,7 @@ defmodule Acs.PlugsPipeline do
      pipeline :mall do
         plug :accepts, ["json"]
         plug :fetch_session
+        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_user_id
         plug :fetch_access_token
@@ -95,6 +99,7 @@ defmodule Acs.PlugsPipeline do
       pipeline :forum do
         plug :accepts, ["json"]
         plug :fetch_session
+        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_user_id
         plug :fetch_access_token

@@ -89,7 +89,8 @@ export default {
     newComment: 'Comment',
     deleteBtn: '删除',
     reply: '回复：',
-    originalPost: '原帖：'
+    originalPost: '原帖：',
+    confirmDeArchive: '是否确认解封'
   },
   campaign: {
     title: '活动',

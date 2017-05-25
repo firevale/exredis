@@ -40,7 +40,7 @@ defmodule Acs.RedisSubscriber do
     {:noreply, state}
   end
 
-  def handle_info(what, %{sub: sub} = state) do 
+  def handle_info(what, %{sub: _sub} = state) do 
     d "receive unknown message: #{inspect what}"
     {:noreply, state}
   end

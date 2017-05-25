@@ -270,7 +270,7 @@ defmodule Acs.ForumController do
   end
 
   #get_paged_ban_post
-  def get_paged_ban_post(%Plug.Conn{private: %{acs_is_forum_admin: is_admin}} = conn,
+  def get_paged_ban_post(%Plug.Conn{private: %{acs_is_forum_admin: _is_admin}} = conn,
                             %{"forum_id" => forum_id,
                              "page" => page,
                              "records_per_page" => records_per_page}) do

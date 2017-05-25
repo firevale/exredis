@@ -2,7 +2,6 @@ defmodule Acs.RedisDevice do
   require Redis
 
   alias   Acs.StatsRepo
-  import  Ecto.Query
 
   use     LogAlias
   alias   Acs.Device

@@ -2,10 +2,10 @@
   <div class="slider-nav">
     <div class="nav">
       <div class="nav-center">
-        <v-touch tag="a" class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" key="item.value" :class="{'is-active': item.value == currentValue}"
-          @tap="switchMenu(item, index,$event)" ref="navItem">{{item.text}}</v-touch>
-        <div class="slider-bar" :style="{'left': sliderPosition, 'width': barWidth, 'background-size': sliderBackgroundSize}" ref="sliderBar"
-          style="display: flex;">
+        <v-touch tag="a" class="nav-item is-tab has-right-line is-mobile" v-for="(item, index) in menus" key="item.value"
+          :class="{'is-active': item.value == currentValue}" @tap="switchMenu(item, index,$event)" ref="navItem">{{item.text}}</v-touch>
+        <div class="slider-bar" :style="{'left': sliderPosition, 'width': barWidth, 'background-size': sliderBackgroundSize}"
+          ref="sliderBar" style="display: flex;">
         </div>
       </div>
     </div>
@@ -72,21 +72,22 @@ export default {
 
       let offsetLeft = element.offsetLeft;
       let offsetWidth = element.offsetWidth;
+      let _barWidth = parseInt(bar.offsetWidth)
 
-      if (offsetWidth < bar.offsetWidth) {
-        this.barWidth = offsetWidth + "px"
-      } else {
-        this.barWidth = "100px"
+      if (_barWidth > offsetWidth) {
+        _barWidth = offsetWidth;
+      } else if (offsetWidth > 100) {
+        _barWidth = 100
       }
 
-      let left = element.offsetLeft + ((offsetWidth - 100) / 2)
+      this.barWidth = _barWidth + "px"
+      let left = element.offsetLeft + ((offsetWidth - _barWidth) / 2)
       return left + "px"
     },
   },
   methods: {
     switchMenu: function(item, index, event) {
       this.currentValue = item.value
-
       this.$emit('onSelect',
         item,
         index

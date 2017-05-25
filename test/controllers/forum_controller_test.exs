@@ -44,6 +44,7 @@ defmodule Acs.ForumControllerTest do
       conn = conn 
       |> put_req_header("acs-access-token", token)
       |> put_private(:acs_access_token, token)
+      |> put_private(:plug_session_fetch, :done)
 
       {:ok, %{tags | conn: conn}}
     end
@@ -53,12 +54,15 @@ defmodule Acs.ForumControllerTest do
          |> put_private(:acs_platform, platform)
          |> put_req_header("acs-locale", "zh-Hans")
          |> put_req_header("acs-zone-id", "1")
+         |> put_req_header("acs-app-id", app_id)
          |> put_private(:acs_device_id, device_id)
          |> put_private(:acs_session_user_id, 100001)
   end
 
   test "update forum info", context do
-    
+
+    IO.inspect context.conn
+
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       "forum" => %{
         "id" => 1,

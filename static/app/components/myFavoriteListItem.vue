@@ -4,7 +4,7 @@
       <v-touch class="level-left level-item is-clickable" @tap="showDetail">
         <div class="tile is-vertical">
           <div class="tile">
-            <h5 class="title is-5">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
+            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
           </div>
           <div class="tile" style="font-size:1.1rem">
             <span class="subtitle">{{ itemData.post.inserted_at | formatServerDateTime }}</span>
@@ -13,7 +13,7 @@
           </div>
         </div>
       </v-touch>
-      <v-touch class="level-right level-item is-narrow is-clickable" >
+      <v-touch class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
         <span class="icon image-icon icon-trash is-small"></span>
         <span class="is-danger" @click.prevent="confirmDeleteFavorite"> {{ $t('forum.personal.cancelFavor') }}</span>
       </v-touch>

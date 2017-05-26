@@ -63,7 +63,6 @@ defmodule Acs.PlugsPipeline do
      pipeline :sdkpay do
         plug :accepts, ["json"]
         plug :fetch_session
-        plug :protect_from_forgery
         plug :parse_user_agent
         plug :fetch_device_id
         plug :fetch_locale

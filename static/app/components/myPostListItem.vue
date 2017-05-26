@@ -4,7 +4,7 @@
       <v-touch class="level-left level-item is-clickable" @tap="showDetail">
         <div class="tile is-vertical">
           <div class="tile">
-            <h5 class="title is-5">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
+            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
             <a v-show="itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
           </div>
           <div class="tile" style="font-size:1.1rem">
@@ -14,11 +14,12 @@
           </div>
         </div>
       </v-touch>
-      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" @tap="confirmDeArchivePost">
+      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" tag="div"
+        style="height:4rem">
         <span class="icon image-icon icon-lock is-small"></span>
-        <span class="is-danger"> {{ $t('forum.detail.openPost')}}</span>
+        <span class="is-danger" style="margin-left:0.25rem" @click.prevent="confirmDeArchivePost"> {{ $t('forum.detail.openPost')}}</span>
       </v-touch>
-      <v-touch v-else class="level-right level-item is-narrow is-clickable">
+      <v-touch v-else class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
         <span class="icon image-icon icon-trash is-small"></span>
         <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
       </v-touch>

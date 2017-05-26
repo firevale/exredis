@@ -11,7 +11,7 @@ defmodule Acs.RedisDevice do
   def find(device_id) do 
     key = "#{@device_cache_key}.#{device_id}"
 
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined ->
           case StatsRepo.get(Device, device_id) do 

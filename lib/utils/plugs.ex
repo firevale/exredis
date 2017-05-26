@@ -92,7 +92,7 @@ defmodule Acs.Plugs do
           "android" ->
             conn |> put_private(:acs_platform, "android")
           "ios" ->
-            conn |> put_private(:acs_platform, "android")
+            conn |> put_private(:acs_platform, "ios")
           _ ->
             conn
         end
@@ -487,14 +487,14 @@ defmodule Acs.Plugs do
                             query_string: query_string,
                             body_params: body_params} = conn, opts) do
     key = "#{request_path}?#{query_string}!#{URI.encode_query(body_params)}"
-    case Cachex.get(:mem_cache, key) do
+    case Cachex.get(:default, key) do
       {:ok, {resp_headers, resp_body}} ->
         %{conn | resp_headers: resp_headers} |> send_resp(200, resp_body) |> halt
 
       _ ->
         do_cache = fn(%Plug.Conn{resp_headers: resp_headers,
                                  resp_body: resp_body} = conn) ->
-                     Cachex.set(:mem_cache, key, {resp_headers, resp_body}, ttl: :timer.seconds(Keyword.get(opts, :cache_seconds, 60)), async: true)
+                     Cachex.set(:default, key, {resp_headers, resp_body}, ttl: :timer.seconds(Keyword.get(opts, :cache_seconds, 60)), async: true)
                      conn
                    end
         %{conn | before_send: [do_cache | conn.before_send]}

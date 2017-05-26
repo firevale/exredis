@@ -132,11 +132,12 @@ defmodule Acs.AppChannel do
     app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
 
     if is_nil(RedisDevice.find(device_id)) do
+      # client may join channel twice at the same time, ignore the second one
       Device.changeset(%Device{}, %{
         id: device_id,
         model: device_model,
         platform: platform,
-        os: os}) |> StatsRepo.insert!
+        os: os}) |> StatsRepo.insert(on_conflict: :nothing)
     end
 
     app_device = RedisAppDevice.find(app_id, zone_id, device_id)

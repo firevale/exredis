@@ -48,7 +48,7 @@ defmodule Acs.RedisApp do
   def find(id) when is_bitstring(id) do
     key = "#{@app_cache_key}.#{id}"
 
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) ->    
+    Cachex.get!(:default, key, fallback: fn(redis_key) ->    
       case Redis.get(redis_key) do
         :undefined -> refresh(id, false)
         raw -> raw |> from_json
@@ -60,7 +60,7 @@ defmodule Acs.RedisApp do
     redis_key = "#{@app_cache_key}.#{id}"
 
     if force_update do 
-      Cachex.del(:mem_cache, redis_key)
+      Cachex.del(:default, redis_key)
     end
 
     query = from app in App,

@@ -13,7 +13,7 @@ defmodule Acs.RedisAppUser do
   def find(app_id, zone_id, user_id) do 
     key = "#{@app_user_cache_key}.#{app_id}.#{zone_id}.#{user_id}"
 
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined ->
           case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 

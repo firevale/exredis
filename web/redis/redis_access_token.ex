@@ -46,7 +46,7 @@ defmodule Acs.RedisAccessToken do
 
   def find(nil), do: nil
   def find(token_id) when is_bitstring(token_id) do
-    Cachex.get!(:mem_cache, key(token_id), fallback: fn(key) -> 
+    Cachex.get!(:default, key(token_id), fallback: fn(key) -> 
       case Redis.get(key) do
         :undefined ->
           find_fvac_token(token_id)

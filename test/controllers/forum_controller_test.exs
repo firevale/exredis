@@ -1,16 +1,6 @@
 defmodule Acs.ForumControllerTest do
   use Acs.ConnCase
 
-  alias Acs.App
-  alias Acs.Repo
-  alias Acs.User
-  alias Acs.AdminUser
-  alias Acs.RedisUser
-  alias Acs.ForumComment
-  alias Acs.ForumPost
-  alias Acs.ForumController
-  alias Acs.RedisAccessToken
-
   alias Utils.JSON
   require Utils
 
@@ -128,76 +118,112 @@ defmodule Acs.ForumControllerTest do
 
   end
 
-  # test "get post detail" do
-    
-    
+  test "get post detail", context do
+    resp = post(context.conn, "/forum_actions/get_post_detail", %{
+      post_id: 1
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "get user post comments" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "get user post comments", context do
+    resp = post(context.conn, "/forum_actions/get_user_post_comments", %{
+      forum_id: 1, 
+      page: 1,
+      records_per_page: 10
+    })
 
-  # test "delete comment" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "toggle post favorite" do
-    
-    
+  test "delete comment", context do
+    resp = post(context.conn, "/forum_actions/delete_comment", %{
+      comment_id: 1
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "toggle post status" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "toggle post favorite", context do
+    resp = post(context.conn, "/forum_actions/toggle_post_favorite", %{
+      post_id: 1
+    })
 
-  # test "add comment" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "get user favorites" do
-    
-    
+  test "toggle post status", context do
+    resp = post(context.conn, "/forum_actions/toggle_post_status", %{
+      post_id: 1,
+      is_top: true,
+      forum_id: 1
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "search" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "add comment", context do
+    resp = post(context.conn, "/forum_actions/add_comment", %{
+      forum_id: 1,
+      section_id: 1,
+      post_id: 1,
+      content: "test content"
+    })
 
-  # test "fetch post" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "upload post image" do
-    
-    
+  test "get user favorites", context do
+    resp = post(context.conn, "/forum_actions/get_user_favorites", %{
+      forum_id: 1,
+      page: 1,
+      records_per_page: 10
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "fetch comment" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "search", context do
+    resp = post(context.conn, "/forum_actions/search", %{
+      forum_id: 1,
+      keyword: "test",
+      page: 1,
+      records_per_page: 10
+    })
 
-  # test "upload post image" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
 end

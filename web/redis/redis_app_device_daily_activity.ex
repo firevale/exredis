@@ -10,7 +10,7 @@ defmodule Acs.RedisAppDeviceDailyActivity do
   def find(app_device_id, date) do 
     key = "#{@cache_key}.#{app_device_id}.#{date}"
 
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined ->
           case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device_id, date: date) do 

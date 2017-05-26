@@ -18,7 +18,7 @@ defmodule Acs.RedisAdminUser do
 
   def get_admin_level(admin_user_id, app_id \\ nil)  when is_integer(admin_user_id) do
     key = get_redis_key(admin_user_id, app_id)
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do
         :undefined -> refresh(admin_user_id, app_id, false)
         raw ->
@@ -44,7 +44,7 @@ defmodule Acs.RedisAdminUser do
     redis_key = get_redis_key(admin_user_id, app_id)
 
     if force_update do 
-      Cachex.del(:mem_cache, redis_key)
+      Cachex.del(:default, redis_key)
     end
 
     query = 

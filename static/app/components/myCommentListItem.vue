@@ -6,7 +6,7 @@
         <h5 v-if="!itemData.active" class="title is-5" style="color: #979797;">{{delHtmlTag(itemData.content)}}</h5>
         <h5 v-else class="title is-5">{{delHtmlTag(itemData.content)}}</h5>
       </div>
-      <div class="tile" style="margin-left: 1rem">
+      <div class="tile" style="margin-left: 1rem;font-size:1.1rem">
         <span class="subtitle is-marginless">{{ itemData.inserted_at | formatServerDateTime }}</span>
         <span class="subtitle" style="margin:0 1em">|</span>
         <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>

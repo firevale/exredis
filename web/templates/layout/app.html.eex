@@ -31,6 +31,7 @@
         user: {
           id: <%= user.id %>,
           nickname: '<%= user.nickname %>',
+          inserted_at: '<%= user.inserted_at %>',
           email: '<%= user.email %>',
           mobile: '<%= user.mobile %>',
           gender: '<%= user.gender %>',

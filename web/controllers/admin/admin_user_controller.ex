@@ -98,7 +98,7 @@ defmodule Acs.AdminUserController do
             where: au.id == ^admin_user_id and au.app_id == ^app_id
     case Repo.one(query) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "error.server.commentNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.userNotExist"})
       %AdminUser{} = user ->
         if(user.admin_level == 2 and RedisAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
             conn |> json(%{success: false, i18n_message: "error.server.illegal"})

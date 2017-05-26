@@ -1,12 +1,13 @@
-defmodule Acs.AdminControllerTest do
+defmodule Acs.AdminUserControllerTest do
   use Acs.ConnCase
 
   alias Utils.JSON
+  alias Acs.User
+  alias Acs.AdminUser
   require Utils
 
   @app_id   "978A7D84040FE589ED0C76295131E43D"
   @user_id  100001
-  @goods_id "biu.goods.credits18"
 
   setup %{conn: conn} = tags do
       device_id = "idfa.#{Utils.generate_token()}"
@@ -43,62 +44,10 @@ defmodule Acs.AdminControllerTest do
          |> put_private(:acs_session_user_id, @user_id)
   end
 
-  test "fetch_apps", context do
-    resp = post(context.conn, "/admin_actions/fetch_apps", %{})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "fetch_supported_sdks", context do
-    resp = post(context.conn, "/admin_actions/fetch_supported_sdks", %{})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "update_app_info", context do
-    resp = post(context.conn, "/admin_actions/app/update_app_info", %{
-      "app" => %{
-        "name" => "test app",
-        "currency" => "CNY"
-      }})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "update_app_goods_info", context do
-    resp = post(context.conn, "/admin_actions/app/update_app_goods_info", %{
-      "goods" => %{
-        "id" => @goods_id,
-        "name" => "测试商品",
-        "description" => "测试描述",
-        "price" => 1100,
-        "app_id" => @app_id,
-    }})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "fetch_orders", context do
-    resp = post(context.conn, "/admin_actions/fetch_orders", %{
-      "app_id" => @app_id,
-      "page" => 1,
-      "records_per_page" => 10
+  test "get_users_by_level", context do
+    resp = post(context.conn, "/admin_actions/user/get_users_by_level", %{
+      "level" => 1,
+      "keyword" => ""
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -108,13 +57,8 @@ defmodule Acs.AdminControllerTest do
     assert result.success
   end
 
-  test "search_orders", context do
-    resp = post(context.conn, "/admin_actions/search_orders", %{
-      "app_id" => @app_id,
-      "keyword" => "test",
-      "page" => 1,
-      "records_per_page" => 10
-    })
+  test "get_current_user_level", context do
+    resp = post(context.conn, "/admin_actions/user/get_current_user_level", %{})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
     IO.inspect resp.resp_body
@@ -122,4 +66,63 @@ defmodule Acs.AdminControllerTest do
     assert resp.status == 200
     assert result.success
   end
+
+  test "add_admin_user", context do
+
+    user = User.changeset(%User{}, %{
+        id: 100005,
+        email: "test@firevale.com",
+        encrypted_password: "xxxxxx"
+      }) |> Repo.insert!(on_conflict: :nothing)
+
+    resp = post(context.conn, "/admin_actions/user/add_admin_user", %{
+        "admin_id" => 100005,
+        "level" => 2,
+        "app_id" => @app_id, 
+        "account_id" => "test@firevale.com"
+      })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
+  test "delete_admin_user", context do
+      user = User.changeset(%User{}, %{
+        id: 100005,
+        email: "test@firevale.com",
+        encrypted_password: "xxxxxx"
+      }) |> Repo.insert!(on_conflict: :nothing)
+
+      admin_user = AdminUser.changeset(%AdminUser{}, %{
+        account_id: "test@firevale.com",
+        active: true,
+        admin_level: 2,
+        app_id: @app_id, 
+        user_id: 100005
+      }) |> Repo.insert!(on_conflict: :nothing)
+
+    resp = post(context.conn, "/admin_actions/user/delete_admin_user", %{
+        "admin_user_id" => admin_user.id
+      })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
+  test "get_admin_user_by_app", context do
+    resp = post(context.conn, "/admin_actions/user/get_admin_user_by_app", %{})
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
 end

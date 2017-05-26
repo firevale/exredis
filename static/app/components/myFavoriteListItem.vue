@@ -6,7 +6,7 @@
           <div class="tile">
             <h5 class="title is-5">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
           </div>
-          <div class="tile">
+          <div class="tile" style="font-size:1.1rem">
             <span class="subtitle">{{ itemData.post.inserted_at | formatServerDateTime }}</span>
             <span class="subtitle" style="margin: 0 1rem">|</span>
             <span class="subtitle">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>

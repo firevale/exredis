@@ -28,6 +28,7 @@ alias Acs.MallOrder
 alias Acs.MallOrderDetail
 alias Acs.UserAddress
 alias Acs.MallOPLog
+alias Acs.AppNews
 require Logger
 
 Redis.flushdb()
@@ -107,3 +108,6 @@ AdminUser.changeset(%AdminUser{}, %{account_id: "xiaobin@firevale.com", user_id:
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhongxiaobin@firevale.com", user_id: 100001, admin_level: 1}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "zhumingzhen@firevale.com", user_id: 100002, admin_level: 1}) |> Repo.insert
 AdminUser.changeset(%AdminUser{}, %{account_id: "xiebing@firevale.com", user_id: 100004, admin_level: 1}) |> Repo.insert
+
+AppNews.changeset(%AppNews{}, %{title: "title", content: "content", group: "news", active: true, app_id: "978A7D84040FE589ED0C76295131E43D", user_id: 100001}) |> Repo.insert
+

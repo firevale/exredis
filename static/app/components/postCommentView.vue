@@ -22,8 +22,8 @@
               {{ $t('common.delete') }} </span>
           </div>
         </nav>
-        <quill-content class="quill-editor ql-snow post-content" :key="filterContent" :content="filterContent"
-          style="font-size:1.1rem"></quill-content>
+        <quill-content class="quill-editor ql-snow post-content" :class="!commentData.active?'subtitle':''" :key="filterContent"
+          :content="filterContent" style="font-size:1.1rem"></quill-content>
       </div>
     </article>
   </div>

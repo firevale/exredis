@@ -118,6 +118,15 @@ test() {
 	fi
 }
 
+test_reset() {
+	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
+	if [ $? -eq 0 ]; then
+		docker exec -e MIX_ENV=test acs mix test.reset
+	else
+		new_for_test
+	fi
+}
+
 shell() {
 	docker-compose up -d
 	check_build_image
@@ -150,6 +159,9 @@ case "$1" in
 		;;
 	test)
 		test
+		;;
+	test_reset)
+		test_reset
 		;;
 	mix)
 		mix ${@:2}

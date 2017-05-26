@@ -27,10 +27,10 @@
     </article>
     <div class="tile is-full has-text-centered">
       <p style="margin: 1rem auto;">
-        <input type="button" style="margin: 0.5rem; border-radius: 0; min-width: 8rem; font-weight: 500; font-size: 1rem; padding-bottom: 0.4em; padding-top: 0.35em; "
-          @click="close" :value="$t('forum.newPost.backAndEdit')" class="button is-info" />
-        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="handleSubmit" :value="$t('forum.newPost.btnTitle')"
-          class="button is-primary" />
+        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="close" :value="$t('forum.newPost.backAndEdit')"
+          class="button is-info" />
+        <input type="submit" style="display: inline-block; margin: 0.5rem; font-size: 1rem;" @click="handleSubmit"
+          :value="$t('forum.newPost.btnTitle')" class="button is-primary" />
       </p>
     </div>
   </div>
@@ -85,11 +85,12 @@ export default {
         this.processing = true
         let forumId = this.$router.currentRoute.params.forumId
         let result = await this.$acs.addPost({
-          forum_id: forumId, 
+          forum_id: forumId,
           section_id: this.editingPostData.selectedSectionId,
           post_id: this.editingPostData.id,
-          title: this.editingPostData.title, 
-          content: this.editingPostData.content})
+          title: this.editingPostData.title,
+          content: this.editingPostData.content
+        })
 
         if (result.success) {
           this.resetPostEditingData()

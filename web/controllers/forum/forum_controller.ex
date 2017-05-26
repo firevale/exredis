@@ -245,7 +245,7 @@ defmodule Acs.ForumController do
               join: u in assoc(p, :user),
               join: s in assoc(p, :section),
               join: f in assoc(p, :forum),
-              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
+              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :active, :inserted_at,
                               :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], 
                               section: [:id, :title], forum: [:id]]),
               limit: ^records_per_page,
@@ -270,7 +270,7 @@ defmodule Acs.ForumController do
   end
 
   #get_paged_ban_post
-  def get_paged_ban_post(%Plug.Conn{private: %{acs_is_forum_admin: is_admin}} = conn,
+  def get_paged_ban_post(%Plug.Conn{private: %{acs_is_forum_admin: _is_admin}} = conn,
                             %{"forum_id" => forum_id,
                              "page" => page,
                              "records_per_page" => records_per_page}) do
@@ -283,7 +283,7 @@ defmodule Acs.ForumController do
               join: u in assoc(p, :user),
               join: s in assoc(p, :section),
               join: f in assoc(p, :forum),
-              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :inserted_at,
+              select: map(p, [:id, :title, :is_top, :is_hot, :is_vote, :reads, :comms, :active, :inserted_at,
                               :last_reply_at, :has_pic, user: [:id, :nickname, :avatar_url], 
                               section: [:id, :title], forum: [:id]]),
               limit: ^records_per_page,
@@ -421,7 +421,7 @@ defmodule Acs.ForumController do
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
             where: p.forum_id == ^forum_id and c.user_id == ^user_id and p.active == true,
-            select: map(c, [:id, :content, :floor, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
+            select: map(c, [:id, :content, :floor, :active, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
             preload: [post: {p, section: s}]

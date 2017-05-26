@@ -189,7 +189,9 @@ export default {
           this.decrUserPostCount()
           this.postList.splice(index, 1)
           break;
-
+        case "banPost":
+          this.banList.splice(index, 1)
+          break;
         case "myFavorite":
           this.favoriteList.splice(index, 1)
           break;
@@ -201,6 +203,7 @@ export default {
       this.$acs.cancelGetUserPagedPost()
       this.$acs.cancelGetUserPostComments()
       this.$acs.cancelGetUserPostFavorites()
+      this.$acs.cancelGetPagedBanPost()
 
       let result = await this.$acs.getUserPagedPost(this.$route.params.forumId,
         this.page + 1, this.recordsPerPage)
@@ -221,6 +224,7 @@ export default {
       this.$acs.cancelGetUserPagedPost()
       this.$acs.cancelGetUserPostComments()
       this.$acs.cancelGetUserPostFavorites()
+      this.$acs.cancelGetPagedBanPost()
 
       let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1,
         this.recordsPerPage)
@@ -241,6 +245,7 @@ export default {
       this.$acs.cancelGetUserPagedPost()
       this.$acs.cancelGetUserPostComments()
       this.$acs.cancelGetUserPostFavorites()
+      this.$acs.cancelGetPagedBanPost()
 
       let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1,
         this.recordsPerPage)
@@ -257,21 +262,24 @@ export default {
     },
 
     getBanPage: async function() {
-      // cancel last get paged post if we're requesting 
-      this.$acs.cancelGetUserPagedPost()
-      this.$acs.cancelGetUserPostComments()
-      this.$acs.cancelGetUserPostFavorites()
+      if (this.isManager) {
+        // cancel last get paged post if we're requesting
+        this.$acs.cancelGetUserPagedPost()
+        this.$acs.cancelGetUserPostComments()
+        this.$acs.cancelGetUserPostFavorites()
+        this.$acs.cancelGetPagedBanPost()
 
-      let result = await this.$acs.getPagedBanPost(this.$route.params.forumId, this.page + 1,
-        this.recordsPerPage)
+        let result = await this.$acs.getPagedBanPost(this.$route.params.forumId, this.page + 1,
+          this.recordsPerPage)
 
-      if (result.success) {
-        this.banList = this.page == 0 ? result.posts : this.banList.concat(result.posts)
-        this.total = result.total
-        this.page = this.page + 1
+        if (result.success) {
+          this.banList = this.page == 0 ? result.posts : this.banList.concat(result.posts)
+          this.total = result.total
+          this.page = this.page + 1
 
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
+          if (this.$refs.scroller && this.page >= this.total) {
+            this.$refs.scroller.$emit('all-loaded')
+          }
         }
       }
     }

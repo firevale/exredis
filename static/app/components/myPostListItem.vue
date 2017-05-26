@@ -14,7 +14,11 @@
           </div>
         </div>
       </v-touch>
-      <v-touch class="level-right level-item is-narrow is-clickable" @tap="confirmDeletePost">
+      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" @tap="confirmDeArchivePost">
+        <span class="icon image-icon icon-lock is-small"></span>
+        <span class="is-danger"> {{ $t('forum.detail.openPost')}}</span>
+      </v-touch>
+      <v-touch v-else class="level-right level-item is-narrow is-clickable" @tap="confirmDeletePost">
         <span class="icon image-icon icon-trash is-small"></span>
         <span class="is-danger"> {{ $t('forum.personal.deleteBtn') }}</span>
       </v-touch>
@@ -41,7 +45,9 @@ export default {
   },
 
   computed: {
-
+    isManager() {
+      return window.acsConfig.isAdmin == true
+    }
   },
 
   methods: {
@@ -74,6 +80,27 @@ export default {
         onCancel: null,
       })
     },
+
+    confirmDeArchivePost(e) {
+      AlertDialog.show({
+        visible: true,
+        okText: this.$t('common.ok'),
+        cancelText: this.$t('common.cancel'),
+        message: this.$t('forum.personal.confirmDeArchive'),
+        onOk: async _ => {
+          let result = await this.$acs.togglePostStatus({
+            forum_id: this.$route.params.forumId,
+            post_id: this.itemData.id,
+            active: true
+          })
+          if (result.success) {
+            Toast.show(this.$t(result.i18n_message))
+            this.$emit('item-deleted', 'banPost', this.itemIndex)
+          }
+        },
+        onCancel: null,
+      })
+    }
 
   },
 }

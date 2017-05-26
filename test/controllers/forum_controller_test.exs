@@ -1,173 +1,229 @@
 defmodule Acs.ForumControllerTest do
   use Acs.ConnCase
 
-  alias Acs.Repo
-  alias Acs.User
-  alias Acs.Forum
-  alias Acs.ForumComment
-  alias Acs.ForumPost
-  alias Acs.ForumSection
-  alias Acs.ForumController
-  alias Acs.RedisAccessToken
-
   alias Utils.JSON
-
   require Utils
 
-setup %{conn: conn} = tags do
-    conn =
-      conn
-      |> recycle()
-      |> set_acs_header(app_id, device_id, platform)
+  @app_id   "978A7D84040FE589ED0C76295131E43D"
+  @user_id  100001
 
-    app_id = "978A7D84040FE589ED0C76295131E43D"
-    device_id = "idfa.#{Utils.generate_token()}"
-    platform = "ios"
+  setup %{conn: conn} = tags do
+      device_id = "idfa.#{Utils.generate_token()}"
+      platform = "ios"
 
-    user = User.changeset(%User{}, %{
-      id: 100001,
-      email: "zhongxiaobin@firevale.com",
-      encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA"
-      }) |> Repo.insert!(on_conflict: :nothing)
+      conn = conn
+        |> recycle()
+        |> set_acs_header(device_id, platform)
 
-    RedisUser.refresh(user.id)
+      resp = post(conn, "/user/create_token", %{
+        account_id: "zhongxiaobin@firevale.com",
+        password: "smilezh"
+      })
 
-    access_token = RedisAccessToken.create(%{
-                            app_id: app_id,
-                            user_id: user.id,
-                            device_id: device_id,
-                            platform: platform,
-                            ttl: 604800,
-                            binding: %{}
-                          })
+      str = resp.resp_body |> String.replace("'", "\"") |> Poison.decode!
+      token = str["access_token"]
+      session = %{"access_token" => token}
 
-    conn  |> put_session(:access_token, access_token.id)
-          |> put_session(:platform, platform)
-          |> put_session(:device_id, device_id)
+      conn = conn
+      |> Plug.Test.init_test_session(session) 
+      |> put_req_header("acs-access-token", token)
+      |> put_private(:acs_access_token, token)
 
-    {:ok, %{tags | conn: conn}}
-  end
+      {:ok, %{tags | conn: conn}}
+    end
 
-  defp set_acs_header(conn, app_id, device_id, platform) do
-    conn |> put_private(:acs_app_id, app_id)
+  defp set_acs_header(conn, device_id, platform) do
+    conn |> put_private(:acs_app_id, @app_id)
          |> put_private(:acs_platform, platform)
          |> put_req_header("acs-locale", "zh-Hans")
          |> put_req_header("acs-zone-id", "1")
+         |> put_req_header("acs-app-id", @app_id)
          |> put_private(:acs_device_id, device_id)
+         |> put_private(:acs_session_user_id, @user_id)
   end
 
   test "update forum info", context do
-
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
-      id: 1,
-      title: "test",
-      active: true,
-      icon: "test",
-      app_id: "978A7D84040FE589ED0C76295131E43D"
-    })
+      "forum" => %{
+        "id" => 1,
+        "title" => "test",
+        "active" => true,
+        "icon" => "test",
+        "app_id" => @app_id
+      } })
 
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
     IO.inspect resp.resp_body
-    # result = JSON.decode!(resp.resp_body, keys: :atoms)
-    # IO.inspect result
 
     assert resp.status == 200
-    # assert result.success
+    assert result.success
   end
 
-  # test "update section info" do
-    
-    
+  test "update section info", context do
+    resp = post(context.conn, "/admin_actions/forum/update_section_info", %{
+      "section" => %{
+        "id" => 1,
+        "title" => "test",
+        "active" => true,
+        "sort" => 1,
+        "forum_id" => 1
+      } })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "get forum info with keyword" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "get forum info with keyword", context do
+    resp = post(context.conn, "/forum_actions/get_forum_info_with_keyword", %{
+      forum_id: 1
+    })
 
-  # test "get user paged post" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "add post" do
-    
-    
+  test "get user paged post", context do
+    resp = post(context.conn, "/forum_actions/get_user_paged_post", %{
+      forum_id: 1,
+      page: 1,
+      records_per_page: 10
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "get post detail" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "add post", context do
+    resp = post(context.conn, "/forum_actions/add_post", %{
+      forum_id: "1",
+      section_id: 1,
+      title: "test title",
+      content: "test content"
+    })
 
-  # test "get user post comments" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
 
-  # test "delete comment" do
-    
-    
+  end
 
-  # end
+  test "get post detail", context do
+    resp = post(context.conn, "/forum_actions/get_post_detail", %{
+      post_id: 1
+    })
 
-  # test "toggle post favorite" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "toggle post status" do
-    
-    
+  test "get user post comments", context do
+    resp = post(context.conn, "/forum_actions/get_user_post_comments", %{
+      forum_id: 1, 
+      page: 1,
+      records_per_page: 10
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "add comment" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "delete comment", context do
+    resp = post(context.conn, "/forum_actions/delete_comment", %{
+      comment_id: 1
+    })
 
-  # test "get user favorites" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "search" do
-    
-    
+  test "toggle post favorite", context do
+    resp = post(context.conn, "/forum_actions/toggle_post_favorite", %{
+      post_id: 1
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "fetch post" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "toggle post status", context do
+    resp = post(context.conn, "/forum_actions/toggle_post_status", %{
+      post_id: 1,
+      is_top: true,
+      forum_id: 1
+    })
 
-  # test "upload post image" do
-    
-    
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # end
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # test "fetch comment" do
-    
-    
+  test "add comment", context do
+    resp = post(context.conn, "/forum_actions/add_comment", %{
+      forum_id: 1,
+      section_id: 1,
+      post_id: 1,
+      content: "test content"
+    })
 
-  # end
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
 
-  # test "upload post image" do
-    
-    
+    assert resp.status == 200
+    assert result.success
+  end
 
-  # end
+  test "get user favorites", context do
+    resp = post(context.conn, "/forum_actions/get_user_favorites", %{
+      forum_id: 1,
+      page: 1,
+      records_per_page: 10
+    })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
+  test "search", context do
+    resp = post(context.conn, "/forum_actions/search", %{
+      forum_id: 1,
+      keyword: "test",
+      page: 1,
+      records_per_page: 10
+    })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
 
 end

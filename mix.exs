@@ -71,6 +71,11 @@ defmodule Acs.Mixfile do
   #     $ mix ecto.setup
   #
   # See the documentation for `Mix` for more info on aliases.
+  defp change_test_env(_) do
+    Mix.env(:test)
+    Mix.shell.info "MIX_ENV Change to #{Mix.env}"
+  end
+
   defp aliases do
     ["ecto.setup": ["ecto.create -r Acs.Repo", 
                     "ecto.migrate -r Acs.Repo", 
@@ -78,12 +83,14 @@ defmodule Acs.Mixfile do
                     "ecto.migrate -r Acs.StatsRepo", 
                     "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop -r Acs.Repo", "ecto.drop -r Acs.StatsRepo", "ecto.setup"],
-     "test": ["ecto.drop --quiet -r Acs.Repo", 
-              "ecto.create --quiet -r Acs.Repo", 
-              "ecto.migrate --quiet -r Acs.Repo", 
-              "ecto.drop --quiet -r Acs.StatsRepo", 
-              "ecto.create --quiet -r Acs.StatsRepo", 
-              "ecto.migrate --quiet -r Acs.StatsRepo", 
-              "test"]]
+     "test.reset": [
+                    "ecto.drop --quiet -r Acs.Repo", 
+                    "ecto.create --quiet -r Acs.Repo", 
+                    "ecto.migrate --quiet -r Acs.Repo", 
+                    "ecto.drop --quiet -r Acs.StatsRepo", 
+                    "ecto.create --quiet -r Acs.StatsRepo", 
+                    "ecto.migrate --quiet -r Acs.StatsRepo", 
+                    "run priv/repo/test_seeds.exs"],
+    ]
   end
 end

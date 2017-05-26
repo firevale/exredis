@@ -114,7 +114,7 @@ defmodule Acs.AppChannel do
                         "device_id" => device_id,
                         "device_model" => device_model,
                         "os_ver" => os,
-                        "sdk" => sdk,
+                        "sdk" => _sdk,
                         "platform" => platform,
                         "app_user_id" => app_user_id,
                         "app_user_name" => app_user_name,

@@ -3,7 +3,7 @@
     <div class="tile is-vertical">
       <div class="tile" style="margin-left: 1rem">
         <h5 class="title is-5">{{ $t('forum.personal.reply') }}</h5>
-        <h5 v-if="!itemData.active" class="title is-5" style="font-weight:300">{{delHtmlTag(itemData.content)}}</h5>
+        <h5 v-if="!itemData.active" class="title is-5" style="color: #979797;">{{delHtmlTag(itemData.content)}}</h5>
         <h5 v-else class="title is-5">{{delHtmlTag(itemData.content)}}</h5>
       </div>
       <div class="tile" style="margin-left: 1rem">

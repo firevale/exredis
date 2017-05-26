@@ -13,9 +13,9 @@
           </div>
         </div>
       </v-touch>
-      <v-touch class="level-right level-item is-narrow is-clickable" @tap="confirmDeleteFavorite">
+      <v-touch class="level-right level-item is-narrow is-clickable" >
         <span class="icon image-icon icon-trash is-small"></span>
-        <span class="is-danger"> {{ $t('forum.personal.cancelFavor') }}</span>
+        <span class="is-danger" @click.prevent="confirmDeleteFavorite"> {{ $t('forum.personal.cancelFavor') }}</span>
       </v-touch>
     </div>
   </div>

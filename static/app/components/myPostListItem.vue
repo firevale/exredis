@@ -18,9 +18,9 @@
         <span class="icon image-icon icon-lock is-small"></span>
         <span class="is-danger"> {{ $t('forum.detail.openPost')}}</span>
       </v-touch>
-      <v-touch v-else class="level-right level-item is-narrow is-clickable" @tap="confirmDeletePost">
+      <v-touch v-else class="level-right level-item is-narrow is-clickable">
         <span class="icon image-icon icon-trash is-small"></span>
-        <span class="is-danger"> {{ $t('forum.personal.deleteBtn') }}</span>
+        <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
       </v-touch>
     </div>
   </div>

@@ -22,7 +22,7 @@
               {{ $t('common.delete') }} </span>
           </div>
         </nav>
-        <quill-content class="quill-editor ql-snow post-content" :class="!commentData.active?'subtitle':''" :key="filterContent"
+        <quill-content class="quill-editor ql-snow post-content" :style="{color:!commentData.active?'#979797':''}" :key="filterContent"
           :content="filterContent" style="font-size:1.1rem"></quill-content>
       </div>
     </article>

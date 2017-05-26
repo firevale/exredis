@@ -16,7 +16,7 @@
         </p>
         <p>
           {{ $t('forum.personal.registerTime') }}
-          <span>{{ this.userInfo.inserted_at | formatServerDateTime }}</span>
+          <span>{{ this.userInfo.inserted_at | formatServerDate }}</span>
         </p>
       </div>
     </article>

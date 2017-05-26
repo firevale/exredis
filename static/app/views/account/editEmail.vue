@@ -12,9 +12,10 @@
         </div>
         <div class="field">
           <p class="control has-icon has-button has-button-right">
-            <input class="input" type="number" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')" />
+            <input class="input" type="number" v-model.trim="verifyCode" :placeholder="$t('account.placeholder.inputVerifyCode')"
+            />
             <span class="icon image-icon icon-shield"></span>
-            <v-touch tag="a" class="button is-primary" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
+            <v-touch tag="button" type="button" class="button is-primary" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
              'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
               {{ btnFetchVerifyCodeTitle }}
             </v-touch>
@@ -30,7 +31,8 @@
           </p>
         </div>
       </div>
-      <p v-show="errorHint" class="help is-danger"> <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
+      <p v-show="errorHint" class="help is-danger">
+        <span class="icon image-icon icon-error-sign"></span> {{ errorHint }} </p>
       <v-touch tag="button" type="submit" class="button is-info is-submit" :disabled="$v.$invalid" :class="{'is-disabled': $v.$invalid,
         'is-loading': processing}">
         {{ $t('account.bind') }}
@@ -164,15 +166,19 @@ export default {
 
     sendEmailVerifyCode: async function() {
       try {
-        this.sendingVerifyCode = true
-        let result = await this.$acs.sendBindEmailVerifyCode(this.email)
-        if (result.success) {
-          this.cooldownCounter = 60
-          setTimeout(this.cooldownTimer, 1000)
+        if (!utils.isValidEmail(this.email)) {
+          this.errorHint = this.$t('error.validation.invalidEmailAddress')
         } else {
-          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+          this.sendingVerifyCode = true
+          let result = await this.$acs.sendBindEmailVerifyCode(this.email)
+          if (result.success) {
+            this.cooldownCounter = 60
+            setTimeout(this.cooldownTimer, 1000)
+          } else {
+            this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+          }
+          this.sendingVerifyCode = false
         }
-        this.sendingVerifyCode = false
       } catch (_) {
         this.setErrorMessage(this.$t('error.server.networkError'))
         this.sendingVerifyCode = false

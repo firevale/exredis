@@ -7,10 +7,10 @@
             <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
             <a v-show="itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
           </div>
-          <div class="tile" style="font-size:1.1rem">
-            <span class="subtitle">{{ itemData.inserted_at | formatServerDateTime }}</span>
-            <span class="subtitle" style="margin: 0 1rem">|</span>
-            <span class="subtitle">{{ itemData.comms + '/' + itemData.reads }}</span>
+          <div class="tile">
+            <span class="size-1-1 is-thickness is-dark">{{ itemData.inserted_at | formatServerDateTime }}</span>
+            <span class="size-1-1 is-thickness is-dark" style="margin: 0 1rem">|</span>
+            <span class="size-1-1 is-thickness is-dark">{{ itemData.comms + '/' + itemData.reads }}</span>
           </div>
         </div>
       </v-touch>

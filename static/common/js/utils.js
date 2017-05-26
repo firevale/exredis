@@ -1,6 +1,6 @@
 import './date'
 
-let emailRegex = /^[^@]+@[^@]+$/
+let emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/
 
 let firevaleEmailRegex = /^\w+@firevale\.com$/
 

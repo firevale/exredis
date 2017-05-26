@@ -4,13 +4,10 @@ defmodule Acs.ForumControllerTest do
   alias Acs.App
   alias Acs.Repo
   alias Acs.User
-  alias Acs.AdminSetting
   alias Acs.AdminUser
   alias Acs.RedisUser
-  alias Acs.Forum
   alias Acs.ForumComment
   alias Acs.ForumPost
-  alias Acs.ForumSection
   alias Acs.ForumController
   alias Acs.RedisAccessToken
 
@@ -28,31 +25,8 @@ defmodule Acs.ForumControllerTest do
         |> recycle()
         |> set_acs_header(device_id, platform)
 
-      app = App.changeset(%App{}, %{
-            id: @app_id,
-            secret: Utils.generate_token(),
-            name: "Test App",
-            currency: "CNY",
-            payment_callback: "http://localhost:4001/",
-          }) |> Repo.insert!(on_conflict: :nothing)
-
-      user = User.changeset(%User{}, %{
-        id: @user_id,
-        email: "zhongxiaobin@firevale.com",
-        encrypted_password: "$pbkdf2-sha512$160000$XBC9izsPHnce3kqllIpE8A$xh0TY1uYF3VKukY5fwyqsGEkLqvY.o.iIdaN536i2lSJp6Bnu4xNsu/FH243xuEv9UrLQXLOPmPetmi3hrmdmA"
-        }) |> Repo.insert!(on_conflict: :nothing)
-
-      RedisUser.refresh(user.id)
-
-      admin_user = AdminUser.changeset(%AdminUser{}, %{
-        account_id: user.email,
-        active: true,
-        admin_level: 1,
-        user_id: @user_id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
       resp = post(conn, "/user/create_token", %{
-        account_id: user.email,
+        account_id: "zhongxiaobin@firevale.com",
         password: "smilezh"
       })
 
@@ -79,16 +53,9 @@ defmodule Acs.ForumControllerTest do
   end
 
   test "update forum info", context do
-    forum = Forum.changeset(%Forum{}, %{
-        title: "orig title",
-        active: true,
-        icon: "orig icon",
-        app_id: @app_id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
     resp = post(context.conn, "/admin_actions/forum/update_forum_info", %{
       "forum" => %{
-        "id" => forum.id,
+        "id" => 1,
         "title" => "test",
         "active" => true,
         "icon" => "test",
@@ -103,27 +70,13 @@ defmodule Acs.ForumControllerTest do
   end
 
   test "update section info", context do
-    forum = Forum.changeset(%Forum{}, %{
-        title: "orig title",
-        active: true,
-        icon: "orig icon",
-        app_id: @app_id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
-    section = ForumSection.changeset(%ForumSection{}, %{
-        title: "orig title",
-        active: true,
-        sort: 1,
-        forum_id: forum.id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
     resp = post(context.conn, "/admin_actions/forum/update_section_info", %{
       "section" => %{
-        "id" => section.id,
+        "id" => 1,
         "title" => "test",
         "active" => true,
         "sort" => 1,
-        "forum_id" => forum.id
+        "forum_id" => 1
       } })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -134,23 +87,8 @@ defmodule Acs.ForumControllerTest do
   end
 
   test "get forum info with keyword", context do
-    forum = Forum.changeset(%Forum{}, %{
-        title: "orig title",
-        active: true,
-        icon: "orig icon",
-        app_id: @app_id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
-    setting = AdminSetting.changeset(%AdminSetting{}, %{
-        name: "keyword",
-        value: "keyword",
-        active: true,
-        group: "keyword",
-        memo: "keyword"
-        }) |> Repo.insert!(on_conflict: :nothing)
-
     resp = post(context.conn, "/forum_actions/get_forum_info_with_keyword", %{
-      forum_id: forum.id
+      forum_id: 1
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -175,23 +113,9 @@ defmodule Acs.ForumControllerTest do
   end
 
   test "add post", context do
-    forum = Forum.changeset(%Forum{}, %{
-        title: "orig title",
-        active: true,
-        icon: "orig icon",
-        app_id: @app_id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
-    section = ForumSection.changeset(%ForumSection{}, %{
-        title: "orig title",
-        active: true,
-        sort: 1,
-        forum_id: forum.id
-        }) |> Repo.insert!(on_conflict: :nothing)
-
     resp = post(context.conn, "/forum_actions/add_post", %{
-      forum_id: forum.id,
-      section_id: section.id,
+      forum_id: "1",
+      section_id: 1,
       title: "test title",
       content: "test content"
     })

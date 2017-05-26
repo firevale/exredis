@@ -13,7 +13,7 @@ defmodule Acs.RedisAppDevice do
   def find(app_id, zone_id, device_id) do 
     key = "#{@app_device_cache_key}.#{app_id}.#{zone_id}.#{device_id}"
 
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined ->
           case StatsRepo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do 

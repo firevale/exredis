@@ -34,7 +34,7 @@ defmodule Acs do
 
       supervisor(Task.Supervisor, [[name: Acs.TaskSupervisor]]),
 
-      worker(Cachex, [:mem_cache, [
+      worker(Cachex, [:default, [
         default_ttl: :timer.seconds(60), 
         limit: %Cachex.Limit{limit: 100_000, policy: Cachex.Policy.LRW, reclaim: 0.5},
         record_stats: true,

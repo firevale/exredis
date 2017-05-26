@@ -24,11 +24,11 @@ defmodule Acs.RedisSubscriber do
 
   def handle_info({:message, "cachex.del", key, _}, %{sub: sub} = state) do 
     # invoke Cachex.del only when the key exists, otherwise it will cause endless loop
-    case Cachex.get!(:mem_cache, key) do 
+    case Cachex.get!(:default, key) do 
       nil -> :do_nothing
       _ -> 
         info "delete cachex key: #{key}"
-        Cachex.del(:mem_cache, key)
+        Cachex.del(:default, key)
     end
     :eredis_sub.ack_message(sub)
     {:noreply, state}

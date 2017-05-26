@@ -33,7 +33,7 @@ defmodule Acs.RedisMall do
 
   def find(id)  do
     key = "#{@mall_cache_key}.#{id}"
-    Cachex.get!(:mem_cache, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do
         :undefined ->
           refreshById(id)
@@ -45,7 +45,7 @@ defmodule Acs.RedisMall do
 
   def refresh(goods)  do
     redis_key = "#{@mall_cache_key}.#{goods.id}"
-    Cachex.del(:mem_cache, redis_key)
+    Cachex.del(:default, redis_key)
     cache = %__MODULE__{
       id: goods.id,
       name: goods.name,

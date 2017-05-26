@@ -322,3 +322,9 @@ only screen and (min-resolution: 1.25dppx) {
   height: 400px;
   width: 400px;
 }
+
+.fn-nowrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

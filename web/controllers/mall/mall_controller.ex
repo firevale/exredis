@@ -299,7 +299,7 @@ defmodule Acs.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def get_mall_detail(conn,%{"app_id" =>app_id})do
+  def get_mall_detail(conn,%{"app_id" => app_id})do
     mall= Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true )
     conn |> json(%{success: true, mall: mall})
   end

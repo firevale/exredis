@@ -1,9 +1,9 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
   <div class="top-bar flex-fixed-size">
-    <div class="title-bar">
+    <router-link class="title-bar" :to="{name: 'postList'}" tag="div">
       <h4 class="title is-4">{{forumInfo.title}}</h4>
-    </div>
+    </router-link>
     <nav class="nav">
       <div class="nav-left has-text-left">
         <span v-show="inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>

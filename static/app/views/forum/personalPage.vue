@@ -68,17 +68,6 @@ export default {
     ...mapGetters([
       'userInfo'
     ]),
-
-    sliderPosition() {
-      switch (this.type) {
-        case "myPosts":
-          return "10% bottom"
-        case "myComments":
-          return "50% bottom"
-        case "myFavor":
-          return "90% bottom"
-      }
-    },
     avatarUrl() {
       return {
         src: filter.imageStaticUrl(this.userInfo.avatar_url || window.acsConfig.defaultAvatarUrl),

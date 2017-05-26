@@ -1,4 +1,4 @@
-defmodule Acs.AdminControllerTest do
+defmodule Acs.AdminSettingControllerTest do
   use Acs.ConnCase
 
   alias Utils.JSON
@@ -6,7 +6,6 @@ defmodule Acs.AdminControllerTest do
 
   @app_id   "978A7D84040FE589ED0C76295131E43D"
   @user_id  100001
-  @goods_id "biu.goods.credits18"
 
   setup %{conn: conn} = tags do
       device_id = "idfa.#{Utils.generate_token()}"
@@ -43,62 +42,9 @@ defmodule Acs.AdminControllerTest do
          |> put_private(:acs_session_user_id, @user_id)
   end
 
-  test "fetch_apps", context do
-    resp = post(context.conn, "/admin_actions/fetch_apps", %{})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "fetch_supported_sdks", context do
-    resp = post(context.conn, "/admin_actions/fetch_supported_sdks", %{})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "update_app_info", context do
-    resp = post(context.conn, "/admin_actions/app/update_app_info", %{
-      "app" => %{
-        "name" => "test app",
-        "currency" => "CNY"
-      }})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "update_app_goods_info", context do
-    resp = post(context.conn, "/admin_actions/app/update_app_goods_info", %{
-      "goods" => %{
-        "id" => @goods_id,
-        "name" => "测试商品",
-        "description" => "测试描述",
-        "price" => 1100,
-        "app_id" => @app_id,
-    }})
-
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
-
-    assert resp.status == 200
-    assert result.success
-  end
-
-  test "fetch_orders", context do
-    resp = post(context.conn, "/admin_actions/fetch_orders", %{
-      "app_id" => @app_id,
-      "page" => 1,
-      "records_per_page" => 10
+  test "get_setting", context do
+    resp = post(context.conn, "/admin_actions/setting/get_setting", %{
+      "setting_name" => "keyword"
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -108,12 +54,9 @@ defmodule Acs.AdminControllerTest do
     assert result.success
   end
 
-  test "search_orders", context do
-    resp = post(context.conn, "/admin_actions/search_orders", %{
-      "app_id" => @app_id,
-      "keyword" => "test",
-      "page" => 1,
-      "records_per_page" => 10
+  test "get_settings_by_group", context do
+    resp = post(context.conn, "/admin_actions/setting/get_settings_by_group", %{
+      "group" => "keyword"
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
@@ -122,4 +65,46 @@ defmodule Acs.AdminControllerTest do
     assert resp.status == 200
     assert result.success
   end
+
+  test "delete_setting", context do
+    resp = post(context.conn, "/admin_actions/setting/delete_setting", %{
+        "setting_name" => "keyword"
+      })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
+  test "add_setting", context do
+    resp = post(context.conn, "/admin_actions/setting/add_setting", %{
+        "setting_name" => "test_setting",
+        "setting_value" => "123",
+        "group" => "test",
+        "memo" => "test"
+      })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
+  test "update_setting", context do
+    resp = post(context.conn, "/admin_actions/setting/update_setting", %{
+      "setting_id" => 1,
+      "setting_value" => "123456",
+      "active" => true
+    })
+
+    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    IO.inspect resp.resp_body
+
+    assert resp.status == 200
+    assert result.success
+  end
+
 end

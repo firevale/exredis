@@ -13,7 +13,7 @@
           </div>
         </div>
       </v-touch>
-      <v-touch class="level-right level-item is-narrow is-clickable" >
+      <v-touch class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
         <span class="icon image-icon icon-trash is-small"></span>
         <span class="is-danger" @click.prevent="confirmDeleteFavorite"> {{ $t('forum.personal.cancelFavor') }}</span>
       </v-touch>

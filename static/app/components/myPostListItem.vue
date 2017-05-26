@@ -14,11 +14,11 @@
           </div>
         </div>
       </v-touch>
-      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" @tap="confirmDeArchivePost">
+      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
         <span class="icon image-icon icon-lock is-small"></span>
-        <span class="is-danger"> {{ $t('forum.detail.openPost')}}</span>
+        <span class="is-danger" style="margin-left:0.25rem" @click.prevent="confirmDeArchivePost"> {{ $t('forum.detail.openPost')}}</span>
       </v-touch>
-      <v-touch v-else class="level-right level-item is-narrow is-clickable">
+      <v-touch v-else class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
         <span class="icon image-icon icon-trash is-small"></span>
         <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
       </v-touch>

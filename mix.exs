@@ -83,7 +83,7 @@ defmodule Acs.Mixfile do
                     "ecto.migrate -r Acs.StatsRepo", 
                     "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop -r Acs.Repo", "ecto.drop -r Acs.StatsRepo", "ecto.setup"],
-     "test.reset": [&change_test_env/1,
+     "test.reset": [
                     "ecto.drop --quiet -r Acs.Repo", 
                     "ecto.create --quiet -r Acs.Repo", 
                     "ecto.migrate --quiet -r Acs.Repo", 

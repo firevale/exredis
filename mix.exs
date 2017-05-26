@@ -71,7 +71,7 @@ defmodule Acs.Mixfile do
   #     $ mix ecto.setup
   #
   # See the documentation for `Mix` for more info on aliases.
-   defp change_test_env(_) do
+  defp change_test_env(_) do
     Mix.env(:test)
     Mix.shell.info "MIX_ENV Change to #{Mix.env}"
   end

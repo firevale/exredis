@@ -12,7 +12,8 @@
             <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
             <div class="level-item">
               <h5 class="title is-5" style="margin-bottom: 0; margin-right: 0.2rem"> [{{postInfo.section.title}}] </h5>
-              <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 19rem);" v-html="strenghtenKeywordTitle"></h5>
+              <h5 v-if="$route.name == 'search'" class="title is-5 fn-nowrap" style="width: calc(100vw - 19rem);" v-html="strenghtenKeywordTitle"></h5>
+              <h5 v-else class="title is-5 fn-nowrap" :style="maxWidth" v-html="strenghtenKeywordTitle"></h5>
             </div>
             <span v-if="postInfo.has_pic" class="level-item tag image-tag has-picture"></span>
             <span v-if="postInfo.is_vote" class="level-item tag is-essence">{{ $t('forum.postList.essence') }}</span>
@@ -59,7 +60,26 @@ export default {
         loading: window.acsConfig.defaultAvatarUrl
       }
     },
+    maxWidth() {
+      let maxCount = 0
+      if (this.postInfo.is_top)
+        maxCount += 1
+      if (this.postInfo.has_pic)
+        maxCount += 1
+      if (this.postInfo.is_vote)
+        maxCount += 1
+      if (this.postInfo.is_hot)
+        maxCount += 1
 
+      if (maxCount == 2)
+        return "max-width: calc(100vw - 24rem);"
+      else if (maxCount == 3)
+        return "max-width: calc(100vw - 26rem);"
+      else if (maxCount == 4)
+        return "max-width: calc(100vw - 28rem);"
+      else
+        return "max-width: calc(100vw - 21rem);"
+    },
     strenghtenKeywordTitle() {
       return this.searchKeyword ?
         filter.filterKeyword(this.postInfo.title).replace(new RegExp(this.searchKeyword, 'g'),

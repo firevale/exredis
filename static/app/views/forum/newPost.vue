@@ -102,7 +102,7 @@ export default {
       title: {
         required,
         minLength: utils.minLength(10),
-        maxLength: utils.maxLength(50),
+        maxLength: utils.maxLength(250),
         emoji: function(val) {
           return !(/\ud83d[\ude00-\ude4f]/.test(val))
         },

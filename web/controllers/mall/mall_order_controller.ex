@@ -51,7 +51,7 @@ defmodule Acs.MallOrderController do
     end
   end
 
-  def search_orders(app_id,keyword,page,records_per_page) do
+  defp search_orders(app_id,keyword,page,records_per_page) do
     if String.length(keyword)>0 do
       query = %{
         query: %{

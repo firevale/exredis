@@ -200,6 +200,17 @@ form.post {
   }
 }
 
+.post-list-item.isTop+.post-list-item:not(.isTop) {
+  margin-top:.4rem;
+  :before {
+    @include bottom-line(.5rem,
+    $bottom-line-light);
+    top: -.5rem;
+    width: 100vw;
+    left: 0;
+  }
+}
+
 .person {
   display: flex;
   flex-flow: column nowrap;

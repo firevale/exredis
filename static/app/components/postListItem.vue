@@ -1,5 +1,5 @@
 <template>
-  <v-touch class="has-bottom-line post-list-item" v-if="$route.params.forumId == postInfo.forum.id"
+  <v-touch class="has-bottom-line post-list-item" :class="{isTop: postInfo.is_top}" v-if="$route.params.forumId == postInfo.forum.id"
     v-on:tap="showPostDetail">
     <article class="media">
       <div class="media-left" style="margin: 0.3rem 0.8rem 0 0">

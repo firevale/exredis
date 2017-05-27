@@ -147,13 +147,15 @@ export default {
     },
 
     search: async function(keyword) {
-      if (keyword && typeof keyword == 'string') {
-        this.keyword = keyword
+      if (keyword != "") {
+        if (keyword && typeof keyword == 'string') {
+          this.keyword = keyword
+        }
+        this.page = 1
+        this.searching = true
+        await this.refreshList()
+        this.searching = false
       }
-      this.page = 1
-      this.searching = true
-      await this.refreshList()
-      this.searching = false
     },
 
     refreshList: async function(page = 1) {

@@ -69,7 +69,7 @@ defmodule Acs.AdminUserControllerTest do
 
   test "add_admin_user", context do
 
-    user = User.changeset(%User{}, %{
+    _user = User.changeset(%User{}, %{
         id: 100005,
         email: "test@firevale.com",
         encrypted_password: "xxxxxx"
@@ -90,7 +90,7 @@ defmodule Acs.AdminUserControllerTest do
   end
 
   test "delete_admin_user", context do
-      user = User.changeset(%User{}, %{
+      _user = User.changeset(%User{}, %{
         id: 100005,
         email: "test@firevale.com",
         encrypted_password: "xxxxxx"

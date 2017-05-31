@@ -48,7 +48,7 @@ defmodule Acs.RedisUserTest do
     assert user.id >= 100001
 
     find_result = RedisUser.find!(email)
-    assert user = find_result
+    assert _user = find_result
 
     ts1 = Utils.unix_timestamp
 

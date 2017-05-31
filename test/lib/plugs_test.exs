@@ -9,7 +9,7 @@ defmodule Acs.PlugsTest do
 #  end
 
    test "GET /", %{conn: conn} do
-     conn = Acs.Plugs.parse_user_agent(conn, [])
+     conn = Plugs.parse_user_agent(conn, [])
     
     assert conn.private[:acs_platform] == "unknown"
     assert conn.private[:acs_platform] == "unknown"

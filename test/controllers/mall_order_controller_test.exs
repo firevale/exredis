@@ -104,7 +104,7 @@ defmodule Acs.MallOrderControllerTest do
       "order_id" => "A10000010"
     })
 
-    result = JSON.decode!(resp.resp_body, keys: :atoms)
+    _result = JSON.decode!(resp.resp_body, keys: :atoms)
     IO.inspect resp.resp_body
 
     assert resp.status == 200

@@ -39,6 +39,10 @@ import {
   password
 } from './loginValidation'
 
+import {
+  updateQueryStringParameter
+} from 'common/js/utils'
+
 export default {
   mixins: [loginFormMixin],
 
@@ -88,7 +92,7 @@ export default {
               nativeApi.closeWebviewWithResult(result)
             } else {
               if (this.redirectUri) {
-                window.location = this.redirectUri
+                window.location = updateQueryStringParameter(this.redirectUri, 'accessToken', result.access_token)
               }
               else {
                 this.$router.back()

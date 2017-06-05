@@ -5,12 +5,13 @@
     </div>
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
-        <input type="text" maxlength="50" 
-        v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off" @keyup="handleValidation($v.accountId)" />
+        <input type="text" maxlength="50" v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off"
+          @keyup="handleValidation($v.accountId)" />
         <span class="icon addon-icon icon-user"></span>
       </div>
       <div class="row-login">
-        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @keyup="handleValidation($v.password)" />
+        <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
+          :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @keyup="handleValidation($v.password)" />
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
@@ -30,87 +31,90 @@
     </form>
   </div>
 </template>
-
 <script>
-  import nativeApi from 'common/js/nativeApi'
+import nativeApi from 'common/js/nativeApi'
 
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
-  import loginFormMixin from './loginFormMixin'
-  import {
+import loginFormMixin from './loginFormMixin'
+import {
+  accountId,
+  password
+} from './loginValidation'
+
+import {
+  updateQueryStringParameter
+} from 'common/js/utils'
+
+export default {
+  mixins: [loginFormMixin],
+
+  validations: {
     accountId,
     password
-  } from './loginValidation'
+  },
 
-  export default {
-    mixins: [loginFormMixin],
+  beforeMount: function() {
+    this.accountId = this.loginAccount
+  },
 
-    validations: {
-      accountId,
-      password
-    },
+  data: function() {
+    return {
+      accountId: '',
+      password: '',
+      passwordIcon: 'eye-slash',
+      errorMessage: '',
+      processing: false,
+    }
+  },
 
-    beforeMount: function() {
-      this.accountId = this.loginAccount
-    },
+  computed: {
+    ...mapGetters([
+      'loginAccount', 'redirectUri'
+    ]),
+  },
 
-    data: function() {
-      return {
-        accountId: '',
-        password: '',
-        passwordIcon: 'eye-slash',
-        errorMessage: '',
-        processing: false,
+  methods: {
+    ...mapActions([
+      'setLoginAccountId', 'addLoginnedAccount',
+    ]),
+
+    handleSubmit: async function() {
+      console.log('handle submit, validation: ', this.$v.$invalid, 'processing: ', this.processing)
+      if (!this.$v.$invalid && !this.processing) {
+        this.processing = true
+        try {
+          let result = await this.$acs.createToken(this.accountId, this.password)
+          this.processing = false
+          console.info('create token result: ', result)
+
+          if (result.success) {
+            this.addLoginnedAccount(result)
+            this.setLoginAccountId(this.accountId)
+
+            if (window.acsConfig.inApp) {
+              console.log('close webview with result: ', result)
+              nativeApi.closeWebviewWithResult(result)
+            } else {
+              if (this.redirectUri) {
+                window.location = updateQueryStringParameter(this.redirectUri, 'accessToken', result.access_token)
+              }
+            }
+          } else {
+            console.error('create token failed with error: ', this.$t(result.i18n_message, result.i18n_object))
+            this.setErrorMessage(this.$t(result.i18n_message, result.i18n_object))
+          }
+        } catch (e) {
+          console.error('create token failed with exception: ', e)
+          this.processing = false
+          this.setErrorMessage(this.$t('error.server.networkError'))
+        }
+        this.processing = false
       }
     },
-
-    computed: {
-      ...mapGetters([
-        'loginAccount', 'redirectUri'
-      ]),
-    },
-
-    methods: {
-      ...mapActions([
-        'setLoginAccountId', 'addLoginnedAccount',
-      ]),
-
-      handleSubmit: async function() {
-        console.log('handle submit, validation: ', this.$v.$invalid, 'processing: ', this.processing)
-        if (!this.$v.$invalid && !this.processing) {
-          this.processing = true
-          try {
-            let result = await this.$acs.createToken(this.accountId, this.password)
-            this.processing = false
-            console.info('create token result: ', result)
-
-            if (result.success) {
-              this.addLoginnedAccount(result)
-              this.setLoginAccountId(this.accountId)
-
-              if (window.acsConfig.inApp) {
-                console.log('close webview with result: ', result)
-                nativeApi.closeWebviewWithResult(result)
-              } else {
-                if (this.redirectUri) {
-                  window.location = this.redirectUri
-                }
-              }
-            } else {
-              console.error('create token failed with error: ', this.$t(result.i18n_message, result.i18n_object))
-              this.setErrorMessage(this.$t(result.i18n_message, result.i18n_object))
-            }
-          } catch (e) {
-            console.error('create token failed with exception: ', e)
-            this.processing = false
-            this.setErrorMessage(this.$t('error.server.networkError'))
-          }
-          this.processing = false
-        }
-      },
-    },
-  }
+  },
+}
 </script>

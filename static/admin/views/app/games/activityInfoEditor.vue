@@ -170,6 +170,9 @@ export default {
         data: {
           news_id: news.id
         },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
+        },
         extensions: ['jpg', 'png'],
         imageValidator: {
           minWidth: 640,

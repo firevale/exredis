@@ -253,6 +253,9 @@ export default {
           data: {
             goods_id: this.goods.id
           },
+          headers: {
+            'x-csrf-token': window.acsConfig.csrfToken
+          },
           extensions: ['png', 'jpg', 'jpeg'],
           title: this.$t('admin.titles.uploadGoodsPic'),
           imageValidator: {
@@ -288,6 +291,9 @@ export default {
         accept: 'image/jpeg, image/png',
         data: {
           app_id: this.goods.app_id
+        },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
         },
         extensions: ['png', 'jpg', 'jpeg'],
         callback: response => {

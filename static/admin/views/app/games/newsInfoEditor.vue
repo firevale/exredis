@@ -158,6 +158,9 @@ export default {
         data: {
           news_id: news.id
         },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
+        },
         extensions: ['png'],
         title: this.$t('admin.titles.uploadNewsPic'),
         callback: response => news.pic = response.pic,

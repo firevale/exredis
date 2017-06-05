@@ -233,6 +233,10 @@ defmodule Acs.AdminController do
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
+  def update_goods_icon(conn, params) do 
+    error "invalid request params for update_goods_icon: #{inspect params, pretty: true}"
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
 
   def delete_app_goods(conn, %{"goods_id" => ""}) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})

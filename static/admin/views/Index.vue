@@ -62,10 +62,13 @@ export default {
     updateAppIcon: function(app) {
       if (this.adminLevel < 3) {
         showFileUploadDialog(this.$i18n, {
-          postAction: '/admin_actions/update_app_icon',
+          postAction: '/admin_actions/app/update_app_icon',
           accept: 'image/png',
           data: {
             app_id: app.id,
+          },
+          headers: {
+            'x-csrf-token': window.acsConfig.csrfToken
           },
           extensions: ['png'],
           title: this.$t('admin.titles.uploadAppIcon', {

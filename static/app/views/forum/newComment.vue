@@ -162,6 +162,9 @@ export default {
             post_id: this.$route.params.postId,
             comment_id: this.id,
           },
+          headers: {
+            'x-csrf-token': window.acsConfig.csrfToken
+          },
           extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
             if (response.success) {

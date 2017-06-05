@@ -84,6 +84,9 @@ export default {
         data: {
           app_id: this.news.app_id
         },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
+        },
         extensions: ['png', 'jpg', 'jpeg'],
         callback: response => {
           if (response.success) {

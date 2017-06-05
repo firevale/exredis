@@ -150,11 +150,14 @@ export default {
 
     updateGoodsIcon: function(goods) {
       showFileUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/update_goods_icon',
+        postAction: '/admin_actions/app/update_goods_icon',
         accept: 'image/png',
         data: {
           app_id: this.app.id,
           goods_id: goods.id,
+        },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
         },
         extensions: ['png'],
         title: this.$t('admin.titles.uploadGoodsIcon', {

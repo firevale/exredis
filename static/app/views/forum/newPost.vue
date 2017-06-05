@@ -211,6 +211,9 @@ export default {
             section_id: this.editingPostData.selectedSectionId,
             post_id: this.editingPostData.id, 
           },
+          headers: {
+            'x-csrf-token': window.acsConfig.csrfToken
+          },
           extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
             if (response.success) {

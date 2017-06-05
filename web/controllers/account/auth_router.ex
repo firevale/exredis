@@ -83,6 +83,7 @@ defmodule Acs.AuthApiRouter do
     get  "/anonymous_token", UserController, :create_anonymous_token
     get  "/verify_token", UserController, :verify_token
     post "/verify_token", UserController, :verify_token
+    post "/get_token_user", UserController, :get_token_user
   end
 end
 

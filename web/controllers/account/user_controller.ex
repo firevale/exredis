@@ -384,6 +384,22 @@ defmodule Acs.UserController do
     conn |> json(%{success: false, message: "app not found, check your verify token url & location"})
   end
 
+  def get_token_user(conn, %{"access_token" => token_id}) do
+    case RedisAccessToken.find(token_id) do
+      nil ->
+        conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
+      
+      token ->
+        case RedisUser.find(token.user_id) do 
+          nil ->
+            conn |> json(%{success: false, message: "user not found"})
+          
+          user ->
+            conn |> json(%{success: true, user: %{id: user.id, email: user.email}})
+        end
+    end
+  end
+
   def authorization_token(conn, params) do
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")
   end

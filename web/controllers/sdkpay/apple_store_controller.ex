@@ -103,8 +103,7 @@ defmodule Acs.AppleStoreController do
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 
-  def verify_and_deliver(%Plug.Conn{private: %{acs_session_user: %RedisUser{} = user,
-                                               acs_app: %RedisApp{} = app,
+  def verify_and_deliver(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
                                                acs_zone_id: zone_id, 
                                                acs_platform: "ios",
                                                acs_device_id: device_id}} = conn, 
@@ -128,7 +127,6 @@ defmodule Acs.AppleStoreController do
               amount: amount,
               currency: currency,
               app: app, 
-              user: user, 
               device_id: device_id, 
               zone_id: zone_id)
 
@@ -145,19 +143,18 @@ defmodule Acs.AppleStoreController do
                   amount: amount,
                   currency: currency,
                   app: app, 
-                  user: user, 
                   device_id: device_id, 
                   zone_id: zone_id)           
 
               _ ->
                 error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
-                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
+                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
             error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
-            ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
+            ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
           {:error, reason} ->
@@ -182,7 +179,6 @@ defmodule Acs.AppleStoreController do
     amount: amount,
     currency: currency,
     app: app, 
-    user: user, 
     device_id: device_id, 
     zone_id: zone_id) do 
     case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
@@ -198,10 +194,11 @@ defmodule Acs.AppleStoreController do
 
       %AppOrder{} = order ->
         error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
-        ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条, 购买商品: #{goods_name}", app)
+        ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条, 购买商品: #{goods_name}", app)
         conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
       nil ->
+        user = conn.private[:acs_session_user]
         app_user = StatsRepo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
 
         order_info = %{

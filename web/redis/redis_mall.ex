@@ -36,9 +36,12 @@ defmodule Acs.RedisMall do
     Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do
         :undefined ->
-          refreshById(id)
+          case refreshById(id) do
+            nil -> {:ignore, nil}
+            mall -> {:commit, mall}
+          end
         raw ->
-          raw |> from_json
+          {:commit, raw |> from_json}
       end
     end)
   end

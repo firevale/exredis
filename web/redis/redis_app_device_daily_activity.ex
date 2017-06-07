@@ -21,15 +21,15 @@ defmodule Acs.RedisAppDeviceDailyActivity do
                   active_seconds: 0}
               ) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, appDeviceDA |> :erlang.term_to_binary |> Base.encode64)
-              appDeviceDA
+              {:commit, appDeviceDA}
 
             %AppDeviceDailyActivity{} = appDeviceDA ->
               Redis.setex(key, 3600 * 24, appDeviceDA |> :erlang.term_to_binary |> Base.encode64)
-              appDeviceDA
+              {:commit, appDeviceDA}
           end
 
         raw -> 
-          raw |> Base.decode64! |> :erlang.binary_to_term
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
       end
     end)
   end

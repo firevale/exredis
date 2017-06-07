@@ -15,15 +15,15 @@ defmodule Acs.RedisDevice do
       case Redis.get(redis_key) do 
         :undefined ->
           case StatsRepo.get(Device, device_id) do 
-            nil -> nil
+            nil -> {:ignore, nil}
 
             %Device{} = device ->
               Redis.setex(key, 3600 * 24, device |> :erlang.term_to_binary |> Base.encode64)
-              device 
+              {:commit, device}
           end
 
         raw -> 
-          raw |> Base.decode64! |> :erlang.binary_to_term
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
       end
     end)
   end

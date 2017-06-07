@@ -20,11 +20,11 @@ defmodule Acs.RedisAdminUser do
     key = get_redis_key(admin_user_id, app_id)
     Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do
-        :undefined -> refresh(admin_user_id, app_id, false)
+        :undefined -> {:commit, refresh(admin_user_id, app_id, false)}
         raw ->
           case Integer.parse(raw) do
-            {level, ""} -> level
-            _ -> 0
+            {level, ""} -> {:commit, level}
+            _ -> {:commit, 0}
           end
       end
     end)

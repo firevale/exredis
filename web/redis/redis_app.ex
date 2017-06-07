@@ -50,8 +50,13 @@ defmodule Acs.RedisApp do
 
     Cachex.get!(:default, key, fallback: fn(redis_key) ->    
       case Redis.get(redis_key) do
-        :undefined -> refresh(id, false)
-        raw -> raw |> from_json
+        :undefined -> 
+          case refresh(id, false) do 
+            nil -> {:ignore, nil}
+            app -> {:commit, app}
+          end
+        raw ->
+          {:commit, raw |> from_json}
       end
     end)
   end

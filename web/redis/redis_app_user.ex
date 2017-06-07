@@ -20,15 +20,15 @@ defmodule Acs.RedisAppUser do
             nil ->  
               {:ok, appUser} = AppUser.changeset(%AppUser{}, %{app_id: app_id, user_id: user_id, zone_id: zone_id}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, appUser |> :erlang.term_to_binary |> Base.encode64)
-              appUser
+              {:commit, appUser}
 
             %AppUser{} = appUser ->
               Redis.setex(key, 3600 * 24, appUser |> :erlang.term_to_binary |> Base.encode64)
-              appUser
+              {:commit, appUser}
           end
 
         raw -> 
-          raw |> Base.decode64! |> :erlang.binary_to_term
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
       end
     end)
   end

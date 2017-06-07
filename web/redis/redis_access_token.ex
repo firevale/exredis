@@ -49,9 +49,12 @@ defmodule Acs.RedisAccessToken do
     Cachex.get!(:default, key(token_id), fallback: fn(key) -> 
       case Redis.get(key) do
         :undefined ->
-          find_fvac_token(token_id)
+          case find_fvac_token(token_id) do 
+            nil -> {:ignore, nil}
+            token -> {:commit, token}
+          end
         json ->
-          from_json(json)
+          {:commit, from_json(json)}
       end
     end)
   end

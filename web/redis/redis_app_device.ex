@@ -20,15 +20,15 @@ defmodule Acs.RedisAppDevice do
             nil ->  
               {:ok, appDevice} = AppDevice.changeset(%AppDevice{}, %{app_id: app_id, device_id: device_id, zone_id: zone_id}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
-              appDevice
+              {:commit, appDevice}
 
             %AppDevice{} = appDevice ->
               Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
-              appDevice
+              {:commit, appDevice}
           end
 
         raw -> 
-          raw |> Base.decode64! |> :erlang.binary_to_term
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
       end
     end)
   end

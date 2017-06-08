@@ -26,9 +26,6 @@ defmodule Acs.RedisMall do
 
   require Logger
 
-
-
-
   @mall_cache_key      "fvac.mall_cache"
 
   def find(id)  do

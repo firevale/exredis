@@ -1,5 +1,5 @@
 defmodule Acs.Web.AdminUsersTest do
-  use Acs.Web.ModelCase
+  use Acs.ModelCase
 
   alias Acs.AdminUser
 

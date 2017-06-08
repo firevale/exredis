@@ -1,5 +1,5 @@
 defmodule Acs.Web.RedisAdminUserTest do
-  use Acs.Web.ModelCase
+  use Acs.ModelCase
 
   require Redis
   alias   Acs.RedisAdminUser

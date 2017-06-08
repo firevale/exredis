@@ -1,4 +1,4 @@
-defmodule Acs.Web.ModelCase do
+defmodule Acs.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -21,7 +21,7 @@ defmodule Acs.Web.ModelCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Acs.Web.ModelCase
+      import Acs.ModelCase
     end
   end
 

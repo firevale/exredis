@@ -1,5 +1,5 @@
 defmodule Acs.Web.MeiShengSMSTest do
-  use Acs.Web.ModelCase
+  use Acs.ModelCase
 
   alias   Acs.MeishengSms
   require Utils

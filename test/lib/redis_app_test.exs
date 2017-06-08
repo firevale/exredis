@@ -1,5 +1,5 @@
-defmodule Acs.Web.RedisAppTest do
-  use Acs.Web.ModelCase
+defmodule Acs.RedisAppTest do
+  use Acs.ModelCase
 
   require Redis
   require Utils
@@ -60,9 +60,12 @@ defmodule Acs.Web.RedisAppTest do
       end)
     end)
 
-    app = RedisApp.find("53A993ABE3A1CB110E1DC59AE557F5C9")
+    # force update cache
+    app = RedisApp.refresh("53A993ABE3A1CB110E1DC59AE557F5C9")
+    cached = RedisApp.find("53A993ABE3A1CB110E1DC59AE557F5C9")
 
-    assert client.bindings.anzhi.app_key == app.sdk_bindings.anzhi["app_key"]
+    assert app = cached
+    assert client.bindings.anzhi.app_key == app.sdk_bindings.anzhi.app_key
   end
 
 end

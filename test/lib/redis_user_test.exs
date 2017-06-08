@@ -1,5 +1,5 @@
-defmodule Acs.Web.RedisUserTest do
-  use Acs.Web.ModelCase
+defmodule Acs.RedisUserTest do
+  use Acs.ModelCase
 
   require Redis
   require Utils

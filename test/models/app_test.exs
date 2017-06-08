@@ -1,5 +1,5 @@
 defmodule Acs.Web.AppTest do
-  use Acs.Web.ModelCase
+  use Acs.ModelCase
 
   alias Acs.App
   alias Utils

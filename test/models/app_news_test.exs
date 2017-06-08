@@ -1,5 +1,5 @@
 defmodule Acs.Web.AppNewsTest do
-  use Acs.Web.ModelCase
+  use Acs.ModelCase
 
   alias Acs.AppNews
 

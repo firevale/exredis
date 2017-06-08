@@ -1,4 +1,4 @@
-defmodule Acs.Web.PlugsTest do
+defmodule Acs.PlugsTest do
  use Acs.Web.ConnCase
  alias Acs.Plugs
 #  test "parse_user_agent unkown", %{​conn:​ conn} do

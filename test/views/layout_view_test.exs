@@ -1,3 +1,3 @@
-defmodule Acs.LayoutViewTest do
-  use Acs.ConnCase, async: true
+defmodule Acs.Web.LayoutViewTest do
+  use Acs.Web.ConnCase, async: true
 end

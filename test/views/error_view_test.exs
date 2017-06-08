@@ -1,5 +1,5 @@
-defmodule Acs.ErrorViewTest do
-  use Acs.ConnCase, async: true
+defmodule Acs.Web.ErrorViewTest do
+  use Acs.Web.ConnCase, async: true
 
   # Bring render/3 and render_to_string/3 for testing custom views
   import Phoenix.View

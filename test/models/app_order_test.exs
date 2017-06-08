@@ -1,4 +1,4 @@
-defmodule Acs.OrderTest do
+defmodule Acs.Web.OrderTest do
   use Acs.ModelCase
 
   alias Acs.AppOrder

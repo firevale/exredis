@@ -1,5 +1,5 @@
-defmodule Acs.AdminUserControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.AdminUserControllerTest do
+  use Acs.Web.ConnCase
 
   alias Utils.JSON
   alias Acs.User

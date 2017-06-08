@@ -1,4 +1,4 @@
-defmodule Acs.ForumPostTest do
+defmodule Acs.Web.ForumPostTest do
   use Acs.ModelCase
 
   alias Acs.ForumPost

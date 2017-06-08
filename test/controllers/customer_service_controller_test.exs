@@ -1,5 +1,5 @@
-defmodule Acs.CustomerServiceControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.CustomerServiceControllerTest do
+  use Acs.Web.ConnCase
 
   alias Utils.JSON
   alias Acs.Question

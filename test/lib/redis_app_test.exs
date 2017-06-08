@@ -1,4 +1,4 @@
-defmodule Acs.RedisAppTest do
+defmodule Acs.Web.RedisAppTest do
   use Acs.ModelCase
 
   require Redis

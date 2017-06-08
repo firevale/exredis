@@ -18,20 +18,20 @@ defmodule Acs.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-     mod: {Acs, []}, 
+     mod: {Acs.Application, []}, 
      extra_applications: [:inets, :ssl, :public_key, :logger, :ex_syslogger, :runtime_tools]
     ]
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.4"},
+    [{:phoenix, "~> 1.3.0-rc"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.2"},
      {:mariaex, ">= 0.0.0"},
@@ -71,11 +71,6 @@ defmodule Acs.Mixfile do
   #     $ mix ecto.setup
   #
   # See the documentation for `Mix` for more info on aliases.
-  defp change_test_env(_) do
-    Mix.env(:test)
-    Mix.shell.info "MIX_ENV Change to #{Mix.env}"
-  end
-
   defp aliases do
     ["ecto.setup": ["ecto.create -r Acs.Repo", 
                     "ecto.migrate -r Acs.Repo", 

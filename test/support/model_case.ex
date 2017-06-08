@@ -1,4 +1,4 @@
-defmodule Acs.ModelCase do
+defmodule Acs.Web.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.

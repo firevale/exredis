@@ -7,7 +7,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   http: [port: 4000],
   url: [host: System.get_env("ACS_HOST") || "localhost", port: 80, scheme: "http"],
   static_url: [host: System.get_env("ACS_HOST") || "localhost", port: 80, scheme: "http"],
@@ -17,13 +17,13 @@ config :acs, Acs.Endpoint,
   watchers: [yarn: ["run", "watch", cd: Path.expand("../static", __DIR__)]]
 
 # Watch static and templates for browser reloading.
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{lib/acs/web/views/.*(ex)$},
+      ~r{lib/acs/web/templates/.*(eex)$}
     ]
   ]
 

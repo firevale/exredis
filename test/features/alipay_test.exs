@@ -1,5 +1,5 @@
-defmodule Acs.AlipayTest do
-  use Acs.ConnCase
+defmodule Acs.Web.AlipayTest do
+  use Acs.Web.ConnCase
 
   alias Acs.Repo
   alias Acs.App

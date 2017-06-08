@@ -1,4 +1,4 @@
-defmodule Acs.MallOPLogTest do
+defmodule Acs.Web.MallOPLogTest do
   use Acs.ModelCase
 
   alias Acs.MallOPLog

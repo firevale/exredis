@@ -1,5 +1,5 @@
-defmodule Acs.WechatTest do
-  use Acs.ConnCase
+defmodule Acs.Web.WechatTest do
+  use Acs.Web.ConnCase
 
   alias Acs.Repo
   alias Acs.App

@@ -1,4 +1,4 @@
-defmodule Acs.MeiShengSMSTest do
+defmodule Acs.Web.MeiShengSMSTest do
   use Acs.ModelCase
 
   alias   Acs.MeishengSms

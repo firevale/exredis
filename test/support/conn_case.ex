@@ -1,4 +1,4 @@
-defmodule Acs.ConnCase do
+defmodule Acs.Web.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -26,12 +26,12 @@ defmodule Acs.ConnCase do
       import Ecto.Changeset
       import Ecto.Query
 
-      import Acs.Router.Helpers
+      import Acs.Web.Router.Helpers
 
       import  Acs.Plugs
 
       # The default endpoint for testing
-      @endpoint Acs.Endpoint
+      @endpoint Acs.Web.Endpoint
     end
   end
 

@@ -1,13 +1,13 @@
 use Mix.Config
 
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   http: [port: 4000, compress: true],
   ssl: false,
   debug_errors: false,
   code_reloader: false,
   check_origin: ["//*.firevale.com"],
   cache_static_lookup: true,
-  cache_static_manifest: "priv/static/manifest.json",
+  cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
 config :phoenix, :serve_endpoints, true

@@ -1,4 +1,4 @@
-defmodule Acs.ChannelCase do
+defmodule Acs.Web.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -27,7 +27,7 @@ defmodule Acs.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint Acs.Endpoint
+      @endpoint Acs.Web.Endpoint
     end
   end
 

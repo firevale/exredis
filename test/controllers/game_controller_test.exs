@@ -1,5 +1,5 @@
-defmodule Acs.GameControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.GameControllerTest do
+  use Acs.Web.ConnCase
 
   alias Utils.JSON
   require Utils

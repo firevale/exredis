@@ -1,4 +1,4 @@
-defmodule Acs.UserAddressTest do
+defmodule Acs.Web.UserAddressTest do
   use Acs.ModelCase
 
   alias Acs.UserAddress

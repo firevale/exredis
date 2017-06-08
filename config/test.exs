@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   http: [port: 4001],
   server: false
 

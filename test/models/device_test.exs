@@ -1,4 +1,4 @@
-defmodule Acs.DeviceTest do
+defmodule Acs.Web.DeviceTest do
   use Acs.ModelCase
 
   alias Acs.Device

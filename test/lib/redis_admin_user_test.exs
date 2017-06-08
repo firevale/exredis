@@ -1,4 +1,4 @@
-defmodule Acs.RedisAdminUserTest do
+defmodule Acs.Web.RedisAdminUserTest do
   use Acs.ModelCase
 
   require Redis

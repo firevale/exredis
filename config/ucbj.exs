@@ -2,7 +2,7 @@ use Mix.Config
 
 import_config "prod.base.exs"
 
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   url: [host: "fvac.firevale.com", port: 443, scheme: "https"],
   static_url: [host: "fvaccdn.firevale.com", port: 443, scheme: "https"]
 

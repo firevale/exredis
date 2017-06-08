@@ -1,4 +1,4 @@
-defmodule Acs.AppGoodsProductIdTest do
+defmodule Acs.Web.AppGoodsProductIdTest do
   use Acs.ModelCase
 
   alias Acs.AppGoodsProductId

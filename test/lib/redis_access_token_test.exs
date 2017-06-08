@@ -1,4 +1,4 @@
-defmodule Acs.RedisAccessTokenTest do
+defmodule Acs.Web.RedisAccessTokenTest do
   use Acs.ModelCase
 
   require Redis

@@ -1,5 +1,5 @@
-defmodule Acs.ForumControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.ForumControllerTest do
+  use Acs.Web.ConnCase
 
   alias Utils.JSON
   require Utils

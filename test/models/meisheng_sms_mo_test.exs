@@ -1,4 +1,4 @@
-defmodule Acs.MeishengSmsMoTest do
+defmodule Acs.Web.MeishengSmsMoTest do
   use Acs.ModelCase
 
   alias Acs.MeishengSmsMo

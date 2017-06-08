@@ -1,3 +1,3 @@
-defmodule Acs.PageViewTest do
-  use Acs.ConnCase, async: true
+defmodule Acs.Web.PageViewTest do
+  use Acs.Web.ConnCase, async: true
 end

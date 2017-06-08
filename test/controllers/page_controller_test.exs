@@ -1,5 +1,5 @@
-defmodule Acs.PageControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.PageControllerTest do
+  use Acs.Web.ConnCase
 
   # test "GET /", %{conn: conn} do
   #   conn = get conn, "/"

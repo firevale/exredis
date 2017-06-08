@@ -1,5 +1,5 @@
-defmodule Acs.MallControllerTest do
-  use Acs.ConnCase
+defmodule Acs.Web.MallControllerTest do
+  use Acs.Web.ConnCase
 
   alias Utils.JSON
   alias Acs.MallGoods

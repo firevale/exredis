@@ -9,10 +9,10 @@ use Mix.Config
 config :acs, ecto_repos: [Acs.Repo, Acs.StatsRepo]
   
 # Configures the endpoint
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "NVAlSDVOMDNSRkU5VllOKDdQOTFTKCZGNzFOVlNDTEQpX1EoTUc0N0VVUkpRKzdCJFhYUlE5QjFOU0dKTUJHRzhCK0tWMTdNIyUjVzBVQ0VO",
-  render_errors: [view: Acs.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Acs.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Acs.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

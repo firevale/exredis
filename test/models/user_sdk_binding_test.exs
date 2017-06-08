@@ -1,4 +1,4 @@
-defmodule Acs.UserSdkBindingTest do
+defmodule Acs.Web.UserSdkBindingTest do
   use Acs.ModelCase
 
   alias Acs.UserSdkBinding

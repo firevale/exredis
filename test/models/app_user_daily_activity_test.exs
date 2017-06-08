@@ -1,4 +1,4 @@
-defmodule Acs.AppUserDailyActivityTest do
+defmodule Acs.Web.AppUserDailyActivityTest do
   use Acs.ModelCase
 
   alias Acs.AppUserDailyActivity

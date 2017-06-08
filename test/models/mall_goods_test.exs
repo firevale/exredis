@@ -1,4 +1,4 @@
-defmodule Acs.MallGoodsTest do
+defmodule Acs.Web.MallGoodsTest do
   use Acs.ModelCase
 
   alias Acs.MallGoods

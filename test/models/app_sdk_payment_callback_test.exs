@@ -1,4 +1,4 @@
-defmodule Acs.AppSdkPaymentCallbackTest do
+defmodule Acs.Web.AppSdkPaymentCallbackTest do
   use Acs.ModelCase
 
   alias Acs.AppSdkPaymentCallback

@@ -1,5 +1,5 @@
-defmodule Acs.RedisAppDeviceTest do
-  use Acs.ConnCase
+defmodule Acs.Web.RedisAppDeviceTest do
+  use Acs.Web.ConnCase
 
   require Redis
   alias   Acs.StatsRepo

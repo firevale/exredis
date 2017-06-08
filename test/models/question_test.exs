@@ -1,4 +1,4 @@
-defmodule Acs.QuestionTest do
+defmodule Acs.Web.QuestionTest do
   use Acs.ModelCase
 
   alias Acs.Question

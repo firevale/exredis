@@ -1,4 +1,4 @@
-defmodule Acs.ForumSectionTest do
+defmodule Acs.Web.ForumSectionTest do
   use Acs.ModelCase
 
   alias Acs.ForumSection

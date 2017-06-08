@@ -2,7 +2,7 @@ use Mix.Config
 
 import_config "prod.base.exs"
 
-config :acs, Acs.Endpoint,
+config :acs, Acs.Web.Endpoint,
   url: [host: "hkac.firevale.com", port: 443, scheme: "https"],
   static_url: [host: "d3kus54sky882h.cloudfront.net", port: 443, scheme: "https"]
 

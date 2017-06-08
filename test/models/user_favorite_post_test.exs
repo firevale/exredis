@@ -1,4 +1,4 @@
-defmodule Acs.UserFavoritePostTest do
+defmodule Acs.Web.UserFavoritePostTest do
   use Acs.ModelCase
 
   alias Acs.UserFavoritePost

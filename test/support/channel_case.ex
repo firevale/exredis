@@ -1,4 +1,4 @@
-defmodule Acs.Web.Web.ChannelCase do
+defmodule Acs.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.

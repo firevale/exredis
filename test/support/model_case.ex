@@ -21,7 +21,7 @@ defmodule Acs.Web.ModelCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Acs.ModelCase
+      import Acs.Web.ModelCase
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Acs.Web.ModelCase do
   """
   def errors_on(struct, data) do
     struct.__struct__.changeset(struct, data)
-    |> Ecto.Changeset.traverse_errors(&Acs.ErrorHelpers.translate_error/1)
+    |> Ecto.Changeset.traverse_errors(&Acs.Web.ErrorHelpers.translate_error/1)
     |> Enum.flat_map(fn {key, errors} -> for msg <- errors, do: {key, msg} end)
   end
 end

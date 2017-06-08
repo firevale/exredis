@@ -1,5 +1,5 @@
 defmodule Acs.Web.UserTest do
-  use Acs.ModelCase
+  use Acs.Web.ModelCase
 
   alias Acs.User
 

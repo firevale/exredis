@@ -121,7 +121,13 @@ test() {
 test_reset() {
 	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
 	if [ $? -eq 0 ]; then
-		docker exec -e MIX_ENV=test acs mix test.reset
+		docker exec -e MIX_ENV=test acs mix ecto.drop -r Acs.Repo
+		docker exec -e MIX_ENV=test acs mix ecto.create -r Acs.Repo
+		docker exec -e MIX_ENV=test acs mix ecto.migrate -r Acs.Repo
+		docker exec -e MIX_ENV=test acs mix ecto.drop -r Acs.StatsRepo
+		docker exec -e MIX_ENV=test acs mix ecto.create -r Acs.StatsRepo
+		docker exec -e MIX_ENV=test acs mix ecto.migrate -r Acs.StatsRepo
+		docker exec -e MIX_ENV=test acs mix run priv/repo/test_seeds.exs
 	else
 		new_for_test
 	fi

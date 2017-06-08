@@ -1,5 +1,5 @@
 defmodule Acs.Web.AdminSettingTest do
-  use Acs.ModelCase
+  use Acs.Web.ModelCase
 
   alias Acs.AdminSetting
 

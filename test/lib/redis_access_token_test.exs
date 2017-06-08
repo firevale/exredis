@@ -1,5 +1,5 @@
 defmodule Acs.Web.RedisAccessTokenTest do
-  use Acs.ModelCase
+  use Acs.Web.ModelCase
 
   require Redis
   alias   Acs.RedisAccessToken

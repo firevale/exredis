@@ -1,5 +1,5 @@
 defmodule Acs.Web.ForumSectionTest do
-  use Acs.ModelCase
+  use Acs.Web.ModelCase
 
   alias Acs.ForumSection
 

@@ -7,14 +7,14 @@ config :acs, Acs.Web.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :info
+config :logger, level: :error
 
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: System.get_env("ACS_MYSQL_USER") || "root",
   password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
   database: "acs_test",
-  ownership_timeout: 30_000,
+  ownership_timeout: 60_000,
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
@@ -22,7 +22,7 @@ config :acs, Acs.StatsRepo,
   adapter: Ecto.Adapters.MySQL,
   username: System.get_env("ACS_MYSQL_USER") || "root",
   password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
-  ownership_timeout: 30_000,
+  ownership_timeout: 60_000,
   database: "acs_stats_test",
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

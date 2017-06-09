@@ -51,7 +51,7 @@ defmodule Acs.Web.AdminUserControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -61,7 +61,7 @@ defmodule Acs.Web.AdminUserControllerTest do
     resp = post(context.conn, "/admin_actions/user/get_current_user_level", %{})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -83,7 +83,7 @@ defmodule Acs.Web.AdminUserControllerTest do
       })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -109,7 +109,7 @@ defmodule Acs.Web.AdminUserControllerTest do
       })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -119,7 +119,7 @@ defmodule Acs.Web.AdminUserControllerTest do
     resp = post(context.conn, "/admin_actions/user/get_admin_user_by_app", %{})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success

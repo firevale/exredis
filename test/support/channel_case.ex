@@ -32,10 +32,12 @@ defmodule Acs.Web.ChannelCase do
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.StatsRepo)
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.Repo)
 
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Acs.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Acs.StatsRepo, {:shared, self()})
     end
 
     :ok

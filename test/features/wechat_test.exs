@@ -94,7 +94,7 @@ defmodule Acs.Web.WechatTest do
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
 
-    IO.inspect result
+
 
     assert resp.status == 200
     assert result.success

@@ -8,29 +8,29 @@ defmodule Acs.Web.ForumControllerTest do
   @user_id  100001
 
   setup %{conn: conn} = tags do
-      device_id = "idfa.#{Utils.generate_token()}"
-      platform = "ios"
+    device_id = "idfa.#{Utils.generate_token()}"
+    platform = "ios"
 
-      conn = conn
-        |> recycle()
-        |> set_acs_header(device_id, platform)
+    conn = conn
+      |> recycle()
+      |> set_acs_header(device_id, platform)
 
-      resp = post(conn, "/user/create_token", %{
-        account_id: "zhongxiaobin@firevale.com",
-        password: "smilezh"
-      })
+    resp = post(conn, "/user/create_token", %{
+      account_id: "zhongxiaobin@firevale.com",
+      password: "smilezh"
+    })
 
-      str = resp.resp_body |> String.replace("'", "\"") |> Poison.decode!
-      token = str["access_token"]
-      session = %{"access_token" => token}
+    str = resp.resp_body |> String.replace("'", "\"") |> Poison.decode!
+    token = str["access_token"]
+    session = %{"access_token" => token}
 
-      conn = conn
-      |> Plug.Test.init_test_session(session) 
-      |> put_req_header("acs-access-token", token)
-      |> put_private(:acs_access_token, token)
+    conn = conn
+    |> Plug.Test.init_test_session(session) 
+    |> put_req_header("acs-access-token", token)
+    |> put_private(:acs_access_token, token)
 
-      {:ok, %{tags | conn: conn}}
-    end
+    {:ok, %{tags | conn: conn}}
+  end
 
   defp set_acs_header(conn, device_id, platform) do
     conn |> put_private(:acs_app_id, @app_id)
@@ -53,7 +53,6 @@ defmodule Acs.Web.ForumControllerTest do
       } })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -70,7 +69,6 @@ defmodule Acs.Web.ForumControllerTest do
       } })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -82,7 +80,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -96,7 +93,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -111,11 +107,9 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
-
   end
 
   test "get post detail", context do
@@ -124,7 +118,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -138,7 +131,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -150,7 +142,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -162,7 +153,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -176,7 +166,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -191,7 +180,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -205,7 +193,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -220,7 +207,6 @@ defmodule Acs.Web.ForumControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success

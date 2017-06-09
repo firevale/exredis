@@ -43,7 +43,7 @@ defmodule Acs.RedisAppDeviceTest do
           reg_date: utc_now
         }) |> StatsRepo.insert!(on_conflict: :replace_all)
 
-    IO.inspect deviceDa, pretty: true
+
 
     _deviceDaA = AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
           date: "2000-01-29",

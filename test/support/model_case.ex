@@ -17,6 +17,7 @@ defmodule Acs.ModelCase do
   using do
     quote do
       alias Acs.Repo
+      alias Acs.StatsRepo
 
       import Ecto
       import Ecto.Changeset
@@ -26,9 +27,11 @@ defmodule Acs.ModelCase do
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.StatsRepo)
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.Repo)
 
     unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Acs.StatsRepo, {:shared, self()})
       Ecto.Adapters.SQL.Sandbox.mode(Acs.Repo, {:shared, self()})
     end
 

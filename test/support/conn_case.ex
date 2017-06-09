@@ -19,9 +19,10 @@ defmodule Acs.Web.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      use     Phoenix.Controller
+      use Phoenix.Controller
 
-      alias Acs.Repo
+      alias  Acs.Repo
+      alias  Acs.StatsRepo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
@@ -36,9 +37,11 @@ defmodule Acs.Web.ConnCase do
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.StatsRepo)
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Acs.Repo)
 
     unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Acs.StatsRepo, {:shared, self()})
       Ecto.Adapters.SQL.Sandbox.mode(Acs.Repo, {:shared, self()})
     end
 

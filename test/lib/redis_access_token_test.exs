@@ -21,11 +21,11 @@ defmodule Acs.RedisAccessTokenTest do
 
     token = RedisAccessToken.create(item)
     assert token.id != "" 
-    IO.inspect token.id
+
 
     token = RedisAccessToken.find(token.id)
     assert token.id != "" 
-    IO.inspect token.id
+
 
     RedisAccessToken.delete(token)
 

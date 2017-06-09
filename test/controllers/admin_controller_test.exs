@@ -47,7 +47,6 @@ defmodule Acs.Web.AdminControllerTest do
     resp = post(context.conn, "/admin_actions/fetch_apps", %{})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -57,7 +56,6 @@ defmodule Acs.Web.AdminControllerTest do
     resp = post(context.conn, "/admin_actions/fetch_supported_sdks", %{})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -71,7 +69,6 @@ defmodule Acs.Web.AdminControllerTest do
       }})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -88,7 +85,6 @@ defmodule Acs.Web.AdminControllerTest do
     }})
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -102,7 +98,6 @@ defmodule Acs.Web.AdminControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success
@@ -117,7 +112,6 @@ defmodule Acs.Web.AdminControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
 
     assert resp.status == 200
     assert result.success

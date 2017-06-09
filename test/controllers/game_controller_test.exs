@@ -49,7 +49,7 @@ defmodule Acs.Web.GameControllerTest do
       })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -64,7 +64,7 @@ defmodule Acs.Web.GameControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -76,7 +76,7 @@ defmodule Acs.Web.GameControllerTest do
       })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -93,7 +93,7 @@ defmodule Acs.Web.GameControllerTest do
       })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success
@@ -105,7 +105,7 @@ defmodule Acs.Web.GameControllerTest do
     })
 
     result = JSON.decode!(resp.resp_body, keys: :atoms)
-    IO.inspect resp.resp_body
+
 
     assert resp.status == 200
     assert result.success

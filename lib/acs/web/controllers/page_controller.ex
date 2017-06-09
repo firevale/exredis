@@ -219,4 +219,5 @@ defmodule Acs.Web.PageController do
 
     conn |> put_private(:acs_body_class, class)
   end
+  defp fetch_body_class(conn, _options), do: conn
 end

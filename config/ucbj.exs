@@ -31,7 +31,8 @@ config :acs, :elasticsearch,
   connection: [host: "10.10.56.136", port: 9200]
 
 config :redis_poolex,
-  host: "10.10.56.136",
+  # host: "10.10.56.136",
+  host: "10.10.242.97",
   port: 6379,
   password: "",
   db: 0,

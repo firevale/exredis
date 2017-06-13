@@ -5,8 +5,10 @@ defmodule Acs.PaymentHelper do
 
   alias   Utils.Httpc
   alias   Acs.Repo
+  alias   Acs.StatsRepo
 
   alias   Acs.AppOrder
+  alias   Acs.AppUser
 
   alias   Acs.RedisApp
   alias   Acs.ChaoxinNotifier
@@ -25,6 +27,8 @@ defmodule Acs.PaymentHelper do
         {:error, :app_not_found}
 
       app ->
+        update_stats_info(order)
+
         total_fee = case Integer.parse("#{order.fee}") do
                       :error -> 0
                       {fee, _} -> round(fee / 100)
@@ -79,31 +83,31 @@ defmodule Acs.PaymentHelper do
           else
             save_order_failed(order, "#{inspect response, pretty: true}")
             chaoxin_notify(app, order, "[#{app.name}], 调用CP发货接口\"#{callback_url}\"失败, response: #{inspect response, pretty: true}")
-            Logger.error "notify_cp failed, url: #{callback_url}, params: #{inspect params}, result: #{inspect response, pretty: true}"
+            error "notify_cp failed, url: #{callback_url}, params: #{inspect params}, result: #{inspect response, pretty: true}"
             {:cp_failed, "#{inspect response, pretty: true}"}
           end
         catch
           :error, %HTTPotion.HTTPError{message: "econnrefused"} ->
-            Logger.error "notify_cp failed, cp payment callback site #{callback_url} is down"
+            error "notify_cp failed, cp payment callback site #{callback_url} is down"
             save_order_failed(order, "cp service down")
             chaoxin_notify(app, order, "[#{app.name}], 调用CP发货接口\"#{callback_url}\"失败, 无法建立连接")
             {:error, :exception_encountered}
 
           :error, %HTTPotion.HTTPError{message: "req_timedout"} ->
-            Logger.error "notify_cp failed, request payment callback site #{callback_url} timeout(> 30_000 seconds)"
+            error "notify_cp failed, request payment callback site #{callback_url} timeout(> 30_000 seconds)"
             save_order_failed(order, "cp service down")
             chaoxin_notify(app, order, "[#{app.name}], 调用CP发货接口\"#{callback_url}\"失败, 请求超时")
             {:error, :exception_encountered}
 
           :error, %HTTPotion.HTTPError{message: error_message} ->
-            Logger.error "notify_cp failed, request payment callback site #{callback_url} failed: #{error_message}"
+            error "notify_cp failed, request payment callback site #{callback_url} failed: #{error_message}"
             save_order_failed(order, error_message)
             chaoxin_notify(app, order, "[#{app.name}], 调用CP发货接口\"#{callback_url}\"失败: #{error_message}")
             {:error, :exception_encountered}
 
           t, e ->
             save_order_failed(order, "exception encountered")
-            Logger.error "notify_cp failed, error type: #{inspect t} error: #{inspect e}, params: #{inspect params}"
+            error "notify_cp failed, error type: #{inspect t} error: #{inspect e}, params: #{inspect params}"
             {:error, :exception_encountered}
         end
     end
@@ -164,5 +168,19 @@ defmodule Acs.PaymentHelper do
     ChaoxinNotifier.send_text_msg(msg, chaoxin_group_id)
   end
   defp chaoxin_notify(_, _, _), do: :ok
+
+
+  defp update_stats_info(%AppOrder{
+    try_deliver_counter: 0, 
+    app_id: app_id,
+    fee: fee,
+    app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
+    case StatsRepo.get(AppUser, app_user_id) do 
+      %AppUser{app_id: ^app_id} = app_user ->
+        AppUser.changeset(app_user, %{pay_amount: app_user.pay_amount + fee}) |> StatsRepo.update
+      _ -> :ok
+    end
+  end
+  defp update_stats_info(_), do: :ok
 
 end

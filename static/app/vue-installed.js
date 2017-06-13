@@ -8,6 +8,7 @@ import Vuelidate from 'vuelidate'
 import VueTouch from 'common/components/vue-touch'
 import VueLazyLoad from 'vue-lazyload'
 import ServerApi from './serverApi'
+import VuePreview from 'vue-preview'
 import VueQuillEditor from 'common/components/quillEditor'
 import * as acs from 'common/js/acs'
 
@@ -15,6 +16,7 @@ Vue.use(Vuelidate)
 Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(VueQuillEditor)
+Vue.use(VuePreview)
 
 Vue.use(VueLazyLoad, {
   listenEvents: [ 'scroll' ]

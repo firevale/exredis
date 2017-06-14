@@ -99,6 +99,9 @@ module.exports = {
       loader: 'vue-loader',
       options: require('./vue-loader.conf'),
     }, {
+      test: /vue-preview.src.*?js$/,
+      loader: 'babel-loader'
+    }, {
       test: /\.js$/,
       use: 'babel-loader',
       include: projectRoot,

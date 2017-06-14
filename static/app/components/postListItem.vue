@@ -61,26 +61,6 @@ export default {
         loading: window.acsConfig.defaultAvatarUrl
       }
     },
-    maxWidth() {
-      let maxCount = 0
-      if (this.postInfo.is_top)
-        maxCount += 1
-      if (this.postInfo.has_pic)
-        maxCount += 1
-      if (this.postInfo.is_vote)
-        maxCount += 1
-      if (this.postInfo.is_hot)
-        maxCount += 1
-
-      if (maxCount == 2)
-        return "max-width: calc(100vw - 24rem);"
-      else if (maxCount == 3)
-        return "max-width: calc(100vw - 26rem);"
-      else if (maxCount == 4)
-        return "max-width: calc(100vw - 28rem);"
-      else
-        return "max-width: calc(100vw - 21rem);"
-    },
     strenghtenKeywordTitle() {
       return this.searchKeyword ?
         filter.filterKeyword(this.postInfo.title).replace(new RegExp(this.searchKeyword, 'g'),

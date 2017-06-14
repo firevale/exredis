@@ -103,6 +103,7 @@ export default {
   .quill-image {
     margin-top: 1rem;
     margin-bottom: 1rem;
+    cursor: pointer;
   }
 }
 </style>

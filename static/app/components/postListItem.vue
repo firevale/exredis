@@ -7,20 +7,21 @@
         </figure>
       </div>
       <div class="media-content">
-        <div class="level is-mobile">
-          <div class="level-left level-item is-narrow" @click="showPostDetail">
-            <span v-if="postInfo.is_top" class="level-item tag is-danger">{{ $t('forum.postList.top') }}</span>
-            <div class="level-item">
-              <h5 class="title is-5" style="margin-bottom: 0; margin-right: 0.2rem"> [{{postInfo.section.title}}] </h5>
-              <h5 v-if="$route.name == 'search'" class="title is-5 fn-nowrap" style="width: calc(100vw - 19rem);" v-html="strenghtenKeywordTitle"></h5>
-              <h5 v-else class="title is-5 fn-nowrap" :style="maxWidth" v-html="strenghtenKeywordTitle"></h5>
-            </div>
-            <span v-if="postInfo.has_pic" class="level-item tag image-tag has-picture"></span>
-            <span v-if="postInfo.is_vote" class="level-item tag is-essence">{{ $t('forum.postList.essence') }}</span>
-            <span v-if="postInfo.is_hot" class="level-item tag is-danger">{{ $t('forum.postList.hot') }}</span>
+        <div class="post-title">
+          <div class="post-title-content flex-take-rest" @click="showPostDetail">
+            <span v-if="postInfo.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
+            <span v-if="$route.name == 'search'" class="title is-5" style="width: calc(100vw - 19rem);">
+              [{{postInfo.section.title}}] {{ strenghtenKeywordTitle }}
+            </span>
+            <span v-else class="title is-5">
+              [{{postInfo.section.title}}] {{ strenghtenKeywordTitle }}
+            </span>
+            <span v-if="postInfo.has_pic" class="tag image-tag has-picture"></span>
+            <span v-if="postInfo.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
+            <span v-if="postInfo.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
           </div>
-          <div class="level-right level-item has-text-right grey-text" style="margin-top: 0">
-            <timeago :since="(postInfo.last_reply_at || postInfo.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
+          <div class="post-title-time has-text-right grey-text flex-fixed-size" style="margin-top: 0">
+            <timeago class="fn-nowrap" style="padding-left: 1rem;" :since="(postInfo.last_reply_at || postInfo.inserted_at) | convertServerDateTime" :auto-update="60"></timeago>
           </div>
         </div>
         <div class="level is-mobile">
@@ -101,3 +102,25 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .post-title {
+    display: flex;
+
+    &-content {
+      display: flex;
+      align-items: flex-start;
+      span.tag {
+        display: inline-flex;
+        margin-top: 0.15rem;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+      }
+      span.title.is-5 {
+        display: inline-block;
+        overflow-wrap: break-word;
+        line-height: 1.3;
+      }
+    }
+  }
+</style>

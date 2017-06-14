@@ -1,5 +1,5 @@
 <template>
-  <div ref="container">
+  <div ref="container" class="quill-image">
     <div v-if="isValidImage">
       <progressive-background :style="imageSize" :src="src | imageStaticUrl" :placeholder="src | imageStaticUrl | imageLowQualityUrl"
         :blur="30" no-ratio/>
@@ -31,11 +31,6 @@ export default {
     }
   },
 
-  created() {
-    if (this.isValidImage)
-      this.$emit('add', this.src)
-  },
-
   mounted() {
     this.maxWidth = this.$refs.container.clientWidth
     this.onResize = window.addEventListener('resize', _ => {
@@ -43,8 +38,11 @@ export default {
     })
 
     if (this.isValidImage) {
+      const rect = this.$el.getBoundingClientRect()
+      this.$emit('add', this.src, parseInt(this.width), parseInt(this.height), {x: rect.left, y: rect.top, w: parseInt(this.width)})
       this.$el.addEventListener('tap', _ => {
-        this.$emit('tap', this.src)
+        let rect = this.$el.getBoundingClientRect()
+        this.$emit('tap', this.src, {x: rect.left, y: rect.top, w: parseInt(this.width)})
       }, false)
     }
   },
@@ -101,6 +99,10 @@ export default {
     align-items: center;
     font-style: italic;
     cursor: default;
+  }
+  .quill-image {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 }
 </style>

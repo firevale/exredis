@@ -30,7 +30,7 @@ defmodule Acs.RedisAppUser do
             %AppUser{} = app_user ->
               {:commit, app_user}
 
-            %{} -> old_app_user ->
+            %{} = old_app_user ->
               {:commit, %AppUser{
                 id: old_app_user.id,
                 app_user_id: old_app_user.app_user_id,

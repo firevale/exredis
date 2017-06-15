@@ -184,6 +184,7 @@ defmodule Acs.RedisUser do
               redis_user = %{user | inserted_at: db_user.inserted_at}
               "ok" = Scripts.save_user([], [to_json(redis_user), user.id, user.email, user.mobile, user.device_id])
               redis_user
+              
             %User{} = old_user ->
               User.changeset(old_user, Map.from_struct(user)) |> Repo.update!
               redis_user = %{user | inserted_at: old_user.inserted_at}

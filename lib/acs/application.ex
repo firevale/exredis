@@ -1,9 +1,13 @@
 defmodule Acs.Application do
   use Application
+  use LogAlias
 
   require Ecto.Migrator
   require Elasticsearch
   require Cachex
+  require Redis
+
+  alias   Ecto.Adapters.SQL
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -58,6 +62,7 @@ defmodule Acs.Application do
     Ecto.Migrator.run Acs.StatsRepo, Path.join(["#{:code.priv_dir(:acs)}", "stats_repo", "migrations"]), :up, all: true
     # this line will fail if elasticsearch is not correctly configured
     init_elasticsearch_mappings()
+    check_user_id_counter()
     # return res
     res
   end
@@ -68,6 +73,25 @@ defmodule Acs.Application do
     Acs.Question.init_mapping()
     Acs.MallOrder.init_mapping()
     Acs.MallGoods.init_mapping()
+  end
+
+  defp check_user_id_counter() do 
+    case SQL.query(Acs.Repo, "select max(id) from users") do 
+      {:ok, %{rows: [[max_user_id]]}} ->
+        case Redis.get("fvac.counter.uid") do 
+          :undefined ->
+            error "user counter is not defined in redis, set to #{max_user_id + 1}"
+            Redis.set("fvac.counter.uid", max_user_id + 1)
+          uid ->
+            uid = String.to_integer(uid)
+            if uid < max_user_id do 
+              error "uid counter in redis is: #{uid}, which is smaller than max user id #{max_user_id}, set redis uid counter to #{max_user_id + 1}"
+              Redis.set("fvac.counter.uid", max_user_id + 1)
+            end
+        end
+      _ ->
+        :ok
+    end
   end
 
 end

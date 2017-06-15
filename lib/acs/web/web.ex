@@ -57,6 +57,7 @@ defmodule Acs.Web do
       alias  Acs.RedisApp
       alias  Acs.RedisAppOrder
       alias  Acs.RedisUser
+      alias  Acs.RedisDevice
       alias  Acs.RedisAppUser
       alias  Acs.RedisAccessToken
       alias  Acs.RedisForum
@@ -66,15 +67,15 @@ defmodule Acs.Web do
       alias  Acs.User
       alias  Acs.UserFavoritePost
       alias  Acs.UserAddress
-      alias  Acs.Stats.Device
       alias  Acs.AppSdkBinding
       alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
       alias  Acs.AppUserDailyActivity
-      alias  Acs.AppDevice
-      alias  Acs.AppDeviceDailyActivity
+      alias  Acs.Stats.Device
+      alias  Acs.Stats.AppDevice
+      alias  Acs.Stats.AppDeviceDailyActivity
       alias  Acs.AppNews
 
       alias  Acs.Question
@@ -152,8 +153,8 @@ defmodule Acs.Web do
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
       alias  Acs.AppUserDailyActivity
-      alias  Acs.AppDevice
-      alias  Acs.AppDeviceDailyActivity
+      alias  Acs.Stats.AppDevice
+      alias  Acs.Stats.AppDeviceDailyActivity
     end
   end
 

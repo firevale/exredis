@@ -1,7 +1,7 @@
 defmodule Acs.Web.AppDeviceTest do
   use Acs.ModelCase
 
-  alias Acs.AppDevice
+  alias Acs.Stats.AppDevice
 
   @valid_attrs %{pay_amount: 0, active_seconds: 12}
   @invalid_attrs %{pay_amount: -1, active_seconds: -11}

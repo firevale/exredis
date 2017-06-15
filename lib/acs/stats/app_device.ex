@@ -1,5 +1,7 @@
-defmodule Acs.AppDevice do
-  use Acs.Web, :model
+defmodule Acs.Stats.AppDevice do
+  use Ecto.Schema
+  import Ecto.Changeset
+  alias Acs.Stats.AppDevice
 
   schema "app_devices" do
     field :active_seconds, :integer, default: 0
@@ -18,10 +20,10 @@ defmodule Acs.AppDevice do
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:active_seconds, :pay_amount, :last_active_at, :last_paid_at, :reg_date, :zone_id, :app_id, :device_id])
+  def changeset(%AppDevice{} = app_device, attrs) do
+    app_device
+    |> cast(attrs, [:active_seconds, :pay_amount, :last_active_at, :last_paid_at, :reg_date, :zone_id, :app_id, :device_id])
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
-  end
+  end  
 end

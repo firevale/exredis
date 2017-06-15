@@ -3,7 +3,7 @@ defmodule Acs.RedisAppDeviceDailyActivity do
   require Cachex
 
   alias   Acs.StatsRepo
-  alias   Acs.AppDeviceDailyActivity
+  alias   Acs.Stats.AppDeviceDailyActivity
 
   @cache_key     "fvac.app_device_daily_activity_cache"
 

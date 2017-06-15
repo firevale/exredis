@@ -6,7 +6,7 @@ defmodule Acs.RedisAppDevice do
   # import  Ecto
   # import  Ecto.Query
 
-  alias   Acs.AppDevice
+  alias   Acs.Stats.AppDevice
 
   @app_device_cache_key     "fvac.app_device_cache"
 
@@ -28,7 +28,23 @@ defmodule Acs.RedisAppDevice do
           end
 
         raw -> 
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+          case raw |> Base.decode64! |> :erlang.binary_to_term do 
+            %AppDevice{} = app_device ->
+              {:commit, app_device}
+            %{} = old_app_device ->
+              {:commit, %AppDevice{
+                active_seconds: old_app_device.active_seconds,
+                pay_amount: old_app_device.pay_amount,
+                last_active_at: old_app_device.last_active_at,
+                last_paid_at: old_app_device.last_paid_at,
+                reg_date: old_app_device.reg_date,
+                app_id: old_app_device.app_id,
+                zone_id: old_app_device.zone_id,
+                device_id: old_app_device.device_id,
+                inserted_at: old_app_device.inserted_at,
+                updated_at: old_app_device.updated_at,
+              }}
+          end
       end
     end)
   end

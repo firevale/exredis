@@ -2,10 +2,6 @@ defmodule Acs.Web.FVSdkController do
   use     Acs.Web, :controller
   use     Timex
 
-  alias   Acs.StatsRepo 
-  alias   Acs.RedisDevice 
-  alias   Acs.Stats.Device
-
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version

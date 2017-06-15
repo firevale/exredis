@@ -1,7 +1,7 @@
 defmodule Acs.Web.AppDeviceDailyActivityTest do
   use Acs.ModelCase
 
-  alias Acs.AppDeviceDailyActivity
+  alias Acs.Stats.AppDeviceDailyActivity
 
   @valid_attrs %{active_seconds: 42, date: ~D[2015-04-21], pay_amount: 42, app_device_id: 121234}
   @invalid_attrs %{}

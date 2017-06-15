@@ -1,4 +1,4 @@
-defmodule Acs.AppDeviceDailyActivity do
+defmodule Acs.Stats.AppDeviceDailyActivity do
   use Acs.Web, :model
 
   schema "app_device_daily_activities" do
@@ -6,7 +6,7 @@ defmodule Acs.AppDeviceDailyActivity do
 
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
-    belongs_to :app_device, Acs.AppDevice
+    belongs_to :app_device, Acs.Stats.AppDevice
 
     timestamps()
   end

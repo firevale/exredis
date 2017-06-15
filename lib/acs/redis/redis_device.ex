@@ -27,7 +27,13 @@ defmodule Acs.RedisDevice do
             %Device{} = device ->
               {:commit, device}
             %{} = old_device ->
-              {:commit, %Device{id: old_device.id, model: old_device.model, platform: old_device.platform, os: old_device.os}}
+              {:commit, %Device{
+                id: old_device.id, 
+                model: old_device.model, 
+                platform: old_device.platform, 
+                os: old_device.os,
+                inserted_at: old_device.inserted_at,
+                updated_at: old_device.updated_at}}
           end
       end
     end)

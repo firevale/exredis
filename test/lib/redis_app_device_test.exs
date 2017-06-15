@@ -4,8 +4,8 @@ defmodule Acs.RedisAppDeviceTest do
   require Redis
   alias   Acs.StatsRepo
   alias   Acs.Stats.Device
-  alias   Acs.AppDevice
-  alias   Acs.AppDeviceDailyActivity
+  alias   Acs.Stats.AppDevice
+  alias   Acs.Stats.AppDeviceDailyActivity
   alias   Acs.RedisAppDevice
   alias   Acs.RedisAppDeviceDailyActivity
 

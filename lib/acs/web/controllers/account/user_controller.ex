@@ -438,7 +438,7 @@ defmodule Acs.Web.UserController do
     #           select: %{ id: u.id, email: u.email, mobile: u.mobile, nickname: u.nickname, gender: u.gender, age: u.age, avatar_url: u.avatar_url, inserted_at: u.inserted_at, 
     #           app_user_id: app_user.app_user_id, app_user_name: app_user.app_user_name, app_user_level: app_user.app_user_level,zone_id: app_user.zone_id, pay_amount: app_user.pay_amount }
     
-     query = from app_user in Acs.AppUser,
+     query = from app_user in Acs.Stats.AppUser,
               where: app_user.app_id == ^app_id,
               select:  map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
      query =

@@ -1,5 +1,7 @@
 defmodule Acs.Stats.AppDeviceDailyActivity do
-  use Acs.Web, :model
+  use Ecto.Schema
+  import Ecto.Changeset
+  alias Acs.Stats.AppDeviceDailyActivity
 
   schema "app_device_daily_activities" do
     field :date, :date
@@ -14,9 +16,9 @@ defmodule Acs.Stats.AppDeviceDailyActivity do
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:date, :active_seconds, :pay_amount, :app_device_id])
+  def changeset(%AppDeviceDailyActivity{} = app_device_daily_activity, attrs) do
+    app_device_daily_activity
+    |> cast(attrs, [:date, :active_seconds, :pay_amount, :app_device_id])
     |> validate_required([:date, :app_device_id])
-  end
+  end  
 end

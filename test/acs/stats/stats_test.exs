@@ -186,4 +186,190 @@ defmodule Acs.StatsTest do
       assert %Ecto.Changeset{} = Stats.change_app_device(app_device)
     end
   end
+
+  describe "app_users" do
+    alias Acs.Stats.AppUser
+
+    @valid_attrs %{app_id: "some app_id", zone_id: "some zone_id"}
+    @update_attrs %{app_id: "some updated app_id", zone_id: "some updated zone_id"}
+    @invalid_attrs %{app_id: nil, zone_id: nil}
+
+    def app_user_fixture(attrs \\ %{}) do
+      {:ok, app_user} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_app_user()
+
+      app_user
+    end
+
+    test "list_app_users/0 returns all app_users" do
+      app_user = app_user_fixture()
+      assert Stats.list_app_users() == [app_user]
+    end
+
+    test "get_app_user!/1 returns the app_user with given id" do
+      app_user = app_user_fixture()
+      assert Stats.get_app_user!(app_user.id) == app_user
+    end
+
+    test "create_app_user/1 with valid data creates a app_user" do
+      assert {:ok, %AppUser{} = app_user} = Stats.create_app_user(@valid_attrs)
+      assert app_user.app_id == "some app_id"
+      assert app_user.zone_id == "some zone_id"
+    end
+
+    test "create_app_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_app_user(@invalid_attrs)
+    end
+
+    test "update_app_user/2 with valid data updates the app_user" do
+      app_user = app_user_fixture()
+      assert {:ok, app_user} = Stats.update_app_user(app_user, @update_attrs)
+      assert %AppUser{} = app_user
+      assert app_user.app_id == "some updated app_id"
+      assert app_user.zone_id == "some updated zone_id"
+    end
+
+    test "update_app_user/2 with invalid data returns error changeset" do
+      app_user = app_user_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_app_user(app_user, @invalid_attrs)
+      assert app_user == Stats.get_app_user!(app_user.id)
+    end
+
+    test "delete_app_user/1 deletes the app_user" do
+      app_user = app_user_fixture()
+      assert {:ok, %AppUser{}} = Stats.delete_app_user(app_user)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_app_user!(app_user.id) end
+    end
+
+    test "change_app_user/1 returns a app_user changeset" do
+      app_user = app_user_fixture()
+      assert %Ecto.Changeset{} = Stats.change_app_user(app_user)
+    end
+  end
+
+  describe "app_usrs_aaa" do
+    alias Acs.Stats.AppUserDailyActivity
+
+    @valid_attrs %{app_id: "some app_id", zone_id: "some zone_id"}
+    @update_attrs %{app_id: "some updated app_id", zone_id: "some updated zone_id"}
+    @invalid_attrs %{app_id: nil, zone_id: nil}
+
+    def app_user_daily_activity_fixture(attrs \\ %{}) do
+      {:ok, app_user_daily_activity} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_app_user_daily_activity()
+
+      app_user_daily_activity
+    end
+
+    test "list_app_usrs_aaa/0 returns all app_usrs_aaa" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert Stats.list_app_usrs_aaa() == [app_user_daily_activity]
+    end
+
+    test "get_app_user_daily_activity!/1 returns the app_user_daily_activity with given id" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert Stats.get_app_user_daily_activity!(app_user_daily_activity.id) == app_user_daily_activity
+    end
+
+    test "create_app_user_daily_activity/1 with valid data creates a app_user_daily_activity" do
+      assert {:ok, %AppUserDailyActivity{} = app_user_daily_activity} = Stats.create_app_user_daily_activity(@valid_attrs)
+      assert app_user_daily_activity.app_id == "some app_id"
+      assert app_user_daily_activity.zone_id == "some zone_id"
+    end
+
+    test "create_app_user_daily_activity/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_app_user_daily_activity(@invalid_attrs)
+    end
+
+    test "update_app_user_daily_activity/2 with valid data updates the app_user_daily_activity" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert {:ok, app_user_daily_activity} = Stats.update_app_user_daily_activity(app_user_daily_activity, @update_attrs)
+      assert %AppUserDailyActivity{} = app_user_daily_activity
+      assert app_user_daily_activity.app_id == "some updated app_id"
+      assert app_user_daily_activity.zone_id == "some updated zone_id"
+    end
+
+    test "update_app_user_daily_activity/2 with invalid data returns error changeset" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_app_user_daily_activity(app_user_daily_activity, @invalid_attrs)
+      assert app_user_daily_activity == Stats.get_app_user_daily_activity!(app_user_daily_activity.id)
+    end
+
+    test "delete_app_user_daily_activity/1 deletes the app_user_daily_activity" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert {:ok, %AppUserDailyActivity{}} = Stats.delete_app_user_daily_activity(app_user_daily_activity)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_app_user_daily_activity!(app_user_daily_activity.id) end
+    end
+
+    test "change_app_user_daily_activity/1 returns a app_user_daily_activity changeset" do
+      app_user_daily_activity = app_user_daily_activity_fixture()
+      assert %Ecto.Changeset{} = Stats.change_app_user_daily_activity(app_user_daily_activity)
+    end
+  end
+
+  describe "app_usrs_aaa_aaa" do
+    alias Acs.Stats.AppDeviceDailyActivity
+
+    @valid_attrs %{app_id: "some app_id", zone_id: "some zone_id"}
+    @update_attrs %{app_id: "some updated app_id", zone_id: "some updated zone_id"}
+    @invalid_attrs %{app_id: nil, zone_id: nil}
+
+    def app_device_daily_activity_fixture(attrs \\ %{}) do
+      {:ok, app_device_daily_activity} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_app_device_daily_activity()
+
+      app_device_daily_activity
+    end
+
+    test "list_app_usrs_aaa_aaa/0 returns all app_usrs_aaa_aaa" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert Stats.list_app_usrs_aaa_aaa() == [app_device_daily_activity]
+    end
+
+    test "get_app_device_daily_activity!/1 returns the app_device_daily_activity with given id" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert Stats.get_app_device_daily_activity!(app_device_daily_activity.id) == app_device_daily_activity
+    end
+
+    test "create_app_device_daily_activity/1 with valid data creates a app_device_daily_activity" do
+      assert {:ok, %AppDeviceDailyActivity{} = app_device_daily_activity} = Stats.create_app_device_daily_activity(@valid_attrs)
+      assert app_device_daily_activity.app_id == "some app_id"
+      assert app_device_daily_activity.zone_id == "some zone_id"
+    end
+
+    test "create_app_device_daily_activity/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_app_device_daily_activity(@invalid_attrs)
+    end
+
+    test "update_app_device_daily_activity/2 with valid data updates the app_device_daily_activity" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert {:ok, app_device_daily_activity} = Stats.update_app_device_daily_activity(app_device_daily_activity, @update_attrs)
+      assert %AppDeviceDailyActivity{} = app_device_daily_activity
+      assert app_device_daily_activity.app_id == "some updated app_id"
+      assert app_device_daily_activity.zone_id == "some updated zone_id"
+    end
+
+    test "update_app_device_daily_activity/2 with invalid data returns error changeset" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_app_device_daily_activity(app_device_daily_activity, @invalid_attrs)
+      assert app_device_daily_activity == Stats.get_app_device_daily_activity!(app_device_daily_activity.id)
+    end
+
+    test "delete_app_device_daily_activity/1 deletes the app_device_daily_activity" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert {:ok, %AppDeviceDailyActivity{}} = Stats.delete_app_device_daily_activity(app_device_daily_activity)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_app_device_daily_activity!(app_device_daily_activity.id) end
+    end
+
+    test "change_app_device_daily_activity/1 returns a app_device_daily_activity changeset" do
+      app_device_daily_activity = app_device_daily_activity_fixture()
+      assert %Ecto.Changeset{} = Stats.change_app_device_daily_activity(app_device_daily_activity)
+    end
+  end
 end

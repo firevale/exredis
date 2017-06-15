@@ -29,7 +29,18 @@ defmodule Acs.RedisAppDeviceDailyActivity do
           end
 
         raw -> 
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+          case raw |> Base.decode64! |> :erlang.binary_to_term do 
+            %AppDeviceDailyActivity{} = app_dda ->
+              {:commit, app_dda}
+            %{} = old ->
+              {:commit, %AppDeviceDailyActivity{
+                id: old.id,
+                date: old.date,
+                active_seconds: old.active_seconds,
+                pay_amount: old.pay_amount,
+                app_device_id: old.app_device_id,
+              }}
+          end
       end
     end)
   end

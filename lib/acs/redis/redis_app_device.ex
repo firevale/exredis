@@ -33,6 +33,7 @@ defmodule Acs.RedisAppDevice do
               {:commit, app_device}
             %{} = old_app_device ->
               {:commit, %AppDevice{
+                id: old_app_device.id,
                 active_seconds: old_app_device.active_seconds,
                 pay_amount: old_app_device.pay_amount,
                 last_active_at: old_app_device.last_active_at,

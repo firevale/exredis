@@ -8,7 +8,7 @@ defmodule Acs.PaymentHelper do
   alias   Acs.StatsRepo
 
   alias   Acs.AppOrder
-  alias   Acs.AppUser
+  alias   Acs.Stats.AppUser
 
   alias   Acs.RedisApp
   alias   Acs.ChaoxinNotifier

@@ -3,7 +3,7 @@ defmodule Acs.RedisAppUserDailyActivity do
   require Cachex
 
   alias   Acs.StatsRepo
-  alias   Acs.AppUserDailyActivity
+  alias   Acs.Stats.AppUserDailyActivity
 
   @cache_key     "fvac.app_user_da_cache"
 
@@ -29,7 +29,19 @@ defmodule Acs.RedisAppUserDailyActivity do
           end
 
         raw -> 
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+          case raw |> Base.decode64! |> :erlang.binary_to_term do 
+            %AppUserDailyActivity{} = app_user_daily_activity ->
+              {:commit, app_user_daily_activity}
+              
+            %{} = old ->
+              {:commit, %AppUserDailyActivity{
+                id: old.id,
+                date: old.date,
+                active_seconds: old.active_seconds,
+                pay_amount: old.pay_amount,
+                app_user_id: old.app_user_id,
+              }}
+          end
       end
     end)
   end

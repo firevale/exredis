@@ -68,14 +68,14 @@ defmodule Acs.Web do
       alias  Acs.UserFavoritePost
       alias  Acs.UserAddress
       alias  Acs.AppSdkBinding
-      alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
-      alias  Acs.AppUserDailyActivity
       alias  Acs.Stats.Device
       alias  Acs.Stats.AppDevice
       alias  Acs.Stats.AppDeviceDailyActivity
+      alias  Acs.Stats.AppUser
+      alias  Acs.Stats.AppUserDailyActivity
       alias  Acs.AppNews
 
       alias  Acs.Question
@@ -146,14 +146,14 @@ defmodule Acs.Web do
 
       alias  Acs.App
       alias  Acs.User
-      alias  Acs.Stats.Device
       alias  Acs.AppSdkBinding
-      alias  Acs.AppUser
       alias  Acs.AppOrder
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
-      alias  Acs.AppUserDailyActivity
+      alias  Acs.Stats.Device
       alias  Acs.Stats.AppDevice
+      alias  Acs.Stats.AppUser
+      alias  Acs.Stats.AppUserDailyActivity
       alias  Acs.Stats.AppDeviceDailyActivity
     end
   end

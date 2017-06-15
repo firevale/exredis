@@ -63,8 +63,15 @@ defmodule Acs.Application do
     # this line will fail if elasticsearch is not correctly configured
     init_elasticsearch_mappings()
     check_user_id_counter()
+    reset_online_counter()
     # return res
     res
+  end
+
+  def stop(state) do 
+    info "application stop with state: #{inspect state, pretty: true}"
+    reset_online_counter()
+    :ok
   end
 
   defp init_elasticsearch_mappings() do
@@ -89,6 +96,18 @@ defmodule Acs.Application do
               Redis.set("fvac.counter.uid", max_user_id + 1)
             end
         end
+      _ ->
+        :ok
+    end
+  end
+
+  defp reset_online_counter() do 
+    node_name = System.get_env("ACS_NODE_NAME")
+    case Redis.keys("online_counter.*.#{node_name}") do 
+      counter_list when is_list(counter_list) ->
+        Enum.each(counter_list, fn(redis_key) -> 
+          Redis.del(redis_key)
+        end)
       _ ->
         :ok
     end

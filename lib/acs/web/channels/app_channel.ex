@@ -22,6 +22,10 @@ defmodule Acs.Web.AppChannel do
                           "zone_id" => zone_id,
                           "zone_name" => _zone_name} = payload, socket) do
     d "receive channel join request, payload: #{inspect payload, pretty: true}"
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hset(online_redis_key, device_id, user_id)
+
     if authorized?(payload) do
       Logger.metadata(user_id: user_id)
       Logger.metadata(app_id: app_id)
@@ -79,14 +83,20 @@ defmodule Acs.Web.AppChannel do
       }
   end
 
-  def handle_in("pause", _payload, socket) do
+  def handle_in("pause", _payload, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
       d "channel paused"
+      node_name = System.get_env("ACS_NODE_NAME")
+      online_redis_key = "online_counter.#{app_id}.#{node_name}"
+      Redis.hdel(online_redis_key, device_id)
       do_stat(socket) 
       {:noreply, socket |> assign(:active, false) }
   end
 
-  def handle_in("resume", _payload, socket) do
+  def handle_in("resume", _payload, %{assigns: %{active: false, device_id: device_id, user_id: user_id, app_id: app_id}} = socket) do
       d "channel resumes"
+      node_name = System.get_env("ACS_NODE_NAME")
+      online_redis_key = "online_counter.#{app_id}.#{node_name}"
+      Redis.hset(online_redis_key, device_id, user_id)
       {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
                         |> assign(:active, true)
       }
@@ -101,8 +111,11 @@ defmodule Acs.Web.AppChannel do
   #   {:noreply, socket}
   # end
 
-  def terminate(reason, %{assigns: %{active: true}} = socket) do
+  def terminate(reason, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
     d "channel termiate with reason: #{inspect reason}"
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
     do_stat(socket)
     :ok
   end

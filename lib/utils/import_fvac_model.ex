@@ -13,7 +13,7 @@ defmodule ImportFvacModel do
   alias   Acs.User
   alias   Acs.UserSdkBinding 
   alias   Acs.AppOrder
-  alias   Acs.Device
+  alias   Acs.Stats.Device
   alias   Acs.AppDevice
   alias   Acs.AppUser
   alias   Acs.AppUserDailyActivity

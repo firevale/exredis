@@ -4,7 +4,7 @@ defmodule Acs.Web.FVSdkController do
 
   alias   Acs.StatsRepo 
   alias   Acs.RedisDevice 
-  alias   Acs.Device
+  alias   Acs.Stats.Device
 
   plug :fetch_app_id
   plug :fetch_app

@@ -1,7 +1,7 @@
 defmodule Acs.Web.DeviceTest do
   use Acs.ModelCase
 
-  alias Acs.Device
+  alias Acs.Stats.Device
 
   @valid_attrs %{model: "some content", platform: "some content"}
   @invalid_attrs %{}

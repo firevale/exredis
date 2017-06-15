@@ -4,7 +4,7 @@ defmodule Acs.RedisDevice do
   alias   Acs.StatsRepo
 
   use     LogAlias
-  alias   Acs.Device
+  alias   Acs.Stats.Device
 
   @device_cache_key     "fvac.device_cache"
 
@@ -23,7 +23,12 @@ defmodule Acs.RedisDevice do
           end
 
         raw -> 
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+          case raw |> Base.decode64! |> :erlang.binary_to_term do 
+            %Device{} = device ->
+              {:commit, device}
+            %{} = old_device ->
+              {:commit, %Device{id: old_device.id, model: old_device.model, platform: old_device.platform, os: old_device.os}}
+          end
       end
     end)
   end

@@ -10,7 +10,7 @@ defmodule Acs.AppDevice do
 
     field :app_id, :string
     field :zone_id, :string
-    belongs_to :device, Acs.Device, type: :string
+    belongs_to :device, Acs.Stats.Device, type: :string
 
     timestamps()
   end

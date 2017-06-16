@@ -314,7 +314,7 @@ defmodule Utils do
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
     dest_file_full_name = Path.join(Path.join(static_path, relative_path), dest_file_name)
-    {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "100", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
+    {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "80", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
 
     if opts[:low_quality] do 
       low_quality_file_name = Path.rootname(dest_file_full_name) <> ".lq.jpg" 

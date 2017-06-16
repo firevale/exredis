@@ -386,7 +386,7 @@ defmodule Acs.Web.ForumController do
     query = from c in ForumComment,
             join: u in assoc(c, :user),
             order_by: [asc: c.id],
-            where: c.post_id == ^post_id,
+            where: c.post_id == ^post_id and c.active == true,
             select: map(c, [:id, :content, :floor, :active, :inserted_at, user: [:id, :nickname, :avatar_url]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -420,7 +420,7 @@ defmodule Acs.Web.ForumController do
             join: p in assoc(c, :post),
             join: s in assoc(p, :section),
             order_by: [desc: c.id],
-            where: p.forum_id == ^forum_id and c.user_id == ^user_id and p.active == true,
+            where: p.forum_id == ^forum_id and c.user_id == ^user_id and p.active == true and c.active == true,
             select: map(c, [:id, :content, :floor, :active, :inserted_at, post: [:id, :title, :comms, :reads, section: [:id, :title]]]),
             limit: ^records_per_page,
             offset: ^((page - 1) * records_per_page),
@@ -571,13 +571,13 @@ defmodule Acs.Web.ForumController do
       end
     end
 
-    conn |>json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
+    conn |> json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
   end
   def add_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
   end
   defp _get_max_floor(post_id) do
-    Repo.one(from c in ForumComment, where: c.post_id == ^post_id, select: max(c.floor)) || 0
+    Repo.one(from c in ForumComment, where: c.post_id == ^post_id and c.active == true, select: max(c.floor)) || 0
   end
 
   # get_user_favorites

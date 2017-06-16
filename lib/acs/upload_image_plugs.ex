@@ -197,6 +197,7 @@ defmodule Acs.UploadImagePlugs do
 
   defp reformat_image(%{path: path, format: format} = image_file, new_format) when new_format in ["jpg", "jpeg", "png"] do 
     if format == new_format do  
+      d "new_format: #{new_format}, dest_format: #{format}, no reformat action taken"
       {:ok, image_file}
     else 
       {_, 0} = System.cmd("mogrify", ["-background", "white", "-alpha", "remove", "-quality", "80", "-format", new_format, path])

@@ -49,8 +49,8 @@ import {
 
 import menuModal from '../../components/menuModal'
 import {
-  showFileUploadDialog
-} from 'common/components/fileUpload'
+  showImageUploadDialog
+} from 'common/components/imageUpload'
 import {
   showMobileMenu
 } from 'common/components/mobileMenu'
@@ -203,9 +203,11 @@ export default {
           }
         })
       } else {
-        showFileUploadDialog(this.$i18n, {
+        showImageUploadDialog(this.$i18n, {
           postAction: '/forum_actions/upload_post_image',
-          accept: 'image/jpeg, image/png',
+          maxLength: 800,
+          destFormat: 'image/jpeg',
+          destQuality: 90,
           data: {
             forum_id: this.$route.params.forumId,
             section_id: this.editingPostData.selectedSectionId,
@@ -214,7 +216,6 @@ export default {
           headers: {
             'x-csrf-token': window.acsConfig.csrfToken
           },
-          extensions: ['png', 'jpg', 'jpeg'],
           callback: response => {
             if (response.success) {
               editor.focus()

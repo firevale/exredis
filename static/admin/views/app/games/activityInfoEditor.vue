@@ -69,8 +69,8 @@ import {
 } from 'vuex'
 
 import {
-  showFileUploadDialog
-} from 'common/components/fileUpload'
+  showImageUploadDialog
+} from 'common/components/imageUpload'
 
 import {
   processAjaxError,
@@ -164,16 +164,14 @@ export default {
     },
 
     updateNewsPic: function(news) {
-      showFileUploadDialog(this.$i18n, {
+      showImageUploadDialog(this.$i18n, {
         postAction: '/admin_actions/games/update_news_title_picture',
-        accept: 'image/jpg, image/jpeg, image/png',
         data: {
           news_id: news.id
         },
         headers: {
           'x-csrf-token': window.acsConfig.csrfToken
         },
-        extensions: ['jpg', 'png'],
         imageValidator: {
           minWidth: 640,
           minHeight: 260,

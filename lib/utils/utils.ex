@@ -4,6 +4,7 @@ defmodule Utils do
 
   require Ecto.DateTime
   alias   Comeonin.Pbkdf2
+  alias   Utils.Tinypng 
   
   def md5_sign(s) when is_bitstring(s) do
     :crypto.hash(:md5, s) |> to_hex |> String.downcase
@@ -304,12 +305,16 @@ defmodule Utils do
       %Mogrify.Image{format: "jpg", width: width, height: height} -> {"jpg", width, height}
       %Mogrify.Image{format: "gif", width: width, height: height} -> {"gif", width, height}
     end
+
+    # looks like tinify does not reduce much size 
+    Tinypng.tinify(from)
+
     relative_path = Path.join("/images", "/#{to}")
     url_path = Path.join("/img", "/#{to}")
     static_path = Application.app_dir(:acs, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
     dest_file_full_name = Path.join(Path.join(static_path, relative_path), dest_file_name)
-    {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "50", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
+    {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "100", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
 
     if opts[:low_quality] do 
       low_quality_file_name = Path.rootname(dest_file_full_name) <> ".lq.jpg" 

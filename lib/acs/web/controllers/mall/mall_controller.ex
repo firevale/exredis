@@ -149,10 +149,8 @@ defmodule Acs.Web.MallController do
   plug :check_upload_image, [
     param_name: "file", 
     square: true,
-    min_width: 400,
     format: ["png", "jpeg", "jpg"],
-    reformat: "jpg",
-    resize_to_limit: [width: 400, height: 400]] when action == :update_goods_pic
+    reformat: "jpg"] when action == :update_goods_pic
   def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
    case Repo.get(MallGoods, goods_id) do
       nil ->
@@ -190,7 +188,6 @@ defmodule Acs.Web.MallController do
                 "pic" => pic,
                 "description" => description,
                 "price" => price,
-                "currency" => _currency,
                 "postage" => postage,
                 "stock" => stock,
                 "is_new" => is_new} = goods) do

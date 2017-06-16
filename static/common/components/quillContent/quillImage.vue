@@ -38,11 +38,10 @@ export default {
     })
 
     if (this.isValidImage) {
-      const rect = this.$el.getBoundingClientRect()
-      this.$emit('add', this.src, parseInt(this.width), parseInt(this.height), {x: rect.left, y: rect.top, w: parseInt(this.width)})
+      this.$emit('add', this.src, parseInt(this.width), parseInt(this.height) )
       this.$el.addEventListener('tap', _ => {
         let rect = this.$el.getBoundingClientRect()
-        this.$emit('tap', this.src, {x: rect.left, y: rect.top, w: parseInt(this.width)})
+        this.$emit('tap', this.src)
       }, false)
     }
   },

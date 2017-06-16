@@ -93,7 +93,8 @@ export const imageStaticUrl = val => {
   if (typeof val === 'string' && !/^https?:\/\//.test(val)) {
       let base = window.acsConfig.imagesUrl
       let url =  /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
-      return isWebpSupported ? `${url}.webp` : url
+      // return isWebpSupported ? `${url}.webp` : url
+      return url
   }
   
   return val

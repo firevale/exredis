@@ -115,6 +115,10 @@ import {
 } from 'admin/miscellaneous'
 
 import {
+  showImageUploadDialog
+} from 'common/components/imageUpload'
+
+import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
 
@@ -247,21 +251,17 @@ export default {
 
     onShowImageUpload: function(index) {
       if (this.goods.id.length > 0) {
-        showFileUploadDialog(this.$i18n, {
+        showImageUploadDialog(this.$i18n, {
           postAction: '/admin_actions/mall/update_goods_pic',
-          accept: 'image/jpeg, image/png',
           data: {
             goods_id: this.goods.id
           },
           headers: {
             'x-csrf-token': window.acsConfig.csrfToken
           },
-          extensions: ['png', 'jpg', 'jpeg'],
           title: this.$t('admin.titles.uploadGoodsPic'),
-          imageValidator: {
-            square: true,
-            minWidth: 400,
-          },
+          width: 400,
+          height: 400,
           callback: response => this.pics.splice(index, 1, response.pic_url),
         })
       } else {

@@ -30,8 +30,8 @@ import {
 } from 'vuex'
 
 import {
-  showFileUploadDialog
-} from 'common/components/fileUpload'
+  showImageUploadDialog
+} from 'common/components/imageUpload'
 
 import {
   openNotification,
@@ -61,23 +61,19 @@ export default {
   methods: {
     updateAppIcon: function(app) {
       if (this.adminLevel < 3) {
-        showFileUploadDialog(this.$i18n, {
+        showImageUploadDialog(this.$i18n, {
           postAction: '/admin_actions/app/update_app_icon',
-          accept: 'image/png',
+          width: 128,
+          height: 128,
           data: {
             app_id: app.id,
           },
           headers: {
             'x-csrf-token': window.acsConfig.csrfToken
           },
-          extensions: ['png'],
           title: this.$t('admin.titles.uploadAppIcon', {
             appName: app.name
           }),
-          imageValidator: {
-            square: true,
-            minWidth: 128,
-          },
           callback: response => {
             if (response.success) {
               app.icon = response.icon_url

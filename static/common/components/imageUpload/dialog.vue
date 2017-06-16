@@ -5,7 +5,7 @@
         <article class="tile is-child file-upload-container">
           <file-upload class="file-upload" :class="file ? 'file-selected' : ''" ref="upload" :name="name" :title="title" :drop="true"
             accept="image/png, image/jpeg, image/jpg" :multiple="false" :headers="headers" :data="data" :size="maxFileSize"
-            :timeout="60000" :postAction="postAction" :extensions="extensions" :events="uploadEvents">
+            :timeout="60000" :postAction="postAction" :extensions="['png', 'jpg', 'jpeg']" :events="uploadEvents">
           </file-upload>
         </article>
       </div>
@@ -103,13 +103,25 @@ export default {
       type: Number,
       default: 512 * 1024,
     },
+    maxLength: {
+      type: Number,
+      default: undefined,
+    },
     width: {
       type: Number,
-      default: 100,
+      default: undefined,
     },
     height: {
       type: Number,
-      default: 100,
+      default: undefined,
+    },
+    destFormat: {
+      type: String,
+      default: 'image/png'
+    },
+    destQuality: {
+      type: Number,
+      default: 100
     }
   },
 
@@ -125,14 +137,8 @@ export default {
         add: file => {
           this.file = undefined
           this.upload.$el.style.backgroundImage = ''
-          const ratio = this.height / this.width
 
-          if (file.size > this.maxFileSize) {
-            this.errorMessage = this.$t('upload.fileIsTooLarge', {
-              maxFileSize: humanReadableSize('' + this.maxFileSize)
-            })
-            this.upload.clear()
-          } else if (!checkFileType('image/png, image/jpeg, image/jpg', file.file.type)) {
+          if (!checkFileType('image/png, image/jpeg, image/jpg', file.file.type)) {
             this.errorMessage = this.$t('upload.invalidFileType', {
               fileType: file.file.type
             })
@@ -147,7 +153,7 @@ export default {
 
               let img = new Image()
               img.onload = _ => {
-                if (img.width < this.width) {
+                if (this.width && img.width < this.width) {
                   this.errorMessage = this.$t('upload.imgWidthShouldGreaterThan', {
                     minWidth: this.width
                   })
@@ -155,7 +161,7 @@ export default {
                   return
                 }
 
-                if (img.height < this.height) {
+                if (this.height && img.height < this.height) {
                   this.errorMessage = this.$t('upload.imgHeightShouldGreaterThan', {
                     minHeight: this.height
                   })
@@ -163,35 +169,60 @@ export default {
                   return
                 }
 
-                if (Math.abs(img.height / img.width - ratio) > 0.01) {
-                  this.errorMessage = this.$t('upload.invalidImageRatio', {
-                    ratio: (img.height / img.width).toFixed(2),
-                    requiredRatio: ratio.toFixed(2)
-                  })
-                  this.upload.clear()
-                  return
+                if (this.width && this.height) {
+                  const ratio = this.height / this.width
+                  if (Math.abs(img.height / img.width - ratio) > 0.01) {
+                    this.errorMessage = this.$t('upload.invalidImageRatio', {
+                      ratio: (img.height / img.width).toFixed(2),
+                      requiredRatio: ratio.toFixed(2)
+                    })
+                    this.upload.clear()
+                    return
+                  }
+                }
+
+                let destWidth = this.width || img.width
+                let destHeight = this.height || img.height
+
+                if (this.maxLength) {
+                  if (img.width > this.maxLength && img.width > img.height) {
+                    destHeight = Math.round((this.maxLength / img.width) * img.height)
+                    destWidth = this.maxLength
+                  }
+                  else if (img.height > this.maxLength && img.height > img.width) {
+                    destWidth = Math.round((this.maxLength / img.height) * img.width)
+                    destHeight = this.maxLength
+                  }
                 }
 
                 let canvas = document.createElement('canvas')
-                canvas.width = this.width
-                canvas.height = this.height
+                canvas.width = destWidth
+                canvas.height = destHeight
 
                 pica.resize(img, canvas, {
-                    unsharpAmount: 60,
-                    unsharpRadius: 0.5,
-                    unsharpThreshold: 60,
-                    alpha: true
+                    quality: 3,
+                    unsharpAmount: 100,
+                    unsharpRadius: 2,
+                    unsharpThreshold: 220,
+                    alpha: this.destQuality == 'image/png'
                   })
                   .then(result => {
                     let imageUrl = result.toDataURL()
                     this.upload.$el.style.backgroundImage = `url(${imageUrl})`
-                    return pica.toBlob(result, 'image/png', 100)
+                    return pica.toBlob(result, this.destFormat, 100)
                   })
                   .then(blob => {
-                    this.blob = blob
+                    if (blob.size > this.maxFileSize) {
+                      this.errorMessage = this.$t('upload.fileIsTooLarge', {
+                        maxFileSize: humanReadableSize('' + this.maxFileSize)
+                      })
+                      this.upload.clear()
+                    }
+                    else {
+                      this.blob = blob
+                      this.file = file
+                    }
                   });
-
-                this.file = file
               }
               img.src = reader.result
             }
@@ -226,6 +257,11 @@ export default {
         this.file = undefined
         this.active = false
         this.visible = false
+      }).catch(e => {
+        console.error(e)
+        this.$nextTick(_ => {
+          this.callback({success: false})
+        })        
       })
     }
   },

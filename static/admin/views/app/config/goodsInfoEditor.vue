@@ -63,8 +63,8 @@ import {
 } from 'vuex'
 
 import {
-  showFileUploadDialog
-} from 'common/components/fileUpload'
+  showImageUploadDialog
+} from 'common/components/imageUpload'
 
 import {
   showMessageBox
@@ -149,9 +149,10 @@ export default {
     },
 
     updateGoodsIcon: function(goods) {
-      showFileUploadDialog(this.$i18n, {
+      showImageUploadDialog(this.$i18n, {
         postAction: '/admin_actions/app/update_goods_icon',
-        accept: 'image/png',
+        width: 128,
+        height: 128,
         data: {
           app_id: this.app.id,
           goods_id: goods.id,
@@ -159,14 +160,10 @@ export default {
         headers: {
           'x-csrf-token': window.acsConfig.csrfToken
         },
-        extensions: ['png'],
+        extensions: ['png', 'jpg'],
         title: this.$t('admin.titles.uploadGoodsIcon', {
           goodsName: goods.name
         }),
-        imageValidator: {
-          square: true,
-          minWidth: 128,
-        },
         callback: response => {
           if (response.success) {
             goods.icon = response.icon_url

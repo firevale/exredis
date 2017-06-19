@@ -115,6 +115,31 @@ defmodule Acs.Web.CronController do
   end
 
   def save_online_counter(conn, _params) do 
+    case Redis.keys("online_counter.*") do 
+      counter_list when is_list(counter_list) ->
+        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
+          ["online_counter", app_id, node_id | _] = String.split(counter_key, ".")
+          count = Redis.hlen(counter_key)
+          case Map.get(result, app_id) do 
+            nil ->
+              Map.put_new(result, app_id, count)
+            x when is_integer(x) ->
+              Map.put(result, app_id, x + count)
+            _ ->
+              result
+          end
+        end)
 
+        now = Utils.unix_timestamp()
+
+        Enum.each(onlines, fn({app_id, online_count}) -> 
+          Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
+          Redis.ltrim("onlines.#{app_id}", 0, 60*24*14)
+        end)
+
+      _ ->
+        info "no online counter found..."
+    end
+    conn |> json(%{success: true, message: "done"})
   end
 end

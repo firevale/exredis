@@ -95,6 +95,7 @@ defmodule Acs.Web.Router do
     get "/report_sms_amount", CronController, :report_sms_amount
     get "/cancel_mall_order", CronController, :cancel_mall_order
     get "/finish_mall_order", CronController, :finish_mall_order
+    get "/check_admin_users", CronController, :check_admin_users
   end
 
   scope "/admin_actions", Acs.Web do

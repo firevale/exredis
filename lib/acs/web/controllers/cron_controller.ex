@@ -4,7 +4,10 @@ defmodule Acs.Web.CronController do
   alias   Acs.MeishengSmsSender
   alias   Acs.ChaoxinNotifier
   alias   Acs.RedisMall
+  alias   Ecto.Adapters.SQL
   use     Timex
+
+  require Redis
 
   def notify_cp(conn, _params) do
     now = DateTime.utc_now()
@@ -63,7 +66,6 @@ defmodule Acs.Web.CronController do
       Repo.all(query) |> Enum.each(fn(order) ->
         MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
         rollback_goods_stock(order.id)
-        d "-------- auto close order: #{order.id}"
     end)
     conn |> json(%{success: true, message: "done"})
   end
@@ -87,8 +89,32 @@ defmodule Acs.Web.CronController do
 
       Repo.all(query) |> Enum.each(fn(order) ->
         MallOrder.changeset(order, %{status: 4, confirm_at: now, memo: "auto finish over 15 days"}) |> Repo.update()
-        d "-------- auto finish order: #{order.id}"
     end)
     conn |> json(%{success: true, message: "done"})
+  end
+
+  def check_admin_users(conn, _params) do 
+    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
+
+    case SQL.query(Acs.Repo, "select count(id) from admin_users") do 
+      {:ok, %{rows: [[count]]}} ->
+        if count <= 0 do 
+          case Redis.get("_monitor.check_admin_users") do 
+            :undefined -> 
+              ChaoxinNotifier.send_text_msg("#{now}, admin_users 表被清空")          
+              Redis.set("_monitor.check_admin_users", now)
+            _ ->
+              :ok
+          end
+        end
+      _ ->
+        ChaoxinNotifier.send_text_msg("#{now}, 获取admin_users大小失败")          
+    end
+
+    conn |> json(%{success: true, message: "done"})
+  end
+
+  def save_online_counter(conn, _params) do 
+
   end
 end

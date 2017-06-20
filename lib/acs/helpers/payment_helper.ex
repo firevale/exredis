@@ -9,6 +9,7 @@ defmodule Acs.PaymentHelper do
 
   alias   Acs.AppOrder
   alias   Acs.Stats.AppUser
+  alias   Acs.Stats.AppDevice
 
   alias   Acs.RedisApp
   alias   Acs.ChaoxinNotifier
@@ -172,19 +173,42 @@ defmodule Acs.PaymentHelper do
   defp update_stats_info(%AppOrder{
     try_deliver_counter: 0, 
     app_id: app_id,
+    device_id: device_id,
+    zone_id: zone_id,
     fee: fee,
     app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
+
+    now = DateTime.utc_now()
+    
+    # update app user payment info
     case StatsRepo.get(AppUser, app_user_id) do 
       %AppUser{app_id: ^app_id} = app_user ->
         info "payment success, update app user #{app_user_id} of app: #{app_id}, fee: #{fee}"
         AppUser.changeset(app_user, %{
           pay_amount: app_user.pay_amount + fee,
-          last_paid_at: DateTime.utc_now(),
-          last_active_at: DateTime.utc_now(),
+          first_paid_at: app_user.first_paid_at || now,
+          last_paid_at: now,
+          last_active_at: now,
           }) |> StatsRepo.update
         :ok
       _ -> 
         error "can not get app user by id: #{app_user_id}"
+        :ok
+    end
+
+    # update app device payment info
+    case StatsRepo.get_by(AppDevice, app_id: app_id, zone_id: zone_id, device_id: device_id) do 
+      %AppDevice{app_id: ^app_id, zone_id: ^zone_id, device_id: ^device_id} = app_device ->
+        info "payment success, update app device #{device_id} of app: #{app_id}, fee: #{fee}"
+        AppDevice.changeset(app_device, %{
+          pay_amount: app_device.pay_amount + fee,
+          first_paid_at: app_device.first_paid_at || now,
+          last_paid_at: now,
+          last_active_at: now,
+          }) |> StatsRepo.update
+        :ok
+      _ -> 
+        error "can not get app device by app_id: #{app_id}, zone_id: #{zone_id}, device_id: #{device_id}"
         :ok
     end
   end

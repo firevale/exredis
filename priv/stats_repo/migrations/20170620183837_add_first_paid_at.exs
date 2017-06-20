@@ -11,7 +11,6 @@ defmodule Acs.Repo.Migrations.AddFirstPaidAt do
     end
     
     create index(:app_users, [:first_paid_at])
-    create index(:app_users, [:reg_date])
     
     create index(:app_devices, [:first_paid_at])
     create index(:app_devices, [:reg_date])

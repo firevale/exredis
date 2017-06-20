@@ -21,10 +21,9 @@ defmodule Acs.Web.AppChannel do
                           "app_user_level" => _app_user_level,
                           "zone_id" => zone_id,
                           "zone_name" => _zone_name} = payload, socket) do
-    info "receive channel join request, payload: #{inspect payload, pretty: true}"
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "online_counter.#{app_id}.#{node_name}"
-    Redis.hset(online_redis_key, device_id, user_id)
+    info "receive channel join request, payload: #{inspect payload}"
+
+    incr_online_counter(app_id, device_id, user_id, platform, zone_id)
 
     if authorized?(payload) do
       Logger.metadata(user_id: user_id)
@@ -47,7 +46,7 @@ defmodule Acs.Web.AppChannel do
                    |> assign(:today, today)
       }
     else
-      error "received unauthorized payload: #{inspect payload, pretty: true}"
+      error "received unauthorized payload: #{inspect payload}"
       {:error, %{reason: "unauthorized"}}
     end
   end
@@ -66,40 +65,56 @@ defmodule Acs.Web.AppChannel do
                            "app_user_level" => _app_user_level,
                            "zone_id" => zone_id,
                            "zone_name" => _zone_name
-                          } = payload, socket) do
-      info "receive reset channel request with payload: #{inspect payload, pretty: true}"
-      Logger.metadata(user_id: user_id)
-      do_stat(socket)
+                          } = payload, 
+                          %{assigns: %{app_id: app_id, 
+                                       device_id: device_id, 
+                                       platform: platform, 
+                                       zone_id: last_zone_id}} =  socket) do
+    info "receive reset channel request with payload: #{inspect payload}"
+    Logger.metadata(user_id: user_id)
 
-      {date, _} = :calendar.local_time
-      today = date |> Date.from_erl!
-      socket = init_stat_data(payload, today, socket)
+    decr_online_counter(app_id, device_id, platform, last_zone_id)
+    incr_online_counter(app_id, device_id, user_id, platform, zone_id)
 
-      {:noreply, socket |> assign(:user_id, user_id)
-                        |> assign(:join_at, Utils.unix_timestamp)
-                        |> assign(:zone_id, "#{zone_id}")
-                        |> assign(:active, true)
-                        |> assign(:today, today)
-      }
+    do_stat(socket)
+
+    {date, _} = :calendar.local_time
+    today = date |> Date.from_erl!
+    socket = init_stat_data(payload, today, socket)
+
+    {:noreply, socket |> assign(:user_id, user_id)
+                      |> assign(:join_at, Utils.unix_timestamp)
+                      |> assign(:zone_id, "#{zone_id}")
+                      |> assign(:active, true)
+                      |> assign(:today, today)
+    }
   end
 
-  def handle_in("pause", _payload, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
-      info "channel paused, device_id: #{device_id}"
-      node_name = System.get_env("ACS_NODE_NAME")
-      online_redis_key = "online_counter.#{app_id}.#{node_name}"
-      Redis.hdel(online_redis_key, device_id)
-      do_stat(socket) 
-      {:noreply, socket |> assign(:active, false) }
+  def handle_in("pause", _payload, %{assigns: %{
+    active: true, 
+    device_id: device_id, 
+    app_id: app_id, 
+    platform: platform, 
+    zone_id: zone_id}} = socket) do
+
+    info "channel paused, device_id: #{device_id}"
+    decr_online_counter(app_id, device_id, platform, zone_id)
+    do_stat(socket) 
+    {:noreply, socket |> assign(:active, false) }
   end
 
-  def handle_in("resume", _payload, %{assigns: %{active: false, device_id: device_id, user_id: user_id, app_id: app_id}} = socket) do
-      info "channel resume, device_id: #{device_id}, user_id: #{user_id}, app_id: #{app_id}"
-      node_name = System.get_env("ACS_NODE_NAME")
-      online_redis_key = "online_counter.#{app_id}.#{node_name}"
-      Redis.hset(online_redis_key, device_id, user_id)
-      {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
-                        |> assign(:active, true)
-      }
+  def handle_in("resume", _payload, %{assigns: %{
+    active: false, 
+    device_id: device_id, 
+    user_id: user_id, 
+    app_id: app_id, 
+    platform: platform, 
+    zone_id: zone_id}} = socket) do
+    info "channel resume, device_id: #{device_id}, user_id: #{user_id}, app_id: #{app_id}"
+    incr_online_counter(app_id, device_id, user_id, platform, zone_id)
+    {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
+                      |> assign(:active, true)
+    }
   end
 
   def handle_in(_command, _payload, socket), do: {:noreply, socket}
@@ -111,19 +126,24 @@ defmodule Acs.Web.AppChannel do
   #   {:noreply, socket}
   # end
 
-  def terminate(reason, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
+  def terminate(reason, %{assigns: %{
+    active: true, 
+    device_id: device_id, 
+    app_id: app_id,
+    platform: platform,
+    zone_id: zone_id}} = socket) do
     info "active channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "online_counter.#{app_id}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
+    decr_online_counter(app_id, device_id, platform, zone_id)
     do_stat(socket)
     :ok
   end
-  def terminate(reason, %{assigns: %{device_id: device_id, app_id: app_id}} = socket) do
+  def terminate(reason, %{assigns: %{
+    device_id: device_id, 
+    app_id: app_id,
+    platform: platform,
+    zone_id: zone_id}} = socket) do
     info "inactive channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "online_counter.#{app_id}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
+    decr_online_counter(app_id, device_id, platform, zone_id)
     :ok
   end
   def terminate(_reason, _socket), do: :ok
@@ -220,5 +240,25 @@ defmodule Acs.Web.AppChannel do
       %{device_id: ^device_id, user_id: ^user_id} -> true
       _ -> false
     end
+  end
+
+  defp incr_online_counter(app_id, device_id, user_id, platform, zone_id) do 
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hset(online_redis_key, device_id, user_id)
+    online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
+    Redis.hset(online_redis_key, device_id, user_id)
+    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
+    Redis.hset(online_redis_key, device_id, user_id)
+  end
+
+  defp decr_online_counter(app_id, device_id, platform, zone_id) do 
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
+    online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
+    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
   end
 end

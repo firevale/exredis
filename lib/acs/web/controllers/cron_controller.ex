@@ -140,6 +140,61 @@ defmodule Acs.Web.CronController do
       _ ->
         info "no online counter found..."
     end
+
+    case Redis.keys("ponline_counter.*") do 
+      counter_list when is_list(counter_list) ->
+        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
+          ["ponline_counter", app_id, platform, node_id | _] = String.split(counter_key, ".")
+          count = Redis.hlen(counter_key)
+          key = "#{app_id}.#{platform}"
+          case Map.get(result, key) do 
+            nil ->
+              Map.put_new(result, key, count)
+            x when is_integer(x) ->
+              Map.put(result, key, x + count)
+            _ ->
+              result
+          end
+        end)
+
+        now = Utils.unix_timestamp()
+
+        Enum.each(onlines, fn({key, online_count}) -> 
+          Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
+          Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
+        end)
+
+      _ ->
+        info "no platform online counter found..."
+    end
+
+    case Redis.keys("zonline_counter.*") do 
+      counter_list when is_list(counter_list) ->
+        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
+          ["zonline_counter", app_id, zone_id, node_id | _] = String.split(counter_key, ".")
+          count = Redis.hlen(counter_key)
+          key = "#{app_id}.#{zone_id}"
+          case Map.get(result, key) do 
+            nil ->
+              Map.put_new(result, key, count)
+            x when is_integer(x) ->
+              Map.put(result, key, x + count)
+            _ ->
+              result
+          end
+        end)
+
+        now = Utils.unix_timestamp()
+
+        Enum.each(onlines, fn({key, online_count}) -> 
+          Redis.lpush("zonlines.#{key}", "#{now}.#{online_count}")
+          Redis.ltrim("zonlines.#{key}", 0, 60*24*60)
+        end)
+
+      _ ->
+        info "no platform online counter found..."
+    end
+
     conn |> json(%{success: true, message: "done"})
   end
 end

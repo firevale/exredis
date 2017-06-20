@@ -106,6 +106,7 @@ defmodule Acs.Application do
     case Redis.keys("online_counter.*.#{node_name}") do 
       counter_list when is_list(counter_list) ->
         Enum.each(counter_list, fn(redis_key) -> 
+          info "deleting redis online counter: #{redis_key}"
           Redis.del(redis_key)
         end)
       _ ->

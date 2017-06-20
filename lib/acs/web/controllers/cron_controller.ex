@@ -118,7 +118,7 @@ defmodule Acs.Web.CronController do
     case Redis.keys("online_counter.*") do 
       counter_list when is_list(counter_list) ->
         onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["online_counter", app_id, node_id | _] = String.split(counter_key, ".")
+          ["online_counter", app_id | _] = String.split(counter_key, ".")
           count = Redis.hlen(counter_key)
           case Map.get(result, app_id) do 
             nil ->
@@ -144,7 +144,7 @@ defmodule Acs.Web.CronController do
     case Redis.keys("ponline_counter.*") do 
       counter_list when is_list(counter_list) ->
         onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["ponline_counter", app_id, platform, node_id | _] = String.split(counter_key, ".")
+          ["ponline_counter", app_id, platform | _] = String.split(counter_key, ".")
           count = Redis.hlen(counter_key)
           key = "#{app_id}.#{platform}"
           case Map.get(result, key) do 
@@ -171,7 +171,7 @@ defmodule Acs.Web.CronController do
     case Redis.keys("zonline_counter.*") do 
       counter_list when is_list(counter_list) ->
         onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["zonline_counter", app_id, zone_id, node_id | _] = String.split(counter_key, ".")
+          ["zonline_counter", app_id, zone_id | _] = String.split(counter_key, ".")
           count = Redis.hlen(counter_key)
           key = "#{app_id}.#{zone_id}"
           case Map.get(result, key) do 

@@ -21,7 +21,7 @@ defmodule Acs.Web.AppChannel do
                           "app_user_level" => _app_user_level,
                           "zone_id" => zone_id,
                           "zone_name" => _zone_name} = payload, socket) do
-    d "receive channel join request, payload: #{inspect payload, pretty: true}"
+    info "receive channel join request, payload: #{inspect payload, pretty: true}"
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"
     Redis.hset(online_redis_key, device_id, user_id)
@@ -67,7 +67,7 @@ defmodule Acs.Web.AppChannel do
                            "zone_id" => zone_id,
                            "zone_name" => _zone_name
                           } = payload, socket) do
-      d "receive reset channel request with payload: #{inspect payload, pretty: true}"
+      info "receive reset channel request with payload: #{inspect payload, pretty: true}"
       Logger.metadata(user_id: user_id)
       do_stat(socket)
 
@@ -84,7 +84,7 @@ defmodule Acs.Web.AppChannel do
   end
 
   def handle_in("pause", _payload, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
-      d "channel paused"
+      info "channel paused, device_id: #{device_id}"
       node_name = System.get_env("ACS_NODE_NAME")
       online_redis_key = "online_counter.#{app_id}.#{node_name}"
       Redis.hdel(online_redis_key, device_id)
@@ -93,7 +93,7 @@ defmodule Acs.Web.AppChannel do
   end
 
   def handle_in("resume", _payload, %{assigns: %{active: false, device_id: device_id, user_id: user_id, app_id: app_id}} = socket) do
-      d "channel resumes"
+      info "channel resume, device_id: #{device_id}, user_id: #{user_id}, app_id: #{app_id}"
       node_name = System.get_env("ACS_NODE_NAME")
       online_redis_key = "online_counter.#{app_id}.#{node_name}"
       Redis.hset(online_redis_key, device_id, user_id)
@@ -112,14 +112,22 @@ defmodule Acs.Web.AppChannel do
   # end
 
   def terminate(reason, %{assigns: %{active: true, device_id: device_id, app_id: app_id}} = socket) do
-    d "channel termiate with reason: #{inspect reason}"
+    info "active channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"
     Redis.hdel(online_redis_key, device_id)
     do_stat(socket)
     :ok
   end
+  def terminate(reason, %{assigns: %{device_id: device_id, app_id: app_id}} = socket) do
+    info "inactive channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
+    :ok
+  end
   def terminate(_reason, _socket), do: :ok
+  
 
   defp init_stat_data(%{"access_token" => _access_token,
                         "user_id" => user_id,

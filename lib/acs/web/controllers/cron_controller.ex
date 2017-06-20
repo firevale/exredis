@@ -134,7 +134,7 @@ defmodule Acs.Web.CronController do
 
         Enum.each(onlines, fn({app_id, online_count}) -> 
           Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
-          Redis.ltrim("onlines.#{app_id}", 0, 60*24*14)
+          Redis.ltrim("onlines.#{app_id}", 0, 60*24*60)
         end)
 
       _ ->

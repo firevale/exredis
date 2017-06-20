@@ -24,7 +24,6 @@ defmodule Utils.Tinypng do
                 :error
             end
           x ->
-            d "decode json: #{inspect x, pretty: true}"
             :error
         end
       _ ->

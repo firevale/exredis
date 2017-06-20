@@ -137,9 +137,9 @@ defmodule Acs.Web.FVSdkController do
                    nil ->
                      AppDevice.changeset(%AppDevice{}, %{
                        app_id: app.id,
-                       create_date: today,
                        device_id: device_id,
-                       zone_id: zone_id
+                       zone_id: zone_id,
+                       reg_date: today,
                      }) |> StatsRepo.insert!
 
                    %AppDevice{} = app_device ->

@@ -2,7 +2,7 @@ defmodule UFile do
   use     HTTPotion.Base
 
   require Utils
-  require Logger
+  use     LogAlias
 
   @ufile_cfg   Application.get_env(:acs, :ufile, [public_key: "", 
                                                   private_key: "", 
@@ -36,7 +36,7 @@ defmodule UFile do
       {:ok, "#{@cdn_scheme}://#{@cdn_domain}/#{file_key}"}
     rescue 
       e ->
-        Logger.error "exception encountered: #{inspect e, pretty: true}"
+        error "exception encountered: #{inspect e, pretty: true}"
         {:error, nil}
     end
   end
@@ -47,7 +47,7 @@ defmodule UFile do
       {:ok, "#{@cdn_scheme}://#{@cdn_domain}/#{file_key}"}
     rescue 
       e ->
-        Logger.error "exception encountered: #{inspect e, pretty: true}"
+        error "exception encountered: #{inspect e, pretty: true}"
         {:error, nil}
     end
   end
@@ -58,7 +58,7 @@ defmodule UFile do
       {:ok, "#{@cdn_scheme}://#{@cdn_domain}/#{file_key}"}
     rescue 
       e ->
-        Logger.error "exception encountered: #{inspect e, pretty: true}"
+        error "exception encountered: #{inspect e, pretty: true}"
         {:error, nil}
     end
   end
@@ -69,7 +69,7 @@ defmodule UFile do
       :ok
     rescue 
       e ->
-        Logger.error "exception encountered: #{inspect e, pretty: true}"
+        error "exception encountered: #{inspect e, pretty: true}"
         :error
     end
   end

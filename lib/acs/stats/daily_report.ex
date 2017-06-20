@@ -17,8 +17,10 @@ defmodule Acs.Stats.DailyReport do
     field :dand, :integer, default: 0
     field :total_fee, :integer, default: 0
 
-    # has many retention data
-    # has many timing data
+    has_many :user_retentions, Acs.Stats.DailyUserRetention 
+    has_many :user_timings, Acs.Stats.DailyUserTiming 
+    has_many :device_retentions, Acs.Stats.DailyDeviceRetention 
+    has_many :device_timings, Acs.Stats.DailyDeviceTiming 
 
     timestamps()
   end

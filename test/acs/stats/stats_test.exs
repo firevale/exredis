@@ -372,4 +372,258 @@ defmodule Acs.StatsTest do
       assert %Ecto.Changeset{} = Stats.change_app_device_daily_activity(app_device_daily_activity)
     end
   end
+
+  describe "daily_retentions" do
+    alias Acs.Stats.DailyUserRetention
+
+    @valid_attrs %{app_id: "some app_id", date: ~D[2010-04-17], nday: 42, platform: "some platform", retention: 42}
+    @update_attrs %{app_id: "some updated app_id", date: ~D[2011-05-18], nday: 43, platform: "some updated platform", retention: 43}
+    @invalid_attrs %{app_id: nil, date: nil, nday: nil, platform: nil, retention: nil}
+
+    def daily_retentions_fixture(attrs \\ %{}) do
+      {:ok, daily_retentions} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_daily_retentions()
+
+      daily_retentions
+    end
+
+    test "list_daily_retentions/0 returns all daily_retentions" do
+      daily_retentions = daily_retentions_fixture()
+      assert Stats.list_daily_retentions() == [daily_retentions]
+    end
+
+    test "get_daily_retentions!/1 returns the daily_retentions with given id" do
+      daily_retentions = daily_retentions_fixture()
+      assert Stats.get_daily_retentions!(daily_retentions.id) == daily_retentions
+    end
+
+    test "create_daily_retentions/1 with valid data creates a daily_retentions" do
+      assert {:ok, %DailyUserRetention{} = daily_retentions} = Stats.create_daily_retentions(@valid_attrs)
+      assert daily_retentions.app_id == "some app_id"
+      assert daily_retentions.date == ~D[2010-04-17]
+      assert daily_retentions.nday == 42
+      assert daily_retentions.platform == "some platform"
+      assert daily_retentions.retention == 42
+    end
+
+    test "create_daily_retentions/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_daily_retentions(@invalid_attrs)
+    end
+
+    test "update_daily_retentions/2 with valid data updates the daily_retentions" do
+      daily_retentions = daily_retentions_fixture()
+      assert {:ok, daily_retentions} = Stats.update_daily_retentions(daily_retentions, @update_attrs)
+      assert %DailyUserRetention{} = daily_retentions
+      assert daily_retentions.app_id == "some updated app_id"
+      assert daily_retentions.date == ~D[2011-05-18]
+      assert daily_retentions.nday == 43
+      assert daily_retentions.platform == "some updated platform"
+      assert daily_retentions.retention == 43
+    end
+
+    test "update_daily_retentions/2 with invalid data returns error changeset" do
+      daily_retentions = daily_retentions_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_daily_retentions(daily_retentions, @invalid_attrs)
+      assert daily_retentions == Stats.get_daily_retentions!(daily_retentions.id)
+    end
+
+    test "delete_daily_retentions/1 deletes the daily_retentions" do
+      daily_retentions = daily_retentions_fixture()
+      assert {:ok, %DailyUserRetention{}} = Stats.delete_daily_retentions(daily_retentions)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_daily_retentions!(daily_retentions.id) end
+    end
+
+    test "change_daily_retentions/1 returns a daily_retentions changeset" do
+      daily_retentions = daily_retentions_fixture()
+      assert %Ecto.Changeset{} = Stats.change_daily_retentions(daily_retentions)
+    end
+  end
+
+  describe "daily_user_timings" do
+    alias Acs.Stats.DailyUserTiming
+
+    @valid_attrs %{counter: 42, nmin: 42}
+    @update_attrs %{counter: 43, nmin: 43}
+    @invalid_attrs %{counter: nil, nmin: nil}
+
+    def daily_user_timing_fixture(attrs \\ %{}) do
+      {:ok, daily_user_timing} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_daily_user_timing()
+
+      daily_user_timing
+    end
+
+    test "list_daily_user_timings/0 returns all daily_user_timings" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert Stats.list_daily_user_timings() == [daily_user_timing]
+    end
+
+    test "get_daily_user_timing!/1 returns the daily_user_timing with given id" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert Stats.get_daily_user_timing!(daily_user_timing.id) == daily_user_timing
+    end
+
+    test "create_daily_user_timing/1 with valid data creates a daily_user_timing" do
+      assert {:ok, %DailyUserTiming{} = daily_user_timing} = Stats.create_daily_user_timing(@valid_attrs)
+      assert daily_user_timing.counter == 42
+      assert daily_user_timing.nmin == 42
+    end
+
+    test "create_daily_user_timing/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_daily_user_timing(@invalid_attrs)
+    end
+
+    test "update_daily_user_timing/2 with valid data updates the daily_user_timing" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert {:ok, daily_user_timing} = Stats.update_daily_user_timing(daily_user_timing, @update_attrs)
+      assert %DailyUserTiming{} = daily_user_timing
+      assert daily_user_timing.counter == 43
+      assert daily_user_timing.nmin == 43
+    end
+
+    test "update_daily_user_timing/2 with invalid data returns error changeset" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_daily_user_timing(daily_user_timing, @invalid_attrs)
+      assert daily_user_timing == Stats.get_daily_user_timing!(daily_user_timing.id)
+    end
+
+    test "delete_daily_user_timing/1 deletes the daily_user_timing" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert {:ok, %DailyUserTiming{}} = Stats.delete_daily_user_timing(daily_user_timing)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_daily_user_timing!(daily_user_timing.id) end
+    end
+
+    test "change_daily_user_timing/1 returns a daily_user_timing changeset" do
+      daily_user_timing = daily_user_timing_fixture()
+      assert %Ecto.Changeset{} = Stats.change_daily_user_timing(daily_user_timing)
+    end
+  end
+
+  describe "daily_device_timings" do
+    alias Acs.Stats.DailyDeviceTiming
+
+    @valid_attrs %{counter: 42, nmin: 42}
+    @update_attrs %{counter: 43, nmin: 43}
+    @invalid_attrs %{counter: nil, nmin: nil}
+
+    def daily_device_timing_fixture(attrs \\ %{}) do
+      {:ok, daily_device_timing} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_daily_device_timing()
+
+      daily_device_timing
+    end
+
+    test "list_daily_device_timings/0 returns all daily_device_timings" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert Stats.list_daily_device_timings() == [daily_device_timing]
+    end
+
+    test "get_daily_device_timing!/1 returns the daily_device_timing with given id" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert Stats.get_daily_device_timing!(daily_device_timing.id) == daily_device_timing
+    end
+
+    test "create_daily_device_timing/1 with valid data creates a daily_device_timing" do
+      assert {:ok, %DailyDeviceTiming{} = daily_device_timing} = Stats.create_daily_device_timing(@valid_attrs)
+      assert daily_device_timing.counter == 42
+      assert daily_device_timing.nmin == 42
+    end
+
+    test "create_daily_device_timing/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_daily_device_timing(@invalid_attrs)
+    end
+
+    test "update_daily_device_timing/2 with valid data updates the daily_device_timing" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert {:ok, daily_device_timing} = Stats.update_daily_device_timing(daily_device_timing, @update_attrs)
+      assert %DailyDeviceTiming{} = daily_device_timing
+      assert daily_device_timing.counter == 43
+      assert daily_device_timing.nmin == 43
+    end
+
+    test "update_daily_device_timing/2 with invalid data returns error changeset" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_daily_device_timing(daily_device_timing, @invalid_attrs)
+      assert daily_device_timing == Stats.get_daily_device_timing!(daily_device_timing.id)
+    end
+
+    test "delete_daily_device_timing/1 deletes the daily_device_timing" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert {:ok, %DailyDeviceTiming{}} = Stats.delete_daily_device_timing(daily_device_timing)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_daily_device_timing!(daily_device_timing.id) end
+    end
+
+    test "change_daily_device_timing/1 returns a daily_device_timing changeset" do
+      daily_device_timing = daily_device_timing_fixture()
+      assert %Ecto.Changeset{} = Stats.change_daily_device_timing(daily_device_timing)
+    end
+  end
+
+  describe "daily_device_retentions" do
+    alias Acs.Stats.DailyDeviceRetention
+
+    @valid_attrs %{nday: 42, retention: 42}
+    @update_attrs %{nday: 43, retention: 43}
+    @invalid_attrs %{nday: nil, retention: nil}
+
+    def daily_device_retention_fixture(attrs \\ %{}) do
+      {:ok, daily_device_retention} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Stats.create_daily_device_retention()
+
+      daily_device_retention
+    end
+
+    test "list_daily_device_retentions/0 returns all daily_device_retentions" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert Stats.list_daily_device_retentions() == [daily_device_retention]
+    end
+
+    test "get_daily_device_retention!/1 returns the daily_device_retention with given id" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert Stats.get_daily_device_retention!(daily_device_retention.id) == daily_device_retention
+    end
+
+    test "create_daily_device_retention/1 with valid data creates a daily_device_retention" do
+      assert {:ok, %DailyDeviceRetention{} = daily_device_retention} = Stats.create_daily_device_retention(@valid_attrs)
+      assert daily_device_retention.nday == 42
+      assert daily_device_retention.retention == 42
+    end
+
+    test "create_daily_device_retention/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stats.create_daily_device_retention(@invalid_attrs)
+    end
+
+    test "update_daily_device_retention/2 with valid data updates the daily_device_retention" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert {:ok, daily_device_retention} = Stats.update_daily_device_retention(daily_device_retention, @update_attrs)
+      assert %DailyDeviceRetention{} = daily_device_retention
+      assert daily_device_retention.nday == 43
+      assert daily_device_retention.retention == 43
+    end
+
+    test "update_daily_device_retention/2 with invalid data returns error changeset" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert {:error, %Ecto.Changeset{}} = Stats.update_daily_device_retention(daily_device_retention, @invalid_attrs)
+      assert daily_device_retention == Stats.get_daily_device_retention!(daily_device_retention.id)
+    end
+
+    test "delete_daily_device_retention/1 deletes the daily_device_retention" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert {:ok, %DailyDeviceRetention{}} = Stats.delete_daily_device_retention(daily_device_retention)
+      assert_raise Ecto.NoResultsError, fn -> Stats.get_daily_device_retention!(daily_device_retention.id) end
+    end
+
+    test "change_daily_device_retention/1 returns a daily_device_retention changeset" do
+      daily_device_retention = daily_device_retention_fixture()
+      assert %Ecto.Changeset{} = Stats.change_daily_device_retention(daily_device_retention)
+    end
+  end
 end

@@ -306,7 +306,6 @@ defmodule Utils do
       %Mogrify.Image{format: "gif", width: width, height: height} -> {"gif", width, height}
     end
 
-    # looks like tinify does not reduce much size 
     Tinypng.tinify(from)
 
     relative_path = Path.join("/images", "/#{to}")

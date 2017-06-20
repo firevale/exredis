@@ -102,6 +102,8 @@ defmodule Acs.Application do
   end
 
   defp reset_online_counter() do 
+    info "resetting online counter...."
+    
     node_name = System.get_env("ACS_NODE_NAME")
     case Redis.keys("online_counter.*.#{node_name}") do 
       counter_list when is_list(counter_list) ->
@@ -112,6 +114,27 @@ defmodule Acs.Application do
       _ ->
         :ok
     end
+
+    case Redis.keys("ponline_counter.*.#{node_name}") do 
+      counter_list when is_list(counter_list) ->
+        Enum.each(counter_list, fn(redis_key) -> 
+          info "deleting redis platform online counter: #{redis_key}"
+          Redis.del(redis_key)
+        end)
+      _ ->
+        :ok
+    end
+
+    case Redis.keys("zonline_counter.*.#{node_name}") do 
+      counter_list when is_list(counter_list) ->
+        Enum.each(counter_list, fn(redis_key) -> 
+          info "deleting redis zone online counter: #{redis_key}"
+          Redis.del(redis_key)
+        end)
+      _ ->
+        :ok
+    end
+
   end
 
 end

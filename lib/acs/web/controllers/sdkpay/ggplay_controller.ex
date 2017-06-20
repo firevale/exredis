@@ -28,16 +28,16 @@ defmodule Acs.Web.GgplayController do
                               currency_code: order.trade_currency, 
                               item_name: order.goods_name})
             _ ->
-              Logger.error "deliver ggplay goods failed, invalid signed_data: #{signed_data}"
+              error "deliver ggplay goods failed, invalid signed_data: #{signed_data}"
               conn |> json(%{success: false, message: "signed_data is not a valid json string"})
           end
 
         _ ->
-          Logger.error "deliver ggplay goods failed, can't find platform order: #{order_id}"
+          error "deliver ggplay goods failed, can't find platform order: #{order_id}"
           conn |> json(%{success: false, message: "invalid platform order id"})
       end
     else 
-      Logger.error "deliver ggplay goods failed, verify signature failed: #{signed_data}, #{signature}"
+      error "deliver ggplay goods failed, verify signature failed: #{signed_data}, #{signature}"
       conn |> json(%{success: false, message: "invalid signature data"})
     end 
   end
@@ -49,7 +49,7 @@ defmodule Acs.Web.GgplayController do
               case Base.decode64(signature <> "==") do 
                 {:ok, val} -> val
                 :error ->
-                  Logger.error "decode ggplay signature failed, signature: #{signature}"
+                  error "decode ggplay signature failed, signature: #{signature}"
                   nil
               end
           end

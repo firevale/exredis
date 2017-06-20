@@ -169,7 +169,6 @@ defmodule Acs.PaymentHelper do
   end
   defp chaoxin_notify(_, _, _), do: :ok
 
-
   defp update_stats_info(%AppOrder{
     try_deliver_counter: 0, 
     app_id: app_id,
@@ -177,8 +176,16 @@ defmodule Acs.PaymentHelper do
     app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
     case StatsRepo.get(AppUser, app_user_id) do 
       %AppUser{app_id: ^app_id} = app_user ->
-        AppUser.changeset(app_user, %{pay_amount: app_user.pay_amount + fee}) |> StatsRepo.update
-      _ -> :ok
+        info "payment success, update app user #{app_user_id} of app: #{app_id}, fee: #{fee}"
+        AppUser.changeset(app_user, %{
+          pay_amount: app_user.pay_amount + fee,
+          last_paid_at: DateTime.utc_now(),
+          last_active_at: DateTime.utc_now(),
+          }) |> StatsRepo.update
+        :ok
+      _ -> 
+        error "can not get app user by id: #{app_user_id}"
+        :ok
     end
   end
   defp update_stats_info(_), do: :ok

@@ -2,9 +2,10 @@ defmodule Acs.RedisAppUser do
   require Redis
 
   alias   Acs.StatsRepo
-  require Cachex
-
   alias   Acs.Stats.AppUser
+
+  require Cachex
+  use     Timex
 
   @app_user_cache_key     "fvac.app_user_cache"
 
@@ -16,7 +17,11 @@ defmodule Acs.RedisAppUser do
         :undefined ->
           case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 
             nil ->  
-              {:ok, app_user} = AppUser.changeset(%AppUser{}, %{app_id: app_id, user_id: user_id, zone_id: zone_id}) |> StatsRepo.insert
+              {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
+                app_id: app_id, 
+                user_id: user_id, 
+                zone_id: zone_id,
+                reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, app_user |> :erlang.term_to_binary |> Base.encode64)
               {:commit, app_user}
 

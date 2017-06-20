@@ -2,11 +2,10 @@ defmodule Acs.RedisAppDevice do
   require Redis
 
   alias   Acs.StatsRepo
-  require Cachex
-  # import  Ecto
-  # import  Ecto.Query
-
   alias   Acs.Stats.AppDevice
+
+  require Cachex
+  use     Timex
 
   @app_device_cache_key     "fvac.app_device_cache"
 
@@ -18,7 +17,11 @@ defmodule Acs.RedisAppDevice do
         :undefined ->
           case StatsRepo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do 
             nil ->  
-              {:ok, appDevice} = AppDevice.changeset(%AppDevice{}, %{app_id: app_id, device_id: device_id, zone_id: zone_id}) |> StatsRepo.insert
+              {:ok, appDevice} = AppDevice.changeset(%AppDevice{}, %{
+                app_id: app_id, 
+                device_id: device_id, 
+                zone_id: zone_id,
+                reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
               {:commit, appDevice}
 
@@ -31,6 +34,7 @@ defmodule Acs.RedisAppDevice do
           case raw |> Base.decode64! |> :erlang.binary_to_term do 
             %AppDevice{} = app_device ->
               {:commit, app_device}
+              
             %{} = old_app_device ->
               {:commit, %AppDevice{
                 id: old_app_device.id,

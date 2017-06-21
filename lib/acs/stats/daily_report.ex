@@ -9,13 +9,14 @@ defmodule Acs.Stats.DailyReport do
     field :date, :date
     field :platform, :string
 
-    field :dau, :integer, default: 0
-    field :danu, :integer, default: 0
-    field :dapu, :integer, default: 0
-    field :danpu, :integer, default: 0
-    field :dad, :integer, default: 0
-    field :dand, :integer, default: 0
-    field :total_fee, :integer, default: 0
+    field :dau, :integer, default: 0         # daily active user
+    field :danu, :integer, default: 0        # daily active new user
+    field :dapu, :integer, default: 0        # daily active paid user
+    field :danpu, :integer, default: 0       # daily active new paid user
+    field :dad, :integer, default: 0         # daily active devices
+    field :dand, :integer, default: 0        # daily active new devices
+    
+    field :total_fee, :integer, default: 0   # daily paid amount sum
 
     has_many :user_retentions, Acs.Stats.DailyUserRetention 
     has_many :user_timings, Acs.Stats.DailyUserTiming 

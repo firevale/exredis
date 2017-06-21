@@ -15,6 +15,6 @@ defmodule Acs.StatsRepo.Migrations.CreateAppUserDailyActivity do
 
     create index(:app_user_daily_activities, [:date])
     create index(:app_user_daily_activities, [:app_user_id])
-    create index(:app_user_daily_activities, [:date, :app_user_id])
+    create index(:app_user_daily_activities, [:date, :app_user_id], unique: true)
   end
 end

@@ -10,6 +10,8 @@ defmodule Acs.PaymentHelper do
   alias   Acs.AppOrder
   alias   Acs.Stats.AppUser
   alias   Acs.Stats.AppDevice
+  alias   Acs.Stats.AppUserDailyActivity
+  alias   Acs.Stats.AppDeviceDailyActivity
 
   alias   Acs.RedisApp
   alias   Acs.ChaoxinNotifier
@@ -179,10 +181,11 @@ defmodule Acs.PaymentHelper do
     app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
 
     now = DateTime.utc_now()
+    today = Timex.local() |> Timex.to_date()
     
     # update app user payment info
     case StatsRepo.get(AppUser, app_user_id) do 
-      %AppUser{app_id: ^app_id} = app_user ->
+      %AppUser{id: ^app_user_id, app_id: ^app_id} = app_user ->
         info "payment success, update app user #{app_user_id} of app: #{app_id}, fee: #{fee}"
         AppUser.changeset(app_user, %{
           pay_amount: app_user.pay_amount + fee,
@@ -190,6 +193,14 @@ defmodule Acs.PaymentHelper do
           last_paid_at: now,
           last_active_at: now,
           }) |> StatsRepo.update
+
+        case StatsRepo.get_by(AppUserDailyActivity, app_user_id: app_user_id, date: today) do 
+          %AppUserDailyActivity{app_user_id: ^app_user_id, date: ^today} = auda ->
+            AppUserDailyActivity.changeset(auda, %{pay_amount: auda.pay_amount + fee}) |> StatsRepo.update
+          _ ->
+            error "can not get app user daily activity by app_user_id: #{app_user_id}, date: #{today}"
+        end
+
         :ok
       _ -> 
         error "can not get app user by id: #{app_user_id}"
@@ -198,7 +209,7 @@ defmodule Acs.PaymentHelper do
 
     # update app device payment info
     case StatsRepo.get_by(AppDevice, app_id: app_id, zone_id: zone_id, device_id: device_id) do 
-      %AppDevice{app_id: ^app_id, zone_id: ^zone_id, device_id: ^device_id} = app_device ->
+      %AppDevice{id: app_device_id, app_id: ^app_id, zone_id: ^zone_id, device_id: ^device_id} = app_device ->
         info "payment success, update app device #{device_id} of app: #{app_id}, fee: #{fee}"
         AppDevice.changeset(app_device, %{
           pay_amount: app_device.pay_amount + fee,
@@ -206,6 +217,14 @@ defmodule Acs.PaymentHelper do
           last_paid_at: now,
           last_active_at: now,
           }) |> StatsRepo.update
+
+        case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device_id, date: today) do 
+          %AppDeviceDailyActivity{app_device_id: ^app_device_id, date: ^today} = adda ->
+            AppDeviceDailyActivity.changeset(adda, %{pay_amount: adda.pay_amount + fee}) |> StatsRepo.update
+          _ ->
+            error "can not get app device daily activity by app_user_id: #{app_device_id}, date: #{today}"
+        end
+
         :ok
       _ -> 
         error "can not get app device by app_id: #{app_id}, zone_id: #{zone_id}, device_id: #{device_id}"

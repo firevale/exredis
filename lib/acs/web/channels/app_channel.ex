@@ -78,8 +78,7 @@ defmodule Acs.Web.AppChannel do
 
     do_stat(socket)
 
-    {date, _} = :calendar.local_time
-    today = date |> Date.from_erl!
+    today = Timex.local() |> Timex.to_date()
     socket = init_stat_data(payload, today, socket)
 
     {:noreply, socket |> assign(:user_id, user_id)

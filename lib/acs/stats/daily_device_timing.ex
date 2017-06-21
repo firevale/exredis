@@ -3,7 +3,6 @@ defmodule Acs.Stats.DailyDeviceTiming do
   import Ecto.Changeset
   alias Acs.Stats.DailyDeviceTiming
 
-
   schema "stats_daily_device_timings" do
     field :counter, :integer
     field :nmin, :integer

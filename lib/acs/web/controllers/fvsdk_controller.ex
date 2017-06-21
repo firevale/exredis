@@ -80,7 +80,8 @@ defmodule Acs.Web.FVSdkController do
                        "osver" => os,
                        "channel" => _sdk,
                        "zone_id" => zone_id} = params) do
-    today = Timex.today
+
+    today = Timex.local() |> Timex.to_date()
 
     # oops, counter params only exists in android fvsdk
     active_seconds = String.to_integer(params["counter"] || "1") * 300

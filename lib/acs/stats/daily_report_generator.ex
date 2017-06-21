@@ -22,14 +22,14 @@ defmodule Acs.Stats.DailyReportGenerator do
     end)
    catch 
      t, e ->
-       ChaoxinNotifier.send_text_msg("统计日报生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
+       ChaoxinNotifier.send_text_msg("统计日报表生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
    end
   end
 
   defp _generate(app_id, date, platform) do 
     query = from au in AppUser,
         right_join: auda in assoc(au, :daily_activities),
-        select: count(auda.app_user_id, :distinct),
+        select: count(au.user_id, :distinct),
         where: au.app_id == ^app_id and auda.date == ^date
 
     query = if platform != "all" do 
@@ -42,7 +42,7 @@ defmodule Acs.Stats.DailyReportGenerator do
 
     query = from au in AppUser,
         left_join: auda in assoc(au, :daily_activities),
-        select: count(auda.app_user_id, :distinct),
+        select: count(au.user_id, :distinct),
         where: au.app_id == ^app_id and au.reg_date == ^date and auda.date == ^date
 
     query = if platform != "all" do 

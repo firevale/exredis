@@ -94,7 +94,7 @@ defmodule Acs.Web.FVSdkController do
                       app_user_id: app_user_id,
                       app_user_name: app_user_name,
                       zone_id: zone_id,
-                      create_date: today,
+                      reg_date: today,
                       app_id: app.id,
                       user_id: user_id
                     }) |> StatsRepo.insert!

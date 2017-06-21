@@ -97,6 +97,7 @@ defmodule Acs.Web.FVSdkController do
                       zone_id: zone_id,
                       reg_date: today,
                       app_id: app.id,
+                      platform: platform,
                       user_id: user_id
                     }) |> StatsRepo.insert!
 
@@ -140,6 +141,7 @@ defmodule Acs.Web.FVSdkController do
                        app_id: app.id,
                        device_id: device_id,
                        zone_id: zone_id,
+                       platform: platform,
                        reg_date: today,
                      }) |> StatsRepo.insert!
 

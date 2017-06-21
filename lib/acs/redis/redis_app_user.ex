@@ -9,7 +9,7 @@ defmodule Acs.RedisAppUser do
 
   @app_user_cache_key     "fvac.app_user_cache"
 
-  def find(app_id, zone_id, user_id) do 
+  def find(app_id, zone_id, user_id, platform) do 
     key = "#{@app_user_cache_key}.#{app_id}.#{zone_id}.#{user_id}"
 
     Cachex.get!(:default, key, fallback: fn(redis_key) -> 
@@ -21,6 +21,7 @@ defmodule Acs.RedisAppUser do
                 app_id: app_id, 
                 user_id: user_id, 
                 zone_id: zone_id,
+                platform: platform,
                 reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, app_user |> :erlang.term_to_binary |> Base.encode64)
               {:commit, app_user}

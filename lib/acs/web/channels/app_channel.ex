@@ -147,7 +147,6 @@ defmodule Acs.Web.AppChannel do
   end
   def terminate(_reason, _socket), do: :ok
   
-
   defp init_stat_data(%{"access_token" => _access_token,
                         "user_id" => user_id,
                         "app_id" => app_id,
@@ -163,7 +162,7 @@ defmodule Acs.Web.AppChannel do
                         "zone_name" => _zone_name}, today, socket) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
-    app_user = RedisAppUser.find(app_id, zone_id, user_id)
+    app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
     app_user = %{app_user | app_user_name: app_user_name,
                             app_user_id: app_user_id,
                             last_active_at: utc_now,
@@ -180,7 +179,7 @@ defmodule Acs.Web.AppChannel do
         os: os}) |> StatsRepo.insert(on_conflict: :nothing)
     end
 
-    app_device = RedisAppDevice.find(app_id, zone_id, device_id)
+    app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
     app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
 
     socket |> assign(:app_user, app_user)

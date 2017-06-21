@@ -9,7 +9,7 @@ defmodule Acs.RedisAppDevice do
 
   @app_device_cache_key     "fvac.app_device_cache"
 
-  def find(app_id, zone_id, device_id) do 
+  def find(app_id, zone_id, device_id, platform) do 
     key = "#{@app_device_cache_key}.#{app_id}.#{zone_id}.#{device_id}"
 
     Cachex.get!(:default, key, fallback: fn(redis_key) -> 
@@ -21,6 +21,7 @@ defmodule Acs.RedisAppDevice do
                 app_id: app_id, 
                 device_id: device_id, 
                 zone_id: zone_id,
+                platform: platform,
                 reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
               Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
               {:commit, appDevice}

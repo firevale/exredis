@@ -2,6 +2,7 @@ export default {
   dashboard: '概况',
   appConfig: '修改配置',
   adminUserManage: '角色管理',
+  loginCodeManage: '激活码',
   userManage: '查询用户',
   orderManage: '订单管理',
   forumManage: '论坛管理',

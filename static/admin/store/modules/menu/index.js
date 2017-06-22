@@ -41,6 +41,14 @@ const state = {
       path: '/admin/app/:appId/users',
       meta: {
         icon: 'fa-user',
+        level: '1,2,3,',
+      },
+    },
+    {
+      name: i18n.t('admin.menu.loginCodeManage'),
+      path: '/admin/app/:appId/loginCodes',
+      meta: {
+        icon: 'fa-wechat',
         level: '1,2,',
       },
     },

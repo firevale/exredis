@@ -86,6 +86,10 @@ export default new Router({
           name: 'Faq',
           path: 'faq',
           component: require('../views/app/faq/questionEditor')
+        }, {
+          name: 'LoginCodes',
+          path: 'loginCodes',
+          component: require('../views/app/loginCodes')
         },
       ],
     }, {

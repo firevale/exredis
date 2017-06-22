@@ -4,6 +4,7 @@ export default {
   AppDashboard: '概况',
   AppConfig: '修改应用配置',
   AdminUsers: '账号管理',
+  LoginCodes: '激活码管理',
   Users: '用户管理',
   Orders: '订单管理',
   Forums: '论坛管理',

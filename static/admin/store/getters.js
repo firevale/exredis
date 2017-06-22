@@ -14,6 +14,7 @@ const adminLevel = state => state.main.adminLevel
 const menuitems = state => {
   let has_mall = state.apps.app && state.apps.app.has_mall
   let has_forum = state.apps.app && state.apps.app.has_forum
+  let restrict_login = state.apps.app && state.apps.app.restrict_login
 
   let result = []
 
@@ -25,6 +26,10 @@ const menuitems = state => {
 
       case '/admin/app/:appId/editmall':
         if (has_mall) result.push(element);
+        break;
+
+      case '/admin/app/:appId/loginCodes':
+        if (restrict_login) result.push(element);
         break;
 
       default:

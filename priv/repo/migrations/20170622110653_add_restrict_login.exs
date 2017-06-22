@@ -1,0 +1,24 @@
+defmodule Acs.Repo.Migrations.AddRestrictLogin do
+  use Ecto.Migration
+
+  def change do
+    alter table(:apps) do 
+      add :restrict_login, :boolean, default: false
+    end
+    
+    create table(:app_login_codes) do 
+      add :code, :string
+      add :owner, :string
+
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
+
+      timestamps()
+    end
+
+    create index(:app_login_codes, [:app_id, :code], unique: true)
+    create index(:app_login_codes, [:app_id, :owner], unique: true)
+    create index(:app_login_codes, [:app_id, :user_id])
+    create index(:app_login_codes, [:user_id])
+  end
+end

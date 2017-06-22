@@ -16,6 +16,7 @@ defmodule Acs.App do
     field :active, :boolean, default: true
     field :has_forum, :boolean, default: false
     field :has_mall, :boolean, default: false
+    field :restrict_login, :boolean, default: false   # 是否需要激活码登录, 限制登录
 
     field :chaoxin_group_id, :string # 超信运营群号
     

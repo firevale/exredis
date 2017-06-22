@@ -9,6 +9,8 @@ import { sync } from 'vuex-router-sync'
 import VueI18n from 'vue-i18n'
 import Vuelidate from 'vuelidate'
 import VueDragula from 'vue-dragula'
+import ToggleButton from 'vue-js-toggle-button'
+import VueClipboard from 'vue-clipboard2'
 
 import App from './App.vue'
 import router from './router'
@@ -30,6 +32,8 @@ Vue.use(NProgress)
 Vue.use(ServerApi)
 Vue.use(VueDragula)
 Vue.use(VueQuillEditor)
+Vue.use(ToggleButton)
+Vue.use(VueClipboard)
 
 axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 

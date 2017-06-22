@@ -23,6 +23,9 @@ export default {
   next: '下一页',
   previous: '上一页',
   operateSuccess: '操作成功',
+  switchOn: '开启',
+  switchOff: '关闭',
+  copy: '拷贝',
 
   label: {
     appId: '应用ID(APP ID)',
@@ -30,6 +33,9 @@ export default {
     appName: '应用名称',
     appManager: '应用管理员',
     appCustomerService: '应用客服',
+    appHasForum: '是否启用论坛',
+    appHasMall: '是否启用商城',
+    appRestrictLogin: '开启激活码',
     currency: '商品定价货币',
     chaoxinGroupId: '超信运营群号',
     paymentCallbackUrl: '充值回调地址',
@@ -43,8 +49,6 @@ export default {
     forumUrl: '论坛链接',
     websiteName: '主页名称',
     websiteUrl: '主页链接',
-    appHasForum: '是否启用论坛',
-    appHasMall: '是否启用商城',
     csPhoneNumber: '客服电话',
     cpOrderId: 'CP订单号',
     transactionId: '交易ID',
@@ -123,6 +127,7 @@ export default {
     confirmUnPublishGoods: '您确定要下架该商品么?',
     confirmDeleteAppManager: '您确定要删除应用管理员『{nickName}』么?',
     confirmDeleteCustomerService: '您确定要删除应用客服『{nickName}』么?',
+    copyClipboardSuccess: '已拷贝到剪贴板',
   },
 
   serverSuccess: {

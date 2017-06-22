@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import basicInfoEditor from 'admin/components/app/basicInfoEditor'
+  import basicInfoEditor from 'admin/views/app/config/basicInfoEditor'
 
   export default {
     data() {

@@ -48,7 +48,7 @@ defmodule Acs.App do
     struct
     |> cast(params, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
                      :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
-                     :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall])
+                     :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall, :restrict_login])
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
   end

@@ -10,6 +10,9 @@
       <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.app.goodsInfo')">
         <goods-info-editor v-if="app" :app="app"></goods-info-editor>
       </tab-pane>
+      <tab-pane icon="fa fa-shopping-cart" :label="$t('admin.app.linkInfo')">
+        <link-editor v-if="app" :app="app"></link-editor>
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -24,9 +27,10 @@ import {
   TabPane
 } from 'vue-bulma-tabs'
 
-import basicInfoEditor from 'admin/components/app/basicInfoEditor'
+import basicInfoEditor from './basicInfoEditor'
 import sdkInfoEditor from './sdkInfoEditor'
 import goodsInfoEditor from './goodsInfoEditor'
+import linkEditor from './linkEditor'
 
 export default {
   computed: {
@@ -47,6 +51,7 @@ export default {
     basicInfoEditor,
     sdkInfoEditor,
     goodsInfoEditor,
+    linkEditor,
   }
 }
 </script>

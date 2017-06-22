@@ -1,7 +1,8 @@
 export default {
-  basicInfo: '基本信息',
-  sdkInfo: 'SDK配置',
+  basicInfo: '应用配置',
+  sdkInfo: 'SDK接入',
   goodsInfo: '商品配置',
+  linkInfo: '应用链接',
   add: '添加新应用',
 
   goods: {

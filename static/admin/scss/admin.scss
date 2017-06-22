@@ -39,6 +39,19 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
+.flex-fixed-size {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+.flex-take-rest {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+
 .app-content {
   padding: 20px;
 }

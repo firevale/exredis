@@ -37,14 +37,6 @@ const state = {
       },
     },
     {
-      name: i18n.t('admin.menu.adminUserManage'),
-      path: '/admin/app/:appId/adminusers',
-      meta: {
-        icon: 'fa-user-circle',
-        level: '1,2,',
-      },
-    },
-    {
       name: i18n.t('admin.menu.userManage'),
       path: '/admin/app/:appId/users',
       meta: {
@@ -106,6 +98,14 @@ const state = {
       meta: {
         icon: 'fa-comments',
         level: '1,2,3,',
+      },
+    },
+    {
+      name: i18n.t('admin.menu.adminUserManage'),
+      path: '/admin/app/:appId/adminusers',
+      meta: {
+        icon: 'fa-user-circle',
+        level: '1,2,',
       },
     },
   ]

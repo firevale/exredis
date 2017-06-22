@@ -5,11 +5,36 @@ const goods = state => state.apps.goods
 const device = state => state.main.device
 const sidebar = state => state.main.sidebar
 const effect = state => state.main.effect
-const menuitems = state => state.menu.items
 const indexMenuitems = state => state.menu.indexItems
 const mallList = state => state.mall.list
 const mallHash = state => state.mall.hash
 const adminLevel = state => state.main.adminLevel
+
+
+const menuitems = state => {
+  let has_mall = state.apps.app && state.apps.app.has_mall
+  let has_forum = state.apps.app && state.apps.app.has_forum
+
+  let result = []
+
+  state.menu.items.forEach(element => {
+    switch(element.path) {
+      case '/admin/app/:appId/editforum':
+        if (has_forum) result.push(element);
+        break;
+
+      case '/admin/app/:appId/editmall':
+        if (has_mall) result.push(element);
+        break;
+
+      default:
+        result.push(element)
+        break;
+    }
+  })
+
+  return result
+}
 
 export {
   main,

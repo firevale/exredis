@@ -1,50 +1,10 @@
 <template>
-  <form name="basicInfo" @submit.prevent="handleSubmit">
+  <form name="linkInfo" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
-      <div class="column is-4" v-if="app.id">
-        <label class="label"> {{ $t('admin.label.appId')}}: </label>
-        <p class="control">
-          <input class="input is-disabled" disabled type="text" v-model.trim="app.id">
-        </p>
-      </div>
-      <div class="column is-8" v-if="app.id">
-        <label class="label"> {{ $t('admin.label.appKey')}}: </label>
-        <p class="control">
-          <input class="input is-disabled" disabled type="text" v-model.trim="app.secret">
-        </p>
-      </div>
-      <div class="column is-4">
-        <label class="label"> {{ $t('admin.label.appName')}}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="app.name">
-        </p>
-      </div>
-      <div class="column is-2">
-        <label class="label"> {{ $t('admin.label.currency')}}: </label>
-        <p class="control">
-          <span class="select">
-            <select v-model.trim="app.currency">
-              <option v-for="currency in currencies" :value="currency">{{$t('admin.currency.' + currency)}}</option>
-            </select>
-          </span>
-        </p>
-      </div>
-      <div class="column is-2">
-        <label class="label"> {{ $t('admin.label.chaoxinGroupId')}}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="app.chaoxin_group_id">
-        </p>
-      </div>
-      <div class="column is-2">
+      <div class="column is-12">
         <label class="label"> {{ $t('admin.label.csPhoneNumber')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.cs_phone_number">
-        </p>
-      </div>
-      <div class="column is-12">
-        <label class="label"> {{ $t('admin.label.paymentCallbackUrl')}}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="app.payment_callback">
         </p>
       </div>
       <div class="column is-4">
@@ -105,18 +65,6 @@
         <label class="label"> {{ $t('admin.label.forumUrl')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.forum_url">
-        </p>
-      </div>
-      <div class="column">
-        <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
-        <p class="control">
-          <input type="checkbox" v-model.trim="app.has_forum">
-        </p>
-      </div>
-      <div class="column is-8">
-        <label class="label"> {{ $t('admin.label.appHasMall')}}: </label>
-        <p class="control">
-          <input type="checkbox" v-model.trim="app.has_mall">
         </p>
       </div>
     </div>

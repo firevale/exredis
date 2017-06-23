@@ -94,5 +94,12 @@ defmodule Acs.Web.AdminRouter do
       post  "/add_admin_user", AdminUserController, :add_admin_user
       post  "/get_current_user_level", AdminUserController, :get_current_user_level
     end
+
+    scope "/login_codes" do 
+      pipe_through :admin_app
+
+      post  "/stats_info", Admin.LoginCodesController, :stats_info
+      post  "/gen_codes", Admin.LoginCodesController, :gen_codes 
+    end
   end
 end

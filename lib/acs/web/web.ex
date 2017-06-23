@@ -71,6 +71,7 @@ defmodule Acs.Web do
       alias  Acs.AppOrder
       alias  Acs.AppGoods
       alias  Acs.AppGoodsProductId
+      alias  Acs.AppLoginCode
       alias  Acs.Stats.Device
       alias  Acs.Stats.AppDevice
       alias  Acs.Stats.AppDeviceDailyActivity

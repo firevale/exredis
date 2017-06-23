@@ -89,7 +89,7 @@ export default new Router({
         }, {
           name: 'LoginCodes',
           path: 'loginCodes',
-          component: require('../views/app/loginCodes')
+          component: require('../views/app/loginCodes/main')
         },
       ],
     }, {

@@ -10,6 +10,9 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
       add :code, :string
       add :owner, :string
 
+      add :assigned_at, :utc_datetime
+      add :used_at, :utc_datetime
+
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)
       add :user_id, references(:users, type: :integer, on_delete: :delete_all)
 

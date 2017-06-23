@@ -48,7 +48,7 @@ const state = {
       name: i18n.t('admin.menu.loginCodeManage'),
       path: '/admin/app/:appId/loginCodes',
       meta: {
-        icon: 'fa-wechat',
+        icon: 'fa-registered',
         level: '1,2,',
       },
     },

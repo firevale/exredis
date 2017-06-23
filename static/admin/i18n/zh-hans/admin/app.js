@@ -4,6 +4,8 @@ export default {
   goodsInfo: '商品配置',
   linkInfo: '应用链接',
   add: '添加新应用',
+  loginCodeds: '激活码管理',
+  wechatPub: '公众号管理',
 
   goods: {
     icon: '商品图片',

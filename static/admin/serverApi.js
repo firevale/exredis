@@ -217,6 +217,14 @@ export default {
       searchUsers(params) {
         return post('/admin_actions/user/search_users', params)
       },
+
+      generateLoginCodes(params) {
+        return post('/admin_actions/login_codes/generate_codes', params)
+      },
+
+      fetchLoginCodesStats(params) {
+        return post('/admin_actions/login_codes/stats_info', params)
+      },
     }
   }
 }

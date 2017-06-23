@@ -65,7 +65,7 @@
     </div>
     <div class="box" v-else>
       <div class="hero-body has-text-centered">
-        <div v-if="loading || initing" class="container">
+        <div v-if="loading || initing">
           <span class="icon is-large">
             <i class="fa fa-spinner fa-spin"></i>
           </span>
@@ -73,7 +73,7 @@
             {{ $t('admin.titles.loading') }}
           </h2>
         </div>
-        <div v-else class="container">
+        <div v-else>
           <h1 class="title">
             {{ $t('admin.titles.oops') }}
           </h1>

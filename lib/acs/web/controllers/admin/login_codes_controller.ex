@@ -16,11 +16,19 @@ defmodule Acs.Web.Admin.LoginCodesController do
 
     available = Repo.one(query1)
 
-    query = query |> where([c], not is_nil(c.owner) and not is_nil(c.user_id))
+    query2 = query |> where([c], not is_nil(c.owner) and not is_nil(c.user_id))
 
-    used = Repo.one(query)
+    used = Repo.one(query2)
 
-    conn
+    conn |> json(%{
+      success: true,
+      stats: %{
+        total: total,
+        available: available,
+        assigned: total - available,
+        used: used
+      }
+    })
   end
 
 end

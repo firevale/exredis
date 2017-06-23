@@ -26,6 +26,7 @@ import codes from './codes'
 import wechatPub from './wechatPub'
 
 export default {
+
   computed: {
     ...mapGetters([
       'app'

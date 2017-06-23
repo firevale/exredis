@@ -7,6 +7,13 @@ export default {
   loginCodeds: '激活码管理',
   wechatPub: '公众号管理',
 
+  totalCodes: '已生成',
+  availableCodes: '剩余',
+  assignedCodes: '已分配',
+  usedCodes: '已使用',
+  genCodes: '生成',
+  genCodesPlaceholder: '激活码数量',
+
   goods: {
     icon: '商品图片',
     id: '商品ID',

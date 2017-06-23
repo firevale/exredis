@@ -85,6 +85,7 @@ defmodule Acs.Application do
   defp check_user_id_counter() do 
     case SQL.query(Acs.Repo, "select max(id) from users") do 
       {:ok, %{rows: [[max_user_id]]}} ->
+        d "max_user_id: #{inspect max_user_id}"
         case Redis.get("fvac.counter.uid") do 
           :undefined ->
             error "user counter is not defined in redis, set to #{max_user_id + 1}"

@@ -40,7 +40,7 @@
         <p class="control">
           <span class="select" style="width: 80%">
             <select v-model.trim="app.currency" style="width: 100%">
-              <option v-for="currency in currencies" :value="currency">{{$t('admin.currency.' + currency)}}</option>
+              <option v-for="currency in currencies" :key="currency" :value="currency">{{$t('admin.currency.' + currency)}}</option>
             </select>
           </span>
         </p>
@@ -62,7 +62,7 @@
         <p class="control">
           <toggle-button :value="app.has_forum" color="#4e9ed8" :sync="true" 
           :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}"
-          @change="x => app.has_forum = x.value" />
+          @change="x => app.has_forum = x.value" ></toggle-button>
         </p>
       </div>
       <div class="column is-4">
@@ -70,7 +70,7 @@
         <p class="control">
           <toggle-button :value="app.has_mall" color="#4e9ed8" :sync="true" 
           :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}" 
-          @change="x => app.has_mall = x.value" />
+          @change="x => app.has_mall = x.value" ></toggle-button>
         </p>
       </div>
       <div class="column is-4">
@@ -78,7 +78,7 @@
         <p class="control">
           <toggle-button :value="app.restrict_login" color="#4e9ed8" :sync="true" 
           :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}" 
-          @change="x => app.restrict_login = x.value" />
+          @change="x => app.restrict_login = x.value"> </toggle-button>
         </p>
       </div>
     </div>

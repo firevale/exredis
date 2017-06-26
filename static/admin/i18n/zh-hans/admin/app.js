@@ -12,7 +12,9 @@ export default {
   assignedCodes: '已分配',
   usedCodes: '已使用',
   genCodes: '生成',
-  genCodesPlaceholder: '激活码数量',
+  delCodes: '删除',
+  searchCodes: '搜索',
+  searchCodesPlaceholder: '输入激活码',
 
   goods: {
     icon: '商品图片',
@@ -28,5 +30,9 @@ export default {
   message: {
     appIconUpdated: '应用『{appName}』图标更新成功',
     goodsIconUpdated: '商品『{goodsName}』图标更新成功',
+    tooSmallCodesGenNumber: '生成激活码个数不得小于100个',
+    invalidLoginCodesDelNumber: '删除的激活码个数必须在0~{max}之间',
+    genLoginCodesSuccess: '已成功生成{number}个激活码!',
+    delLoginCodesSuccess: '已成功删除{number}个激活码!',
   }
 }

@@ -10,6 +10,7 @@ const processResponse = (result, successMessage) => {
   if (!result.success) {
     processAjaxError(result)
   } else if (successMessage) {
+    console.log(successMessage)
     openNotification({
       title: i18n.t('admin.notification.title.success'),
       message: successMessage,
@@ -218,8 +219,12 @@ export default {
         return post('/admin_actions/user/search_users', params)
       },
 
-      generateLoginCodes(params) {
-        return post('/admin_actions/login_codes/generate_codes', params)
+      generateLoginCodes(params, successMessage) {
+        return post('/admin_actions/login_codes/gen_codes', params, successMessage)
+      },
+
+      delLoginCodes(params, successMessage) {
+        return post('/admin_actions/login_codes/del_codes', params, successMessage)
       },
 
       fetchLoginCodesStats(params) {

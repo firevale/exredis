@@ -1,14 +1,45 @@
 <template>
   <div>
-    <div class="field has-addons">
-      <p class="control">
-        <input class="input" type="number" :placeholder="$t('admin.app.genCodesPlaceholder')">
-      </p>
-      <p class="control">
-        <button class="button">
-          {{ $t('admin.app.genCodes') }}
-        </button>
-      </p>
+    <div class="columns">
+      <div class="column is-3">
+        <div class="field has-addons">
+          <p class="control">
+            <input class="input" type="number" step="100" min="0" v-model.number="genNumber">
+          </p>
+          <p class="control">
+            <button class="button is-primary" @click="genCodes">
+              <span class="icon is-small"> <i class="fa fa-plus"></i> </span>
+              <span> {{ $t('admin.app.genCodes') }} </span>
+            </button>
+          </p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="field has-addons">
+          <p class="control">
+            <input class="input" type="number" step="100" min="0" v-model.number="delNumber">
+          </p>
+          <p class="control">
+            <button class="button is-primary" @click="delCodes">
+              <span class="icon is-small"> <i class="fa fa-minus"></i> </span>
+              <span> {{ $t('admin.app.delCodes') }} </span>
+            </button>
+          </p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="field has-addons">
+          <p class="control">
+            <input class="input" type="text" :placeholder="$t('admin.app.searchCodesPlaceholder')">
+          </p>
+          <p class="control">
+            <button class="button is-primary">
+              <span class="icon is-small"> <i class="fa fa-search"></i> </span>
+              <span> {{ $t('admin.app.searchCodes') }} </span>
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
     <nav class="level">
       <div class="level-item has-text-centered box">
@@ -47,6 +78,7 @@ import {
 } from 'vuex'
 
 import Chart from 'vue-bulma-chartjs'
+import Toast from 'common/components/toast'
 
 export default {
   data: function() {
@@ -57,6 +89,8 @@ export default {
         assigned: 0,
         used: 0,
       },
+      genNumber: 0,
+      delNumber: 0,
       labels: ['Sleeping', 'Designing', 'Coding', 'Cycling'],
       data: [20, 40, 5, 35],
 
@@ -119,8 +153,47 @@ export default {
       let result = await this.$acs.fetchLoginCodesStats({
         app_id: this.$route.params.appId
       })
-      this.stats = result.stats
-    }
+      if (result.success) {
+        this.stats = result.stats
+      }
+    },
+
+    genCodes: async function() {
+      if (this.genNumber < 100) {
+        Toast.show(this.$t('admin.app.message.tooSmallCodesGenNumber'))
+      }
+      else {
+        let successMessage = this.$t('admin.app.message.genLoginCodesSuccess', {number: this.genNumber}) 
+        let result = await this.$acs.generateLoginCodes({
+          app_id: this.$route.params.appId,
+          number: this.genNumber
+        }, successMessage)
+
+        if (result.success) {
+          this.stats.total = this.stats.total + this.genNumber
+          this.stats.available = this.stats.available + this.genNumber
+        }
+      }
+    },
+
+    delCodes: async function() {
+      if (this.delNumber <= 0 || this.delNumber > this.stats.available) {
+        Toast.show(this.$t('admin.app.message.invalidLoginCodesDelNumber', {max: this.stats.available}))
+      }
+      else {
+        let successMessage = this.$t('admin.app.message.delLoginCodesSuccess', {number: this.delNumber}) 
+        let result = await this.$acs.delLoginCodes({
+          app_id: this.$route.params.appId,
+          number: this.delNumber
+        }, successMessage)
+
+        if (result.success) {
+          this.stats.total = this.stats.total - this.delNumber
+          this.stats.available = this.stats.available - this.delNumber
+        }
+      }
+    },
+
   },
 
   components: {

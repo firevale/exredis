@@ -27,7 +27,7 @@
               </tr>
             </tfoot>
             <tbody v-show="app.goods && app.goods.length > 0">
-              <tr v-for="(goods, index) in app.goods">
+              <tr v-for="(goods, index) in app.goods" :key="goods.id">
                 <td class="is-icon">
                   <figure class="image is-32x32 goods-icon" @click="updateGoodsIcon(goods)">
                     <img :src="goods.icon ? goods.icon: 'https://placehold.it/32x32?text=128x128'"></img>
@@ -37,7 +37,7 @@
                 <td> {{ goods.name }} </td>
                 <td> {{ goods.description }} </td>
                 <td> {{ (goods.price / 100).toFixed(2) }} </td>
-                <td v-for="sdk in sdks" class="is-icon">
+                <td v-for="sdk in sdks" class="is-icon" :key="sdk">
                   <span class="sdk-icon" :class="classOfGoodsSdk(goods, sdk)" @click.prevent="editGoodsProductId(goods, sdk)"></span>
                 </td>
                 <td class="is-icon">

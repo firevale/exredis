@@ -23,7 +23,7 @@ defmodule Acs.AppLoginCode do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:code, :owner])
-    |> validate_required([:code])
+    |> cast(params, [:code, :owner, :assigned_at, :used_at, :app_id, :user_id])
+    |> validate_required([:app_id, :code])
   end
 end

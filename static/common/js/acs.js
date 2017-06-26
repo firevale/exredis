@@ -1,14 +1,15 @@
 import './date'
 import { guid } from './utils'
 
+const appId = window.acsConfig.appId ? window.acsConfig.appId : 'account-center'
+const acsDeviceId = window.acsConfig.deviceId
+
 export const getAppId = _ => {
-  return window.acsConfig.appId ?
-    window.acsConfig.appId :
-    'account-center'
+  return appId
 }
 
 export const getDeviceId = _ => {
-  let deviceId = window.acsConfig.deviceId
+  let deviceId = acsDeviceId
 
   if (!deviceId) {
     deviceId = localStorage.getItem('__acs_device_id__')
@@ -29,3 +30,7 @@ export const checkIsLogin = (callback) => {
     callback()
   }
 }
+
+export const isRestrictLogin = window.acsConfig.isRestrictLogin || false
+
+

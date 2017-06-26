@@ -1,17 +1,17 @@
 <template>
-  <div class="login-box" v-if="currentAccount">
-    <form @submit.prevent="handleSubmit">
+  <div class="login-box">
+    <form @submit.prevent="handleSubmit" v-if="currentAccount">
       <div class="row-login">
         <p class="title">{{ $t('account.loginPage.quickTitle') }}</p>
       </div>
       <div class="row-login">
-        <input type="text" v-model.trim="currentAccount.label" @click.prevent="toggleAccountsListVisibility" name="accountLabel" readonly />
+        <input type="text" v-model.trim="currentAccount.label" @click.prevent="toggleAccountsListVisibility" name="accountLabel" readonly ></input>
 
         <span class="icon addon-icon icon-user"></span>
         <span class="icon addon-icon pull-right icon-down" @click="toggleAccountsListVisibility" :class="{'flip-vertical': accountListVisible}"></span>
 
         <div v-if="accountListVisible" ref="accountList" class="account-list">
-          <div class="account-item row-login" v-for="account in historyAccounts">
+          <div class="account-item row-login" v-for="account in historyAccounts" :key="account.label">
             <span @click.prevent="chooseAccount(account)" style="width: 100%; padding: 0;">{{account.label}}</span>
             <span class="icon addon-icon pull-right icon-times icon-small" @click.prevent="toggleAccountsListVisibility"></span>
           </div>
@@ -22,10 +22,10 @@
         <span>{{ errorMessage }}</span>
       </p>
       <div class="row-login" style="margin-top: .8rem; margin-bottom: 1.0rem;">
-        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing" />
+        <input type="submit" :class="{'is-disabled': processing}" :value="$t('account.loginPage.btnSubmit')" :disabled="processing" ></input>
         <span v-show="processing" class="icon progress-icon rotating"></span>
       </div>
-      <hr class="show-in-app" />
+      <hr class="show-in-app" ></hr>
       <div class="row-login show-in-app" style="-webkit-justify-content: center; justify-content: center;">
         <router-link class="pull-right" :to="{name: 'selectAccountType'}">{{ $t('account.quickLoginPage.gotoSelectAccount') }}</router-link>
       </div>

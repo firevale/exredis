@@ -6,12 +6,12 @@
     <form @submit.prevent="handleSubmit">
       <div class="row-login">
         <input type="text" maxlength="50" v-model.trim="accountId" name="user" :placeholder="accountIdPlaceholder" autocomplete="off"
-          @keyup="handleValidation($v.accountId)" />
+          @keyup="handleValidation($v.accountId)" ></input>
         <span class="icon addon-icon icon-user"></span>
       </div>
       <div class="row-login">
         <input ref="password" class="sibling" maxlength="20" type="password" v-model.trim="password" autocomplete="off" name="password"
-          :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @keyup="handleValidation($v.password)" />
+          :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" @keyup="handleValidation($v.password)" ></input>
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-'+passwordIcon" @click="togglePasswordVisibility"></span>
       </div>
@@ -83,13 +83,11 @@ export default {
     ]),
 
     handleSubmit: async function() {
-      console.log('handle submit, validation: ', this.$v.$invalid, 'processing: ', this.processing)
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true
         try {
           let result = await this.$acs.createToken(this.accountId, this.password)
           this.processing = false
-          console.info('create token result: ', result)
 
           if (result.success) {
             this.addLoginnedAccount(result)

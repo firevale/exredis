@@ -67,7 +67,13 @@ export default {
         return Vue.axios.post("/reset_register_captcha", params).then(response => {
           return response.data
         })
-      }
+      },
+
+      bindLoginCode(params) {
+        return Vue.axios.post("/user/bind_login_code", params).then(response => {
+          return response.data
+        })
+      },
     }
   }
 }

@@ -9,6 +9,9 @@ defmodule Acs.RedisLoginCode do
   @code_cache_key "acs.login_codes.code"
 
   # key_field can be user_id(integer) or code(bitstring)
+  def find(nil, _), do: nil
+  def find(_, nil), do: nil
+  
   def find(app_id, key_field) do 
     Cachex.get!(:default, key(app_id, key_field), fallback: fn(redis_key) ->    
       case Redis.get(redis_key) do

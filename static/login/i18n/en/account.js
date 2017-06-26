@@ -49,6 +49,10 @@ export default {
     gotoSelectAccount: 'Other ways >',
   },
 
+  codePage: {
+    title: 'Active Code'
+  },
+
   types: {
     anonymous: 'Anonymous',
     firevale: 'Firevale',

@@ -34,3 +34,9 @@ export const verifyCode = {
   minLength: minLength(4),
   maxLength: maxLength(6),
 }
+
+export const loginCode = {
+  required,
+  minLength: minLength(6),
+  maxLength: maxLength(10),
+}

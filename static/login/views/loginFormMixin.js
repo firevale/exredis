@@ -41,7 +41,6 @@ export default {
     },
 
     updateErrorMessage() {
-      console.log('update error message....before...' + this.errorMessage)
       if (this.$v.$invalid) {
         if (typeof this.$v.accountId === 'object' && this.$v.accountId.$invalid) {
           let $v = this.$v.accountId
@@ -77,6 +76,16 @@ export default {
             this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
           } else if (!$v.maxLength) {
             this.errorMessage = this.$t('error.validation.invalidVerifyCodeLength')
+          }
+        }
+        else if (typeof this.$v.loginCode === 'object' && this.$v.loginCode.$invalid) {
+          let $v = this.$v.loginCode
+          if (!$v.required) {
+            this.errorMessage = this.$t('error.validation.requireLoginCode')
+          } else if (!$v.minLength) {
+            this.errorMessage = this.$t('error.validation.invalidLoginCodeLength')
+          } else if (!$v.maxLength) {
+            this.errorMessage = this.$t('error.validation.invalidLoginCodeLength')
           }
         }
       }

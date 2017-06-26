@@ -46,6 +46,8 @@ defmodule Acs.RedisApp do
 
   @app_cache_key     "fvac.app_cache"
 
+  def find("account-center"), do: nil
+
   def find(id) when is_bitstring(id) do
     key = "#{@app_cache_key}.#{id}"
 

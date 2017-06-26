@@ -8,7 +8,7 @@
       <p v-if="isMobileAccount" class="code-tip"> {{ $t('account.registerPage.pleaseInputMobileVerifyCode') }}: </p>
       <div class="row-login">
         <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
-          maxlength="10" class="outsideText" name="verifyCode" @keyup="handleValidation($v.verifyCode)" />
+          maxlength="10" class="outsideText" name="verifyCode" @keyup="handleValidation($v.verifyCode)" ></input>
         <div v-if="!isMobileAccount" class="captchaBox">
           <img class="captcha" :src="captchaUrl" @click.prevent="updateCaptcha"></img>
         </div>

@@ -33,6 +33,7 @@
 </template>
 <script>
 import nativeApi from 'common/js/nativeApi'
+import {isRestrictLogin} from 'common/js/acs'
 
 import {
   mapGetters,
@@ -94,7 +95,6 @@ export default {
             this.setLoginAccountId(this.accountId)
 
             if (window.acsConfig.inApp) {
-              console.log('close webview with result: ', result)
               nativeApi.closeWebviewWithResult(result)
             } else {
               if (this.redirectUri) {

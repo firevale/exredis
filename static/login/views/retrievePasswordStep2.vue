@@ -7,7 +7,7 @@
       <p class="code-tip" v-html="verifyCodeSentHint"> </p>
       <div class="row-login">
         <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
-          class="outsideText" name="verifyCode" @keyup="handleValidation($v.verifyCode)" />
+          class="outsideText" name="verifyCode" @keyup="handleValidation($v.verifyCode)" ></input>
         <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex" @click.prevent="sendVerifyCode">
         </input>
         <span class="icon addon-icon icon-check"></span>

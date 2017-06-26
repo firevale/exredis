@@ -61,6 +61,7 @@ defmodule Acs.Web do
       alias  Acs.RedisAppUser
       alias  Acs.RedisAccessToken
       alias  Acs.RedisForum
+      alias  Acs.RedisLoginCode
 
       alias  Acs.App
       alias  Acs.AdminUser

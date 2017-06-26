@@ -56,6 +56,7 @@ defmodule Acs.Web.Router do
     post "/update_resident_info", UserController, :update_resident_info # update(reset) password
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
+    post "/bind_login_code", UserController, :bind_login_code
   end
 
   scope "/auth", Acs.Web do

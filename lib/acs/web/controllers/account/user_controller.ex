@@ -290,46 +290,65 @@ defmodule Acs.Web.UserController do
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
+                        anonymous: is_anonymous,
                         platform: platform,
                         ttl: 604800,
                         binding: %{}
                       })
                     %RedisApp{} = app ->
-                      RedisAccessToken.create(%{
+                      token = RedisAccessToken.create(%{
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
+                        anonymous: is_anonymous,
                         platform: platform,
                         ttl: app.token_ttl,
                         binding: %{}
                       })
+
+                      if app.restrict_login do 
+                        case RedisLoginCode.find(app, user.id) do 
+                          nil -> token
+                          %{code: code} ->
+                            %{token | login_code: code}
+                        end
+                      else
+                        token
+                      end
                   end
 
-      conn |> put_session(:access_token, access_token.id)
-           |> put_session(:platform, platform)
-           |> put_session(:device_id, device_id)
-           |> delete_session(:failed_attempts)
-           |> delete_session(:last_failed_timestamp)
-           |> delete_session(:register_verify_code)
-           |> delete_session(:register_account_id)
-           |> json(%{
-               success: true,
-               access_token: access_token.id,
-               expires_at: RedisAccessToken.expired_at(access_token),
-               user_id: to_string(user.id),
-               user_email: user.email || "",
-               user_mobile: user.mobile || "",
-               nick_name: user.nickname,
-               is_anonymous: is_anonymous,
-               avatar_url: case user.avatar_url do 
-                             nil -> nil
-                             "/" <> _ -> static_url(conn, user.avatar_url)
-                             "http" <> _ -> user.avatar_url
-                           end,
-               sdk: :firevale,
-               binding: %{},
-               bindings: %{}, # 兼容旧的SDK
-             })
+    conn = conn |> put_session(:access_token, access_token.id)
+      |> put_session(:platform, platform)
+      |> put_session(:device_id, device_id)
+      |> delete_session(:failed_attempts)
+      |> delete_session(:last_failed_timestamp)
+      |> delete_session(:register_verify_code)
+      |> delete_session(:register_account_id)
+
+    app = conn.private[:acs_app]
+    
+    if app && app.restrict_login && is_nil(access_token.login_code) do 
+      conn |> json(%{success: false, action: "show_login_code"})
+    else
+      conn |> json(%{
+              success: true,
+              access_token: access_token.id,
+              expires_at: RedisAccessToken.expired_at(access_token),
+              user_id: to_string(user.id),
+              user_email: user.email || "",
+              user_mobile: user.mobile || "",
+              nick_name: user.nickname,
+              is_anonymous: is_anonymous,
+              avatar_url: case user.avatar_url do 
+                            nil -> nil
+                            "/" <> _ -> static_url(conn, user.avatar_url)
+                            "http" <> _ -> user.avatar_url
+                          end,
+              sdk: :firevale,
+              binding: %{},
+              bindings: %{}, # 兼容旧的SDK
+            })
+    end
   end
 
   def logout(conn, _params) do
@@ -474,5 +493,76 @@ defmodule Acs.Web.UserController do
             Map.merge(app_user, user)
           end)
     json(conn, %{success: true, users: users})
+  end
+
+  def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 
+    case RedisLoginCode.find(app_id, code) do 
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
+
+      %{code: ^code, owner: nil} ->
+        conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
+      
+      %{code: ^code} = login_code ->
+        case get_session(conn, :access_token) do 
+          nil ->
+            conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
+
+          token_id ->
+            case RedisAccessToken.find(token_id) do 
+              nil ->
+                conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
+
+              %{app_id: ^app_id, id: ^token_id, user_id: user_id} = access_token ->
+                case login_code.user_id do 
+                  nil ->
+                    AcsLoginCode.changeset(login_code, %{user_id: user_id}) |> Repo.update!
+                    RedisLoginCode.refresh(app_id, code)
+                    RedisLoginCode.refresh(app_id, user_id)
+                    access_token = %{access_token | login_code: code}
+                    RedisAccessToken.save(access_token)
+                    response_access_token(conn, access_token)
+
+                  ^user_id ->
+                    RedisLoginCode.refresh(app_id, code)
+                    RedisLoginCode.refresh(app_id, user_id)
+                    access_token = %{access_token | login_code: code}
+                    RedisAccessToken.save(access_token)
+                    response_access_token(conn, access_token)
+
+                  _ ->
+                    conn |> json(%{success: false, i18n_message: "error.server.loginCodeUsed"})
+                end
+              
+              _ ->
+                conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+            end
+        end
+    end
+  end
+  def bind_login_code(conn, _) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  defp response_access_token(conn, access_token) do 
+    user = RedisUser.find(access_token.user_id)
+    conn |> json(%{
+            success: true,
+            access_token: access_token.id,
+            expires_at: RedisAccessToken.expired_at(access_token),
+            user_id: to_string(user.id),
+            user_email: user.email || "",
+            user_mobile: user.mobile || "",
+            nick_name: user.nickname,
+            is_anonymous: access_token.anonymous,
+            avatar_url: case user.avatar_url do 
+                          nil -> nil
+                          "/" <> _ -> static_url(conn, user.avatar_url)
+                          "http" <> _ -> user.avatar_url
+                        end,
+            sdk: :firevale,
+            binding: %{},
+            bindings: %{}, # 兼容旧的SDK
+          })
   end
 end

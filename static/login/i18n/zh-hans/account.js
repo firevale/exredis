@@ -49,6 +49,12 @@ export default {
     complete: '完成',
   },
 
+  codePage: {
+    title: '激活码',
+    pleaseInputLoginCode: '请输入激活码',
+    btnSubmit: '使用',
+  },
+
   quickLoginPage: {
     gotoSelectAccount: '其他账号登陆>',
   },

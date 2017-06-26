@@ -3,6 +3,8 @@ defmodule Acs.RedisAccessToken do
             app_id: nil,
             user_id: nil,
             device_id: nil,
+            login_code: nil,
+            anonymous: false,
             ttl: 115200,
             created_at: 0,
             updated_at: 0,

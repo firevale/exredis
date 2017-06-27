@@ -30,6 +30,19 @@
       <div class="column is-3">
         <div class="field has-addons">
           <p class="control">
+            <input class="input" type="number" step="10" min="0" v-model.number="assignNumber">
+          </p>
+          <p class="control">
+            <button class="button is-primary" @click="assignCodes">
+              <span class="icon is-small"> <i class="fa fa-anchor"></i> </span>
+              <span> {{ $t('admin.app.assignCodes') }} </span>
+            </button>
+          </p>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="field has-addons">
+          <p class="control">
             <input class="input" type="text" :placeholder="$t('admin.app.searchCodesPlaceholder')">
           </p>
           <p class="control">
@@ -74,7 +87,8 @@
 </template>
 <script>
 import {
-  mapActions
+  mapActions,
+  mapGetters
 } from 'vuex'
 
 import Chart from 'vue-bulma-chartjs'
@@ -91,6 +105,7 @@ export default {
       },
       genNumber: 0,
       delNumber: 0,
+      assignNumber: 0,
       labels: ['Sleeping', 'Designing', 'Coding', 'Cycling'],
       data: [20, 40, 5, 35],
 
@@ -131,6 +146,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'app'
+    ]),
+
     seriesData() {
       let data = {
         labels: this.labels_3
@@ -149,6 +168,10 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'updateMyLoginCodes'
+    ]),
+
     updateStats: async function() {
       let result = await this.$acs.fetchLoginCodesStats({
         app_id: this.$route.params.appId
@@ -190,6 +213,25 @@ export default {
         if (result.success) {
           this.stats.total = this.stats.total - this.delNumber
           this.stats.available = this.stats.available - this.delNumber
+        }
+      }
+    },
+
+    assignCodes: async function() {
+      let assigned = (this.app.myCodes && this.app.myCodes.length) || 0 
+
+      if (this.assignNumber <= 0 || this.assignNumber + assigned > 100 || this.assignNumber > this.stats.available) {
+        Toast.show(this.$t('admin.app.message.invalidLoginCodesAssignNumber', {max: min(100 - assigned, this.stats.available)}))
+      }
+      else {
+        let successMessage = this.$t('admin.app.message.assignLoginCodesSuccess', {number: this.assignNumber}) 
+        let result = await this.$acs.assignLoginCodes({
+          app_id: this.$route.params.appId,
+          number: this.assignNumber
+        }, successMessage)
+
+        if (result.success) {
+          updateMyLoginCodes(result.codes)
         }
       }
     },

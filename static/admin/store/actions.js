@@ -67,3 +67,9 @@ export const fetchMalls = ({
       }
     }).catch(e => processAjaxError(e))
 }
+
+export const updateMyLoginCodes = ({
+  commit
+}, codes) => {
+  commit(types.SET_MY_LOGIN_CODES, codes)
+}

@@ -24,6 +24,7 @@
 </template>
 <script>
 import * as utils from 'common/js/utils'
+import nativeApi from 'common/js/nativeApi'
 
 import {
   mapGetters,
@@ -50,6 +51,11 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters([
+      'redirectUri'
+    ]),
+  },
 
   methods: {
     handleSubmit: async function() {
@@ -59,13 +65,21 @@ export default {
           let result = await this.$acs.bindLoginCode({
             login_code: this.loginCode
           })
-
+          console.log(result)
           if (result.success) {
-
+            if (window.acsConfig.inApp) {
+              nativeApi.closeWebviewWithResult(result)
+            } 
+            else {
+              if (this.redirectUri) {
+                window.location = utils.updateQueryStringParameter(this.redirectUri, 'accessToken', result.access_token)
+              }
+            }
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))
           }
-        } catch (_) {
+        } catch (e) {
+          console.error('exception encountered', e)
           this.setErrorMessage(this.$t('error.server.networkError'))
         }
         this.processing = false

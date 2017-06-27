@@ -1,5 +1,6 @@
 const main = state => state.main
 const app = state => state.apps.app
+const myLoginCodes = state => state.apps.myLoginCodes
 const sdks = state => state.apps.sdks
 const goods = state => state.apps.goods
 const device = state => state.main.device
@@ -54,4 +55,5 @@ export {
   mallList,
   mallHash,
   adminLevel,
+  myLoginCodes,
 }

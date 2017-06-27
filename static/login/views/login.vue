@@ -101,6 +101,8 @@ export default {
                 window.location = updateQueryStringParameter(this.redirectUri, 'accessToken', result.access_token)
               }
             }
+          } else if (result.action == 'show_login_code') {
+            this.$router.push({name: 'inputLoginCode'})
           } else {
             console.error('create token failed with error: ', this.$t(result.i18n_message, result.i18n_object))
             this.setErrorMessage(this.$t(result.i18n_message, result.i18n_object))

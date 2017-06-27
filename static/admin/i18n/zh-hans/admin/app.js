@@ -13,8 +13,10 @@ export default {
   usedCodes: '已使用',
   genCodes: '生成',
   delCodes: '删除',
+  assignCodes: '分配',
   searchCodes: '搜索',
   searchCodesPlaceholder: '输入激活码',
+  myLoginCodes: '我的激活码',
 
   goods: {
     icon: '商品图片',
@@ -32,7 +34,9 @@ export default {
     goodsIconUpdated: '商品『{goodsName}』图标更新成功',
     tooSmallCodesGenNumber: '生成激活码个数不得小于100个',
     invalidLoginCodesDelNumber: '删除的激活码个数必须在0~{max}之间',
+    invalidLoginCodesAssignNumber: '删除的激活码个数必须在0~{max}之间',
     genLoginCodesSuccess: '已成功生成{number}个激活码!',
     delLoginCodesSuccess: '已成功删除{number}个激活码!',
+    assignLoginCodesSuccess: '已成功为您分配{number}个激活码!',
   }
 }

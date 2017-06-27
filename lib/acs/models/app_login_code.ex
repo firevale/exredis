@@ -25,5 +25,6 @@ defmodule Acs.AppLoginCode do
     struct
     |> cast(params, [:code, :owner, :assigned_at, :used_at, :app_id, :user_id])
     |> validate_required([:app_id, :code])
+    |> unique_constraint(:code, name: :app_login_codes_app_id_code_index)
   end
 end

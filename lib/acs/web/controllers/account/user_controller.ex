@@ -307,7 +307,7 @@ defmodule Acs.Web.UserController do
                       })
 
                       if app.restrict_login do 
-                        case RedisLoginCode.find(app, user.id) do 
+                        case RedisLoginCode.find(app.id, user.id) do 
                           nil -> token
                           %{code: code} ->
                             %{token | login_code: code}
@@ -496,6 +496,8 @@ defmodule Acs.Web.UserController do
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 
+    code = String.upcase(code)
+
     case RedisLoginCode.find(app_id, code) do 
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
@@ -516,7 +518,7 @@ defmodule Acs.Web.UserController do
               %{app_id: ^app_id, id: ^token_id, user_id: user_id} = access_token ->
                 case login_code.user_id do 
                   nil ->
-                    AcsLoginCode.changeset(login_code, %{user_id: user_id}) |> Repo.update!
+                    AppLoginCode.changeset(login_code, %{user_id: user_id}) |> Repo.update!
                     RedisLoginCode.refresh(app_id, code)
                     RedisLoginCode.refresh(app_id, user_id)
                     access_token = %{access_token | login_code: code}

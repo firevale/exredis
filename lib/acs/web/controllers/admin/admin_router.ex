@@ -101,6 +101,8 @@ defmodule Acs.Web.AdminRouter do
       post  "/stats_info", Admin.LoginCodesController, :stats_info
       post  "/gen_codes", Admin.LoginCodesController, :gen_codes 
       post  "/del_codes", Admin.LoginCodesController, :del_codes 
+      post  "/assign_codes", Admin.LoginCodesController, :assign_codes 
+      post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
     end
   end
 end

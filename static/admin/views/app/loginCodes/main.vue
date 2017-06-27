@@ -4,6 +4,11 @@
       <tab-pane icon="fa fa-registered" :label="$t('admin.app.loginCodeds')">
         <codes v-if="app"></codes>
       </tab-pane>
+
+      <tab-pane icon="fa fa-anchor" :label="$t('admin.app.myLoginCodes')">
+        <my-codes v-if="app"></my-codes>
+      </tab-pane>
+
       <tab-pane icon="fa fa-wechat" :label="$t('admin.app.wechatPub')">
         <wechat-pub v-if="app"></wechat-pub>
       </tab-pane>
@@ -14,7 +19,8 @@
 <script>
 
 import {
-  mapGetters
+  mapGetters,
+  mapActions
 } from 'vuex'
 
 import {
@@ -23,22 +29,40 @@ import {
 } from 'vue-bulma-tabs'
 
 import codes from './codes'
+import myCodes from './myCodes'
 import wechatPub from './wechatPub'
 
 export default {
 
   computed: {
     ...mapGetters([
-      'app'
+      'app', 'myLoginCodes'
     ]),
+  },
+
+  methods: {
+    ...mapActions([
+      'updateMyLoginCodes'
+    ]),
+  },
+
+  created: async function() {
+    let result = await this.$acs.fetchMyLoginCodes({
+      app_id: this.$route.params.appId,
+    })
+
+    if (result.success) {
+      this.updateMyLoginCodes(result.codes)
+    } 
   },
 
   components: {
     Tabs,
     TabPane,
     codes,
+    myCodes,
     wechatPub,
-  }
+  },
 
 }
 </script>

@@ -61,6 +61,46 @@ defmodule Acs.Web.Admin.LoginCodesController do
     })
   end
 
+  def assign_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id, "number" => number}) do
+    owner = "admin.#{admin_user_id}"
+
+    query = from c in AppLoginCode,
+      select: count(1),
+      where: c.app_id == ^app_id and c.owner == ^owner
+    
+    assigned = Repo.one(query)
+
+    if number + assigned > 100 do 
+      conn |> json(%{success: false, i18n_message: "error.server.assignTooManyCodes"})
+    else 
+      now = DateTime.utc_now
+      Repo.transaction(fn -> 
+        {:ok, _} = SQL.query(Repo, "update app_login_codes set owner = ?, assigned_at = ? where app_id = ? \
+          and owner is null and user_id is null order by inserted_at desc limit ?", 
+          [owner, now, app_id, number])
+      end)
+
+      query = from c in AppLoginCode,
+        select: c,
+        where: c.app_id == ^app_id and c.owner == ^owner
+
+      codes = Repo.all(query)
+
+      conn |> json(%{success: true, codes: codes})
+    end
+  end
+
+  def fetch_my_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id}) do
+    owner = "admin.#{admin_user_id}"
+    
+    query = from c in AppLoginCode,
+      select: c,
+      where: c.app_id == ^app_id and c.owner == ^owner
+
+    codes = Repo.all(query)
+
+    conn |> json(%{success: true, codes: codes})    
+  end
 
 
 

@@ -4,7 +4,7 @@
     <p class="title">{{ $t('account.loginPage.otherWays') }}</p>
   </div>
   <div class="horizontal-stack-box">
-    <div class="tile" v-for="accountType in accountTypes">
+    <div class="tile" v-for="accountType in accountTypes" :key="accountType">
       <a class="sdk-icon" :class="accountType + ((accountType == 'anonymous' && processing) ? ' rotating' : '')"
           @click="onLoginByType(accountType)">
       </a>
@@ -63,15 +63,17 @@ export default {
         this.$t('account.alert.cancel'),
         this.$t('account.types.anonymous'),
         async result => {
-          console.log('anonymous login, show alert dialog result', result)
           if (result == 'ok') {
             this.processing = true
             try {
               let result = await this.$acs.createAnonymousToken()
               if (result.success) {
                 this.addLoginnedAccount(result)
+                nativeApi.closeWebviewWithResult(result)
               }
-              nativeApi.closeWebviewWithResult(result)
+              else if (result.action == 'show_login_code') {
+                this.$router.push({name: 'inputLoginCode'})
+              }
             } catch (e) {
               console.error(e)
             }

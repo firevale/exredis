@@ -98,6 +98,9 @@ export default {
                 this.$router.back()
               }
             }
+          }
+          else if (result.action == 'show_login_code') {
+            this.$router.push('inputLoginCode')
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))
           }

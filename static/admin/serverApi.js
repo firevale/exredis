@@ -230,6 +230,14 @@ export default {
       fetchLoginCodesStats(params) {
         return post('/admin_actions/login_codes/stats_info', params)
       },
+
+      assignLoginCodes(params, successMessage) {
+        return post('/admin_actions/login_codes/assign_codes', params, successMessage)
+      },
+
+      fetchMyLoginCodes(params) {
+        return post('/admin_actions/login_codes/fetch_my_codes', params)
+      },
     }
   }
 }

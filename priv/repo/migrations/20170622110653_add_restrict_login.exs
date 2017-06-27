@@ -20,8 +20,8 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     end
 
     create index(:app_login_codes, [:app_id, :code], unique: true)
-    create index(:app_login_codes, [:app_id, :owner], unique: true)
-    create index(:app_login_codes, [:app_id, :user_id])
+    create index(:app_login_codes, [:app_id, :user_id], unique: true)
+    create index(:app_login_codes, [:app_id, :owner])
     create index(:app_login_codes, [:user_id])
     create index(:app_login_codes, [:assigned_at])
     create index(:app_login_codes, [:used_at])

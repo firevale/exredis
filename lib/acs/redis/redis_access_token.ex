@@ -27,17 +27,13 @@ defmodule Acs.RedisAccessToken do
       platform: _platform,
       ttl: ttl,
       binding: binding
-    }) when is_bitstring(device_id) do
+    } = params) when is_bitstring(device_id) do
 
     ts = Utils.unix_timestamp
-    token = %__MODULE__{id: Utils.generate_token,
-                        app_id: app_id,
-                        user_id: user_id,
-                        device_id: device_id,
-                        ttl: ttl,
-                        binding: binding,
-                        created_at: ts,
-                        updated_at: ts}
+    token = Map.merge(%__MODULE__{
+      id: Utils.generate_token,
+      created_at: ts,
+      updated_at: ts}, params)
     save(token)
     token
   end

@@ -53,9 +53,10 @@ defmodule Acs.Web.UserController do
             {:ok, user} ->
               create_and_response_access_token(conn, user, app_id, device_id, platform)
             _ ->
-              conn |> put_session(:failed_attempts, failed_attempts + 1)
-                  |> put_session(:last_failed_timestamp, now)
-                  |> json(%{success: false, i18n_message: "error.server.passwordNotMatch"})
+              conn 
+                |> put_session(:failed_attempts, failed_attempts + 1)
+                |> put_session(:last_failed_timestamp, now)
+                |> json(%{success: false, i18n_message: "error.server.passwordNotMatch"})
           end
         else
           conn |> json(%{success: false, i18n_message: "error.server.tooManyFails"})
@@ -258,8 +259,6 @@ defmodule Acs.Web.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"access_token" => access_token_id}) do
-    d "acs_app_id: #{app_id}, acs_device_id: #{device_id}, acs_platform: #{platform}, access_token_id: #{access_token_id}"
-
     case RedisAccessToken.find(access_token_id) do
       nil ->
         error "access token not found for #{access_token_id}"
@@ -290,8 +289,8 @@ defmodule Acs.Web.UserController do
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
-                        anonymous: is_anonymous,
                         platform: platform,
+                        anonymous: is_anonymous,
                         ttl: 604800,
                         binding: %{}
                       })
@@ -300,8 +299,8 @@ defmodule Acs.Web.UserController do
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
-                        anonymous: is_anonymous,
                         platform: platform,
+                        anonymous: is_anonymous,
                         ttl: app.token_ttl,
                         binding: %{}
                       })

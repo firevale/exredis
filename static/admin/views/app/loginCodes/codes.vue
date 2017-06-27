@@ -231,7 +231,7 @@ export default {
         }, successMessage)
 
         if (result.success) {
-          updateMyLoginCodes(result.codes)
+          this.updateMyLoginCodes(result.codes)
         }
       }
     },

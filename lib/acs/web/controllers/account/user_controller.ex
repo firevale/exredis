@@ -455,11 +455,11 @@ defmodule Acs.Web.UserController do
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
     "keyword" => keyword, "page" => _page, "records_per_page" => _records_per_page}) do
 
-     query = from app_user in Acs.Stats.AppUser,
+    query = from app_user in Acs.Stats.AppUser,
               where: app_user.app_id == ^app_id,
               select:  map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
 
-     query =
+    query =
       case Integer.parse(keyword) do
         {int_keyword, ""} ->
           query |> where([au], au.app_user_id == ^keyword or au.user_id == ^int_keyword)
@@ -496,6 +496,7 @@ defmodule Acs.Web.UserController do
         end
         Map.merge(app_user, user)
       end)
+      
     conn |> json(%{success: true, users: users})
   end
 

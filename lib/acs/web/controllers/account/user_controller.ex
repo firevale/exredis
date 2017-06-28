@@ -448,50 +448,55 @@ defmodule Acs.Web.UserController do
     }})
   end
 
-  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"keyword" => keyword,  
-                      "page" => _page, "records_per_page" => _records_per_page}) do
-    # query = from app_user in "acs_stats_dev.app_users",
-    #           left_join: u in Acs.User, on: u.id == app_user.user_id,
-    #           where: app_user.app_id == ^app_id,
-    #           select: %{ id: u.id, email: u.email, mobile: u.mobile, nickname: u.nickname, gender: u.gender, age: u.age, avatar_url: u.avatar_url, inserted_at: u.inserted_at, 
-    #           app_user_id: app_user.app_user_id, app_user_name: app_user.app_user_name, app_user_level: app_user.app_user_level,zone_id: app_user.zone_id, pay_amount: app_user.pay_amount }
-    
+  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
+    "keyword" => "", "page" => _page, "records_per_page" => _records_per_page}) do
+    conn |> json(%{success: true, users: []})
+  end
+  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
+    "keyword" => keyword, "page" => _page, "records_per_page" => _records_per_page}) do
+
      query = from app_user in Acs.Stats.AppUser,
               where: app_user.app_id == ^app_id,
               select:  map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
+
      query =
       case Integer.parse(keyword) do
-        {int_keyword,""} ->
-            where(query, [au], au.app_user_id == ^keyword or au.user_id == ^int_keyword)
-          _  ->
-            if String.length(keyword) >0 do
-              query_user =  
-                from u in User,
-                where: like(u.nickname, ^"%#{keyword}%") or u.email == ^keyword,
-                select: u.id
-              ids = Repo.all(query_user)
-              where(query, [au], like(au.app_user_name, ^"%#{keyword}%") or au.user_id in ^ids)
-            else 
-              query
-            end
+        {int_keyword, ""} ->
+          query |> where([au], au.app_user_id == ^keyword or au.user_id == ^int_keyword)
+
+        _  ->
+          if String.length(keyword) > 0 do
+            query_user =  
+              from u in User,
+              where: like(u.nickname, ^"%#{keyword}%") or u.email == ^keyword,
+              select: u.id
+
+            ids = Repo.all(query_user)
+
+            query |> where([au], like(au.app_user_name, ^"%#{keyword}%") or au.user_id in ^ids)
+          else 
+            query
+          end
       end
 
-      app_users = StatsRepo.all(query)
-      users = 
-        Enum.map(app_users, fn app_user -> 
-            user_id = app_user.user_id
-            user = 
-              case Process.get("user_#{user_id}") do 
-                nil -> 
-                  user_db = RedisUser.find(user_id) |> Map.take([:nickname, :age, :email, :gender, :avatar_url, :inserted_at])
-                  Process.put("user_#{user_id}", user_db)
-                  user_db
-                  user_cache ->
-                  user_cache
-            end
-            Map.merge(app_user, user)
-          end)
-    json(conn, %{success: true, users: users})
+    app_users = StatsRepo.all(query)
+
+    users = 
+      Enum.map(app_users, fn app_user -> 
+        user_id = app_user.user_id
+        user = 
+          case Process.get("user_#{user_id}") do 
+            nil -> 
+              user_db = RedisUser.find(user_id) |> Map.take([:nickname, :age, :email, :gender, :avatar_url, :inserted_at])
+              Process.put("user_#{user_id}", user_db)
+              user_db
+
+            user_cache ->
+              user_cache
+        end
+        Map.merge(app_user, user)
+      end)
+    conn |> json(%{success: true, users: users})
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 

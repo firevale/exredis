@@ -4,8 +4,8 @@
       General
     </p>
     <ul class="menu-list">
-      <li v-for="(item, index) in menu">
-        <router-link :to="getPath(item.path)" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path"
+      <li v-for="(item, index) in menu" :key="item.path">
+        <router-link :to="item.path" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path"
           @click.native="toggle(index, item)">
           <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label || item.name }}
           <span class="icon is-small is-angle" v-if="item.children && item.children.length">
@@ -20,7 +20,7 @@
         </a>
         <expanding v-if="item.children && item.children.length">
           <ul v-show="isExpanded(item)">
-            <li v-for="subItem in item.children" v-if="subItem.path">
+            <li v-for="subItem in item.children" v-if="subItem.path" :key="subItem.path">
               <router-link :to="generatePath(item, subItem)">
                 {{ subItem.meta && subItem.meta.label || subItem.name }}
               </router-link>
@@ -67,7 +67,27 @@ export default {
     ]),
 
     menu: function() {
-      return (this.$route.params.appId ? this.menuitems : this.indexMenuitems).filter(this.checkPower)
+      let result = []
+      if (this.$route.params.appId) {
+        result = this.menuitems.map(item => {
+          return {
+            name: item.name,
+            path: item.path ? item.path.replace(":appId", this.$route.params.appId) : undefined,
+            meta: item.meta,
+            children: item.children ? item.children.map(subItem => {
+              return {
+                name: subItem.name,
+                path: subItem.path ? subItem.path.replace(":appId", this.$route.params.appId) : undefined,
+                meta: subItem.meta,
+              }
+            }) :undefined,
+          }
+        })
+      } 
+      else {
+        result = this.indexMenuitems
+      }
+      return result.filter(this.checkPower)
     }
   },
 
@@ -81,16 +101,7 @@ export default {
     },
 
     checkPower(item) {
-      return item.meta.level.indexOf(this.adminLevel+",") >= 0
-    },
-
-    getPath(path) {
-      if (this.$route.params.appId){
-        return path.replace(":appId", this.$route.params.appId)
-      }
-      else {
-        return path
-      }
+      return item.meta.level.indexOf(this.adminLevel + ",") >= 0
     },
 
     toggle(index, item) {
@@ -104,15 +115,16 @@ export default {
       let matched = route.matched
       let lastMatched = matched[matched.length - 1]
       let parent = lastMatched.parent || lastMatched
+      const isParent = parent === lastMatched
 
-      if (parent === lastMatched) {
+      if (isParent) {
         const p = this.findParentFromMenu(route)
         if (p) {
           parent = p
         }
       }
 
-      if ('expanded' in parent.meta && parent !== lastMatched) {
+      if ('expanded' in parent.meta && !isParent) {
         this.expandMenu({
           item: parent,
           expanded: true

@@ -46,11 +46,31 @@ const state = {
     },
     {
       name: i18n.t('admin.menu.loginCodeManage'),
-      path: '/admin/app/:appId/loginCodes',
       meta: {
+        must: 'restrict_login',
         icon: 'fa-registered',
         level: '1,2,',
+        expanded: false,
       },
+
+      children: [
+        {
+          name: i18n.t('admin.menu.loginCodeManage'),
+          path: '/admin/app/:appId/loginCodes',
+          meta: {
+            icon: 'fa-registered',
+            level: '1,2,',
+          },          
+        },
+        {
+          name: i18n.t('admin.menu.loginCodeManage'),
+          path: '/admin/app/:appId/loginCodes',
+          meta: {
+            icon: 'fa-registered',
+            level: '1,2,',
+          },          
+        },
+      ]
     },
     {
       name: i18n.t('admin.menu.orderManage'),
@@ -64,6 +84,7 @@ const state = {
       name: i18n.t('admin.menu.forumManage'),
       path: '/admin/app/:appId/editforum',
       meta: {
+        must: 'has_forum',
         icon: 'fa-twitch',
         level: '1,2,',
       },
@@ -72,6 +93,7 @@ const state = {
       name: i18n.t('admin.menu.appMalls'),
       path: '/admin/app/:appId/editmall',
       meta: {
+        must: 'has_mall',
         icon: 'fa-shopping-bag',
         level: '1,2,',
       },

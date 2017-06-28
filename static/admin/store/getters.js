@@ -20,17 +20,20 @@ const menuitems = state => {
   let result = []
 
   state.menu.items.forEach(element => {
-    switch(element.path) {
-      case '/admin/app/:appId/editforum':
+    switch(element.meta.must) {
+      case 'has_forum':
         if (has_forum) result.push(element);
         break;
 
-      case '/admin/app/:appId/editmall':
+      case 'has_mall':
         if (has_mall) result.push(element);
         break;
 
-      case '/admin/app/:appId/loginCodes':
-        if (restrict_login) result.push(element);
+      case 'restrict_login':
+        if (restrict_login) {
+          element.meta.expanded = false
+          result.push(element);
+        }
         break;
 
       default:

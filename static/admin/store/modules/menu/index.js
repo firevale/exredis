@@ -119,7 +119,7 @@ const state = {
     {
       path: '/admin/app/:appId/orders',
       meta: {
-        icon: 'fa-star',
+        icon: 'fa-money',
         level: '1,2,',
         label: i18n.t('admin.menu.orderManage'),
       },

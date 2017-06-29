@@ -8,11 +8,10 @@ defmodule Wcp.Plugs.CheckMsgSignature do
   import Wcp.Signature
   import Wcp.Cipher
 
+  alias  Acs.RedisAppWcpConfig
+
   def init(opts) do
-    Keyword.merge opts,
-      token: Wcp.config[:token],
-      appid: Wcp.config[:appid],
-      aes_key: aes_key(Wcp.config[:encoding_aes_key])
+    opts
   end
 
   defp aes_key(nil) do
@@ -23,6 +22,13 @@ defmodule Wcp.Plugs.CheckMsgSignature do
   end
 
   def call(conn, opts) do
+    config = RedisAppWcpConfig.find(conn.params["app_id"])
+
+    opts = Keyword.merge(opts,
+      token: config.token,
+      appid: config.wcp_app_id,
+      aes_key: aes_key(config.aes_key))
+
     {:ok, xml, conn} = read_body(conn)
     msg = xml |> parse
     case msg_encrypted?(conn.params) do

@@ -4,11 +4,14 @@ defmodule Wcp.AccessToken do
   """
 
   import Wcp.ApiBase
+  alias  Acs.RedisAppWcpConfig
 
   def get_token(app_id) do
-    get "token",
+    config = RedisAppWcpConfig.find(app_id)
+
+    get_access_token("token",
       grant_type: "client_credential",
-      appid: Wcp.config[:appid],
-      secret: Wcp.config[:secret]
+      appid: config.wcp_app_id,
+      secret: config.wcp_app_key)
   end
 end

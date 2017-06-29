@@ -7,14 +7,15 @@ defmodule Wcp.Plugs.CheckUrlSignature do
   import Wcp.Signature
 
   def init(opts) do
-    Keyword.merge opts,
-      token: Wcp.config[:token]
+    opts 
   end
 
-  def call(conn = %Plug.Conn{params: params}, [token: token]) do
+  def call(conn = %Plug.Conn{params: params}, _opts) do
+    config = RedisAppWcpConfig.find(conn.params["app_id"])
+
     %{"timestamp" => timestamp, "nonce" => nonce,
       "signature" => signature} = params
-    my_signature = [token, timestamp, nonce] |> sign
+    my_signature = [config.token, timestamp, nonce] |> sign
     case my_signature == signature do
       true ->
         conn

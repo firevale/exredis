@@ -91,7 +91,8 @@ defmodule Acs.Web.Router do
     end
 
     scope "/wcp" do 
-      post "/on_receive_msg/:app_id", WcpController, :on_receive_message
+      get  "/:app_id", WcpController, :index
+      post "/:app_id", WcpController, :on_receive_message
     end
   end # end scope ap
 

@@ -1,5 +1,6 @@
 defmodule Acs.RedisDevice do
   require Redis
+  require Cachex
 
   alias   Acs.StatsRepo
 

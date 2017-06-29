@@ -89,6 +89,10 @@ defmodule Acs.Web.Router do
       get   "/notify",   AlipayController, :notify
       post  "/notify",   AlipayController, :notify
     end
+
+    scope "/wcp" do 
+      post "/on_receive_msg/:app_id", WcpController, :on_receive_message
+    end
   end # end scope ap
 
   scope "/cron", Acs.Web do

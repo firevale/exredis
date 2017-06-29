@@ -41,6 +41,7 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
 
       add :new_code_template, :string
       add :owned_code_template, :string
+      add :no_code_template, :string
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)
 

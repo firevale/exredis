@@ -89,7 +89,27 @@ export default new Router({
         }, {
           name: 'LoginCodes',
           path: 'loginCodes',
-          component: require('../views/app/loginCodes/main')
+          component: require('../views/app/loginCodes/codes')
+        }, {
+          name: 'MyLoginCodes',
+          path: 'myLoginCodes',
+          component: require('../views/app/loginCodes/mycodes')
+        }, {
+          name: 'WcpParams',
+          path: 'wcpParams',
+          component: require('../views/app/wechatPub/params')
+        }, {
+          name: 'WcpRules',
+          path: 'wcpRules',
+          component: require('../views/app/wechatPub/rules')
+        }, {
+          name: 'WcpMessages',
+          path: 'wcpMessages',
+          component: require('../views/app/wechatPub/messages')
+        }, {
+          name: 'WcpMenu',
+          path: 'wcpMenu',
+          component: require('../views/app/wechatPub/customMenu')
         },
       ],
     }, {

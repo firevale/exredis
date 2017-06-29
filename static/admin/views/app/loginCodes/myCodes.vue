@@ -18,11 +18,6 @@ import {
 import Toast from 'common/components/toast'
 
 export default {
-  data: function() {
-    return {
-      myCodes: []
-    }
-  },
 
   computed: {
     ...mapGetters([
@@ -31,7 +26,19 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'updateMyLoginCodes'
+    ]),
+  },
 
+  created: async function() {
+    let result = await this.$acs.fetchMyLoginCodes({
+      app_id: this.$route.params.appId,
+    })
+
+    if (result.success) {
+      this.updateMyLoginCodes(result.codes)
+    } 
   },
 
   components: {

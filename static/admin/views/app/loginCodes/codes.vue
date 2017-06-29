@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="login_codes">
     <div class="columns">
       <div class="column is-3">
         <div class="field has-addons">
@@ -243,3 +243,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .login_codes {
+    .box:not(:last-child) {
+      margin-bottom: 0;
+    }
+  }
+</style>

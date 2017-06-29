@@ -5,6 +5,7 @@ export default {
   AppConfig: '修改应用配置',
   AdminUsers: '账号管理',
   LoginCodes: '激活码管理',
+  MyLoginCodes: '我的激活码',
   Users: '用户管理',
   Orders: '订单管理',
   Forums: '论坛管理',
@@ -28,4 +29,8 @@ export default {
   Notice: '公告管理',
   News: '新闻管理',
   null: '',
+  WcpParams: '微信公众号--参数配置',
+  WcpMessages: '微信公众号--消息记录',
+  WcpRules: '微信公众号--自定义回复',
+  WcpMenu: '微信公众号--自定义菜单',
 }

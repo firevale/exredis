@@ -4,138 +4,182 @@ import * as types from '../../mutation-types'
 
 const state = {
   indexItems: [{
-      name: i18n.t('admin.menu.appList'),
       path: '/admin/index',
       meta: {
         icon: 'fa-bars',
         level: '1,2,3,',
+        label: i18n.t('admin.menu.appList'),
       },
     },
     {
-      name: i18n.t('admin.menu.settings'),
       path: '/admin/settings',
       meta: {
         icon: 'fa-cog',
         level: '1,',
+        label: i18n.t('admin.menu.settings'),
       },
     }
   ],
   items: [{
-      name: i18n.t('admin.menu.dashboard'),
       path: '/admin/app/:appId/dashboard',
       meta: {
         icon: 'fa-tachometer',
         level: '1,2,',
+        label: i18n.t('admin.menu.dashboard'),
       },
     },
     {
-      name: i18n.t('admin.menu.appConfig'),
       path: '/admin/app/:appId/config/',
       meta: {
         icon: 'fa-bars',
         level: '1,2,',
+        label: i18n.t('admin.menu.appConfig'),
       },
     },
     {
-      name: i18n.t('admin.menu.userManage'),
       path: '/admin/app/:appId/users',
       meta: {
         icon: 'fa-user',
         level: '1,2,3,',
+        label: i18n.t('admin.menu.userManage'),
       },
     },
     {
-      name: i18n.t('admin.menu.loginCodeManage'),
       meta: {
         must: 'restrict_login',
         icon: 'fa-registered',
         level: '1,2,',
+        label: i18n.t('admin.menu.loginCode'),
         expanded: false,
       },
 
       children: [
         {
-          name: i18n.t('admin.menu.loginCodeManage'),
+          name: 'LoginCodes',
           path: '/admin/app/:appId/loginCodes',
           meta: {
             icon: 'fa-registered',
             level: '1,2,',
+            label: i18n.t('admin.menu.loginCodeManage'),
           },          
         },
         {
-          name: i18n.t('admin.menu.loginCodeManage'),
-          path: '/admin/app/:appId/loginCodes',
+          name: 'MyLoginCodes',
+          path: '/admin/app/:appId/myLoginCodes',
           meta: {
             icon: 'fa-registered',
             level: '1,2,',
+            label: i18n.t('admin.menu.myLoginCodes'),
           },          
         },
       ]
     },
     {
-      name: i18n.t('admin.menu.orderManage'),
+      meta: {
+        must: 'restrict_login',
+        icon: 'fa-wechat',
+        level: '1,2,',
+        label: i18n.t('admin.menu.wechatPublic'),
+        expanded: false,
+      },
+
+      children: [
+        {
+          name: 'WcpRules',
+          path: '/admin/app/:appId/wcpRules',
+          meta: {
+            level: '1,2,',
+            label: i18n.t('admin.menu.wcpRules'),
+          },          
+        }, {
+          name: 'WcpMenu',
+          path: '/admin/app/:appId/wcpMenu',
+          meta: {
+            level: '1,2,',
+            label: i18n.t('admin.menu.wcpMenu'),
+          }
+        }, {
+          name: 'WcpMessages',
+          path: '/admin/app/:appId/wcpMessages',
+          meta: {
+            level: '1,2,',
+            label: i18n.t('admin.menu.wcpMessages'),
+          },          
+        },{
+          name: 'WcpParams',
+          path: '/admin/app/:appId/wcpParams',
+          meta: {
+            icon: 'fa-registered',
+            level: '1,2,',
+            label: i18n.t('admin.menu.wcpConfig'),
+          },          
+        },
+      ]
+    },
+    {
       path: '/admin/app/:appId/orders',
       meta: {
         icon: 'fa-star',
         level: '1,2,',
+        label: i18n.t('admin.menu.orderManage'),
       },
     },
     {
-      name: i18n.t('admin.menu.forumManage'),
       path: '/admin/app/:appId/editforum',
       meta: {
         must: 'has_forum',
         icon: 'fa-twitch',
         level: '1,2,',
+        label: i18n.t('admin.menu.forumManage'),
       },
     },
     {
-      name: i18n.t('admin.menu.appMalls'),
       path: '/admin/app/:appId/editmall',
       meta: {
         must: 'has_mall',
         icon: 'fa-shopping-bag',
         level: '1,2,',
+        label: i18n.t('admin.menu.appMalls'),
       },
     },
     {
-      name: i18n.t('admin.menu.activityInfo'),
       path: '/admin/app/:appId/activity',
       meta: {
         icon: 'fa-joomla',
         level: '1,2,',
+        label: i18n.t('admin.menu.activityInfo'),
       },
     },
     {
-      name: i18n.t('admin.menu.noticeInfo'),
       path: '/admin/app/:appId/notice',
       meta: {
         icon: 'fa-bullhorn',
         level: '1,2,',
+        label: i18n.t('admin.menu.noticeInfo'),
       },
     },
     {
-      name: i18n.t('admin.menu.newsInfo'),
       path: '/admin/app/:appId/news',
       meta: {
         icon: 'fa-newspaper-o',
         level: '1,2,',
+        label: i18n.t('admin.menu.newsInfo'),
       },
     },
     {
-      name: i18n.t('admin.menu.customerService'),
       path: '/admin/app/:appId/faq/',
       meta: {
         icon: 'fa-comments',
         level: '1,2,3,',
+        label: i18n.t('admin.menu.customerService'),
       },
     },
     {
-      name: i18n.t('admin.menu.adminUserManage'),
       path: '/admin/app/:appId/adminusers',
       meta: {
         icon: 'fa-user-circle',
         level: '1,2,',
+        label: i18n.t('admin.menu.adminUserManage'),
       },
     },
   ]

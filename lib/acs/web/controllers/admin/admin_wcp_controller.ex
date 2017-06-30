@@ -99,6 +99,26 @@ defmodule Acs.Web.AdminWcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  # get_rule_list
+  def get_rule_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
+    total = Repo.one!(from msg in AppWcpMessageRule, where: msg.app_id == ^app_id, select: count(msg.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from msg in AppWcpMessageRule,
+              select: msg,
+              limit: ^records_per_page,
+              where: msg.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: msg.inserted_at]
+
+    rules = Repo.all(query)
+
+    conn |> json(%{success: true, rules: rules, total: total_page})
+  end
+  def get_rule_list(conn, _params) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
   # update_wcp_message_rule
   def update_wcp_message_rule(conn, %{"app_id" => app_id, "keywords" => keywords, "response" => response} = rule) do
     case Repo.get(App, app_id) do

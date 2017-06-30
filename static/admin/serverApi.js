@@ -246,6 +246,18 @@ export default {
       updateWcpParams(params, successMessage) {
         return post('/admin_actions/wcp/update_wcp_params', params, successMessage)
       },
+
+      deleteRule(rule_id, successMessage) {
+        return post('/admin_actions/wcp/delete_wcp_message_rule', {rule_id}, successMessage)
+      },
+
+      getRuleList(app_id, page, records_per_page) {
+        return post('/admin_actions/wcp/get_rule_list', {
+          app_id,
+          page,
+          records_per_page
+        })
+      },
     }
   }
 }

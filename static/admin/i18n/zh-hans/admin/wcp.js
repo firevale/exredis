@@ -10,5 +10,11 @@ export default {
   newCodeTemplate: '新激活码模版',
   ownedCodeTemplate: '已有激活码模版',
   noCodeTemplate: '没有激活码模版',
-  
+  id: '编号',
+  keywords: '关键词',
+  response: '回复',
+  createdAt: '创建时间',
+  edit: '修改',
+  operate: '操作',
+  addRule: '添加自定义回复',
 }

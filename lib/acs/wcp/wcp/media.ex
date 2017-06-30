@@ -5,7 +5,7 @@ defmodule Wcp.Media do
 
   import Wcp.ApiFile
 
-  def download(media_id) do
-    get "media/get", media_id: media_id
+  def download(app_id, media_id) do
+    get(app_id, "media/get", media_id: media_id)
   end
 end

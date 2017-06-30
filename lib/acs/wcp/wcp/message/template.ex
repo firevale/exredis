@@ -9,7 +9,7 @@ defmodule Wcp.Message.Template do
 
   @api_path "message/template/send"
 
-  def send(openid, template_id, url, data) do
+  def send(app_id, openid, template_id, url, data) do
     body = %{
       "touser" => openid,
       "template_id" => template_id,
@@ -17,6 +17,6 @@ defmodule Wcp.Message.Template do
       "data" => data
     }
 
-    post @api_path, body
+    post(app_id, @api_path, body)
   end
 end

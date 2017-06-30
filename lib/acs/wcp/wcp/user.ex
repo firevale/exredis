@@ -5,15 +5,15 @@ defmodule Wcp.User do
 
   import Wcp.ApiBase
 
-  def list do
-    get "user/get"
+  def list(app_id) do
+    get(app_id, "user/get")
   end
 
-  def list(next_openid) do
-    get "user/get", next_openid: next_openid
+  def list(app_id, next_openid) do
+    get(app_id, "user/get", next_openid: next_openid)
   end
 
-  def info(openid) do
-    get "user/info", openid: openid
+  def info(app_id, openid) do
+    get(app_id, "user/info", openid: openid)
   end
 end

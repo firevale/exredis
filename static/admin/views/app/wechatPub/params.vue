@@ -99,29 +99,11 @@ export default {
 
     handleSubmit: async function() {
       this.processing = true
-      let result = await this.$acs.updateMallInfo({
-        mall: this.mall
-      }, this.$t('admin.notification.message.mallInfoUpdated'))
+      let result = await this.$acs.updateWcpParams(this.params, this.$t('admin.notification.message.wcpParamsUpdated'))
       if (result.success) {
-        axios.post('/admin_actions/update_wcp_params', {
-            app_id: this.mall.app_id
-          })
-          .then(response => response.data)
-          .then(result => {
-            if (result.success) {
-              this.setApp(result.app)
-            }
-          })
+        this.params = result.wcpconfig
       }
       this.processing = false
-      if (result.mall) {
-        this.addMall(result.mall)
-        this.$nextTick(_ => {
-          this.$router.replace({
-            path: '/admin/malls/edit/${result.mall.id}'
-          })
-        })
-      }
     },
   },
 

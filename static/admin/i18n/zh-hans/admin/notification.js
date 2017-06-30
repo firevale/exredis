@@ -20,5 +20,6 @@ export default {
     sensitiveWordsUpdated: '系统敏感词库已成功更新',
     appManagerDeleted: '应用管理员『{nickName}』已成功删除',
     appCustomerServiceDeleted: '应用客服『{nickName}』已成功删除',
+    wcpParamsUpdated: '公众号参数已成功更新',
   }
 }

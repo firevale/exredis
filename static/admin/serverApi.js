@@ -242,6 +242,10 @@ export default {
       addWcpEmptyParams(params) {
         return post('/admin_actions/wcp/add_wcp_empty_params', params)
       },
+
+      updateWcpParams(params, successMessage) {
+        return post('/admin_actions/wcp/update_wcp_params', params, successMessage)
+      },
     }
   }
 }

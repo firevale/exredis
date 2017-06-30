@@ -101,7 +101,7 @@ defmodule Wcp.Message.Custom do
     }
   end
 
-  defp deliver(app_id, openid, body) when is_map body do
+  defp deliver(app_id, openid, body) when is_map(body) do
     body =
       body
       |> Map.merge(%{"touser" => openid})

@@ -6,6 +6,8 @@ defmodule Wcp.Plugs.CheckUrlSignature do
   import Plug.Conn
   import Wcp.Signature
 
+  alias  Acs.RedisAppWcpConfig
+
   def init(opts) do
     opts 
   end

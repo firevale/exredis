@@ -2,7 +2,7 @@ defmodule Acs.Web.WcpController do
   use Acs.Web, :controller
 
   plug Wcp.Plugs.CheckUrlSignature
-  plug Wcp.Plugs.CheckMsgSignature when action in [:create]
+  plug Wcp.Plugs.CheckMsgSignature when action in [:on_receive_message]
 
   def index(conn, %{"echostr" => echostr}) do
     conn |> text(echostr)
@@ -10,6 +10,7 @@ defmodule Acs.Web.WcpController do
 
   def on_receive_message(conn, _params) do
     msg = conn.assigns[:msg]
+    d "msg: #{inspect msg, pretty: true}"
     reply = build_text_reply(msg, msg.content)
     conn |> render("text.xml", reply: reply)
   end

@@ -20,17 +20,30 @@ defmodule Wcp.Cipher do
     {appid, msg}
   end
 
+  def encrypt(text, aes_key) do 
+    iv = binary_part(aes_key, 0, 16)
+    len = String.length(text)
+
+    encode_binary =
+      <<iv :: binary-size(16),
+        len :: integer-size(32),
+        text :: binary>>
+
+    :crypto.block_encrypt(:aes_cbc, aes_key, iv, encrypt_padding(encode_binary)) |> Base.encode64
+  end
+
   defp decrypt_aes(aes_encrypt, aes_key) do
     iv = binary_part(aes_key, 0, 16)
-    :crypto.block_decrypt(:aes_cbc128, aes_key, iv, aes_encrypt)
+    :crypto.block_decrypt(:aes_cbc, aes_key, iv, aes_encrypt)
   end
 
   defp decode_padding(padded_text) do
-    len = byte_size(padded_text)
-    <<pad :: utf8>> = binary_part(padded_text, len, -1)
-    case pad < 1 or pad > 32 do
-      true -> binary_part(padded_text, 0, len)
-      false -> binary_part(padded_text, 0, len-pad)
-    end
+    to_remove = :binary.last(padded_text)
+    :binary.part(padded_text, 0, byte_size(padded_text) - to_remove)
+  end
+
+  def encrypt_padding(text) do
+    to_add = 32 - rem(byte_size(text), 32)
+    text <> to_string(:string.chars(to_add, to_add))
   end
 end

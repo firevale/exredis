@@ -8,6 +8,7 @@ defmodule Wcp.Plugs.CheckMsgSignature do
   import Wcp.Signature
   import Wcp.Cipher
 
+  use    LogAlias
   alias  Acs.RedisAppWcpConfig
 
   def init(opts) do
@@ -32,8 +33,10 @@ defmodule Wcp.Plugs.CheckMsgSignature do
     {:ok, xml, conn} = read_body(conn)
     msg = xml |> parse
     case msg_encrypted?(conn.params) do
-      true -> decrypt_msg(conn, msg, opts)
-      false -> conn |> assign(:msg, msg)
+      true -> 
+        decrypt_msg(conn, msg, opts)
+      false -> 
+        conn |> assign(:msg, msg)
     end
   end
 
@@ -45,8 +48,26 @@ defmodule Wcp.Plugs.CheckMsgSignature do
       true ->
         case decrypt(msg_encrypt, aes_key) do
           {^appid, msg_decrypt} ->
-            conn
-            |> assign(:msg, msg_decrypt |> parse)
+            conn 
+              |> assign(:msg, msg_decrypt |> parse)
+              |> register_before_send(fn(conn) -> 
+                case conn.resp_body do 
+                  "<xml>" <> _ ->
+                    encrypted_message = encrypt(conn.resp_body, aes_key)
+                    %{"timestamp" => timestamp, 
+                      "nonce" => nonce} = conn.params
+                    signature = sign([token, timestamp, nonce, encrypted_message])
+                    new_response = ~s|<xml>
+                      <Encrypt><![CDATA[#{encrypted_message}]]></Encrypt>
+                      <MsgSignature><![CDATA[#{signature}]]></MsgSignature>
+                      <TimeStamp>#{timestamp}</TimeStamp>
+                      <Nonce><![CDATA[#{nonce}]]></Nonce>
+                    </xml>|
+                    %{conn | resp_body: new_response}
+                  _ ->
+                    conn
+                end
+              end)
           _ ->
             conn
             |> send_resp(400, "decrypt msg failed")

@@ -9,6 +9,7 @@ import routes from './routes'
 import setting from './setting'
 import customerService from './customerService'
 import notification from './notification'
+import wcp from './wcp'
 import error from 'common/i18n/zh-hans/error'
 
 export default {
@@ -146,6 +147,7 @@ export default {
   news,
   sdks,
   setting,
+  wcp,
   customerService,
   notification,
   error

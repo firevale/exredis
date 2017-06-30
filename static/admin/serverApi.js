@@ -238,6 +238,10 @@ export default {
       fetchMyLoginCodes(params) {
         return post('/admin_actions/login_codes/fetch_my_codes', params)
       },
+
+      addWcpEmptyParams(params) {
+        return post('/admin_actions/wcp/add_wcp_empty_params', params)
+      },
     }
   }
 }

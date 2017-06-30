@@ -104,5 +104,16 @@ defmodule Acs.Web.AdminRouter do
       post  "/assign_codes", Admin.LoginCodesController, :assign_codes 
       post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
     end
+
+    scope "/wcp" do 
+      pipe_through :admin_app
+
+      post  "/add_wcp_empty_params", AdminWcpController, :add_wcp_empty_params
+      post  "/update_wcp_params", AdminWcpController, :update_wcp_params 
+      post  "/update_wcp_menus", AdminWcpController, :update_wcp_menus 
+      post  "/get_message_list", AdminWcpController, :get_message_list 
+      post  "/update_wcp_message_rule", AdminWcpController, :update_wcp_message_rule
+      post  "/delete_wcp_message_rule", AdminWcpController, :delete_wcp_message_rule 
+    end
   end
 end

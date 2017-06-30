@@ -85,11 +85,12 @@ const state = {
 
       children: [
         {
-          name: 'WcpRules',
-          path: '/admin/app/:appId/wcpRules',
+          name: 'WcpParams',
+          path: '/admin/app/:appId/wcpParams',
           meta: {
+            icon: 'fa-registered',
             level: '1,2,',
-            label: i18n.t('admin.menu.wcpRules'),
+            label: i18n.t('admin.menu.wcpConfig'),
           },          
         }, {
           name: 'WcpMenu',
@@ -99,19 +100,18 @@ const state = {
             label: i18n.t('admin.menu.wcpMenu'),
           }
         }, {
+          name: 'WcpRules',
+          path: '/admin/app/:appId/wcpRules',
+          meta: {
+            level: '1,2,',
+            label: i18n.t('admin.menu.wcpRules'),
+          },          
+        }, {
           name: 'WcpMessages',
           path: '/admin/app/:appId/wcpMessages',
           meta: {
             level: '1,2,',
             label: i18n.t('admin.menu.wcpMessages'),
-          },          
-        },{
-          name: 'WcpParams',
-          path: '/admin/app/:appId/wcpParams',
-          meta: {
-            icon: 'fa-registered',
-            level: '1,2,',
-            label: i18n.t('admin.menu.wcpConfig'),
           },          
         },
       ]

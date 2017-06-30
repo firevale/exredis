@@ -103,6 +103,10 @@ export default new Router({
           path: 'wcpRules',
           component: require('../views/app/wechatPub/rules')
         }, {
+          name: 'WcpEditRule',
+          path: 'wcpEditRule',
+          component: require('../views/app/wechatPub/ruleEdit')
+        }, {
           name: 'WcpMessages',
           path: 'wcpMessages',
           component: require('../views/app/wechatPub/messages')

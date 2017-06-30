@@ -9,6 +9,7 @@ import routes from './routes'
 import setting from './setting'
 import customerService from './customerService'
 import notification from './notification'
+import wcp from './wcp'
 import error from 'common/i18n/zh-hans/error'
 
 export default {
@@ -128,6 +129,7 @@ export default {
     confirmDeleteAppManager: '您确定要删除应用管理员『{nickName}』么?',
     confirmDeleteCustomerService: '您确定要删除应用客服『{nickName}』么?',
     copyClipboardSuccess: '已拷贝到剪贴板',
+    confirmDeleteRule: '您确定要删除自定义回复么?',
   },
 
   serverSuccess: {
@@ -146,6 +148,7 @@ export default {
   news,
   sdks,
   setting,
+  wcp,
   customerService,
   notification,
   error

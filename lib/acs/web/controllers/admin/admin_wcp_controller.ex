@@ -6,12 +6,12 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.AppWcpMessageRule
   # alias Acs.RedisSetting
 
-  # update_wcp_params
-  def update_wcp_params(conn, %{"app_id" => app_id} = wcpParams) do
+  # add_wcp_empty_params
+  def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
-
+      
       %App{} = app ->
         case Repo.get_by(AppWcpConfig, app_id: app_id) do
           nil ->
@@ -26,16 +26,32 @@ defmodule Acs.Web.AdminWcpController do
             end
 
           %AppWcpConfig{} = config ->
-            # update
-            case AppWcpConfig.changeset(config, wcpParams) |> Repo.update do
-              {:ok, new_wcp} ->
-                # RedisApp.refresh(new_goods.app_id)
-                conn |> json(%{success: true, wcpconfig: new_wcp})
-
-              {:error, %{errors: errors}} ->
-                conn |> json(%{success: false, message: translate_errors(errors)})
-            end
+            # do nothing
+            conn |> json(%{success: true, wcpconfig: config})
         end
+      
+    end
+  end
+  def add_wcp_empty_params(conn, _params) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  # update_wcp_params
+  def update_wcp_params(conn, %{"app_id" => app_id} = wcpParams) do
+    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+      %AppWcpConfig{} = config ->
+        # update
+        case AppWcpConfig.changeset(config, wcpParams) |> Repo.update do
+          {:ok, new_wcp} ->
+            # RedisApp.refresh(new_goods.app_id)
+            conn |> json(%{success: true, wcpconfig: new_wcp})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+      
+      _ -> 
+        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
   end
   def update_wcp_params(conn, _params) do 
@@ -46,7 +62,7 @@ defmodule Acs.Web.AdminWcpController do
   def update_wcp_menus(conn, %{"app_id" => app_id, "menu" => menu}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       nil ->
-        conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
+        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
 
       %AppWcpConfig{} = config ->
         case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
@@ -80,6 +96,26 @@ defmodule Acs.Web.AdminWcpController do
     conn |> json(%{success: true, message: message, total: total_page})
   end
   def get_message_list(conn, _params) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  # get_rule_list
+  def get_rule_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
+    total = Repo.one!(from msg in AppWcpMessageRule, where: msg.app_id == ^app_id, select: count(msg.id))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from msg in AppWcpMessageRule,
+              select: msg,
+              limit: ^records_per_page,
+              where: msg.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: msg.inserted_at]
+
+    rules = Repo.all(query)
+
+    conn |> json(%{success: true, rules: rules, total: total_page})
+  end
+  def get_rule_list(conn, _params) do 
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

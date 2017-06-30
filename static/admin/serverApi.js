@@ -238,6 +238,26 @@ export default {
       fetchMyLoginCodes(params) {
         return post('/admin_actions/login_codes/fetch_my_codes', params)
       },
+
+      addWcpEmptyParams(params) {
+        return post('/admin_actions/wcp/add_wcp_empty_params', params)
+      },
+
+      updateWcpParams(params, successMessage) {
+        return post('/admin_actions/wcp/update_wcp_params', params, successMessage)
+      },
+
+      deleteRule(rule_id, successMessage) {
+        return post('/admin_actions/wcp/delete_wcp_message_rule', {rule_id}, successMessage)
+      },
+
+      getRuleList(app_id, page, records_per_page) {
+        return post('/admin_actions/wcp/get_rule_list', {
+          app_id,
+          page,
+          records_per_page
+        })
+      },
     }
   }
 }

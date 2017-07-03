@@ -9,7 +9,8 @@ defmodule Acs.AppWcpResponse do
     case RedisAppWcpConfig.find(app_id) do 
       %AppWcpConfig{} = wcp_cfg ->
         _build_event_reply(app_id, msg, wcp_cfg)
-      _ -> nil
+      _ -> 
+        nil
     end
   end
   def build_reply(app_id, %{msgtype: "text"} = msg) do 
@@ -23,12 +24,12 @@ defmodule Acs.AppWcpResponse do
             _build_default_text_reply(app_id, msg)
           
           ":login_code" -> 
-            %{from: msg.to, 
-              to: msg.from, 
-              content: WcpLoginCodeResponse.build_reply_content(app_id, msg.from)}
+            %{from: msg.tousername, 
+              to: msg.fromusername, 
+              content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
             
           response when is_bitstring(response) ->
-            %{from: msg.to, to: msg.from, content: response}
+            %{from: msg.tousername, to: msg.fromusername, content: response}
 
           _ -> 
             nil
@@ -40,49 +41,53 @@ defmodule Acs.AppWcpResponse do
     case RedisAppWcpConfig.find(app_id) do 
       %AppWcpConfig{default_response: nil} -> nil
       %AppWcpConfig{default_response: default_response}  -> 
-        %{from: msg.to,
-          to: msg.from,
+        %{from: msg.tousername,
+          to: msg.fromusername,
           content: default_response}
       _ -> nil
     end
   end
 
   defp _build_event_reply(app_id, 
+    %{msgtype: "event", event: "subscribe"}, 
+    %{subscribed_response: nil}), do: nil
+  defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "subscribe"} = msg, 
     %{subscribed_response: ":login_code"}) do 
-    %{from: msg.to, 
-      to: msg.from, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.from)}
+    %{from: msg.tousername, 
+      to: msg.fromusername, 
+      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "subscribe"} = msg, 
     %{subscribed_response: response}) do 
-    %{from: msg.to, 
-      to: msg.from, 
+    %{from: msg.tousername, 
+      to: msg.fromusername, 
       content: response}
   end
   defp _build_event_reply(app_id, 
+    %{msgtype: "event", event: "SCAN"}, 
+    %{scan_response: nil}), do: nil 
+  defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "SCAN"} = msg, 
     %{scan_response: ":login_code"}) do 
-    %{from: msg.to, 
-      to: msg.from, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.from)}
+    %{from: msg.tousername, 
+      to: msg.fromusername, 
+      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "SCAN"} = msg, 
     %{scan_response: response}) do 
-    %{from: msg.to, 
-      to: msg.from, 
+    %{from: msg.tousername, 
+      to: msg.fromusername, 
       content: response}
   end
   # 自定义菜单事件
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "CLICK", event_key: "assign_login_code"} = msg) do 
-    %{from: msg.to, 
-      to: msg.from, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.from)}
+    %{from: msg.tousername, 
+      to: msg.fromusername, 
+      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
-
-
 
 end

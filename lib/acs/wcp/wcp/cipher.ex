@@ -20,14 +20,15 @@ defmodule Wcp.Cipher do
     {appid, msg}
   end
 
-  def encrypt(text, aes_key) do 
+  def encrypt(text, appid, aes_key) do 
     iv = binary_part(aes_key, 0, 16)
     len = String.length(text)
 
     encode_binary =
       <<iv :: binary-size(16),
         len :: integer-size(32),
-        text :: binary>>
+        text :: binary-size(len),
+        appid :: binary>>
 
     :crypto.block_encrypt(:aes_cbc, aes_key, iv, encrypt_padding(encode_binary)) |> Base.encode64
   end

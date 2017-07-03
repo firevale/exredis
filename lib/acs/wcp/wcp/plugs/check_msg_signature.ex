@@ -53,16 +53,17 @@ defmodule Wcp.Plugs.CheckMsgSignature do
               |> register_before_send(fn(conn) -> 
                 case conn.resp_body do 
                   "<xml>" <> _ ->
-                    encrypted_message = encrypt(conn.resp_body, aes_key)
+                    info "raw response: #{inspect conn.resp_body, pretty: true}"
+                    encrypted_message = encrypt(conn.resp_body, appid, aes_key)
                     %{"timestamp" => timestamp, 
                       "nonce" => nonce} = conn.params
                     signature = sign([token, timestamp, nonce, encrypted_message])
                     new_response = ~s|<xml>
-                      <Encrypt><![CDATA[#{encrypted_message}]]></Encrypt>
-                      <MsgSignature><![CDATA[#{signature}]]></MsgSignature>
-                      <TimeStamp>#{timestamp}</TimeStamp>
-                      <Nonce><![CDATA[#{nonce}]]></Nonce>
-                    </xml>|
+  <Encrypt><![CDATA[#{encrypted_message}]]></Encrypt>
+  <MsgSignature><![CDATA[#{signature}]]></MsgSignature>
+  <TimeStamp>#{timestamp}</TimeStamp>
+  <Nonce><![CDATA[#{nonce}]]></Nonce>
+</xml>|
                     %{conn | resp_body: new_response}
                   _ ->
                     conn

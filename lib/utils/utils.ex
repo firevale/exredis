@@ -331,5 +331,18 @@ defmodule Utils do
     {:ok, path}
   end
 
+  #deploy_wcp_file
+  def deploy_wcp_file(from: from, filename: filename) do
+    if File.exists?(from) do
+      static_path = Application.app_dir(:acs, "/") 
+      case File.cp(from, Path.join(static_path, filename)) do 
+        :ok -> {:ok, filename}
+        {:error, reason} -> {:error, reason} 
+      end
+    else
+      {:error, "file #{from} not exists"}
+    end
+  end
+
 end
 

@@ -4,7 +4,7 @@
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.verifyFile')}}: <span @mouseenter="show=true" @mouseleave="show=false" class="icon is-sign">?</span></label>
         <p class="control">
-          <input class="input" disabled type="text" v-model.trim="wcpParams.verify_File">
+          <a @click.prevent="updateFile(wcpParams)"> {{ wcpParams.verify_File ? wcpParams.verify_File : "点击上传" }} </a>
         </p>
       </div>
       <div class="column is-8">
@@ -43,6 +43,14 @@ import {
   mapActions
 } from 'vuex'
 
+import {
+  processAjaxError
+} from 'admin/miscellaneous'
+
+import {
+  showFileUploadDialog
+} from 'common/components/fileUpload'
+
 export default {
   data() {
     return {
@@ -66,6 +74,29 @@ export default {
     ...mapActions([
       'updateWcpParams',
     ]),
+
+    updateFile: function(wcpParams) {
+      showFileUploadDialog(this.$i18n, {
+        postAction: '/admin_actions/wcp/upload_wcp_file',
+        accept: 'text/plain',
+        data: {
+          app_id: wcpParams.app_id
+        },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
+        },
+        extensions: ['txt'],
+        title: this.$t('admin.titles.uploadWcpFile'),
+        callback: response => {
+          if (response.success) {
+            wcpParams.verify_File = response.filename
+            this.updateWcpParams(wcpParams)
+          } else {
+            processAjaxError(response)
+          }
+        },
+      })
+    },
 
     handleSubmit: async function() {
       this.processing = true

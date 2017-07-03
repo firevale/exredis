@@ -192,4 +192,21 @@ defmodule Acs.Web.AdminWcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end  
 
+  def upload_wcp_file(conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename}}) do
+    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+      %AppWcpConfig{} = config ->
+        case Utils.deploy_wcp_file(from: file_path, filename: filename) do
+          {:ok, filename} ->
+            AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
+            conn |> json(%{success: true, filename: filename})
+          
+          {:error, errinfo} ->
+            conn |> json(%{success: false, errinfo: errinfo})
+        end 
+
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
+    end
+  end  
+
 end

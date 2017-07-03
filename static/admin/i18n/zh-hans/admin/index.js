@@ -113,7 +113,8 @@ export default {
     yes: '是',
     no: '否',
     noData: '暂无数据',
-    noMoreData: '没有更多数据啦'
+    noMoreData: '没有更多数据啦',
+    uploadWcpFile: '上传验证文件',
   },
 
   messages: {

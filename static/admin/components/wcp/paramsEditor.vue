@@ -1,26 +1,32 @@
 <template>
   <form name="params" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
-      <div class="column is-5">
-        <label class="label"> {{ $t('admin.wcp.appId')}}: </label>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.verifyFile')}}: <span @mouseenter="show=true" @mouseleave="show=false" class="icon is-sign">?</span></label>
+        <p class="control">
+          <input class="input" disabled type="text" v-model.trim="wcpParams.verify_File">
+        </p>
+      </div>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.appId')}}: <span class="icon is-sign">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.wcp_app_id">
         </p>
       </div>
-      <div class="column is-5">
-        <label class="label"> {{ $t('admin.wcp.appKey')}}: </label>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.appKey')}}: <span class="icon is-sign">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.wcp_app_key">
         </p>
       </div>
-      <div class="column is-5">
-        <label class="label"> {{ $t('admin.wcp.token')}}: </label>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.token')}}: <span class="icon is-sign">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.token">
         </p>
       </div>
-      <div class="column is-5">
-        <label class="label"> {{ $t('admin.wcp.aesKey')}}: </label>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.aesKey')}}: <span class="icon is-sign">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.aes_key">
         </p>
@@ -40,7 +46,13 @@ import {
 export default {
   data() {
     return {
-      processing: false
+      show: false,
+      processing: false,
+      tips: ['',
+        '',
+        '',
+        '',
+      ],
     }
   },
 

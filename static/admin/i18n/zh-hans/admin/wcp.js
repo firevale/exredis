@@ -11,6 +11,7 @@ export default {
   ownedCodeTemplate: '已有激活码模版',
   noCodeTemplate: '没有激活码模版',
   id: '编号',
+  verifyFile: '验证文件',
   keywords: '关键词',
   response: '回复',
   createdAt: '创建时间',

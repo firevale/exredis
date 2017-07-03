@@ -32,7 +32,7 @@ defmodule Acs.WcpLoginCodeResponse do
                 _build_content(cfg.new_code_template, code)
             
               _ ->
-                cfg.no_code_template
+                cfg.no_code_template || "所有激活码已全部发放完成."
             end
         end
       _ -> 

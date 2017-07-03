@@ -22,7 +22,7 @@ defmodule Acs.AppWcpMessage do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:from, :to, :msg_type, :content, :create_time])
-    |> validate_required([:from, :to, :msg_type, :content, :create_time])
+    |> cast(params, [:from, :to, :msg_type, :content, :create_time, :app_id])
+    |> validate_required([:from, :to, :msg_type, :content])
   end
 end

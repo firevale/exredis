@@ -89,5 +89,6 @@ defmodule Acs.AppWcpResponse do
       to: msg.fromusername, 
       content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
+  defp _build_event_reply(app_id, %{msgtype: "event"}, _cfg), do: nil
 
 end

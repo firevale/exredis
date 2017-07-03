@@ -221,7 +221,7 @@ export default {
       let assigned = (this.app.myCodes && this.app.myCodes.length) || 0 
 
       if (this.assignNumber <= 0 || this.assignNumber + assigned > 100 || this.assignNumber > this.stats.available) {
-        Toast.show(this.$t('admin.app.message.invalidLoginCodesAssignNumber', {max: min(100 - assigned, this.stats.available)}))
+        Toast.show(this.$t('admin.app.message.invalidLoginCodesAssignNumber', {max: Math.min(100 - assigned, this.stats.available)}))
       }
       else {
         let successMessage = this.$t('admin.app.message.assignLoginCodesSuccess', {number: this.assignNumber}) 

@@ -6,6 +6,8 @@ defmodule Acs.WcpLoginCodeResponse do
   alias   Acs.Repo
   import  Ecto.Query
 
+  alias   Ecto.Adapters.SQL
+
   def build_reply_content(app_id, from) do 
     case RedisAppWcpConfig.find(app_id) do 
       %AppWcpConfig{} = cfg ->

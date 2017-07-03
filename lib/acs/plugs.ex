@@ -448,7 +448,8 @@ defmodule Acs.Plugs do
   def check_forum_manager(%Plug.Conn{private: %{acs_access_token: access_token},
                                      params: %{"forum_id" => forum_id}} = conn, _options) do
    case RedisAccessToken.find(access_token) do
-     nil -> conn |> put_private(:acs_is_forum_admin, false)
+     nil -> 
+       conn |> put_private(:acs_is_forum_admin, false)
 
      %RedisAccessToken{user_id: user_id} ->
         _check_forum_manager(conn, user_id, forum_id)

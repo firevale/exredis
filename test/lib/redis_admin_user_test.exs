@@ -11,7 +11,6 @@ defmodule Acs.Web.RedisAdminUserTest do
     admin_level = RedisAdminUser.get_admin_level(@user_id)
     assert admin_level >= 0 
 
-
     if(admin_level > 1) do
       admin_appids = RedisAdminUser.get_admin_appids(@user_id)
       assert length(admin_appids) >= 1 
@@ -19,8 +18,6 @@ defmodule Acs.Web.RedisAdminUserTest do
 
     admin_level = RedisAdminUser.refresh(@user_id, nil, true)
     assert admin_level >= 0 
-
-
   end
 
 

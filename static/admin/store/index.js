@@ -7,6 +7,7 @@ import main from './modules/main'
 import apps from './modules/apps'
 import menu from './modules/menu'
 import mall from './modules/mall'
+import wcp from './modules/wcp'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
     main,
     menu,
     apps,
-    mall
+    mall,
+    wcp
   },
   state: {
   },

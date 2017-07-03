@@ -8,7 +8,7 @@ defmodule Acs.Web.WcpController do
     conn |> text(echostr)
   end
 
-  def on_receive_message(conn, _params) do
+  def on_receive_message(conn, %{"app_id" => app_id} = params) do
     msg = conn.assigns[:msg]
     d "msg: #{inspect msg, pretty: true}"
     reply = build_text_reply(msg, msg.content)

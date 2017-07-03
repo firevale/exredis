@@ -17,4 +17,10 @@ export default {
   edit: '修改',
   operate: '操作',
   addRule: '添加自定义回复',
+
+  keywordsPlaceholder: '请填写关键词',
+  responsePlaceholder: '请填写回复内容',
+  btnTitle: '保 存',
+  keywordsRequired: '关键词必填',
+  operateSuccess: '操作成功',
 }

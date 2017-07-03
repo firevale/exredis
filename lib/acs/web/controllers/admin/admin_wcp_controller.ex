@@ -5,6 +5,7 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.AppWcpMessage
   alias Acs.AppWcpMessageRule
   # alias Acs.RedisSetting
+  import Acs.UploadImagePlugs 
 
   # add_wcp_empty_params
   def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
@@ -172,6 +173,22 @@ defmodule Acs.Web.AdminWcpController do
     end
   end
   def delete_wcp_message_rule(conn, _params) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["jpg", "jpeg", "png"],
+    reformat: "jpeg"] when action in [:upload_wcp_image]
+  plug :convert_base64_image, [param_name: "file"] when action in [:upload_wcp_image]
+  def upload_wcp_image(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
+    {:ok, image_path, width, height} = 
+      Utils.deploy_image_file_return_size(from: image_file_path, 
+        to: "wcp/#{app_id}/", 
+        low_quality: true)
+    conn |> json(%{success: true, app_id: app_id, link: image_path, width: width, height: height})
+  end
+  def upload_wcp_image(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end  
 

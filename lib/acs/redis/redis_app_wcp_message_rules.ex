@@ -5,7 +5,7 @@ defmodule Acs.RedisAppWcpMessageRule do
   alias   Utils.JSON
   alias   Acs.Repo
   alias   Acs.AppWcpMessageRule
-  
+
   import  Ecto.Query
 
   def get_all(app_id) when is_bitstring(app_id) do
@@ -36,9 +36,9 @@ defmodule Acs.RedisAppWcpMessageRule do
           rule.keywords 
             |> String.split([",", " ", "，"], trim: true)
             |> Enum.map(fn(kw) ->
-              %{keyword: kw, response: rule.response}
+              {kw, rule.response}
             end)
-        end) |> List.flatten
+        end) |> List.flatten |> Enum.into(%{})
         Redis.set(key(app_id), JSON.encode(rules))
         rules
 

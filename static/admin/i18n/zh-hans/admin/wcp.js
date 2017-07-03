@@ -23,4 +23,8 @@ export default {
   btnTitle: '保 存',
   keywordsRequired: '关键词必填',
   operateSuccess: '操作成功',
+
+  basicInfo: '基本参数',
+  replyInfo: '回复配置',
+  replyModel: '回复模版',
 }

@@ -10,7 +10,7 @@ const indexMenuitems = state => state.menu.indexItems
 const mallList = state => state.mall.list
 const mallHash = state => state.mall.hash
 const adminLevel = state => state.main.adminLevel
-
+const wcpParams = state => state.wcp.wcpParams
 
 const menuitems = state => {
   let has_mall = state.apps.app && state.apps.app.has_mall
@@ -59,4 +59,5 @@ export {
   mallHash,
   adminLevel,
   myLoginCodes,
+  wcpParams,
 }

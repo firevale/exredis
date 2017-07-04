@@ -16,12 +16,12 @@ defmodule Acs.Web.WcpController do
     case msg.msgtype do 
       "text" ->
         AppWcpMessage.changeset(%AppWcpMessage{}, 
-        %{from: msg.fromusername, 
-          to: msg.tousername, 
-          msg_type: msg.msgtype, 
-          content: msg.content, 
-          create_time: msg.createtime,
-          app_id: app_id}) |> Repo.insert
+          %{from: msg.fromusername, 
+            to: msg.tousername, 
+            msg_type: msg.msgtype, 
+            content: msg.content, 
+            create_time: msg.createtime,
+            app_id: app_id}) |> Repo.insert
 
       "event" -> 
         AppWcpMessage.changeset(%AppWcpMessage{}, 
@@ -34,6 +34,7 @@ defmodule Acs.Web.WcpController do
       _ ->
         :do_nothing
     end
+    
     case AppWcpResponse.build_reply(app_id, msg) do 
       nil ->
         info "response is nil, return success"

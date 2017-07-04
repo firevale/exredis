@@ -11,7 +11,7 @@ defmodule Acs.Web.AdminUserController do
     adminUsers = Repo.all(queryAdminUser)
 
     query = from user in User,
-            select: map(user, [:id, :nickname, :email, :inserted_at]),
+            select: map(user, [:id, :nickname, :email, :mobile, :inserted_at]),
             where: not user.id in (^adminUsers) and (like(user.email, ^"%#{keyword}%") or like(user.mobile, ^"%#{keyword}%")),
             order_by: [desc: user.inserted_at]
     users = Repo.all(query)

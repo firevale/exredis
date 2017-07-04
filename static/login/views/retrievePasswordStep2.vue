@@ -8,7 +8,7 @@
       <div class="row-login">
         <input type="text" :placeholder="$t('account.loginPage.verifyCodePlaceholder')" v-model.trim="verifyCode" autocomplete="off"
           class="outsideText" name="verifyCode" @keyup="handleValidation($v.verifyCode)" ></input>
-        <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="sendCodeTex" @click.prevent="sendVerifyCode">
+        <input type="button" :class="{'inputDisabled': cooldownCounter > 0}" class="inside-input" :value="btnSendTitle" @click.prevent="sendVerifyCode">
         </input>
         <span class="icon addon-icon icon-check"></span>
       </div>
@@ -75,7 +75,7 @@ export default {
       }
     },
 
-    sendCodeTex: function() {
+    btnSendTitle: function() {
       if (this.cooldownCounter > 0) {
         return this.$t('account.registerPage.cooldownText', {
           timer: this.cooldownCounter
@@ -105,6 +105,7 @@ export default {
           let result = await this.$acs.sendRetrievePasswordVerifyCode(this.accountId)
           if (result.success) {
             this.cooldownCounter = 60
+            setTimeout(this.cooldownTimer, 1000)
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))
           }

@@ -93,7 +93,7 @@ export default new Router({
         }, {
           name: 'MyLoginCodes',
           path: 'myLoginCodes',
-          component: require('../views/app/loginCodes/mycodes')
+          component: require('../views/app/loginCodes/myCodes')
         }, {
           name: 'WcpParams',
           path: 'wcpParams',

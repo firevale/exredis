@@ -1,18 +1,26 @@
 <template>
   <form name="params" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
-      <!--<div class="column is-8">
+      <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.serverHost')}}: </label>
-        <p class="control">
-          <label class="label" > {{  }}</label>
-        </p>
-      </div>      -->
+        <div class="field has-addons">
+          <p class="control flex-take-rest">
+            <input class="input disabled" disabled type="text" v-model.trim="serverHost">
+          </p>
+          <p class="control flex-fixed-size">
+            <a class="button" style="margin: 2px" v-clipboard:copy="serverHost" v-clipboard:success="toastClipboardSuccess">
+              <span class="icon is-small"> <i class="fa fa-clipboard"></i> </span>
+              <span> {{$t('admin.copy')}} </span>
+            </a>
+          </p>
+        </div>
+      </div>
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.verifyFile')}}: <span @mouseenter="show=true" @mouseleave="show=false" class="icon is-sign">?</span></label>
         <p class="control">
           <a @click.prevent="updateFile(wcpParams)"> {{ wcpParams.verify_File ? wcpParams.verify_File : "点击上传" }} </a>
         </p>
-      </div>      
+      </div>
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.appId')}}: <span class="icon is-sign">?</span></label>
         <p class="control">
@@ -57,10 +65,17 @@ import {
   showFileUploadDialog
 } from 'common/components/fileUpload'
 
+import Toast from 'common/components/toast'
+
 export default {
+  mounted: function() {
+    this.serverHost = location.origin + "/wcp/" + this.$route.params.appId
+  },
+
   data() {
     return {
       show: false,
+      serverHost: '',
       processing: false,
       tips: ['',
         '',
@@ -80,6 +95,10 @@ export default {
     ...mapActions([
       'updateWcpParams',
     ]),
+
+    toastClipboardSuccess: function() {
+      Toast.show(this.$t('admin.messages.copyClipboardSuccess'))
+    },
 
     updateFile: function(wcpParams) {
       showFileUploadDialog(this.$i18n, {

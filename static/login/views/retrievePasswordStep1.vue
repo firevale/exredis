@@ -7,7 +7,7 @@
       <p class="code-tip"> </p>
       <div class="row-login">
         <input type="text" class="outsideText" :placeholder="accountIdPlaceholder" v-model.trim="accountId" autocomplete="off" name="user"
-          @keyup="handleValidation($v.accountId)" />
+          @keyup="handleValidation($v.accountId)" ></input>
         <span class="icon addon-icon icon-user"></span>
       </div>
       <p class="errors">

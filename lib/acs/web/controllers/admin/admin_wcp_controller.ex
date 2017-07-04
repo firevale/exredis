@@ -158,6 +158,7 @@ defmodule Acs.Web.AdminWcpController do
 
   # update_wcp_message_rule
   def update_wcp_message_rule(conn, %{"app_id" => app_id, "keywords" => keywords, "response" => response} = rule) do
+    d "rule: #{inspect rule, pretty: true}"
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})

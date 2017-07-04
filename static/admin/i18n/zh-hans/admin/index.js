@@ -99,7 +99,7 @@ export default {
     searchMallOrders: '输入用户ID/订单号/用户姓名/手机号搜索',
     searchGoods: '搜索商品名称',
     searchUsers:'输入用户ID/昵称、APP用户ID/角色名',
-    searchAdminUsers:'输入用户Email/手机号码搜索',
+    searchAdminUsers:'输入火谷邮件账号(如: xxx@firevale.com)搜索',
     oops: '哦噢。。。',
     noOrderToDisplay: '当前没有任何可以显示的订单',
     noGoodsToDisplay: '当前没有任何商品',

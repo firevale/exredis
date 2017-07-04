@@ -11,7 +11,7 @@ defmodule Acs.Web.AdminUserController do
     adminUsers = Repo.all(queryAdminUser)
 
     query = from user in User,
-            select: map(user, [:id, :nickname, :email, :inserted_at]),
+            select: map(user, [:id, :nickname, :email, :mobile, :inserted_at]),
             where: not user.id in (^adminUsers) and (like(user.email, ^"%#{keyword}%") or like(user.mobile, ^"%#{keyword}%")),
             order_by: [desc: user.inserted_at]
     users = Repo.all(query)
@@ -30,17 +30,18 @@ defmodule Acs.Web.AdminUserController do
     if(level == 2 and RedisAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     else 
-      queryCount = from au in AdminUser,select: count(1), where: au.app_id == ^app_id and au.user_id == ^admin_id
+      queryCount = from au in AdminUser, select: count(1), where: au.app_id == ^app_id and au.user_id == ^admin_id
       case Repo.one!(queryCount) do
         1 ->
           conn |> json(%{success: false, i18n_message: "admin.user.messages.appAccountExists"})
         _ ->
           case AdminUser.changeset(%AdminUser{}, %{user_id: admin_id, account_id: account_id, admin_level: level, active: true, app_id: app_id}) |> Repo.insert do
-              {:ok, _new_admin_user} ->
-                RedisAdminUser.refresh(admin_id, app_id)
-                conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
-              {:error, %{errors: _errors}} ->
-                conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+            {:ok, _new_admin_user} ->
+              RedisAdminUser.refresh(admin_id, app_id)
+              conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
+            {:error, what} ->
+              error "add admin user failed, error: #{inspect what}"
+              conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           end
       end
     end

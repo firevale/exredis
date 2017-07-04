@@ -13,7 +13,7 @@
           </header>
           <div class="card-content">
             <div class="admin-user">
-              <div v-for="item in users" v-if="item.admin_level==2">
+              <div v-for="item in users" :key="item.user.id" v-if="item.admin_level==2">
                 <span class="tag is-info is-medium">
                   {{item.user.nickname}}
                   <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
@@ -35,7 +35,7 @@
           </header>
           <div class="card-content">
             <div class="admin-user">
-              <div v-for="item in users" class="level-item" v-if="item.admin_level==3">
+              <div v-for="item in users" :key="item.user.id" class="level-item" v-if="item.admin_level==3">
                 <span class="tag is-info is-medium">
                   {{item.user.nickname}}
                   <button @click="deleteUsers(item)" class="delete is-small"></button>

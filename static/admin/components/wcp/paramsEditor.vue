@@ -1,12 +1,18 @@
 <template>
   <form name="params" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
+      <!--<div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.serverHost')}}: </label>
+        <p class="control">
+          <label class="label" > {{  }}</label>
+        </p>
+      </div>      -->
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.verifyFile')}}: <span @mouseenter="show=true" @mouseleave="show=false" class="icon is-sign">?</span></label>
         <p class="control">
           <a @click.prevent="updateFile(wcpParams)"> {{ wcpParams.verify_File ? wcpParams.verify_File : "点击上传" }} </a>
         </p>
-      </div>
+      </div>      
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.appId')}}: <span class="icon is-sign">?</span></label>
         <p class="control">

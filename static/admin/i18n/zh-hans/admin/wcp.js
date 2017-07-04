@@ -28,4 +28,5 @@ export default {
   basicInfo: '基本参数',
   replyInfo: '回复配置',
   replyModel: '回复模版',
+  serverHost: '服务器域名',
 }

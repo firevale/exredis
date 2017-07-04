@@ -322,7 +322,7 @@ defmodule Utils do
       {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "1", "-define", "webp:lossless=false", low_quality_file_name <> ".webp"])
     end
 
-    path = Path.join(url_path, "/#{dest_file_name}")    
+    path = Path.join(url_path, "/#{dest_file_name}")
     {:ok, path, width, height}
   end
 
@@ -334,7 +334,7 @@ defmodule Utils do
   #deploy_wcp_file
   def deploy_wcp_file(from: from, filename: filename) do
     if File.exists?(from) do
-      static_path = Application.app_dir(:acs, "/") 
+      static_path = Application.app_dir(:acs, "priv/static/")
       case File.cp(from, Path.join(static_path, filename)) do 
         :ok -> {:ok, filename}
         {:error, reason} -> {:error, reason} 

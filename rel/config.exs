@@ -24,6 +24,7 @@ end
 release :acs do
   set version: current_version(:acs)
   set applications: [        
+    :elixir_make,
     :ex_syslogger,
     :inets,
     :poolboy,

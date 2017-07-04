@@ -14,8 +14,8 @@ const state = {
   appId: acs.getAppId(),
   deviceId: acs.getDeviceId(),
   accountExistences: {},
-  loginAccount: localStorage.getItem('_acs_login_account_id_'),
-  registerAccount: localStorage.getItem('_acs_register_account_id_'),
+  loginAccountId: localStorage.getItem('_acs_login_account_id_'),
+  registerAccountId: localStorage.getItem('_acs_register_account_id_'),
   captchaUrl: undefined,
   transitionName: 'slide-left',
   historyAccounts: restoreHistoryAccounts(),
@@ -27,14 +27,14 @@ const mutations = {
     state.accountExistences[payload.account] = payload.exists
   },
 
-  'SET_LOGIN_ACCOUNT' (state, account) {
-    state.loginAccount = account
-    localStorage.setItem('_acs_login_account_id_', account)
+  'SET_LOGIN_ACCOUNT' (state, accountId) {
+    state.loginAccountId = accountId
+    localStorage.setItem('_acs_login_account_id_', accountId)
   },
 
-  'SET_REGISTER_ACCOUNT' (state, account) {
-    state.registerAccount = account
-    localStorage.setItem('_acs_register_account_id_', account)
+  'SET_REGISTER_ACCOUNT' (state, accountId) {
+    state.registerAccountId = accountId
+    localStorage.setItem('_acs_register_account_id_', accountId)
   },
 
   'SET_CAPTCHA_URL' (state, captchaUrl) {

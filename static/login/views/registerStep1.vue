@@ -54,12 +54,12 @@ export default {
   },
 
   created: function() {
-    this.accountId = this.registerAccount
+    this.accountId = this.registerAccountId
   },
 
   computed: {
     ...mapGetters([
-      'registerAccount'
+      'registerAccountId'
     ]),
   },
 

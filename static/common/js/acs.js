@@ -4,6 +4,7 @@ import { guid } from './utils'
 const appId = window.acsConfig.appId ? window.acsConfig.appId : 'account-center'
 const acsDeviceId = window.acsConfig.deviceId
 
+
 export const getAppId = _ => {
   return appId
 }
@@ -32,5 +33,8 @@ export const checkIsLogin = (callback) => {
 }
 
 export const isRestrictLogin = window.acsConfig.isRestrictLogin || false
+export const isInApp = window.acsConfig.inApp || false
+export const csrfToken = window.acsConfig.csrfToken
+export const locale = window.acsConfig.locale || 'zh-hans'
 
 

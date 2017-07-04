@@ -5,8 +5,8 @@ const deviceId = state => state.app.deviceId
 const appId = state => state.app.appId
 const redirectUri = state => state.app.redirectUri
 const accountExistences = state => state.app.accountExistences
-const loginAccount = state => state.app.loginAccount
-const registerAccount = state => state.app.registerAccount
+const loginAccountId = state => state.app.loginAccountId
+const registerAccountId = state => state.app.registerAccountId
 const captchaUrl = state => state.app.captchaUrl
 const transitionName = state => state.app.transitionName
 const historyAccounts = state => state.app.historyAccounts
@@ -28,8 +28,8 @@ export {
   appId,
   redirectUri,
   accountExistences,
-  loginAccount,
-  registerAccount,
+  loginAccountId,
+  registerAccountId,
   captchaUrl,
   colors,
   transitionName,

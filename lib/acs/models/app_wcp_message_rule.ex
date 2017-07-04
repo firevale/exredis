@@ -21,6 +21,5 @@ defmodule Acs.AppWcpMessageRule do
     struct
     |> cast(params, [:keywords, :response])
     |> validate_required([:keywords, :response])
-    |> unique_constraint(name: :app_wcp_message_rules_app_id_keywords_index)
   end
 end

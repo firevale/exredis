@@ -23,12 +23,12 @@ Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(ServerApi)
 
-axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
+axios.defaults.headers.common['x-csrf-token'] = acs.csrfToken
 axios.defaults.headers.common['acs-app-id'] = acs.getAppId()
 axios.defaults.headers.common['acs-device-id'] = acs.getDeviceId()
 
 const i18n = new VueI18n({
-  locale: window.acsConfig.locale || 'zh-hans',
+  locale: acs.locale,
   messages: locales
 })
 

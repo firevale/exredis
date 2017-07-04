@@ -3,14 +3,14 @@ import * as utils from 'common/js/utils'
 
 export const setLoginAccountId = ({
   commit
-}, account) => {
-  commit('SET_LOGIN_ACCOUNT', account)
+}, accountId) => {
+  commit('SET_LOGIN_ACCOUNT', accountId)
 }
 
 export const setRegisterAccountId = ({
   commit
-}, account) => {
-  commit('SET_REGISTER_ACCOUNT', account)
+}, accountId) => {
+  commit('SET_REGISTER_ACCOUNT', accountId)
 }
 
 export const setCaptchaUrl = ({

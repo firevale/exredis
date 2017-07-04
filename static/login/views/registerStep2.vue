@@ -81,7 +81,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'registerAccount', 'captchaUrl'
+      'captchaUrl'
     ]),
 
     sendCodeTitle: function() {

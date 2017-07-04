@@ -6,7 +6,7 @@
       </div>
       <p class="code-tip"> {{ $t('account.registerPage.pleaseInputPassword') }}: </p>
       <div class="row-login">
-        <input type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
+        <input ref="password" type="password" minlength="6" maxlength="20" :placeholder="$t('account.loginPage.userPasswordPlaceHolder')" v-model.trim="password"
           autocomplete="off" name="password" @keyup="handleValidation($v.password)" ></input>
         <span class="icon addon-icon icon-lock"></span>
         <span class="icon addon-icon pull-right" :class="'icon-' + passwordIcon" @click="togglePasswordVisibility"></span>
@@ -42,6 +42,8 @@ import {
 import {
   updateQueryStringParameter
 } from 'common/js/utils'
+
+import {isInApp} from 'common/js/acs'
 
 export default {
   mixins: [loginFormMixin],
@@ -84,11 +86,13 @@ export default {
         try {
           let result = await this.$acs.createUser(this.accountId, this.password, this.verifyCode)
 
+          console.log('register result: ', result)
+
           if (result.success) {
             this.setLoginAccountId(this.accountId)
             this.setRegisterAccountId('')
             this.addLoginnedAccount(result)
-            if (window.acsConfig.inApp) {
+            if (isInApp) {
               nativeApi.closeWebviewWithResult(result)
             } else {
               if (this.redirectUri) {
@@ -100,7 +104,7 @@ export default {
             }
           }
           else if (result.action == 'show_login_code') {
-            this.$router.push('inputLoginCode')
+            this.$router.push({name: 'inputLoginCode'})
           } else {
             this.setErrorMessage(this.$t(result.i18n_message))
           }

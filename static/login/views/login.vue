@@ -50,6 +50,8 @@ import {
   updateQueryStringParameter
 } from 'common/js/utils'
 
+import {isInApp} from 'common/js/acs'
+
 export default {
   mixins: [loginFormMixin],
 
@@ -59,7 +61,7 @@ export default {
   },
 
   beforeMount: function() {
-    this.accountId = this.loginAccount
+    this.accountId = this.loginAccountId
   },
 
   data: function() {
@@ -74,8 +76,14 @@ export default {
 
   computed: {
     ...mapGetters([
-      'loginAccount', 'redirectUri'
+      'loginAccountId', 'redirectUri'
     ]),
+  },
+
+  watch: {
+    loginAccountId: function(val) {
+      this.accountId = val
+    }
   },
 
   methods: {
@@ -94,7 +102,7 @@ export default {
             this.addLoginnedAccount(result)
             this.setLoginAccountId(this.accountId)
 
-            if (window.acsConfig.inApp) {
+            if (isInApp) {
               nativeApi.closeWebviewWithResult(result)
             } else {
               if (this.redirectUri) {

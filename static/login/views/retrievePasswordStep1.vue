@@ -41,7 +41,7 @@ export default {
   },
 
   beforeMount: function() {
-    this.accountId = this.loginAccount
+    this.accountId = this.loginAccountId
   },
 
   data: function() {
@@ -54,8 +54,14 @@ export default {
 
   computed: {
     ...mapGetters([
-      'loginAccount', 'invalidAccountIdErrorMessage'
+      'loginAccountId', 'invalidAccountIdErrorMessage'
     ]),
+  },
+
+  watch: {
+    loginAccountId: function(val) {
+      this.accountId = loginAccountId
+    }
   },
 
   methods: {

@@ -10,11 +10,13 @@ export default {
   newCodeTemplate: '新激活码模版',
   ownedCodeTemplate: '已有激活码模版',
   noCodeTemplate: '没有激活码模版',
+  
   id: '编号',
   verifyFile: '验证文件',
   keywords: '关键词',
   response: '回复内容',
   createdAt: '创建时间',
+  view: '查看',
   edit: '修改',
   operate: '操作',
   addRule: '添加自定义回复',
@@ -24,11 +26,18 @@ export default {
   btnTitle: '保 存',
   keywordsRequired: '关键词必填',
   operateSuccess: '操作成功',
-
   basicInfo: '基本参数',
   replyInfo: '回复配置',
   replyModel: '回复模版',
   serverHost: '服务器域名',
-
   userLoginCode: '使用激活码',
+
+  msgId: '编号',
+  msgFrom: '发送人',
+  msgTo: '接收人',
+  msgType: '消息类型',
+  msgContent: '消息内容',
+  msgTime: '创建时间',
+
+  searchTip: '输入发送人，接收人或消息内容',
 }

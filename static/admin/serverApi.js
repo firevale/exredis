@@ -255,9 +255,22 @@ export default {
         return post('/admin_actions/wcp/delete_wcp_message_rule', {rule_id}, successMessage)
       },
 
+      deleteMessage(message_id, successMessage) {
+        return post('/admin_actions/wcp/delete_wcp_message', {message_id}, successMessage)
+      },
+
       getRuleList(app_id, page, records_per_page) {
         return post('/admin_actions/wcp/get_rule_list', {
           app_id,
+          page,
+          records_per_page
+        })
+      },
+
+      getMessageList(app_id, keyword, page, records_per_page) {
+        return post('/admin_actions/wcp/get_message_list', {
+          app_id,
+          keyword,
           page,
           records_per_page
         })

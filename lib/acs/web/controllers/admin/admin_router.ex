@@ -111,7 +111,8 @@ defmodule Acs.Web.AdminRouter do
       post  "/add_wcp_empty_params", AdminWcpController, :add_wcp_empty_params
       post  "/update_wcp_params", AdminWcpController, :update_wcp_params 
       post  "/update_wcp_menus", AdminWcpController, :update_wcp_menus 
-      post  "/get_message_list", AdminWcpController, :get_message_list 
+      post  "/get_message_list", AdminWcpController, :get_message_list
+      post  "/delete_wcp_message", AdminWcpController, :delete_wcp_message  
       post  "/update_wcp_message_rule", AdminWcpController, :update_wcp_message_rule
       post  "/delete_wcp_message_rule", AdminWcpController, :delete_wcp_message_rule 
       post  "/get_rule_list", AdminWcpController, :get_rule_list

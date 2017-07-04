@@ -49,6 +49,7 @@ defmodule Acs.Mixfile do
      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
      {:comeonin, "~> 3.1"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
+     {:unicode_util_compat, github: "benoitc/unicode_util_compat", override: true},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
      {:ex_syslogger, "~> 1.3"},

@@ -39,7 +39,7 @@ defmodule Acs.Web.AdminUserController do
             {:ok, _new_admin_user} ->
               RedisAdminUser.refresh(admin_id, app_id)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
-            {:error, what}} ->
+            {:error, what} ->
               error "add admin user failed, error: #{inspect what, pretty: true}"
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
           end

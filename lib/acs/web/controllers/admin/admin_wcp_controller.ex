@@ -4,7 +4,8 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.AppWcpConfig
   alias Acs.AppWcpMessage
   alias Acs.AppWcpMessageRule
-  # alias Acs.RedisSetting
+  alias Acs.RedisAppWcpConfig
+  alias Acs.RedisAppWcpMessageRule
   import Acs.UploadImagePlugs 
 
   # add_wcp_empty_params
@@ -19,7 +20,7 @@ defmodule Acs.Web.AdminWcpController do
             # add new
             case AppWcpConfig.changeset(%AppWcpConfig{}, wcpParams) |> Repo.insert do
               {:ok, new_wcp} ->
-                # RedisApp.refresh(new_goods.app_id)
+                RedisAppWcpConfig.refresh(app_id)
                 conn |> json(%{success: true, wcpconfig: new_wcp})
 
               {:error, %{errors: errors}} ->
@@ -44,7 +45,7 @@ defmodule Acs.Web.AdminWcpController do
         # update
         case AppWcpConfig.changeset(config, wcpParams) |> Repo.update do
           {:ok, new_wcp} ->
-            # RedisApp.refresh(new_goods.app_id)
+            RedisAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
           {:error, %{errors: errors}} ->
@@ -68,7 +69,7 @@ defmodule Acs.Web.AdminWcpController do
       %AppWcpConfig{} = config ->
         case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
           {:ok, new_wcp} ->
-            # RedisApp.refresh(new_goods.app_id)
+            RedisAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
           {:error, %{errors: errors}} ->
@@ -132,7 +133,7 @@ defmodule Acs.Web.AdminWcpController do
             # add new
             case AppWcpMessageRule.changeset(%AppWcpMessageRule{}, rule) |> Repo.insert do
               {:ok, new_rule} ->
-                # RedisApp.refresh(new_goods.app_id)
+                RedisAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
@@ -143,7 +144,7 @@ defmodule Acs.Web.AdminWcpController do
             # update
             case AppWcpMessageRule.changeset(msgrule, rule) |> Repo.update do
               {:ok, new_rule} ->
-                # RedisApp.refresh(new_goods.app_id)
+                RedisAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
@@ -162,7 +163,7 @@ defmodule Acs.Web.AdminWcpController do
       %AppWcpMessageRule{} = rule ->
         case Repo.delete(rule) do
           {:ok, _} ->
-            # RedisApp.refresh(app_id)
+            RedisAppWcpMessageRule.refresh(rule.app_id)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->

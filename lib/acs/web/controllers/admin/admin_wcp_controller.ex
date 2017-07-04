@@ -82,22 +82,57 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # get_message_list
-  def get_message_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
-    total = Repo.one!(from msg in AppWcpMessage, where: msg.app_id == ^app_id, select: count(msg.id))
+  def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+    total_query = case String.length(keyword) >0 do
+          false -> 
+            from msg in AppWcpMessage, where: msg.app_id == ^app_id, select: count(msg.id)
+          true -> 
+            from msg in AppWcpMessage, where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")), select: count(msg.id)
+        end
+    total = Repo.one!(total_query)
     total_page = round(Float.ceil(total / records_per_page))
 
-    query = from msg in AppWcpMessage,
-              select: msg,
-              limit: ^records_per_page,
-              where: msg.app_id == ^app_id,
-              offset: ^((page - 1) * records_per_page),
-              order_by: [desc: msg.inserted_at]
+    query = case String.length(keyword) >0 do
+              false ->
+                from msg in AppWcpMessage,
+                          select: msg,
+                          limit: ^records_per_page,
+                          where: msg.app_id == ^app_id,
+                          offset: ^((page - 1) * records_per_page),
+                          order_by: [desc: msg.inserted_at]
+
+              true -> 
+                from msg in AppWcpMessage,
+                          select: msg,
+                          limit: ^records_per_page,
+                          where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")),
+                          offset: ^((page - 1) * records_per_page),
+                          order_by: [desc: msg.inserted_at]
+            end
 
     message = Repo.all(query)
-
     conn |> json(%{success: true, message: message, total: total_page})
   end
   def get_message_list(conn, _params) do 
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  end
+
+  # delete_wcp_message
+  def delete_wcp_message(conn, %{"message_id" => message_id}) do
+    case Repo.get(AppWcpMessage, message_id) do
+      %AppWcpMessage{} = message ->
+        case Repo.delete(message) do
+          {:ok, _} ->
+            conn |> json(%{success: true})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    end
+  end
+  def delete_wcp_message(conn, _params) do 
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

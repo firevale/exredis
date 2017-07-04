@@ -131,6 +131,7 @@ export default {
     confirmDeleteCustomerService: '您确定要删除应用客服『{nickName}』么?',
     copyClipboardSuccess: '已拷贝到剪贴板',
     confirmDeleteRule: '您确定要删除自定义回复么?',
+    confirmDeleteMessage: '您确定要删除消息记录么?',
   },
 
   serverSuccess: {

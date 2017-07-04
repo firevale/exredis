@@ -1,6 +1,6 @@
 defmodule Acs.Emails do 
   import Bamboo.Email
-  use    Bamboo.Phoenix, view: Acs.EmailView
+  use    Bamboo.Phoenix, view: Acs.Web.EmailView
   import Acs.Web.Gettext
 
   require Utils
@@ -20,6 +20,6 @@ defmodule Acs.Emails do
     Gettext.put_locale(Acs.Gettext, locale)
 
     new_email()
-    |> put_html_layout({Acs.LayoutView, "email.html"})
+    |> put_html_layout({Acs.Web.LayoutView, "email.html"})
   end
 end

@@ -16,7 +16,9 @@
         </div>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.verifyFile')}}: <span @mouseenter="show=true" @mouseleave="show=false" class="icon is-sign">?</span></label>
+        <label class="label"> {{ $t('admin.wcp.verifyFile')}}:
+          <tooltip label="" placement="top"><span class="icon is-sign">?</span></tooltip>
+        </label>
         <p class="control">
           <a @click.prevent="updateFile(wcpParams)"> {{ wcpParams.verify_File ? wcpParams.verify_File : "点击上传" }} </a>
         </p>
@@ -66,10 +68,11 @@ import {
 } from 'common/components/fileUpload'
 
 import Toast from 'common/components/toast'
+import Tooltip from 'vue-bulma-tooltip'
 
 export default {
   mounted: function() {
-    this.serverHost = location.origin + "/wcp/" + this.$route.params.appId
+    this.serverHost = location.origin + "/api/wcp/" + this.$route.params.appId
   },
 
   data() {
@@ -89,6 +92,10 @@ export default {
     ...mapGetters([
       'wcpParams'
     ]),
+  },
+
+  components: {
+    Tooltip
   },
 
   methods: {

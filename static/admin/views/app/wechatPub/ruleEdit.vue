@@ -1,18 +1,24 @@
 <template>
   <div style="position: relative">
     <form class="post" @submit.prevent="handleSubmit">
-      <p class="control is-horizontal" style="margin-bottom: 1.5rem">
-        <input class="input" style="border-radius: 0" type="text" v-model.trim="rule.keywords" :placeholder="$t('admin.wcp.keywordsPlaceholder')"></input>
-      </p>
-      <quill-editor v-model.trim="rule.response" :placeholder="$t('admin.wcp.responsePlaceholder')"
-        @ready="setEditor" @input="handleValidation($v.rule.response)" @image="onInsertImage">
-      </quill-editor>
+      <div>
+        <label> {{ $t('admin.wcp.keywords') }}: </label>
+        <p class="control is-horizontal" style="margin-bottom: 1.5rem">
+          <input class="input" style="border-radius: 0" type="text" v-model.trim="rule.keywords" :placeholder="$t('admin.wcp.keywordsPlaceholder')"></input>
+        </p>
+      </div>
+      <div>
+        <label> {{ $t('admin.wcp.response') }}: </label>
+        <quill-editor v-model.trim="rule.response" :placeholder="$t('admin.wcp.responsePlaceholder')" @ready="setEditor"
+          @input="handleValidation($v.rule.response)" @image="onInsertImage">
+        </quill-editor>
+      </div>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
         <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
       </div>
       <div class="tile is-full has-text-centered">
-        <p style="margin: 0 auto">
+        <p style="margin: 5px auto">
           <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnTitle')"
             class="button is-primary" :class="processing || $v.$invalid ? 'is-disabled' : ''" :disabled="$v.$invalid"
           />

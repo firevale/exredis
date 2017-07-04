@@ -13,7 +13,7 @@ export default {
   id: '编号',
   verifyFile: '验证文件',
   keywords: '关键词',
-  response: '回复',
+  response: '回复内容',
   createdAt: '创建时间',
   edit: '修改',
   operate: '操作',
@@ -29,4 +29,6 @@ export default {
   replyInfo: '回复配置',
   replyModel: '回复模版',
   serverHost: '服务器域名',
+
+  userLoginCode: '使用激活码',
 }

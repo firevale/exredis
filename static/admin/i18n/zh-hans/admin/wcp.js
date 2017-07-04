@@ -29,4 +29,6 @@ export default {
   replyInfo: '回复配置',
   replyModel: '回复模版',
   serverHost: '服务器域名',
+
+  userLoginCode: '使用激活码',
 }

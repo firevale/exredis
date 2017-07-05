@@ -9,9 +9,10 @@
       </div>
       <div>
         <label> {{ $t('admin.wcp.response') }}: </label>
-        <quill-editor v-model.trim="rule.response" :placeholder="$t('admin.wcp.responsePlaceholder')" @ready="setEditor"
+        <textarea class="textarea" rows="4" :placeholder="$t('admin.wcp.responsePlaceholder')" v-model.trim="rule.response" />
+        <!--<quill-editor v-model.trim="rule.response" :placeholder="$t('admin.wcp.responsePlaceholder')" @ready="setEditor"
           @input="handleValidation($v.rule.response)" @image="onInsertImage">
-        </quill-editor>
+        </quill-editor>-->
       </div>
       <div class="tile is-full has-text-left" style="margin-top: 0.5rem" v-show="errorHint">
         <span class="icon is-sign">!</span>
@@ -56,7 +57,7 @@ export default {
       } else if (!this.$v.rule.keywords.emoji) {
         return this.$t('error.validation.emojiPostTitle')
       } else if (!this.$v.rule.response.required) {
-        return this.$t('error.validation.commentContentRequired')
+        return this.$t('error.validation.responseRequired')
       }
       return ''
     },

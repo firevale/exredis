@@ -91,5 +91,6 @@
      postTitleMinLength: '标题文字太短了',
      postTitleMaxLength: '标题文字太长了',
      commentContentRequired: '回帖内容最少5个字',
+     responseRequired: '回复内容不能为空',
    }
  }

@@ -17,29 +17,19 @@
                 <th>{{ $t('admin.wcp.msgId') }}</th>
                 <th>{{ $t('admin.wcp.msgFrom') }}</th>
                 <th>{{ $t('admin.wcp.msgTo')}}</th>
+                <th>{{ $t('admin.wcp.msgContent')}}</th>
                 <th>{{ $t('admin.wcp.msgType')}}</th>
                 <th>{{ $t('admin.wcp.msgTime')}}</th>
-                <th>{{ $t('admin.wcp.view')}}</th>
-                <th>{{ $t('admin.wcp.operate')}}</th>
               </tr>
             </thead>
             <tbody v-show="messages && messages.length > 0">
               <tr v-for="(message, index) in messages">
                 <td> {{ message.id }} </td>
-                <td> {{ message.from }} </td>
-                <td> {{ message.to }} </td>
+                <td> {{ getMsgUser(message.from) }} </td>
+                <td> {{ getMsgUser(message.to) }} </td>
+                <td style="max-width:400px;"> {{ message.content }} </td>
                 <td> {{ message.msg_type }} </td>
                 <td> {{ message.inserted_at | formatServerDateTime }} </td>
-                <td class="is-icon">
-                  <a @click.prevent="viewDetail(message)">
-                    <i class="fa fa-comment"></i>
-                  </a>
-                </td>
-                <td class="is-icon">
-                  <a @click.prevent="deleteMsg(message, index)">
-                    <i class="fa fa-trash-o"></i>
-                  </a>
-                </td>
               </tr>
             </tbody>
           </table>
@@ -90,6 +80,13 @@ export default {
         this.page = page
       }
       this.loading = false
+    },
+
+    getMsgUser: function(openid) {
+      if(openid.indexOf('gh_') >= 0)
+        return '系统'
+      else
+        return openid
     },
 
     onPageChange: function(page) {

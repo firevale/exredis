@@ -22,6 +22,7 @@
               <tr>
                 <th>{{ $t('admin.wcp.id') }}</th>
                 <th>{{ $t('admin.wcp.keywords') }}</th>
+                <th>{{ $t('admin.wcp.response') }}</th>
                 <th>{{ $t('admin.wcp.createdAt')}}</th>
                 <th>{{ $t('admin.wcp.edit')}}</th>
                 <th>{{ $t('admin.wcp.operate')}}</th>
@@ -31,6 +32,7 @@
               <tr v-for="(rule, index) in rules">
                 <td> {{ rule.id }} </td>
                 <td> {{ rule.keywords }} </td>
+                <td style="max-width:400px;"> {{ rule.response }} </td>
                 <td> {{ rule.inserted_at | formatServerDateTime }} </td>
                 <td class="is-icon">
                   <a @click.prevent="editRule(rule, index)">

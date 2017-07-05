@@ -11,7 +11,7 @@ defmodule Acs.WcpLoginCodeResponse do
 
   def build_reply_content(app_id, from) do 
     case RedisApp.find(app_id) do 
-      %{} = app
+      %{} = app ->
         case RedisAppWcpConfig.find(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.can_assign_code do 

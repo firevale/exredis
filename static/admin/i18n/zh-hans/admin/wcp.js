@@ -25,12 +25,14 @@ export default {
   keywordsPlaceholder: '请填写关键词',
   responsePlaceholder: '请填写回复内容',
   btnTitle: '保 存',
+  btnGetMenu: '获取当前菜单',
+  btnUpdateMenu: '更新到服务器',
   keywordsRequired: '关键词必填',
   operateSuccess: '操作成功',
   basicInfo: '基本参数',
   replyInfo: '消息配置',
   replyModel: '激活码消息',
-  serverHost: '服务器域名',
+  serverHost: '服务器域名(URL)',
   userLoginCode: '发放激活码',
 
   msgId: '编号',
@@ -41,4 +43,13 @@ export default {
   msgTime: '创建时间',
 
   searchTip: '输入发送人，接收人或消息内容',
+
+  menus: {
+    params: '按钮其他参数',
+    name: '名称',
+    type: '类型',
+    key: 'Key',
+    url: 'Url',
+    tip: '如果有下级菜单请忽略上述类型和Key、Url等参数。',
+  }
 }

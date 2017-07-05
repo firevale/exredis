@@ -100,22 +100,37 @@
       </table>
     </div>
     <div class="column is-4">
-      <label style="font-weight:bold;">{{ $t('admin.wcp.menus.params') }}</label>
-      <div>
-        <label>{{ $t('admin.wcp.menus.name') }}:</label>
-        <input class="input" type="text" value="">
+      <div class="field has-addons">
+        <label style="font-weight:bold;">{{ $t('admin.wcp.menus.params') }}</label>
       </div>
-      <div>
-        <label>{{ $t('admin.wcp.menus.type') }}:</label>
-        <input class="input" type="text" value="">
+      <div class="field has-addons">
+        <label class="label">{{ $t('admin.wcp.menus.name') }}：</label>
+        <p class="control">
+          <input class="input is-small" style="width:200px;" type="text" value="">
+        </p>
       </div>
-      <div>
-        <label>{{ $t('admin.wcp.menus.key') }}:</label>
-        <input class="input" type="text" value="">
+      <div class="field has-addons">
+        <label class="label">{{ $t('admin.wcp.menus.type') }}：</label>
+        <p class="control">
+          <span class="select is-media">
+            <select>
+              <option value="click">  点击事件(传回服务器)  </option>
+              <option value="url">  访问网页(直接跳转)  </option>
+            </select>
+          </span>
+        </p>
       </div>
-      <div>
-        <label>{{ $t('admin.wcp.menus.url') }}:</label>
-        <input class="input" type="text" value="">
+      <div class="field has-addons">
+        <label class="label">{{ $t('admin.wcp.menus.key') }}：</label>
+        <p class="control">
+          <input class="input is-small" type="text" style="width:200px;" value="">
+        </p>
+      </div>
+      <div class="field has-addons">
+        <label class="label">{{ $t('admin.wcp.menus.url') }}：</label>
+        <p class="control">
+          <input class="input is-small" type="text" style="width:200px;" value="">
+        </p>
       </div>
       <label style="font-size:10pt;">{{ $t('admin.wcp.menus.tip') }}</label>
     </div>

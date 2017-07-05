@@ -10,7 +10,8 @@ export default {
   defaultResponse: '默认回复消息',
   newCodeTemplate: '新激活码模版',
   ownedCodeTemplate: '已有激活码模版',
-  noCodeTemplate: '没有激活码模版',
+  noCodeTemplate: '没有激活码回复消息',
+  closedTemplate: '未开启领取回复消息',
   
   id: '编号',
   verifyFile: '验证文件',

@@ -57,7 +57,7 @@
           <input class="input" type="text" v-model.trim="app.payment_callback">
         </p>
       </div>
-      <div class="column is-4">
+      <div class="column is-3">
         <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
         <p class="control">
           <toggle-button :value="app.has_forum" color="#4e9ed8" :sync="true" 
@@ -65,7 +65,7 @@
           @change="x => app.has_forum = x.value" ></toggle-button>
         </p>
       </div>
-      <div class="column is-4">
+      <div class="column is-3">
         <label class="label"> {{ $t('admin.label.appHasMall')}}: </label>
         <p class="control">
           <toggle-button :value="app.has_mall" color="#4e9ed8" :sync="true" 
@@ -73,12 +73,20 @@
           @change="x => app.has_mall = x.value" ></toggle-button>
         </p>
       </div>
-      <div class="column is-4">
+      <div class="column is-3">
         <label class="label"> {{ $t('admin.label.appRestrictLogin')}}: </label>
         <p class="control">
           <toggle-button :value="app.restrict_login" color="#4e9ed8" :sync="true" 
           :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}" 
           @change="x => app.restrict_login = x.value"> </toggle-button>
+        </p>
+      </div>
+      <div class="column is-3">
+        <label class="label"> {{ $t('admin.label.appCanAssignCode')}}: </label>
+        <p class="control">
+          <toggle-button :value="app.can_assign_code" color="#4e9ed8" :sync="true" 
+          :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}" 
+          @change="x => app.can_assign_code = x.value"> </toggle-button>
         </p>
       </div>
     </div>

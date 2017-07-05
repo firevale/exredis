@@ -33,7 +33,7 @@ defmodule Acs.AppWcpConfig do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:verify_File, :wcp_app_id, :wcp_app_key, :token, :aes_key, :menu, :subscribed_response, :scan_response, 
+    |> cast(params, [:verify_file, :wcp_app_id, :wcp_app_key, :token, :aes_key, :menu, :subscribed_response, :scan_response, 
                     :default_response, :new_code_template, :owned_code_template, :no_code_template, :closed_template, :app_id])
     |> validate_required([:app_id])
     |> unique_constraint(:wcp_app_id)

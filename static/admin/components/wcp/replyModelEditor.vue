@@ -19,6 +19,12 @@
           <textarea class="textarea" rows="4" v-model.trim="wcpParams.no_code_template" ></textarea>
         </p>
       </div>
+      <div class="column is-10">
+        <label class="label"> {{ $t('admin.wcp.closedTemplate')}}: </label>
+        <p class="control">
+          <textarea class="textarea" rows="4" v-model.trim="wcpParams.closed_template" ></textarea>
+        </p>
+      </div>
       <div class="column is-10 has-text-centered">
         <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
       </div>

@@ -4,7 +4,7 @@ defmodule Acs.AppWcpConfig do
   @derive {Poison.Encoder, except: [:app, :__meta__]}
 
   schema "app_wcp_configs" do
-    field :verify_File, :string    # 验证文件
+    field :verify_file, :string    # 验证文件
     field :wcp_app_id, :string    # 开发者ID
     field :wcp_app_key, :string   # 开发者密码
     field :token, :string         # 令牌
@@ -19,6 +19,7 @@ defmodule Acs.AppWcpConfig do
     field :new_code_template, :string     # 新激活码模版
     field :owned_code_template, :string   # 已有激活码模版
     field :no_code_template, :string      # 没有激活码模版
+    field :closed_template, :string       # 关闭领取模版
 
     belongs_to :app, Acs.App, type: :string
 
@@ -33,7 +34,7 @@ defmodule Acs.AppWcpConfig do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:verify_File, :wcp_app_id, :wcp_app_key, :token, :aes_key, :menu, :subscribed_response, :scan_response, 
-                    :default_response, :new_code_template, :owned_code_template, :no_code_template, :app_id])
+                    :default_response, :new_code_template, :owned_code_template, :no_code_template, :closed_template, :app_id])
     |> validate_required([:app_id])
     |> unique_constraint(:wcp_app_id)
   end

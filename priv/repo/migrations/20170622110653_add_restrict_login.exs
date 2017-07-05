@@ -28,7 +28,7 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     create index(:app_login_codes, [:inserted_at])
 
     create table(:app_wcp_configs) do
-      add :verify_File, :string
+      add :verify_file, :string
       add :wcp_app_id, :string
       add :wcp_app_key, :string
       add :token, :string

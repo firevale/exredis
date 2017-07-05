@@ -29,12 +29,12 @@ const menuitems = state => {
         if (has_mall) result.push(element);
         break;
 
-      case 'restrict_login':
-        if (restrict_login) {
-          element.meta.expanded = false
-          result.push(element);
-        }
-        break;
+      // case 'restrict_login':
+      //   if (restrict_login) {
+      //     element.meta.expanded = false
+      //     result.push(element);
+      //   }
+      //   break;
 
       default:
         result.push(element)

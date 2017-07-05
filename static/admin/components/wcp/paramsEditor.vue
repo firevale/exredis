@@ -47,9 +47,9 @@
           <input class="input" type="text" v-model.trim="wcpParams.aes_key">
         </p>
       </div>
-    </div>
-    <div class="container has-text-centered" style="margin-top: 15px">
-      <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
+      <div class="column is-8 has-text-centered">
+        <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
+      </div>
     </div>
   </form>
 </template>

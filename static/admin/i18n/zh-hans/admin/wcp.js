@@ -1,10 +1,11 @@
 export default {
-  appId: '开发者ID(AppID)',
+  appId: '开发者ID(AppId)',
   appKey: '开发者密码(AppSecret)',
   token: '令牌(Token)',
   aesKey: '消息加解密密钥(EncodingAESKey)',
   menu: '自定义菜单',
-  subscribedResponse: '订阅回复消息',
+
+  subscribedResponse: '关注公众号时回复',
   scanResponse: '扫码回复消息',
   defaultResponse: '默认回复消息',
   newCodeTemplate: '新激活码模版',
@@ -29,10 +30,10 @@ export default {
   keywordsRequired: '关键词必填',
   operateSuccess: '操作成功',
   basicInfo: '基本参数',
-  replyInfo: '回复配置',
-  replyModel: '回复模版',
-  serverHost: '服务器地址(URL)',
-  userLoginCode: '使用激活码',
+  replyInfo: '消息配置',
+  replyModel: '激活码消息',
+  serverHost: '服务器域名(URL)',
+  userLoginCode: '发放激活码',
 
   msgId: '编号',
   msgFrom: '发送人',

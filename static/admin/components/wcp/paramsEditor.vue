@@ -2,20 +2,6 @@
   <form name="params" @submit.prevent="handleSubmit">
     <div class="columns is-multiline">
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.serverHost')}}: </label>
-        <div class="field has-addons">
-          <p class="control flex-take-rest">
-            <input class="input disabled" disabled type="text" v-model.trim="serverHost">
-          </p>
-          <p class="control flex-fixed-size">
-            <a class="button" style="margin: 2px" v-clipboard:copy="serverHost" v-clipboard:success="toastClipboardSuccess">
-              <span class="icon is-small"> <i class="fa fa-clipboard"></i> </span>
-              <span> {{$t('admin.copy')}} </span>
-            </a>
-          </p>
-        </div>
-      </div>
-      <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.verifyFile')}}:
           <tooltip label="" placement="top"><span class="icon is-sign">?</span></tooltip>
         </label>
@@ -34,6 +20,20 @@
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.wcp_app_key">
         </p>
+      </div>
+      <div class="column is-8">
+        <label class="label"> {{ $t('admin.wcp.serverHost')}}: </label>
+        <div class="field has-addons">
+          <p class="control flex-take-rest">
+            <input class="input disabled" disabled type="text" v-model.trim="serverHost">
+          </p>
+          <p class="control flex-fixed-size">
+            <a class="button" style="margin: 2px" v-clipboard:copy="serverHost" v-clipboard:success="toastClipboardSuccess">
+              <span class="icon is-small"> <i class="fa fa-clipboard"></i> </span>
+              <span> {{$t('admin.copy')}} </span>
+            </a>
+          </p>
+        </div>
       </div>
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.token')}}: <span class="icon is-sign">?</span></label>

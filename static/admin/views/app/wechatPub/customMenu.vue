@@ -1,8 +1,8 @@
 <template>
   <div class="columns is-multiline">
     <div class="column is-12" style="padding:10px;">
-      <h2>使用说明及规则，请仔细阅读</h2>
-      <ul>
+      <h2 style="font-weight:bold;">使用说明及规则，请仔细阅读</h2>
+      <ul style="list-style:circle; padding:10px 0 10px 20px; font-size:11pt;">
         <li>官方要求：一级菜单按钮个数为2-3个</li>
         <li>官方要求：如果设置了二级菜单，子按钮个数为2-5个</li>
         <li>官方要求：按钮描述，既按钮名字，不超过16个字节，子菜单不超过40个字节</li>

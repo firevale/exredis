@@ -93,7 +93,7 @@ defmodule Acs.AppWcpResponse do
   end
   # 自定义菜单事件
   defp _build_event_reply(app_id, 
-    %{msgtype: "event", event: "CLICK", event_key: "assign_login_code"} = msg) do 
+    %{msgtype: "event", event: "CLICK", event_key: "assign_login_code"} = msg, _cfg) do 
     %{from: msg.tousername, 
       to: msg.fromusername, 
       content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}

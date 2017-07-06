@@ -97,12 +97,11 @@ defmodule Acs.AppLoginCode do
     Redis.del(key)
     Cachex.del(:default, key)
     with dates <- latest_dates(ndays),
-         labels <- labels(dates),
          assigned_data <- daily_assigned_data(app_id, ndays, dates),
          used_data <- daily_used_data(app_id, ndays, dates)
     do 
       %{
-        labels: labels,
+        labels: dates,
         datasets: [
           %{
             fillColor: "rgba(220,220,220,0.5)",
@@ -126,10 +125,10 @@ defmodule Acs.AppLoginCode do
   end
 
   defp daily_assigned_data(app_id, ndays, dates) do 
-    query = from c in __MODULE__,
-      select: {fragment("date(convert_tz(?, '+00:00', '+08:00'))", c.assigned_at), count(c.code)},
-      group_by: fragment("date(convert_tz(?, '+00:00', '+08:00'))", c.assigned_at),
-      where: c.app_id == ^app_id and not is_nil(c.assigned_at) and c.assigned_at > ago(^ndays, "day"), 
+    query = from c in __MODULE__, 
+      select: {fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.assigned_at), count(c.code)}, 
+      group_by: fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.assigned_at), 
+      where: c.app_id == ^app_id and not is_nil(c.assigned_at) and c.assigned_at > ago(^ndays, "day"),
       where: not like(c.owner, "admin.%")
     
     counters = case Repo.all(query) do 
@@ -143,9 +142,9 @@ defmodule Acs.AppLoginCode do
   end
 
   defp daily_used_data(app_id, ndays, dates) do 
-    query = from c in __MODULE__,
-      select: {fragment("date(convert_tz(?, '+00:00', '+08:00'))", c.used_at), count(c.code)},
-      group_by: fragment("date(convert_tz(?, '+00:00', '+08:00'))", c.used_at),
+    query = from c in __MODULE__, 
+      select: {fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.used_at), count(c.code)}, 
+      group_by: fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.used_at), 
       where: c.app_id == ^app_id and not is_nil(c.used_at) and c.used_at > ago(^ndays, "day"), 
       where: not like(c.owner, "admin.%")
     
@@ -162,11 +161,9 @@ defmodule Acs.AppLoginCode do
   defp latest_dates(ndays) do 
     now = Timex.local 
     0..ndays |> Enum.map(fn(n) -> 
-      now |> Timex.shift(days: -n) |> Timex.to_date 
+      now |> Timex.shift(days: -n) |> Timex.to_date |> to_string 
     end) |> Enum.reverse 
   end
-
-  defp labels(l), do: Enum.map(l, &(to_string(&1))) 
   
 
 end

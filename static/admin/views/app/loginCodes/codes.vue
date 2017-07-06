@@ -80,8 +80,8 @@
         </div>
       </div>
     </nav>
-    <article class="tile box">
-      <chart :type="'line'" :data="dailyChart"></chart>
+    <article class="tile box chart">
+      <line-chart ref="chart" :options="options" :width="'100%'"></line-chart>
     </article>
   </div>
 </template>
@@ -91,7 +91,7 @@ import {
   mapGetters
 } from 'vuex'
 
-import Chart from 'vue-bulma-chartjs'
+import LineChart from 'admin/components/chart/line'
 import Toast from 'common/components/toast'
 
 export default {
@@ -106,7 +106,12 @@ export default {
       genNumber: 0,
       delNumber: 0,
       assignNumber: 0,
-      dailyChart: {},
+      dailyChart: undefined,
+      options: {
+        segmentShowStroke: false,
+        responsive: true, 
+        maintainAspectRatio: false
+      }
     }
   },
 
@@ -129,9 +134,10 @@ export default {
       let result = await this.$acs.fetchLoginCodesStats({
         app_id: this.$route.params.appId
       })
+
       if (result.success) {
         this.stats = result.stats
-        this.dailyChart = result.daily_chart
+        this.$refs.chart && (this.$refs.chart.updateChart(result.daily_chart))
       }
     },
 
@@ -195,7 +201,7 @@ export default {
   },
 
   components: {
-    Chart
+    LineChart
   }
 }
 </script>
@@ -205,5 +211,11 @@ export default {
     .box:not(:last-child) {
       margin-bottom: 0;
     }
+    article.chart {
+      div {
+        flex-basis: 100%;
+      }
+    }
+
   }
 </style>

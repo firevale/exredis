@@ -92,8 +92,10 @@ defmodule Acs.AppLoginCode do
     end)
   end
 
-
   def refresh_daily_chart_data(app_id, ndays) do 
+    key = "login_code.daily_chart_data.#{app_id}.#{ndays}"
+    Redis.del(key)
+    Cachex.del(:default, key)
     with dates <- latest_dates(ndays),
          labels <- labels(dates),
          assigned_data <- daily_assigned_data(app_id, ndays, dates),
@@ -107,6 +109,7 @@ defmodule Acs.AppLoginCode do
             strokeColor: "rgba(220,220,220,1)",
             pointColor: "rgba(220,220,220,1)",
             pointStrokeColor: "#fff",
+            label: "公众号发码数",
             data: assigned_data,
           },
           %{
@@ -114,6 +117,7 @@ defmodule Acs.AppLoginCode do
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
             pointStrokeColor: "#fff",
+            label: "登录绑定数",
             data: used_data
           }
         ]

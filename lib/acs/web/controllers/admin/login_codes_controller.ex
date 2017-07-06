@@ -8,6 +8,8 @@ defmodule Acs.Web.Admin.LoginCodesController do
       gen_uniq_code(app_id, code_length)
     end)
 
+    AppLoginCode.refresh_stats_info(app_id)
+
     conn |> json(%{success: true})
   end
 
@@ -31,6 +33,8 @@ defmodule Acs.Web.Admin.LoginCodesController do
       {:ok, _} = SQL.query(Repo, "delete from app_login_codes where app_id = ? \
         and owner is null and user_id is null order by inserted_at desc limit ?", 
         [app_id, number])
+
+      AppLoginCode.refresh_stats_info(app_id)
     end)
     conn |> json(%{success: true})
   end
@@ -67,7 +71,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
         where: c.app_id == ^app_id and c.owner == ^owner
 
       codes = Repo.all(query)
-
+      AppLoginCode.refresh_stats_info(app_id)
       conn |> json(%{success: true, codes: codes})
     end
   end

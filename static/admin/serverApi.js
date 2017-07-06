@@ -239,6 +239,10 @@ export default {
         return post('/admin_actions/login_codes/fetch_my_codes', params)
       },
 
+      fetchLoginCodeDailyChart(params) {
+        return post('/admin_actions/login_codes/daily_chart_data', params)
+      },
+
       addWcpEmptyParams(params) {
         return post('/admin_actions/wcp/add_wcp_empty_params', params)
       },

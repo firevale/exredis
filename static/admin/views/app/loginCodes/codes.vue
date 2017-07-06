@@ -213,7 +213,7 @@ export default {
     }
     article.chart {
       div {
-        flex-basis: 100%;
+        flex-grow: 1;
       }
     }
 

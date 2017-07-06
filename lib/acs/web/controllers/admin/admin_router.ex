@@ -103,7 +103,6 @@ defmodule Acs.Web.AdminRouter do
       post  "/del_codes", Admin.LoginCodesController, :del_codes 
       post  "/assign_codes", Admin.LoginCodesController, :assign_codes 
       post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
-      post  "/daily_chart_data", Admin.LoginCodesController, :daily_chart_data
     end
 
     scope "/wcp" do 

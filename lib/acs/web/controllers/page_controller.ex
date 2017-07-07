@@ -58,6 +58,13 @@ defmodule Acs.Web.PageController do
     conn |> redirect(to: "/forum/#{forum_id}/index")
   end
 
+  def show_app_mall(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 
+    conn |> redirect(to: "/mall/#{app_id}/index")
+  end
+  def show_app_mall(conn, _params) do 
+    conn |> send_resp(500, gettext("mall not configured for app"))
+  end
+
   def show_app_games(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 
     conn |> redirect(to: "/games/#{app_id}/")
   end

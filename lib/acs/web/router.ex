@@ -20,6 +20,7 @@ defmodule Acs.Web.Router do
     get  "/forum/index", PageController, :show_forum_page
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
     get  "/show_app_forum", PageController, :show_app_forum
+    get  "/show_app_mall", PageController, :show_app_mall
     get  "/show_app_games", PageController, :show_app_games
     get  "/show_app_faq", PageController, :show_app_faq
     get  "/customerService/*path", PageController, :show_customer_service_page

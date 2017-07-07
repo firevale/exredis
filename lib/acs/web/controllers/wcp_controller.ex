@@ -18,38 +18,39 @@ defmodule Acs.Web.WcpController do
     msg = conn.assigns[:msg]
 
     Process.spawn(fn() -> 
-      user_info = Wcp.User.info(app_id, msg.fromusername) |> Poison.decode!(keys: :atoms)
+      openid = msg.fromusername
+      user_info = Wcp.User.info(app_id, openid) |> Poison.decode!(keys: :atoms)
 
-      info "wechat user info[openid=#{msg.fromusername}]: #{inspect user_info}"
+      info "wechat user info[openid=#{openid}]: #{inspect user_info}"
 
       case Map.get(user_info, :openid) do 
-        ^(msg.fromusername) ->
-          case Repo.get_by(AppWcpUser, app_id: app_id, openid: userinfo.openid) do 
+        ^openid ->
+          case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do 
             nil -> 
               AppWcpUser.changeset(%AppWcpUser{}, %{
-                openid: userinfo.openid,
-                nickname: userinfo.nickname,
-                sex: userinfo.sex,
-                avatar_url: userinfo.headimgurl,
-                city: userinfo.city,
-                country: userinfo.country,
+                openid: user_info.openid,
+                nickname: user_info.nickname,
+                sex: user_info.sex,
+                avatar_url: user_info.headimgurl,
+                city: user_info.city,
+                country: user_info.country,
                 app_id: app_id
               }) |> Repo.insert
             wcp_user ->
               AppWcpUser.changeset(wcp_user, %{
-                openid: userinfo.openid,
-                nickname: userinfo.nickname,
-                sex: userinfo.sex,
-                avatar_url: userinfo.headimgurl,
-                city: userinfo.city,
-                country: userinfo.country,
+                openid: user_info.openid,
+                nickname: user_info.nickname,
+                sex: user_info.sex,
+                avatar_url: user_info.headimgurl,
+                city: user_info.city,
+                country: user_info.country,
                 app_id: app_id
               }) |> Repo.update              
           end
         _ ->
           :do_nothing
       end
-    end)
+    end, [])
 
     case msg.msgtype do 
       "text" ->
@@ -76,7 +77,7 @@ defmodule Acs.Web.WcpController do
     case AppWcpResponse.build_reply(app_id, msg) do 
       nil ->
         info "response is nil, return success"
-        conn |> text "success" 
+        conn |> text("success") 
       %{} = reply ->
         AppWcpMessage.changeset(%AppWcpMessage{}, 
           %{from: reply.from, 

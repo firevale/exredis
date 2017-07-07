@@ -103,6 +103,7 @@ defmodule Acs.Web.Router do
     get "/finish_mall_order", CronController, :finish_mall_order
     get "/check_admin_users", CronController, :check_admin_users
     get "/save_online_counter", CronController, :save_online_counter
+    get "/refresh_login_code_chart", CronController, :refresh_login_code_chart
   end
 
   scope "/admin_actions", Acs.Web do

@@ -197,4 +197,19 @@ defmodule Acs.Web.CronController do
 
     conn |> json(%{success: true, message: "done"})
   end
+
+  def refresh_login_code_chart(conn, params) do 
+    case Redis.keys("login_code.daily_chart_data.*") do 
+      keys when is_list(keys) ->
+        Enum.each(keys, fn(key) -> 
+          ["login_code", "daily_chart_data", app_id, ndays | _ ] = String.split(key, ".")
+          AcsLoginCode.refresh_daily_chart_data(app_id, String.to_integer(ndays))
+        end)
+
+      _ ->
+        info "no login code chart data find..."
+    end 
+
+    conn |> json(%{success: true, message: "done"})
+  end
 end

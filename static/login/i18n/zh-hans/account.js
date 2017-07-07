@@ -53,6 +53,7 @@ export default {
     title: '激活码',
     pleaseInputLoginCode: '请输入激活码',
     btnSubmit: '使用',
+    obtainCode: '前往领取',
   },
 
   quickLoginPage: {

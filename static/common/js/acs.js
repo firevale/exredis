@@ -36,5 +36,6 @@ export const isRestrictLogin = window.acsConfig.isRestrictLogin || false
 export const isInApp = window.acsConfig.inApp || false
 export const csrfToken = window.acsConfig.csrfToken
 export const locale = window.acsConfig.locale || 'zh-hans'
+export const obtainCodeUrl = window.acsConfig.obtainCodeUrl || ''
 
 

@@ -187,4 +187,17 @@ export default {
       return false
     }
   },
+
+  openBrowser: function(url) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.openBrowser === 'function') {
+      AndroidNativeAPI.openBrowser(url)
+    } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
+      typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'openBrowser', params: url })
+    } else {
+      console.error('native function openBrowser is not available')
+    }
+  },
+
+
 }

@@ -19,12 +19,16 @@
           {{ $t('account.codePage.btnSubmit') }}
         </button>
       </div>
+      <div v-if="obtainCodeUrl" class="row-login" style="-webkit-justify-content: flex-end; justify-content: flex-end;">
+        <a class="pull-right" @click.prevent="gotoObtain">{{ $t('account.codePage.obtainCode') }} </a>
+      </div>
     </form>
   </div>
 </template>
 <script>
 import * as utils from 'common/js/utils'
 import nativeApi from 'common/js/nativeApi'
+import {obtainCodeUrl, isInApp} from 'common/js/acs'
 
 import {
   mapGetters,
@@ -48,6 +52,7 @@ export default {
       loginCode: '',
       errorMessage: '',
       processing: false,
+      obtainCodeUrl: obtainCodeUrl,
     }
   },
 
@@ -58,6 +63,12 @@ export default {
   },
 
   methods: {
+    gotoObtain: function() {
+      if (isInApp) {
+        nativeApi.openBrowser(obtainCodeUrl)
+      }
+    },
+
     handleSubmit: async function() {
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true

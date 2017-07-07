@@ -12,6 +12,11 @@
                           _ -> false 
                         end %>
 
+<% obtainCodeUrl = case @conn.private[:acs_app] do 
+                          %{obtain_code_url: v} -> v
+                          _ -> "" 
+                        end %>
+
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
   <head>
@@ -43,6 +48,7 @@
         isRestrictLogin: <%= isRestrictLogin %>,
         isFbLoginSupported: <%= isFbLoginSupported %>,
         isWechatLoginSupported: <%= isWechatLoginSupported %>,
+        obtainCodeUrl: '<%= obtainCodeUrl %>',
       }
     </script>
     <script src="<%= static_url(@conn, "/js/login_commons.js") %>"></script>

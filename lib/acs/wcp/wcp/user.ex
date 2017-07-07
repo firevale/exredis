@@ -14,6 +14,6 @@ defmodule Wcp.User do
   end
 
   def info(app_id, openid) do
-    get(app_id, "user/info", openid: openid)
+    get(app_id, "user/info", openid: openid, lang: "zh_CN")
   end
 end

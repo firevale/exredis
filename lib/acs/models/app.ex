@@ -18,6 +18,7 @@ defmodule Acs.App do
     field :has_mall, :boolean, default: false
     field :restrict_login, :boolean, default: false   # 是否需要激活码登录, 限制登录
     field :can_assign_code, :boolean, default: false  # 是否开放激活码领取
+    field :obtain_code_url, :string
 
     field :chaoxin_group_id, :string # 超信运营群号
     
@@ -49,7 +50,8 @@ defmodule Acs.App do
     struct
     |> cast(params, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
                      :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
-                     :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall, :restrict_login, :can_assign_code])
+                     :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall, :restrict_login, :can_assign_code, 
+                     :obtain_code_url])
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
   end

@@ -28,6 +28,7 @@ export default {
   Activity: '活动管理',
   Notice: '公告管理',
   News: '新闻管理',
+  undefined: '',
   null: '',
   WcpParams: '微信公众号--参数配置',
   WcpMessages: '微信公众号--消息记录',

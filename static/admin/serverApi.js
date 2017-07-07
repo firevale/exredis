@@ -251,12 +251,20 @@ export default {
         return post('/admin_actions/wcp/update_wcp_message_rule', params)
       },
 
+      getWcpMenu(params) {
+        return post('/admin_actions/wcp/get_wcp_menu', params)
+      },
+      
+      updateWcpMenu(params) {
+        return post('/admin_actions/wcp/update_wcp_menu', params)
+      },
+
       deleteRule(rule_id, successMessage) {
-        return post('/admin_actions/wcp/delete_wcp_message_rule', {rule_id}, successMessage)
+        return post('/admin_actions/wcp/delete_wcp_message_rule', { rule_id }, successMessage)
       },
 
       deleteMessage(message_id, successMessage) {
-        return post('/admin_actions/wcp/delete_wcp_message', {message_id}, successMessage)
+        return post('/admin_actions/wcp/delete_wcp_message', { message_id }, successMessage)
       },
 
       getRuleList(app_id, page, records_per_page) {

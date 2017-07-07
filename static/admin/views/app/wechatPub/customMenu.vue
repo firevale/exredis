@@ -14,90 +14,54 @@
       </ul>
     </div>
     <div class="column is-8" style="padding:10px;">
-      <table class="table is-bordered is-narrow goods-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>第一列</th>
-            <th>第二列</th>
-            <th>第三列</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="font-size:10pt;">二级菜单No.1</td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-          </tr>
-          <tr>
-            <td style="font-size:9pt;">二级菜单No.2</td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-          </tr>
-          <tr>
-            <td style="font-size:9pt;">二级菜单No.3</td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-          </tr>
-          <tr>
-            <td style="font-size:9pt;">二级菜单No.4</td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-          </tr>
-          <tr>
-            <td style="font-size:9pt;">二级菜单No.5</td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-            <td>
-              <input class="input" type="text">
-            </td>
-          </tr>
-          <tr>
-            <td style="font-size:9pt;">一级菜单按钮</td>
-            <td>
-              <input class="input" type="text" value="菜单1">
-            </td>
-            <td>
-              <input class="input" type="text" value="菜单2">
-            </td>
-            <td>
-              <input class="input" type="text" value="菜单3">
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="columns is-multiline" style="border:1px #ccc solid; margin:3px;">
+        <div class="column is-2"></div>
+        <div class="column is-10">
+          <div class="columns">
+            <div class="column">第一列</div>
+            <div class="column">第二列</div>
+            <div class="column">第三列</div>
+          </div>
+        </div>
+        <div class="column is-2" style="font-size:10pt; line-height:450%;">
+          <ul>
+            <li>二级菜单No.1</li>
+            <li>二级菜单No.2</li>
+            <li>二级菜单No.3</li>
+            <li>二级菜单No.4</li>
+            <li>二级菜单No.5</li>
+            <li>一级菜单按钮</li>
+          </ul>
+        </div>
+        <div class="column is-10">
+          <div class="columns is-multiline">
+            <div class="column is-one-third">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[0].sub_button">
+                <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
+              </div>
+              <div class="column">
+                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[0])" v-model.trim="wcpParams.menu.button[0].name">
+              </div>
+            </div>
+            <div class="column is-one-third">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[1].sub_button">
+                <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
+              </div>
+              <div class="column">
+                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[1])" v-model.trim="wcpParams.menu.button[1].name">
+              </div>
+            </div>
+            <div class="column is-one-third">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[2].sub_button">
+                <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
+              </div>
+              <div class="column">
+                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[2])" v-model.trim="wcpParams.menu.button[2].name">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="column is-4">
       <div class="field has-addons">
@@ -106,84 +70,224 @@
       <div class="field has-addons">
         <label class="label">{{ $t('admin.wcp.menus.name') }}：</label>
         <p class="control">
-          <input class="input is-small" style="width:200px;" type="text" value="">
+          <input class="input is-small" style="width:200px;" type="text" v-model.trim="selectedButton.name">
         </p>
       </div>
-      <div class="field has-addons">
+      <div class="field has-addons" v-if="selectedButton.type">
         <label class="label">{{ $t('admin.wcp.menus.type') }}：</label>
         <p class="control">
           <span class="select is-media">
-            <select>
-              <option value="click">  点击事件(传回服务器)  </option>
-              <option value="url">  访问网页(直接跳转)  </option>
+            <select v-model="selectedButton.type">
+              <option v-for="option in options" v-bind:value="option.value">
+                {{ option.text }}
+              </option>
             </select>
           </span>
         </p>
       </div>
-      <div class="field has-addons">
+      <div class="field has-addons" v-if="selectedButton.type=='click'">
         <label class="label">{{ $t('admin.wcp.menus.key') }}：</label>
         <p class="control">
-          <input class="input is-small" type="text" style="width:200px;" value="">
+          <input class="input is-small" type="text" style="width:200px;" v-model.trim="selectedButton.key">
         </p>
       </div>
-      <div class="field has-addons">
+      <div class="field has-addons" v-if="selectedButton.type=='view'">
         <label class="label">{{ $t('admin.wcp.menus.url') }}：</label>
         <p class="control">
-          <input class="input is-small" type="text" style="width:200px;" value="">
+          <input class="input is-small" type="text" style="width:200px;" v-model.trim="selectedButton.url">
         </p>
       </div>
       <label style="font-size:10pt;">{{ $t('admin.wcp.menus.tip') }}</label>
     </div>
     <div class="column is-12 has-text-centered">
       <p style="margin: 5px auto">
-        <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnGetMenu')"
-          class="button is-primary" :class="loading ? 'is-disabled' : ''" />
-        <input type="submit" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnUpdateMenu')"
-          class="button is-primary" :class="loading ? 'is-disabled' : ''" />
+        <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnGetMenu')"
+          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="getMenu()" />
+        <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnUpdateMenu')"
+          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="updateMenu()"
+        />
       </p>
     </div>
   </div>
 </template>
 <script>
 import {
+  mapGetters,
   mapActions
 } from 'vuex'
+
+import {
+  processAjaxError
+} from 'admin/miscellaneous'
+
+import Toast from 'common/components/toast'
+
 export default {
+  mounted: async function() {
+    this.addWcpEmptyParams()
+  },
+
+  computed: {
+    ...mapGetters([
+      'wcpParams'
+    ]),
+  },
+
   data() {
     return {
-      menus: {
+      selectedButton: {},
+      loading: true,
+      options: [{
+          text: '点击事件(传回服务器)',
+          value: 'click'
+        },
+        {
+          text: '访问网页(直接跳转)',
+          value: 'view'
+        }
+      ],
+      menuModel: {
         "button": [{
-            "type": "click",
-            "name": "",
-            "key": "V1001_TODAY_MUSIC"
-          },
-          {
-            "name": "菜单",
+            "name": "主菜单1",
             "sub_button": [{
-                "type": "view",
-                "name": "搜索",
-                "url": "http://www.soso.com/"
-              },
-              {
-                "type": "view",
-                "name": "视频",
-                "url": "http://v.qq.com/"
+                "type": "click",
+                "name": "",
+                "key": ""
               },
               {
                 "type": "click",
-                "name": "赞一下我们",
-                "key": "V1001_GOOD"
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              }
+            ]
+          },
+          {
+            "name": "主菜单2",
+            "sub_button": [{
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              }
+            ]
+          },
+          {
+            "name": "主菜单3",
+            "sub_button": [{
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
               }
             ]
           }
         ]
       },
-      page: 1,
-      total: 1,
-      recordsPerPage: 10,
-      loading: true
     }
   },
-  methods: {}
+  methods: {
+    ...mapActions([
+      'updateWcpParams',
+    ]),
+
+    setCurrentButton: function(button) {
+      this.selectedButton = button
+    },
+
+    addWcpEmptyParams: async function() {
+      this.loading = true
+      let app_id = this.$route.params.appId
+      let result = await this.$acs.addWcpEmptyParams({
+        app_id: app_id,
+        menu: this.menuModel
+      })
+
+      if (result.success) {
+        this.updateWcpParams(result.wcpconfig)
+      }
+
+      this.loading = false
+    },
+
+    getMenu: async function() {
+      this.loading = true
+      let result = await this.$acs.getWcpMenu({
+        app_id: this.wcpParams.app_id
+      })
+      alert(result)
+      console.log("-----------------getMenu:" + result)
+      this.loading = false
+    },
+
+    updateMenu: async function() {
+      this.loading = true
+      let result = await this.$acs.update_wcp_menu({
+        app_id: this.wcpParams.app_id,
+        menu: this.wcpParams.menu
+      })
+      alert(result)
+      console.log("-----------------getMenu:" + result)
+      this.loading = false
+    },
+  },
+
+  watch: {
+    selected: function(val) {
+      this.selectedButton.type = val
+    }
+  },
 }
 </script>

@@ -121,6 +121,7 @@ export default {
         title: this.$t('admin.titles.uploadWcpFile'),
         callback: response => {
           if (response.success) {
+            console.log("---------------"+response.filename)
             wcpParams.verify_File = response.filename
             this.updateWcpParams(wcpParams)
           } else {

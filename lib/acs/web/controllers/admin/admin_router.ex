@@ -118,6 +118,8 @@ defmodule Acs.Web.AdminRouter do
       post  "/get_rule_list", AdminWcpController, :get_rule_list
       post  "/upload_wcp_image", AdminWcpController, :upload_wcp_image
       post  "/upload_wcp_file", AdminWcpController, :upload_wcp_file
+      post  "/get_wcp_menu", AdminWcpController, :get_wcp_menu
+      post  "/update_wcp_menu", AdminWcpController, :update_wcp_menu
     end
   end
 end

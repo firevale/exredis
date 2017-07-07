@@ -6,7 +6,8 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.AppWcpMessageRule
   alias Acs.RedisAppWcpConfig
   alias Acs.RedisAppWcpMessageRule
-  import Acs.UploadImagePlugs 
+  import Acs.UploadImagePlugs
+  alias Wcp.Menu 
 
   # add_wcp_empty_params
   def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
@@ -234,6 +235,7 @@ defmodule Acs.Web.AdminWcpController do
       %AppWcpConfig{} = config ->
         case Utils.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
+            d "----------------------filename: #{filename}"
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
             conn |> json(%{success: true, filename: filename})
           
@@ -244,6 +246,30 @@ defmodule Acs.Web.AdminWcpController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
-  end  
+  end 
+
+  def get_wcp_menu(conn, %{"app_id" => app_id}) do
+    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+      %AppWcpConfig{} = config ->
+        result = Menu.get(app_id)
+        d "------------------------get_wcp_menu: #{inspect result, pretty: true}"
+        conn |> json(%{success: true, result: result})
+      
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
+    end
+  end 
+
+  def update_wcp_menu(conn, %{"app_id" => app_id, "menu" => menu}) do
+    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+      %AppWcpConfig{} = config ->
+        result = Menu.create(app_id, menu)
+        d "------------------------update_wcp_menu: #{inspect result, pretty: true}"
+        conn |> json(%{success: true, result: result})
+      
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
+    end
+  end 
 
 end

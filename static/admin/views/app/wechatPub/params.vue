@@ -40,6 +40,101 @@ export default {
     replyModelEditor,
   },
 
+  data() {
+    return {
+      menuModel: {
+        "button": [{
+            "name": "主菜单1",
+            "sub_button": [{
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              }
+            ]
+          },
+          {
+            "name": "主菜单2",
+            "sub_button": [{
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              }
+            ]
+          },
+          {
+            "name": "主菜单3",
+            "sub_button": [{
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              },
+              {
+                "type": "click",
+                "name": "",
+                "key": ""
+              }
+            ]
+          }
+        ]
+      },
+    }
+  },
+
   methods: {
     ...mapActions([
       'updateWcpParams',
@@ -49,7 +144,8 @@ export default {
       this.loading = true
       let app_id = this.$route.params.appId
       let result = await this.$acs.addWcpEmptyParams({
-        app_id: app_id
+        app_id: app_id,
+        menu: this.menuModel
       })
 
       if (result.success) {

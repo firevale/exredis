@@ -41,6 +41,7 @@ export default {
     currency: '商品定价货币',
     chaoxinGroupId: '超信运营群号',
     paymentCallbackUrl: '充值回调地址',
+    obtainCodeUrl: '激活码领取地址',
     publicWeixinName: '微信公众号名称',
     publicWeixinUrl: '微信公众号链接',
     weiboName: '微博名称',

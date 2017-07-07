@@ -203,6 +203,7 @@ defmodule Acs.Web.CronController do
       keys when is_list(keys) ->
         Enum.each(keys, fn(key) -> 
           ["login_code", "daily_chart_data", app_id, ndays | _ ] = String.split(key, ".")
+          AcsLoginCode.refresh_stats_info(app_id)
           AcsLoginCode.refresh_daily_chart_data(app_id, String.to_integer(ndays))
         end)
 

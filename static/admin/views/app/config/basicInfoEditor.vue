@@ -57,6 +57,12 @@
           <input class="input" type="text" v-model.trim="app.payment_callback">
         </p>
       </div>
+      <div class="column is-12">
+        <label class="label"> {{ $t('admin.label.obtainCodeUrl')}}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="app.obtain_code_url">
+        </p>
+      </div>
       <div class="column is-3">
         <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
         <p class="control">

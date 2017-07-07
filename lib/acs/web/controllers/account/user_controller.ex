@@ -523,7 +523,9 @@ defmodule Acs.Web.UserController do
               %{app_id: ^app_id, id: ^token_id, user_id: user_id} = access_token ->
                 case login_code.user_id do 
                   nil ->
-                    AppLoginCode.changeset(login_code, %{user_id: user_id}) |> Repo.update!
+                    now = DateTime.utc_now()
+                    login_code = Repo.get_by(AppLoginCode, app_id: app_id, code: code)
+                    AppLoginCode.changeset(login_code, %{user_id: user_id, used_at: now}) |> Repo.update!
                     RedisLoginCode.refresh(app_id, code)
                     RedisLoginCode.refresh(app_id, user_id)
                     access_token = %{access_token | login_code: code}

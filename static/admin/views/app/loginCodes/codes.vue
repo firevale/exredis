@@ -109,7 +109,7 @@ export default {
       dailyChart: undefined,
       options: {
         segmentShowStroke: false,
-        responsive: true, 
+        responsive: true,
         maintainAspectRatio: false
       }
     }
@@ -144,9 +144,10 @@ export default {
     genCodes: async function() {
       if (this.genNumber < 100) {
         Toast.show(this.$t('admin.app.message.tooSmallCodesGenNumber'))
-      }
-      else {
-        let successMessage = this.$t('admin.app.message.genLoginCodesSuccess', {number: this.genNumber}) 
+      } else {
+        let successMessage = this.$t('admin.app.message.genLoginCodesSuccess', {
+          number: this.genNumber
+        })
         let result = await this.$acs.generateLoginCodes({
           app_id: this.$route.params.appId,
           number: this.genNumber
@@ -161,10 +162,13 @@ export default {
 
     delCodes: async function() {
       if (this.delNumber <= 0 || this.delNumber > this.stats.available) {
-        Toast.show(this.$t('admin.app.message.invalidLoginCodesDelNumber', {max: this.stats.available}))
-      }
-      else {
-        let successMessage = this.$t('admin.app.message.delLoginCodesSuccess', {number: this.delNumber}) 
+        Toast.show(this.$t('admin.app.message.invalidLoginCodesDelNumber', {
+          max: this.stats.available
+        }))
+      } else {
+        let successMessage = this.$t('admin.app.message.delLoginCodesSuccess', {
+          number: this.delNumber
+        })
         let result = await this.$acs.delLoginCodes({
           app_id: this.$route.params.appId,
           number: this.delNumber
@@ -178,13 +182,16 @@ export default {
     },
 
     assignCodes: async function() {
-      let assigned = (this.app.myCodes && this.app.myCodes.length) || 0 
+      let assigned = (this.app.myCodes && this.app.myCodes.length) || 0
 
       if (this.assignNumber <= 0 || this.assignNumber + assigned > 100 || this.assignNumber > this.stats.available) {
-        Toast.show(this.$t('admin.app.message.invalidLoginCodesAssignNumber', {max: Math.min(100 - assigned, this.stats.available)}))
-      }
-      else {
-        let successMessage = this.$t('admin.app.message.assignLoginCodesSuccess', {number: this.assignNumber}) 
+        Toast.show(this.$t('admin.app.message.invalidLoginCodesAssignNumber', {
+          max: Math.min(100 - assigned, this.stats.available)
+        }))
+      } else {
+        let successMessage = this.$t('admin.app.message.assignLoginCodesSuccess', {
+          number: this.assignNumber
+        })
         let result = await this.$acs.assignLoginCodes({
           app_id: this.$route.params.appId,
           number: this.assignNumber
@@ -205,17 +212,17 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
-  .login_codes {
-    .box:not(:last-child) {
-      margin-bottom: 0;
-    }
-    article.chart {
-      div {
-        flex-grow: 1;
-      }
-    }
-
+.login_codes {
+  .box:not(:last-child) {
+    margin-bottom: 0;
   }
+  article.chart {
+    background: #212733;
+    div {
+      flex-grow: 1;
+      background: #212733;
+    }
+  }
+}
 </style>

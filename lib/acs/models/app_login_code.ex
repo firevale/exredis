@@ -104,19 +104,11 @@ defmodule Acs.AppLoginCode do
         labels: dates,
         datasets: [
           %{
-            fillColor: "rgba(220,220,220,0.5)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            label: "公众号发码数",
+            label: "已分配(用户)",
             data: assigned_data,
           },
           %{
-            fillColor: "rgba(151,187,205,0.5)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            label: "登录绑定数",
+            label: "已使用(用户)",
             data: used_data
           }
         ]

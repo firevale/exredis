@@ -34,7 +34,7 @@
           </ul>
         </div>
         <div class="column is-10">
-          <div class="columns is-multiline">
+          <div class="columns is-multiline" v-if="wcpParams.menu">
             <div class="column is-one-third">
               <div class="column" v-for="(button, index) in wcpParams.menu.button[0].sub_button">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">

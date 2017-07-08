@@ -19,7 +19,7 @@ defmodule Acs.Web.WcpController do
 
     Process.spawn(fn() -> 
       openid = msg.fromusername
-      user_info = Wcp.User.info(app_id, openid) |> Poison.decode!(keys: :atoms)
+      user_info = Wcp.User.info(app_id, openid) 
 
       info "wechat user info[openid=#{openid}]: #{inspect user_info}"
 

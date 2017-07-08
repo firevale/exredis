@@ -12,7 +12,10 @@ defmodule Wcp do
       Cachex.get!(:default, key(app_id), fallback: fn(redis_key) -> 
         case Redis.get(redis_key) do 
           :undefined -> 
-            {:commit, refresh_access_token(app_id)}
+            case refresh_access_token(app_id) do 
+              nil -> {:ignore, nil}
+              v -> {:commit, v}
+            end
           
           binary ->
             {:commit, Poison.decode!(binary, keys: :atoms)}
@@ -33,11 +36,18 @@ defmodule Wcp do
 
   defp refresh_access_token(app_id) do
     now = DateTime.to_unix(DateTime.utc_now)
-    token_info = Map.merge(Wcp.AccessToken.get_token(app_id), %{refreshed_at: now})
-    Redis.set(key(app_id), Poison.encode!(token_info))
-    token_info
+    case Wcp.AccessToken.get_token(app_id) do 
+      %{access_token: _} = token_info ->
+        token_info = Map.merge(token_info, %{refreshed_at: now})
+        Redis.set(key(app_id), Poison.encode!(token_info))
+        token_info
+
+      _ -> 
+        nil
+    ene
   end
 
+  defp access_token_expired?(nil), do: true
   defp access_token_expired?(token_info) do
     now = DateTime.utc_now |> DateTime.to_unix
     now >= (token_info.refreshed_at + token_info.expires_in)

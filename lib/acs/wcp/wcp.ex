@@ -44,7 +44,7 @@ defmodule Wcp do
 
       _ -> 
         nil
-    ene
+    end
   end
 
   defp access_token_expired?(nil), do: true

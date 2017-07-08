@@ -6,7 +6,7 @@ defmodule Acs.Repo.Migrations.AddAppWcpUser do
       add :openid, :string
       add :nickname, :string
       add :sex, :integer
-      add :avtar_url, :string
+      add :avatar_url, :string
       add :city, :string
       add :country, :string
       add :app_id, references(:apps, type: :string, on_delete: :delete_all)

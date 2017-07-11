@@ -45,6 +45,12 @@ export default {
       'updateWcpParams',
     ]),
 
+    showPopup: function(e) {
+      var rect = e.target.getBoundingClientRect()
+      this.popup.x = rect.left
+      this.popup.y = rect.top
+    },
+
     addWcpEmptyParams: async function() {
       this.loading = true
       let app_id = this.$route.params.appId

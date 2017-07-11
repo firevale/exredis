@@ -8,8 +8,23 @@
         </p>
       </div>
       <div>
-        <label> {{ $t('admin.wcp.response') }}: </label>
-        <textarea class="textarea" rows="4" :placeholder="$t('admin.wcp.responsePlaceholder')" v-model.trim="rule.response" />
+        <div class="field has-addons" style="margin-bottom: 0">
+          <label class="label flex-take-rest"> {{ $t('admin.wcp.response')}}: </label>
+          <div class="field has-addons flex-fixed-size">
+            <p class="flex-take-rest" style="padding-right: 0.5rem">
+              <label class="label"> {{$t('admin.wcp.userLoginCode')}} </label>
+            </p>
+            <p class="flex-fixed-size">
+              <toggle-button :value="rule.response == this.loginCode" color="#4e9ed8" :sync="true" :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}"
+                @change="x => setLoginCode(x)">
+              </toggle-button>
+            </p>
+          </div>
+        </div>
+        <p class="control">
+          <textarea :disabled="rule.response == this.loginCode"  class="textarea" rows="4" :placeholder="$t('admin.wcp.responsePlaceholder')" v-model.trim="rule.response"
+          />
+        </p>
         <!--<quill-editor v-model.trim="rule.response" :placeholder="$t('admin.wcp.responsePlaceholder')" @ready="setEditor"
           @input="handleValidation($v.rule.response)" @image="onInsertImage">
         </quill-editor>-->
@@ -80,6 +95,7 @@ export default {
 
   data() {
     return {
+      loginCode: ':login_code',
       rule: Object,
       processing: false,
       editor: undefined,
@@ -101,6 +117,10 @@ export default {
         clearTimeout(touchMap.get($v))
       }
       touchMap.set($v, setTimeout($v.$touch(), 2000))
+    },
+
+    setLoginCode: function(x) {
+      this.rule.response = (x.value ? this.loginCode : '')
     },
 
     onInsertImage: async function(editor) {

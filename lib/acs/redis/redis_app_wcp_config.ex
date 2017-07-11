@@ -14,7 +14,7 @@ defmodule Acs.RedisAppWcpConfig do
             wcp_config -> {:commit, wcp_config}
           end
         raw ->
-          {:commit, raw |> AppWcpConfig.from_json}
+          {:commit, raw |> AppWcpConfig.from_redis}
       end
     end)
   end
@@ -23,14 +23,14 @@ defmodule Acs.RedisAppWcpConfig do
     Cachex.del(:default, key(app_id))
     case Repo.get_by(AppWcpConfig, app_id: app_id) do 
       %AppWcpConfig{} = wcp_config ->
-        Redis.set(key(app_id), AppWcpConfig.to_json(wcp_config))
+        Redis.set(key(app_id), AppWcpConfig.to_redis(wcp_config))
         wcp_config
       _ -> nil
     end
   end
 
   defp key(app_id) do 
-    "acs.app_wcp_config.#{app_id}"
+    "acs._app_wcp_config.#{app_id}"
   end
 
 end

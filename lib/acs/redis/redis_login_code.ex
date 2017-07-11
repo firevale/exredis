@@ -5,8 +5,8 @@ defmodule Acs.RedisLoginCode do
   alias   Acs.Repo
   alias   Acs.AppLoginCode
 
-  @app_user_cache_key "acs.login_codes.app_user"
-  @code_cache_key "acs.login_codes.code"
+  @app_user_cache_key "acs._login_codes.app_user"
+  @code_cache_key "acs._login_codes.code"
 
   # key_field can be user_id(integer) or code(bitstring)
   def find(nil, _), do: nil
@@ -21,7 +21,7 @@ defmodule Acs.RedisLoginCode do
             app_login_code -> {:commit, app_login_code}
           end
         raw ->
-          {:commit, raw |> AppLoginCode.from_json()}
+          {:commit, raw |> AppLoginCode.from_redis()}
       end
     end)
   end
@@ -41,7 +41,7 @@ defmodule Acs.RedisLoginCode do
 
     case db_model do 
       %AppLoginCode{} = app_login_code ->
-        Redis.set(redis_key, app_login_code |> AppLoginCode.to_json())
+        Redis.set(redis_key, app_login_code |> AppLoginCode.to_redis())
         app_login_code
       
       _ -> 

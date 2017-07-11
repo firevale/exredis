@@ -16,7 +16,7 @@ defmodule Acs.AppLoginCode do
     timestamps()
   end
 
-  use Utils.Jsonable
+  use Utils.Redisable
   use Timex
   require Redis
   require Cachex
@@ -70,14 +70,8 @@ defmodule Acs.AppLoginCode do
     info
   end
 
-  defp stats_key(app_id) do 
-    key = "login_code.stats_info.#{app_id}"
-  end
-
   def daily_chart_data(app_id, ndays) do 
-    key = "login_code.daily_chart_data.#{app_id}.#{ndays}"
-
-    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
+    Cachex.get!(:default, daily_chart_key(app_id, ndays), fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined ->
           now = Timex.local
@@ -93,7 +87,7 @@ defmodule Acs.AppLoginCode do
   end
 
   def refresh_daily_chart_data(app_id, ndays) do 
-    key = "login_code.daily_chart_data.#{app_id}.#{ndays}"
+    key = daily_chart_key(app_id, ndays)
     Redis.del(key)
     Cachex.del(:default, key)
     with dates <- latest_dates(ndays),
@@ -157,5 +151,13 @@ defmodule Acs.AppLoginCode do
     end) |> Enum.reverse 
   end
   
+  defp stats_key(app_id) do 
+    "acs.login_code.stats_info.#{app_id}"
+  end
+
+  defp daily_chart_key(app_id, ndays) do 
+    "acs.login_code.daily_chart_data.#{app_id}.#{ndays}"
+  end
+
 
 end

@@ -36,6 +36,7 @@ defmodule Acs.Web.WcpController do
                 country: user_info.country,
                 app_id: app_id
               }) |> Repo.insert
+              
             wcp_user ->
               AppWcpUser.changeset(wcp_user, %{
                 openid: user_info.openid,

@@ -98,6 +98,8 @@
         </p>
       </div>
       <label style="font-size:10pt;">{{ $t('admin.wcp.menus.tip') }}</label>
+      <br/>
+      <label style="font-size:10pt;">{{ $t('admin.wcp.menus.tip2') }}</label>
     </div>
     <div class="column is-12 has-text-centered">
       <p style="margin: 5px auto">
@@ -215,6 +217,7 @@ export default {
       })
       if (response.success) {
         this.wcpParams.menu = this.fixFullMenu(response.menu)
+        Toast.show(this.$t('admin.wcp.menus.getSuccess'))
       } else {
         processAjaxError(response)
       }
@@ -225,12 +228,16 @@ export default {
       this.loading = true
       let newmenu = JSON.parse(JSON.stringify(this.wcpParams.menu)); //deep copy
       newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, ''))
-      console.log("-----------------newmenu:" + JSON.stringify(newmenu))
-      let result = await this.$acs.updateWcpMenu({
+      let response = await this.$acs.updateWcpMenu({
         app_id: this.wcpParams.app_id,
         menu: newmenu
       })
-      console.log("-----------------getMenu:" + JSON.stringify(result))
+      if (response.success) {
+        Toast.show(this.$t('admin.wcp.menus.updateSuccess'))
+      } else {
+        processAjaxError(response)
+      }
+
       this.loading = false
     },
 

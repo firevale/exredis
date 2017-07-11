@@ -52,5 +52,8 @@ export default {
     key: 'Key',
     url: 'Url',
     tip: '如果有下级菜单请忽略上述类型和Key、Url等参数。',
+    tip2: '二级菜单点击事件必须设置Key值，访问网页必须设置Url值，否则会自动被忽略',
+    getSuccess: '菜单获取成功',
+    updateSuccess: '菜单更新成功',
   }
 }

@@ -5,11 +5,9 @@ defmodule Wcp.Menu do
 
   import Wcp.ApiBase
   require Poison
+  use LogAlias
 
   def create(app_id, menu) when is_map(menu) do
-    post(app_id, "menu/create", Poison.encode!(menu))
-  end
-  def create(app_id, menu) when is_bitstring(menu) do
     post(app_id, "menu/create", menu)
   end
 

@@ -31,7 +31,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
   def del_codes(conn, %{"app_id" => app_id, "number" => number}) do 
     Repo.transaction(fn -> 
       {:ok, _} = SQL.query(Repo, "delete from app_login_codes where app_id = ? \
-        and user_id is null order by inserted_at desc limit ?", 
+        and user_id is null order by assigned_at limit ?", 
         [app_id, number])
 
       AppLoginCode.refresh_stats_info(app_id)

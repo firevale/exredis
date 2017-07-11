@@ -280,9 +280,10 @@ export default {
         obj = {
           "button": []
         }
-        obj.button.push(this.subMenuModel);
-        obj.button.push(this.subMenuModel);
-        obj.button.push(this.subMenuModel);
+        for (var i = 0; i < 3; i++) {
+          let newmenu = JSON.parse(JSON.stringify(this.subMenuModel)); //deep copy
+          obj.button.push(newmenu);
+        }
       }
       return obj;
     },
@@ -307,7 +308,8 @@ export default {
           obj.push(this.subMenuModel.sub_button)
         }
       } else {
-        obj = this.subMenuModel
+        let newmenu = JSON.parse(JSON.stringify(this.subMenuModel)); //deep copy
+        obj = newmenu;
       }
       return obj;
     },

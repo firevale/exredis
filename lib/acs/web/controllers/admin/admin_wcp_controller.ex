@@ -235,7 +235,6 @@ defmodule Acs.Web.AdminWcpController do
       %AppWcpConfig{} = config ->
         case Utils.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
-            d "----------------------filename: #{filename}"
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
             conn |> json(%{success: true, filename: filename})
           

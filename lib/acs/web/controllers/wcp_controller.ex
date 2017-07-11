@@ -21,8 +21,6 @@ defmodule Acs.Web.WcpController do
       openid = msg.fromusername
       user_info = Wcp.User.info(app_id, openid) 
 
-      info "wechat user info[openid=#{openid}]: #{inspect user_info}"
-
       case Map.get(user_info, :openid) do 
         ^openid ->
           case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do 

@@ -60,7 +60,7 @@ export default {
       messages: [],
       page: 1,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 20,
       loading: false
     }
   },

@@ -16,7 +16,7 @@ defmodule Acs.AppWcpUser do
     timestamps()
   end
 
-  use Utils.Jsonable
+  use Utils.Redisable
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

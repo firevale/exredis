@@ -21,12 +21,12 @@ defmodule Acs.RedisMall do
 
   alias   Acs.MallGoods
 
-  use     Utils.Jsonable
+  use     Utils.Redisable
   require Cachex
 
   require Logger
 
-  @mall_cache_key      "fvac.mall_cache"
+  @mall_cache_key      "acs.mall_cache"
 
   def find(id)  do
     key = "#{@mall_cache_key}.#{id}"
@@ -38,7 +38,7 @@ defmodule Acs.RedisMall do
             mall -> {:commit, mall}
           end
         raw ->
-          {:commit, raw |> from_json}
+          {:commit, raw |> from_redis}
       end
     end)
   end
@@ -60,7 +60,7 @@ defmodule Acs.RedisMall do
       active: goods.active,
       app_id: goods.app_id
     }
-    Redis.set(redis_key, to_json(cache))
+    Redis.set(redis_key, to_redis(cache))
 
     cache
   end

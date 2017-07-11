@@ -8,8 +8,6 @@ defmodule Acs.RedisForum do
   alias   Acs.Forum
   alias   Acs.RedisSetting
 
-  require Logger
-
   ########################################
   defstruct id: 0,
             title: nil,
@@ -19,10 +17,10 @@ defmodule Acs.RedisForum do
             icon: "",
             sections: %{}
 
-  use     Utils.Jsonable
+  use     Utils.Redisable
 
-  @forum_cache_key      "fvac.forum_cache"
-  @forum_post_hot_key   "fvac.forum_post_hot"
+  @forum_cache_key      "acs.forum_cache"
+  @forum_post_hot_key   "acs.forum_post_hot"
 
   def find(id)  do
     redis_key = "#{@forum_cache_key}.#{id}"
@@ -31,7 +29,7 @@ defmodule Acs.RedisForum do
       :undefined ->
         refresh(id)
       raw ->
-        raw |> from_json
+        raw |> from_redis
     end
   end
 
@@ -57,7 +55,7 @@ defmodule Acs.RedisForum do
           end) |> Enum.into(%{})
         }
 
-        Redis.set(redis_key, to_json(cache))
+        Redis.set(redis_key, to_redis(cache))
 
         cache
     end
@@ -81,7 +79,6 @@ defmodule Acs.RedisForum do
       if(hot_limit > 0 and hot_hours > 0) do
         if(comments >= hot_limit) do
           redis_key = "#{@forum_post_hot_key}.#{post_id}"
-          d "-------------set hot: post_id=#{post_id}, comments=#{comments}"
           case Redis.get(redis_key) do
             :undefined -> Redis.setex(redis_key, hot_hours*3600, 1)
             _ -> :do_nothing

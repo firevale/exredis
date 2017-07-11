@@ -161,9 +161,9 @@ export default {
     },
 
     delCodes: async function() {
-      if (this.delNumber <= 0 || this.delNumber > this.stats.available) {
+      if (this.delNumber <= 0 || this.delNumber > (this.stats.total - this.stats.used)) {
         Toast.show(this.$t('admin.app.message.invalidLoginCodesDelNumber', {
-          max: this.stats.available
+          max: (this.stats.total - this.stats.used)
         }))
       } else {
         let successMessage = this.$t('admin.app.message.delLoginCodesSuccess', {
@@ -176,7 +176,10 @@ export default {
 
         if (result.success) {
           this.stats.total = this.stats.total - this.delNumber
-          this.stats.available = this.stats.available - this.delNumber
+          this.stats.available = Math.max(this.stats.available - this.delNumber, 0)
+          if (this.stats.assigned > this.stats.total) {
+            this.stats.assigned = this.stats.total
+          }
         }
       }
     },

@@ -12,14 +12,14 @@ defmodule Acs.AppWcpConfig do
 
     field :menu, :map             # 自定义菜单
 
-    field :subscribed_response, :string   # 订阅回复消息
-    field :scan_response, :string         # 扫码回复消息
-    field :default_response, :string      # 默认回复消息
+    field :subscribed_response, :binary   # 订阅回复消息
+    field :scan_response, :binary         # 扫码回复消息
+    field :default_response, :binary      # 默认回复消息
 
-    field :new_code_template, :string     # 新激活码模版
-    field :owned_code_template, :string   # 已有激活码模版
-    field :no_code_template, :string      # 没有激活码模版
-    field :closed_template, :string       # 关闭领取模版
+    field :new_code_template, :binary     # 新激活码模版
+    field :owned_code_template, :binary   # 已有激活码模版
+    field :no_code_template, :binary      # 没有激活码模版
+    field :closed_template, :binary       # 关闭领取模版
 
     belongs_to :app, Acs.App, type: :string
 

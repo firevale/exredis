@@ -5,7 +5,7 @@ defmodule Acs.AppWcpMessageRule do
 
   schema "app_wcp_message_rules" do
     field :keywords, :string
-    field :response, :string
+    field :response, :binary
 
     belongs_to :app, Acs.App, type: :string
 

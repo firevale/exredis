@@ -306,7 +306,8 @@ export default {
             }
           }
         } else {
-          obj.push(this.subMenuModel.sub_button)
+          let nm = JSON.parse(JSON.stringify(this.subMenuModel.sub_button)); //deep copy
+          obj.push(nm)
         }
       } else {
         let newmenu = JSON.parse(JSON.stringify(this.subMenuModel)); //deep copy

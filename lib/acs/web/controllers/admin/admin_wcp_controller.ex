@@ -6,6 +6,7 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.AppWcpMessageRule
   alias Acs.RedisAppWcpConfig
   alias Acs.RedisAppWcpMessageRule
+  alias Acs.AppWcpUser
   import Acs.UploadImagePlugs
   alias Wcp.Menu 
 
@@ -96,7 +97,9 @@ defmodule Acs.Web.AdminWcpController do
     query = case String.length(keyword) >0 do
               false ->
                 from msg in AppWcpMessage,
-                          select: msg,
+                          left_join: f in AppWcpUser, on: f.openid == msg.from,
+                          left_join: t in AppWcpUser, on: t.openid == msg.to,
+                          select: %{id: msg.id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content, fromname: f.nickname, toname: t.nickname},
                           limit: ^records_per_page,
                           where: msg.app_id == ^app_id,
                           offset: ^((page - 1) * records_per_page),
@@ -104,7 +107,9 @@ defmodule Acs.Web.AdminWcpController do
 
               true -> 
                 from msg in AppWcpMessage,
-                          select: msg,
+                          left_join: f in AppWcpUser, on: f.openid == msg.from,
+                          left_join: t in AppWcpUser, on: t.openid == msg.to,
+                          select: %{id: msg.id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content, fromname: f.nickname, toname: t.nickname},
                           limit: ^records_per_page,
                           where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")),
                           offset: ^((page - 1) * records_per_page),

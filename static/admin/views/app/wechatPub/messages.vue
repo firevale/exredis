@@ -25,8 +25,8 @@
             <tbody v-show="messages && messages.length > 0">
               <tr v-for="(message, index) in messages">
                 <td> {{ message.id }} </td>
-                <td> {{ getMsgUser(message.from) }} </td>
-                <td> {{ getMsgUser(message.to) }} </td>
+                <td> {{ getMsgUser(message.from, message.fromname) }} </td>
+                <td> {{ getMsgUser(message.to, message.toname) }} </td>
                 <td style="max-width:400px;"> {{ message.content }} </td>
                 <td> {{ message.msg_type }} </td>
                 <td> {{ message.inserted_at | formatServerDateTime }} </td>
@@ -82,11 +82,11 @@ export default {
       this.loading = false
     },
 
-    getMsgUser: function(openid) {
+    getMsgUser: function(openid, name) {
       if(openid.indexOf('gh_') >= 0)
         return '系统'
       else
-        return openid
+        return name ? name : openid
     },
 
     onPageChange: function(page) {

@@ -10,7 +10,8 @@
         <li>如果一级菜单为空，该列所有设置的二级菜单都会被忽略</li>
         <li>key仅在SingleButton（单击按钮，无下级菜单）的状态下设置，如果此按钮有下级菜单，key将被忽略</li>
         <li>所有二级菜单都为SingleButton</li>
-        <li>如果要快速看到微信上的菜单最新状态，需要重新关注，否则需要静静等待N小时</li>
+        <li>如果要快速看到微信上的菜单最新状态，需要<strong style="color: red">重新关注</strong>，否则需要静静等待N小时</li>
+        <li>菜单项为点击时间，并且菜单key为<strong style="color: red">assign_login_code</strong>时，点击该菜单事件触发激活码回复</li>
       </ul>
     </div>
     <div class="column is-8" style="padding:10px;">

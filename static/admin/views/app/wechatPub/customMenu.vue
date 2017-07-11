@@ -73,7 +73,7 @@
           <input class="input is-small" style="width:200px;" type="text" v-model.trim="selectedButton.name">
         </p>
       </div>
-      <div class="field has-addons" v-if="selectedButton.type">
+      <div class="field has-addons">
         <label class="label">{{ $t('admin.wcp.menus.type') }}：</label>
         <p class="control">
           <span class="select is-media">
@@ -146,93 +146,37 @@ export default {
           value: 'view'
         }
       ],
-      menuModel: {
-        "button": [{
-            "name": "主菜单1",
-            "sub_button": [{
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              }
-            ]
+      subMenuModel: {
+        "name": "",
+        "sub_button": [{
+            "type": "",
+            "name": "",
+            "key": "",
+            "url": ""
           },
           {
-            "name": "主菜单2",
-            "sub_button": [{
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              }
-            ]
+            "type": "",
+            "name": "",
+            "key": "",
+            "url": ""
           },
           {
-            "name": "主菜单3",
-            "sub_button": [{
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              },
-              {
-                "type": "click",
-                "name": "",
-                "key": ""
-              }
-            ]
+            "type": "",
+            "name": "",
+            "key": "",
+            "url": ""
+          },
+          {
+            "type": "",
+            "name": "",
+            "key": "",
+            "url": ""
+          },
+          {
+            "type": "",
+            "name": "",
+            "key": "",
+            "url": ""
           }
         ]
       },
@@ -252,11 +196,13 @@ export default {
       let app_id = this.$route.params.appId
       let result = await this.$acs.addWcpEmptyParams({
         app_id: app_id,
-        menu: this.menuModel
+        menu: ''
       })
 
       if (result.success) {
-        this.updateWcpParams(result.wcpconfig)
+        let config = result.wcpconfig
+        config.menu = this.fixFullMenu(config.menu)
+        this.updateWcpParams(config)
       }
 
       this.loading = false
@@ -264,23 +210,99 @@ export default {
 
     getMenu: async function() {
       this.loading = true
-      let result = await this.$acs.getWcpMenu({
+      let response = await this.$acs.getWcpMenu({
         app_id: this.wcpParams.app_id
       })
-      alert(result)
-      console.log("-----------------getMenu:" + result)
+      if (response.success) {
+        this.wcpParams.menu = this.fixFullMenu(response.menu)
+      } else {
+        processAjaxError(response)
+      }
       this.loading = false
     },
 
     updateMenu: async function() {
       this.loading = true
-      let result = await this.$acs.update_wcp_menu({
+      let newmenu = JSON.parse(JSON.stringify(this.wcpParams.menu)); //deep copy
+      newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, ''))
+      console.log("-----------------newmenu:" + JSON.stringify(newmenu))
+      let result = await this.$acs.updateWcpMenu({
         app_id: this.wcpParams.app_id,
-        menu: this.wcpParams.menu
+        menu: newmenu
       })
-      alert(result)
-      console.log("-----------------getMenu:" + result)
+      console.log("-----------------getMenu:" + JSON.stringify(result))
       this.loading = false
+    },
+
+    cleanEmpty: function(obj) {
+      for (var i in obj) {
+        var value = obj[i];
+        if (typeof value === 'object') {
+          if (Array.isArray(value)) {
+            if (value.length == 0) {
+              delete obj[i];
+              continue;
+            }
+          }
+          value = this.cleanEmpty(value);
+          if (this.isEmpty(value)) {
+            delete obj[i];
+          }
+        } else {
+          if (value === null || value === undefined || value === '') {
+            delete obj[i];
+          }
+        }
+      }
+      return obj;
+    },
+
+    isEmpty: function(object) {
+      for (var name in object) {
+        return false;
+      }
+      return true;
+    },
+
+    fixFullMenu: function(obj) {
+      if (obj) {
+        obj.button[0] = this.fixMenu(obj.button[0]);
+        obj.button[1] = this.fixMenu(obj.button[1]);
+        obj.button[2] = this.fixMenu(obj.button[2]);
+      } else {
+        obj = {
+          "button": []
+        }
+        obj.button.push(this.subMenuModel);
+        obj.button.push(this.subMenuModel);
+        obj.button.push(this.subMenuModel);
+      }
+      return obj;
+    },
+
+    fixMenu: function(obj) {
+      if (obj) {
+        let sub_button = obj.sub_button;
+        if (sub_button && Array.isArray(sub_button)) {
+          let ml = 5 - sub_button.length;
+          if (ml > 0) {
+            for (var i = 0; i < ml; i++) {
+              let temp = {
+                type: '',
+                name: '',
+                key: '',
+                url: ''
+              };
+              sub_button.unshift(temp);
+            }
+          }
+        } else {
+          obj.push(this.subMenuModel.sub_button)
+        }
+      } else {
+        obj = this.subMenuModel
+      }
+      return obj;
     },
   },
 

@@ -252,9 +252,13 @@ defmodule Acs.Web.AdminWcpController do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
         result = Menu.get(app_id)
-        d "------------------------get_wcp_menu: #{inspect result, pretty: true}"
-        conn |> json(%{success: true, result: result})
-      
+        if(result.menu) do
+          AppWcpConfig.changeset(config, %{menu: result.menu}) |> Repo.update!
+          conn |> json(%{success: true, menu: result.menu})
+        else
+          conn |> json(%{success: false, message: result})
+        end
+
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
@@ -263,10 +267,10 @@ defmodule Acs.Web.AdminWcpController do
   def update_wcp_menu(conn, %{"app_id" => app_id, "menu" => menu}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
+        d "------------------update_wcp_menu: #{inspect menu, pretty: true}"
         result = Menu.create(app_id, menu)
-        d "------------------------update_wcp_menu: #{inspect result, pretty: true}"
         conn |> json(%{success: true, result: result})
-      
+
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end

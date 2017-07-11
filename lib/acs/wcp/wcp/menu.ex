@@ -14,11 +14,11 @@ defmodule Wcp.Menu do
   end
 
   def get(app_id) do
-    get(app_id, "menu/get") |> Poison.decode!
+    get(app_id, "menu/get")
   end
 
   def delete(app_id) do
-    get(app_id, "menu/delete") |> Poison.decode!
+    get(app_id, "menu/delete") 
   end
 
 end

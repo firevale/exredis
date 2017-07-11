@@ -77,6 +77,7 @@ defmodule Acs.Web.WcpController do
       nil ->
         info "response is nil, return success"
         conn |> text("success") 
+
       %{} = reply ->
         AppWcpMessage.changeset(%AppWcpMessage{}, 
           %{from: reply.from, 

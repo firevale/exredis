@@ -7,7 +7,7 @@ defmodule Acs.AppWcpMessage do
     field :from, :string
     field :to, :string
     field :msg_type, :string
-    field :content, :string
+    field :content, :binary
     field :create_time, :integer
 
     belongs_to :app, Acs.App, type: :string

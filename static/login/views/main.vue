@@ -55,8 +55,19 @@ export default {
   },
 
   watch: {
-    '$route' (to, from) {
-      this.canGoBack = (history.state != null)
+    '$route': async function(to, from) {
+      let native = await nativeApi.canGoback()
+      switch(native) {
+        case 'yes':
+          this.canGoBack = true
+          break
+        case 'no':
+          this.canGoBack = false
+          break
+        default: 
+          this.canGoBack = (history.state != null)
+          break
+      }
     }
   },
 }

@@ -199,5 +199,24 @@ export default {
     }
   },
 
+  canGoback: function() {
+    if (typeof AndroidNativeAPI === 'object' &&
+      typeof AndroidNativeAPI.canGoback === 'function') {
+      return Promise.resolve(AndroidNativeAPI.canGoback())
+    } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
+      typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'canGoback' })
+      return new Promise(function(resolve, reject) {
+        window.acsConfig.canGobackCallback = (result) => {
+          window.acsConfig.canGobackCallback = undefined
+          console.log('can go back: ', result)
+          resolve(result)
+        }
+      })
+    } else {
+      return Promise.resolve('undefined')
+    }
+  },
+
 
 }

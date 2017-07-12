@@ -47,7 +47,7 @@
               <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
-          <v-touch v-if="isInApp" tag="a" class="button is-info is-submit" style="margin-top: 1rem" @tap="logout">
+          <v-touch v-if="isInApp && showLogout" tag="a" class="button is-info is-submit" style="margin-top: 1rem" @tap="logout">
             {{ $t('account.logout') }}
           </v-touch>
         </div>
@@ -87,6 +87,10 @@ export default {
 
     isMobileAccountSupported() {
       return acs.isMobileAccountSupported
+    },
+
+    showLogout() {
+      return acs.showLogout
     },
 
     avatarUrl() {

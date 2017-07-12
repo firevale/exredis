@@ -41,6 +41,7 @@
           nil_password: <%= is_nil(user.encrypted_password) %>,
         },
         <% end %>
+        show_logout: <%= @conn.params["can_log_out"] == "1" %>,
         imagesUrl: '<%= static_url(@conn, "/images/") %>',
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
         isMobileAccountSupported: <%= @is_mobile_account_supported %>,

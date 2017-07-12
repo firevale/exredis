@@ -47,6 +47,14 @@ config :acs, :wechat,
   refund_url: "https://api.mch.weixin.qq.com/secapi/pay/refund",
   refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery"
 
+config :acs, :netease_dun,
+  secretId: "f94740b35af60351d389117156eef9aa",
+  secretKey: "09b5a40215c5bc3b4c8159d8901d7f46",
+  txt_businessId: "3fcaa4a970b5444ed676ffbffc545588",
+  img_businessId: "afcb2720bea5912effcbda7a85a904b8",
+  check_txt_url: "https://api.aq.163.com/v3/text/check",
+  check_img_url: "https://api.aq.163.com/v3/image/check"
+
 config :acs, Acs.MeishengSmsSender,
   server_ip: "112.74.76.186",
   server_port: 8030,

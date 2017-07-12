@@ -92,5 +92,20 @@
      postTitleMaxLength: '标题文字太长了',
      commentContentRequired: '回帖内容最少5个字',
      responseRequired: '回复内容不能为空',
+   },
+
+   sdks: {
+     netease: {
+       checkPass: '检测结果：通过', 
+       checkNotPass: '检测结果：不通过',
+       label100: '色情',
+       label110: '性感',
+       label200: '广告',
+       label210: '二维码',
+       label300: '暴恐',
+       label400: '违禁',
+       label600: '谩骂',
+       label700: '灌水',
+     }
    }
  }

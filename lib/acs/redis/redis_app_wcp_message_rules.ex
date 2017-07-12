@@ -17,7 +17,7 @@ defmodule Acs.RedisAppWcpMessageRule do
             rules -> {:commit, rules}
           end
         raw ->
-          {:commit, raw |> JSON.decode!}
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
       end
     end)
   end
@@ -39,7 +39,7 @@ defmodule Acs.RedisAppWcpMessageRule do
               {kw, rule.response}
             end)
         end) |> List.flatten |> Enum.into(%{})
-        Redis.set(key(app_id), JSON.encode(rules))
+        Redis.set(key(app_id), rules |> :erlang.term_to_binary |> Base.encode64)
         rules
 
       _ -> nil

@@ -47,6 +47,9 @@
               <span class="icon image-icon icon-arrow-right"></span>
             </p>
           </v-touch>
+          <v-touch v-if="isInApp" tag="a" class="button is-info is-submit" style="margin-top: 1rem" @tap="logout">
+            {{ $t('account.logout') }}
+          </v-touch>
         </div>
       </div>
     </scroller>
@@ -59,7 +62,7 @@ import {
 } from 'vuex'
 
 import * as utils from 'common/js/utils'
-
+import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
 
 import {
@@ -73,29 +76,29 @@ import {
 import CropUploadDialog from 'common/components/imageCropUpload'
 
 export default {
-  data() {
-    return {
-      isMobileAccountSupported: window.acsConfig.isMobileAccountSupported
-    }
-  },
-
   computed: {
     ...mapGetters([
       'userInfo'
     ]),
+
+    isInApp() {
+      return acs.isInApp
+    },
+
+    isMobileAccountSupported() {
+      return acs.isMobileAccountSupported
+    },
 
     avatarUrl() {
       return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
     },
 
     email() {
-      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t(
-        'account.notBound')
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t('account.notBound')
     },
 
     mobile() {
-      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t(
-        'account.notBound')
+      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t('account.notBound')
     }
   },
 
@@ -179,7 +182,15 @@ export default {
           window.acsConfig.user.avatar_url = result.user.avatar_url
         }
       }
+    },
+
+    logout: function() {
+      nativeApi.closeWebviewWithResult({
+        success: false,
+        action: 'logout',
+      })
     }
+
   },
 }
 </script>

@@ -37,5 +37,6 @@ export const isInApp = window.acsConfig.inApp || false
 export const csrfToken = window.acsConfig.csrfToken
 export const locale = window.acsConfig.locale || 'zh-hans'
 export const obtainCodeUrl = window.acsConfig.obtainCodeUrl || ''
+export const isMobileAccountSupported = window.acsConfig.isMobileAccountSupported || false
 
 

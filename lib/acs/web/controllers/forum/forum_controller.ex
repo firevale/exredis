@@ -716,7 +716,7 @@ defmodule Acs.Web.ForumController do
            "section_id" => section_id} = post <- conn.params,
           forum_id <- String.to_integer(forum_id),
           %{sections: sections} <- RedisForum.find(forum_id),
-          %{id: _} <- sections["#{section_id}" |> String.to_atom]
+          %{id: _} <- sections[section_id]
     do 
       case post["post_id"] do 
         x when x in [nil, "undefined", "null"] ->
@@ -811,7 +811,7 @@ defmodule Acs.Web.ForumController do
       title -> case SDKNeteaseDun.check_txt(title) do 
         {:error, label, info} ->
           if label do
-            %{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}}
+            %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
           else
             %{success: false, message: info}
           end
@@ -824,7 +824,7 @@ defmodule Acs.Web.ForumController do
       true -> case SDKNeteaseDun.check_txt(conn.params["content"]) do 
           {:error, label, info} ->
             if label do
-              %{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}}
+              %{success: false, i18n_message: "forum.newPost.contentFilterFail"}
             else
               %{success: false, message: info}
             end

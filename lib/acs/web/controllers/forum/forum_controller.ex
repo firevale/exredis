@@ -15,6 +15,7 @@ defmodule Acs.Web.ForumController do
   plug :no_emoji, [param_name: "title"] when action == :add_post
   plug :fetch_post when action in [:add_post, :upload_post_image]
   plug :fetch_comment when action in [:add_comment, :upload_comment_image]
+  plug :check_txt when action in [:add_post, :add_comment]
 
   # fetch_forums
   def fetch_forums(conn, %{"page" => page, "records_per_page" => records_per_page}) do
@@ -305,18 +306,10 @@ defmodule Acs.Web.ForumController do
                %{"title" => title,
                  "content" => content} = post) do
       
-      case SDKNeteaseDun.check_txt(title) do 
-        {:error, label} ->
-          conn |> json(%{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}})
-        _ -> nil # do nothing
-      end
-
-      case SDKNeteaseDun.check_txt(content) do 
-        {:error, label} ->
-          conn |> json(%{success: false, i18n_message: "forum.newPost.contentFilterFail", i18n_message_object: %{label: label}})
-        _ -> nil # do nothing
-      end
-      
+    check_out = conn.private[:check_txt]
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
       post = case Floki.find(content, "img") do
                [] -> post |> Map.put("has_pic", false) |> Map.put("active", true)
                _  -> post |> Map.put("has_pic", true) |> Map.put("active", true)
@@ -347,7 +340,8 @@ defmodule Acs.Web.ForumController do
         id: new_post.id
       })
 
-    conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
+      conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
+    end
   end
   def add_post(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -558,38 +552,38 @@ defmodule Acs.Web.ForumController do
                                         forum_comment: forum_comment}} = conn,
                     %{"content" => content}) do
 
-    case SDKNeteaseDun.check_txt(content) do 
-      {:error, label} ->
-        conn |> json(%{success: false, i18n_message: "forum.newPost.contentFilterFail", i18n_message_object: %{label: label}})
-      _ -> nil # do nothing
-    end
+    check_out = conn.private[:check_txt]
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      {:ok, _comment} = ForumComment.changeset(forum_comment, %{
+        content: content,
+        active: true,
+        floor: _get_max_floor(forum_post.id) + 1
+      }) |> Repo.update
 
-    {:ok, _comment} = ForumComment.changeset(forum_comment, %{
-      content: content,
-      active: true,
-      floor: _get_max_floor(forum_post.id) + 1
-    }) |> Repo.update
+      utc_now = DateTime.utc_now()
+      ForumPost.changeset(forum_post, %{
+        comms: forum_post.comms + 1, 
+        last_reply_at: utc_now}) |> Repo.update()
 
-    utc_now = DateTime.utc_now()
-    ForumPost.changeset(forum_post, %{
-      comms: forum_post.comms + 1, 
-      last_reply_at: utc_now}) |> Repo.update()
-
-    # check is hot
-    hot_hours = RedisSetting.find("forum_post_hot_hours")
-    if hot_hours != nil do
-      hot_hours = String.to_integer(hot_hours)
-      if hot_hours > 0 do
-        before_time = Timex.shift(utc_now, hours: -hot_hours)
-        query = from c in ForumComment, 
-                select: count(1), 
-                where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
-        total = Repo.one!(query)
-        RedisForum.checkIsHot(forum_post.id, total)
+      # check is hot
+      hot_hours = RedisSetting.find("forum_post_hot_hours")
+      if hot_hours != nil do
+        hot_hours = String.to_integer(hot_hours)
+        if hot_hours > 0 do
+          before_time = Timex.shift(utc_now, hours: -hot_hours)
+          query = from c in ForumComment, 
+                  select: count(1), 
+                  where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
+          total = Repo.one!(query)
+          RedisForum.checkIsHot(forum_post.id, total)
+        end
       end
-    end
 
-    conn |> json(%{success: true, i18n_message: "forum.writeComment.addSuccess"})
+      conn |> json(%{success: true, i18n_message: "forum.writeComment.addSuccess"}) 
+    end
+                    
   end
   def add_comment(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams", action: "login"})
@@ -805,6 +799,43 @@ defmodule Acs.Web.ForumController do
     else 
       _ -> conn
     end
+  end
+
+  # check text by netease dun
+  defp check_txt(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
+
+    check_out = case conn.params["title"] do
+      x when x in [nil, "undefined", "null"] ->
+        %{success: true}
+
+      title -> case SDKNeteaseDun.check_txt(title) do 
+        {:error, label, info} ->
+          if label do
+            %{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}}
+          else
+            %{success: false, message: info}
+          end
+
+        _ -> %{success: true}
+      end
+    end
+    
+    check_out = case check_out.success do
+      true -> case SDKNeteaseDun.check_txt(conn.params["content"]) do 
+          {:error, label, info} ->
+            if label do
+              %{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}}
+            else
+              %{success: false, message: info}
+            end
+
+          _ -> %{success: true}
+        end
+
+      false -> check_out        
+    end
+
+    conn |> put_private(:check_txt, check_out)
   end
 
   def upload_comment_image(%Plug.Conn{private: %{forum_post: forum_post, 

@@ -23,11 +23,11 @@ defmodule Acs.RedisAppDevice do
                 zone_id: zone_id,
                 platform: platform,
                 reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
-              Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
+              Redis.setex(key, 3600 * 24, AppDevice.to_redis(appDevice))
               {:commit, appDevice}
 
             %AppDevice{} = appDevice ->
-              Redis.setex(key, 3600 * 24, appDevice |> :erlang.term_to_binary |> Base.encode64)
+              Redis.setex(key, 3600 * 24, AppDevice.to_redis(appDevice))
               {:commit, appDevice}
           end
 

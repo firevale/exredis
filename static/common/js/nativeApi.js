@@ -199,6 +199,28 @@ export default {
     }
   },
 
+  updateNickname: function(nickname) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.updateNickname === 'function') {
+      AndroidNativeAPI.updateNickname(nickname)
+    } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
+      typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'updateNickname', params: nickname })
+    } else {
+      console.error('native function updateNickname is not available')
+    }
+  },
+
+  updateAvatar: function(url) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.updateAvatar === 'function') {
+      AndroidNativeAPI.updateAvatar(url)
+    } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
+      typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
+      window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'updateAvatar', params: url })
+    } else {
+      console.error('native function updateAvatar is not available')
+    }
+  },
+
   canGoback: function() {
     if (typeof AndroidNativeAPI === 'object' &&
       typeof AndroidNativeAPI.canGoback === 'function') {

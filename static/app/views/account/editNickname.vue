@@ -37,6 +37,8 @@ import * as utils from 'common/js/utils'
 
 import Toast from 'common/components/toast'
 
+import nativeApi from 'common/js/nativeApi'
+
 export default {
   data() {
     return {
@@ -78,6 +80,7 @@ export default {
         if (result.success) {
           this.updateUserNickname(this.nickname)
           window.acsConfig.user.nickname = this.nickname
+          nativeApi.updateNickname(this.nickname)
 
           this.$nextTick(_ => {
             Toast.show(this.$t('account.messages.nicknameUpdated', {

@@ -457,7 +457,7 @@ defmodule Acs.Web.UserController do
 
     query = from app_user in Acs.Stats.AppUser,
               where: app_user.app_id == ^app_id,
-              select:  map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
+              select: map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
 
     query =
       case Integer.parse(keyword) do

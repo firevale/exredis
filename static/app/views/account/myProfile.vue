@@ -159,6 +159,7 @@ export default {
             if (result.success) {
               this.updateUserAvatar(result.user.avatar_url)
               window.acsConfig.user.avatar_url = result.user.avatar_url
+              nativeApi.updateAvatar(result.user.avatar_url)
             }
           }
         })

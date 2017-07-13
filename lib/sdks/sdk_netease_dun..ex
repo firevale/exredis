@@ -12,9 +12,18 @@ defmodule SDKNeteaseDun do
   @secretKey          @dun_config[:secretKey]
   @txt_businessId     @dun_config[:txt_businessId]
   @img_businessId     @dun_config[:img_businessId]
+  @user_businessId    @dun_config[:user_businessId]
   @version            "v3"
 
+  def check_userid(userid) do
+    _check_txt(userid, @user_businessId)
+  end
+
   def check_txt(content) do 
+    _check_txt(content, @txt_businessId)
+  end
+
+  defp _check_txt(content, businessId) do 
     
     try do
       timestamp = Utils.unix_timestamp
@@ -23,13 +32,13 @@ defmodule SDKNeteaseDun do
 
       response = Httpc.post_msg(@check_txt_url, %{
                           "secretId" => @secretId,
-                          "businessId" => @txt_businessId,
+                          "businessId" => businessId,
                           "version" => @version,
                           "timestamp" => timestamp,
                           "nonce" => nonce,
                           "dataId" => dataId,
                           "content" => content,
-                          "signature" => Utils.md5_sign("businessId#{@txt_businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
+                          "signature" => Utils.md5_sign("businessId#{businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
                           })
 
       if Httpc.success?(response) do 

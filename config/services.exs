@@ -52,6 +52,7 @@ config :acs, :netease_dun,
   secretKey: "09b5a40215c5bc3b4c8159d8901d7f46",
   txt_businessId: "3fcaa4a970b5444ed676ffbffc545588",
   img_businessId: "afcb2720bea5912effcbda7a85a904b8",
+  user_businessId: "65497b57a490592212b91c1d3305b757",
   check_txt_url: "https://api.aq.163.com/v3/text/check",
   check_img_url: "https://api.aq.163.com/v3/image/check"
 

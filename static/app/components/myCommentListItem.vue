@@ -12,14 +12,12 @@
         <span class="size-1-1 is-thickness is-dark">{{ itemData.post.comms + '/' + itemData.post.reads }}</span>
       </div>
       <v-touch class="tile has-background is-clickable" style="align-items: center;" @tap="showDetail">
-        <h5 class="title is-5" style="margin: 0.5rem">{{ $t('forum.personal.originalPost') }}[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
+        <h5 class="title is-5" style="margin: 0.5rem">{{ $t('forum.personal.originalPost') }}[{{ itemData.post.section.title }}] {{ itemData.post.title }}</h5>
       </v-touch>
     </div>
   </div>
 </template>
 <script>
-import * as filter from 'common/js/filters'
-
 export default {
   props: {
     itemData: {
@@ -42,7 +40,7 @@ export default {
       })
     },
     delHtmlTag(html) {
-      return filter.filterKeyword(html.replace(/<[^>]+>/g, "").trim().substring(0, 20))
+      return html.replace(/<[^>]+>/g, "").trim().substring(0, 20)
     }
   },
 }

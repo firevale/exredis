@@ -14,10 +14,10 @@
         <li>菜单项为点击事件，并且菜单key为<strong style="color: red">assign_login_code</strong>时，点击该菜单事件触发激活码回复</li>
       </ul>
     </div>
-    <div class="column is-8" style="padding:10px;">
+    <div class="column is-7" style="padding:10px;">
       <div class="columns is-multiline" style="border:1px #ccc solid; margin:3px;">
-        <div class="column is-2"></div>
-        <div class="column is-10">
+        <div class="column is-3"></div>
+        <div class="column is-9">
           <div class="columns">
             <div class="column">第一列</div>
             <div class="column">第二列</div>
@@ -26,12 +26,12 @@
         </div>
         <div class="column is-2" style="font-size:10pt; line-height:450%;">
           <ul>
-            <li>二级菜单No.1</li>
-            <li>二级菜单No.2</li>
-            <li>二级菜单No.3</li>
-            <li>二级菜单No.4</li>
-            <li>二级菜单No.5</li>
-            <li>一级菜单按钮</li>
+            <li>&nbsp;</li>
+            <li>&nbsp;</li>
+            <li>二级菜单</li>
+            <li>&nbsp;</li>
+            <li>&nbsp;</li>
+            <li>一级菜单</li>
           </ul>
         </div>
         <div class="column is-10">
@@ -41,7 +41,12 @@
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
-                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[0])" v-model.trim="wcpParams.menu.button[0].name">
+                <p class="control has-icons-left">
+                  <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[0])" v-model.trim="wcpParams.menu.button[0].name">
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-reorder"></i>
+                  </span>
+                </p>
               </div>
             </div>
             <div class="column is-one-third">
@@ -49,7 +54,12 @@
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
-                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[1])" v-model.trim="wcpParams.menu.button[1].name">
+                <p class="control has-icons-left">
+                  <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[1])" v-model.trim="wcpParams.menu.button[1].name">
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-reorder"></i>
+                  </span>
+                </p>
               </div>
             </div>
             <div class="column is-one-third">
@@ -57,14 +67,19 @@
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
-                <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[2])" v-model.trim="wcpParams.menu.button[2].name">
+                <p class="control has-icons-left">
+                  <input class="input" type="text" @click.prevent="setCurrentButton(wcpParams.menu.button[2])" v-model.trim="wcpParams.menu.button[2].name">
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-reorder"></i>
+                  </span>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="column is-4">
+    <div class="column is-5">
       <div class="field has-addons">
         <label style="font-weight:bold;">{{ $t('admin.wcp.menus.params') }}</label>
       </div>
@@ -228,7 +243,8 @@ export default {
     updateMenu: async function() {
       this.loading = true
       let newmenu = JSON.parse(JSON.stringify(this.wcpParams.menu)); //deep copy
-      newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, ''))
+      newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, '').replace(/,null/g, ''))
+      
       let response = await this.$acs.updateWcpMenu({
         app_id: this.wcpParams.app_id,
         menu: newmenu
@@ -245,6 +261,11 @@ export default {
     cleanEmpty: function(obj) {
       for (var i in obj) {
         var value = obj[i];
+        if((typeof value === 'object') && !Array.isArray(value)){
+          if(!value["name"] || value["name"].trim() === '') {
+            delete obj[i];
+          }
+        }
         if (typeof value === 'object') {
           if (Array.isArray(value)) {
             if (value.length == 0) {

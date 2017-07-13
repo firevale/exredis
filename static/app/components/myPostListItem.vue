@@ -4,7 +4,7 @@
       <v-touch class="level-left level-item is-clickable" @tap="showDetail">
         <div class="tile is-vertical">
           <div class="tile">
-            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.section.title }}] {{ itemData.title | filterKeyword}}</h5>
+            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.section.title }}] {{ itemData.title }}</h5>
             <a v-show="itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
           </div>
           <div class="tile">

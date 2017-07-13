@@ -42,29 +42,29 @@ defmodule SDKNeteaseDun do
               case result["action"] do
                 2 ->
                   [labels] = result["labels"]
-                  {:error, i18n_message: "error.sdks.netease.checkNotPass", label: "error.sdks.netease.label#{labels["label"]}"}
+                  {:error, "error.sdks.netease.label#{labels["label"]}"}
                 
                 _ ->
-                  {:ok, i18n_message: "error.sdks.netease.checkPass"}
+                  {:ok, "error.sdks.netease.checkPass"}
                   
               end
 
             else 
               Logger.error "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"
-              {:error, message: "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"}
+              {:error, "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"}
             end
           _ -> 
             Logger.error "netease dun check txt error, not a json response"
-            {:error, message: "netease dun check txt error, not a json response"}
+            {:error, "netease dun check txt error, not a json response"}
         end 
       else
         Logger.error "netease dun check txt failed"
-        {:error, message: "netease dun check txt failed"}
+        {:error, "netease dun check txt failed"}
       end
     catch
       :error, e ->
         Logger.error "netease dun check txt exception: #{inspect e}"
-        {:error, message: "netease dun check txt exception: #{inspect e}"}
+        {:error, "netease dun check txt exception: #{inspect e}"}
     end 
   end
 
@@ -95,29 +95,29 @@ defmodule SDKNeteaseDun do
 
               case maxResult["level"] do
                 2 ->
-                  {:error, i18n_message: "error.sdks.netease.checkNotPass", label: "error.sdks.netease.label#{maxResult["label"]}"}
+                  {:error, "error.sdks.netease.label#{maxResult["label"]}"}
                 
                 _ ->
-                  {:ok, i18n_message: "error.sdks.netease.checkPass"}
+                  {:ok, "error.sdks.netease.checkPass"}
                   
               end
 
             else 
               Logger.error "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"
-              {:error, message: "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"}
+              {:error, "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"}
             end
           _ -> 
             Logger.error "netease dun check img error, not a json response"
-            {:error, message: "netease dun check img error, not a json response"}
+            {:error, "netease dun check img error, not a json response"}
         end 
       else
         Logger.error "netease dun check img failed"
-        {:error, message: "netease dun check img failed"}
+        {:error, "netease dun check img failed"}
       end
     catch
       :error, e ->
         Logger.error "netease dun check img exception: #{inspect e}"
-        {:error, message: "netease dun check img exception: #{inspect e}"}
+        {:error, "netease dun check img exception: #{inspect e}"}
     end 
   end
 

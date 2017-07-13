@@ -63,10 +63,10 @@ export default {
     },
     strenghtenKeywordTitle() {
       return this.searchKeyword ?
-        filter.filterKeyword(this.postInfo.title).replace(new RegExp(this.searchKeyword, 'g'),
+        this.postInfo.title.replace(new RegExp(this.searchKeyword, 'g'),
           `<span class="is-danger" style="font-weight: 400; font-style: italic; margin-right:0.2rem">${this.searchKeyword}</span>`
         ) :
-        filter.filterKeyword(this.postInfo.title)
+        this.postInfo.title
     },
   },
 

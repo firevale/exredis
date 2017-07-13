@@ -12,7 +12,7 @@
         <nav class="nav">
           <div class="nav-left has-text-left">
             <span class="post-title">
-              [{{editingPostData.sectionTitle}}] {{editingPostData.title | filterKeyword}}
+              [{{editingPostData.sectionTitle}}] {{editingPostData.title}}
             </span>
           </div>
         </nav>
@@ -22,7 +22,7 @@
           </span>
           <span class="is-primary">{{ userInfo.nickname }}</span>
         </p>
-        <quill-content class="post-content" :content="filterContent"></quill-content>
+        <quill-content class="post-content" :content="editingPostData.content"></quill-content>
       </div>
     </article>
     <div class="tile is-full has-text-centered">
@@ -66,9 +66,6 @@ export default {
       }
     },
 
-    filterContent() {
-      return filter.filterKeyword(this.editingPostData.content)
-    }
   },
 
   methods: {

@@ -13,7 +13,7 @@
           <div class="nav-left has-text-left flex-take-rest">
             <span v-if="postData.is_top" class="tag is-danger">{{ $t('forum.postList.top') }}</span>
             <span class="post-title">
-              [{{postData.section.title}}] {{postData.title | filterKeyword}}
+              [{{postData.section.title}}] {{postData.title}}
             </span>
             <span v-if="postData.is_vote" class="tag is-essence">{{ $t('forum.postList.essence') }}</span>
             <span v-if="postData.is_hot" class="tag is-danger">{{ $t('forum.postList.hot') }}</span>
@@ -30,7 +30,7 @@
           </span>
           <span class="is-primary" style="font-size:1.1rem">{{ postData.user.nickname }}</span>
         </p>
-        <quill-content class="quill-editor ql-snow post-content" :content="filterContent" style="font-size:1.1rem"></quill-content>
+        <quill-content class="quill-editor ql-snow post-content" :content="postData.content" style="font-size:1.1rem"></quill-content>
         <div class="tile favoriting">
           <span v-if="favoriting" class="icon image-icon icon-circle rotating" style="margin-left: 0.1rem"></span>
           <v-touch v-else tag="span" :class="postData.is_favorite ? 'icon-heart' : 'icon-heart-o'" class="icon image-icon is-clickable"
@@ -116,10 +116,6 @@ export default {
         loading: window.acsConfig.defaultAvatarUrl
       }
     },
-
-    filterContent() {
-      return filter.filterKeyword(this.postData.content)
-    }
   },
 
   methods: {

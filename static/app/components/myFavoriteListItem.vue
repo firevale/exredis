@@ -4,7 +4,7 @@
       <v-touch class="level-left level-item is-clickable" @tap="showDetail">
         <div class="tile is-vertical">
           <div class="tile">
-            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.post.section.title }}] {{ itemData.post.title | filterKeyword }}</h5>
+            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.post.section.title }}] {{ itemData.post.title }}</h5>
           </div>
           <div class="tile">
             <span class="size-1-1 is-thickness is-dark">{{ itemData.post.inserted_at | formatServerDateTime }}</span>

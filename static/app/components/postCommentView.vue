@@ -22,8 +22,8 @@
               {{ $t('common.delete') }} </span>
           </div>
         </nav>
-        <quill-content class="quill-editor ql-snow post-content" :style="{color:!commentData.active?'#979797':''}" :key="filterContent"
-          :content="filterContent" style="font-size:1.1rem"></quill-content>
+        <quill-content class="quill-editor ql-snow post-content" :style="{color:!commentData.active?'#979797':''}" :key="commentData.content"
+          :content="commentData.content" style="font-size:1.1rem"></quill-content>
       </div>
     </article>
   </div>
@@ -70,11 +70,7 @@ export default {
         loading: window.acsConfig.defaultAvatarUrl
       }
     },
-
-    filterContent() {
-      return filter.filterKeyword(this.commentData.content)
-    },
-
+    
     nthName: function() {
       switch (this.nth) {
         case 1:

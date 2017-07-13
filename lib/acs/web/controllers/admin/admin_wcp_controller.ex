@@ -103,7 +103,7 @@ defmodule Acs.Web.AdminWcpController do
                           limit: ^records_per_page,
                           where: msg.app_id == ^app_id,
                           offset: ^((page - 1) * records_per_page),
-                          order_by: [desc: msg.inserted_at]
+                          order_by: [desc: msg.id]
 
               true -> 
                 from msg in AppWcpMessage,
@@ -113,7 +113,7 @@ defmodule Acs.Web.AdminWcpController do
                           limit: ^records_per_page,
                           where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")),
                           offset: ^((page - 1) * records_per_page),
-                          order_by: [desc: msg.inserted_at]
+                          order_by: [desc: msg.id]
             end
 
     message = Repo.all(query)

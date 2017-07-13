@@ -63,7 +63,9 @@ export default {
     requireTitle: '请输入标题',
     requireContent: '请输入内容',
     requireSection: '请选择发贴版块',
-    addSuccess: '发帖成功'
+    addSuccess: '发帖成功',
+    titleFilterFail: '标题中含有[{label}]词汇，请修改后重新提交',
+    contentFilterFail: '内容中含有[{label}]词汇，请修改后重新提交',
   },
   writeComment: {
     title: '回复',

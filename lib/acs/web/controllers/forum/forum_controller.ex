@@ -304,7 +304,19 @@ defmodule Acs.Web.ForumController do
   def add_post(%Plug.Conn{private: %{forum_post: forum_post}} = conn, 
                %{"title" => title,
                  "content" => content} = post) do
+      
+      case SDKNeteaseDun.check_txt(title) do 
+        {:error, label} ->
+          conn |> json(%{success: false, i18n_message: "forum.newPost.titleFilterFail", i18n_message_object: %{label: label}})
+        _ -> nil # do nothing
+      end
 
+      case SDKNeteaseDun.check_txt(content) do 
+        {:error, label} ->
+          conn |> json(%{success: false, i18n_message: "forum.newPost.contentFilterFail", i18n_message_object: %{label: label}})
+        _ -> nil # do nothing
+      end
+      
       post = case Floki.find(content, "img") do
                [] -> post |> Map.put("has_pic", false) |> Map.put("active", true)
                _  -> post |> Map.put("has_pic", true) |> Map.put("active", true)
@@ -545,6 +557,12 @@ defmodule Acs.Web.ForumController do
                                         forum_post: forum_post,
                                         forum_comment: forum_comment}} = conn,
                     %{"content" => content}) do
+
+    case SDKNeteaseDun.check_txt(content) do 
+      {:error, label} ->
+        conn |> json(%{success: false, i18n_message: "forum.newPost.contentFilterFail", i18n_message_object: %{label: label}})
+      _ -> nil # do nothing
+    end
 
     {:ok, _comment} = ForumComment.changeset(forum_comment, %{
       content: content,

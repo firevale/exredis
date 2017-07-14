@@ -66,6 +66,7 @@ export default {
     addSuccess: '发帖成功',
     titleFilterFail: '标题中含有敏感词汇，请修改后重新提交',
     contentFilterFail: '内容中含有敏感词汇，请修改后重新提交',
+    imageFilterFail: '图片违规，请修改后重新提交',
   },
   writeComment: {
     title: '回复',

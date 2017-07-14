@@ -756,7 +756,13 @@ defmodule Acs.Web.ForumController do
       Utils.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
         low_quality: true)
-    conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
+
+    check_out = check_img(conn, image_path)
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
+    end
   end
   def upload_post_image(%Plug.Conn{private: %{image_file_path: image_file_path,
                                               forum_post: forum_post}} = conn, 
@@ -765,7 +771,13 @@ defmodule Acs.Web.ForumController do
       Utils.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
         low_quality: true)
-    conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
+    
+    check_out = check_img(conn, image_path)
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
+    end    
   end
   def upload_post_image(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -838,6 +850,27 @@ defmodule Acs.Web.ForumController do
     conn |> put_private(:check_txt, check_out)
   end
 
+  # check image by netease dun
+  defp check_img(conn, image_path) do
+    image_path = case String.starts_with?(String.downcase(image_path), "http") do
+      true -> image_path
+      false -> static_url(conn, image_path)
+    end
+
+    images = "[{'name': '#{image_path}', 'type': 1, 'data': '#{image_path}'}]"
+    check_out = case SDKNeteaseDun.check_img(images) do 
+      {:error, label, info} ->
+        if label do
+          %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
+        else
+          %{success: false, message: info}
+        end
+
+      _ -> %{success: true}
+    end
+    check_out
+  end
+
   def upload_comment_image(%Plug.Conn{private: %{forum_post: forum_post, 
                                                  forum_comment: forum_comment}} = conn, 
                          %{"file" => %{path: image_file_path}}) do
@@ -845,11 +878,13 @@ defmodule Acs.Web.ForumController do
       Utils.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
         low_quality: true)
-    conn |> json(%{success: true, 
-                   comment_id: forum_comment.id, 
-                   link: image_path, 
-                   width: width, 
-                   height: height})
+    
+    check_out = check_img(conn, image_path)
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      conn |> json(%{success: true, comment_id: forum_comment.id, link: image_path, width: width, height: height})
+    end 
   end
   def upload_comment_image(%Plug.Conn{private: %{image_file_path: image_file_path,
                                                  forum_post: forum_post,
@@ -859,11 +894,13 @@ defmodule Acs.Web.ForumController do
       Utils.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
         low_quality: true)
-    conn |> json(%{success: true, 
-                   comment_id: forum_comment.id, 
-                   link: image_path, 
-                   width: width, 
-                   height: height})
+
+    check_out = check_img(conn, image_path)
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      conn |> json(%{success: true, comment_id: forum_comment.id, link: image_path, width: width, height: height})
+    end
   end
   def upload_comment_image(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})

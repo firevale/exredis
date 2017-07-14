@@ -760,7 +760,7 @@ defmodule Acs.Web.ForumController do
         low_quality: true)
     
     check_out = check_img(conn, image_path)
-    if(check_out && !check_out.success) do
+    if (check_out && !check_out.success) do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
@@ -870,15 +870,16 @@ defmodule Acs.Web.ForumController do
       :null ->
         case SDKNeteaseDun.check_img(images) do 
           {:error, label, info} ->
+            RedisNeteaseDun.refresh(image_path)
+
             if label do
               %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
             else
               %{success: false, message: info}
             end
 
-            RedisNeteaseDun.refresh(image_path)
-
-          _ -> %{success: true}
+          _ -> 
+            %{success: true}
         end
     end
   end

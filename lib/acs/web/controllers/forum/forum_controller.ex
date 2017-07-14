@@ -4,7 +4,8 @@ defmodule Acs.Web.ForumController do
   alias   Acs.RedisForum
   alias   Acs.RedisSetting
   require Floki
-  import  Acs.UploadImagePlugs 
+  import  Acs.UploadImagePlugs
+  alias   Acs.RedisNeteaseDun 
 
   plug :fetch_app_id
   plug :fetch_session_user_id  
@@ -756,7 +757,7 @@ defmodule Acs.Web.ForumController do
       Utils.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
         low_quality: true)
-
+    
     check_out = check_img(conn, image_path)
     if(check_out && !check_out.success) do
       conn |> json(check_out)
@@ -858,16 +859,24 @@ defmodule Acs.Web.ForumController do
     end
 
     images = "[{'name': '#{image_path}', 'type': 1, 'data': '#{image_path}'}]"
-    check_out = case SDKNeteaseDun.check_img(images) do 
-      {:error, label, info} ->
-        if label do
-          %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
-        else
-          %{success: false, message: info}
-        end
+    check_out = case RedisNeteaseDun.find(image_path) do
+      :exist -> 
+        %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
+      
+      :null ->
+        case SDKNeteaseDun.check_img(images) do 
+          {:error, label, info} ->
+            if label do
+              %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
+            else
+              %{success: false, message: info}
+            end
+            RedisNeteaseDun.refresh(image_path)
 
-      _ -> %{success: true}
+          _ -> %{success: true}
+        end
     end
+
     check_out
   end
 

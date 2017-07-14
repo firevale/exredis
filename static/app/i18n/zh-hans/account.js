@@ -38,5 +38,6 @@ export default {
 
   error: {
     userIdCheckFail: '用户信息中含有敏感词汇，请修改后重新提交',
+    nickNameError: '用户昵称只允许【中文/数字/字母/下划线】',
   }
 }

@@ -856,7 +856,7 @@ defmodule Acs.Web.ForumController do
   defp check_img(conn, image_path) do
     image_path = case String.starts_with?(String.downcase(image_path), "http") do
       true -> image_path
-      false -> static_url(conn, image_path)
+      false -> static_url(conn, String.replace(image_path, "/img/", "/images/"))
     end
 
     info "check_image: #{image_path}"

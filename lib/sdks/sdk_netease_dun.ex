@@ -42,7 +42,6 @@ defmodule SDKNeteaseDun do
                           })
 
       if Httpc.success?(response) do 
-       
         case JSON.decode(response.body) do 
           {:ok, res} ->
             
@@ -91,9 +90,9 @@ defmodule SDKNeteaseDun do
                           "images" => images,
                           "signature" => Utils.md5_sign("businessId#{@img_businessId}images#{images}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
                           })
-
+      info "netease dun check response: #{inspect response}"
+      
       if Httpc.success?(response) do 
-       
         case JSON.decode(response.body) do 
           {:ok, res} ->
             if res["code"] == 200 do 

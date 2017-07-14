@@ -50,6 +50,7 @@ defmodule Acs.Mixfile do
      {:comeonin, "~> 3.1"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:unicode_util_compat, github: "benoitc/unicode_util_compat", override: true},
+     {:bugsnag, "~> 1.5"},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
      {:ex_syslogger, "~> 1.3"},

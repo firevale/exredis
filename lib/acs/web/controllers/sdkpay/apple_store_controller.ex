@@ -19,7 +19,7 @@ defmodule Acs.Web.AppleStoreController do
       %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
-            _deliver_apple_store_order(conn: conn, 
+            _deliver_apple_store_order(%{conn: conn, 
               cp_order_id: cp_order_id,
               transaction_id: transaction_id, 
               receipt_type: receipt_type,
@@ -30,12 +30,12 @@ defmodule Acs.Web.AppleStoreController do
               currency: currency,
               app: app, 
               device_id: device_id, 
-              zone_id: params["zone_id"] || "0")
+              zone_id: params["zone_id"] || "0"})
 
           {:ok, %{in_app: in_app, receipt_type: receipt_type} = what} -> 
             case Enum.find(in_app, fn(x) -> Map.get(x, "product_id") == product_id and Map.get(x, "original_transaction_id") == transaction_id end) do 
               %{"product_id" => ^product_id, "original_transaction_id" => ^transaction_id} ->
-                _deliver_apple_store_order(conn: conn, 
+                _deliver_apple_store_order(%{conn: conn, 
                   cp_order_id: cp_order_id,
                   transaction_id: transaction_id, 
                   receipt_type: receipt_type,
@@ -46,7 +46,7 @@ defmodule Acs.Web.AppleStoreController do
                   currency: currency,
                   app: app, 
                   device_id: device_id, 
-                  zone_id: params["zone_id"] || "0")           
+                  zone_id: params["zone_id"] || "0"})           
 
               _ ->
                 error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
@@ -115,7 +115,7 @@ defmodule Acs.Web.AppleStoreController do
       %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
-            _deliver_apple_store_order(conn: conn, 
+            _deliver_apple_store_order(%{conn: conn, 
               cp_order_id: cp_order_id,
               transaction_id: transaction_id, 
               receipt_type: receipt_type,
@@ -126,12 +126,12 @@ defmodule Acs.Web.AppleStoreController do
               currency: currency,
               app: app, 
               device_id: device_id, 
-              zone_id: zone_id)
+              zone_id: zone_id})
 
           {:ok, %{in_app: in_app, receipt_type: receipt_type} = what} -> 
             case Enum.find(in_app, fn(x) -> Map.get(x, "product_id") == product_id and Map.get(x, "original_transaction_id") == transaction_id end) do 
               %{"product_id" => ^product_id, "original_transaction_id" => ^transaction_id} ->
-                _deliver_apple_store_order(conn: conn, 
+                _deliver_apple_store_order(%{conn: conn, 
                   cp_order_id: cp_order_id,
                   transaction_id: transaction_id, 
                   receipt_type: receipt_type,
@@ -142,7 +142,7 @@ defmodule Acs.Web.AppleStoreController do
                   currency: currency,
                   app: app, 
                   device_id: device_id, 
-                  zone_id: zone_id)           
+                  zone_id: zone_id})           
 
               _ ->
                 error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
@@ -167,7 +167,7 @@ defmodule Acs.Web.AppleStoreController do
     end
   end
 
-  defp _deliver_apple_store_order(conn: conn, 
+  defp _deliver_apple_store_order(%{conn: conn, 
     cp_order_id: cp_order_id, 
     transaction_id: transaction_id, 
     receipt_type: receipt_type,
@@ -178,7 +178,7 @@ defmodule Acs.Web.AppleStoreController do
     currency: currency,
     app: app, 
     device_id: device_id, 
-    zone_id: zone_id) do 
+    zone_id: zone_id}) do 
     case Repo.get_by(AppOrder, transaction_id: "applestore." <> transaction_id) do 
       %AppOrder{cp_order_id: ^cp_order_id} = order ->
         if order.status > 0 do 

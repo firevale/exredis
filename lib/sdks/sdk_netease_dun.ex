@@ -55,24 +55,23 @@ defmodule SDKNeteaseDun do
                 
                 _ ->
                   {:ok, "error.sdks.netease.checkPass"}
-                  
               end
 
             else 
-              Logger.error "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"
+              error "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"
               {:error, "", "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"}
             end
           _ -> 
-            Logger.error "netease dun check txt error, not a json response"
+            error "netease dun check txt error, not a json response"
             {:error, "", "netease dun check txt error, not a json response"}
         end 
       else
-        Logger.error "netease dun check txt failed"
+        error "netease dun check txt failed"
         {:error, "", "netease dun check txt failed"}
       end
     catch
       :error, e ->
-        Logger.error "netease dun check txt exception: #{inspect e}"
+        error "netease dun check txt exception: #{inspect e}"
         {:error, "", "netease dun check txt exception: #{inspect e}"}
     end 
   end
@@ -115,20 +114,20 @@ defmodule SDKNeteaseDun do
               end
 
             else 
-              Logger.error "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"
+              error "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"
               {:error, "", "netease dun check img failed, code = #{res["code"]}, msg = #{res["msg"]}"}
             end
           _ -> 
-            Logger.error "netease dun check img error, not a json response"
+            error "netease dun check img error, not a json response"
             {:error, "", "netease dun check img error, not a json response"}
         end 
       else
-        Logger.error "netease dun check img failed"
+        error "netease dun check img failed"
         {:error, "", "netease dun check img failed"}
       end
     catch
       :error, e ->
-        Logger.error "netease dun check img exception: #{inspect e}"
+        error "netease dun check img exception: #{inspect e}"
         {:error, "", "netease dun check img exception: #{inspect e}"}
     end 
   end

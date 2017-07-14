@@ -715,7 +715,8 @@ defmodule Acs.Web.ForumController do
   defp fetch_post(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
     with %{"forum_id" => forum_id,
            "section_id" => section_id} = post <- conn.params,
-          forum_id <- String.to_integer(forum_id),
+          forum_id <- String.to_integer("#{forum_id}"),
+          section_id <- String.to_integer("#{section_id}"),
           %{sections: sections} <- RedisForum.find(forum_id),
           %{id: _} <- sections[section_id]
     do 

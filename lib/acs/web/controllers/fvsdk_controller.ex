@@ -2,6 +2,9 @@ defmodule Acs.Web.FVSdkController do
   use     Acs.Web, :controller
   use     Timex
 
+  alias   Acs.RedisDeviceInfo
+  alias   Acs.Stats.DeviceInfo
+
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version
@@ -15,13 +18,25 @@ defmodule Acs.Web.FVSdkController do
       [v | _] -> v
     end
 
+    device_model = case get_req_header(conn, "acs-device-model") do 
+      [] -> nil
+      [v | _] -> 
+        d "device_model: #{v}"
+        case get_req_header(conn, "acs-device-memory") do 
+          [] -> :ok
+          [mem] ->
+            case RedisDeviceInfo.find(v) do 
+              nil ->
+                DeviceInfo.changeset(%DeviceInfo{}, %{id: v, total_mem_size: mem}) |> StatsRepo.insert
+              device_info ->
+                DeviceInfo.changeset(device_info, %{total_mem_size: mem}) |> StatsRepo.update
+            end
+        end
+        v
+    end
+
     case RedisDevice.find(device_id) do 
       nil -> 
-        device_model = case get_req_header(conn, "acs-device-model") do 
-          [] -> nil
-          [v | _] -> v
-        end
-
         Device.changeset(%Device{}, %{id: device_id, 
           model: device_model, 
           platform: platform, 

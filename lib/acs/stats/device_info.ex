@@ -21,7 +21,7 @@ defmodule Acs.Stats.DeviceInfo do
   """
   def changeset(%DeviceInfo{} = device_info, attrs \\ %{}) do
     device_info
-    |> cast(attrs, [:id, :alias, :total_men_size, :cpu_arch])
+    |> cast(attrs, [:id, :alias, :total_mem_size, :cpu_arch])
     |> validate_required([:id])
   end
 end

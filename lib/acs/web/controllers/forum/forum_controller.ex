@@ -865,7 +865,7 @@ defmodule Acs.Web.ForumController do
 
     case RedisNeteaseDun.find(image_path) do
       :exist -> 
-        %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
+        %{success: false, i18n_message: "forum.newPost.imageFilterFail"}
       
       :null ->
         case SDKNeteaseDun.check_img(images) do 
@@ -873,7 +873,7 @@ defmodule Acs.Web.ForumController do
             RedisNeteaseDun.refresh(image_path)
 
             if label do
-              %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
+              %{success: false, i18n_message: "forum.newPost.imageFilterFail"}
             else
               %{success: false, message: info}
             end

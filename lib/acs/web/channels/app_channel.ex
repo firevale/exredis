@@ -230,6 +230,10 @@ defmodule Acs.Web.AppChannel do
   defp do_stat(_socket), do: :ok
 
   # Add authorization logic here as required.
+  defp authorized?(%{"user_id" => ""}) do 
+    error "invalid empty user_id to join app channel"
+    false
+  end
   defp authorized?(%{"access_token" => access_token_id,
                      "device_id" => device_id,
                      "user_id" => user_id}) do
@@ -238,6 +242,10 @@ defmodule Acs.Web.AppChannel do
       %{device_id: ^device_id, user_id: ^user_id} -> true
       _ -> false
     end
+  end
+  defp authorized?(payload) do 
+    error "invalid app channel authorization payload: #{inspect payload}"
+    false
   end
 
   defp incr_online_counter(app_id, device_id, user_id, platform, zone_id) do 

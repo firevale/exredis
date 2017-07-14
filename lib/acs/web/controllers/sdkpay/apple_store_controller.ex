@@ -29,7 +29,6 @@ defmodule Acs.Web.AppleStoreController do
               amount: amount,
               currency: currency,
               app: app, 
-              user: user, 
               device_id: device_id, 
               zone_id: params["zone_id"] || "0")
 
@@ -46,7 +45,6 @@ defmodule Acs.Web.AppleStoreController do
                   amount: amount,
                   currency: currency,
                   app: app, 
-                  user: user, 
                   device_id: device_id, 
                   zone_id: params["zone_id"] || "0")           
 

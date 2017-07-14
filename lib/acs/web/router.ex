@@ -1,9 +1,6 @@
 defmodule Acs.Web.Router do
   use Acs.Web, :router
-
-  if not Mix.env in [:dev, :test] do
-    use Plugsnag
-  end
+  use Plugsnag
 
   if Mix.env == :dev do
     forward "/sent_emails", Bamboo.SentEmailViewerPlug

@@ -40,3 +40,5 @@ config :redis_poolex,
   pool_size: 20,
   pool_max_overflow: 10
 
+
+config :bugsnag, release_stage: "ucbj"

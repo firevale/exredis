@@ -45,6 +45,17 @@ config :acs, email_service_provider: Acs.LocalMailer
 config :acs, :facebook, graph_url: "https://graph.facebook.com/v2.8"
 
 
+config :bugsnag, api_key: "3be9d27395dbccdda866ff8c409b40db"
+
+# Set the release stage in your environment configs (e.g. config/prod.exs)
+config :bugsnag, release_stage: "dev"
+
+# Set the notify release stages to limit reorting the errors based on your environment
+config :bugsnag, notify_release_stages: ["ucbj", "uchk"]
+
+# Set `use_logger: true` to report all uncaught exceptions (using Erlang SASL)
+config :bugsnag, use_logger: true
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

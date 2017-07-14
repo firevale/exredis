@@ -39,3 +39,5 @@ config :redis_poolex,
   reconnect: :no_reconnect,
   pool_size: 20,
   pool_max_overflow: 10
+
+config :bugsnag, release_stage: "uchk"

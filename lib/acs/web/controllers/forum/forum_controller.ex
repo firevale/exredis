@@ -859,8 +859,11 @@ defmodule Acs.Web.ForumController do
       false -> static_url(conn, image_path)
     end
 
+    info "check_image: #{image_path}"
+
     images = "[{'name': '#{image_path}', 'type': 1, 'data': '#{image_path}'}]"
-    check_out = case RedisNeteaseDun.find(image_path) do
+
+    case RedisNeteaseDun.find(image_path) do
       :exist -> 
         %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
       
@@ -872,13 +875,12 @@ defmodule Acs.Web.ForumController do
             else
               %{success: false, message: info}
             end
+
             RedisNeteaseDun.refresh(image_path)
 
           _ -> %{success: true}
         end
     end
-
-    check_out
   end
 
   def upload_comment_image(%Plug.Conn{private: %{forum_post: forum_post, 
@@ -890,7 +892,8 @@ defmodule Acs.Web.ForumController do
         low_quality: true)
     
     check_out = check_img(conn, image_path)
-    if(check_out && !check_out.success) do
+
+    if (check_out && !check_out.success) do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, comment_id: forum_comment.id, link: image_path, width: width, height: height})

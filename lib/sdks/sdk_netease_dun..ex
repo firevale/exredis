@@ -1,9 +1,9 @@
 defmodule SDKNeteaseDun do
 
-  require Logger
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  use     LogAlias
 
   @dun_config         Application.get_env(:acs, :netease_dun)
   @check_txt_url      @dun_config[:check_txt_url]
@@ -96,16 +96,19 @@ defmodule SDKNeteaseDun do
       if Httpc.success?(response) do 
        
         case JSON.decode(response.body) do 
-          {:ok, res} -> 
+          {:ok, res} ->
             if res["code"] == 200 do 
-
+              
               result = res["result"]
               maxResult = Enum.max(Enum.map(result, fn(x) -> Enum.max_by(x["labels"], fn(y) -> y["level"] end)  end))
 
               case maxResult["level"] do
                 2 ->
                   {:error, "error.sdks.netease.label#{maxResult["label"]}", ""}
-                
+
+                1 ->
+                  {:error, "error.sdks.netease.label#{maxResult["label"]}", ""}
+
                 _ ->
                   {:ok, "error.sdks.netease.checkPass"}
                   

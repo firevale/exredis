@@ -59,15 +59,17 @@ export default Line.extend({
     addData: function(label, data) {
       console.info('add chart data, label:', label, 'data: ', data)
       if (this._chart) {
-        this._chart.data.labels.pop()
-        this._chart.data.labels.push(label)
-        for (let i = 0; i < data.length; ++i) {
-          if (this._chart.data.datasets[i]) {
-            this._chart.data.datasets[i].data.pop()
-            this._chart.data.datasets[i].data.push(data[i])
+        if (this._chart.data.labels[this._chart.data.labels.length - 1] != label) {
+          this._chart.data.labels.shift()
+          this._chart.data.labels.push(label)
+          for (let i = 0; i < data.length; ++i) {
+            if (this._chart.data.datasets[i]) {
+              this._chart.data.datasets[i].data.shift()
+              this._chart.data.datasets[i].data.push(data[i])
+            }
           }
+          this._chart.update()
         }
-        this._chart.update()
       }
     }
   }

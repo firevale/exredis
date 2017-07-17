@@ -20,7 +20,8 @@ export default {
       options: {
         segmentShowStroke: false,
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        pointDot: false,
       }
     }
   },

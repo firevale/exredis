@@ -7,6 +7,7 @@
    save: '保存',
    update: '修改',
    return: '返回',
+   tip: '提示',
 
    bind: '绑定',
    camera: '拍照',

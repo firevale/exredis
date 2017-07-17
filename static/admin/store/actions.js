@@ -79,3 +79,9 @@ export const updateWcpParams = ({
 }, params) => {
   commit(types.UPDATE_WCP_PARAMS, params)
 }
+
+export const joinAppChannel = ({
+  commit
+}, params) => {
+  commit(types.JOIN_APP_CHANNEL, params)
+}

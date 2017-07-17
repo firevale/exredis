@@ -23,7 +23,7 @@
               </tr>
             </thead>
             <tbody v-show="messages && messages.length > 0">
-              <tr v-for="(message, index) in messages">
+              <tr v-for="(message, index) in messages" :key="message.id">
                 <td> {{ message.id }} </td>
                 <td> {{ getMsgUser(message.from, message.fromname) }} </td>
                 <td> {{ getMsgUser(message.to, message.toname) }} </td>

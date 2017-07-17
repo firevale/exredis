@@ -37,7 +37,7 @@
         <div class="column is-10">
           <div class="columns is-multiline" v-if="wcpParams.menu">
             <div class="column is-one-third">
-              <div class="column" v-for="(button, index) in wcpParams.menu.button[0].sub_button">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[0].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="column is-one-third">
-              <div class="column" v-for="(button, index) in wcpParams.menu.button[1].sub_button">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[1].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
@@ -63,7 +63,7 @@
               </div>
             </div>
             <div class="column is-one-third">
-              <div class="column" v-for="(button, index) in wcpParams.menu.button[2].sub_button">
+              <div class="column" v-for="(button, index) in wcpParams.menu.button[2].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
               <div class="column">
@@ -94,7 +94,7 @@
         <p class="control">
           <span class="select is-media">
             <select v-model="selectedButton.type">
-              <option v-for="option in options" v-bind:value="option.value">
+              <option v-for="option in options" v-bind:value="option.value" :key="option.value">
                 {{ option.text }}
               </option>
             </select>
@@ -120,10 +120,10 @@
     <div class="column is-12 has-text-centered">
       <p style="margin: 5px auto">
         <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnGetMenu')"
-          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="getMenu()" />
+          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="getMenu()" ></input>
         <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnUpdateMenu')"
           class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="updateMenu()"
-        />
+        ></input>
       </p>
     </div>
   </div>

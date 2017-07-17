@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody v-show="rules && rules.length > 0">
-              <tr v-for="(rule, index) in rules">
+              <tr v-for="(rule, index) in rules" :key="rule.id">
                 <td> {{ rule.id }} </td>
                 <td> {{ rule.keywords }} </td>
                 <td style="max-width:400px;"> {{ rule.response }} </td>

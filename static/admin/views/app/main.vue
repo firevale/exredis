@@ -18,6 +18,10 @@ export default {
         if (result.success) {
           next(vm => {
             vm.setApp(result.app)
+            vm.joinAppChannel({
+              appId: result.app.id,
+              accessToken: window.acsConfig.accessToken
+            })
           })
         } else {
           next({
@@ -34,7 +38,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setApp'
+      'setApp', 'joinAppChannel'
     ])
   }
 }

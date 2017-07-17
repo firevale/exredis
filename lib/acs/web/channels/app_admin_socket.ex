@@ -24,18 +24,18 @@ defmodule Acs.Web.AppAdminSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
 
-  def connect(%{"app_id" => app_id}, socket) do 
-    case RedisApp.find(app_id) do 
-      %{id: ^app_id} = _app ->
-        {:ok, socket |> assign(:app_id, app_id)}
-      _ ->
-        :error
-    end
-  end
+  # def connect(%{"app_id" => app_id}, socket) do 
+  #   case RedisApp.find(app_id) do 
+  #     %{id: ^app_id} = _app ->
+  #       {:ok, socket |> assign(:app_id, app_id)}
+  #     _ ->
+  #       :error
+  #   end
+  # end
 
-  def connect(params, _socket) do
-    d "app admin websocket connection params: #{inspect params, pretty: true}"
-    :error
+  def connect(params, socket) do
+    d "receive admin socket connection request..."
+    {:ok, socket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

@@ -29,6 +29,7 @@ const mutations = {
   },
 
   [types.JOIN_APP_CHANNEL](state, params) {
+    console.log('join app channel')
     if (state.channel) {
       state.channel.leave()
       state.channel = undefined
@@ -40,11 +41,13 @@ const mutations = {
     })
 
     state.channel.join()
-      .receive('ok', _ => console.log('app admin channel joined'))
+      .receive('ok', _ => {
+        console.log('app admin channel joined')
+        state.channel.on('new_online_data', payload => state.latestOnlineData = payload)
+      })
       .receive('error', reasons => console.log('can NOT join app admin channel', reasons))
       .receive('timeout', _ => console.log('can NOT join app admin channel with networking issue...'))
 
-    state.channel.on('new_online_data', payload => state.latestOnlineData = payload)
   }
 }
 

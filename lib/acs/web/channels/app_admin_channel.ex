@@ -42,7 +42,7 @@ defmodule Acs.Web.AppAdminChannel do
   #   {:noreply, socket}
   # end
   def handle_info(%{event: event, payload: payload}, socket) do
-    d "push message: #{event}, #{inspect payload}"
+    # d "push message: #{event}, #{inspect payload}"
     push socket, event, payload
     {:noreply, socket}
   end

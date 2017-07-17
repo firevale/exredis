@@ -9,6 +9,7 @@ const state = {
   myLoginCodes: [],
   channel: undefined,
   orders: [],
+  latestOnlineData: undefined,
 }
 
 const socket = new Socket('/app_admin_sock')
@@ -39,9 +40,11 @@ const mutations = {
     })
 
     state.channel.join()
-      .receive("ok", _ => console.log('app admin channel joined'))
-      .receive("error", reasons => console.log('can NOT join app admin channel', reasons))
-      .receive("timeout", _ => console.log("can NOT join app admin channel with networking issue..."))
+      .receive('ok', _ => console.log('app admin channel joined'))
+      .receive('error', reasons => console.log('can NOT join app admin channel', reasons))
+      .receive('timeout', _ => console.log('can NOT join app admin channel with networking issue...'))
+
+    state.channel.on('new_online_data', payload => state.latestOnlineData = payload)
   }
 }
 

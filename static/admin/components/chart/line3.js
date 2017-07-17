@@ -3,7 +3,9 @@ import { Line } from 'vue-chartjs'
 export default Line.extend({
   props: {
     options: {
-      default: {}
+      default: function() {
+        return {}
+      }
     },
     width: {
       default: '100%',
@@ -17,22 +19,25 @@ export default Line.extend({
       datasets: [{
         label: '',
         borderColor: '#FC2525',
-        pointBackgroundColor: 'white',
         borderWidth: 1,
-        pointBorderColor: 'white',
+        pointStyle: 'cross',
+        pointRadius: 1,
+        pointHitRadius: 2,
         data: []
       }, {
         label: '',
         borderColor: '#05CBE1',
-        pointBackgroundColor: 'white',
-        pointBorderColor: 'white',
+        pointRadius: 1,
+        pointHitRadius: 2,
+        pointStyle: 'cross',
         borderWidth: 1,
         data: []
       }, {
         label: '',
-        borderColor: '#CB05E1',
-        pointBackgroundColor: 'white',
-        pointBorderColor: 'white',
+        borderColor: '#56E437',
+        pointRadius: 1,
+        pointHitRadius: 2,
+        pointStyle: 'cross',
         borderWidth: 1,
         data: []
       }]
@@ -51,5 +56,19 @@ export default Line.extend({
         this._chart.update()
       }
     },
+    addData: function(label, data) {
+      console.info('add chart data, label:', label, 'data: ', data)
+      if (this._chart) {
+        this._chart.data.labels.pop()
+        this._chart.data.labels.push(label)
+        for (let i = 0; i < data.length; ++i) {
+          if (this._chart.data.datasets[i]) {
+            this._chart.data.datasets[i].data.pop()
+            this._chart.data.datasets[i].data.push(data[i])
+          }
+        }
+        this._chart.update()
+      }
+    }
   }
 })

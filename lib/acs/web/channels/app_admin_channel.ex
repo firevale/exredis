@@ -34,12 +34,18 @@ defmodule Acs.Web.AppAdminChannel do
 
   def handle_in(_command, _payload, socket), do: {:noreply, socket}
 
+
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (weblogs:lobby).
   # def handle_in("shout", payload, socket) do
   #   broadcast socket, "shout", payload
   #   {:noreply, socket}
   # end
+  def handle_info(%{event: event, payload: payload}, socket) do
+    d "push message: #{event}, #{inspect payload}"
+    push socket, event, payload
+    {:noreply, socket}
+  end
 
   def terminate(_reason, _socket), do: :ok
 end

@@ -5,6 +5,7 @@ defmodule Acs.Web.CronController do
   alias   Acs.ChaoxinNotifier
   alias   Acs.RedisMall
   alias   Ecto.Adapters.SQL
+  alias   Phoenix.PubSub
   use     Timex
 
   require Redis
@@ -116,6 +117,7 @@ defmodule Acs.Web.CronController do
 
   def save_online_counter(conn, _params) do 
     now = Utils.unix_timestamp()
+    realtime_onlines = %{}
 
     case Redis.keys("online_counter.*") do 
       counter_list when is_list(counter_list) ->
@@ -135,6 +137,7 @@ defmodule Acs.Web.CronController do
         Enum.each(onlines, fn({app_id, online_count}) -> 
           Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
           Redis.ltrim("onlines.#{app_id}", 0, 60*24*60)
+          Process.put("onlines.#{app_id}", online_count)
         end)
 
       _ ->
@@ -160,6 +163,7 @@ defmodule Acs.Web.CronController do
         Enum.each(onlines, fn({key, online_count}) -> 
           Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
           Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
+          Process.put("ponlines.#{key}", online_count)
         end)
 
       _ ->
@@ -189,6 +193,26 @@ defmodule Acs.Web.CronController do
 
       _ ->
         info "no platform online counter found..."
+    end
+
+    # broadcast
+    case Redis.keys("online_counter.*") do 
+      counter_list when is_list(counter_list) ->
+        Enum.each(counter_list, fn(counter_key) -> 
+          ["online_counter", app_id | _] = String.split(counter_key, ".")
+          label = now |> Timex.from_unix |> Timex.Timezone.convert(Timex.Timezone.Local.lookup) |> Timex.format!("{0M}-{D} {h24}:{0m}")
+          all = Process.get("onlines.#{app_id}", 0)
+          ios = Process.get("ponlines.#{app_id}.ios", 0)
+          android = Process.get("ponlines.#{app_id}.android", 0)
+          PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
+            event: "new_online_data", 
+            payload: %{
+              label: label,
+              data: [ all, ios, android ]
+          }})
+        end)
+      _ ->
+        :ok
     end
 
     conn |> json(%{success: true, message: "done"})

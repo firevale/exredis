@@ -22,13 +22,14 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         pointDot: false,
+        pointDotRadius: 0,
       }
     }
   },
 
   computed: {
     ...mapGetters([
-      'app'
+      'app', 'latestOnlineData'
     ]),
   },
 
@@ -42,6 +43,14 @@ export default {
 
       if (result.success && result.chart.labels.length > 0 && this.$refs.chart) {
         this.$refs.chart.updateChart(result.chart)
+      }
+    }
+  },
+
+  watch: {
+    'latestOnlineData': function(chart) {
+      if (this.$refs.chart) {
+        this.$refs.chart.addData(chart.label, chart.data)
       }
     }
   },

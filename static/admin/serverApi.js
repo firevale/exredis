@@ -283,6 +283,12 @@ export default {
           records_per_page
         })
       },
+
+      getOnlineChart(app_id) {
+        return post('/admin_actions/chart/onlines', {
+          app_id
+        })
+      }
     }
   }
 }

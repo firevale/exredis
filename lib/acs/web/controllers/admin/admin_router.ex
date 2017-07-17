@@ -105,6 +105,12 @@ defmodule Acs.Web.AdminRouter do
       post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
     end
 
+    scope "/chart" do 
+      pipe_through :admin_app
+
+      post  "/onlines", Admin.ChartController, :onlines
+    end
+
     scope "/wcp" do 
       pipe_through :admin_app
 

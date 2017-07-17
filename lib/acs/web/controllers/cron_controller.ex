@@ -115,6 +115,8 @@ defmodule Acs.Web.CronController do
   end
 
   def save_online_counter(conn, _params) do 
+    now = Utils.unix_timestamp()
+
     case Redis.keys("online_counter.*") do 
       counter_list when is_list(counter_list) ->
         onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
@@ -129,8 +131,6 @@ defmodule Acs.Web.CronController do
               result
           end
         end)
-
-        now = Utils.unix_timestamp()
 
         Enum.each(onlines, fn({app_id, online_count}) -> 
           Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
@@ -157,8 +157,6 @@ defmodule Acs.Web.CronController do
           end
         end)
 
-        now = Utils.unix_timestamp()
-
         Enum.each(onlines, fn({key, online_count}) -> 
           Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
           Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
@@ -183,8 +181,6 @@ defmodule Acs.Web.CronController do
               result
           end
         end)
-
-        now = Utils.unix_timestamp()
 
         Enum.each(onlines, fn({key, online_count}) -> 
           Redis.lpush("zonlines.#{key}", "#{now}.#{online_count}")

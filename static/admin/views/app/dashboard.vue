@@ -39,8 +39,6 @@ export default {
     getOnlineChart: async function() {
       let result = await this.$acs.getOnlineChart(this.$route.params.appId)
 
-      console.log(result)
-
       if (result.success && result.chart.labels.length > 0 && this.$refs.chart) {
         this.$refs.chart.updateChart(result.chart)
       }

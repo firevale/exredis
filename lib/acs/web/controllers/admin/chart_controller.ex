@@ -13,22 +13,22 @@ defmodule Acs.Web.Admin.ChartController do
       android = Enum.reverse(all)
 
       labels = Enum.map(all, fn(x) ->
-        [ts, _counter] = String.split(".", trim: true)
+        [ts, _counter] = String.split(x, ".", trim: true)
         ts |> String.to_integer |> Timex.from_unix |> Timex.Timezone.convert(tz) |> Timex.format!("{0M}-{D} {h24}:{0m}")
       end)   
 
       all_data = Enum.map(all, fn(x) -> 
-        [_ts, counter] = String.split(".", trim: true)
+        [_ts, counter] = String.split(x, ".", trim: true)
         String.to_integer(counter)
       end)
 
       ios_data = Enum.map(ios, fn(x) -> 
-        [_ts, counter] = String.split(".", trim: true)
+        [_ts, counter] = String.split(x, ".", trim: true)
         String.to_integer(counter)
       end)
 
       android_data = Enum.map(android, fn(x) -> 
-        [_ts, counter] = String.split(".", trim: true)
+        [_ts, counter] = String.split(x, ".", trim: true)
         String.to_integer(counter)
       end)
 

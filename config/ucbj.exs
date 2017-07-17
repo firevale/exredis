@@ -9,6 +9,11 @@ config :acs, Acs.Web.Endpoint,
 config :acs, sm_provider: :meisheng
 config :acs, email_service_provider: Acs.SendCloudMailer
 
+config :acs, Acs.Web.Endpoint,
+  pubsub: [adapter: Phoenix.PubSub.Redis,
+           host: "10.10.242.97", 
+           node_name: System.get_env("NODE")]
+
 # Configure your database
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,

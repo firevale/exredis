@@ -34,6 +34,7 @@ release :acs do
     :des_ecb3,
     :phoenix,
     :phoenix_pubsub,
+    :phoenix_pubsub_redis,
     :mogrify,
     :phoenix_html,
     :cowboy,

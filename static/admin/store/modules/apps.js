@@ -29,7 +29,6 @@ const mutations = {
   },
 
   [types.JOIN_APP_CHANNEL](state, params) {
-    console.log('join app channel')
     if (state.channel) {
       state.channel.leave()
       state.channel = undefined

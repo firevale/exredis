@@ -196,10 +196,10 @@ defmodule Acs.Web.CronController do
     end
 
     # broadcast
-    case Redis.keys("online_counter.*") do 
+    case Redis.keys("onlines.*") do 
       counter_list when is_list(counter_list) ->
         Enum.each(counter_list, fn(counter_key) -> 
-          ["online_counter", app_id | _] = String.split(counter_key, ".")
+          ["onlines", app_id | _] = String.split(counter_key, ".")
           label = now |> Timex.from_unix |> Timex.Timezone.convert(Timex.Timezone.Local.lookup) |> Timex.format!("{0M}-{D} {h24}:{0m}")
           all = Process.get("onlines.#{app_id}", 0)
           ios = Process.get("ponlines.#{app_id}.ios", 0)

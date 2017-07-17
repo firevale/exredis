@@ -43,6 +43,8 @@ release :acs do
     :gettext,
     :phoenix_ecto,
     :mariaex,
+    :redix,
+    :redix_pubsub,
     :exredis,
     :redis_poolex,
     :oauth2,

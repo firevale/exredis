@@ -9,8 +9,8 @@ defmodule Acs.Web.Admin.ChartController do
          ios <- Redis.lrange("ponlines.#{app_id}.ios", 0, n),
          android <- Redis.lrange("ponlines.#{app_id}.android", 0, n) do 
       all = Enum.reverse(all)
-      ios = Enum.reverse(all)
-      android = Enum.reverse(all)
+      ios = Enum.reverse(ios)
+      android = Enum.reverse(android)
 
       labels = Enum.map(all, fn(x) ->
         [ts, _counter] = String.split(x, ".", trim: true)

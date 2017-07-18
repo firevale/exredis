@@ -10,6 +10,13 @@ config :acs, Acs.Web.Endpoint,
 config :acs, sm_provider: :none
 config :acs, email_service_provider: Acs.SendCloudMailer
 
+config :acs, Acs.Web.Endpoint,
+  pubsub: [adapter: Phoenix.PubSub.Redis,
+           name: Acs.PubSub,
+           host: "10.8.21.135", 
+           password: "",
+           node_name: System.get_env("NODE")]
+
 # Configure your database
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,

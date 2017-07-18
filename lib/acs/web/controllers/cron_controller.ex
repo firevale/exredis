@@ -119,80 +119,68 @@ defmodule Acs.Web.CronController do
     now = Utils.unix_timestamp()
     realtime_onlines = %{}
 
-    case Redis.keys("online_counter.*") do 
-      counter_list when is_list(counter_list) ->
-        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["online_counter", app_id | _] = String.split(counter_key, ".")
-          count = Redis.hlen(counter_key)
-          case Map.get(result, app_id) do 
-            nil ->
-              Map.put_new(result, app_id, count)
-            x when is_integer(x) ->
-              Map.put(result, app_id, x + count)
-            _ ->
-              result
-          end
-        end)
+    with counter_keys <- Redis.keys("online_counter.*"),
+         result_keys <- Redis.keys("onlines.*")
+    do 
+      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
+        [_, app_id | _] = String.split(key, ".")
+        Map.put(result, app_id, 0)
+      end)
 
-        Enum.each(onlines, fn({app_id, online_count}) -> 
-          Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
-          Redis.ltrim("onlines.#{app_id}", 0, 60*24*60)
-          Process.put("onlines.#{app_id}", online_count)
-        end)
+      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
+        ["online_counter", app_id | _] = String.split(counter_key, ".")
+        count = Redis.hlen(counter_key)
+        Map.put(result, app_id, Map.get(result, app_id, 0) + count)
+      end)
 
-      _ ->
-        info "no online counter found..."
+      Enum.each(onlines, fn({app_id, online_count}) -> 
+        Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
+        Redis.ltrim("onlines.#{app_id}", 0, 60*24*60)
+        Process.put("onlines.#{app_id}", online_count)
+      end)
     end
 
-    case Redis.keys("ponline_counter.*") do 
-      counter_list when is_list(counter_list) ->
-        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["ponline_counter", app_id, platform | _] = String.split(counter_key, ".")
-          count = Redis.hlen(counter_key)
-          key = "#{app_id}.#{platform}"
-          case Map.get(result, key) do 
-            nil ->
-              Map.put_new(result, key, count)
-            x when is_integer(x) ->
-              Map.put(result, key, x + count)
-            _ ->
-              result
-          end
-        end)
+    with counter_keys <- Redis.keys("ponline_counter.*"),
+         result_keys <- Redis.keys("ponlines.*")
+    do 
+      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
+        [_, app_id, platform | _] = String.split(key, ".")
+        Map.put(result, "#{app_id}.#{platform}", 0)
+      end)
 
-        Enum.each(onlines, fn({key, online_count}) -> 
-          Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
-          Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
-          Process.put("ponlines.#{key}", online_count)
-        end)
+      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
+        ["ponline_counter", app_id, platform | _] = String.split(counter_key, ".")
+        count = Redis.hlen(counter_key)
+        key = "#{app_id}.#{platform}"
+        Map.put(result, key, Map.get(result, key, 0) + count)
+      end)
 
-      _ ->
-        info "no platform online counter found..."
+      Enum.each(onlines, fn({key, online_count}) -> 
+        Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
+        Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
+        Process.put("ponlines.#{key}", online_count)
+      end)
     end
 
-    case Redis.keys("zonline_counter.*") do 
-      counter_list when is_list(counter_list) ->
-        onlines = Enum.reduce(counter_list, %{}, fn(counter_key, result) -> 
-          ["zonline_counter", app_id, zone_id | _] = String.split(counter_key, ".")
-          count = Redis.hlen(counter_key)
-          key = "#{app_id}.#{zone_id}"
-          case Map.get(result, key) do 
-            nil ->
-              Map.put_new(result, key, count)
-            x when is_integer(x) ->
-              Map.put(result, key, x + count)
-            _ ->
-              result
-          end
-        end)
+    with counter_keys <- Redis.keys("zonline_counter.*"),
+         result_keys <- Redis.keys("zonlines.*")
+    do 
+      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
+        [_, app_id, zone_id | _] = String.split(key, ".")
+        Map.put(result, "#{app_id}.#{zone_id}", 0)
+      end)
 
-        Enum.each(onlines, fn({key, online_count}) -> 
-          Redis.lpush("zonlines.#{key}", "#{now}.#{online_count}")
-          Redis.ltrim("zonlines.#{key}", 0, 60*24*60)
-        end)
+      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
+        ["zonline_counter", app_id, zone_id | _] = String.split(counter_key, ".")
+        count = Redis.hlen(counter_key)
+        key = "#{app_id}.#{zone_id}"
+        Map.put(result, key, Map.get(result, key, 0) + count)
+      end)
 
-      _ ->
-        info "no platform online counter found..."
+      Enum.each(onlines, fn({key, online_count}) -> 
+        Redis.lpush("zonlines.#{key}", "#{now}.#{online_count}")
+        Redis.ltrim("zonlines.#{key}", 0, 60*24*60)
+      end)
     end
 
     # broadcast

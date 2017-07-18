@@ -2,13 +2,20 @@ defmodule Acs.Web.AppChannel do
   use Acs.Web, :channel
 
   require Utils
+  alias   Acs.RedisAccessToken
   alias   Acs.RedisAppUser
   alias   Acs.RedisDevice
   alias   Acs.RedisAppDevice
   alias   Acs.RedisAppUserDailyActivity
   alias   Acs.RedisAppDeviceDailyActivity
 
-  def join("app:" <> _, %{"access_token" => _access_token,
+  def join(_, %{"access_token" => ""}, socket) do 
+     {:error, %{reason: "bad request"}}
+  end
+  def join(_, %{"user_id" => ""}, socket) do 
+     {:error, %{reason: "bad request"}}
+  end
+  def join("app:" <> _, %{"access_token" => access_token,
                           "user_id" => user_id,
                           "app_id" => app_id,
                           "device_id" => device_id,
@@ -21,14 +28,15 @@ defmodule Acs.Web.AppChannel do
                           "app_user_level" => _app_user_level,
                           "zone_id" => zone_id,
                           "zone_name" => _zone_name} = payload, socket) do
-    info "receive channel join request, payload: #{inspect payload}"
 
-    incr_online_counter(app_id, device_id, user_id, platform, zone_id)
+    info "receive channel join request, payload: #{inspect payload}"
 
     if authorized?(payload) do
       Logger.metadata(user_id: user_id)
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
+
+      incr_online_counter(app_id, device_id, user_id, platform, zone_id)
 
       {date, _} = :calendar.local_time
       today = date |> Date.from_erl!
@@ -248,6 +256,7 @@ defmodule Acs.Web.AppChannel do
     false
   end
 
+  defp incr_online_counter(_app_id, _device_id, "", _platform, _zone_id), do: :ok
   defp incr_online_counter(app_id, device_id, user_id, platform, zone_id) do 
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"

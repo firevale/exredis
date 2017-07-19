@@ -345,6 +345,7 @@ defmodule Acs.Web.AppChannel do
 
   defp incr_online_counter(_app_id, _device_id, "", _platform), do: :ok
   defp incr_online_counter(app_id, device_id, user_id, platform) do 
+    Redis.sadd("online_apps", app_id)
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"
     Redis.hset(online_redis_key, device_id, user_id)
@@ -353,6 +354,7 @@ defmodule Acs.Web.AppChannel do
   end
   defp incr_online_counter(_app_id, _device_id, "", _platform, _zone_id), do: :ok
   defp incr_online_counter(app_id, device_id, user_id, platform, zone_id) do 
+    Redis.sadd("online_apps", app_id)
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"
     Redis.hset(online_redis_key, device_id, user_id)

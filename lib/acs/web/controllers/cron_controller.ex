@@ -115,93 +115,195 @@ defmodule Acs.Web.CronController do
     conn |> json(%{success: true, message: "done"})
   end
 
+  @n_hours 7*24
+  def save_hourly_online_counter(conn, _params) do 
+    now = %{Timex.local | minute: 0, second: 0, microsecond: {0, 0}}
+    begining = now |> Timex.shift(hours: -1) |> Timex.to_unix  
+    ending = now |> Timex.to_unix
+    label = Timex.format!(now, "{0M}-{D} {h24}:00")
+
+    Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
+      max = Redis.lrange("onlines.#{app_id}", 0, 90) |> Enum.filter_map(fn(x) ->
+        [ts, _counter] = String.split(x, ".", trim: true)  
+        ts = String.to_integer(ts)
+        ts >= begining && ts < ending
+      end, fn(x) -> 
+        [_, counter] = String.split(x, ".", trim: true)  
+        String.to_integer(counter)
+      end) |> Enum.max(fn -> 0 end)
+
+      ios_max = Redis.lrange("ponlines.#{app_id}.ios", 0, 90) |> Enum.filter_map(fn(x) ->
+        [ts, _counter] = String.split(x, ".", trim: true)  
+        ts = String.to_integer(ts)
+        ts >= begining && ts < ending
+      end, fn(x) -> 
+        [_, counter] = String.split(x, ".", trim: true)  
+        String.to_integer(counter)
+      end) |> Enum.min_max(fn -> 0 end)
+
+      android_max = Redis.lrange("ponlines.#{app_id}.android", 0, 90) |> Enum.filter_map(fn(x) ->
+        [ts, _counter] = String.split(x, ".", trim: true)  
+        ts = String.to_integer(ts)
+        ts >= begining && ts < ending
+      end, fn(x) -> 
+        [_, counter] = String.split(x, ".", trim: true)  
+        String.to_integer(counter)
+      end) |> Enum.min_max(fn -> 0 end)
+
+      cache_key = "hourly_onlines_chart.#{app_id}" 
+
+      %{
+        labels: labels,
+        datasets: [
+          %{ data: all }, %{data: ios}, %{data: android}
+        ]
+      } = 
+        case Redis.get(cache_key) do 
+          :undefined ->
+            %{
+              labels: [],
+              datasets: [
+                %{
+                  label: "同时在线",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(IOS)",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(ANDROID)",
+                  data: [],
+                }
+              ]
+            }
+          raw ->
+            raw |> Base.decode64! |> :erlang.binary_to_term
+        end
+
+      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_hours)
+      {all, _} = Enum.split([max | Enum.reverse(all)], @n_hours)
+      {ios, _} = Enum.split([ios_max | Enum.reverse(ios)], @n_hours)
+      {android, _} = Enum.split([android_max | Enum.reverse(android)], @n_hours)
+      
+      chart =
+        %{
+          labels: Enum.reverse(labels),
+          datasets: [
+            %{
+              label: "同时在线",
+              data: Enum.reverse(all),
+            },
+            %{
+              label: "同时在线(IOS)",
+              data: Enum.reverse(ios),
+            },
+            %{
+              label: "同时在线(ANDROID)",
+              data: Enum.reverse(android),
+            }
+          ]          
+        }
+
+      Redis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
+      Cachex.del(:default, cache_key)
+      Cachex.set(:default, cache_key, ttl: :timer.hours(1))
+
+      PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
+        event: "new_hourly_online_data", 
+        payload: %{
+          label: label,
+          data: [ max, ios_max, android_max ]
+      }})
+    end)
+
+    conn |> json(%{success: true, message: "done"})
+  end
+
+  @n_mins 180 
   def save_online_counter(conn, _params) do 
-    now = Utils.unix_timestamp()
-    realtime_onlines = %{}
+    now = %{Timex.local | second: 0, microsecond: {0, 0}} 
+    label = Timex.format!(now, "{h24}:{0m}")
 
-    with counter_keys <- Redis.keys("online_counter.*"),
-         result_keys <- Redis.keys("onlines.*")
-    do 
-      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
-        [_, app_id | _] = String.split(key, ".")
-        Map.put(result, app_id, 0)
-      end)
+    Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
+      n_all = Enum.reduce(Redis.keys("online_counter.#{app_id}.*"), 0, fn(key, n) ->
+        n + Redis.hlen(key)
+      end)  
 
-      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
-        ["online_counter", app_id | _] = String.split(counter_key, ".")
-        count = Redis.hlen(counter_key)
-        Map.put(result, app_id, Map.get(result, app_id, 0) + count)
-      end)
+      n_ios = Enum.reduce(Redis.keys("ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
+        n + Redis.hlen(key)
+      end)   
 
-      Enum.each(onlines, fn({app_id, online_count}) -> 
-        Redis.lpush("onlines.#{app_id}", "#{now}.#{online_count}")
-        Redis.ltrim("onlines.#{app_id}", 0, 60*24*60)
-        Process.put("onlines.#{app_id}", online_count)
-      end)
-    end
+      n_android = Enum.reduce(Redis.keys("ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
+        n + Redis.hlen(key)
+      end)   
 
-    with counter_keys <- Redis.keys("ponline_counter.*"),
-         result_keys <- Redis.keys("ponlines.*")
-    do 
-      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
-        [_, app_id, platform | _] = String.split(key, ".")
-        Map.put(result, "#{app_id}.#{platform}", 0)
-      end)
+      cache_key = "onlines_chart.#{app_id}" 
 
-      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
-        ["ponline_counter", app_id, platform | _] = String.split(counter_key, ".")
-        count = Redis.hlen(counter_key)
-        key = "#{app_id}.#{platform}"
-        Map.put(result, key, Map.get(result, key, 0) + count)
-      end)
+      %{
+        labels: labels,
+        datasets: [
+          %{ data: all }, %{data: ios}, %{data: android}
+        ]
+      } = 
+        case Redis.get(cache_key) do 
+          :undefined ->
+            %{
+              labels: [],
+              datasets: [
+                %{
+                  label: "同时在线",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(IOS)",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(ANDROID)",
+                  data: [],
+                }
+              ]
+            }
+          raw ->
+            raw |> Base.decode64! |> :erlang.binary_to_term
+        end
 
-      Enum.each(onlines, fn({key, online_count}) -> 
-        Redis.lpush("ponlines.#{key}", "#{now}.#{online_count}")
-        Redis.ltrim("ponlines.#{key}", 0, 60*24*60)
-        Process.put("ponlines.#{key}", online_count)
-      end)
-    end
+      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_mins)
+      {all, _} = Enum.split([n_all | Enum.reverse(all)], @n_mins)
+      {ios, _} = Enum.split([n_ios | Enum.reverse(ios)], @n_mins)
+      {android, _} = Enum.split([n_android | Enum.reverse(android)], @n_mins)
+      
+      chart =
+        %{
+          labels: Enum.reverse(labels),
+          datasets: [
+            %{
+              label: "同时在线",
+              data: Enum.reverse(all),
+            },
+            %{
+              label: "同时在线(IOS)",
+              data: Enum.reverse(ios),
+            },
+            %{
+              label: "同时在线(ANDROID)",
+              data: Enum.reverse(android),
+            }
+          ]          
+        }
 
-    with counter_keys <- Redis.keys("zonline_counter.*"),
-         result_keys <- Redis.keys("zonlines.*")
-    do 
-      onlines = Enum.reduce(counter_keys ++ result_keys, %{}, fn(key, result) -> 
-        [_, app_id, zone_id | _] = String.split(key, ".")
-        Map.put(result, "#{app_id}.#{zone_id}", 0)
-      end)
+      Redis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
+      Cachex.del(:default, cache_key)
+      Cachex.set(:default, cache_key, ttl: :timer.minutes(1))
 
-      onlines = Enum.reduce(counter_keys, onlines, fn(counter_key, result) -> 
-        ["zonline_counter", app_id, zone_id | _] = String.split(counter_key, ".")
-        count = Redis.hlen(counter_key)
-        key = "#{app_id}.#{zone_id}"
-        Map.put(result, key, Map.get(result, key, 0) + count)
-      end)
-
-      Enum.each(onlines, fn({key, online_count}) -> 
-        Redis.lpush("zonlines.#{key}", "#{now}.#{online_count}")
-        Redis.ltrim("zonlines.#{key}", 0, 60*24*60)
-      end)
-    end
-
-    # broadcast
-    case Redis.keys("onlines.*") do 
-      counter_list when is_list(counter_list) ->
-        Enum.each(counter_list, fn(counter_key) -> 
-          ["onlines", app_id | _] = String.split(counter_key, ".")
-          label = now |> Timex.from_unix |> Timex.Timezone.convert(Timex.Timezone.Local.lookup) |> Timex.format!("{0M}-{D} {h24}:{0m}")
-          all = Process.get("onlines.#{app_id}", 0)
-          ios = Process.get("ponlines.#{app_id}.ios", 0)
-          android = Process.get("ponlines.#{app_id}.android", 0)
-          PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
-            event: "new_online_data", 
-            payload: %{
-              label: label,
-              data: [ all, ios, android ]
-          }})
-        end)
-      _ ->
-        :ok
-    end
+      PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
+        event: "new_online_data", 
+        payload: %{
+          label: label,
+          data: [ n_all, n_ios, n_android ]
+      }})
+    end)
 
     conn |> json(%{success: true, message: "done"})
   end

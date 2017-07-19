@@ -109,6 +109,7 @@ defmodule Acs.Web.AdminRouter do
       pipe_through :admin_app
 
       post  "/onlines", Admin.ChartController, :onlines
+      post  "/historic_onlines", Admin.ChartController, :historic_onlines
     end
 
     scope "/wcp" do 

@@ -56,16 +56,20 @@ export default Line.extend({
         this._chart.update()
       }
     },
-    addData: function(label, data) {
+    addData: function(label, data, n) {
       console.info('add chart data, label:', label, 'data: ', data)
       if (this._chart) {
         if (this._chart.data.labels[this._chart.data.labels.length - 1] != label) {
-          this._chart.data.labels.shift()
           this._chart.data.labels.push(label)
+          if (this._chart.data.labels.length > n) {
+            this._chart.data.labels.shift()
+          }
           for (let i = 0; i < data.length; ++i) {
             if (this._chart.data.datasets[i]) {
-              this._chart.data.datasets[i].data.shift()
               this._chart.data.datasets[i].data.push(data[i])
+              if (this._chart.data.datasets[i].data.length > n) {
+                this._chart.data.datasets[i].data.shift()
+              }
             }
           }
           this._chart.update()

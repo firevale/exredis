@@ -123,7 +123,7 @@ defmodule Acs.Web.CronController do
     label = Timex.format!(now, "{0M}-{D} {h24}:00")
 
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
-      max = Redis.lrange("onlines.#{app_id}", 0, 90) |> Enum.filter_map(fn(x) ->
+      max = Redis.lrange("_onlines.#{app_id}", 0, 90) |> Enum.filter_map(fn(x) ->
         [ts, _counter] = String.split(x, ".", trim: true)  
         ts = String.to_integer(ts)
         ts >= begining && ts < ending
@@ -132,7 +132,7 @@ defmodule Acs.Web.CronController do
         String.to_integer(counter)
       end) |> Enum.max(fn -> 0 end)
 
-      ios_max = Redis.lrange("ponlines.#{app_id}.ios", 0, 90) |> Enum.filter_map(fn(x) ->
+      ios_max = Redis.lrange("_ponlines.#{app_id}.ios", 0, 90) |> Enum.filter_map(fn(x) ->
         [ts, _counter] = String.split(x, ".", trim: true)  
         ts = String.to_integer(ts)
         ts >= begining && ts < ending
@@ -141,7 +141,7 @@ defmodule Acs.Web.CronController do
         String.to_integer(counter)
       end) |> Enum.min_max(fn -> 0 end)
 
-      android_max = Redis.lrange("ponlines.#{app_id}.android", 0, 90) |> Enum.filter_map(fn(x) ->
+      android_max = Redis.lrange("_ponlines.#{app_id}.android", 0, 90) |> Enum.filter_map(fn(x) ->
         [ts, _counter] = String.split(x, ".", trim: true)  
         ts = String.to_integer(ts)
         ts >= begining && ts < ending
@@ -239,9 +239,12 @@ defmodule Acs.Web.CronController do
         n + Redis.hlen(key)
       end)   
 
-      Redis.set("onlines.#{app_id}", "#{ts}.#{n_all}") 
-      Redis.set("ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
-      Redis.set("ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
+      Redis.lpush("_onlines.#{app_id}", "#{ts}.#{n_all}") 
+      Redis.ltrim("_onlines.#{app_id}", 0, @n_mins) 
+      Redis.lpush("_ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
+      Redis.ltrim("_ponlines.#{app_id}.ios", 0, @n_mins) 
+      Redis.lpush("_ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
+      Redis.ltrim("_ponlines.#{app_id}.android", 0, @n_mins) 
 
       cache_key = "onlines_chart.#{app_id}" 
 

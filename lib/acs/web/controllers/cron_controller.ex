@@ -224,6 +224,7 @@ defmodule Acs.Web.CronController do
   def save_online_counter(conn, _params) do 
     now = %{Timex.local | second: 0, microsecond: {0, 0}} 
     label = Timex.format!(now, "{h24}:{0m}")
+    ts = Timex.to_unix(now)
 
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       n_all = Enum.reduce(Redis.keys("online_counter.#{app_id}.*"), 0, fn(key, n) ->
@@ -237,6 +238,10 @@ defmodule Acs.Web.CronController do
       n_android = Enum.reduce(Redis.keys("ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
         n + Redis.hlen(key)
       end)   
+
+      Redis.set("onlines.#{app_id}", "#{ts}.#{n_all}") 
+      Redis.set("ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
+      Redis.set("ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
 
       cache_key = "onlines_chart.#{app_id}" 
 

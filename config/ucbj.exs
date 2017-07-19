@@ -9,6 +9,8 @@ config :acs, Acs.Web.Endpoint,
 config :acs, sm_provider: :meisheng
 config :acs, email_service_provider: Acs.SendCloudMailer
 
+config :phoenix, :stacktrace_depth, 20
+
 config :acs, Acs.Web.Endpoint,
   pubsub: [adapter: Phoenix.PubSub.Redis,
            name: Acs.PubSub,

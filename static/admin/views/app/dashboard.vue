@@ -50,7 +50,7 @@ export default {
   watch: {
     'latestOnlineData': function(chart) {
       if (this.$refs.chart) {
-        this.$refs.chart.addData(chart.label, chart.data)
+        this.$refs.chart.addData(chart.label, chart.data, 180)
       }
     }
   },

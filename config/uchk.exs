@@ -14,7 +14,6 @@ config :acs, Acs.Web.Endpoint,
   pubsub: [adapter: Phoenix.PubSub.Redis,
            name: Acs.PubSub,
            host: "10.8.21.135", 
-           password: "",
            node_name: System.get_env("NODE")]
 
 # Configure your database

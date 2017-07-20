@@ -110,33 +110,27 @@ defmodule Acs.Web.UserController do
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do
-    
-    check_out = check_userid(account_id)
-    if(check_out && !check_out.success) do
-      conn |> json(check_out)
+    if RedisUser.exists?(account_id) do
+      conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      if RedisUser.exists?(account_id) do
-        conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
-      else
-        case get_session(conn, :register_verify_code) do
-          ^verify_code ->
-            is_valid_account = case get_session(conn, :register_account_id) do
-                                nil -> true
-                                ^account_id -> true
-                                _ -> false
-                              end
-            if is_valid_account do
-              user = RedisUser.create!(account_id, password)
-              user = RedisUser.save!(user)
-              create_and_response_access_token(conn, user, app_id, device_id, platform)
-            else
-              conn |> json(%{success: false, i18n_message: "error.server.accountIdChanged"})
-            end
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
-        end
-      end      
-    end 
+      case get_session(conn, :register_verify_code) do
+        ^verify_code ->
+          is_valid_account = case get_session(conn, :register_account_id) do
+                              nil -> true
+                              ^account_id -> true
+                              _ -> false
+                            end
+          if is_valid_account do
+            user = RedisUser.create!(account_id, password)
+            user = RedisUser.save!(user)
+            create_and_response_access_token(conn, user, app_id, device_id, platform)
+          else
+            conn |> json(%{success: false, i18n_message: "error.server.accountIdChanged"})
+          end
+        _ ->
+          conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
+      end
+    end      
   end
 
   def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do

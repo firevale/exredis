@@ -55,7 +55,7 @@ defmodule Acs.Web.PageController do
     conn |> send_resp(500, gettext("forum not configured for app"))
   end
   def show_app_forum(%Plug.Conn{private: %{acs_app: %{forum_id: forum_id}}} = conn, _params) do 
-    conn |> redirect(to: "/forum/#{forum_id}/index")
+    conn |> redirect(to: "/m/forum/#{forum_id}/index")
   end
 
   def show_app_mall(%Plug.Conn{private: %{acs_app: %{id: app_id}}} = conn, _params) do 

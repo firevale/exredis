@@ -75,6 +75,7 @@ module.exports = {
     admin: ['./admin'],
     theme_default: ['./app/scss/themes/default.scss'],
     theme_jqxs: ['./app/scss/themes/jqxs.scss'],
+    theme_jqxs_mobile: ['./app/scss/themes/jqxs_mobile.scss'],
   },
 
   output: {

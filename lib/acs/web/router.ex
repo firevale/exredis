@@ -37,6 +37,14 @@ defmodule Acs.Web.Router do
     post "/send_retrieve_password_verify_code", VerifyCodeController, :send_retrieve_password_verify_code
   end
 
+  scope "/m", Acs.Web do
+      pipe_through :browser
+
+      get  "/forum", PageController, :show_forum_page
+      get  "/forum/index", PageController, :show_forum_page
+      get  "/forum/:forum_id/*path", PageController, :show_forum_page
+  end
+
   scope "/user", Acs.Web do
     pipe_through :browser # Use the default browser stack
 

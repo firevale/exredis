@@ -1,14 +1,5 @@
-@import "./variables";
-@import "common/scss/mixins";
-
-@import "~bulma";
-
-@import "./bulma-fix";
-@import "./global";
-@import "./icons";
+@import "./base";
 @import "./customerService";
 @import "./payment";
 @import "./mall";
 @import "./account";
-
-@import 'common/scss/animation.scss'

@@ -55,7 +55,11 @@ var plugins = [
     }
   }),
 
-  new ExtractTextPlugin('css/[name].css'),
+  new ExtractTextPlugin({
+    filename: (getPath) => {
+      return getPath('css/[name].css').replace('theme_', 'themes/');
+    },
+  }),
 
   new CopyWebpackPlugin([{
     from: 'assets',
@@ -69,6 +73,8 @@ module.exports = {
     login: ['./login'],
     app: ['./app'],
     admin: ['./admin'],
+    theme_default: ['./app/scss/themes/default.scss'],
+    theme_jqxs: ['./app/scss/themes/jqxs.scss'],
   },
 
   output: {

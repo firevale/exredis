@@ -10,8 +10,6 @@ import routerMap from './routes'
 import {i18n} from './vue-i18n'
 import * as filters from 'common/js/filters'
 
-require('app/scss/app.scss')
-
 Object.keys(filters).forEach(function (k) {
   Vue.filter(k, filters[k])
 })

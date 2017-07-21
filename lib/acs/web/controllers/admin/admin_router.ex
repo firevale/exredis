@@ -108,8 +108,8 @@ defmodule Acs.Web.AdminRouter do
     scope "/chart" do 
       pipe_through :admin_app
 
-      post  "/onlines", Admin.ChartController, :onlines
-      post  "/historic_onlines", Admin.ChartController, :historic_onlines
+      post  "/onlines", Admin.StatsController, :onlines
+      post  "/historic_onlines", Admin.StatsController, :historic_onlines
     end
 
     scope "/wcp" do 

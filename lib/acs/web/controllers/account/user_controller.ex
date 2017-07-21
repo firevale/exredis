@@ -299,6 +299,7 @@ defmodule Acs.Web.UserController do
                         ttl: 604800,
                         binding: %{}
                       })
+                      
                     %RedisApp{} = app ->
                       token = RedisAccessToken.create(%{
                         app_id: app_id,

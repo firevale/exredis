@@ -34,8 +34,8 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(device_id: device_id)
 
       incr_online_counter(app_id, device_id, user_id, platform)
-      {date, _} = :calendar.local_time
-      today = date |> Date.from_erl!
+      today = Timex.local |> Timex.to_date
+      Redis.sadd("_dau.#{today}.#{app_id}.#{platform}", user_id)
 
       {:ok, socket |> assign(:user_id, user_id)
                    |> assign(:app_id, app_id)
@@ -76,8 +76,7 @@ defmodule Acs.Web.AppChannel do
 
       incr_online_counter(app_id, device_id, user_id, platform, zone_id)
 
-      {date, _} = :calendar.local_time
-      today = date |> Date.from_erl!
+      today = Timex.local |> Timex.to_date
 
       socket = init_stat_data(payload, today, socket)
 

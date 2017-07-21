@@ -225,6 +225,7 @@ defmodule Acs.Web.CronController do
     now = %{Timex.local | second: 0, microsecond: {0, 0}} 
     label = Timex.format!(now, "{h24}:{0m}")
     ts = Timex.to_unix(now)
+    today = Timex.to_date(now)
 
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       n_all = Enum.reduce(Redis.keys("online_counter.#{app_id}.*"), 0, fn(key, n) ->
@@ -309,7 +310,25 @@ defmodule Acs.Web.CronController do
         event: "new_online_data", 
         payload: %{
           label: label,
-          data: [ n_all, n_ios, n_android ]
+          data: [ n_all, n_ios, n_android ],
+          stats: %{
+            dau: %{
+              ios: Redis.scard("_dau.#{today}.#{app_id}.ios"),
+              android: Redis.scard("_dau.#{today}.#{app_id}.android"),
+            },
+            danu: %{
+              ios: Redis.scard("_danu.#{today}.#{app_id}.ios"),
+              android: Redis.scard("_danu.#{today}.#{app_id}.android"),
+            },
+            dapu: %{
+              ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"),
+              android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
+            },
+            fee: %{
+              ios: Redis.get("_totalfee.#{today}.#{app_id}.ios"),
+              android: Redis.get("_totalfee.#{today}.#{app_id}.android"),
+            }
+          }
       }})
     end)
 

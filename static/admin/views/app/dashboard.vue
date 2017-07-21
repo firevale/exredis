@@ -4,25 +4,25 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>
-          <p class="title">{{ 0 }}</p>
+          <p class="title">{{ 0 }}  <sub>[ios: {{ 0 }}, android: {{ 0 }}]</sub></p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
-          <p class="heading">{{ $t('admin.app.availableCodes') }}</p>
-          <p class="title">{{ 0 }}</p>
+          <p class="heading">{{ $t('admin.app.danu') }}</p>
+          <p class="title">{{ 0 }} <sub>[ios: {{ 0 }}, android: {{ 0 }}]</sub> </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
-          <p class="heading">{{ $t('admin.app.assignedCodes') }}</p>
-          <p class="title">{{ 0 }}</p>
+          <p class="heading">{{ $t('admin.app.totalFee') }}</p>
+          <p class="title">{{ 0 }} <sub>[ios: {{ 0 }}, android: {{ 0 }}]</sub> </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
-          <p class="heading">{{ $t('admin.app.usedCodes') }}</p>
-          <p class="title">{{ 0 }}</p>
+          <p class="heading">{{ $t('admin.app.paidUserNumber') }}</p>
+          <p class="title">{{ 0 }} <sub>[ios: {{ 0 }}, android: {{ 0 }}]</sub> </p>
         </div>
       </div>
     </nav>
@@ -97,6 +97,11 @@ export default {
     div {
       flex-grow: 1;
       background: #212733;
+    }
+  }
+  p.title {
+    sub {
+      font-size: 0.9rem;
     }
   }
 }

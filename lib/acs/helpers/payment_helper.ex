@@ -1,7 +1,6 @@
 defmodule Acs.PaymentHelper do
-  require Logger
-
   require Utils
+  require Redis
 
   alias   Utils.Httpc
   alias   Acs.Repo
@@ -176,12 +175,17 @@ defmodule Acs.PaymentHelper do
     try_deliver_counter: 0, 
     app_id: app_id,
     device_id: device_id,
+    user_id: user_id,
     zone_id: zone_id,
+    platform: platform,
     fee: fee,
     app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
 
     now = DateTime.utc_now()
     today = Timex.local() |> Timex.to_date()
+
+    Redis.sadd("_dapu.#{today}.#{app_id}.#{platform}", user_id)
+    Redis.incrby("_totalfee.#{today}.#{app_id}.#{platform}", fee)
     
     # update app user payment info
     case StatsRepo.get(AppUser, app_user_id) do 

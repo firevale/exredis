@@ -17,12 +17,14 @@ defmodule Acs.RedisAppUser do
         :undefined ->
           case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 
             nil ->  
+              today = Timex.local |> Timex.to_date 
               {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
                 app_id: app_id, 
                 user_id: user_id, 
                 zone_id: zone_id,
                 platform: platform,
-                reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
+                reg_date: today}) |> StatsRepo.insert
+              Redis.sadd("_danu.#{today}.#{app_id}.#{platform}", user_id) 
               Redis.setex(key, 3600 * 24, AppUser.to_redis(app_user))
               {:commit, app_user}
 

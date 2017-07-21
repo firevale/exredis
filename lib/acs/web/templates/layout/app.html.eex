@@ -12,6 +12,7 @@
     <meta name="360-fullscreen" content="true"/>
     <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
     <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
+    <%= render_existing @view_module, "header.html", assigns %>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">

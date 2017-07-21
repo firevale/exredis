@@ -119,7 +119,7 @@ defmodule Acs.Web.UserController do
                               nil -> true
                               ^account_id -> true
                               _ -> false
-                             end
+                            end
           if is_valid_account do
             user = RedisUser.create!(account_id, password)
             user = RedisUser.save!(user)
@@ -130,7 +130,7 @@ defmodule Acs.Web.UserController do
         _ ->
           conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
       end
-    end
+    end      
   end
 
   def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do
@@ -220,18 +220,23 @@ defmodule Acs.Web.UserController do
 
   def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
                       %{"nickname" => nickname}) do
-                
-    query = from u in Acs.User,
-            select: count(1),
-            where: u.nickname == ^nickname and u.id != ^user_id
+    
+    check_out = check_userid(nickname)
+    if(check_out && !check_out.success) do
+      conn |> json(check_out)
+    else
+      query = from u in Acs.User,
+              select: count(1),
+              where: u.nickname == ^nickname and u.id != ^user_id
 
-    case Repo.one!(query) do 
-      0 -> 
-        user = %{user | nickname: nickname}
-        RedisUser.save!(user)
-        conn |> json(%{success: true})
-      _ ->
-        conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})
+      case Repo.one!(query) do 
+        0 -> 
+          user = %{user | nickname: nickname}
+          RedisUser.save!(user)
+          conn |> json(%{success: true})
+        _ ->
+          conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})
+      end
     end
   end
   def update_nickname(conn, _) do 
@@ -294,6 +299,7 @@ defmodule Acs.Web.UserController do
                         ttl: 604800,
                         binding: %{}
                       })
+                      
                     %RedisApp{} = app ->
                       token = RedisAccessToken.create(%{
                         app_id: app_id,
@@ -573,5 +579,19 @@ defmodule Acs.Web.UserController do
             binding: %{},
             bindings: %{}, # 兼容旧的SDK
           })
+  end
+
+  # check text by netease dun
+  defp check_userid(userid) do
+    case SDKNeteaseDun.check_userid(userid) do 
+        {:error, label, info} ->
+          if label do
+            %{success: false, i18n_message: "account.error.userIdCheckFail"}
+          else
+            %{success: false, message: info}
+          end
+
+        _ -> %{success: true}
+      end
   end
 end

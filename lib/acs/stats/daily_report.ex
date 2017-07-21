@@ -25,6 +25,8 @@ defmodule Acs.Stats.DailyReport do
 
     timestamps()
   end
+  
+  use Utils.Redisable
 
   @doc false
   def changeset(%DailyReport{} = daily_report, attrs) do

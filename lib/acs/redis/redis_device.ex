@@ -19,14 +19,15 @@ defmodule Acs.RedisDevice do
             nil -> {:ignore, nil}
 
             %Device{} = device ->
-              Redis.setex(key, 3600 * 24, device |> :erlang.term_to_binary |> Base.encode64)
+              Redis.setex(key, 3600 * 24, Device.to_redis(device))
               {:commit, device}
           end
 
         raw -> 
-          case raw |> Base.decode64! |> :erlang.binary_to_term do 
+          case Device.from_redis(raw) do 
             %Device{} = device ->
               {:commit, device}
+
             %{} = old_device ->
               {:commit, %Device{
                 id: old_device.id, 

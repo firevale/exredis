@@ -71,7 +71,16 @@ export default {
   methods: {
     ...mapActions(['updateUserNickname']),
 
+    checkCharacter: function(val) {
+      return /^[\w\u4e00-\u9fa5]+$/gi.test(this.nickname)
+    },
+  
     onSubmit: async function() {
+      if(!this.checkCharacter(this.nickname)){
+        Toast.show(this.$t('account.error.nickNameError'))
+        return
+      }
+
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.updateUserNickname({

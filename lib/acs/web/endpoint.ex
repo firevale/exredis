@@ -3,6 +3,7 @@ defmodule Acs.Web.Endpoint do
   import Acs.Plugs
 
   socket "/socket", Acs.Web.UserSocket
+  socket "/app_admin_sock", Acs.Web.AppAdminSocket
  
   @allow_origin Application.get_env(:acs, :allow_origin, "//*.firevale.com")
   @valid_static_pattern ~w(js css images assets fonts favicon.ico robots.txt verify-68e4f3a600bb881fa4ef46bbfff0.txt)

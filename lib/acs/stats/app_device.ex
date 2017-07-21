@@ -21,6 +21,8 @@ defmodule Acs.Stats.AppDevice do
 
     timestamps()
   end
+  
+  use Utils.Redisable
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

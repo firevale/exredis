@@ -26,6 +26,8 @@ defmodule Acs.Stats.AppUser do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppUser{} = app_user, attrs) do
     app_user

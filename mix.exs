@@ -33,6 +33,7 @@ defmodule Acs.Mixfile do
   defp deps do
     [{:phoenix, "~> 1.3.0-rc"},
      {:phoenix_pubsub, "~> 1.0"},
+     {:phoenix_pubsub_redis, "~> 2.1"},
      {:phoenix_ecto, "~> 3.2"},
      {:mariaex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.9"},
@@ -50,6 +51,7 @@ defmodule Acs.Mixfile do
      {:comeonin, "~> 3.1"},
      {:des_ecb3, github: "xbinxu/des_ecb3"},
      {:unicode_util_compat, github: "benoitc/unicode_util_compat", override: true},
+     {:bugsnag, "~> 1.5"},
      {:plugsnag, "~> 1.3"},
      {:mogrify, "~> 0.5"},
      {:ex_syslogger, "~> 1.3"},

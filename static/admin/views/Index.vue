@@ -6,7 +6,7 @@
       }}
     </router-link>
     <div class="columns is-multiline">
-      <article class="column is-3" v-for="app in appList">
+      <article class="column is-3" v-for="app in appList" :key="app.id">
         <div class="tile is-parent">
           <figure class="image is-64x64 app-icon" @click.prevent="updateAppIcon(app)">
             <img :src="app.icon ? app.icon : 'https://placehold.it/64x64?text=128x128'"></img>

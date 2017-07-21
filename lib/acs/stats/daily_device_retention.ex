@@ -12,6 +12,8 @@ defmodule Acs.Stats.DailyDeviceRetention do
 
     timestamps()
   end
+  
+  use Utils.Redisable
 
   @doc false
   def changeset(%DailyDeviceRetention{} = daily_device_retention, attrs) do

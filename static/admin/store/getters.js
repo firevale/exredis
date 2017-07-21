@@ -1,5 +1,6 @@
 const main = state => state.main
 const app = state => state.apps.app
+const latestOnlineData = state => state.apps.latestOnlineData
 const myLoginCodes = state => state.apps.myLoginCodes
 const sdks = state => state.apps.sdks
 const goods = state => state.apps.goods
@@ -60,4 +61,5 @@ export {
   adminLevel,
   myLoginCodes,
   wcpParams,
+  latestOnlineData,
 }

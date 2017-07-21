@@ -9,6 +9,15 @@ config :acs, Acs.Web.Endpoint,
 config :acs, sm_provider: :meisheng
 config :acs, email_service_provider: Acs.SendCloudMailer
 
+config :phoenix, :stacktrace_depth, 20
+
+config :acs, Acs.Web.Endpoint,
+  pubsub: [adapter: Phoenix.PubSub.Redis,
+           name: Acs.PubSub,
+           host: "10.10.242.97", 
+           password: "uFT-dTm-JYP-T4f",
+           node_name: System.get_env("NODE")]
+
 # Configure your database
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,
@@ -39,3 +48,6 @@ config :redis_poolex,
   reconnect: :no_reconnect,
   pool_size: 20,
   pool_max_overflow: 10
+
+
+config :bugsnag, release_stage: "ucbj"

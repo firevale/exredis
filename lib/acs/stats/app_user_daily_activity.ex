@@ -14,6 +14,8 @@ defmodule Acs.Stats.AppUserDailyActivity do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """

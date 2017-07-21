@@ -45,6 +45,7 @@ defmodule Acs.AppWcpResponse do
         end
     end
   end
+  def build_reply(_, _), do: nil
 
   defp _build_default_text_reply(app_id, msg) do 
     case RedisAppWcpConfig.find(app_id) do 

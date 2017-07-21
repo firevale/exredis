@@ -56,7 +56,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
     
     assigned = Repo.one(query)
 
-    if number + assigned > 100 do 
+    if number + assigned > 500 do 
       conn |> json(%{success: false, i18n_message: "error.server.assignTooManyCodes"})
     else 
       now = DateTime.utc_now

@@ -10,6 +10,8 @@ defmodule Acs.Stats.DailyUserTiming do
     belongs_to :report, Acs.Stats.DailyReport
     timestamps()
   end
+  
+  use Utils.Redisable
 
   @doc false
   def changeset(%DailyUserTiming{} = daily_user_timing, attrs) do

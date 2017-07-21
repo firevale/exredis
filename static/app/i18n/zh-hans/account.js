@@ -34,5 +34,10 @@ export default {
     emailBindSuccess: '已绑定邮箱{email}',
     nicknameUpdated: '昵称已成功修改',
     residentInfoUpdated: '实名制信息已成功更新',
+  },
+
+  error: {
+    userIdCheckFail: '用户信息中含有敏感词汇，请修改后重新提交',
+    nickNameError: '用户昵称只允许【中文/数字/字母/下划线】',
   }
 }

@@ -3,26 +3,26 @@
     <div class="columns is-multiline">
       <div class="column is-8">
         <label class="label"> {{ $t('admin.wcp.verifyFile')}}:
-          <tooltip label="" placement="top"><span class="icon is-sign">?</span></tooltip>
+          <tooltip label="" placement="top"><span class="icon is-sign" @click.prevent="showTip(0)">?</span></tooltip>
         </label>
         <p class="control">
           <a @click.prevent="updateFile(wcpParams)"> {{ wcpParams.verify_File ? wcpParams.verify_File : "点击上传" }} </a>
         </p>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.appId')}}: <span class="icon is-sign">?</span></label>
+        <label class="label"> {{ $t('admin.wcp.appId')}}: <span class="icon is-sign" @click.prevent="showTip(1)">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.wcp_app_id">
         </p>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.appKey')}}: <span class="icon is-sign">?</span></label>
+        <label class="label"> {{ $t('admin.wcp.appKey')}}: <span class="icon is-sign" @click.prevent="showTip(1)">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.wcp_app_key">
         </p>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.serverHost')}}: </label>
+        <label class="label"> {{ $t('admin.wcp.serverHost')}}: <span class="icon is-sign" @click.prevent="showTip(2)">?</span></label>
         <div class="field has-addons">
           <p class="control flex-take-rest">
             <input class="input disabled" disabled type="text" v-model.trim="serverHost">
@@ -36,13 +36,13 @@
         </div>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.token')}}: <span class="icon is-sign">?</span></label>
+        <label class="label"> {{ $t('admin.wcp.token')}}: <span class="icon is-sign" @click.prevent="showTip(2)">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.token">
         </p>
       </div>
       <div class="column is-8">
-        <label class="label"> {{ $t('admin.wcp.aesKey')}}: <span class="icon is-sign">?</span></label>
+        <label class="label"> {{ $t('admin.wcp.aesKey')}}: <span class="icon is-sign" @click.prevent="showTip(2)">?</span></label>
         <p class="control">
           <input class="input" type="text" v-model.trim="wcpParams.aes_key">
         </p>
@@ -70,6 +70,10 @@ import {
 import Toast from 'common/components/toast'
 import Tooltip from 'vue-bulma-tooltip'
 
+import {
+  showTipBox
+} from 'admin/components/dialog/tipBox'
+
 export default {
   mounted: function() {
     this.serverHost = location.origin + "/api/wcp/" + this.$route.params.appId
@@ -80,10 +84,9 @@ export default {
       show: false,
       serverHost: '',
       processing: false,
-      tips: ['',
-        '',
-        '',
-        '',
+      tips: ['<p><img src="/images/wcp_tip1.png"></p><p><img src="/images/wcp_tip2.png"></p>',
+        '<p><img src="/images/wcp_tip3.png"></p>',
+        '<p><img src="/images/wcp_tip4.png"></p>',
       ],
     }
   },
@@ -107,6 +110,13 @@ export default {
       Toast.show(this.$t('admin.messages.copyClipboardSuccess'))
     },
 
+    showTip: function(idx) {
+      showTipBox({
+        visible: true,
+        message: this.tips[idx],
+      })
+    },
+
     updateFile: function(wcpParams) {
       showFileUploadDialog(this.$i18n, {
         postAction: '/admin_actions/wcp/upload_wcp_file',
@@ -121,7 +131,6 @@ export default {
         title: this.$t('admin.titles.uploadWcpFile'),
         callback: response => {
           if (response.success) {
-            console.log("---------------"+response.filename)
             wcpParams.verify_File = response.filename
             this.updateWcpParams(wcpParams)
           } else {

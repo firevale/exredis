@@ -6,6 +6,8 @@ export default {
   add: '添加新应用',
   loginCodeds: '激活码管理',
   wechatPub: '公众号管理',
+  dau: '活跃用户',
+  dad: '活跃设备',
 
   totalCodes: '已生成',
   availableCodes: '剩余',

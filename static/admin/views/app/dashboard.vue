@@ -1,5 +1,31 @@
 <template>
   <div class="dashboard">
+    <nav class="level">
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.dau') }}</p>
+          <p class="title">{{ 0 }}</p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.availableCodes') }}</p>
+          <p class="title">{{ 0 }}</p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.assignedCodes') }}</p>
+          <p class="title">{{ 0 }}</p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.usedCodes') }}</p>
+          <p class="title">{{ 0 }}</p>
+        </div>
+      </div>
+    </nav>
     <article class="tile box chart">
       <line-chart ref="chart" :options="options" :width="'100%'"></line-chart>
     </article>

@@ -247,10 +247,21 @@ defmodule Acs.Web.AppChannel do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
-    app_user = %{app_user | app_user_name: app_user_name,
-                            app_user_id: app_user_id,
-                            last_active_at: utc_now,
-                            app_user_level: app_user_level}
+    app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
+      app_user_name: app_user_name,
+      app_user_id: app_user_id,
+      last_active_at: utc_now,
+      app_user_level: app_user_level  
+    })) do 
+      {:ok, new_app_user} ->
+        key = "acs.app_user_cache.#{app_id}.#{zone_id}.#{user_id}"
+        Cachex.set(:default, key, new_app_user)
+        Redis.setex(key, 3600*24, AppUser.to_redis(new_app_user))
+        new_app_user
+      
+      _ ->
+        app_user
+    end
 
     app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
 

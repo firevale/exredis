@@ -228,8 +228,7 @@ defmodule Acs.Web.AppChannel do
     :ok
   end
   def terminate(reason, socket) do
-    info "channel terminated with: #{inspect reason}"
-    info "channel terminated with: #{inspect socket.assigns, pretty: true}"
+    info "channel terminated with: #{inspect socket.assigns}"
     :ok
   end
   

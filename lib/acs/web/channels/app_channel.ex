@@ -9,11 +9,13 @@ defmodule Acs.Web.AppChannel do
   alias   Acs.RedisAppUserDailyActivity
   alias   Acs.RedisAppDeviceDailyActivity
 
-  def join(_, %{"access_token" => ""}, socket) do 
-     {:error, %{reason: "bad request"}}
+  def join(_, %{"access_token" => ""} = payload, socket) do 
+    info "receive bad channel join request, #{inspect payload}"
+    {:error, %{reason: "bad request"}}
   end
-  def join(_, %{"user_id" => ""}, socket) do 
-     {:error, %{reason: "bad request"}}
+  def join(_, %{"user_id" => ""} = payload, socket) do 
+    info "receive bad channel join request, #{inspect payload}"
+    {:error, %{reason: "bad request"}}
   end
 
   # sdk can join channel anytime, postpond game data info 
@@ -176,7 +178,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform, 
     zone_id: zone_id}} = socket) do
 
-    info "channel paused, device_id: #{device_id}"
+    info "channel paused, assigns: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform, zone_id)
     do_stat(socket) 
     {:noreply, socket |> assign(:active, false) }
@@ -189,7 +191,7 @@ defmodule Acs.Web.AppChannel do
     app_id: app_id, 
     platform: platform, 
     zone_id: zone_id}} = socket) do
-    info "channel resume, device_id: #{device_id}, user_id: #{user_id}, app_id: #{app_id}"
+    info "channel resume, assigns: #{inspect socket.assigns}"
     incr_online_counter(app_id, device_id, user_id, platform, zone_id)
     {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
                       |> assign(:active, true)
@@ -211,8 +213,18 @@ defmodule Acs.Web.AppChannel do
     app_id: app_id,
     platform: platform,
     zone_id: zone_id}} = socket) do
-    info "active channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
+    info "active channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform, zone_id)
+    do_stat(socket)
+    :ok
+  end
+  def terminate(reason, %{assigns: %{
+    active: true, 
+    device_id: device_id, 
+    app_id: app_id,
+    platform: platform}} = socket) do
+    info "active channel terminate with reason: #{inspect socket.assigns}"
+    decr_online_counter(app_id, device_id, platform)
     do_stat(socket)
     :ok
   end
@@ -222,13 +234,21 @@ defmodule Acs.Web.AppChannel do
     app_id: app_id,
     platform: platform,
     zone_id: zone_id}} = socket) do
-    info "inactive channel termiate with reason: #{inspect reason}, device_id: #{device_id}, app_id: #{app_id}"
+    info "inactive channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform, zone_id)
     :ok
   end
+  def terminate(reason, %{assigns: %{
+    active: false,
+    device_id: device_id, 
+    app_id: app_id,
+    platform: platform}} = socket) do
+    info "inactive channel terminate with reason: #{inspect socket.assigns}"
+    decr_online_counter(app_id, device_id, platform)
+    :ok
+  end
   def terminate(reason, socket) do
-    info "channel terminated with: #{inspect reason}"
-    info "channel terminated with: #{inspect socket.assigns, pretty: true}"
+    info "channel terminated with: #{inspect socket.assigns}"
     :ok
   end
   
@@ -246,10 +266,21 @@ defmodule Acs.Web.AppChannel do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
-    app_user = %{app_user | app_user_name: app_user_name,
-                            app_user_id: app_user_id,
-                            last_active_at: utc_now,
-                            app_user_level: app_user_level}
+    app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
+      app_user_name: app_user_name,
+      app_user_id: app_user_id,
+      last_active_at: utc_now,
+      app_user_level: app_user_level  
+    })) do 
+      {:ok, new_app_user} ->
+        key = "acs.app_user_cache.#{app_id}.#{zone_id}.#{user_id}"
+        Cachex.set(:default, key, new_app_user)
+        Redis.setex(key, 3600*24, AppUser.to_redis(new_app_user))
+        new_app_user
+      
+      _ ->
+        app_user
+    end
 
     app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
 
@@ -361,6 +392,13 @@ defmodule Acs.Web.AppChannel do
     Redis.hset(online_redis_key, device_id, user_id)
     online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
     Redis.hset(online_redis_key, device_id, user_id)
+  end
+  defp decr_online_counter(app_id, device_id, platform) do 
+    node_name = System.get_env("ACS_NODE_NAME")
+    online_redis_key = "online_counter.#{app_id}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
+    online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
+    Redis.hdel(online_redis_key, device_id)
   end
   defp decr_online_counter(app_id, device_id, platform, zone_id) do 
     node_name = System.get_env("ACS_NODE_NAME")

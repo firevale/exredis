@@ -313,20 +313,26 @@ defmodule Acs.Web.CronController do
           data: [ n_all, n_ios, n_android ],
           stats: %{
             dau: %{
-              ios: Redis.scard("_dau.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_dau.#{today}.#{app_id}.android"),
+              ios: Redis.scard("_dau.#{today}.#{app_id}.ios") |> String.to_integer,
+              android: Redis.scard("_dau.#{today}.#{app_id}.android") |> String.to_integer,
             },
             danu: %{
-              ios: Redis.scard("_danu.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_danu.#{today}.#{app_id}.android"),
+              ios: Redis.scard("_danu.#{today}.#{app_id}.ios") |> String.to_integer,
+              android: Redis.scard("_danu.#{today}.#{app_id}.android") |> String.to_integer,
             },
             dapu: %{
-              ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
+              ios: Redis.scard("_dapu.#{today}.#{app_id}.ios") |> String.to_integer,
+              android: Redis.scard("_dapu.#{today}.#{app_id}.android") |> String.to_integer,
             },
             fee: %{
-              ios: Redis.get("_totalfee.#{today}.#{app_id}.ios"),
-              android: Redis.get("_totalfee.#{today}.#{app_id}.android"),
+              ios: case Redis.get("_totalfee.#{today}.#{app_id}.ios") do 
+                    :undefined -> 0
+                    x -> String.to_integer(x)
+                   end,
+              android: case Redis.get("_totalfee.#{today}.#{app_id}.android") do 
+                         :undefined -> 0
+                         x -> String.to_integer(0)
+                       end,
             }
           }
       }})

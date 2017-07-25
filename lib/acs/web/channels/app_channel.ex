@@ -178,12 +178,26 @@ defmodule Acs.Web.AppChannel do
     app_id: app_id, 
     platform: platform, 
     zone_id: zone_id}} = socket) do
-
     info "channel paused, assigns: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform, zone_id)
     do_stat(socket) 
     {:noreply, socket |> assign(:active, false) }
   end
+  def handle_in("pause", _payload, %{assigns: %{
+    active: true, 
+    device_id: device_id, 
+    app_id: app_id, 
+    platform: platform}} = socket) do
+    info "channel paused, assigns: #{inspect socket.assigns}"
+    decr_online_counter(app_id, device_id, platform)
+    do_stat(socket) 
+    {:noreply, socket |> assign(:active, false) }
+  end
+  def handle_in("pause", _payload, socket) do 
+    info "unknown channel paused, assigns: #{inspect socket.assigns}"
+    {:noreply, socket}
+  end
+
 
   def handle_in("resume", _payload, %{assigns: %{
     active: false, 
@@ -197,6 +211,22 @@ defmodule Acs.Web.AppChannel do
     {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
                       |> assign(:active, true)
     }
+  end
+  def handle_in("resume", _payload, %{assigns: %{
+    active: false, 
+    device_id: device_id, 
+    user_id: user_id, 
+    app_id: app_id, 
+    platform: platform}} = socket) do
+    info "channel resume, assigns: #{inspect socket.assigns}"
+    incr_online_counter(app_id, device_id, user_id, platform)
+    {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
+                      |> assign(:active, true)
+    }
+  end
+  def handle_in("resume", _payload, socket) do 
+    info "unknown channel resume, assigns: #{inspect socket.assigns}"
+    {:noreply, socket}
   end
 
   def handle_in(_command, _payload, socket), do: {:noreply, socket}

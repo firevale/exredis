@@ -3,6 +3,7 @@ defmodule Acs.RedisAppUser do
 
   alias   Acs.StatsRepo
   alias   Acs.Stats.AppUser
+  import  Ecto.Query
 
   require Cachex
   use     Timex
@@ -18,13 +19,23 @@ defmodule Acs.RedisAppUser do
           case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 
             nil ->  
               today = Timex.local |> Timex.to_date 
+
+              query = from au in AppUser, 
+                      select: count(1),
+                      where: au.app_id == ^app_id,
+                      where: au.user_id == ^user_id
+                      
+              case StatsRepo.one!(query) do 
+                0 -> Redis.sadd("_danu.#{today}.#{app_id}.#{platform}", user_id) 
+                _ -> :ok
+              end
+
               {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
                 app_id: app_id, 
                 user_id: user_id, 
                 zone_id: zone_id,
                 platform: platform,
                 reg_date: today}) |> StatsRepo.insert
-              Redis.sadd("_danu.#{today}.#{app_id}.#{platform}", user_id) 
               Redis.setex(key, 3600 * 24, AppUser.to_redis(app_user))
               {:commit, app_user}
 

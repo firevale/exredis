@@ -57,8 +57,7 @@ export default Line.extend({
       }
     },
     addData: function(label, data, n) {
-      console.info('add chart data, label:', label, 'data: ', data)
-      if (this._chart) {
+      if (this._chart && this._chart.data && this._chart.data.labels) {
         if (this._chart.data.labels[this._chart.data.labels.length - 1] != label) {
           this._chart.data.labels.push(label)
           if (this._chart.data.labels.length > n) {

@@ -109,6 +109,7 @@ defmodule Acs.Web.AdminRouter do
       pipe_through :admin_app
 
       post  "/onlines", Admin.StatsController, :onlines
+      post  "/brief_stats", Admin.StatsController, :brief_stats
       post  "/historic_onlines", Admin.StatsController, :historic_onlines
     end
 

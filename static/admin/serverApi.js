@@ -288,7 +288,14 @@ export default {
         return post('/admin_actions/chart/onlines', {
           app_id
         })
-      }
+      },
+
+      getBriefStats(app_id) {
+        return post('/admin_actions/chart/brief_stats', {
+          app_id
+        })
+      },
+
     }
   }
 }

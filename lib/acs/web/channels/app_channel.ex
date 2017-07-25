@@ -79,6 +79,7 @@ defmodule Acs.Web.AppChannel do
       incr_online_counter(app_id, device_id, user_id, platform, zone_id)
 
       today = Timex.local |> Timex.to_date
+      Redis.sadd("_dau.#{today}.#{app_id}.#{platform}", user_id)
 
       socket = init_stat_data(payload, today, socket)
 

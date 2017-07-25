@@ -85,3 +85,10 @@ export const joinAppChannel = ({
 }, params) => {
   commit(types.JOIN_APP_CHANNEL, params)
 }
+
+export const setAppBriefStats = ({
+  commit
+}, briefStats) => {
+  commit(types.SET_APP_BRIEF_STATS, briefStats)
+}
+

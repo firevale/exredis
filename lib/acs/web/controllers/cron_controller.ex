@@ -309,9 +309,11 @@ defmodule Acs.Web.CronController do
       PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
         event: "new_online_data", 
         payload: %{
-          label: label,
-          data: [ n_all, n_ios, n_android ],
-          stats: %{
+          online: %{
+            label: label,
+            data: [ n_all, n_ios, n_android ],
+          },
+          brief_stats: %{
             dau: %{
               ios: Redis.scard("_dau.#{today}.#{app_id}.ios") |> String.to_integer,
               android: Redis.scard("_dau.#{today}.#{app_id}.android") |> String.to_integer,

@@ -201,6 +201,25 @@ defmodule Acs.Web.AppChannel do
     do_stat(socket) 
     {:noreply, socket |> assign(:active, false) }
   end
+  def handle_in("pause", _payload, %{assigns: %{
+    active: false, 
+    device_id: device_id, 
+    app_id: app_id, 
+    platform: platform, 
+    zone_id: zone_id}} = socket) do
+    info "channel paused, assigns: #{inspect socket.assigns}"
+    decr_online_counter(app_id, device_id, platform, zone_id)
+    {:noreply, socket |> assign(:active, false) }
+  end
+  def handle_in("pause", _payload, %{assigns: %{
+    active: false, 
+    device_id: device_id, 
+    app_id: app_id, 
+    platform: platform}} = socket) do
+    info "channel paused, assigns: #{inspect socket.assigns}"
+    decr_online_counter(app_id, device_id, platform)
+    {:noreply, socket |> assign(:active, false) }
+  end
   def handle_in("pause", _payload, socket) do 
     info "unknown channel paused, assigns: #{inspect socket.assigns}"
     {:noreply, socket}

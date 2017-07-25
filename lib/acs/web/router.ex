@@ -38,11 +38,16 @@ defmodule Acs.Web.Router do
   end
 
   scope "/m", Acs.Web do
-      pipe_through :browser
+    pipe_through :browser
 
-      get  "/forum", PageController, :show_forum_page
-      get  "/forum/index", PageController, :show_forum_page
-      get  "/forum/:forum_id/*path", PageController, :show_forum_page
+    get  "/forum", PageController, :show_forum_page
+    get  "/forum/index", PageController, :show_forum_page
+    get  "/forum/:forum_id/*path", PageController, :show_forum_page
+    get  "/games/*path", PageController, :show_games_page
+    get  "/account/*path", PageController, :show_account_page
+    get  "/mall/*path",  PageController, :show_mall_page
+    get  "/payment/*path", PageController, :show_payment_page
+    get  "/customerService/*path", PageController, :show_customer_service_page
   end
 
   scope "/user", Acs.Web do

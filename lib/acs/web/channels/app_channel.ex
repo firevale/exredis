@@ -137,6 +137,10 @@ defmodule Acs.Web.AppChannel do
                       |> assign(:today, today)
     }
   end
+  def handle_in("reset", payload, socket) do
+    info "receive unknown reset, payload: #{inspect payload}, assigns: #{inspect socket.assigns}"
+    {:noreply, socket} 
+  end
 
   def handle_in("updateGameData", %{"app_user_id" => app_user_id,
                                     "app_user_name" => app_user_name,
@@ -170,6 +174,11 @@ defmodule Acs.Web.AppChannel do
 
     {:noreply, socket |> assign(:zone_id, zone_id)}
   end
+  def handle_in("updateGameData", payload, socket) do
+    info "receive unknown update game data, payload: #{inspect payload}, assigns: #{inspect socket.assigns}"
+    {:noreply, socket} 
+  end
+  
 
   def handle_in("pause", _payload, %{assigns: %{
     active: true, 

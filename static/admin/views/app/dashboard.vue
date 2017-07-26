@@ -86,12 +86,10 @@ export default {
     },
 
     getBriefStats: async function() {
-      if (!this.briefStats) {
-        let result = await this.$acs.getBriefStats(this.$route.params.appId) 
+      let result = await this.$acs.getBriefStats(this.$route.params.appId) 
 
-        if (result.success) {
-          this.setAppBriefStats(result.stats)
-        }
+      if (result.success) {
+        this.setAppBriefStats(result.stats)
       }
     }
   },

@@ -23,12 +23,6 @@ const mutations = {
 
   [types.SET_APP](state, app) {
     state.app = app
-    state.latestOnlineData = undefined
-    state.briefStats = undefined
-    if (state.channel) {
-      state.channel.leave()
-      state.channel = undefined
-    }
   },
 
   [types.SET_MY_LOGIN_CODES](state, codes) {
@@ -44,6 +38,9 @@ const mutations = {
       state.channel.leave()
       state.channel = undefined
     }
+    
+    state.latestOnlineData = undefined
+    state.briefStats = undefined
 
     state.channel = socket.channel(`admin.app:${params.appId}`, {
       access_token: params.accessToken,

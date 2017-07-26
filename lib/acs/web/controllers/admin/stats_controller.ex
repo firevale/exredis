@@ -51,7 +51,7 @@ defmodule Acs.Web.Admin.StatsController do
                 end,
           android: case Redis.get("_totalfee.#{today}.#{app_id}.android") do 
                       :undefined -> 0
-                      x -> String.to_integer(0)
+                      x when is_bitstring(x) -> String.to_integer(x)
                     end,
         }
       }

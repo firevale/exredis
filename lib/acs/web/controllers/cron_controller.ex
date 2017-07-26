@@ -343,18 +343,18 @@ defmodule Acs.Web.CronController do
     conn |> json(%{success: true, message: "done"})
   end
 
-  def refresh_login_code_chart(conn, params) do 
-    case Redis.keys("login_code.daily_chart_data.*") do 
-      keys when is_list(keys) ->
-        Enum.each(keys, fn(key) -> 
-          ["login_code", "daily_chart_data", app_id, ndays | _ ] = String.split(key, ".")
-          AppLoginCode.refresh_stats_info(app_id)
-          AppLoginCode.refresh_daily_chart_data(app_id, String.to_integer(ndays))
-        end)
-
-      _ ->
-        info "no login code chart data find..."
-    end 
+  def daily_refresh(conn, params) do 
+    date = Timex.local |> Timex.shift(days: -1) |> Timex.to_date
+    Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
+      Redis.del("_dau.#{date}.#{app_id}.ios")
+      Redis.del("_dau.#{date}.#{app_id}.android")
+      Redis.del("_danu.#{date}.#{app_id}.ios")
+      Redis.del("_danu.#{date}.#{app_id}.android")
+      Redis.del("_dapu.#{date}.#{app_id}.ios")
+      Redis.del("_dapu.#{date}.#{app_id}.android")
+      Redis.del("_totalfee.#{date}.#{app_id}.ios")
+      Redis.del("_totalfee.#{date}.#{app_id}.android")
+    end)
 
     conn |> json(%{success: true, message: "done"})
   end

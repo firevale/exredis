@@ -380,14 +380,10 @@ defmodule Acs.Plugs do
           nil -> _response_admin_access_failed(conn)
 
           %RedisUser{} = user ->
-            query = from au in AdminUser,
-                    select: count(au.id),
-                    where: au.user_id == ^(user.id),
-                    where: au.active == true
-
-            case Repo.one!(query) do
-              0 -> _response_admin_access_failed(conn)
-              _ -> conn |> put_private(:acs_admin_id, user.id)
+            if RedisAdminUser.is_admin(user_id) do 
+              conn |> put_private(:acs_admin_id, user.id)
+            else
+              _response_admin_access_failed(conn)
             end
         end
     end
@@ -469,7 +465,10 @@ defmodule Acs.Plugs do
 
           %Forum{} = forum ->
             app_id = forum.app_id
-            admins = Repo.one(from au in AdminUser, where: au.user_id == ^user_id and (au.admin_level == 1 or (au.admin_level == 2 and au.app_id == ^app_id)), select: count(1)) || 0
+            admins = Repo.one(from au in AdminUser, 
+              where: au.user_id == ^user_id,
+              where: (au.admin_level == 1 or (au.admin_level == 2 and au.app_id == ^app_id)), 
+              select: count(1)) || 0
             case admins do
               0 -> 
                 # check is forum manager
@@ -478,7 +477,8 @@ defmodule Acs.Plugs do
                   %ForumManager{} -> conn |> put_private(:acs_is_forum_admin, true)
                 end
 
-              _ -> conn |> put_private(:acs_is_forum_admin, true)
+              _ -> 
+                conn |> put_private(:acs_is_forum_admin, true)
             end
         end
      end

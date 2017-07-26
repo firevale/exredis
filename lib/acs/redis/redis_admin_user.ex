@@ -30,6 +30,28 @@ defmodule Acs.RedisAdminUser do
     end)
   end
 
+  def is_admin(user_id) do 
+    Cachex.get!(:default, "acs.isadminuser.#{user_id}", fallback: fn(redis_key) -> 
+      case Redis.get(redis_key) do 
+        :undefined ->
+            query = from au in AdminUser,
+                    select: count(au.id),
+                    where: au.user_id == ^user_id,
+                    where: au.active == true
+
+            case Repo.one!(query) do
+              0 -> 
+                {:ignore, false}
+              _ -> 
+                Redis.setex(redis_key, 3600, "true")
+                {:commit, true}
+            end
+        _ ->
+          {:commit, true}
+      end
+    end)
+  end
+
   # only when admin_level > 1
   def get_admin_appids(admin_user_id)  when is_integer(admin_user_id) do
     query = 

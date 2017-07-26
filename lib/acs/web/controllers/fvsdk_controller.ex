@@ -21,7 +21,6 @@ defmodule Acs.Web.FVSdkController do
     device_model = case get_req_header(conn, "acs-device-model") do 
       [] -> nil
       [v | _] -> 
-        d "device_model: #{v}"
         case get_req_header(conn, "acs-device-memory") do 
           [] -> :ok
           [mem] ->

@@ -76,7 +76,7 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
 
-      incr_online_counter(app_id, device_id, user_id, platform, zone_id)
+      incr_online_counter(app_id, device_id, user_id, platform)
 
       today = Timex.local |> Timex.to_date
       Redis.sadd("_dau.#{today}.#{app_id}.#{platform}", user_id)
@@ -123,9 +123,6 @@ defmodule Acs.Web.AppChannel do
     info "receive reset channel request with payload: #{inspect payload}"
     Logger.metadata(user_id: user_id)
 
-    decr_zonline_counter(app_id, device_id, user_id, last_zone_id)
-    incr_zonline_counter(app_id, device_id, user_id, zone_id)
-
     do_stat(socket)
 
     today = Timex.local() |> Timex.to_date()
@@ -158,8 +155,6 @@ defmodule Acs.Web.AppChannel do
                                                 platform: platform}} =  socket) do
     info "receive update game data request with payload: #{inspect payload}"
 
-    incr_zonline_counter(app_id, device_id, user_id, zone_id)
-
     socket = init_stat_data(%{"app_user_id" => app_user_id,
                               "app_user_name" => app_user_name,
                               "app_user_level" => app_user_level,
@@ -188,7 +183,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform, 
     zone_id: zone_id}} = socket) do
     info "channel paused, assigns: #{inspect socket.assigns}"
-    decr_online_counter(app_id, device_id, platform, zone_id)
+    decr_online_counter(app_id, device_id, platform)
     do_stat(socket) 
     {:noreply, socket |> assign(:active, false) }
   end
@@ -209,7 +204,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform, 
     zone_id: zone_id}} = socket) do
     info "channel paused, assigns: #{inspect socket.assigns}"
-    decr_online_counter(app_id, device_id, platform, zone_id)
+    decr_online_counter(app_id, device_id, platform)
     {:noreply, socket |> assign(:active, false) }
   end
   def handle_in("pause", _payload, %{assigns: %{
@@ -226,7 +221,6 @@ defmodule Acs.Web.AppChannel do
     {:noreply, socket}
   end
 
-
   def handle_in("resume", _payload, %{assigns: %{
     active: false, 
     device_id: device_id, 
@@ -235,7 +229,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform, 
     zone_id: zone_id}} = socket) do
     info "channel resume, assigns: #{inspect socket.assigns}"
-    incr_online_counter(app_id, device_id, user_id, platform, zone_id)
+    incr_online_counter(app_id, device_id, user_id, platform)
     {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
                       |> assign(:active, true)
     }
@@ -259,13 +253,6 @@ defmodule Acs.Web.AppChannel do
 
   def handle_in(_command, _payload, socket), do: {:noreply, socket}
 
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (weblogs:lobby).
-  # def handle_in("shout", payload, socket) do
-  #   broadcast socket, "shout", payload
-  #   {:noreply, socket}
-  # end
-
   def terminate(reason, %{assigns: %{
     active: true, 
     device_id: device_id, 
@@ -273,7 +260,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform,
     zone_id: zone_id}} = socket) do
     info "active channel terminate with reason: #{inspect socket.assigns}"
-    decr_online_counter(app_id, device_id, platform, zone_id)
+    decr_online_counter(app_id, device_id, platform)
     do_stat(socket)
     :ok
   end
@@ -294,7 +281,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform,
     zone_id: zone_id}} = socket) do
     info "inactive channel terminate with reason: #{inspect socket.assigns}"
-    decr_online_counter(app_id, device_id, platform, zone_id)
+    decr_online_counter(app_id, device_id, platform)
     :ok
   end
   def terminate(reason, %{assigns: %{
@@ -421,17 +408,6 @@ defmodule Acs.Web.AppChannel do
     false
   end
 
-  defp incr_zonline_counter(app_id, device_id, user_id, zone_id) do 
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
-    Redis.hset(online_redis_key, device_id, user_id)
-  end
-  defp decr_zonline_counter(app_id, device_id, user_id, zone_id) do 
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
-  end
-
   defp incr_online_counter(_app_id, _device_id, "", _platform), do: :ok
   defp incr_online_counter(app_id, device_id, user_id, platform) do 
     Redis.sadd("online_apps", app_id)
@@ -441,31 +417,11 @@ defmodule Acs.Web.AppChannel do
     online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
     Redis.hset(online_redis_key, device_id, user_id)
   end
-  defp incr_online_counter(_app_id, _device_id, "", _platform, _zone_id), do: :ok
-  defp incr_online_counter(app_id, device_id, user_id, platform, zone_id) do 
-    Redis.sadd("online_apps", app_id)
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "online_counter.#{app_id}.#{node_name}"
-    Redis.hset(online_redis_key, device_id, user_id)
-    online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
-    Redis.hset(online_redis_key, device_id, user_id)
-    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
-    Redis.hset(online_redis_key, device_id, user_id)
-  end
   defp decr_online_counter(app_id, device_id, platform) do 
     node_name = System.get_env("ACS_NODE_NAME")
     online_redis_key = "online_counter.#{app_id}.#{node_name}"
     Redis.hdel(online_redis_key, device_id)
     online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
-  end
-  defp decr_online_counter(app_id, device_id, platform, zone_id) do 
-    node_name = System.get_env("ACS_NODE_NAME")
-    online_redis_key = "online_counter.#{app_id}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
-    online_redis_key = "ponline_counter.#{app_id}.#{platform}.#{node_name}"
-    Redis.hdel(online_redis_key, device_id)
-    online_redis_key = "zonline_counter.#{app_id}.#{zone_id}.#{node_name}"
     Redis.hdel(online_redis_key, device_id)
   end
 end

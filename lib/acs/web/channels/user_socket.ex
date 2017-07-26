@@ -66,6 +66,6 @@ defmodule Acs.Web.UserSocket do
   #     Acs.Web.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(%{assigns: %{user_id: user_id}}), do: "user_socket:#{user_id}" 
+  def id(%{assigns: %{device_id: device_id}}), do: "user_socket:#{device_id}" 
   def id(_socket), do: nil
 end

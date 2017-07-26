@@ -363,7 +363,7 @@ defmodule Acs.Web.AppChannel do
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
-    if active_seconds > 0 do
+    if active_seconds > 30 do
       utc_now = DateTime.utc_now()
 
       AppUser.changeset(app_user, %{

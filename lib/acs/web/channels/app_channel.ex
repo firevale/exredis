@@ -9,6 +9,8 @@ defmodule Acs.Web.AppChannel do
   alias   Acs.RedisAppUserDailyActivity
   alias   Acs.RedisAppDeviceDailyActivity
 
+  @heartbeart_duration 20000
+
   def join(_, %{"access_token" => ""} = payload, socket) do 
     info "receive bad channel join request, #{inspect payload}"
     {:error, %{reason: "bad request"}}
@@ -34,6 +36,8 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(user_id: user_id)
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
+
+      :timer.send_after(@heartbeart_duration, :heartbeart)
 
       incr_online_counter(app_id, device_id, user_id, platform)
       today = Timex.local |> Timex.to_date
@@ -77,6 +81,8 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(device_id: device_id)
 
       incr_online_counter(app_id, device_id, user_id, platform)
+
+      :timer.send_after(@heartbeart_duration, :heartbeart)
 
       today = Timex.local |> Timex.to_date
       Redis.sadd("_dau.#{today}.#{app_id}.#{platform}", user_id)
@@ -252,6 +258,12 @@ defmodule Acs.Web.AppChannel do
   end
 
   def handle_in(_command, _payload, socket), do: {:noreply, socket}
+
+  def handle_info(:heartbeart, socket) do
+    push(socket, "heartbeart", %{})  
+    :timer.send_after(@heartbeart_duration, :heartbeart)
+    {:noreply, socket}
+  end
 
   def terminate(reason, %{assigns: %{
     active: true, 

@@ -25,7 +25,8 @@ config :acs, Acs.Repo,
   password: "A2m#x@8#Y%jVPv7*",
   database: "acs",
   hostname: "10.10.235.154",
-  pool_size: 10
+  pool_size: 10,
+  log: false
 
 config :acs, Acs.StatsRepo,
   adapter: Ecto.Adapters.MySQL,
@@ -33,7 +34,8 @@ config :acs, Acs.StatsRepo,
   password: "A2m#x@8#Y%jVPv7*",
   database: "acs_stats",
   hostname: "10.10.235.154",
-  pool_size: 10
+  pool_size: 10,
+  log: false
 
 config :acs, :elasticsearch,
   pool: [size: 10, max_overflow: 20],

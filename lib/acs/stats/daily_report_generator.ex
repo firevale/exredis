@@ -2,7 +2,8 @@ defmodule Acs.Stats.DailyReportGenerator do
   @moduledoc """
   The boundary for the Stats system.
   """
-
+  use Timex
+  use LogAlias
   import Ecto.Query, warn: false
 
   alias Acs.StatsRepo
@@ -15,15 +16,18 @@ defmodule Acs.Stats.DailyReportGenerator do
   alias Acs.Stats.AppDevice
   alias Acs.Stats.AppDeviceDailyActivity
 
-  def generate(app_id, date) do 
-   try do 
+  def generate(app_id, date) do
     ~w(ios android all) |> Enum.each(fn(platform) -> 
       _generate(app_id, date, platform)
-    end)
-   catch 
-     t, e ->
-       ChaoxinNotifier.send_text_msg("统计日报表生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
-   end
+    end) 
+  #  try do 
+  #   ~w(ios android all) |> Enum.each(fn(platform) -> 
+  #     _generate(app_id, date, platform)
+  #   end)
+  #  catch 
+  #    t, e ->
+  #      ChaoxinNotifier.send_text_msg("统计日报表生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
+  #  end
   end
 
   defp _generate(app_id, date, platform) do 
@@ -105,38 +109,46 @@ defmodule Acs.Stats.DailyReportGenerator do
 
     dand = Acs.StatsRepo.one(query)
 
-    query = from au in AppUser,
-        right_join: auda in assoc(au, :daily_activities),
+    query = if platform != "all" do 
+      from auda in AppUserDailyActivity,
+        join: au in assoc(auda, :app_user),
+        select: sum(auda.pay_amount),
+        where: au.app_id == ^app_id and auda.date == ^date and au.platform == ^platform
+    else
+      from auda in AppUserDailyActivity,
+        join: au in assoc(auda, :app_user),
         select: sum(auda.pay_amount),
         where: au.app_id == ^app_id and auda.date == ^date
-
-    query = if platform != "all" do 
-      query |> where([au], au.platform == ^platform) 
-    else
-      query
     end
 
-    total_fee = Acs.StatsRepo.one(query)
+    total_fee = Acs.StatsRepo.one(query) || 0
+    total_fee =  total_fee |> to_string |> String.to_integer
+
+    daily_report = %{:app_id => app_id, :date => date, :platform => platform, 
+                    :dau => dau, :danu => danu, :dapu => dapu, :danpu => danpu, 
+                    :dad => dad, :dand => dand, :total_fee => total_fee }
+
+    {:ok, report} = DailyReport.changeset(%DailyReport{}, daily_report) |> Acs.StatsRepo.insert
 
     # user retentions
     ~w(1 2 3 5 7 14 30) |> Enum.each(fn(day) -> 
       
     end)
 
-    # user timings
-    query = from au in AppUser,
-        right_join: auda in assoc(au, :daily_activities),
-        select: auda.active_seconds div 300 as idx, count(au.device_id, :distinct),
-        where: au.app_id == ^app_id and auda.date == ^date,
-        group_by: auda.active_seconds div 300
+    # # user timings
+    # query = from au in AppUser,
+    #     right_join: auda in assoc(au, :daily_activities),
+    #     select: auda.active_seconds div 300 as idx, count(au.device_id, :distinct),
+    #     where: au.app_id == ^app_id and auda.date == ^date,
+    #     group_by: auda.active_seconds div 300
 
-    query = if platform != "all" do 
-      query |> where([au], au.platform == ^platform) 
-    else
-      query
-    end
+    # query = if platform != "all" do 
+    #   query |> where([au], au.platform == ^platform) 
+    # else
+    #   query
+    # end
 
-    user_timings = Acs.StatsRepo.all(query)
+    # user_timings = Acs.StatsRepo.all(query)
 
 
     # {:ok, %{rows: [[danu]]}} = SQL.query(Acs.StatsRepo,  
@@ -147,8 +159,32 @@ defmodule Acs.Stats.DailyReportGenerator do
 
   end
 
-  defp calc_day_retentions(app_id, date, platform, day) do
+  defp calc_day_retentions(app_id, platform, reg_date, day) do
+    {:ok, reg} = Timex.parse(reg_date, "{YYYY}-{0M}-{0D}")
+    {:ok, date} = Timex.format(Timex.add(reg, Duration.from_days(day)), "{YYYY}-{0M}-{0D}")
+
+    query = from auda in AppUserDailyActivity,
+        join: au in assoc(auda, :app_user),
+        select: count(1),
+        where: au.app_id == ^app_id and au.reg_date == ^reg_date and auda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([au], au.platform == ^platform) 
+    else
+      query
+    end
+
+    retentions = Acs.StatsRepo.one(query)
+    # user_Retention = Map.put(user_Retention, :nday, day) |> Map.put(:retention, retentions) |> Map.put(:retention, retentions)
     
+    # case DailyUserRetention.changeset(%DailyUserRetention{}, product_id_info) |> Repo.insert do
+    #   {:ok, new_product_id_info} ->
+    #       RedisApp.refresh(app_id)
+    #     conn |> json(%{success: true, product_id_info: new_product_id_info})
+
+    #   {:error, %{errors: errors}} ->
+    #     conn |> json(%{success: false, message: translate_errors(errors)})
+    # end
 
   end
 

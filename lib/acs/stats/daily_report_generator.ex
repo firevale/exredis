@@ -53,11 +53,102 @@ defmodule Acs.Stats.DailyReportGenerator do
 
     danu = Acs.StatsRepo.one(query)
 
+    query = from au in AppUser,
+        right_join: auda in assoc(au, :daily_activities),
+        select: count(au.user_id, :distinct),
+        where: au.app_id == ^app_id and auda.pay_amount >0 and auda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([au], au.platform == ^platform) 
+    else
+      query
+    end
+
+    dapu = Acs.StatsRepo.one(query)
+
+    query = from au in AppUser,
+        left_join: auda in assoc(au, :daily_activities),
+        select: count(au.user_id, :distinct),
+        where: au.app_id == ^app_id and au.reg_date == ^date and auda.pay_amount >0 and auda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([au], au.platform == ^platform) 
+    else
+      query
+    end
+
+    danpu = Acs.StatsRepo.one(query)
+
+    query = from ad in AppDevice,
+        right_join: adda in assoc(ad, :daily_activities),
+        select: count(ad.device_id, :distinct),
+        where: ad.app_id == ^app_id and adda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([ad], ad.platform == ^platform) 
+    else
+      query
+    end
+
+    dad = Acs.StatsRepo.one(query)
+
+    query = from ad in AppDevice,
+        left_join: adda in assoc(ad, :daily_activities),
+        select: count(ad.device_id, :distinct),
+        where: ad.app_id == ^app_id and ad.reg_date == ^date and adda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([ad], ad.platform == ^platform) 
+    else
+      query
+    end
+
+    dand = Acs.StatsRepo.one(query)
+
+    query = from au in AppUser,
+        right_join: auda in assoc(au, :daily_activities),
+        select: sum(auda.pay_amount),
+        where: au.app_id == ^app_id and auda.date == ^date
+
+    query = if platform != "all" do 
+      query |> where([au], au.platform == ^platform) 
+    else
+      query
+    end
+
+    total_fee = Acs.StatsRepo.one(query)
+
+    # user retentions
+    ~w(1 2 3 5 7 14 30) |> Enum.each(fn(day) -> 
+      
+    end)
+
+    # user timings
+    query = from au in AppUser,
+        right_join: auda in assoc(au, :daily_activities),
+        select: auda.active_seconds div 300 as idx, count(au.device_id, :distinct),
+        where: au.app_id == ^app_id and auda.date == ^date,
+        group_by: auda.active_seconds div 300
+
+    query = if platform != "all" do 
+      query |> where([au], au.platform == ^platform) 
+    else
+      query
+    end
+
+    user_timings = Acs.StatsRepo.all(query)
+
+
     # {:ok, %{rows: [[danu]]}} = SQL.query(Acs.StatsRepo,  
     #   "SELECT count(DISTINCT a0.`app_user_id`) FROM `app_user_daily_activities` AS a0 \
     #     LEFT OUTER JOIN `app_users` AS a1 ON a1.`id` = a0.`app_user_id` \
     #     WHERE (((a1.`app_id` = ?) AND (a1.`reg_date` = ?)) AND (a0.`date` = ?))", 
     #     ["53A993ABE3A1CB110E1DC59AE557F5C9", {2017, 6, 20}, {2017, 6, 20}])   
+
+  end
+
+  defp calc_day_retentions(app_id, date, platform, day) do
+    
 
   end
 

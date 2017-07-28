@@ -37,7 +37,12 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
 
-      :timer.send_after(@heartbeart_duration, :heartbeart)
+      case Map.get(payload, "version") do 
+        x when x in [2, "2"] -> 
+          {:ok, timer} = :timer.send_interval(@heartbeart_duration, :heartbeart)
+        _ -> 
+          :ok
+      end
 
       incr_online_counter(app_id, device_id, user_id, platform)
       today = Timex.local |> Timex.to_date
@@ -53,6 +58,8 @@ defmodule Acs.Web.AppChannel do
                    |> assign(:sdk, sdk)
                    |> assign(:active, true)
                    |> assign(:today, today)
+                   |> assign(:hb_interval, timer)
+                   |> assign(:version, 2)
       }
     else
       error "received unauthorized payload: #{inspect payload}"
@@ -82,7 +89,7 @@ defmodule Acs.Web.AppChannel do
 
       incr_online_counter(app_id, device_id, user_id, platform)
 
-      :timer.send_after(@heartbeart_duration, :heartbeart)
+      # old version client, don't start heartbeart
 
       today = Timex.local |> Timex.to_date
       Redis.sadd("_dau.#{today}.#{app_id}.#{platform}", user_id)
@@ -257,11 +264,30 @@ defmodule Acs.Web.AppChannel do
     {:noreply, socket}
   end
 
+  def handle_in("heartbeart", _payload, %{assigns: %{active: true, version: 2, hb_timeout: nil}} = socket) do 
+    {:noreply, socket}
+  end
+  def handle_in("heartbeart", _payload, %{assigns: %{active: true, version: 2, hb_timeout: timer}} = socket) do 
+    :timer.cancel(timer) 
+    {:noreply, socket |> assign(:hb_timeout, nil)}
+  end
+
   def handle_in(_command, _payload, socket), do: {:noreply, socket}
 
-  def handle_info(:heartbeart, socket) do
+  def handle_info(:heartbeart, %{assigns: %{active: true, version: 2}} = socket) do
     push(socket, "heartbeart", %{})  
-    :timer.send_after(@heartbeart_duration, :heartbeart)
+    {:ok, timer} = :timer.send_after(5000, :heartbeart_timeout)
+    {:noreply, socket |> assign(:hb_timeout, timer)}
+  end
+  def handle_info(:heartbeart, socket) do
+    {:noreply, socket}
+  end
+  def handle_info(:heartbeart_timeout, %{assigns: %{
+    active: true, 
+    version: 2}} = socket) do
+    {:stop, :normal, socket}
+  end
+  def handle_info(:heartbeart_timeout, socket) do
     {:noreply, socket}
   end
 
@@ -274,6 +300,10 @@ defmodule Acs.Web.AppChannel do
     info "active channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform)
     do_stat(socket)
+    case Map.get(socket.assigns, :hb_interval) do 
+      nil -> :do_nothing
+      timer -> :timer.cancel(timer)
+    end
     :ok
   end
   def terminate(reason, %{assigns: %{
@@ -284,6 +314,10 @@ defmodule Acs.Web.AppChannel do
     info "active channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform)
     do_stat(socket)
+    case Map.get(socket.assigns, :hb_interval) do 
+      nil -> :do_nothing
+      timer -> :timer.cancel(timer)
+    end
     :ok
   end
   def terminate(reason, %{assigns: %{
@@ -294,6 +328,10 @@ defmodule Acs.Web.AppChannel do
     zone_id: zone_id}} = socket) do
     info "inactive channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform)
+    case Map.get(socket.assigns, :hb_interval) do 
+      nil -> :do_nothing
+      timer -> :timer.cancel(timer)
+    end
     :ok
   end
   def terminate(reason, %{assigns: %{
@@ -303,10 +341,18 @@ defmodule Acs.Web.AppChannel do
     platform: platform}} = socket) do
     info "inactive channel terminate with reason: #{inspect socket.assigns}"
     decr_online_counter(app_id, device_id, platform)
+    case Map.get(socket.assigns, :hb_interval) do 
+      nil -> :do_nothing
+      timer -> :timer.cancel(timer)
+    end
     :ok
   end
   def terminate(reason, socket) do
     info "channel terminated with: #{inspect socket.assigns}"
+    case Map.get(socket.assigns, :hb_interval) do 
+      nil -> :do_nothing
+      timer -> :timer.cancel(timer)
+    end
     :ok
   end
   

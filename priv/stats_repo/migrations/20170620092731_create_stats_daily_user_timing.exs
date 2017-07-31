@@ -11,5 +11,6 @@ defmodule Acs.Repo.Migrations.CreateAcs.Stats.DailyUserTiming do
     end
 
     create index(:stats_daily_user_timings, [:report_id])
+    create index(:stats_daily_user_timings, [:nmin, :report_id], unique: true)
   end
 end

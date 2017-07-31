@@ -11,5 +11,6 @@ defmodule Acs.Repo.Migrations.CreateAcs.Stats.DailyDeviceTiming do
     end
 
     create index(:stats_daily_device_timings, [:report_id])
+    create index(:stats_daily_device_timings, [:nmin, :report_id], unique: true)
   end
 end

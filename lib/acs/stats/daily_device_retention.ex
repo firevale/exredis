@@ -18,7 +18,7 @@ defmodule Acs.Stats.DailyDeviceRetention do
   @doc false
   def changeset(%DailyDeviceRetention{} = daily_device_retention, attrs) do
     daily_device_retention
-    |> cast(attrs, [:nday, :retention])
-    |> validate_required([:nday, :retention])
+    |> cast(attrs, [:nday, :retention, :report_id])
+    |> validate_required([:nday, :retention, :report_id])
   end
 end

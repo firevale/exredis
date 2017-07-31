@@ -11,5 +11,6 @@ defmodule Acs.Repo.Migrations.CreateAcs.Stats.DailyDeviceRetention do
     end
 
     create index(:stats_daily_device_retentions, [:report_id])
+    create index(:stats_daily_device_retentions, [:nday, :report_id], unique: true)
   end
 end

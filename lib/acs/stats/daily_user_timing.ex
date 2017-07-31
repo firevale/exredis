@@ -16,7 +16,7 @@ defmodule Acs.Stats.DailyUserTiming do
   @doc false
   def changeset(%DailyUserTiming{} = daily_user_timing, attrs) do
     daily_user_timing
-    |> cast(attrs, [:nmin, :counter])
-    |> validate_required([:nmin, :counter])
+    |> cast(attrs, [:nmin, :counter, :report_id])
+    |> validate_required([:nmin, :counter, :report_id])
   end
 end

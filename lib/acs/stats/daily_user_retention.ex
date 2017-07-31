@@ -16,7 +16,7 @@ defmodule Acs.Stats.DailyUserRetention do
   @doc false
   def changeset(%DailyUserRetention{} = daily_retentions, attrs) do
     daily_retentions
-    |> cast(attrs, [:nday, :retention])
-    |> validate_required([:nday, :retention])
+    |> cast(attrs, [:nday, :retention, :report_id])
+    |> validate_required([:nday, :retention, :report_id])
   end
 end

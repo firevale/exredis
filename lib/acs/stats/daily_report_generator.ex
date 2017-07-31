@@ -21,17 +21,14 @@ defmodule Acs.Stats.DailyReportGenerator do
   alias Acs.Stats.DailyDeviceTiming
 
   def generate(app_id, date) do
+   try do 
     ~w(ios android all) |> Enum.each(fn(platform) -> 
       _generate(app_id, date, platform)
-    end) 
-  #  try do 
-  #   ~w(ios android all) |> Enum.each(fn(platform) -> 
-  #     _generate(app_id, date, platform)
-  #   end)
-  #  catch 
-  #    t, e ->
-  #      ChaoxinNotifier.send_text_msg("统计日报表生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
-  #  end
+    end)
+   catch 
+     t, e ->
+       ChaoxinNotifier.send_text_msg("统计日报表生成失败, app_id: #{app_id}, date: #{date}, t: #{inspect t}, e: #{inspect e}")
+   end
   end
 
   defp _generate(app_id, date, platform) do 

@@ -15,29 +15,28 @@ defmodule Acs.WcpLoginCodeResponse do
         case RedisAppWcpConfig.find(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.can_assign_code do 
-              owner = "openid.#{from}"
-              query = from c in AppLoginCode,
-                        select: c,
-                        where: c.owner == ^owner
-
-              case Repo.one(query) do 
-                %AppLoginCode{code: code, owner: ^owner} ->
-                  _build_content(cfg.owned_code_template, code)
-                
-                _ ->
-                  case SQL.query(Repo, "update app_login_codes set owner = ?, \
-                                        assigned_at = ? \
-                                        where app_id = ? \
-                                        and owner is null and user_id is null \
-                                        order by inserted_at limit ?", [owner, DateTime.utc_now(), app_id, 1]) do 
-
-                    {:ok, %{num_rows: 1}} -> 
-                      %{code: code} = Repo.one(query) 
-                      _build_content(cfg.new_code_template, code)
-                  
-                    _ ->
+              case AppLoginCode.find_by_openid(app_id, from) do 
+                nil ->
+                  case Redis.srandmember("_acs.login_codes.available.#{app_id}") do 
+                    :undefined ->
                       cfg.no_code_template || "所有激活码已全部发放完成(默认回复，请在后台编辑此消息)"
+                    
+                    code ->
+                      Redis.srem("_acs.login_codes.available.#{app_id}", code)
+                      Redis.sadd("_acs.login_codes.assigned.#{app_id}", code)
+
+                      AppLoginCode.changeset(%AppLoginCode{}, %{
+                        code: code,
+                        owner: "openid.#{from}",
+                        assigned_at: DateTime.utc_now(),
+                        app_id: app_id
+                      }) |> Repo.insert!
+
+                      _build_content(cfg.new_code_template, code) 
                   end
+
+                code ->
+                  _build_content(cfg.owned_code_template, code)
               end
             else 
               cfg.closed_template || "激活码领取未开启(默认回复，请在后台编辑本消息)"

@@ -21,6 +21,8 @@ defmodule Acs.AppLoginCode do
   require Redis
   require Cachex
   require Poison
+  alias   Acs.Repo
+  import  Ecto.Query
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
@@ -35,8 +37,35 @@ defmodule Acs.AppLoginCode do
   def stats_info(app_id) do 
     Cachex.get!(:default, stats_key(app_id), fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
-        :undefined -> {:commit, refresh_stats_info(app_id)}
-        raw -> {:commit, Poison.decode!(raw, keys: :atoms)}
+        :undefined -> 
+          {:commit, refresh_stats_info(app_id)}
+        raw -> 
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+      end
+    end)
+  end
+
+  def find_by_openid(app_id, openid) do 
+    key = "_acs.login_codes.owns.#{app_id}.#{openid}"
+    Cachex.get!(:default, "_acs.login_codes.owns.#{app_id}.#{openid}", fallback: fn(redis_key) -> 
+      case Redis.get(redis_key) do 
+        :undefined -> 
+          owner = "openid.#{openid}"
+          query = from c in AppLoginCode,
+                    select: c,
+                    where: c.owner == ^owner
+
+          case Repo.one(query) do 
+            %__MODULE__{code: code, owner: ^owner} ->
+              Redis.set(redis_key, code)
+              {:commit, code}
+            
+            _ -> 
+              {:ignore, nil}
+          end
+        
+        code -> 
+          {:commit, code}
       end
     end)
   end
@@ -44,28 +73,26 @@ defmodule Acs.AppLoginCode do
   def refresh_stats_info(app_id) do 
     Cachex.del(:default, stats_key(app_id))
 
+    total = Redis.scard("_acs.login_codes.all.#{app_id}")
+    available = Redis.scard("_acs.login_codes.available.#{app_id}")
+    assigned = Redis.scard("_acs.login_codes.assigned.#{app_id}")
+
     query = from c in __MODULE__,
             select: count(1),
-            where: c.app_id == ^app_id
+            where: c.app_id == ^app_id,
+            where: not is_nil(c.owner),
+            where: not is_nil(c.user_id)
 
-    total = Repo.one(query)
-
-    query1 = query |> where([c], is_nil(c.owner))
-
-    available = Repo.one(query1)
-
-    query2 = query |> where([c], not is_nil(c.owner) and not is_nil(c.user_id))
-
-    used = Repo.one(query2)
+    used = Repo.one(query)
 
     info = %{
       total: total,
       available: available,
-      assigned: total - available,
+      assigned: assigned,
       used: used
     }
 
-    Redis.set(stats_key(app_id), Poison.encode!(info))
+    Redis.set(stats_key(app_id), info |> :erlang.term_to_binary |> Base.encode64)
 
     info
   end
@@ -83,6 +110,31 @@ defmodule Acs.AppLoginCode do
         raw ->
           {:commit, Poison.decode!(raw, keys: :atoms)}
       end
+    end)
+  end
+
+  def import_mysql_codes() do 
+    query = from c in __MODULE__,
+            select: {c.code, c.app_id}
+    
+    Repo.all(query) |> Enum.each(fn({code, app_id}) -> 
+      Redis.sadd("_acs.login_codes.all.#{app_id}", code)
+    end)
+
+    query = from c in __MODULE__,
+            select: {c.code, c.app_id},
+            where: is_nil(c.owner)  
+
+    Repo.all(query) |> Enum.each(fn({code, app_id}) -> 
+      Redis.sadd("_acs.login_codes.available.#{app_id}", code)
+    end)
+
+    query = from c in __MODULE__,
+            select: {c.code, c.app_id},
+            where: not is_nil(c.owner)  
+
+    Repo.all(query) |> Enum.each(fn({code, app_id}) -> 
+      Redis.sadd("_acs.login_codes.assigned.#{app_id}", code)
     end)
   end
 
@@ -152,11 +204,11 @@ defmodule Acs.AppLoginCode do
   end
   
   defp stats_key(app_id) do 
-    "acs.login_code.stats_info.#{app_id}"
+    "_acs.login_code.stats_info.#{app_id}"
   end
 
   defp daily_chart_key(app_id, ndays) do 
-    "acs.login_code.daily_chart_data.#{app_id}.#{ndays}"
+    "_acs.login_code.daily_chart_data.#{app_id}.#{ndays}"
   end
 
 

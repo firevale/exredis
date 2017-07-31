@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <router-link v-if="this.adminLevel==1" class="button is-primary pull-right" style="position: absolute; top: 20px; right: 20px;"
+    <router-link v-if="this.adminLevel == 1" class="button is-primary pull-right" style="position: absolute; top: 20px; right: 20px;"
       :to="{name: 'NewApp'}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.app.add')
       }}

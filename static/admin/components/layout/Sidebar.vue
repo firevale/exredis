@@ -5,8 +5,7 @@
     </p>
     <ul class="menu-list">
       <li v-for="(item, index) in menu" :key="item.path">
-        <router-link :to="item.path" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path"
-          @click.native="toggle(index, item)">
+        <router-link :to="item.path" :exact="true" :aria-expanded="isExpanded(item) ? 'true' : 'false'" v-if="item.path" @click.native="toggle(index, item)">
           <span class="icon is-small"><i :class="['fa', item.meta.icon]"></i></span> {{ item.meta.label || item.name }}
           <span class="icon is-small is-angle" v-if="item.children && item.children.length">
             <i class="fa fa-angle-down"></i>
@@ -69,26 +68,48 @@ export default {
     menu: function() {
       let result = []
       if (this.$route.params.appId) {
-        result = this.menuitems.map(item => {
-          return {
-            name: item.name,
-            path: item.path ? item.path.replace(":appId", this.$route.params.appId) : undefined,
-            meta: item.meta,
-            children: item.children ? item.children.map(subItem => {
-              return {
-                name: subItem.name,
-                path: subItem.path ? subItem.path.replace(":appId", this.$route.params.appId) : undefined,
-                meta: subItem.meta,
+        this.menuitems.forEach(item => {
+          if (this.checkPower(item)) {
+            if (typeof item.children == 'object' && item.children.length > 0) {
+              let children = []
+              item.children.forEach(subItem => {
+                if (this.checkPower(subItem)) {
+                  children.push({
+                    name: subItem.name,
+                    path: subItem.path ? subItem.path.replace(":appId", this.$route.params.appId) : undefined,
+                    meta: subItem.meta,
+                  })
+                }
+              })
+              if (children.length > 0) {
+                result.push({
+                  name: item.name,
+                  path: item.path ? item.path.replace(":appId", this.$route.params.appId) : undefined,
+                  meta: item.meta,
+                  children: children
+                })
+              } else {
+                result.push({
+                  name: item.name,
+                  path: item.path ? item.path.replace(":appId", this.$route.params.appId) : undefined,
+                  meta: item.meta,
+                })
               }
-            }) :undefined,
+            } else {
+              result.push({
+                name: item.name,
+                path: item.path ? item.path.replace(":appId", this.$route.params.appId) : undefined,
+                meta: item.meta,
+              })
+            }
           }
         })
-      } 
-      else {
-        result = this.indexMenuitems
+        return result
       }
-      return result.filter(this.checkPower)
-    }
+      else {
+        return this.indexMenuitems.filter(this.checkPower)
+      }
+    },
   },
 
   methods: {
@@ -105,10 +126,11 @@ export default {
     },
 
     toggle(index, item) {
-      this.expandMenu({
-        index: index,
-        expanded: !item.meta.expanded
-      })
+      // this.expandMenu({
+      //   index: index,
+      //   expanded: !item.meta.expanded
+      // })
+      item.meta.expanded = !item.meta.expanded
     },
 
     shouldExpandMatchItem(route) {

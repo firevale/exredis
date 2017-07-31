@@ -16,26 +16,41 @@ defmodule Acs.Web.Admin.LoginCodesController do
   defp gen_uniq_code(app_id, code_length, n \\ 1) do 
     code = Utils.generate_token(code_length)
 
-    case AppLoginCode.changeset(%AppLoginCode{}, %{app_id: app_id, code: code}) |> Repo.insert do 
-      {:ok, _} -> code_length
-      {:error, %{errors: [code: _]}} ->
+    case Redis.sadd("_acs.login_codes.all.#{app_id}", code) do 
+      1 -> 
+        Redis.sadd("_acs.login_codes.available.#{app_id}", code)
+        code_length
+      0 ->
         if n <= 10 do 
           gen_uniq_code(app_id, code_length, n + 1)
         else
           gen_uniq_code(app_id, code_length + 1, 1)
         end
-      _ -> code_length
     end
   end
 
   def del_codes(conn, %{"app_id" => app_id, "number" => number}) do 
-    Repo.transaction(fn -> 
-      {:ok, _} = SQL.query(Repo, "delete from app_login_codes where app_id = ? \
-        and user_id is null order by assigned_at limit ?", 
-        [app_id, number])
+    number = "#{number}" |> String.to_integer
+    available_number = Redis.scard("_acs.login_codes.available.#{app_id}")
 
-      AppLoginCode.refresh_stats_info(app_id)
-    end)
+    if available_number > number do 
+      removed = Redis.spop("_acs.login_codes.available.#{app_id}", number)
+      Redis.srem("_acs.login_codes.all.#{app_id}", removed)
+    else 
+      removed = Redis.spop("_acs.login_codes.available.#{app_id}", available_number)
+      Redis.srem("_acs.login_codes.all.#{app_id}", removed)
+      assigned_number = Redis.scard("_acs.login_codes.assigned.#{app_id}") 
+      assigned_number = if (number - available_number) <= assigned_number do 
+                          number - available_number
+                        else
+                          assigned_number
+                        end
+      removed = Redis.spop("_acs.login_codes.assigned.#{app_id}", assigned_number)
+      Redis.srem("_acs.login_codes.all.#{app_id}", removed)
+    end
+
+    AppLoginCode.refresh_stats_info(app_id)
+
     conn |> json(%{success: true})
   end
 
@@ -60,10 +75,21 @@ defmodule Acs.Web.Admin.LoginCodesController do
       conn |> json(%{success: false, i18n_message: "error.server.assignTooManyCodes"})
     else 
       now = DateTime.utc_now
+
+      available_number = Redis.scard("_acs.login_codes.available.#{app_id}")
+      number = min(number, available_number)
+      codes = Redis.spop("_acs.login_codes.available.#{app_id}", number)
+      Redis.sadd("_acs.login_codes.assigned.#{app_id}", codes)
+
       Repo.transaction(fn -> 
-        {:ok, _} = SQL.query(Repo, "update app_login_codes set owner = ?, assigned_at = ? where app_id = ? \
-          and owner is null and user_id is null order by inserted_at desc limit ?", 
-          [owner, now, app_id, number])
+        codes |> Enum.each(fn(code) -> 
+          AppLoginCode.changeset(%AppLoginCode{}, %{
+            code: code,
+            owner: owner,
+            assigned_at: now,
+            app_id: app_id
+          }) |> Repo.insert!
+        end)
       end)
 
       query = from c in AppLoginCode,

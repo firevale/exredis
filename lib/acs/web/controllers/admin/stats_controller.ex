@@ -33,16 +33,16 @@ defmodule Acs.Web.Admin.StatsController do
       success: true,
       stats: %{
         dau: %{
-          ios: Redis.scard("_dau.#{today}.#{app_id}.ios") |> String.to_integer,
-          android: Redis.scard("_dau.#{today}.#{app_id}.android") |> String.to_integer,
+          ios: Redis.scard("_dau.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("_dau.#{today}.#{app_id}.android"),
         },
         danu: %{
-          ios: Redis.scard("_danu.#{today}.#{app_id}.ios") |> String.to_integer,
-          android: Redis.scard("_danu.#{today}.#{app_id}.android") |> String.to_integer,
+          ios: Redis.scard("_danu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("_danu.#{today}.#{app_id}.android"),
         },
         dapu: %{
-          ios: Redis.scard("_dapu.#{today}.#{app_id}.ios") |> String.to_integer,
-          android: Redis.scard("_dapu.#{today}.#{app_id}.android") |> String.to_integer,
+          ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
         },
         fee: %{
           ios: case Redis.get("_totalfee.#{today}.#{app_id}.ios") do 

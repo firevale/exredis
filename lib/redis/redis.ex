@@ -118,9 +118,9 @@ defmodule Redis do
   defredis :rpoplpush, [:source, :destination]
   defredis :rpush, [:key, :value]#, ...]
   defredis :rpushx, [:key, :value]#, ...]
-  defredis :sadd, [:key, :member]#, ...]
+  defredis :sadd, [:key, :member], &int_reply/1
   defredis :save, []
-  defredis :scard, [:key]
+  defredis :scard, [:key], &int_reply/1
   defredis [:script, :exists], [:shasum], &multi_int_reply/1
   defredis [:script, :flush], [], &sts_reply/1
   defredis [:script, :kill], []
@@ -143,6 +143,7 @@ defmodule Redis do
   defredis :smove, [:source, :destination, :member]
   defredis :sort, [:key]#, :by_pattern]
   defredis :spop, [:key]
+  defredis :spop, [:key, :count]
   defredis :srandmember, [:key]#, :count]
   defredis :srem, [:key, :member]#, ...]
   defredis :strlen, [:key], &int_reply/1

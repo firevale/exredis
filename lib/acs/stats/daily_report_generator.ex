@@ -10,7 +10,7 @@ defmodule Acs.Stats.DailyReportGenerator do
   alias Ecto.Adapters.SQL
   alias Acs.ChaoxinNotifier
   alias Acs.Stats.DailyReport
-
+  
   alias Acs.Stats.AppUser
   alias Acs.Stats.AppUserDailyActivity
   alias Acs.Stats.AppDevice

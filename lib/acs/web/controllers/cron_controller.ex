@@ -1,11 +1,13 @@
 defmodule Acs.Web.CronController do
   use     Acs.Web, :controller
+  alias   Acs.App
   alias   Acs.PaymentHelper
   alias   Acs.MeishengSmsSender
   alias   Acs.ChaoxinNotifier
   alias   Acs.RedisMall
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
+  alias   Acs.Stats.DailyReportGenerator
   use     Timex
 
   require Redis
@@ -357,5 +359,15 @@ defmodule Acs.Web.CronController do
     end)
 
     conn |> json(%{success: true, message: "done"})
+  end
+
+  def daily_report(conn, params) do 
+    date = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
+    apps = Repo.all(from app in App, select: map(app, [:id]), where: app.active == true)
+    Enum.each(apps, fn(x) -> 
+      DailyReportGenerator.generate(x.id, date)
+    end)
+
+    conn |> json(%{success: true, message: "daily_report done"})
   end
 end

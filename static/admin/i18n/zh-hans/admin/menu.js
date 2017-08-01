@@ -25,4 +25,7 @@ export default {
   wcpMessages: '消息记录',
   wcpRules: '自定义回复',
   wcpMenu: '自定义菜单',
+  stats: '统计分析',
+  statsByDay: '每日统计',
+  statsRetained: '留存统计',
 }

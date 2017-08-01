@@ -37,6 +37,36 @@ const state = {
       },
     },
     {
+      meta: {
+        must: 'restrict_login',
+        icon: 'fa-flag',
+        level: '1,2,',
+        label: i18n.t('admin.menu.stats'),
+        expanded: false,
+      },
+
+      children: [
+        {
+          name: 'StatsByDay',
+          path: '/admin/app/:appId/statsByDay',
+          meta: {
+            icon: 'fa-sun-o',
+            level: '1,2,',
+            label: i18n.t('admin.menu.statsByDay'),
+          },          
+        },
+        {
+          name: 'StatsRetained',
+          path: '/admin/app/:appId/statsRetained',
+          meta: {
+            icon: 'fa-retweet',
+            level: '1,2,',
+            label: i18n.t('admin.menu.statsRetained'),
+          },          
+        },
+      ]
+    },
+    {
       path: '/admin/app/:appId/users',
       meta: {
         icon: 'fa-user',

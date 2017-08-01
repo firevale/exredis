@@ -1,5 +1,5 @@
 <template>
-<div class="tile is-ancestor">
+  <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
@@ -10,8 +10,8 @@
           response: '',
           app_id: this.$route.params.appId,
         }}}">
-            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{
-            $t('admin.wcp.addRule') }}
+            <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.wcp.addRule')
+            }}
           </router-link>
         </div>
       </article>
@@ -129,7 +129,7 @@ export default {
       let result = await this.$acs.deleteRule(rule.id, this.$t('admin.operateSuccess'))
 
       if (result.success) {
-        this.rules.splice(index,1)
+        this.rules.splice(index, 1)
       }
     },
 

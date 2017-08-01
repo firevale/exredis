@@ -24,7 +24,7 @@ const state = {
       path: '/admin/app/:appId/dashboard',
       meta: {
         icon: 'fa-tachometer',
-        level: '1,2,',
+        level: '1,2,3,',
         label: i18n.t('admin.menu.dashboard'),
       },
     },
@@ -108,7 +108,7 @@ const state = {
       meta: {
         must: 'restrict_login',
         icon: 'fa-wechat',
-        level: '1,2,',
+        level: '1,2,3,',
         label: i18n.t('admin.menu.wechatPublic'),
         expanded: false,
       },
@@ -126,21 +126,21 @@ const state = {
           name: 'WcpMenu',
           path: '/admin/app/:appId/wcpMenu',
           meta: {
-            level: '1,2,',
+            level: '1,2,3,',
             label: i18n.t('admin.menu.wcpMenu'),
           }
         }, {
           name: 'WcpRules',
           path: '/admin/app/:appId/wcpRules',
           meta: {
-            level: '1,2,',
+            level: '1,2,3,',
             label: i18n.t('admin.menu.wcpRules'),
           },          
         }, {
           name: 'WcpMessages',
           path: '/admin/app/:appId/wcpMessages',
           meta: {
-            level: '1,2,',
+            level: '1,2,3,',
             label: i18n.t('admin.menu.wcpMessages'),
           },          
         },
@@ -150,7 +150,7 @@ const state = {
       path: '/admin/app/:appId/orders',
       meta: {
         icon: 'fa-money',
-        level: '1,2,',
+        level: '1,2,3,',
         label: i18n.t('admin.menu.orderManage'),
       },
     },

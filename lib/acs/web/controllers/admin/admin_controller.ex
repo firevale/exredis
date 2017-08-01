@@ -12,9 +12,9 @@ defmodule Acs.Web.AdminController do
             where: app.active == true,
             select: map(app, [:id, :name, :icon])
     query =
-      if admin_level >1  do
+      if admin_level > 1  do
         appids = RedisAdminUser.get_admin_appids(user_id)
-        where(query,[app], app.id in(^appids))
+        where(query, [app], app.id in (^appids))
       else
         query
       end

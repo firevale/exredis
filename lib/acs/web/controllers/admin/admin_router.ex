@@ -83,7 +83,7 @@ defmodule Acs.Web.AdminRouter do
     end
 
     scope "/user" do
-      pipe_through :admin_app
+      pipe_through :admin_customer_service
       post  "/search_users", UserController, :search_users
 
       post  "/add_user", AdminUserController, :add_user
@@ -106,7 +106,7 @@ defmodule Acs.Web.AdminRouter do
     end
 
     scope "/chart" do 
-      pipe_through :admin_app
+      pipe_through :admin_customer_service
 
       post  "/onlines", Admin.StatsController, :onlines
       post  "/brief_stats", Admin.StatsController, :brief_stats
@@ -114,7 +114,7 @@ defmodule Acs.Web.AdminRouter do
     end
 
     scope "/wcp" do 
-      pipe_through :admin_app
+      pipe_through :admin_customer_service
 
       post  "/add_wcp_empty_params", AdminWcpController, :add_wcp_empty_params
       post  "/update_wcp_params", AdminWcpController, :update_wcp_params 

@@ -35,4 +35,6 @@ export default {
   WcpRules: '微信公众号--自定义回复',
   WcpMenu: '微信公众号--自定义菜单',
   WcpEditRule: '编辑自定义回复',
+  StatsByDay: '每日统计',
+  StatsRetained: '留存统计',
 }

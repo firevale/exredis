@@ -115,6 +115,16 @@ export default new Router({
           path: 'wcpMenu',
           component: require('../views/app/wechatPub/customMenu')
         },
+        {
+          name: 'StatsByDay',
+          path: 'statsByDay',
+          component: require('../views/app/stats/statsByDay')
+        },
+        {
+          name: 'StatsRetained',
+          path: 'statsRetained',
+          component: require('../views/app/stats/statsRetained')
+        }
       ],
     }, {
       path: '*',

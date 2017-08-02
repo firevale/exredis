@@ -144,7 +144,7 @@ export default {
 
     getStatsByDay: async function() {
       let result = await this.$acs.getStatsByDay({
-        date: this.date ? "" : this.date.Format("yyyy-MM-dd")
+        date: this.date ? this.date.Format("yyyy-MM-dd") : ""
       })
 
       if (result.success && result.reports) {
@@ -155,7 +155,7 @@ export default {
 
     getUserTimingByDay: async function() {
       let result = await this.$acs.getUserTimingByDay({
-        date: this.date ? "" : this.date.Format("yyyy-MM-dd")
+        date: this.date ? this.date.Format("yyyy-MM-dd") : ""
       })
 
       if (result.success && result.timing) {

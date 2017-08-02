@@ -1,22 +1,23 @@
 <template>
   <div class=" mod-body">
     <div class="toolbar" style="margin-bottom:1rem;">
-      <el-radio-group v-model="platform">
+      <el-radio-group v-model="platform" @change="changePlatform">
         <el-radio-button label="all">全部</el-radio-button>
         <el-radio-button label="ios">iOS</el-radio-button>
         <el-radio-button label="android">Android</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
-      <el-radio-group v-model="dateType">
+      <el-radio-group v-model="dateType" @change="changeDateType">
         <el-radio-button label="week">周</el-radio-button>
         <el-radio-button label="month">月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;"></span>
-      <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围">
+      <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围"
+        @change="changeDateRange">
       </el-date-picker>
     </div>
-    <table id=" retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
+    <table id="retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
       <thead>
         <tr>
           <th style="width:150px">首次使用时间</th>
@@ -25,39 +26,15 @@
         </tr>
         <tr id="daily_after_period" class="after_period_indicator" style="display: table-row;">
           <th colspan="2"></th>
-          <th> 1天后 </th>
-          <th> 2天后 </th>
-          <th> 3天后 </th>
-          <th> 4天后 </th>
-          <th> 5天后 </th>
-          <th> 6天后 </th>
-          <th> 7天后 </th>
-          <th> 14天后 </th>
-          <th> 30天后 </th>
-        </tr>
-        <tr id="weekly_after_period" class="after_period_indicator hidden" style="display: none;">
-          <th colspan="2"></th>
-          <th> 1周后 </th>
-          <th> 2周后 </th>
-          <th> 3周后 </th>
-          <th> 4周后 </th>
-          <th> 5周后 </th>
-          <th> 6周后 </th>
-          <th> 7周后 </th>
-          <th> 8周后 </th>
-          <th> 9周后 </th>
-        </tr>
-        <tr id="monthly_after_period" class="after_period_indicator hidden" style="display: none;">
-          <th colspan="2"></th>
-          <th> 1月后 </th>
-          <th> 2月后 </th>
-          <th> 3月后 </th>
-          <th> 4月后 </th>
-          <th> 5月后 </th>
-          <th> 6月后 </th>
-          <th> 7月后 </th>
-          <th> 8月后 </th>
-          <th> 9月后 </th>
+          <th> 1日留存 </th>
+          <th> 2日留存 </th>
+          <th> 3日留存 </th>
+          <th> 4日留存 </th>
+          <th> 5日留存 </th>
+          <th> 6日留存</th>
+          <th> 7日留存</th>
+          <th> 14日留存 </th>
+          <th> 30日留存 </th>
         </tr>
       </thead>
       <tbody id="data-list">
@@ -142,13 +119,14 @@ import {
   TabPane
 } from 'vue-bulma-tabs'
 
+import 'common/js/date'
 import Datepicker from 'vue-bulma-datepicker'
 import basicInfoEditor from 'admin/components/forum/basicInfoEditor'
 import sectionInfoEditor from 'admin/components/forum/sectionInfoEditor'
 
 export default {
   mounted() {
-    this.fetchForum()
+    this.fetchData()
   },
 
   data() {
@@ -156,7 +134,8 @@ export default {
       forum: {},
       platform: 'all',
       dateType: 'week',
-      dateRange: []
+      dateRange: [],
+      reports: []
     }
   },
 
@@ -175,15 +154,43 @@ export default {
   },
 
   methods: {
-    fetchForum: async function() {
-      if (this.app && this.app.has_forum) {
-        let result = await this.$acs.fetchForum({
-          app_id: this.app.id
-        })
+    changePlatform: function(val) {
+      this.fetchData()
+    },
+    changeDateType: function(val) {
+      if (val != 'custom')
+        this.fetchData()
+    },
+    changeDateRange: function(val) {
+      this.fetchData()
+    },
+    fetchData: async function() {
+      switch (this.dateType) {
+        case 'week':
+          var end = new Date();
+          var start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          this.dateRange = [start, end]
+          break
+        case 'month':
+          var end = new Date();
+          var start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          this.dateRange = [start, end]
+          break
+      }
 
-        if (result.success) {
-          this.forum = result.forum
-        }
+      let data = {
+        platform: this.platform,
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd")
+      }
+
+      console.info(data)
+      let result = await this.$acs.getRetentionStats(data)
+      if (result.success) {
+        this.reports = result.reports
+        console.info(this.reports)
       }
     }
   },

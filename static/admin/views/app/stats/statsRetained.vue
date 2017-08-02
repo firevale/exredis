@@ -14,7 +14,7 @@
       </el-radio-group>
       <span style="margin-right:15px;"></span>
       <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围"
-        @change="changeDateRange">
+        :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
     <table id="retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
@@ -83,6 +83,12 @@ export default {
       platform: 'all',
       dateType: 'week',
       dateRange: [],
+      pickerOptions: {
+        disabledDate: function(date) {
+          var now = new Date();
+          return date > new Date().setDate(now.getDate() - 1)
+        }
+      },
       reports: []
     }
   },
@@ -113,6 +119,11 @@ export default {
       this.fetchData()
     },
     calcRate: function(report, nday) {
+      var now = new Date()
+      var start = new Date().setDate(Date.parse(report.date) + nday)
+      if (start > now)
+        return -1
+
       let record = report.user_retentions.find(rpt => rpt.nday == nday)
       if (record && report.danu > 0) {
         return ((record.retention / report.danu) * 100).toFixed(2)
@@ -125,13 +136,15 @@ export default {
         case 'week':
           var end = new Date();
           var start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          start.setDate(start.getDate() - 7);
+          end.setDate(end.getDate() - 1)
           this.dateRange = [start, end]
           break
         case 'month':
           var end = new Date();
           var start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          start.setDate(start.getDate() - 31);
+          end.setDate(end.getDate() - 1)
           this.dateRange = [start, end]
           break
       }
@@ -142,11 +155,9 @@ export default {
         end_date: this.dateRange[1].Format("yyyy-MM-dd")
       }
 
-      console.info(data)
       let result = await this.$acs.getRetentionStats(data)
       if (result.success) {
         this.reports = result.reports
-        console.info(this.reports)
       }
     }
   },
@@ -157,7 +168,7 @@ export default {
     basicInfoEditor,
     sectionInfoEditor,
     'RetentionRow': {
-      template: ' <td :class="colorGrad">{{value}}%</td>',
+      template: ' <td :class="colorGrad">{{value >=0 ? value + "%" : undefined}}</td>',
       props: {
         value: {
           type: null,
@@ -166,13 +177,13 @@ export default {
       },
       computed: {
         colorGrad() {
-          if (this.value >= 80)
+          if (this.value >= 70)
             return 'colorGrad1'
-          else if (this.value >= 60)
+          else if (this.value >= 50)
             return 'colorGrad2'
-          if (this.value >= 40)
+          else if (this.value >= 30)
             return 'colorGrad3'
-          if (this.value >= 20)
+          else if (this.value >= 10)
             return 'colorGrad4'
         }
       }

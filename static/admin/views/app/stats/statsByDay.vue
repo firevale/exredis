@@ -1,5 +1,16 @@
 <template>
   <div class="dashboard">
+    <div class="toolbar" style="margin-bottom:1rem;">
+      <el-radio-group v-model="platform">
+        <el-radio-button label="all">全部</el-radio-button>
+        <el-radio-button label="ios">iOS</el-radio-button>
+        <el-radio-button label="android">Android</el-radio-button>
+      </el-radio-group>
+      <span style="margin-right:15px;margin-right:15px;"></span>
+      <el-date-picker v-model="dateRange" type="daterange" placeholder="选择日期范围">
+      </el-date-picker>
+      <span style="margin-right:15px;"></span>
+    </div>
     <div class="columns">
       <div class="column is-3 ">
         <div class="field has-addons">
@@ -16,14 +27,14 @@
       </div>
       <div class="column is-3 ">
         <datepicker :placeholder="$t('admin.stats.selectDate')" :config="{ dateFormat: 'Y-m-d', static: true }"
-          :value="this.today"></datepicker>
+          :value="this.date"></datepicker>
       </div>
     </div>
     <nav class="level">
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>
-          <p class="title">{{ briefStats ? briefStats.dau.ios + briefStats.dau.android : 0 }}
+          <p class="title">{{ reports ? briefStats.dau.ios + briefStats.dau.android : 0 }}
             <sub>[ios: {{ briefStats ? briefStats.dau.ios : 0  }}, android: {{ briefStats ? briefStats.dau.android : 0 }}]</sub>
           </p>
         </div>
@@ -78,6 +89,14 @@
           </p>
         </div>
       </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">&nbsp;</p>
+          <p class="title">{{ 0 }}
+            <sub>[ios: 0, android: 0]</sub>
+          </p>
+        </div>
+      </div>
     </nav>
     <article class="tile box chart">
       <line-chart ref="chart" :options="options" :width="'100%'"></line-chart>
@@ -99,29 +118,38 @@ export default {
         pointDot: false,
         pointDotRadius: 0,
       },
-      today: ""
+      date: "",
+      reports: [],
+      timing: [],
+      platform: 'all',
     }
   },
 
   mounted: function() {
-    this.getBriefStats()
-    this.getOnlineChart()
+    this.getStatsByDay()
+    this.getUserTimingByDay()
   },
 
   methods: {
-    getOnlineChart: async function() {
-      let result = await this.$acs.getOnlineChart(this.$route.params.appId)
+    getStatsByDay: async function() {
+      let result = await this.$acs.getStatsByDay({
+        date: this.date
+      })
 
-      if (result.success && result.chart.labels.length > 0 && this.$refs.chart) {
-        this.$refs.chart.updateChart(result.chart)
+      if (result.success) {
+        this.reports = result.reports
+        this.date = result.date
       }
     },
 
-    getBriefStats: async function() {
-      let result = await this.$acs.getBriefStats(this.$route.params.appId)
+    getUserTimingByDay: async function() {
+      let result = await this.$acs.getUserTimingByDay({
+        date: this.date
+      })
 
       if (result.success) {
-        this.setAppBriefStats(result.stats)
+        this.timing = result.timing
+        this.date = result.date
       }
     }
   },

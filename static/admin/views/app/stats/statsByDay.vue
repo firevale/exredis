@@ -7,59 +7,40 @@
         <el-radio-button label="android">Android</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
-      <el-date-picker v-model="dateRange" type="daterange" placeholder="选择日期范围">
+      <el-date-picker v-model="date" :editable="false" type="date" :placeholder="$t('admin.stats.selectDate')">
       </el-date-picker>
       <span style="margin-right:15px;"></span>
-    </div>
-    <div class="columns">
-      <div class="column is-3 ">
-        <div class="field has-addons">
-          <p class="control">
-            <a class="button is-primary">全部</a>
-          </p>
-          <p class="control">
-            <a class="button">iOS</a>
-          </p>
-          <p class="control">
-            <a class="button">Android</a>
-          </p>
-        </div>
-      </div>
-      <div class="column is-3 ">
-        <datepicker :placeholder="$t('admin.stats.selectDate')" :config="{ dateFormat: 'Y-m-d', static: true }"
-          :value="this.date"></datepicker>
-      </div>
     </div>
     <nav class="level">
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>
-          <p class="title">{{ reports ? briefStats.dau.ios + briefStats.dau.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.dau.ios : 0  }}, android: {{ briefStats ? briefStats.dau.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].dau : 0 }}
+            <sub>[ios: {{ reports ? reports[2].dau : 0  }}, android: {{ reports ? reports[1].dau : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.danu') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].danu : 0 }}
+            <sub>[ios: {{ reports ? reports[2].danu : 0  }}, android: {{ reports ? reports[1].danu : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dapu') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].dapu : 0 }}
+            <sub>[ios: {{ reports ? reports[2].dapu : 0  }}, android: {{ reports ? reports[1].dapu : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.danpu') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].danpu : 0 }}
+            <sub>[ios: {{ reports ? reports[2].danpu : 0  }}, android: {{ reports ? reports[1].danpu : 0 }}]</sub>
           </p>
         </div>
       </div>
@@ -68,24 +49,24 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dad') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].dad : 0 }}
+            <sub>[ios: {{ reports ? reports[2].dad : 0  }}, android: {{ reports ? reports[1].dad : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dand') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].dand : 0 }}
+            <sub>[ios: {{ reports ? reports[2].dand : 0  }}, android: {{ reports ? reports[1].dand : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.totalFee') }}</p>
-          <p class="title">{{ briefStats ? (briefStats.fee.ios + briefStats.fee.android) / 100 : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.fee.ios / 100 : 0  }}, android: {{ briefStats ? briefStats.fee.android / 100 : 0 }}]</sub>
+          <p class="title">{{ reports ? reports[0].total_fee : 0 }}
+            <sub>[ios: {{ reports ? reports[2].total_fee : 0  }}, android: {{ reports ? reports[1].total_fee : 0 }}]</sub>
           </p>
         </div>
       </div>
@@ -99,18 +80,28 @@
       </div>
     </nav>
     <article class="tile box chart">
-      <line-chart ref="chart" :options="options" :width="'100%'"></line-chart>
+      <bar-chart ref="chart" :options="options" :width="'100%'"></bar-chart>
     </article>
   </div>
 </template>
 <script>
 import Datepicker from 'vue-bulma-datepicker'
-import LineChart from 'admin/components/chart/line3'
+import BarChart from 'admin/components/chart/bar'
 
 export default {
 
   data() {
     return {
+      barData: {
+        labels: ['0-5分钟', '5-10分钟', '10-15分钟', '15-20分钟', '20-25分钟', '25-30分钟', '30-35分钟',
+          '35-40分钟', '40-45分钟',
+          '45-50分钟', '50-55分钟', '55-60分钟', '60分钟以上'
+        ],
+        datasets: [{
+          label: "在线时长统计",
+          data: this.currentTiming,
+        }]
+      },
       options: {
         segmentShowStroke: false,
         responsive: true,
@@ -119,8 +110,9 @@ export default {
         pointDotRadius: 0,
       },
       date: "",
-      reports: [],
-      timing: [],
+      currentTiming: [],
+      reports: null,
+      timing: null,
       platform: 'all',
     }
   },
@@ -136,7 +128,7 @@ export default {
         date: this.date
       })
 
-      if (result.success) {
+      if (result.success && result.reports) {
         this.reports = result.reports
         this.date = result.date
       }
@@ -147,15 +139,26 @@ export default {
         date: this.date
       })
 
-      if (result.success) {
+      if (result.success && result.timing) {
         this.timing = result.timing
         this.date = result.date
+        switch (this.platform) {
+          case 'all':
+            this.currentTiming = this.timing[0]
+            break;
+          case 'android':
+            this.currentTiming = this.timing[1]
+            break;
+          default:
+            this.currentTiming = this.timing[2]
+        }
+        this.$refs.chart.updateChart(this.barData)
       }
     }
   },
 
   components: {
-    LineChart,
+    BarChart,
     Datepicker
   }
 }

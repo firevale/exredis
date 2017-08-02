@@ -11,6 +11,8 @@ import Vuelidate from 'vuelidate'
 import VueDragula from 'vue-dragula'
 import ToggleButton from 'vue-js-toggle-button'
 import VueClipboard from 'vue-clipboard2'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
 
 import App from './App.vue'
 import router from './router'
@@ -34,6 +36,7 @@ Vue.use(VueDragula)
 Vue.use(VueQuillEditor)
 Vue.use(ToggleButton)
 Vue.use(VueClipboard)
+Vue.use(ElementUI)
 
 axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 

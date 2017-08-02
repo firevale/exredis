@@ -1,49 +1,22 @@
 <template>
-  <div class="box mod-body">
-    <div class="columns">
-      <div class="column is-3 ">
-        <div class="field has-addons">
-          <p class="control">
-            <a class="button is-primary">全部</a>
-          </p>
-          <p class="control">
-            <a class="button">iOS</a>
-          </p>
-          <p class="control">
-            <a class="button">
-      Android
-    </a>
-          </p>
-        </div>
-      </div>
-      <div class="column is-2">
-        <div class="field has-addons ">
-          <p class="control">
-            <a class="button is-primary">周</a>
-          </p>
-          <p class="control">
-            <a class="button">月</a>
-          </p>
-          <p class="control">
-            <a class="button">
-      自定义
-    </a>
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="field has-addons ">
-          <p class="control">
-            <datepicker :placeholder="开始时间" :config="{ dateFormat: 'Y-m-d', static: true }" :value="this.today"></datepicker>
-          </p>
-          <p class="control"> ~ </p>
-          <p class="control">
-            <datepicker :placeholder="结束时间" :config="{ dateFormat: 'Y-m-d', static: true }" :value="this.today"></datepicker>
-          </p>
-        </div>
-      </div>
+  <div class=" mod-body">
+    <div class="toolbar" style="margin-bottom:1rem;">
+      <el-radio-group v-model="platform">
+        <el-radio-button label="all">全部</el-radio-button>
+        <el-radio-button label="ios">iOS</el-radio-button>
+        <el-radio-button label="android">Android</el-radio-button>
+      </el-radio-group>
+      <span style="margin-right:15px;margin-right:15px;"></span>
+      <el-radio-group v-model="dateType">
+        <el-radio-button label="week">周</el-radio-button>
+        <el-radio-button label="month">月</el-radio-button>
+        <el-radio-button label="custom">自定义</el-radio-button>
+      </el-radio-group>
+      <span style="margin-right:15px;"></span>
+      <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围">
+      </el-date-picker>
     </div>
-    <table id="retention-table" class="data-load" width="100%" border="0" cellspacing="0">
+    <table id=" retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
       <thead>
         <tr>
           <th style="width:150px">首次使用时间</th>
@@ -181,6 +154,9 @@ export default {
   data() {
     return {
       forum: {},
+      platform: 'all',
+      dateType: 'week',
+      dateRange: []
     }
   },
 
@@ -222,6 +198,10 @@ export default {
 }
 </script>
 <style lang="scss">
+.box {
+  padding: 0!important;
+}
+
 .columns:not(:last-child) {
   margin-bottom: 0 !important;
 }

@@ -106,7 +106,7 @@ defmodule Acs.Web.Admin.StatsController do
     date = case params["date"] do
       nil -> yesterday
       ""  -> yesterday
-      _  -> params["date"]
+      _  -> params["date"] 
     end
     
     query = from dut in DailyUserTiming,

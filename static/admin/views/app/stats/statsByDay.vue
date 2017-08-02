@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard">
     <div class="toolbar" style="margin-bottom:1rem;">
-      <el-radio-group v-model="platform">
+      <el-radio-group v-model="platform" @change="changePlatform">
         <el-radio-button label="all">全部</el-radio-button>
         <el-radio-button label="ios">iOS</el-radio-button>
         <el-radio-button label="android">Android</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
-      <el-date-picker v-model="date" :editable="false" type="date" :placeholder="$t('admin.stats.selectDate')">
+      <el-date-picker v-model="date" :editable="false" type="date" @change="changeDate" :placeholder="$t('admin.stats.selectDate')">
       </el-date-picker>
       <span style="margin-right:15px;"></span>
     </div>
@@ -85,6 +85,7 @@
   </div>
 </template>
 <script>
+import 'common/js/date'
 import Datepicker from 'vue-bulma-datepicker'
 import BarChart from 'admin/components/chart/bar'
 
@@ -109,7 +110,7 @@ export default {
         pointDot: false,
         pointDotRadius: 0,
       },
-      date: "",
+      date: null,
       currentTiming: [],
       reports: null,
       timing: null,
@@ -123,35 +124,44 @@ export default {
   },
 
   methods: {
+    changePlatform: function(val) {
+      switch (this.platform) {
+        case 'all':
+          this.currentTiming = this.timing[0]
+          break;
+        case 'android':
+          this.currentTiming = this.timing[1]
+          break;
+        default:
+          this.currentTiming = this.timing[2]
+      }
+    },
+
+    changeDate: function() {
+      this.getStatsByDay()
+      this.getUserTimingByDay()
+    },
+
     getStatsByDay: async function() {
       let result = await this.$acs.getStatsByDay({
-        date: this.date
+        date: this.date ? "" : this.date.Format("yyyy-MM-dd")
       })
 
       if (result.success && result.reports) {
         this.reports = result.reports
-        this.date = result.date
+        this.date = Date.parse(result.date)
       }
     },
 
     getUserTimingByDay: async function() {
       let result = await this.$acs.getUserTimingByDay({
-        date: this.date
+        date: this.date ? "" : this.date.Format("yyyy-MM-dd")
       })
 
       if (result.success && result.timing) {
         this.timing = result.timing
-        this.date = result.date
-        switch (this.platform) {
-          case 'all':
-            this.currentTiming = this.timing[0]
-            break;
-          case 'android':
-            this.currentTiming = this.timing[1]
-            break;
-          default:
-            this.currentTiming = this.timing[2]
-        }
+        this.date = Date.parse(result.date)
+        this.changePlatform()
         this.$refs.chart.updateChart(this.barData)
       }
     }

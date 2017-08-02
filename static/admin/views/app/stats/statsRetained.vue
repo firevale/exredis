@@ -83,8 +83,9 @@ export default {
       dateRange: [],
       pickerOptions: {
         disabledDate: function(date) {
-          var now = new Date();
-          return date > new Date().setTime(now.getTime() - 1)
+          var limitDate = new Date();
+          limitDate.setTime(limitDate.getTime() - 3600 * 1000 * 24)
+          return date > limitDate
         }
       },
       reports: []

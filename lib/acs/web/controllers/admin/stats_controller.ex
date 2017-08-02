@@ -126,7 +126,7 @@ defmodule Acs.Web.Admin.StatsController do
         left_join: user_retentions in assoc(dp, :user_retentions),
         select: map(dp, [:id, :date, :platform, :dau, :danu,
           user_retentions: [:id, :nday, :retention ]]),
-        where:  dp.app_id == "3E4125B15C4FE2AB3BA00CB1DC1A0EE5" and dp.platform == ^platform and dp.date >= ^start_date and dp.date <= ^end_date,
+        where:  dp.app_id == ^app_id and dp.platform == ^platform and dp.date >= ^start_date and dp.date <= ^end_date,
         order_by: [asc: dp.date],
         preload: [user_retentions: user_retentions]
     reports = StatsRepo.all(query)

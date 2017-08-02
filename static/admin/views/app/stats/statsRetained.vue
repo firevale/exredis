@@ -13,7 +13,7 @@
         <el-radio-button label="custom">自定义</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;"></span>
-      <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围"
+      <el-date-picker ref="datePicker" v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围"
         :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
@@ -83,8 +83,9 @@ export default {
       dateRange: [],
       pickerOptions: {
         disabledDate: function(date) {
-          var now = new Date();
-          return date > new Date().setDate(now.getDate() - 1)
+          var limitDate = new Date();
+          limitDate.setTime(limitDate.getTime() - 3600 * 1000 * 24)
+          return date > limitDate
         }
       },
       reports: []
@@ -112,13 +113,15 @@ export default {
     changeDateType: function(val) {
       if (val != 'custom')
         this.fetchData()
+      else
+        this.$refs.datePicker.handleFocus()
     },
     changeDateRange: function(val) {
       this.fetchData()
     },
     calcRate: function(report, nday) {
       var now = new Date()
-      var start = new Date().setDate(Date.parse(report.date) + nday)
+      var start = new Date().setTime(Date.parse(report.date) + 3600 * 1000 * 24 * nday)
       if (start > now)
         return -1
 
@@ -134,15 +137,15 @@ export default {
         case 'week':
           var end = new Date();
           var start = new Date();
-          start.setDate(start.getDate() - 7);
-          end.setDate(end.getDate() - 1)
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          end.setTime(end.getTime() - 3600 * 1000 * 24)
           this.dateRange = [start, end]
           break
         case 'month':
           var end = new Date();
           var start = new Date();
-          start.setDate(start.getDate() - 31);
-          end.setDate(end.getDate() - 1)
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
+          end.setTime(end.getTime() - 3600 * 1000 * 24)
           this.dateRange = [start, end]
           break
       }

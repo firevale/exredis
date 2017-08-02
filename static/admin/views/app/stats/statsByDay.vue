@@ -93,16 +93,6 @@ export default {
 
   data() {
     return {
-      barData: {
-        labels: ['0-5分钟', '5-10分钟', '10-15分钟', '15-20分钟', '20-25分钟', '25-30分钟', '30-35分钟',
-          '35-40分钟', '40-45分钟',
-          '45-50分钟', '50-55分钟', '55-60分钟', '60分钟以上'
-        ],
-        datasets: [{
-          label: "在线时长统计",
-          data: this.currentTiming,
-        }]
-      },
       options: {
         segmentShowStroke: false,
         responsive: true,
@@ -135,6 +125,21 @@ export default {
         default:
           this.currentTiming = this.timing[2]
       }
+
+      var param_str =
+        "'0-5分钟', '5-10分钟', '10-15分钟', '15-20分钟', '20-25分钟', '25-30分钟', '30-35分钟', '35-40分钟', '40-45分钟', '45-50分钟', '50-55分钟', '55-60分钟', '60分钟以上'"
+      var param = param_str.split(',')
+      var datasets = []
+      datasets.push({
+        "label": "在线时长统计",
+        "data": this.currentTiming
+      })
+      var barData = {
+        "labels": param,
+        "datasets": datasets
+      }
+
+      this.$refs.chart.updateChart(barData)
     },
 
     changeDate: function() {
@@ -149,7 +154,8 @@ export default {
 
       if (result.success && result.reports) {
         this.reports = result.reports
-        this.date = Date.parse(result.date)
+        this.date = new Date()
+        this.date.setTime(Date.parse(result.date))
       }
     },
 
@@ -160,9 +166,9 @@ export default {
 
       if (result.success && result.timing) {
         this.timing = result.timing
-        this.date = Date.parse(result.date)
+        this.date = new Date()
+        this.date.setTime(Date.parse(result.date))
         this.changePlatform()
-        this.$refs.chart.updateChart(this.barData)
       }
     }
   },

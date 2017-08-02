@@ -115,11 +115,17 @@ defmodule Acs.Web.Admin.StatsController do
             where: dut.report_id == r.id and r.date == ^date and r.app_id == ^app_id,
             preload: [report: r]
 
-    timing = StatsRepo.all(query)
+    all = StatsRepo.all(query)
+    timing = [_calc_user_timing(all, "all"), _calc_user_timing(all, "android"), _calc_user_timing(all, "ios")]
     conn |> json(%{success: true, timing: timing, date: date})
   end
 
-    def get_stats_retention(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+  defp _calc_user_timing(all, type) do
+    uts = Enum.filter(all,&(&1.report.platform == type))
+    Enum.map(uts, fn(%{counter: k}) -> k end)
+  end
+
+  def get_stats_retention(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                         %{"platform" => platform, "start_date" => start_date, "end_date" => end_date}) do
     query = 
       from dp in DailyReport,

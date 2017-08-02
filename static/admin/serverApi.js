@@ -285,15 +285,23 @@ export default {
       },
 
       getOnlineChart(app_id) {
-        return post('/admin_actions/chart/onlines', {
+        return post('/admin_actions/stats/onlines', {
           app_id
         })
       },
 
       getBriefStats(app_id) {
-        return post('/admin_actions/chart/brief_stats', {
+        return post('/admin_actions/stats/brief_stats', {
           app_id
         })
+      },
+
+      get_stats_by_day(params) {
+        return post('/admin_actions/stats/get_stats_by_day', params)
+      },
+
+      get_user_timing_by_day(params) {
+        return post('/admin_actions/stats/get_user_timing_by_day', params)
       },
 
     }

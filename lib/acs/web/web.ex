@@ -78,6 +78,11 @@ defmodule Acs.Web do
       alias  Acs.Stats.AppDeviceDailyActivity
       alias  Acs.Stats.AppUser
       alias  Acs.Stats.AppUserDailyActivity
+      alias  Acs.Stats.DailyReport
+      alias  Acs.Stats.DailyUserRetention
+      alias  Acs.Stats.DailyUserTiming
+      alias  Acs.Stats.DailyDeviceRetention
+      alias  Acs.Stats.DailyDeviceTiming
       alias  Acs.AppNews
 
       alias  Acs.Question

@@ -105,12 +105,14 @@ defmodule Acs.Web.AdminRouter do
       post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
     end
 
-    scope "/chart" do 
+    scope "/stats" do 
       pipe_through :admin_customer_service
 
       post  "/onlines", Admin.StatsController, :onlines
       post  "/brief_stats", Admin.StatsController, :brief_stats
       post  "/historic_onlines", Admin.StatsController, :historic_onlines
+      post  "/get_stats_by_day", Admin.StatsController, :get_stats_by_day
+      post  "/get_user_timing_by_day", Admin.StatsController, :get_user_timing_by_day
     end
 
     scope "/wcp" do 

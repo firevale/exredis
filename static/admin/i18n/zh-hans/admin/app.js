@@ -10,6 +10,8 @@ export default {
   dad: '日活跃设备',
   danu: '新增用户数',
   dand: '新增设备',
+  dapu: '日付费用户数',
+  danpu: '新增付费用户',
   totalFee: '充值流水',
   paidUserNumber: '付费用户数',
 

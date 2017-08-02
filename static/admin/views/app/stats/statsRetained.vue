@@ -8,8 +8,8 @@
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
       <el-radio-group v-model="dateType" @change="changeDateType">
-        <el-radio-button label="week">周</el-radio-button>
-        <el-radio-button label="month">月</el-radio-button>
+        <el-radio-button label="week">最近一周</el-radio-button>
+        <el-radio-button label="month">最近一月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;"></span>
@@ -38,70 +38,18 @@
         </tr>
       </thead>
       <tbody id="data-list">
-        <tr>
-          <td>2017-07-26</td>
-          <td>83</td>
-          <td class="colorGrad3">30.1 %</td>
-          <td class="colorGrad4">18.1 %</td>
-          <td class="colorGrad4">13.3 %</td>
-          <td class="colorGrad4">19.3 %</td>
-          <td class="colorGrad4">16.9 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-27</td>
-          <td>104</td>
-          <td class="colorGrad3">20.2 %</td>
-          <td class="colorGrad4">13.5 %</td>
-          <td class="colorGrad4">6.7 %</td>
-          <td class="colorGrad4">5.8 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-28</td>
-          <td>79</td>
-          <td class="colorGrad4">19 %</td>
-          <td class="colorGrad4">16.5 %</td>
-          <td class="colorGrad4">19 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-29</td>
-          <td>73</td>
-          <td class="colorGrad3">27.4 %</td>
-          <td class="colorGrad4">19.2 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-30</td>
-          <td>75</td>
-          <td class="colorGrad3">21.3 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
+        <tr v-for="report in reports">
+          <td>{{report.date}}</td>
+          <td>{{report.danu}}</td>
+          <retention-row :value="calcRate(report,1)"> </retention-row>
+          <retention-row :value="calcRate(report,2)"> </retention-row>
+          <retention-row :value="calcRate(report,3)"> </retention-row>
+          <retention-row :value="calcRate(report,4)"> </retention-row>
+          <retention-row :value="calcRate(report,5)"> </retention-row>
+          <retention-row :value="calcRate(report,6)"> </retention-row>
+          <retention-row :value="calcRate(report,7)"> </retention-row>
+          <retention-row :value="calcRate(report,14)"> </retention-row>
+          <retention-row :value="calcRate(report,30)"> </retention-row>
         </tr>
       </tbody>
     </table>
@@ -164,6 +112,14 @@ export default {
     changeDateRange: function(val) {
       this.fetchData()
     },
+    calcRate: function(report, nday) {
+      let record = report.user_retentions.find(rpt => rpt.nday == nday)
+      if (record && report.danu > 0) {
+        return ((record.retention / report.danu) * 100).toFixed(2)
+      } else {
+        return 0
+      }
+    },
     fetchData: async function() {
       switch (this.dateType) {
         case 'week':
@@ -200,7 +156,27 @@ export default {
     TabPane,
     basicInfoEditor,
     sectionInfoEditor,
-    Datepicker,
+    'RetentionRow': {
+      template: ' <td :class="colorGrad">{{value}}%</td>',
+      props: {
+        value: {
+          type: null,
+          default: 0
+        }
+      },
+      computed: {
+        colorGrad() {
+          if (this.value >= 80)
+            return 'colorGrad1'
+          else if (this.value >= 60)
+            return 'colorGrad2'
+          if (this.value >= 40)
+            return 'colorGrad3'
+          if (this.value >= 20)
+            return 'colorGrad4'
+        }
+      }
+    }
   }
 }
 </script>

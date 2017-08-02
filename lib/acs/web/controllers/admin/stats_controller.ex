@@ -119,4 +119,17 @@ defmodule Acs.Web.Admin.StatsController do
     conn |> json(%{success: true, timing: timing, date: date})
   end
 
+    def get_stats_retention(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                        %{"platform" => platform, "start_date" => start_date, "end_date" => end_date}) do
+    query = 
+      from dp in DailyReport,
+        left_join: user_retentions in assoc(dp, :user_retentions),
+        select: map(dp, [:id, :date, :platform, :dau, :danu,
+          user_retentions: [:id, :nday, :retention ]]),
+        where:  dp.app_id == "3E4125B15C4FE2AB3BA00CB1DC1A0EE5" and dp.platform == ^platform and dp.date >= ^start_date and dp.date <= ^end_date,
+        order_by: [asc: dp.date],
+        preload: [user_retentions: user_retentions]
+    reports = StatsRepo.all(query)
+    conn |> json(%{success: true, reports: reports})
+  end
 end

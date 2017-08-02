@@ -69,8 +69,6 @@ import {
 
 import 'common/js/date'
 import Datepicker from 'vue-bulma-datepicker'
-import basicInfoEditor from 'admin/components/forum/basicInfoEditor'
-import sectionInfoEditor from 'admin/components/forum/sectionInfoEditor'
 
 export default {
   mounted() {
@@ -165,8 +163,6 @@ export default {
   components: {
     Tabs,
     TabPane,
-    basicInfoEditor,
-    sectionInfoEditor,
     'RetentionRow': {
       template: ' <td :class="colorGrad">{{value >=0 ? value + "%" : undefined}}</td>',
       props: {

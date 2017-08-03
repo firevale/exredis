@@ -21,8 +21,12 @@ defmodule Acs.AppWcpConfig do
     field :no_code_template, :binary      # 没有激活码模版
     field :closed_template, :binary       # 关闭领取模版
 
-    field :tf_closed_template, :binary           # testflight下载未开启
-    field :new_tf_tester_template, :binary       # 新添加了testflight邮件回复
+    field :download_disabled_template, :binary   # 公众号下载未开启
+    field :android_download_template, :binary    # android 下载
+    field :ios_download_template, :binary        # ios download template
+    field :tf_download_template, :binary         # test flight download template
+    field :new_tf_email_template, :binary        # 新添加了testflight邮件回复
+    field :update_tf_email_template, :binary
     field :accepted_tf_tester_template, :binary  # testflight邮件已添加并激活
     field :tf_email_used_template, :binary       # 电子邮件已经被其他用户使用
     field :tf_tester_full_template, :binary      # 没有testflight配额回复
@@ -40,7 +44,10 @@ defmodule Acs.AppWcpConfig do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:verify_file, :wcp_app_id, :wcp_app_key, :token, :aes_key, :menu, :subscribed_response, :scan_response, 
-                    :default_response, :new_code_template, :owned_code_template, :no_code_template, :closed_template, :app_id])
+                    :default_response, :new_code_template, :owned_code_template, :no_code_template, :closed_template, :app_id,
+                    :download_disabled_template, :android_download_template, :new_tf_email_template, :update_tf_email_template,
+                    :accepted_tf_tester_template, :tf_email_used_template, :tf_tester_full_template, :ios_download_template, 
+                    :tf_download_template])
     |> validate_required([:app_id])
     |> unique_constraint(:wcp_app_id)
   end

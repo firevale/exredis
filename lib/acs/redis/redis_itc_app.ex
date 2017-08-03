@@ -33,14 +33,7 @@ defmodule Acs.RedisItcApp do
 
   def active_itc_app_id_of(app_id) do 
     Cachex.get!(:default, "_acs.itc_active_app.#{app_id}", fallback: fn(redis_key) -> 
-      itc_apps = Cachex.get!(:default, "_acs.itc_apps.#{app_id}", fallback: fn(redis_key) -> 
-        query = from itc in ItcApp,
-                select: itc.itc_app_id,
-                where: itc.active == true
-
-        {:commit, Repo.all(query)}
-      end)
-
+      itc_apps = itc_app_ids_of(app_id)
       case _active_itc_app(itc_apps) do 
         nil -> {:ignore, nil}
         itc_app_id -> 
@@ -59,6 +52,17 @@ defmodule Acs.RedisItcApp do
     else 
       _active_itc_app(rest)  
     end
+  end
+
+  def itc_app_ids_of(app_id) do 
+    Cachex.get!(:default, "_acs.itc_apps.#{app_id}", fallback: fn(redis_key) -> 
+      query = from itc in ItcApp,
+              select: itc.itc_app_id,
+              where: itc.active == true,
+              order_by: itc.id
+
+      {:commit, Repo.all(query)}
+    end)
   end
 
 

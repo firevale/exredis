@@ -243,7 +243,6 @@ defmodule Acs.TestFlight.Worker do
     Path.join(@base_url, "/WebObjects/iTunesConnect.woa/ra/user/externalTesters/#{itc_app_id}/"), 
     [{"Content-Type", "application/json"}]) do 
       {:ok, %{body: body}} ->
-        d "body: #{body}"
         case Poison.decode(body) do 
           {:ok, %{"data" => %{"users" => users}}} ->
             testers = Enum.map(users, &( {&1["emailAddress"]["value"], %{"tester_id" => &1["testerId"], "testing" => &1["testing"]["value"]}} ))

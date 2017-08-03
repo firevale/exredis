@@ -86,19 +86,28 @@ defmodule Acs.Web.Admin.StatsController do
   end
 
   def get_stats_by_day(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
-    {:ok, date} = params["date"] || (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}"))
+    {:ok, yesterday} = (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")) 
+    date = case params["date"] do
+      nil -> yesterday
+      ""  -> yesterday
+      _  -> params["date"]
+    end
 
     query = from dp in DailyReport,
             select: map(dp, [:id, :platform, :dau, :danu, :dapu, :danpu, :dad, :dand, :total_fee]),
             where: dp.date == ^date and dp.app_id == ^app_id
 
-    reports = Repo.all(query)
+    reports = StatsRepo.all(query)
     conn |> json(%{success: true, reports: reports, date: date})
   end
 
   def get_user_timing_by_day(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
-    {:ok, date} = params["date"] || (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}"))
-    platform = params["platform"] || "all"
+    {:ok, yesterday} = (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")) 
+    date = case params["date"] do
+      nil -> yesterday
+      ""  -> yesterday
+      _  -> params["date"] 
+    end
     
     query = from dut in DailyUserTiming,
             join: r in assoc(dut, :report),
@@ -106,8 +115,27 @@ defmodule Acs.Web.Admin.StatsController do
             where: dut.report_id == r.id and r.date == ^date and r.app_id == ^app_id,
             preload: [report: r]
 
-    timing = Repo.all(query)
-    conn |> json(%{success: true, timing: timing, date: date, platform: platform})
+    all = StatsRepo.all(query)
+    timing = [_calc_user_timing(all, "all"), _calc_user_timing(all, "android"), _calc_user_timing(all, "ios")]
+    conn |> json(%{success: true, timing: timing, date: date})
   end
 
+  defp _calc_user_timing(all, type) do
+    uts = Enum.filter(all,&(&1.report.platform == type))
+    Enum.map(uts, fn(%{counter: k}) -> k end)
+  end
+
+  def get_stats_retention(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                        %{"platform" => platform, "start_date" => start_date, "end_date" => end_date}) do
+    query = 
+      from dp in DailyReport,
+        left_join: user_retentions in assoc(dp, :user_retentions),
+        select: map(dp, [:id, :date, :platform, :dau, :danu,
+          user_retentions: [:id, :nday, :retention ]]),
+        where:  dp.app_id == ^app_id and dp.platform == ^platform and dp.date >= ^start_date and dp.date <= ^end_date,
+        order_by: [asc: dp.date],
+        preload: [user_retentions: user_retentions]
+    reports = StatsRepo.all(query)
+    conn |> json(%{success: true, reports: reports})
+  end
 end

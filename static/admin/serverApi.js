@@ -254,7 +254,7 @@ export default {
       getWcpMenu(params) {
         return post('/admin_actions/wcp/get_wcp_menu', params)
       },
-      
+
       updateWcpMenu(params) {
         return post('/admin_actions/wcp/update_wcp_menu', params)
       },
@@ -296,14 +296,16 @@ export default {
         })
       },
 
-      get_stats_by_day(params) {
+      getStatsByDay(params) {
         return post('/admin_actions/stats/get_stats_by_day', params)
       },
 
-      get_user_timing_by_day(params) {
+      getUserTimingByDay(params) {
         return post('/admin_actions/stats/get_user_timing_by_day', params)
       },
-
+      getRetentionStats(params) {
+        return post('/admin_actions/stats/get_stats_retention', params)
+      },
     }
   }
 }

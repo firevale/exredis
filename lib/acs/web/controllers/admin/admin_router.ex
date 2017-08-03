@@ -113,6 +113,7 @@ defmodule Acs.Web.AdminRouter do
       post  "/historic_onlines", Admin.StatsController, :historic_onlines
       post  "/get_stats_by_day", Admin.StatsController, :get_stats_by_day
       post  "/get_user_timing_by_day", Admin.StatsController, :get_user_timing_by_day
+      post  "/get_stats_retention", Admin.StatsController, :get_stats_retention
     end
 
     scope "/wcp" do 

@@ -1,22 +1,23 @@
 <template>
   <div class=" mod-body">
     <div class="toolbar" style="margin-bottom:1rem;">
-      <el-radio-group v-model="platform">
+      <el-radio-group v-model="platform" @change="changePlatform">
         <el-radio-button label="all">全部</el-radio-button>
         <el-radio-button label="ios">iOS</el-radio-button>
         <el-radio-button label="android">Android</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
-      <el-radio-group v-model="dateType">
-        <el-radio-button label="week">周</el-radio-button>
-        <el-radio-button label="month">月</el-radio-button>
+      <el-radio-group v-model="dateType" @change="changeDateType">
+        <el-radio-button label="week">最近一周</el-radio-button>
+        <el-radio-button label="month">最近一月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;"></span>
-      <el-date-picker v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围">
+      <el-date-picker ref="datePicker" v-show="dateType == 'custom'" v-model="dateRange" type="daterange" placeholder="选择日期范围"
+        :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
-    <table id=" retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
+    <table id="retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
       <thead>
         <tr>
           <th style="width:150px">首次使用时间</th>
@@ -25,106 +26,30 @@
         </tr>
         <tr id="daily_after_period" class="after_period_indicator" style="display: table-row;">
           <th colspan="2"></th>
-          <th> 1天后 </th>
-          <th> 2天后 </th>
-          <th> 3天后 </th>
-          <th> 4天后 </th>
-          <th> 5天后 </th>
-          <th> 6天后 </th>
-          <th> 7天后 </th>
-          <th> 14天后 </th>
-          <th> 30天后 </th>
-        </tr>
-        <tr id="weekly_after_period" class="after_period_indicator hidden" style="display: none;">
-          <th colspan="2"></th>
-          <th> 1周后 </th>
-          <th> 2周后 </th>
-          <th> 3周后 </th>
-          <th> 4周后 </th>
-          <th> 5周后 </th>
-          <th> 6周后 </th>
-          <th> 7周后 </th>
-          <th> 8周后 </th>
-          <th> 9周后 </th>
-        </tr>
-        <tr id="monthly_after_period" class="after_period_indicator hidden" style="display: none;">
-          <th colspan="2"></th>
-          <th> 1月后 </th>
-          <th> 2月后 </th>
-          <th> 3月后 </th>
-          <th> 4月后 </th>
-          <th> 5月后 </th>
-          <th> 6月后 </th>
-          <th> 7月后 </th>
-          <th> 8月后 </th>
-          <th> 9月后 </th>
+          <th> 1日留存 </th>
+          <th> 2日留存 </th>
+          <th> 3日留存 </th>
+          <th> 4日留存 </th>
+          <th> 5日留存 </th>
+          <th> 6日留存</th>
+          <th> 7日留存</th>
+          <th> 14日留存 </th>
+          <th> 30日留存 </th>
         </tr>
       </thead>
       <tbody id="data-list">
-        <tr>
-          <td>2017-07-26</td>
-          <td>83</td>
-          <td class="colorGrad3">30.1 %</td>
-          <td class="colorGrad4">18.1 %</td>
-          <td class="colorGrad4">13.3 %</td>
-          <td class="colorGrad4">19.3 %</td>
-          <td class="colorGrad4">16.9 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-27</td>
-          <td>104</td>
-          <td class="colorGrad3">20.2 %</td>
-          <td class="colorGrad4">13.5 %</td>
-          <td class="colorGrad4">6.7 %</td>
-          <td class="colorGrad4">5.8 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-28</td>
-          <td>79</td>
-          <td class="colorGrad4">19 %</td>
-          <td class="colorGrad4">16.5 %</td>
-          <td class="colorGrad4">19 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-29</td>
-          <td>73</td>
-          <td class="colorGrad3">27.4 %</td>
-          <td class="colorGrad4">19.2 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-        </tr>
-        <tr>
-          <td>2017-07-30</td>
-          <td>75</td>
-          <td class="colorGrad3">21.3 %</td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
-          <td class="colorGrad"> </td>
+        <tr v-for="report in reports">
+          <td>{{report.date}}</td>
+          <td>{{report.danu}}</td>
+          <retention-row :value="calcRate(report,1)"> </retention-row>
+          <retention-row :value="calcRate(report,2)"> </retention-row>
+          <retention-row :value="calcRate(report,3)"> </retention-row>
+          <retention-row :value="calcRate(report,4)"> </retention-row>
+          <retention-row :value="calcRate(report,5)"> </retention-row>
+          <retention-row :value="calcRate(report,6)"> </retention-row>
+          <retention-row :value="calcRate(report,7)"> </retention-row>
+          <retention-row :value="calcRate(report,14)"> </retention-row>
+          <retention-row :value="calcRate(report,30)"> </retention-row>
         </tr>
       </tbody>
     </table>
@@ -142,13 +67,12 @@ import {
   TabPane
 } from 'vue-bulma-tabs'
 
+import 'common/js/date'
 import Datepicker from 'vue-bulma-datepicker'
-import basicInfoEditor from 'admin/components/forum/basicInfoEditor'
-import sectionInfoEditor from 'admin/components/forum/sectionInfoEditor'
 
 export default {
   mounted() {
-    this.fetchForum()
+    this.fetchData()
   },
 
   data() {
@@ -156,7 +80,15 @@ export default {
       forum: {},
       platform: 'all',
       dateType: 'week',
-      dateRange: []
+      dateRange: [],
+      pickerOptions: {
+        disabledDate: function(date) {
+          var limitDate = new Date();
+          limitDate.setTime(limitDate.getTime() - 3600 * 1000 * 24)
+          return date > limitDate
+        }
+      },
+      reports: []
     }
   },
 
@@ -175,15 +107,58 @@ export default {
   },
 
   methods: {
-    fetchForum: async function() {
-      if (this.app && this.app.has_forum) {
-        let result = await this.$acs.fetchForum({
-          app_id: this.app.id
-        })
+    changePlatform: function(val) {
+      this.fetchData()
+    },
+    changeDateType: function(val) {
+      if (val != 'custom')
+        this.fetchData()
+      else
+        this.$refs.datePicker.handleFocus()
+    },
+    changeDateRange: function(val) {
+      this.fetchData()
+    },
+    calcRate: function(report, nday) {
+      var now = new Date()
+      var start = new Date().setTime(Date.parse(report.date) + 3600 * 1000 * 24 * nday)
+      if (start > now)
+        return -1
 
-        if (result.success) {
-          this.forum = result.forum
-        }
+      let record = report.user_retentions.find(rpt => rpt.nday == nday)
+      if (record && report.danu > 0) {
+        return ((record.retention / report.danu) * 100).toFixed(2)
+      } else {
+        return 0
+      }
+    },
+    fetchData: async function() {
+      switch (this.dateType) {
+        case 'week':
+          var end = new Date();
+          var start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          end.setTime(end.getTime() - 3600 * 1000 * 24)
+          this.dateRange = [start, end]
+          break
+        case 'month':
+          var end = new Date();
+          var start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
+          end.setTime(end.getTime() - 3600 * 1000 * 24)
+          this.dateRange = [start, end]
+          break
+      }
+
+      let data = {
+        platform: this.platform,
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd")
+      }
+
+      let result = await this.$acs.getRetentionStats(data)
+      if (result.success) {
+        this.reports = result.reports
       }
     }
   },
@@ -191,9 +166,27 @@ export default {
   components: {
     Tabs,
     TabPane,
-    basicInfoEditor,
-    sectionInfoEditor,
-    Datepicker,
+    'RetentionRow': {
+      template: ' <td :class="colorGrad">{{value >=0 ? value + "%" : undefined}}</td>',
+      props: {
+        value: {
+          type: null,
+          default: 0
+        }
+      },
+      computed: {
+        colorGrad() {
+          if (this.value >= 70)
+            return 'colorGrad1'
+          else if (this.value >= 50)
+            return 'colorGrad2'
+          else if (this.value >= 30)
+            return 'colorGrad3'
+          else if (this.value >= 10)
+            return 'colorGrad4'
+        }
+      }
+    }
   }
 }
 </script>

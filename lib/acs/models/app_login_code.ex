@@ -51,7 +51,7 @@ defmodule Acs.AppLoginCode do
       case Redis.get(redis_key) do 
         :undefined -> 
           owner = "openid.#{openid}"
-          query = from c in AppLoginCode,
+          query = from c in __MODULE__,
                     select: c,
                     where: c.owner == ^owner
 

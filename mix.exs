@@ -31,7 +31,7 @@ defmodule Acs.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0-rc"},
+    [{:phoenix, "~> 1.3.0"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_pubsub_redis, "~> 2.1"},
      {:phoenix_ecto, "~> 3.2"},
@@ -66,6 +66,7 @@ defmodule Acs.Mixfile do
      {:exmoji, "~> 0.2"},
      {:distillery, "~> 1.4", runtime: false},
      {:cachex, "~> 2.1"},
+     {:cookie_jar, "~> 1.0"},
     ]
   end
 

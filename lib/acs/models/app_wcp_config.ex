@@ -21,6 +21,12 @@ defmodule Acs.AppWcpConfig do
     field :no_code_template, :binary      # 没有激活码模版
     field :closed_template, :binary       # 关闭领取模版
 
+    field :tf_closed_template, :binary           # testflight下载未开启
+    field :new_tf_tester_template, :binary       # 新添加了testflight邮件回复
+    field :accepted_tf_tester_template, :binary  # testflight邮件已添加并激活
+    field :tf_email_used_template, :binary       # 电子邮件已经被其他用户使用
+    field :tf_tester_full_template, :binary      # 没有testflight配额回复
+
     belongs_to :app, Acs.App, type: :string
 
     timestamps()

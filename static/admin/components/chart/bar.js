@@ -8,7 +8,7 @@ export default Bar.extend({
     width: {
       default: '100%',
       type: String
-    }
+    },
   },
 
   mounted() {

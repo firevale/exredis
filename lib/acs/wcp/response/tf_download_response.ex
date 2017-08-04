@@ -35,7 +35,7 @@ defmodule Acs.WcpTFDownloadResponse do
   end
 
   def is_waiting_email(app_id, open_id) do 
-    Redis.exists("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
+    Redis.exists("_wcp.tfd_wait_email.#{app_id}.#{open_id}") == 1
   end
 
   def build_email_reply(app_id, open_id, email) do 
@@ -44,7 +44,6 @@ defmodule Acs.WcpTFDownloadResponse do
         case RedisAppWcpConfig.find(app_id) do 
           %AppWcpConfig{} = cfg ->
             if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, email) do 
-              Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
               case RedisAppWcpUser.find_by_email(app_id, email) do 
                 %AppWcpUser{openid: ^open_id, tf_email: ^email} -> 
                   cfg.tf_already_invited_template
@@ -84,12 +83,14 @@ defmodule Acs.WcpTFDownloadResponse do
               %AppWcpUser{openid: ^open_id, tf_email: nil, nickname: nickname} = wcp_user ->
                 case TestFlight.invite(app_id, email, nickname) do 
                   {:ok, status} ->
+                    Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)
                     content = String.replace(cfg.new_tf_email_template, "#email", email)
                     Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   {:error, :quata} -> 
+                    Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
 
                   _ ->
@@ -101,6 +102,7 @@ defmodule Acs.WcpTFDownloadResponse do
                 case TestFlight.invite(app_id, email, nickname) do 
                   {:ok, status} ->
                     info "tester #{email} for #{nickname} added, status: #{status}"
+                    Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)
                     content = String.replace(cfg.update_tf_email_template, "#email", email)
@@ -108,6 +110,7 @@ defmodule Acs.WcpTFDownloadResponse do
                     Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   {:error, :quata} -> 
+                    Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
 
                   _ ->

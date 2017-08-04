@@ -49,7 +49,7 @@ defmodule Acs.WcpTFDownloadResponse do
                   cfg.tf_already_invited_template
                 nil ->
                   _invite_user(app_id, open_id, email)
-                  cfg.tf_download_email_received_template
+                  String.replace(cfg.tf_download_email_received_template, "#email", email)
                 _ ->
                   cfg.tf_email_used_template
               end

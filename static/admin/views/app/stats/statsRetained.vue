@@ -53,7 +53,6 @@
         </tr>
       </tbody>
     </table>
-    <div class="wait-load" style="display: none;"><img src="/images/pic/ajax-loader.gif"></div>
   </div>
 </template>
 <script>

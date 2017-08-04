@@ -9,7 +9,6 @@
 *.log
 *.orig
 yarn.lock
-mix.lock
 
 # Generated on crash by the VM
 erl_crash.dump

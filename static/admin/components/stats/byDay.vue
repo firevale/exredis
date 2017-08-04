@@ -87,9 +87,9 @@ import BarChart from 'admin/components/chart/bar'
 
 export default {
   props: {
-    date: {
-      default: '',
-      type: String
+    days: {
+      default: 0,
+      type: Number
     }
   },
 
@@ -106,10 +106,12 @@ export default {
       reports: null,
       timing: null,
       platform: 'all',
+      date: '',
     }
   },
 
   mounted: function() {
+    this.date = new Date().DateAdd('d', this.days).Format("yyyy-MM-dd")
     this.getStatsByDay()
     this.getUserTimingByDay()
   },

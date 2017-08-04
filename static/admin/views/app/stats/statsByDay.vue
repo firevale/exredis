@@ -1,19 +1,13 @@
 <template>
   <div>
-    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
-      <tab-pane icon="fa fa-clone" :label="beforeYesterday">
-        <by-day :date="beforeYesterday"></by-day>
-      </tab-pane>
-      <tab-pane icon="fa fa-clone" :label="yesterday">
-        <by-day :date="yesterday"></by-day>
-      </tab-pane> 
-       <tab-pane icon="fa fa-clone" :label="today">
-        <by-day :date="today"></by-day>
-      </tab-pane> 
-      <!-- <tab-pane icon="fa fa-clone" :label="today">
+    <tabs v-show="tbs" type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
+      <tab-pane icon="fa fa-plus" :label="$t('admin.stats.addTab')">
         <el-date-picker :editable="false" type="date" @change="changeDate" :placeholder="$t('admin.stats.selectDate')">
         </el-date-picker>
-      </tab-pane> -->
+      </tab-pane>
+      <tab-pane :key="tb" v-for="(tb, index) in tbs" icon="fa fa-clone" :label="getTabName(tb)">
+        <by-day :days="tb"></by-day>
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -33,9 +27,7 @@ import byDay from 'admin/components/stats/byDay'
 export default {
   data() {
     return {
-      today: new Date().Format("yyyy-MM-dd"),
-      yesterday: new Date().DateAdd('d', -1).Format("yyyy-MM-dd"),
-      beforeYesterday: new Date().DateAdd('d', -2).Format("yyyy-MM-dd"),
+      tbs: [-2, -1, 0],
     }
   },
 
@@ -52,9 +44,12 @@ export default {
 
   methods: {
     changeDate: function() {
-      // this.getStatsByDay()
-      // this.getUserTimingByDay()
+      this.tbs.push(1)
+      console.log("----------tabs" + this.tbs)
     },
+    getTabName: function(days) {
+      return new Date().DateAdd('d', days).Format("yyyy-MM-dd")
+    }
   },
 }
 </script>

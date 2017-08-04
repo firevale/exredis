@@ -70,6 +70,11 @@ defmodule Acs.AppLoginCode do
     end)
   end
 
+  def clear_stats_cache(app_id) do 
+    Redis.del("_acs.login_code.stats_info.#{app_id}")
+    Cachex.del(:default, "_acs.login_code.stats_info.#{app_id}")
+  end
+
   def refresh_stats_info(app_id) do 
     Cachex.del(:default, stats_key(app_id))
 

@@ -9,8 +9,12 @@ defmodule Acs.TestFlight do
   end
 
   def invite(app_id, email, nickname) do 
-    itc_app_id = RedisItcApp.active_itc_app_id_of(app_id)
-    Worker.add_tester!(itc_app_id, email, nickname)
+    case RedisItcApp.active_itc_app_id_of(app_id) do 
+      nil ->
+        {:error, :quata}
+      itc_app_id ->
+        Worker.add_tester!(itc_app_id, email, nickname)
+    end
   end
 
   def remove(app_id, email) do 

@@ -10,6 +10,7 @@ defmodule Acs.AppWcpUser do
     field :avatar_url, :string
     field :city, :string
     field :country, :string
+    field :tf_email, :string
 
     belongs_to :app, Acs.App, type: :string
 
@@ -23,7 +24,7 @@ defmodule Acs.AppWcpUser do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id])
+    |> cast(params, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :tf_email])
     |> validate_required([:app_id])
   end
 end

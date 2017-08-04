@@ -10,6 +10,9 @@
       <tab-pane icon="fa fa-support" :label="$t('admin.wcp.replyModel')">
         <reply-model-editor></reply-model-editor>
       </tab-pane>
+      <tab-pane icon="fa fa-support" :label="$t('admin.wcp.downloadReply')">
+        <download-reply-editor></download-reply-editor>
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -26,6 +29,7 @@ import {
 import paramsEditor from 'admin/components/wcp/paramsEditor'
 import replyEditor from 'admin/components/wcp/replyEditor'
 import replyModelEditor from 'admin/components/wcp/replyModelEditor'
+import downloadReplyEditor from 'admin/components/wcp/downloadReplyEditor'
 
 export default {
   mounted: async function() {
@@ -38,6 +42,7 @@ export default {
     paramsEditor,
     replyEditor,
     replyModelEditor,
+    downloadReplyEditor,
   },
 
   methods: {

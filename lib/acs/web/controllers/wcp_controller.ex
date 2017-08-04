@@ -7,6 +7,7 @@ defmodule Acs.Web.WcpController do
   alias Acs.AppWcpResponse
   alias Acs.AppWcpMessage
   alias Acs.AppWcpUser
+  alias Acs.RedisAppWcpUser
 
   require Wcp.User
 
@@ -23,7 +24,7 @@ defmodule Acs.Web.WcpController do
 
       case Map.get(user_info, :openid) do 
         ^openid ->
-          case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do 
+          {:ok, wcp_user} = case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do 
             nil -> 
               AppWcpUser.changeset(%AppWcpUser{}, %{
                 openid: user_info.openid,
@@ -46,6 +47,7 @@ defmodule Acs.Web.WcpController do
                 app_id: app_id
               }) |> Repo.update              
           end
+          RedisAppWcpUser.refresh(wcp_user)
         _ ->
           :do_nothing
       end

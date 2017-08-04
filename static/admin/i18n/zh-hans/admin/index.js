@@ -39,6 +39,7 @@ export default {
     appHasMall: '是否启用商城',
     appRestrictLogin: '激活码登录',
     appCanAssignCode: '激活码领取',
+    wcpDownloadEnabled: '公众号下载',
     currency: '商品定价货币',
     chaoxinGroupId: '超信运营群号',
     paymentCallbackUrl: '充值回调地址',

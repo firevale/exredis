@@ -63,6 +63,7 @@ release :acs do
     :exmoji,
     :mix,
     :cachex,
+    :cookie_jar,
   ]
 
   set vm_args: "rel/vm.args"

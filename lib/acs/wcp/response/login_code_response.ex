@@ -9,6 +9,13 @@ defmodule Acs.WcpLoginCodeResponse do
 
   alias   Ecto.Adapters.SQL
 
+  defmodule Scripts do
+    import Redis.Script
+
+    defredis_script :rand_code, file_path: "lua/rand_code.lua"
+  end
+
+
   def build_reply_content(app_id, from) do 
     case RedisApp.find(app_id) do 
       %{} = app ->
@@ -17,14 +24,11 @@ defmodule Acs.WcpLoginCodeResponse do
             if app.can_assign_code do 
               case AppLoginCode.find_by_openid(app_id, from) do 
                 nil ->
-                  case Redis.srandmember("_acs.login_codes.available.#{app_id}") do 
-                    :undefined ->
+                  case Scripts.rand_code([app_id], []) do 
+                    "undefined" ->
                       cfg.no_code_template || "所有激活码已全部发放完成(默认回复，请在后台编辑此消息)"
                     
                     code ->
-                      Redis.srem("_acs.login_codes.available.#{app_id}", code)
-                      Redis.sadd("_acs.login_codes.assigned.#{app_id}", code)
-
                       AppLoginCode.changeset(%AppLoginCode{}, %{
                         code: code,
                         owner: "openid.#{from}",
@@ -32,6 +36,7 @@ defmodule Acs.WcpLoginCodeResponse do
                         app_id: app_id
                       }) |> Repo.insert!
 
+                      AppLoginCode.clear_stats_cache(app_id)
                       _build_content(cfg.new_code_template, code) 
                   end
 

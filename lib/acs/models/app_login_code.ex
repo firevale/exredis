@@ -51,7 +51,7 @@ defmodule Acs.AppLoginCode do
       case Redis.get(redis_key) do 
         :undefined -> 
           owner = "openid.#{openid}"
-          query = from c in AppLoginCode,
+          query = from c in __MODULE__,
                     select: c,
                     where: c.owner == ^owner
 
@@ -68,6 +68,11 @@ defmodule Acs.AppLoginCode do
           {:commit, code}
       end
     end)
+  end
+
+  def clear_stats_cache(app_id) do 
+    Redis.del("_acs.login_code.stats_info.#{app_id}")
+    Cachex.del(:default, "_acs.login_code.stats_info.#{app_id}")
   end
 
   def refresh_stats_info(app_id) do 

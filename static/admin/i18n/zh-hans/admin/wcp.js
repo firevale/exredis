@@ -12,6 +12,20 @@ export default {
   ownedCodeTemplate: '获取已有激活码模版(用户已经获取过激活码时回复内容，输入#code代表激活码)',
   noCodeTemplate: '没有激活码时回复消息',
   closedTemplate: '未开启领取时回复消息',
+
+  download_disabled_template: '公众号下载未开启时回复消息',
+  android_download_template: '点击安卓下载时回复消息',
+  ios_download_template: '点击IOS下载时回复消息',
+  tf_download_template: '点击IOS(TestFlight)下载时回复消息',
+  tf_download_no_login_code_template: 'TestFlight下载时用户没有激活码回复消息',
+  tf_download_email_received_template: '用户点击TestFlight下载后发送email时的回复消息',
+  tf_invalid_email_template: '用户点击TestFlight下载后发送非法email时的回复消息',
+  tf_email_used_template: '用户点击TestFlight下载后添加用户发送的email已经被其他用户使用时回复的消息',
+  tf_already_invited_template: '用户点击TestFlight下载后发送的email已经加过了的时的回复消息',
+  new_tf_email_template: '用户点击TestFlight下载后发送的email被成功添加时的回复消息',
+  tf_invite_failed_template: '用户点击TestFlight下载后添加用户发送的email出错时的回复消息',
+  update_tf_email_template: '用户点击TestFlight下载后添加用户发送的email覆盖旧的email时的回复消息',
+  tf_tester_full_template: '用户点击TestFlight下载后TestFlight配额已用光时回复的消息',
   
   id: '编号',
   verifyFile: '验证文件',
@@ -22,6 +36,7 @@ export default {
   edit: '修改',
   operate: '操作',
   addRule: '添加自定义回复',
+  downloadReply: '下载消息',
 
   keywordsPlaceholder: '请填写关键词',
   responsePlaceholder: '请填写回复内容',

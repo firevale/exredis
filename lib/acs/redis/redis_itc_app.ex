@@ -56,7 +56,7 @@ defmodule Acs.RedisItcApp do
     Cachex.get!(:default, "_acs.itc_apps.#{app_id}", fallback: fn(_key) -> 
       query = from itc in ItcApp,
               select: itc.itc_app_id,
-              where: itc.active == true,
+              where: itc.active == true and itc.app_id == ^app_id,
               order_by: itc.id
 
       {:commit, Repo.all(query)}

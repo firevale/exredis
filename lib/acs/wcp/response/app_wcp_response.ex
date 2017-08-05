@@ -23,8 +23,7 @@ defmodule Acs.AppWcpResponse do
     case RedisApp.find(app_id) do 
       nil -> nil
       %{wcp_download_enabled: wcp_download_enabled} ->
-        if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, msg.content) 
-          and WcpTFDownloadResponse.is_waiting_email(app_id, msg.fromusername) do 
+        if WcpTFDownloadResponse.is_waiting_email(app_id, msg.fromusername) do 
             %{from: msg.tousername, 
               to: msg.fromusername, 
               content: WcpTFDownloadResponse.build_email_reply(app_id, msg.fromusername, msg.content)}

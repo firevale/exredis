@@ -56,3 +56,16 @@ Date.prototype.toString = function(showWeek)
     }  
     return str;  
 } 
+
+function StringToDate(DateStr)  
+{
+    var converted = Date.parse(DateStr);  
+    var myDate = new Date(converted);  
+    if (isNaN(myDate))  
+    {   
+        //var delimCahar = DateStr.indexOf('/')!=-1?'/':'-';  
+        var arys= DateStr.split('-');  
+        myDate = new Date(arys[0],--arys[1],arys[2]);  
+    }  
+    return myDate;  
+}  

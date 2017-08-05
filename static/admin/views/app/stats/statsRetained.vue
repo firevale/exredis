@@ -76,7 +76,6 @@ export default {
 
   data() {
     return {
-      forum: {},
       platform: 'all',
       dateType: 'week',
       dateRange: [],
@@ -93,9 +92,7 @@ export default {
 
   watch: {
     app: function(newVal) {
-      if (typeof newVal === 'object' && newVal.has_forum) {
-        this.fetchForum()
-      }
+
     }
   },
 

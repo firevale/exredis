@@ -43,7 +43,7 @@ defmodule Acs.Mixfile do
      {:gettext, "~> 0.13"},
      {:cowboy, "~> 1.1"},
      {:httpotion, "~> 3.0"},
-     {:httpoison, "~> 0.12"},
+     {:httpoison, "~> 0.13"},
      {:redis_poolex, ">= 0.0.6"},
      {:poolboy, "~> 1.5"},
      {:logger_file_backend, ">= 0.0.10"},

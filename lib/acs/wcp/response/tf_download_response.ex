@@ -101,6 +101,7 @@ defmodule Acs.WcpTFDownloadResponse do
                 
               %AppWcpUser{openid: ^open_id, tf_email: old_email, nickname: nickname} = wcp_user ->
                 TestFlight.remove(app_id, old_email)
+                RedisAppWcpUser.clear_cache(app_id, open_id, old_email)
                 case TestFlight.invite(app_id, email, nickname) do 
                   {:ok, status} ->
                     info "tester #{email} for #{nickname} added, status: #{status}"

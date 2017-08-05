@@ -51,7 +51,7 @@ defmodule Acs.TestFlight.Worker do
         case Poison.decode(body) do 
           {:ok, %{"success" => true, "status" => status, "num_testers" => num_testers}} -> 
             Cachex.set(:default, "_acs.num_testers.#{itc_app_id}", num_testers)
-            {:ok, status}
+            {:ok, status, num_testers}
           _ ->
             :error
         end

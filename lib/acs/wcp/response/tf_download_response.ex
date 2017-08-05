@@ -82,7 +82,10 @@ defmodule Acs.WcpTFDownloadResponse do
                 :ok 
               %AppWcpUser{openid: ^open_id, tf_email: nil, nickname: nickname} = wcp_user ->
                 case TestFlight.invite(app_id, email, nickname) do 
-                  {:ok, status} ->
+                  {:ok, status, num_testers} ->
+                    if num_testers >= 9900 do 
+                      Cachex.del(:default, "_acs.itc_active_app.#{app_id}")
+                    end
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)
@@ -103,8 +106,11 @@ defmodule Acs.WcpTFDownloadResponse do
                 TestFlight.remove(app_id, old_email)
                 RedisAppWcpUser.clear_cache(app_id, open_id, old_email)
                 case TestFlight.invite(app_id, email, nickname) do 
-                  {:ok, status} ->
+                  {:ok, status, num_testers} ->
                     info "tester #{email} for #{nickname} added, status: #{status}"
+                    if num_testers >= 9900 do 
+                      Cachex.del(:default, "_acs.itc_active_app.#{app_id}")
+                    end
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)

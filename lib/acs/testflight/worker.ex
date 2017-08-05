@@ -11,6 +11,7 @@ defmodule Acs.TestFlight.Worker do
   alias Acs.ItcApp
 
   @base_url "https://itunesconnect.apple.com"
+  @proxy {"54.169.217.97", 9527}
 
   def start(itc_app_id) do 
     GenServer.start(__MODULE__, itc_app_id, name: String.to_atom("tf_#{itc_app_id}"), timeout: 120_000)
@@ -163,7 +164,9 @@ defmodule Acs.TestFlight.Worker do
     itc_password: password, 
     service_key: service_key,
     counter: counter} = state) do
-    itc_login(jar, login, password, service_key) 
+    if rem(counter + 1, 120) == 0 do 
+      itc_login(jar, login, password, service_key) 
+    end
     {:ok, train} = get_train(state)
     state = %{state | train: train}
     {:ok, build_id} = get_build_id(state)
@@ -179,10 +182,11 @@ defmodule Acs.TestFlight.Worker do
   end
 
   defp get_service_key(jar) do 
-    case HTTPoison.get(jar, Path.join(@base_url, "/itc/static-resources/controllers/login_cntrl.js")) do 
+    case HTTPoison.get(jar, Path.join(@base_url, "/itc/static-resources/controllers/login_cntrl.js"), [], [proxy: @proxy]) do 
       {:ok, %{body: body}} ->
         case Regex.named_captures(~r/itcServiceKey = '(?<key>.*)'/, body) do 
           %{"key" => service_key} ->
+            d "service_key: #{service_key}"
             {:ok, service_key}
           _ -> 
             {:error, "cant get service key"}
@@ -203,18 +207,21 @@ defmodule Acs.TestFlight.Worker do
       {"Accept", "application/json, text/javascript"}
     ]) do 
       {:ok, %{body: body, status_code: 200}} -> 
+        d "itc_login success"
         :ok
-      _ -> 
+      what -> 
+        error "itc_login failed, #{inspect what}"
         {:error, "login failed"}
     end
   end
 
   defp get_first_content_provider_id(jar) do 
-    case HTTPoison.get(jar, Path.join(@base_url, "/WebObjects/iTunesConnect.woa/ra/user/detail")) do 
+    case HTTPoison.get(jar, Path.join(@base_url, "/WebObjects/iTunesConnect.woa/ra/user/detail"), [], [proxy: @proxy]) do 
       {:ok, %{body: body}} ->
         case Poison.decode(body) do 
           {:ok, %{"data" => %{"associatedAccounts" => accounts}}} ->
             [%{"contentProvider" => %{"contentProviderId" => team_id}} | _] = accounts 
+            d "team_id: #{team_id}"
             {:ok, team_id}
           _ ->
             {:error, "account not found"}
@@ -225,7 +232,7 @@ defmodule Acs.TestFlight.Worker do
   end
 
   defp get_groups(jar, team_id, itc_app_id) do 
-    case HTTPoison.get(jar, Path.join(@base_url, "/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/groups")) do 
+    case HTTPoison.get(jar, Path.join(@base_url, "/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/groups"), [], [proxy: @proxy]) do 
       {:ok, %{body: body}} ->
         case Poison.decode(body) do 
           {:ok, %{"data" => groups}} ->
@@ -241,7 +248,7 @@ defmodule Acs.TestFlight.Worker do
   defp num_testers(jar, itc_app_id) do 
    case HTTPoison.get(jar, 
     Path.join(@base_url, "/WebObjects/iTunesConnect.woa/ra/user/externalTesters/#{itc_app_id}/"), 
-    [{"Content-Type", "application/json"}]) do 
+    [{"Content-Type", "application/json"}] , [proxy: @proxy]) do 
       {:ok, %{body: body}} ->
         case Poison.decode(body) do 
           {:ok, %{"data" => %{"users" => users}}} ->
@@ -269,14 +276,14 @@ defmodule Acs.TestFlight.Worker do
       email: email,
       firstName: "",
       lastName: nickname || "",
-    } |> Poison.encode!, [ {"Content-Type", "application/json"}]) do 
+    } |> Poison.encode!, [ {"Content-Type", "application/json"}], [proxy: @proxy]) do 
       {:ok, %{body: body}} -> 
         case Poison.decode(body) do 
           {:ok, %{"data" => %{"id" => tester_id}}} ->
             case HTTPoison.put(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/groups/#{group_id}/testers/#{tester_id}", %{
               groupId: group_id,
               testerid: tester_id
-            } |> Poison.encode!, [ {"Content-Type", "application/json"}]) do 
+            } |> Poison.encode!, [ {"Content-Type", "application/json"}], [proxy: @proxy]) do 
               {:ok, %{body: body}} -> 
                 case Poison.decode(body) do 
                   {:ok, %{"data" => %{"email" => ^email, "testerAppState" => state}, "error" => nil}} -> 
@@ -299,7 +306,7 @@ defmodule Acs.TestFlight.Worker do
     case HTTPoison.put(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/builds/#{build_id}/testers/#{tester_id}", %{
       buildId: build_id,
       testerId: tester_id
-    } |> Poison.encode!, [ {"Content-Type", "application/json"}]) do 
+    } |> Poison.encode!, [ {"Content-Type", "application/json"}], [proxy: @proxy]) do 
       {:ok, %{body: body}} ->
         :ok
       _ -> 
@@ -312,13 +319,13 @@ defmodule Acs.TestFlight.Worker do
       email: email,
       firstName: "",
       lastName: "",
-    } |> Poison.encode!, [ {"Content-Type", "application/json"}]) do 
+    } |> Poison.encode!, [ {"Content-Type", "application/json"}], [proxy: @proxy]) do 
       {:ok, %{body: body}} -> 
         case Poison.decode(body) do 
           {:ok, %{"data" => %{"id" => tester_id}, "error" => nil}} ->
             case HTTPoison.post(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/deleteTesters", [%{
               id: tester_id
-            }] |> Poison.encode!, [ {"Content-Type", "application/json"}]) do 
+            }] |> Poison.encode!, [ {"Content-Type", "application/json"}], [proxy: @proxy]) do 
               {:ok, %{status_code: 200}} -> :ok
               _ -> :error
             end
@@ -331,7 +338,7 @@ defmodule Acs.TestFlight.Worker do
   end
 
   defp get_train(%{jar: jar, team_id: team_id, itc_app_id: itc_app_id}) do 
-    case HTTPoison.get(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/platforms/ios/trains") do 
+    case HTTPoison.get(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/platforms/ios/trains", [], [proxy: @proxy]) do 
       {:ok, %{body: body}} -> 
         case Poison.decode(body) do 
           {:ok, %{"data" => [train | _], "error" => nil}} ->
@@ -345,7 +352,7 @@ defmodule Acs.TestFlight.Worker do
   end
 
   defp get_build_id(%{jar: jar, team_id: team_id, itc_app_id: itc_app_id, train: train}) do 
-    case HTTPoison.get(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/platforms/ios/trains/#{train}/builds") do 
+    case HTTPoison.get(jar, "https://itunesconnect.apple.com/testflight/v2/providers/#{team_id}/apps/#{itc_app_id}/platforms/ios/trains/#{train}/builds", [], [proxy: @proxy]) do 
       {:ok, %{body: body}} -> 
         case Poison.decode(body) do 
           {:ok, %{"data" => builds, "error" => nil}} ->

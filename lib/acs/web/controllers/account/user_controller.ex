@@ -583,15 +583,17 @@ defmodule Acs.Web.UserController do
 
   # check text by netease dun
   defp check_userid(userid) do
-    case SDKNeteaseDun.check_userid(userid) do 
-        {:error, label, info} ->
-          if label do
-            %{success: false, i18n_message: "account.error.userIdCheckFail"}
-          else
-            %{success: false, message: info}
-          end
+    %{success: true}
+    # case SDKNeteaseDun.check_userid(userid) do 
+    #   {:error, label, info} ->
+    #     if label do
+    #       %{success: false, i18n_message: "account.error.userIdCheckFail"}
+    #     else
+    #       %{success: false, message: info}
+    #     end
 
-        _ -> %{success: true}
-      end
+    #   _ -> 
+    #     %{success: true}
+    # end
   end
 end

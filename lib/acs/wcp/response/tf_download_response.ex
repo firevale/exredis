@@ -46,15 +46,15 @@ defmodule Acs.WcpTFDownloadResponse do
             if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, email) do 
               case RedisAppWcpUser.find_by_email(app_id, email) do 
                 %AppWcpUser{openid: ^open_id, tf_email: ^email} -> 
-                  cfg.tf_already_invited_template
+                  String.replace(cfg.tf_already_invited_template, "#email", email)
                 nil ->
                   _invite_user(app_id, open_id, email)
                   String.replace(cfg.tf_download_email_received_template, "#email", email)
                 _ ->
-                  cfg.tf_email_used_template
+                  String.replace(cfg.tf_email_used_template, "#email", email)
               end
             else
-              cfg.tf_invalid_email_template
+              String.replace(cfg.tf_invalid_email_template, "email", email)
             end
           _ -> nil
         end
@@ -91,10 +91,12 @@ defmodule Acs.WcpTFDownloadResponse do
 
                   {:error, :quata} -> 
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
+                    content = String.replace(cfg.tf_tester_full_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   _ ->
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_invite_failed_template)  
+                    content = String.replace(cfg.tf_invite_failed_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
                 end
                 
               %AppWcpUser{openid: ^open_id, tf_email: old_email, nickname: nickname} = wcp_user ->
@@ -111,10 +113,12 @@ defmodule Acs.WcpTFDownloadResponse do
 
                   {:error, :quata} -> 
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
+                    content = String.replace(cfg.tf_tester_full_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   _ ->
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_invite_failed_template)  
+                    content = String.replace(cfg.tf_invite_failed_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
                 end                
             end
           end

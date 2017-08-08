@@ -3,7 +3,8 @@
 @import "common/scss/reset";
 @import "common/scss/animation";
 html {
-  font-size: $middle;
+  font-size: 16px;
+  -webkit-text-size-adjust: none; 
 }
 
 body:not(.in-app) {

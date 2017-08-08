@@ -46,15 +46,15 @@ defmodule Acs.WcpTFDownloadResponse do
             if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, email) do 
               case RedisAppWcpUser.find_by_email(app_id, email) do 
                 %AppWcpUser{openid: ^open_id, tf_email: ^email} -> 
-                  cfg.tf_already_invited_template
+                  String.replace(cfg.tf_already_invited_template, "#email", email)
                 nil ->
                   _invite_user(app_id, open_id, email)
-                  cfg.tf_download_email_received_template
+                  String.replace(cfg.tf_download_email_received_template, "#email", email)
                 _ ->
-                  cfg.tf_email_used_template
+                  String.replace(cfg.tf_email_used_template, "#email", email)
               end
             else
-              cfg.tf_invalid_email_template
+              String.replace(cfg.tf_invalid_email_template, "email", email)
             end
           _ -> nil
         end
@@ -82,7 +82,10 @@ defmodule Acs.WcpTFDownloadResponse do
                 :ok 
               %AppWcpUser{openid: ^open_id, tf_email: nil, nickname: nickname} = wcp_user ->
                 case TestFlight.invite(app_id, email, nickname) do 
-                  {:ok, status} ->
+                  {:ok, status, num_testers} ->
+                    if num_testers >= 9900 do 
+                      Cachex.del(:default, "_acs.itc_active_app.#{app_id}")
+                    end
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)
@@ -91,17 +94,23 @@ defmodule Acs.WcpTFDownloadResponse do
 
                   {:error, :quata} -> 
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
+                    content = String.replace(cfg.tf_tester_full_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   _ ->
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_invite_failed_template)  
+                    content = String.replace(cfg.tf_invite_failed_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
                 end
                 
               %AppWcpUser{openid: ^open_id, tf_email: old_email, nickname: nickname} = wcp_user ->
                 TestFlight.remove(app_id, old_email)
+                RedisAppWcpUser.clear_cache(app_id, open_id, old_email)
                 case TestFlight.invite(app_id, email, nickname) do 
-                  {:ok, status} ->
+                  {:ok, status, num_testers} ->
                     info "tester #{email} for #{nickname} added, status: #{status}"
+                    if num_testers >= 9900 do 
+                      Cachex.del(:default, "_acs.itc_active_app.#{app_id}")
+                    end
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                     {:ok, wcp_user} = AppWcpUser.changeset(wcp_user, %{tf_email: email}) |> Repo.update
                     RedisAppWcpUser.refresh(wcp_user)
@@ -111,10 +120,12 @@ defmodule Acs.WcpTFDownloadResponse do
 
                   {:error, :quata} -> 
                     Redis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_tester_full_template)  
+                    content = String.replace(cfg.tf_tester_full_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
 
                   _ ->
-                    Wcp.Message.Custom.send_text(app_id, open_id, cfg.tf_invite_failed_template)  
+                    content = String.replace(cfg.tf_invite_failed_template, "#email", email)
+                    Wcp.Message.Custom.send_text(app_id, open_id, content)  
                 end                
             end
           end

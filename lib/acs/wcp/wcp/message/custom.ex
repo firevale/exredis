@@ -5,6 +5,9 @@ defmodule Wcp.Message.Custom do
   ref: http://mp.weixin.qq.com/wiki/11/c88c270ae8935291626538f9c64bd123.html#.E5.AE.A2.E6.9C.8D.E6.8E.A5.E5.8F.A3-.E5.8F.91.E6.B6.88.E6.81.AF
   """
   import Wcp.ApiBase
+  alias Acs.AppWcpMessage
+  alias Acs.Repo
+  use   Timex
 
   @api_path "message/custom/send"
   @types ~w(text image voice video music news mpnews wxcard)
@@ -14,6 +17,14 @@ defmodule Wcp.Message.Custom do
       "text"
       |> build_message(%{"content" => content})
 
+    AppWcpMessage.changeset(%AppWcpMessage{}, 
+      %{from: "system", 
+        to: openid, 
+        msg_type: "text", 
+        content: content, 
+        create_time: Timex.local |> Timex.to_unix,
+        app_id: app_id}) |> Repo.insert
+        
     deliver(app_id, openid, message)
   end
 

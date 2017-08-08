@@ -43,7 +43,8 @@ defmodule Acs.RedisAppWcpUser do
     case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do 
       %AppWcpUser{} = wcp_user ->
         refresh(wcp_user)
-      _ -> nil
+      _ -> 
+        nil
     end
   end
 
@@ -54,6 +55,13 @@ defmodule Acs.RedisAppWcpUser do
       Redis.set(email_key(app_id, wcp_user.tf_email), AppWcpUser.to_redis(wcp_user))
     end
     wcp_user
+  end
+
+  def clear_cache(app_id, open_id, email) do 
+    Cachex.del(:default, email_key(app_id, email)) 
+    Cachex.del(:default, key(app_id, open_id)) 
+    Redis.del(email_key(app_id, email))
+    Redis.del(key(app_id, open_id))
   end
 
   defp key(app_id, open_id) do 

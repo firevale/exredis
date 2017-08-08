@@ -222,16 +222,23 @@ export default {
   },
 
   canGoback: function() {
-    if (typeof AndroidNativeAPI === 'object' &&
-      typeof AndroidNativeAPI.canGoback === 'function') {
-      return Promise.resolve(AndroidNativeAPI.canGoback())
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.canGoback1 === 'function') {
+      return new Promise(function(resolve, reject) {
+        window.acsConfig.canGoback1Callback = result => {
+          window.acsConfig.canGoback1Callback = undefined
+          resolve(result)
+        }
+        AndroidNativeAPI.canGoback1()
+      })
+    } else if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.canGoback === 'function') {
+      // 旧版本bug
+      return Promise.resolve('yes')
     } else if (typeof window.webkit === 'object' && typeof window.webkit.messageHandlers === 'object' &&
       typeof window.webkit.messageHandlers.IOSNativeAPI === 'object') {
       window.webkit.messageHandlers.IOSNativeAPI.postMessage({ method: 'canGoback' })
       return new Promise(function(resolve, reject) {
         window.acsConfig.canGobackCallback = (result) => {
           window.acsConfig.canGobackCallback = undefined
-          console.log('can go back: ', result)
           resolve(result)
         }
       })

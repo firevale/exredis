@@ -15,11 +15,11 @@ else
 
   if code then
     redis.call('smove', key_a, key_b, code)
+    redis.call('set', key_owns, code)
   else 
     code = 'undefined'
   end
 
-  redis.call('set', key_owns, code)
 
   return code 
 end

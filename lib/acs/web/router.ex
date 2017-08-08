@@ -105,6 +105,10 @@ defmodule Acs.Web.Router do
       get  "/:app_id", WcpController, :index
       post "/:app_id", WcpController, :on_receive_message
     end
+
+    scope "/wcjs" do 
+      get "/:app_id/signature", WcjsController, :signature
+    end
   end # end scope ap
 
   scope "/cron", Acs.Web do

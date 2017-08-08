@@ -1,13 +1,14 @@
 <template>
-  <div class=" mod-body">
+  <div class="mod-body">
     <div class="toolbar" style="margin-bottom:1rem;">
-      <el-radio-group v-model="platform" @change="changePlatform">
-        <el-radio-button label="all">全部</el-radio-button>
-        <el-radio-button label="ios">iOS</el-radio-button>
-        <el-radio-button label="android">Android</el-radio-button>
+      <el-radio-group v-model="statsType" @change="changePlatform">
+        <el-radio-button label="model">机型</el-radio-button>
+        <el-radio-button label="os">操作系统</el-radio-button>
+        <el-radio-button label="mem">内存</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
       <el-radio-group v-model="dateType" @change="changeDateType">
+        <el-radio-button label="today">今日</el-radio-button>
         <el-radio-button label="week">最近一周</el-radio-button>
         <el-radio-button label="month">最近一月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
@@ -17,42 +18,45 @@
         :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
-    <table id="retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
-      <thead>
-        <tr>
-          <th style="width:150px">首次使用时间</th>
-          <th style="width:100px">新增用户</th>
-          <th colspan="9">留存率</th>
-        </tr>
-        <tr id="daily_after_period" class="after_period_indicator" style="display: table-row;">
-          <th colspan="2"></th>
-          <th> 1日留存 </th>
-          <th> 2日留存 </th>
-          <th> 3日留存 </th>
-          <th> 4日留存 </th>
-          <th> 5日留存 </th>
-          <th> 6日留存</th>
-          <th> 7日留存</th>
-          <th> 14日留存 </th>
-          <th> 30日留存 </th>
-        </tr>
-      </thead>
-      <tbody id="data-list">
-        <tr v-for="report in reports">
-          <td>{{report.date}}</td>
-          <td>{{report.danu}}</td>
-          <retention-row :value="calcRate(report,1)"> </retention-row>
-          <retention-row :value="calcRate(report,2)"> </retention-row>
-          <retention-row :value="calcRate(report,3)"> </retention-row>
-          <retention-row :value="calcRate(report,4)"> </retention-row>
-          <retention-row :value="calcRate(report,5)"> </retention-row>
-          <retention-row :value="calcRate(report,6)"> </retention-row>
-          <retention-row :value="calcRate(report,7)"> </retention-row>
-          <retention-row :value="calcRate(report,14)"> </retention-row>
-          <retention-row :value="calcRate(report,30)"> </retention-row>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tile is-ancestor is-vertical">
+      <div class="tile">
+        <div class="tile is-4 is-parent">
+          <div class="tile is-child box card">
+            <header class="card-header">
+              <p class="card-header-title">
+                <span class="icon">
+                  <i class="fa fa-mobile"></i>
+                </span>设备平台
+              </p>
+            </header>
+            <div class="card-content">
+              <pie ref="chart" :options="barOptions" :height="300" :data="platforum_reports"></pie>
+            </div>
+          </div>
+        </div>
+        <div class="tile is-parent">
+          <div class="tile is-child  box card">
+            <header class="card-header">
+              <p class="card-header-title">设备机型
+              </p>
+            </header>
+            <div class="card-content">
+              <horizontal-bar ref="chart2" :options="barOptions" :height="300" :data="reports"></horizontal-bar>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tile is-parent">
+        <el-table class="tile is-child box" :data="tableData" border style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
+          <el-table-column prop="date" label="机型" width="500">
+          </el-table-column>
+          <el-table-column prop="name" label="数量" sortable width="180">
+          </el-table-column>
+          <el-table-column prop="address" label="占比" sortable>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -68,16 +72,29 @@ import {
 
 import 'common/js/date'
 import Datepicker from 'vue-bulma-datepicker'
+import {
+  Bar,
+  HorizontalBar,
+  Pie
+} from './device-bar'
 
 export default {
+  components: {
+    Tabs,
+    TabPane,
+    Bar,
+    HorizontalBar,
+    Pie
+  },
   mounted() {
-    this.fetchData()
+
   },
 
   data() {
     return {
+      statsType: 'model',
       platform: 'all',
-      dateType: 'week',
+      dateType: 'today',
       dateRange: [],
       pickerOptions: {
         disabledDate: function(date) {
@@ -86,25 +103,61 @@ export default {
           return date > limitDate
         }
       },
-      reports: []
+      platforum_reports: {
+        labels: ["iPhone", "Android"],
+        datasets: [{
+          data: [80, 20],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+          ]
+        }]
+      },
+      reports: {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [{
+          label: '设备数',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 206, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)'
+          ]
+        }]
+      },
     }
   },
-
+  computed: {
+    ...mapGetters([
+      'app'
+    ]),
+    barOptions() {
+      let _this = this
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: function() {
+          _this.changePlatform(this)
+        }
+      }
+    }
+  },
   watch: {
     app: function(newVal) {
 
     }
   },
 
-  computed: {
-    ...mapGetters([
-      'app'
-    ]),
-  },
-
   methods: {
-    changePlatform: function(val) {
-      this.fetchData()
+    changePlatform: function(chart) {
+      if (chart.active[0]) {
+        this.platform = chart.active[0]._model.label.toLowerCase()
+      } else {
+        this.platform = 'all'
+      }
     },
     changeDateType: function(val) {
       if (val != 'custom')
@@ -158,181 +211,7 @@ export default {
       }
     }
   },
-
-  components: {
-    Tabs,
-    TabPane,
-    'RetentionRow': {
-      template: ' <td :class="colorGrad">{{value >=0 ? value + "%" : undefined}}</td>',
-      props: {
-        value: {
-          type: null,
-          default: 0
-        }
-      },
-      computed: {
-        colorGrad() {
-          if (this.value >= 70)
-            return 'colorGrad1'
-          else if (this.value >= 50)
-            return 'colorGrad2'
-          else if (this.value >= 30)
-            return 'colorGrad3'
-          else if (this.value >= 10)
-            return 'colorGrad4'
-        }
-      }
-    }
-  }
 }
 </script>
-<style lang="scss">
-.box {
-  padding: 0!important;
-}
-
-.columns:not(:last-child) {
-  margin-bottom: 0 !important;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-
-table.data-load {
-  min-height: 70px;
-  min-height: 0px\9;
-}
-
-table.data-load td:first-child {
-  border-left: 0;
-}
-
-table.data-load td {
-  border: none;
-}
-
-table.data-load .colorGrad1 {
-  background: #49afb4;
-}
-
-table.data-load .colorGrad2 {
-  background: #5dcacf;
-}
-
-table.data-load .colorGrad3 {
-  background: #8ee6ea;
-}
-
-table.data-load .colorGrad4 {
-  background: #b6f2f3;
-}
-
-table.data-load th,
-dl.data-load dt {
-  font-size: 14px;
-  color: #333333;
-  overflow: hidden;
-  background-color: #f5f5f5;
-  height: 36px;
-  line-height: 36px;
-  text-indent: 22px;
-  border-right: 1px solid #e8e8e8;
-  border-left: 1px solid #fff;
-  border-bottom: 1px solid #e8e8e8;
-}
-
-.small-table table.data-load th {
-  font-size: 12px;
-  text-indent: 0;
-  text-align: center;
-}
-
-table.data-load th:first-child {
-  border-left: 0;
-}
-
-table.data-load th:last-child {
-  border-right: 0;
-}
-
-table.data-load td,
-{
-  font-size: 12px;
-  color: #333333;
-  height: 34px;
-  line-height: 34px;
-  padding: 0 0 0 22px;
-  /* border-right: 1px solid #e8e8e8; border-left: 1px solid #fff; border-bottom: 1px solid #e8e8e8; */
-  word-break: break-all;
-}
-
-table.data-load .limit-height {
-  height: 34px;
-  line-height: 34px;
-  overflow: hidden;
-}
-
-table.data-load td .mod-select {
-  text-indent: 0px;
-}
-
-table.data-load td:first-child {
-  border-left: 0;
-}
-
-table.data-load td:last-child {
-  border-right: 0;
-}
-
-table.data-load>tbody>tr:hover {
-  background-color: #d3f0f1;
-}
-
-table.data-load td.td-head-nopadding {
-  padding-left: 0;
-}
-
-table.data-load td .circle {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  margin: 0 5px 0 10px;
-  vertical-align: middle;
-  background: #ef662f;
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  line-height: 8px;
-}
-
-table.data-load td.td-head-nopadding .hidden {
-  visibility: hidden;
-}
-
-.table-success,
-.table-warning,
-.table-info {
-  margin-bottom: 1px;
-  font-size: 14px;
-  padding: 7px 20px;
-  line-height: 20px;
-  border: 1px solid #73d3d6;
-  background: #c7edef;
-  color: #333;
-}
-
-.table-warning {
-  border: 1px solid #E5674A;
-  background: #F5C2B7;
-  color: #802626;
-}
-
-.table-info {
-  border: 1px solid #73d3d6;
-  background: #c7edef;
-  color: #333333;
-}
+<style lang="scss" scoped>
 </style>

@@ -28,4 +28,5 @@ export default {
   stats: '统计分析',
   statsByDay: '每日统计',
   statsRetained: '留存统计',
+  statsDevice: '设备终端',
 }

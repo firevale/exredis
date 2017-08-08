@@ -37,4 +37,5 @@ export default {
   WcpEditRule: '编辑自定义回复',
   StatsByDay: '每日统计',
   StatsRetained: '留存统计',
+  StatsDevice: '设备终端',
 }

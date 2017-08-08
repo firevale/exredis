@@ -39,6 +39,7 @@ defmodule Acs.WcpTFDownloadResponse do
   end
 
   def build_email_reply(app_id, open_id, email) do 
+    email = String.downcase(email)
     case RedisApp.find(app_id) do 
       %{} = app ->
         case RedisAppWcpConfig.find(app_id) do 

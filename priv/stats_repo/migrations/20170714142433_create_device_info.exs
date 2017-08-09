@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreateAcs.Stats.DeviceInfo do
     create table(:device_infos, primary_key: false) do
       add :id, :string, primary_key: true
       add :alias, :string
-      add :total_mem_size, :string
+      add :total_mem_size, :integer
       add :cpu_arch, :string
 
       timestamps()

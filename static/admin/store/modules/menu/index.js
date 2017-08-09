@@ -45,15 +45,14 @@ const state = {
         expanded: false,
       },
 
-      children: [
-        {
+      children: [{
           name: 'StatsByDay',
           path: '/admin/app/:appId/statsByDay',
           meta: {
             icon: 'fa-sun-o',
             level: '1,2,',
             label: i18n.t('admin.menu.statsByDay'),
-          },          
+          },
         },
         {
           name: 'StatsRetained',
@@ -62,7 +61,16 @@ const state = {
             icon: 'fa-retweet',
             level: '1,2,',
             label: i18n.t('admin.menu.statsRetained'),
-          },          
+          },
+        },
+        {
+          name: 'StatsDevice',
+          path: '/admin/app/:appId/statsDevice',
+          meta: {
+            icon: 'fa-retweet',
+            level: '1,2,',
+            label: i18n.t('admin.menu.statsDevice'),
+          },
         },
       ]
     },
@@ -83,15 +91,14 @@ const state = {
         expanded: false,
       },
 
-      children: [
-        {
+      children: [{
           name: 'LoginCodes',
           path: '/admin/app/:appId/loginCodes',
           meta: {
             icon: 'fa-registered',
             level: '1,2,',
             label: i18n.t('admin.menu.loginCodeManage'),
-          },          
+          },
         },
         {
           name: 'MyLoginCodes',
@@ -100,7 +107,7 @@ const state = {
             icon: 'fa-registered',
             level: '1,2,',
             label: i18n.t('admin.menu.myLoginCodes'),
-          },          
+          },
         },
       ]
     },
@@ -113,38 +120,36 @@ const state = {
         expanded: false,
       },
 
-      children: [
-        {
-          name: 'WcpParams',
-          path: '/admin/app/:appId/wcpParams',
-          meta: {
-            icon: 'fa-registered',
-            level: '1,2,',
-            label: i18n.t('admin.menu.wcpConfig'),
-          },          
-        }, {
-          name: 'WcpMenu',
-          path: '/admin/app/:appId/wcpMenu',
-          meta: {
-            level: '1,2,3,',
-            label: i18n.t('admin.menu.wcpMenu'),
-          }
-        }, {
-          name: 'WcpRules',
-          path: '/admin/app/:appId/wcpRules',
-          meta: {
-            level: '1,2,3,',
-            label: i18n.t('admin.menu.wcpRules'),
-          },          
-        }, {
-          name: 'WcpMessages',
-          path: '/admin/app/:appId/wcpMessages',
-          meta: {
-            level: '1,2,3,',
-            label: i18n.t('admin.menu.wcpMessages'),
-          },          
+      children: [{
+        name: 'WcpParams',
+        path: '/admin/app/:appId/wcpParams',
+        meta: {
+          icon: 'fa-registered',
+          level: '1,2,',
+          label: i18n.t('admin.menu.wcpConfig'),
         },
-      ]
+      }, {
+        name: 'WcpMenu',
+        path: '/admin/app/:appId/wcpMenu',
+        meta: {
+          level: '1,2,3,',
+          label: i18n.t('admin.menu.wcpMenu'),
+        }
+      }, {
+        name: 'WcpRules',
+        path: '/admin/app/:appId/wcpRules',
+        meta: {
+          level: '1,2,3,',
+          label: i18n.t('admin.menu.wcpRules'),
+        },
+      }, {
+        name: 'WcpMessages',
+        path: '/admin/app/:appId/wcpMessages',
+        meta: {
+          level: '1,2,3,',
+          label: i18n.t('admin.menu.wcpMessages'),
+        },
+      }, ]
     },
     {
       path: '/admin/app/:appId/orders',

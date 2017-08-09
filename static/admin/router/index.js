@@ -124,6 +124,11 @@ export default new Router({
           name: 'StatsRetained',
           path: 'statsRetained',
           component: require('../views/app/stats/statsRetained')
+        },
+        {
+          name: 'StatsDevice',
+          path: 'statsDevice',
+          component: require('../views/app/stats/statsDevice')
         }
       ],
     }, {

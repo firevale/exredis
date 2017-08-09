@@ -23,9 +23,6 @@ defmodule Acs.WcpLoginCodeResponse do
             if app.can_assign_code do 
               case AppLoginCode.find_by_openid(app_id, from) do 
                 x when x in [nil, "undefined"] ->
-                  Redis.del("_acs.login_codes.owns.#{app_id}.#{from}")
-                  Cachex.del(:default, "_acs.login_codes.owns.#{app_id}.#{from}")
-                  
                   case Scripts.rand_code([app_id], [from]) do 
                     "undefined" ->
                       cfg.no_code_template || "所有激活码已全部发放完成(默认回复，请在后台编辑此消息)"

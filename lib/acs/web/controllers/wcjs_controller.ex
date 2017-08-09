@@ -16,7 +16,7 @@ defmodule Acs.Web.WcjsController do
             noncestr = Utils.generate_token(8)
             timestamp = Utils.unix_timestamp()
             params = [noncestr: noncestr, jsapi_ticket: ticket, timestamp: timestamp, url: url] 
-            str = params |> Enum.map_join("&", fn({k, v}) -> 
+            str = params |> Enum.sort |> Enum.map_join("&", fn({k, v}) -> 
               "#{k}=#{v}"
             end) 
             signature = :crypto.hash(:sha, str) |> Base.encode16(case: :lower)

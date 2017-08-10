@@ -68,6 +68,7 @@ defmodule Acs.Web.Router do
     post "/is_account_exists", UserController, :is_account_exists
     post "/logout", UserController, :logout
     post "/bind_login_code", UserController, :bind_login_code
+    post "/generate_state", UserController, :generate_wechat_login_state
   end
 
   scope "/auth", Acs.Web do
@@ -104,6 +105,10 @@ defmodule Acs.Web.Router do
     scope "/wcp" do 
       get  "/:app_id", WcpController, :index
       post "/:app_id", WcpController, :on_receive_message
+    end
+
+    scope "/wcjs" do 
+      get "/:app_id/signature", WcjsController, :signature
     end
   end # end scope ap
 

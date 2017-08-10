@@ -15,7 +15,6 @@ defmodule Acs.WcpLoginCodeResponse do
     defredis_script :rand_code, file_path: "lua/rand_code.lua"
   end
 
-
   def build_reply_content(app_id, from) do 
     case RedisApp.find(app_id) do 
       %{} = app ->
@@ -23,8 +22,8 @@ defmodule Acs.WcpLoginCodeResponse do
           %AppWcpConfig{} = cfg ->
             if app.can_assign_code do 
               case AppLoginCode.find_by_openid(app_id, from) do 
-                nil ->
-                  case Scripts.rand_code([app_id], []) do 
+                x when x in [nil, "undefined"] ->
+                  case Scripts.rand_code([app_id], [from]) do 
                     "undefined" ->
                       cfg.no_code_template || "所有激活码已全部发放完成(默认回复，请在后台编辑此消息)"
                     

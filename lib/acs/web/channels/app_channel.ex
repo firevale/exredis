@@ -37,11 +37,12 @@ defmodule Acs.Web.AppChannel do
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
 
-      case Map.get(payload, "version") do 
+      timer = case Map.get(payload, "version") do 
         x when x in [2, "2"] -> 
           {:ok, timer} = :timer.send_interval(@heartbeart_duration, :heartbeart)
+          timer
         _ -> 
-          :ok
+          nil 
       end
 
       incr_online_counter(app_id, device_id, user_id, platform)

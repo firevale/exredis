@@ -32,11 +32,11 @@ defmodule Acs.TestFlight.Worker do
             {:ok, %{"success" => true, "num_testers" => num_testers}} -> 
               {:commit, num_testers}
             xx ->
-              {:ignore, 10000} 
+              {:ignore, 0} 
           end
         response ->
           error "get num test failed: #{inspect response}"
-          {:ignore, 10000}
+          {:ignore, 0}
       end
     end)
   end

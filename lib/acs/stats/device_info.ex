@@ -8,7 +8,7 @@ defmodule Acs.Stats.DeviceInfo do
   schema "device_infos" do
     field :id, :string, primary_key: true
     field :alias, :string
-    field :total_mem_size, :string
+    field :total_mem_size, :integer
     field :cpu_arch, :string
 
     timestamps()

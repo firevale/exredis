@@ -138,4 +138,84 @@ defmodule Acs.Web.Admin.StatsController do
     reports = StatsRepo.all(query)
     conn |> json(%{success: true, reports: reports})
   end
+
+  def get_stats_device(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                        %{"platform" => platform, "stats_type" => stats_type}) do
+    query_platform = 
+      from ad in AppDevice,
+        left_join: device in assoc(ad, :device),
+        select: %{ "platform" => ad.platform, "count" => count(ad.id) },
+        group_by: ad.platform,
+        order_by: [asc: count(ad.id)]
+    platform_reports = StatsRepo.all(query_platform)
+
+    query = 
+      from ad in AppDevice,
+        left_join: device in assoc(ad, :device),
+        order_by: [desc: count(ad.id)],
+        limit: 10
+    query = 
+      if stats_type == "model" do
+        query
+        |> group_by([ad,device], device.model) 
+        |> select([ad,device], %{"platform" => ad.platform, "count" => count(ad.id), "model" => device.model})
+      else
+        query
+        |> group_by([ad,device], device.os) 
+        |> select([ad,device], %{"platform" => ad.platform, "count" => count(ad.id), "os" => device.os})
+      end
+
+    query = 
+      unless platform == "all" do
+        where(query, [p], p.platform == ^platform)
+      else
+        query
+      end
+
+    reports = StatsRepo.all(query)
+    conn |> json(%{success: true, platforms: platform_reports, reports: reports})
+  end
+
+  def get_stats_device_details(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                        %{"platform" => platform , "stats_type" => stats_type, "page" => page , "records_per_page" => records_per_page}) do
+   query_group_by = 
+     from ad in AppDevice,
+      left_join: device in assoc(ad, :device),
+      select: %{count: count(ad.id)}
+    query_group_by = 
+      if stats_type == "model" do
+        group_by(query_group_by, [ad,device], device.model)
+      else
+        group_by(query_group_by, [ad,device], device.os)
+      end
+    query_total = from e in subquery(query_group_by), select: count(e.count)
+    total_page = round(Float.ceil(StatsRepo.one(query_total) / records_per_page))
+   
+    query = 
+      from ad in AppDevice,
+        left_join: device in assoc(ad, :device),
+        order_by: [desc: count(ad.id)],
+        offset: ^((page - 1) * records_per_page),
+        limit: ^records_per_page
+    query = 
+      if stats_type == "model" do
+        query
+        |> group_by([ad,device], device.model) 
+        |> select([ad,device], %{"count" => count(ad.id), "model" => device.model})
+      else
+        query
+        |> group_by([ad,device], device.os) 
+        |> select([ad,device], %{"count" => count(ad.id), "os" => device.os})
+      end
+
+    query = 
+      unless platform == "all" do
+        where(query, [p], p.platform == ^platform)
+      else
+        query
+      end
+
+    reports = StatsRepo.all(query)
+    conn |> json(%{success: true, total: total_page, reports: reports})
+  end
 end

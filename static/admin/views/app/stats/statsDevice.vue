@@ -30,31 +30,41 @@
               </p>
             </header>
             <div class="card-content">
-              <pie ref="chart" :options="barOptions" :height="300" :data="platforum_reports"></pie>
+              <pie ref="chart" :options="platformOptions" :height="300" :data="chart_platforms"></pie>
             </div>
           </div>
         </div>
         <div class="tile is-parent">
           <div class="tile is-child  box card">
             <header class="card-header">
-              <p class="card-header-title">设备机型
+              <p class="card-header-title">{{statsType =="model" ?"设备机型":"操作系统"}}
               </p>
             </header>
             <div class="card-content">
-              <horizontal-bar ref="chart2" :options="barOptions" :height="300" :data="reports"></horizontal-bar>
+              <horizontal-bar ref="chart2" :options="modelOptions" :height="300" :data="chart_models"></horizontal-bar>
             </div>
           </div>
         </div>
       </div>
       <div class="tile is-parent">
-        <el-table class="tile is-child box" :data="tableData" border style="width: 100%" :default-sort="{prop: 'date', order: 'descending'}">
-          <el-table-column prop="date" label="机型" width="500">
-          </el-table-column>
-          <el-table-column prop="name" label="数量" sortable width="180">
-          </el-table-column>
-          <el-table-column prop="address" label="占比" sortable>
-          </el-table-column>
-        </el-table>
+        <div class="tile is-child box">
+          <header class="card-header">
+            <p class="card-header-title">明细数据
+            </p>
+          </header>
+          <div class="card-content is-paddingless">
+            <el-table stripe :data="reports" style="width: 100%" :default-sort="{prop: 'count', order: 'descending'}">
+              <el-table-column v-if="statsType == 'model'" prop="model" label="机型" width="500">
+              </el-table-column>
+              <el-table-column v-if="statsType == 'os'" prop="os" label="操作系统" width="500">
+              </el-table-column>
+              <el-table-column prop="count" label="数量" sortable width="180">
+              </el-table-column>
+              <el-table-column prop="count" label="占比" sortable>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,8 +96,9 @@ export default {
     HorizontalBar,
     Pie
   },
-  mounted() {
-
+  async mounted() {
+    await this.fetchData()
+    await this.getDetails()
   },
 
   data() {
@@ -96,6 +107,8 @@ export default {
       platform: 'all',
       dateType: 'today',
       dateRange: [],
+      page: 0,
+      total: 1,
       pickerOptions: {
         disabledDate: function(date) {
           var limitDate = new Date();
@@ -103,38 +116,36 @@ export default {
           return date > limitDate
         }
       },
-      platforum_reports: {
-        labels: ["iPhone", "Android"],
+      chart_platforms: {
+        labels: [],
         datasets: [{
-          data: [80, 20],
-          backgroundColor: [
-            'rgba(54, 162, 235, 0.8)',
-            'rgba(75, 192, 192, 0.8)',
-          ]
+          data: [],
+          backgroundColor: []
         }]
       },
-      reports: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+      reports_colors: ['rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(255, 159, 64, 0.8)'
+      ],
+      chart_models: {
+        labels: [],
         datasets: [{
           label: '设备数',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.8)',
-            'rgba(54, 162, 235, 0.8)',
-            'rgba(255, 206, 86, 0.8)',
-            'rgba(75, 192, 192, 0.8)',
-            'rgba(153, 102, 255, 0.8)',
-            'rgba(255, 159, 64, 0.8)'
-          ]
+          data: [],
+          backgroundColor: []
         }]
       },
+      reports: []
     }
   },
   computed: {
     ...mapGetters([
       'app'
     ]),
-    barOptions() {
+    platformOptions() {
       let _this = this
       return {
         responsive: true,
@@ -143,18 +154,39 @@ export default {
           _this.changePlatform(this)
         }
       }
+    },
+    modelOptions() {
+      let _this = this
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: function() {
+          _this.platform = 'all'
+        }
+      }
     }
   },
   watch: {
-    app: function(newVal) {
-
+    'platform': function(val) {
+      if (val) {
+        this.page = 0
+        this.fetchData()
+        this.getDetails()
+      }
+    },
+    'statsType': function(val) {
+      if (val) {
+        this.page = 0
+        this.fetchData()
+        this.getDetails()
+      }
     }
   },
 
   methods: {
     changePlatform: function(chart) {
       if (chart.active[0]) {
-        this.platform = chart.active[0]._model.label.toLowerCase()
+        this.platform = chart.active[0]._model.label == 'iPhone' ? 'ios' : 'android'
       } else {
         this.platform = 'all'
       }
@@ -166,7 +198,7 @@ export default {
         this.$refs.datePicker.handleFocus()
     },
     changeDateRange: function(val) {
-      this.fetchData()
+      // this.fetchData()
     },
     calcRate: function(report, nday) {
       var now = new Date()
@@ -201,15 +233,82 @@ export default {
 
       let data = {
         platform: this.platform,
-        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
-        end_date: this.dateRange[1].Format("yyyy-MM-dd")
+        stats_type: this.statsType,
+        // start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        // end_date: this.dateRange[1].Format("yyyy-MM-dd")
       }
 
-      let result = await this.$acs.getRetentionStats(data)
+      let result = await this.$acs.getStatsDevice(data)
+      if (result.success) {
+        this.chart_models = result.chart_models
+        this.update_chart_platforms(result.platforms)
+        this.update_model_chart(result.reports)
+      }
+    },
+    update_chart_platforms(chart_models) {
+      if (!chart_models) {
+        return
+      }
+
+      this.chart_platforms = Object.assign({}, {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: []
+        }]
+      })
+
+      var iphone = chart_models.find(r => r.platform == "ios")
+      if (iphone) {
+        this.chart_platforms.labels.push("iPhone")
+        this.chart_platforms.datasets[0].data.push(iphone.count)
+        this.chart_platforms.datasets[0].backgroundColor.push('rgba(54, 162, 235, 0.8)')
+      }
+
+      var android = chart_models.find(r => r.platform == "android")
+      if (android) {
+        this.chart_platforms.labels.push("Android")
+        this.chart_platforms.datasets[0].data.push(android.count)
+        this.chart_platforms.datasets[0].backgroundColor.push('rgba(75, 192, 192, 0.8)')
+      }
+    },
+    update_model_chart(chart_models) {
+      if (!chart_models) {
+        return
+      }
+
+      this.chart_models = {
+        labels: [],
+        datasets: [{
+          label: '设备数',
+          data: [],
+          backgroundColor: []
+        }]
+      }
+
+      chart_models.forEach((rpt, index) => {
+        this.chart_models.labels.push(rpt.model || rpt.os)
+        this.chart_models.datasets[0].data.push(rpt.count)
+        this.chart_models.datasets[0].backgroundColor.push(this.reports_colors[index % this.reports_colors
+          .length])
+      })
+
+    },
+    getDetails: async function() {
+      var data = {
+        platform: this.platform,
+        stats_type: this.statsType,
+        page: this.page + 1,
+        records_per_page: 30
+      }
+
+      let result = await this.$acs.getStatsDeviceDetails(data)
       if (result.success) {
         this.reports = result.reports
+        this.total = result.total
+        this.page++
       }
-    }
+    },
   },
 }
 </script>

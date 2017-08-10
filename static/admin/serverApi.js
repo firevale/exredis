@@ -306,6 +306,12 @@ export default {
       getRetentionStats(params) {
         return post('/admin_actions/stats/get_stats_retention', params)
       },
+      getStatsDevice(params) {
+        return post('/admin_actions/stats/get_stats_device', params)
+      },
+      getStatsDeviceDetails(params) {
+        return post('/admin_actions/stats/get_stats_device_details', params)
+      },
     }
   }
 }

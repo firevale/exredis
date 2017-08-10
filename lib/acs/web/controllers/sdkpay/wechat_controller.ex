@@ -135,8 +135,10 @@ defmodule Acs.Web.WechatController do
                                       acs_platform: platform,
                                       acs_app: %RedisApp{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,
                 %{"state" => state, "code" => code}) do
-
-    with {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
+    session_state = get_session(conn, :wechat_login_state)
+   
+    with true <- session_state == state,
+        {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
         #  {:ok, _openid, nickname, _sex, _headimgurl} <- SDKWechat.get_auth_user_info(access_token, openid)
     do
       case RedisUser.bind_sdk_user(%{sdk: :wechat, 
@@ -173,6 +175,7 @@ defmodule Acs.Web.WechatController do
           conn |> json(%{success: false, message: "can't bind sdk user"})
       end
     else
+      false -> conn |> json(%{success: false, message: "invalid request params"})
       {:error, errmsg} -> conn |> json(%{success: false, message: errmsg})
     end
 

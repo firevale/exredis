@@ -5,7 +5,7 @@
     </div>
     <div class="horizontal-stack-box">
       <div class="tile" v-for="accountType in accountTypes" :key="accountType">
-        <a class="sdk-icon" :class="accountType + ((accountType == 'anonymous' && processing) ? ' rotating' : '')"
+        <a class="sdk-icon" :class="accountType + ((accountType == currentAccountType && processing) ? ' rotating' : '')"
           @click="onLoginByType(accountType)">
       </a>
         <p>{{ $t(`account.types.${accountType}`) }}</p>
@@ -31,6 +31,7 @@ export default {
       accountTypes.push('wechat')
     }
     return {
+      currentAccountType: '',
       accountTypes: accountTypes,
       processing: false,
     }
@@ -42,6 +43,7 @@ export default {
     ]),
 
     onLoginByType: function(accountType) {
+      this.currentAccountType = accountType
       switch (accountType) {
         case 'firevale':
           this.$router.push({
@@ -63,10 +65,17 @@ export default {
       }
     },
 
-    wechatLogin: function() {
-      nativeApi.showWechatLogin("testWechatLogin1",
-        async (state,code) => {
-          this.processing = true
+    wechatLogin: async function() {
+      this.processing = true
+      let result = await this.$acs.generateState()
+      if (result.success) {
+        this.showWechatLogin(result.state)
+      }
+    },
+
+    showWechatLogin: function(mystate) {
+      nativeApi.showWechatLogin(mystate,
+        async(state, code) => {
           let result = await this.$acs.createWechatToken(state, code)
           if (result.success) {
             this.addLoginnedAccount(result)

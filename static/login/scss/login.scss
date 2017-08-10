@@ -16,6 +16,7 @@ body:not(.in-app) {
 body.in-app {
   position: fixed;
   width: 100%;
+  max-width: 320px;
   height: 100%;
   overflow: hidden; // hardware accelerate
   transform: translate3d(0, 0, 0);

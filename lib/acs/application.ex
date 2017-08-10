@@ -64,7 +64,7 @@ defmodule Acs.Application do
     init_elasticsearch_mappings()
     check_user_id_counter()
     reset_online_counter()
-    # return res
+    
     res
   end
 

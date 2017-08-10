@@ -1,17 +1,17 @@
 <template>
-<div class="login-box">
-  <div class="row-login">
-    <p class="title">{{ $t('account.loginPage.otherWays') }}</p>
-  </div>
-  <div class="horizontal-stack-box">
-    <div class="tile" v-for="accountType in accountTypes" :key="accountType">
-      <a class="sdk-icon" :class="accountType + ((accountType == 'anonymous' && processing) ? ' rotating' : '')"
+  <div class="login-box">
+    <div class="row-login">
+      <p class="title">{{ $t('account.loginPage.otherWays') }}</p>
+    </div>
+    <div class="horizontal-stack-box">
+      <div class="tile" v-for="accountType in accountTypes" :key="accountType">
+        <a class="sdk-icon" :class="accountType + ((accountType == 'anonymous' && processing) ? ' rotating' : '')"
           @click="onLoginByType(accountType)">
       </a>
-      <p>{{ $t(`account.types.${accountType}`) }}</p>
+        <p>{{ $t(`account.types.${accountType}`) }}</p>
+      </div>
     </div>
   </div>
-</div>
 </template>
 <script>
 import nativeApi from 'common/js/nativeApi'
@@ -26,6 +26,9 @@ export default {
     let accountTypes = ['anonymous', 'firevale']
     if (window.acsConfig.isFbLoginSupported) {
       accountTypes.push('facebook')
+    }
+    if (window.acsConfig.isWechatLoginSupported) {
+      accountTypes.push('wechat')
     }
     return {
       accountTypes: accountTypes,
@@ -45,16 +48,35 @@ export default {
             name: 'login'
           })
           break;
-        case 'facebook': 
+        case 'facebook':
           nativeApi.closeWebviewWithResult({
             success: false,
             native: 'facebook',
           })
-          break;     
+          break;
         case 'anonymous':
           this.anonymousLogin()
           break;
+        case 'wechat':
+          this.wechatLogin()
+          break;
       }
+    },
+
+    wechatLogin: function() {
+      nativeApi.showWechatLogin("testWechatLogin1",
+        async (state,code) => {
+          this.processing = true
+          let result = await this.$acs.createWechatToken(state, code)
+          if (result.success) {
+            this.addLoginnedAccount(result)
+            nativeApi.closeWebviewWithResult(result)
+          } else if (result.action == 'show_login_code') {
+            this.$router.push({
+              name: 'inputLoginCode'
+            })
+          }
+        })
     },
 
     anonymousLogin: function() {
@@ -70,9 +92,10 @@ export default {
               if (result.success) {
                 this.addLoginnedAccount(result)
                 nativeApi.closeWebviewWithResult(result)
-              }
-              else if (result.action == 'show_login_code') {
-                this.$router.push({name: 'inputLoginCode'})
+              } else if (result.action == 'show_login_code') {
+                this.$router.push({
+                  name: 'inputLoginCode'
+                })
               }
             } catch (e) {
               console.error(e)

@@ -9,6 +9,7 @@ defmodule SDKWechat do
 
   @wechat_config      Application.get_env(:acs, :wechat)
   @prepay_url         @wechat_config[:prepay_url]
+  @auth_base_url      @wechat_config[:auth_base_url]
   # @check_url          @wechat_config[:check_url]
   # @close_url          @wechat_config[:close_url]
   # @refund_url         @wechat_config[:refund_url]
@@ -135,9 +136,55 @@ defmodule SDKWechat do
     end
   end
 
+  defp get_auth_response(resultstr) do
+    result = resultstr |> Poison.decode!
+
+    case result["errcode"] do
+      nil ->
+        {:ok, result["access_token"], result["openid"]}
+      _ ->
+        {:error, result["errmsg"]}
+    end
+  end
+
+  defp get_auth_response_user(resultstr) do
+    result = resultstr |> Poison.decode!
+
+    case result["errcode"] do
+      nil ->
+        {:ok, result["openid"], result["nickname"], result["sex"], result["headimgurl"]}
+      _ ->
+        {:error, result["errmsg"]}
+    end
+  end
+
   def params_with_sign(params, sign_key) do
     sign = "#{make_param_string(params)}&key=#{sign_key}" |> Utils.md5_sign |> String.upcase
     Map.put(params, :sign, sign)
+  end
+
+  def get_auth_access_token(wechat_info, code) do
+    url = "#{@auth_base_url}/oauth2/access_token?appid=#{wechat_info.app_id}&secret=#{wechat_info.app_secret}&code=#{code}&grant_type=authorization_code"
+    response = Httpc.get(url)
+    d "wechat get_auth_access_token, response: #{inspect response.body, pretty: true}"
+    case Httpc.success?(response) do
+      true ->
+        get_auth_response(response.body)
+      _ ->
+        {:error, "get auth access token failed"}  
+    end
+  end
+
+  def get_auth_user_info(access_token, openid) do
+    url = "#{@auth_base_url}/userinfo?access_token=#{access_token}&openid=#{openid}"
+    response = Httpc.get(url)
+    d "wechat get_auth_user_info, url: #{url}, response: #{inspect response.body, pretty: true}"
+    case Httpc.success?(response) do
+      true ->
+        get_auth_response_user(response.body)
+      _ ->
+        {:error, "get auth user info failed"}  
+    end
   end
 
   defp make_param_string(params) do

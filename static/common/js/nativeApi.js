@@ -167,6 +167,17 @@ export default {
     }
   },
 
+  showWechatLogin: function(state, callback) {
+    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
+      window.acsConfig.wechatLoginCallback = callback
+      return AndroidNativeAPI.showWechatLogin(state)
+    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
+      return IOSNativeAPI.showWechatLogin(state)
+    } else {
+      return false
+    }
+  },
+
   openWechatPay: function(payinfo) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
       return AndroidNativeAPI.openWechatPay(payinfo)

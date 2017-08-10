@@ -129,6 +129,59 @@ defmodule Acs.Web.WechatController do
     end
   end
 
+  # authlogin
+  def authlogin(%Plug.Conn{private: %{acs_app_id: app_id,
+                                      acs_device_id: device_id,
+                                      acs_platform: platform,
+                                      acs_app: %RedisApp{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,
+                %{"state" => state, "code" => code}) do
+
+    with {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
+        #  {:ok, _openid, nickname, _sex, _headimgurl} <- SDKWechat.get_auth_user_info(access_token, openid)
+    do
+      case RedisUser.bind_sdk_user(%{sdk: :wechat, 
+                                     app_id: app.id, 
+                                     sdk_user_id: openid, 
+                                     email: nil,
+                                     nickname: "",
+                                     device_id: device_id,
+                                     mobile: nil,
+                                     avatar_url: nil}) do 
+        {:ok, user} -> 
+          access_token = RedisAccessToken.create(%{
+            app_id: app.id, 
+            user_id: user.id,
+            device_id: device_id,
+            platform: platform,
+            ttl: app.token_ttl,
+            binding: %{wechat: %{access_token: access_token, open_id: openid}}
+          })
+
+          conn |> json(%{
+            success: true,
+            access_token: access_token.id,
+            expires_at: RedisAccessToken.expired_at(access_token),
+            user_id: "#{user.id}",
+            user_email: user.email,
+            nick_name:  user.nickname,
+            is_anonymous: false,
+            sdk: :wechat,
+            binding: access_token.binding              
+          })
+
+        _ ->
+          conn |> json(%{success: false, message: "can't bind sdk user"})
+      end
+    else
+      {:error, errmsg} -> conn |> json(%{success: false, message: errmsg})
+    end
+
+  end
+  def authlogin(conn, _params) do
+    d "req : #{inspect conn.private, pretty: true}"
+    conn |> json(%{success: false, message: "invalid request params"})
+  end
+
   defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do
     case RedisApp.find(app_id) do
       nil -> {:error, "app not found"}

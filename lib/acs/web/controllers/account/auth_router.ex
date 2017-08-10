@@ -39,6 +39,7 @@ defmodule Acs.Web.AuthApiRouter do
     get "/bind/xy", XYAuthBind, :bind
     get "/bind/youku", YoukuAuthBind, :bind
     get "/bind/yyh", YYHAuthBind, :bind
+    get "/bind/wechat", WechatController, :authlogin
 
     post "/bind/anzhi", AnzhiAuthBind, :bind
     post "/bind/baidu", BaiduAuthBind, :bind
@@ -73,6 +74,7 @@ defmodule Acs.Web.AuthApiRouter do
     post "/bind/xy", XYAuthBind, :bind
     post "/bind/youku", YoukuAuthBind, :bind
     post "/bind/yyh", YYHAuthBind, :bind
+    post "/bind/wechat", WechatController, :authlogin
 
     get  "/authorization_token", PageController, :show_login_page
     post "/gen_token", UserController, :create_token

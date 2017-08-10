@@ -114,6 +114,8 @@ defmodule Acs.Web.AdminRouter do
       post  "/get_stats_by_day", Admin.StatsController, :get_stats_by_day
       post  "/get_user_timing_by_day", Admin.StatsController, :get_user_timing_by_day
       post  "/get_stats_retention", Admin.StatsController, :get_stats_retention
+      post  "/get_stats_device", Admin.StatsController, :get_stats_device
+      post  "/get_stats_device_details", Admin.StatsController, :get_stats_device_details
     end
 
     scope "/wcp" do 

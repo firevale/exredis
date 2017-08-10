@@ -45,7 +45,8 @@ config :acs, :wechat,
   check_url: "https://api.mch.weixin.qq.com/pay/orderquery",
   close_url: "https://api.mch.weixin.qq.com/pay/closeorder",
   refund_url: "https://api.mch.weixin.qq.com/secapi/pay/refund",
-  refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery"
+  refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery",
+  auth_base_url: "https://api.weixin.qq.com/sns"
 
 config :acs, :netease_dun,
   secretId: "f94740b35af60351d389117156eef9aa",

@@ -559,6 +559,12 @@ defmodule Acs.Web.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def generate_wechat_login_state(conn, _params) do
+    state = Utils.generate_token()
+    conn  |> put_session(:wechat_login_state, state)
+          |> json(%{success: true, state: state})
+  end
+
   defp response_access_token(conn, access_token) do 
     user = RedisUser.find(access_token.user_id)
     conn |> json(%{

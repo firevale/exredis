@@ -158,11 +158,11 @@ defmodule Acs.Web.Admin.StatsController do
       if stats_type == "model" do
         query
         |> group_by([ad,device], device.model) 
-        |> select([ad,device], %{"platform" => ad.platform, "count" => count(ad.id), "model" => device.model})
+        |> select([ad,device], %{platform: ad.platform, count: count(ad.id), model: device.model})
       else
         query
         |> group_by([ad,device], device.os) 
-        |> select([ad,device], %{"platform" => ad.platform, "count" => count(ad.id), "os" => device.os})
+        |> select([ad,device], %{platform: ad.platform, count: count(ad.id), os: device.os})
       end
 
     query = 
@@ -201,11 +201,11 @@ defmodule Acs.Web.Admin.StatsController do
       if stats_type == "model" do
         query
         |> group_by([ad,device], device.model) 
-        |> select([ad,device], %{"count" => count(ad.id), "model" => device.model})
+        |> select([ad,device], %{count: count(ad.id), model: device.model})
       else
         query
         |> group_by([ad,device], device.os) 
-        |> select([ad,device], %{"count" => count(ad.id), "os" => device.os})
+        |> select([ad,device], %{count: count(ad.id), os: device.os})
       end
 
     query = 

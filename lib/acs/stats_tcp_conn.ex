@@ -19,11 +19,17 @@ defmodule Acs.StatsTcpConn do
   end
 
   def handle_call({:set_socket, socket}, _from, state) do 
-    :ok = :inet.setopts(socket, [:binary, packet: :line, active: :once])
+    :ok = :inet.setopts(socket, [:binary, packet: 2, active: :once])
     {:reply, :ok, %{state | socket: socket}}
   end
 
+  def handle_info({:tcp, _socket, "ping"}, %{socket: socket} = state) do
+    :gen_tcp.send(<<4::integer-size(16), "pong">>)
+    :inet.setopts(socket, active: :once)
+    {:noreply, state}
+  end
   def handle_info({:tcp, _socket, bin}, %{socket: socket} = state) do
+    d "received package: #{inspect bin}"
     :inet.setopts(socket, active: :once)
     {:noreply, state}
   end

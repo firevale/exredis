@@ -25,7 +25,7 @@ docker_run() {
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
-								 -p 4000:4000 \
+								 -p 80:4000 \
 								 -p 9527:9527 \
 								 -v ${PWD}:/code \
 								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
@@ -59,7 +59,7 @@ run() {
 								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
-								 -p 4000:4000 \
+								 -p 80:4000 \
 								 -p 9527:9527 \
 								 -v ${PWD}:/code \
 								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \

@@ -4,7 +4,6 @@
       <el-radio-group v-model="statsType" @change="changePlatform">
         <el-radio-button label="model">机型</el-radio-button>
         <el-radio-button label="os">操作系统</el-radio-button>
-        <el-radio-button label="mem">内存</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
       <el-radio-group v-model="dateType" @change="changeDateType">
@@ -53,16 +52,29 @@
             </p>
           </header>
           <div class="card-content is-paddingless">
-            <el-table stripe :data="reports" style="width: 100%" :default-sort="{prop: 'count', order: 'descending'}">
-              <el-table-column v-if="statsType == 'model'" prop="model" label="机型" width="500">
+            <el-table stripe :data="reports" style="width: 100%" @filter-change="filterMemSize" @sort-change="sortChange">
+              <el-table-column v-if="statsType == 'model'" label="机型" width="500">
+                <template scope="scope">
+                  {{ scope.row.alias != null ? scope.row.alias : scope.row.model }}
+                </template>
+              </el-table-column>
+              <el-table-column v-if="statsType == 'model'" prop="total_mem_size" align="right" label="内存" width="180"
+                :filters="mem_filter_opts" :filter-multiple="false" column-key="memSize" sortable="custom">
+                <template scope="scope">
+                  {{ scope.row.total_mem_size | bytesToSize }}
+                </template>
               </el-table-column>
               <el-table-column v-if="statsType == 'os'" prop="os" label="操作系统" width="500">
               </el-table-column>
-              <el-table-column prop="count" label="数量" sortable width="180">
+              <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
               </el-table-column>
-              <el-table-column prop="count" label="占比" sortable>
+              <el-table-column prop="count" label="占比">
               </el-table-column>
             </el-table>
+            <div v-if="reports && reports.length>0" class="ele-pagination">
+              <el-pagination layout="prev, pager, next" :page-count="total" @current-change="changePage">
+              </el-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -105,6 +117,8 @@ export default {
     return {
       statsType: 'model',
       platform: 'all',
+      memSize: [],
+      orderBy: {},
       dateType: 'today',
       dateRange: [],
       page: 0,
@@ -138,7 +152,17 @@ export default {
           backgroundColor: []
         }]
       },
-      reports: []
+      reports: [],
+      mem_filter_opts: [{
+        text: '大于2G',
+        value: [2040109465, 107374182400]
+      }, {
+        text: '1G~2G',
+        value: [1073741824, 2040109465]
+      }, {
+        text: '小于1G',
+        value: [0, 1073741824]
+      }],
     }
   },
   computed: {
@@ -180,7 +204,7 @@ export default {
         this.fetchData()
         this.getDetails()
       }
-    }
+    },
   },
 
   methods: {
@@ -190,6 +214,27 @@ export default {
       } else {
         this.platform = 'all'
       }
+    },
+    changePage: function(page) {
+      this.page = page - 1
+      this.getDetails()
+    },
+    filterMemSize: function(filters) {
+      this.page = 0
+      this.memSize = filters.memSize[0] || []
+      this.getDetails()
+    },
+    sortChange: function(column) {
+      if (column.column == null) {
+        this.orderBy = {}
+      } else if (column.order == "descending") {
+        this.orderBy[column.prop] = "desc"
+      } else {
+        this.orderBy[column.prop] = "asc"
+      }
+      
+      this.page = 0
+      this.getDetails()
     },
     changeDateType: function(val) {
       if (val != 'custom')
@@ -298,8 +343,10 @@ export default {
       var data = {
         platform: this.platform,
         stats_type: this.statsType,
+        mem_size: this.memSize,
+        order_by: this.orderBy,
         page: this.page + 1,
-        records_per_page: 30
+        records_per_page: 10
       }
 
       let result = await this.$acs.getStatsDeviceDetails(data)
@@ -312,5 +359,17 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.ele-pagination {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  li.number {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
 </style>

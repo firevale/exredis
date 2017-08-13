@@ -7,7 +7,6 @@
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
       <el-radio-group v-model="dateType" @change="changeDateType">
-        <el-radio-button label="today">今日</el-radio-button>
         <el-radio-button label="week">最近一周</el-radio-button>
         <el-radio-button label="month">最近一月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
@@ -64,11 +63,16 @@
                   {{ scope.row.total_mem_size | bytesToSize }}
                 </template>
               </el-table-column>
-              <el-table-column v-if="statsType == 'os'" prop="os" label="操作系统" width="500">
+              <el-table-column v-if="statsType == 'os'" label="操作系统" width="500">
+                <template scope="scope">
+                  {{ scope.row.os != null ? scope.row.os : "" }}
+                </template>
               </el-table-column>
               <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
               </el-table-column>
-              <el-table-column prop="count" label="占比">
+              <el-table-column>
+                <template scope="scope">
+                </template>
               </el-table-column>
             </el-table>
             <div v-if="reports && reports.length>0" class="ele-pagination">
@@ -119,7 +123,7 @@ export default {
       platform: 'all',
       memSize: [],
       orderBy: {},
-      dateType: 'today',
+      dateType: 'week',
       dateRange: [],
       page: 0,
       total: 1,
@@ -147,7 +151,7 @@ export default {
       chart_models: {
         labels: [],
         datasets: [{
-          label: '设备数',
+          label: '新增设备数',
           data: [],
           backgroundColor: []
         }]
@@ -201,7 +205,7 @@ export default {
     'statsType': function(val) {
       if (val) {
         this.page = 0
-        this.fetchData()
+        // this.fetchData()
         this.getDetails()
       }
     },
@@ -225,6 +229,11 @@ export default {
       this.getDetails()
     },
     sortChange: function(column) {
+      var field = column.prop
+      if (field == "total_mem_size") {
+        field = "device.total_mem_size"
+      }
+
       if (column.column == null) {
         this.orderBy = {}
       } else if (column.order == "descending") {
@@ -232,7 +241,7 @@ export default {
       } else {
         this.orderBy[column.prop] = "asc"
       }
-      
+
       this.page = 0
       this.getDetails()
     },
@@ -243,22 +252,10 @@ export default {
         this.$refs.datePicker.handleFocus()
     },
     changeDateRange: function(val) {
-      // this.fetchData()
+      this.fetchData()
+      this.getDetails()
     },
-    calcRate: function(report, nday) {
-      var now = new Date()
-      var start = new Date().setTime(Date.parse(report.date) + 3600 * 1000 * 24 * nday)
-      if (start > now)
-        return -1
-
-      let record = report.user_retentions.find(rpt => rpt.nday == nday)
-      if (record && report.danu > 0) {
-        return ((record.retention / report.danu) * 100).toFixed(2)
-      } else {
-        return 0
-      }
-    },
-    fetchData: async function() {
+    calcRate: function() {
       switch (this.dateType) {
         case 'week':
           var end = new Date();
@@ -275,12 +272,14 @@ export default {
           this.dateRange = [start, end]
           break
       }
-
+    },
+    fetchData: async function() {
+      this.calcRate()
       let data = {
         platform: this.platform,
         stats_type: this.statsType,
-        // start_date: this.dateRange[0].Format("yyyy-MM-dd"),
-        // end_date: this.dateRange[1].Format("yyyy-MM-dd")
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd")
       }
 
       let result = await this.$acs.getStatsDevice(data)
@@ -340,10 +339,13 @@ export default {
 
     },
     getDetails: async function() {
+      this.calcRate()
       var data = {
         platform: this.platform,
         stats_type: this.statsType,
         mem_size: this.memSize,
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd"),
         order_by: this.orderBy,
         page: this.page + 1,
         records_per_page: 10

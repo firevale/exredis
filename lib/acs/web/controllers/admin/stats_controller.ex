@@ -140,11 +140,12 @@ defmodule Acs.Web.Admin.StatsController do
   end
 
   def get_stats_device(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                        %{"platform" => platform, "stats_type" => stats_type}) do
+                        %{"platform" => platform, "stats_type" => stats_type, "start_date" => start_date, "end_date" => end_date}) do
     query_platform = 
       from ad in AppDevice,
         left_join: device in assoc(ad, :device),
         select: %{ "platform" => ad.platform, "count" => count(ad.id) },
+        where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
         group_by: ad.platform,
         order_by: [asc: count(ad.id)]
     platform_reports = StatsRepo.all(query_platform)
@@ -152,6 +153,7 @@ defmodule Acs.Web.Admin.StatsController do
     query = 
       from ad in AppDevice,
         left_join: device in assoc(ad, :device),
+        where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
         order_by: [desc: count(ad.id)],
         limit: 10
     query = 
@@ -177,11 +179,12 @@ defmodule Acs.Web.Admin.StatsController do
   end
 
   def get_stats_device_details(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                        %{"platform" => platform , "stats_type" => stats_type, "mem_size" => mem_size, "order_by" => order_bys,
-                        "page" => page , "records_per_page" => records_per_page}) do
+     %{"platform" => platform , "stats_type" => stats_type, "mem_size" => mem_size, "order_by" => order_bys,
+      "start_date" => start_date, "end_date" => end_date, "page" => page , "records_per_page" => records_per_page}) do
     query_group_by = 
       from ad in AppDevice,
         left_join: device in assoc(ad, :device),
+        where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
         select: %{count: count(ad.id)}
     
     query_group_by = 
@@ -205,7 +208,7 @@ defmodule Acs.Web.Admin.StatsController do
     total_page = round(Float.ceil(StatsRepo.one(query_total) / records_per_page))
    
     query_reports =  _query_device_details([platform: platform, stats_type: stats_type, page: page, records_per_page: records_per_page,
-         mem_size: mem_size, order_by: order_bys])
+         mem_size: mem_size, start_date: start_date, end_date: end_date, order_by: order_bys])
     reports = StatsRepo.all(query_reports)
     
     conn |> json(%{success: true, total: total_page, reports: reports})
@@ -215,12 +218,15 @@ defmodule Acs.Web.Admin.StatsController do
     records_per_page = Keyword.get(opts, :records_per_page, 10)
     platform = Keyword.get(opts, :platform, "all")
     stats_type = Keyword.get(opts, :stats_type, "model")
+    start_date = Keyword.get(opts, :start_date)
+    end_date = Keyword.get(opts, :end_date)
     mem_size = Keyword.get(opts, :mem_size, [])
     order_bys = Keyword.get(opts, :order_by, [])
 
     query = 
       from ad in AppDevice,
         left_join: device in assoc(ad, :device),
+        where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
         order_by: [desc: count(ad.id)],
         offset: ^((page - 1) * records_per_page),
         limit: ^records_per_page

@@ -68,10 +68,10 @@ defmodule Acs.Web.AppChannel do
                    |> assign(:platform, platform)
                    |> assign(:os_ver, os_ver)
                    |> assign(:sdk, sdk)
-                   |> assign(:active, true)
                    |> assign(:today, today)
                    |> assign(:node, node)
                    |> assign(:hb_interval, timer)
+                   |> assign(:active, false)
                    |> assign(:version, 2)
       }
     else
@@ -87,7 +87,7 @@ defmodule Acs.Web.AppChannel do
                           "os_ver" => os_ver,
                           "platform" => platform,
                           "sdk" => sdk,
-                          "app_user_id" => _app_user_id,
+                          "app_user_id" => app_user_id,
                           "app_user_name" => _app_user_name,
                           "app_user_level" => _app_user_level,
                           "zone_id" => zone_id,
@@ -118,6 +118,7 @@ defmodule Acs.Web.AppChannel do
                    |> assign(:join_at, Utils.unix_timestamp)
                    |> assign(:platform, platform)
                    |> assign(:os_ver, os_ver)
+                   |> assign(:app_user_id, app_user_id)
                    |> assign(:sdk, sdk)
                    |> assign(:zone_id, "#{zone_id}")
                    |> assign(:active, true)
@@ -129,7 +130,6 @@ defmodule Acs.Web.AppChannel do
       {:error, %{reason: "unauthorized"}}
     end
   end
-
   def join(_channel, payload, _socket) do
     error "can't handle join with payload: #{inspect payload}"
     {:error, %{reason: "unknown payload"}}
@@ -153,15 +153,16 @@ defmodule Acs.Web.AppChannel do
     Logger.metadata(user_id: user_id)
 
     if user_id != last_user_id do 
-      decr_online_counter(node, app_id, platform, state.user_id)
+      decr_online_counter(node, app_id, platform, last_user_id)
       incr_online_counter(node, app_id, platform, user_id)
     end
 
     socket = do_stat(socket)
-    today = Timex.local() |> Timex.to_date()
+    now = Timex.local()
+    today = Timex.to_date(now)
     socket = init_stat_data(payload, today, socket)
     {:noreply, socket |> assign(:user_id, user_id)
-                      |> assign(:join_at, Utils.unix_timestamp)
+                      |> assign(:join_at, Timex.to_unix(now))
                       |> assign(:zone_id, "#{zone_id}")
                       |> assign(:active, true)
                       |> assign(:today, today)
@@ -172,6 +173,10 @@ defmodule Acs.Web.AppChannel do
     {:noreply, socket} 
   end
 
+  def handle_in("updateGameData", %{"app_user_id" => ""} = payload, socket) do 
+    info "receive invalid update game data payload: #{inspect payload}"
+    {:noreply, socket}
+  end
   def handle_in("updateGameData", %{"app_user_id" => app_user_id,
                                     "app_user_name" => app_user_name,
                                     "app_user_level" => app_user_level,
@@ -184,8 +189,16 @@ defmodule Acs.Web.AppChannel do
                                                  device_model: device_model,
                                                  os_ver: os_ver,
                                                  today: today,
+                                                 node: node,
                                                  platform: platform}} =  socket) do
     info "receive update game data request with payload: #{inspect payload}"
+    now = Timex.local()
+    today = Timex.to_date(now)
+    Redis.sadd(dlu_key(today, app_id), user_id)
+    Redis.sadd(dau_key(today, app_id), user_id)
+    Redis.sadd(dlu_key(today, app_id, platform), user_id)
+    Redis.sadd(dau_key(today, app_id, platform), user_id)
+    incr_online_counter(node, app_id, platform, user_id)
 
     socket = init_stat_data(%{"app_user_id" => app_user_id,
                               "app_user_name" => app_user_name,
@@ -202,6 +215,8 @@ defmodule Acs.Web.AppChannel do
 
     {:noreply, socket 
                 |> assign(:zone_id, zone_id)
+                |> assign(:join_at, Timex.to_unix(now))
+                |> assign(:active, true)
                 |> assign(:app_user_id, app_user_id)
     }
   end
@@ -242,6 +257,7 @@ defmodule Acs.Web.AppChannel do
     node: node,
     user_id: user_id, 
     app_id: app_id, 
+    app_user_id: "",
     platform: platform}} = socket) do
     info "channel resume, assigns: #{inspect socket.assigns}"
     incr_online_counter(node, app_id, platform, user_id)

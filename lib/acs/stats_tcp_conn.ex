@@ -22,54 +22,67 @@ defmodule Acs.StatsTcpConn do
     GenServer.call(pid, {:set_socket, socket})
   end
 
-  def send_msg(user_id, msg) do 
+  def send_msg(user_id, %{} = msg) do 
     case Process.whereis(String.to_atom("u#{user_id}")) do 
       nil ->
         {:error, :not_exist}
       pid ->
-        GenServer.call(pid, {:send_message, msg})
+        GenServer.call(pid, {:send_message, Poison.encode!(msg)})
     end
   end
-  def send_msg!(user_id, msg) do 
-    GenServer.call(String.to_atom("u#{user_id}"), {:send_message, msg})
+  def send_msg!(user_id, %{} = msg) do 
+    GenServer.call(String.to_atom("u#{user_id}"), {:send_message, Poison.encode!(msg)})
   end
 
   @doc """
   Starts the registry.
   """
   def start_link() do
+    GenServer.start_link(__MODULE__, [])
+  end
+  def start() do
     GenServer.start(__MODULE__, [])
   end
 
   def init(_) do
+    d "stats tcp connection process start...."
+    {:ok, timer} = :timer.send_interval(5, :heartbeart)
     node = System.get_env("ACS_NODE_NAME")
-    {:ok, %{socket: nil, node: node}}
+    {:ok, %{socket: nil, node: node, timer: timer}}
   end
 
   def handle_call({:set_socket, socket}, _from, state) do 
-    :ok = :inet.setopts(socket, [:binary, packet: 2, active: :once])
+    d "stats tcp connection established....#{inspect socket}"
+    :ok = :inet.setopts(socket, [:binary, packet: :line, active: :once])
     {:reply, :ok, %{state | socket: socket}}
   end
   def handle_call({:send_message, msg}, _from, %{socket: socket} = state) do 
     length = byte_size(msg)
-    result = :gen_tcp.send(socket, <<length::integer-size(16), msg::binary>>)
+    result = :gen_tcp.send(socket, "#{msg}\r\n")
     {:reply, result, %{state | socket: socket}}
   end
-  
-  def handle_info({:tcp, _socket, <<00, 04, "ping">>}, %{socket: socket} = state) do
-    :gen_tcp.send(socket, <<4::integer-size(16), "pong">>)
+
+  def handle_cast(:kill, _from, %{user_id: user_id} = state) do
+    Process.unregister(String.to_atom("u#{user_id}"))
+    {:stop, :normal, state}
+  end
+
+  def handle_info({:tcp, _socket, "ping\r\n"}, %{socket: socket} = state) do
+    d "receive ping from client...."
+    :gen_tcp.send(socket, "pong\r\n")
     :inet.setopts(socket, active: :once)
     {:noreply, state}
   end
-  def handle_info({:tcp, _socket, <<_length::integer-size(16), payload::binary>>}, %{socket: socket, node: node} = state) do
+  def handle_info({:tcp, _socket, payload}, %{socket: socket, node: node} = state) do
     :inet.setopts(socket, active: :once)
+    d "receive socket message: #{inspect payload}"
     case handle_message(Poison.decode!(payload, keys: :atoms), state) do 
       {:ok, new_state} ->  
-        :gen_tcp.send(socket, <<00, 02, "ok">>)
+        :ok = :gen_tcp.send(socket, "ok\r\n")
         {:noreply, new_state}
       _ ->
         error "receive invalid message: #{inspect payload}"
-        :gen_tcp.send(socket, <<00, 02, "error">>)
+        :ok = :gen_tcp.send(socket, "error\r\n")
         {:stop, :error, state}
     end
   end
@@ -80,6 +93,14 @@ defmodule Acs.StatsTcpConn do
   end
   def handle_info({:tcp_closed, _socket}, state) do
     {:stop, :normal, state}
+  end
+  def handle_info(:heartbeart, %{socket: socket} = state) do
+    case :gen_tcp.send(socket, "ping \r\n") do 
+      :ok ->
+        {:noreply, state}
+      _ ->
+        {:stop, :normal, state}
+    end
   end
   def handle_info(info, state) do
     info "stats tcp connection receive info: #{inspect info}"
@@ -110,7 +131,7 @@ defmodule Acs.StatsTcpConn do
     :ok
   end
   def terminate(reason, %{socket: socket} = state) do
-    info "stats tcp connection terminate with reason: #{reason}, #{inspect state}"
+    info "stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     :gen_tcp.close(socket)
     :ok
   end
@@ -132,13 +153,21 @@ defmodule Acs.StatsTcpConn do
     } = payload
   }, %{node: node} = state) do 
     user_id = String.to_integer("#{user_id}")
-    Process.register(self(), String.to_atom("u#{user_id}"))
+    pname = String.to_atom("u#{user_id}") 
+    case Process.whereis(pname) do 
+      nil -> :ok 
+      _pid -> Process.unregister(pname)
+    end
+    Process.register(self(), pname)
+
     case RedisAccessToken.find(access_token_id) do
       %{device_id: ^device_id, user_id: ^user_id} -> 
         now = Timex.local()
         today = Timex.to_date(now)
+        Redis.sadd(dlu_key(today, app_id), user_id)
         Redis.sadd(dlu_key(today, app_id, platform), user_id)
         incr_online_counter(node, app_id, platform, user_id)
+        info "#{today} user login, user_id: #{user_id}, device_id: #{device_id}"
         new_state = state 
           |> Map.put(:access_token, access_token_id)
           |> Map.put(:user_id, user_id)
@@ -152,7 +181,7 @@ defmodule Acs.StatsTcpConn do
         {:ok, new_state}
 
       token -> 
-        error "receive invalid join request, token: {inspect token}, payload: #{inspect payload}"
+        error "receive invalid join request, token: #{inspect token}, payload: #{inspect payload}"
         :error
     end
   end
@@ -170,11 +199,14 @@ defmodule Acs.StatsTcpConn do
       zone_id: zone_id, 
       zone_name: zone_name
     } = payload
-  }, %{app_id: app_id, platform: platform, user_id: user_id} = state) do 
+  }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id} = state) do 
     now = Timex.local()
     today = Timex.to_date(now)
+    Redis.sadd(dlu_key(today, app_id), user_id)
+    Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 
       |> Map.put(:app_user_id, app_user_id)
       |> Map.put(:app_user_name, app_user_name)
@@ -193,12 +225,15 @@ defmodule Acs.StatsTcpConn do
     payload: %{
       user_id: user_id,
     } = payload
-  }, %{app_id: app_id, platform: platform, node: node} = state) do 
+  }, %{app_id: app_id, platform: platform, node: node, device_id: device_id} = state) do 
     Logger.metadata(user_id: user_id)
     now = Timex.local()
     today = Timex.to_date(now)
+    Redis.sadd(dlu_key(today, app_id), user_id)
+    Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
 
     if user_id != state.user_id do 
       decr_online_counter(node, app_id, platform, state.user_id)
@@ -210,8 +245,8 @@ defmodule Acs.StatsTcpConn do
     end
     {:ok, models} = init_stat_data(%{state | user_id: user_id})
     new_state = Map.merge(state, models) 
-      |> Map.put(user_id: user_id)
-      |> Map.put(today: today)
+      |> Map.put(:user_id, user_id)
+      |> Map.put(:today, today)
     {:ok, new_state}
   end
 
@@ -242,6 +277,9 @@ defmodule Acs.StatsTcpConn do
     decr_online_counter(node, app_id, platform, user_id)
     {:ok, state}
   end
+  defp handle_message(%{type: "pause"}, state) do 
+    {:ok, state}
+  end
 
   defp handle_message(%{type: "resume"}, %{
     node: node, 
@@ -257,9 +295,12 @@ defmodule Acs.StatsTcpConn do
       |> Map.put(:join_at, Timex.to_unix(now))
       |> Map.put(:active, true)
 
-     {:ok, models} = init_stat_data(new_state)
+    {:ok, models} = init_stat_data(new_state)
 
     {:ok, Map.merge(new_state, models)}
+  end
+  defp handle_message(%{type: "resume"}, state) do 
+    {:ok, state}
   end
 
   defp incr_online_counter(node, app_id, platform, user_id) do 
@@ -273,10 +314,16 @@ defmodule Acs.StatsTcpConn do
     Redis.srem(online_key(node, app_id, platform), user_id)
   end
 
+  def dlu_key(date, app_id) do 
+    "acs.dlu.#{app_id}.#{date}"
+  end
   def dlu_key(date, app_id, platform) do 
     "acs.dlu.#{app_id}.#{platform}.#{date}"
   end
 
+  def dau_key(date, app_id) do 
+    "acs.dau.#{app_id}.#{date}"
+  end
   def dau_key(date, app_id, platform) do 
     "acs.dau.#{app_id}.#{platform}.#{date}"
   end
@@ -299,7 +346,6 @@ defmodule Acs.StatsTcpConn do
                         app_user_level: app_user_level,
                         zone_id: zone_id,
                         today: today}) do
-
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
@@ -340,6 +386,7 @@ defmodule Acs.StatsTcpConn do
       app_device_daily_activity: app_device_daily_activity
     }}
   end
+  defp init_stat_data(_), do: :ok
 
   defp do_stat(%{app_id: app_id,
                  platform: platform,

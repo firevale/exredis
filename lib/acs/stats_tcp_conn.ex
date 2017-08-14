@@ -57,7 +57,6 @@ defmodule Acs.StatsTcpConn do
     {:reply, :ok, %{state | socket: socket}}
   end
   def handle_call({:send_message, msg}, _from, %{socket: socket} = state) do 
-    length = byte_size(msg)
     result = :gen_tcp.send(socket, "#{msg}\r\n")
     {:reply, result, %{state | socket: socket}}
   end
@@ -68,16 +67,14 @@ defmodule Acs.StatsTcpConn do
   end
 
   def handle_info({:tcp, _socket, "ping\r\n"}, %{socket: socket, timer: timer} = state) do
-    d "receive ping message, response pong"
     :timer.cancel(timer)
     :gen_tcp.send(socket, "pong\r\n")
     :inet.setopts(socket, active: :once)
     {:ok, timer} = :timer.send_after(10000, :heartbeart)
     {:noreply, %{state | timer: timer}}
   end
-  def handle_info({:tcp, _socket, payload}, %{socket: socket, node: node} = state) do
+  def handle_info({:tcp, _socket, payload}, %{socket: socket} = state) do
     :inet.setopts(socket, active: :once)
-    d "receive socket message: #{inspect payload}"
     case handle_message(Poison.decode!(payload, keys: :atoms), state) do 
       {:ok, new_state} ->  
         :ok = :gen_tcp.send(socket, "ok\r\n")
@@ -91,7 +88,7 @@ defmodule Acs.StatsTcpConn do
   def handle_info({:tcp, _socket, bin}, %{socket: socket} = state) do
     d "received package: #{inspect bin}"
     :inet.setopts(socket, active: :once)
-    {:noreply, state}
+    {:stop, :invalid_msg, state}
   end
   def handle_info({:tcp_closed, _socket}, state) do
     {:stop, :normal, state}
@@ -165,7 +162,6 @@ defmodule Acs.StatsTcpConn do
         today = Timex.to_date(now)
         Redis.sadd(dlu_key(today, app_id), user_id)
         Redis.sadd(dlu_key(today, app_id, platform), user_id)
-        incr_online_counter(node, app_id, platform, user_id)
         info "#{today} user login, user_id: #{user_id}, device_id: #{device_id}"
         new_state = state 
           |> Map.put(:access_token, access_token_id)
@@ -198,13 +194,14 @@ defmodule Acs.StatsTcpConn do
       zone_id: zone_id, 
       zone_name: zone_name
     } = payload
-  }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id} = state) do 
+  }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id, node: node} = state) do 
     now = Timex.local()
     today = Timex.to_date(now)
     Redis.sadd(dlu_key(today, app_id), user_id)
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    incr_online_counter(node, app_id, platform, user_id)
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 
       |> Map.put(:app_user_id, app_user_id)
@@ -240,12 +237,17 @@ defmodule Acs.StatsTcpConn do
     end
 
     if state.active do 
-      do_stat(state)    
+       {app_user, app_device, app_user_daily_activity, app_device_daily_activity} = do_stat(state)    
     end
     {:ok, models} = init_stat_data(%{state | user_id: user_id})
     new_state = Map.merge(state, models) 
       |> Map.put(:user_id, user_id)
       |> Map.put(:today, today)
+      |> Map.put(:join_at, Timex.to_unix(now))
+      |> Map.put(:app_user, app_user)
+      |> Map.put(:app_device, app_device)
+      |> Map.put(:app_user_daily_activity, app_user_daily_activity)
+      |> Map.put(:app_device_daily_activity, app_device_daily_activity)      
     {:ok, new_state}
   end
 
@@ -302,13 +304,13 @@ defmodule Acs.StatsTcpConn do
     {:ok, state}
   end
 
-  defp incr_online_counter(node, app_id, platform, user_id) do 
+  def incr_online_counter(node, app_id, platform, user_id) do 
     Redis.sadd("online_apps", app_id)
     Redis.sadd(online_key(node, app_id), user_id)
     Redis.sadd(online_key(node, app_id, platform), user_id)
   end
 
-  defp decr_online_counter(node, app_id, platform, user_id) do 
+  def decr_online_counter(node, app_id, platform, user_id) do 
     Redis.srem(online_key(node, app_id), user_id)
     Redis.srem(online_key(node, app_id, platform), user_id)
   end
@@ -327,10 +329,10 @@ defmodule Acs.StatsTcpConn do
     "acs.dau.#{app_id}.#{platform}.#{date}"
   end
 
-  defp online_key(node, app_id) do 
+  def online_key(node, app_id) do 
     "acs.online_counter.#{app_id}.#{node}"
   end
-  defp online_key(node, app_id, platform) do 
+  def online_key(node, app_id, platform) do 
     "acs.ponline_counter.#{app_id}.#{platform}.#{node}"
   end
 

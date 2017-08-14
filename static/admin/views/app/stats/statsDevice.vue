@@ -4,11 +4,9 @@
       <el-radio-group v-model="statsType" @change="changePlatform">
         <el-radio-button label="model">机型</el-radio-button>
         <el-radio-button label="os">操作系统</el-radio-button>
-        <el-radio-button label="mem">内存</el-radio-button>
       </el-radio-group>
       <span style="margin-right:15px;margin-right:15px;"></span>
       <el-radio-group v-model="dateType" @change="changeDateType">
-        <el-radio-button label="today">今日</el-radio-button>
         <el-radio-button label="week">最近一周</el-radio-button>
         <el-radio-button label="month">最近一月</el-radio-button>
         <el-radio-button label="custom">自定义</el-radio-button>
@@ -53,16 +51,34 @@
             </p>
           </header>
           <div class="card-content is-paddingless">
-            <el-table stripe :data="reports" style="width: 100%" :default-sort="{prop: 'count', order: 'descending'}">
-              <el-table-column v-if="statsType == 'model'" prop="model" label="机型" width="500">
+            <el-table stripe :data="reports" style="width: 100%" @filter-change="filterMemSize" @sort-change="sortChange">
+              <el-table-column v-if="statsType == 'model'" label="机型" width="500">
+                <template scope="scope">
+                  {{ scope.row.alias != null ? scope.row.alias : scope.row.model }}
+                </template>
               </el-table-column>
-              <el-table-column v-if="statsType == 'os'" prop="os" label="操作系统" width="500">
+              <el-table-column v-if="statsType == 'model'" prop="total_mem_size" align="right" label="内存" width="180"
+                :filters="mem_filter_opts" :filter-multiple="false" column-key="memSize" sortable="custom">
+                <template scope="scope">
+                  {{ scope.row.total_mem_size | bytesToSize }}
+                </template>
               </el-table-column>
-              <el-table-column prop="count" label="数量" sortable width="180">
+              <el-table-column v-if="statsType == 'os'" label="操作系统" width="500">
+                <template scope="scope">
+                  {{ scope.row.os != null ? scope.row.os : "" }}
+                </template>
               </el-table-column>
-              <el-table-column prop="count" label="占比" sortable>
+              <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
+              </el-table-column>
+              <el-table-column>
+                <template scope="scope">
+                </template>
               </el-table-column>
             </el-table>
+            <div v-if="reports && reports.length>0" class="ele-pagination">
+              <el-pagination layout="prev, pager, next" :page-count="total" @current-change="changePage">
+              </el-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -105,7 +121,9 @@ export default {
     return {
       statsType: 'model',
       platform: 'all',
-      dateType: 'today',
+      memSize: [],
+      orderBy: {},
+      dateType: 'week',
       dateRange: [],
       page: 0,
       total: 1,
@@ -133,12 +151,22 @@ export default {
       chart_models: {
         labels: [],
         datasets: [{
-          label: '设备数',
+          label: '新增设备数',
           data: [],
           backgroundColor: []
         }]
       },
-      reports: []
+      reports: [],
+      mem_filter_opts: [{
+        text: '大于2G',
+        value: [2040109465, 107374182400]
+      }, {
+        text: '1G~2G',
+        value: [1073741824, 2040109465]
+      }, {
+        text: '小于1G',
+        value: [0, 1073741824]
+      }],
     }
   },
   computed: {
@@ -177,10 +205,10 @@ export default {
     'statsType': function(val) {
       if (val) {
         this.page = 0
-        this.fetchData()
+        // this.fetchData()
         this.getDetails()
       }
-    }
+    },
   },
 
   methods: {
@@ -191,6 +219,32 @@ export default {
         this.platform = 'all'
       }
     },
+    changePage: function(page) {
+      this.page = page - 1
+      this.getDetails()
+    },
+    filterMemSize: function(filters) {
+      this.page = 0
+      this.memSize = filters.memSize[0] || []
+      this.getDetails()
+    },
+    sortChange: function(column) {
+      var field = column.prop
+      if (field == "total_mem_size") {
+        field = "device.total_mem_size"
+      }
+
+      if (column.column == null) {
+        this.orderBy = {}
+      } else if (column.order == "descending") {
+        this.orderBy[column.prop] = "desc"
+      } else {
+        this.orderBy[column.prop] = "asc"
+      }
+
+      this.page = 0
+      this.getDetails()
+    },
     changeDateType: function(val) {
       if (val != 'custom')
         this.fetchData()
@@ -198,22 +252,10 @@ export default {
         this.$refs.datePicker.handleFocus()
     },
     changeDateRange: function(val) {
-      // this.fetchData()
+      this.fetchData()
+      this.getDetails()
     },
-    calcRate: function(report, nday) {
-      var now = new Date()
-      var start = new Date().setTime(Date.parse(report.date) + 3600 * 1000 * 24 * nday)
-      if (start > now)
-        return -1
-
-      let record = report.user_retentions.find(rpt => rpt.nday == nday)
-      if (record && report.danu > 0) {
-        return ((record.retention / report.danu) * 100).toFixed(2)
-      } else {
-        return 0
-      }
-    },
-    fetchData: async function() {
+    calcRate: function() {
       switch (this.dateType) {
         case 'week':
           var end = new Date();
@@ -230,12 +272,14 @@ export default {
           this.dateRange = [start, end]
           break
       }
-
+    },
+    fetchData: async function() {
+      this.calcRate()
       let data = {
         platform: this.platform,
         stats_type: this.statsType,
-        // start_date: this.dateRange[0].Format("yyyy-MM-dd"),
-        // end_date: this.dateRange[1].Format("yyyy-MM-dd")
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd")
       }
 
       let result = await this.$acs.getStatsDevice(data)
@@ -295,11 +339,16 @@ export default {
 
     },
     getDetails: async function() {
+      this.calcRate()
       var data = {
         platform: this.platform,
         stats_type: this.statsType,
+        mem_size: this.memSize,
+        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
+        end_date: this.dateRange[1].Format("yyyy-MM-dd"),
+        order_by: this.orderBy,
         page: this.page + 1,
-        records_per_page: 30
+        records_per_page: 10
       }
 
       let result = await this.$acs.getStatsDeviceDetails(data)
@@ -312,5 +361,17 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.ele-pagination {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  li.number {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
 </style>

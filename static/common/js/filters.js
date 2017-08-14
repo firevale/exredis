@@ -39,6 +39,14 @@ export const humanReadableSize = val => {
   return resStr;
 }
 
+export const bytesToSize = bytes => {
+  if (bytes === 0) return '0 B';
+  var k = 1024;
+  var sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  var i = Math.floor(Math.log(bytes) / Math.log(k));　　
+  return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+}
+
 export const formatServerDateTime = val => {
   if (val) {
     let a = val.split(/[^0-9]/)
@@ -87,16 +95,18 @@ export const formatPrice = val => {
 //   }
 // }
 
-const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.platform == 'android')
+const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.platform ==
+  'android')
 
 export const imageStaticUrl = val => {
   if (typeof val === 'string' && !/^https?:\/\//.test(val)) {
-      let base = window.acsConfig.imagesUrl
-      let url =  /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
-      // return isWebpSupported ? `${url}.webp` : url
-      return url
+    let base = window.acsConfig.imagesUrl
+    let url = /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) :
+      val
+    // return isWebpSupported ? `${url}.webp` : url
+    return url
   }
-  
+
   return val
 }
 

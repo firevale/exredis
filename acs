@@ -17,7 +17,6 @@ docker_run() {
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
-								 --expose 4000 \
 								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
 								 -e "ACS_MYSQL_USER=root" \
 								 -e "ACS_MYSQL_PASSWORD=firevale" \
@@ -26,6 +25,7 @@ docker_run() {
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
 								 -p 80:4000 \
+								 -p 9527:9527 \
 								 -v ${PWD}:/code \
 								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
 								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
@@ -50,7 +50,6 @@ run() {
 	docker run -it --workdir /code \
 								 --privileged \
 								 --rm \
-								 --expose 4000 \
 								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
 								 -e "ACS_MYSQL_USER=root" \
 								 -e "ACS_MYSQL_PASSWORD=firevale" \
@@ -59,6 +58,7 @@ run() {
 								 -e "ACS_HOST=${USERNAME}.firevale.com" \
 								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
 								 -p 80:4000 \
+								 -p 9527:9527 \
 								 -v ${PWD}:/code \
 								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
 								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \

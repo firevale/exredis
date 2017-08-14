@@ -26,6 +26,8 @@ defmodule Acs.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
+
+
       # Start the Ecto repository
       supervisor(Acs.Repo, []),
       supervisor(Acs.StatsRepo, []),
@@ -48,6 +50,14 @@ defmodule Acs.Application do
           server_args: [name: Acs.CachexHook]
           }],
         ]]),
+
+      worker(TcpServer, [9527, [:binary, 
+        packet: 2, 
+        active: :false, 
+        reuseaddr: true, 
+        nodelay: true], Acs.StatsTcpConn]),
+
+      supervisor(TcpConn.Supervisor, [Acs.StatsTcpConn]),
 
       # start elasticsearch pool
       :poolboy.child_spec(:elasticsearch, pool_args, es_cfg[:connection]),

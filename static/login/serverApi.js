@@ -74,6 +74,18 @@ export default {
           return response.data
         })
       },
+
+      generateState() {
+        return Vue.axios.post("/user/generate_state", {}).then(response => {
+          return response.data
+        })
+      },
+
+      createWechatToken(state, code) {
+        return Vue.axios.post("/api/auth/bind/wechat", {state, code}).then(response => {
+          return response.data
+        })
+      },
     }
   }
 }

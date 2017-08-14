@@ -46,7 +46,7 @@ defmodule Acs.StatsTcpConn do
 
   def init(_) do
     d "stats tcp connection process start...."
-    {:ok, timer} = :timer.send_interval(5000, :heartbeart)
+    {:ok, timer} = :timer.send_after(10000, :heartbeart)
     node = System.get_env("ACS_NODE_NAME")
     {:ok, %{socket: nil, node: node, timer: timer}}
   end
@@ -67,11 +67,13 @@ defmodule Acs.StatsTcpConn do
     {:stop, :normal, state}
   end
 
-  def handle_info({:tcp, _socket, "ping\r\n"}, %{socket: socket} = state) do
-    d "receive ping from client...."
+  def handle_info({:tcp, _socket, "ping\r\n"}, %{socket: socket, timer: timer} = state) do
+    d "receive ping message, response pong"
+    :timer.cancel(timer)
     :gen_tcp.send(socket, "pong\r\n")
     :inet.setopts(socket, active: :once)
-    {:noreply, state}
+    {:ok, timer} = :timer.send_after(10000, :heartbeart)
+    {:noreply, %{state | timer: timer}}
   end
   def handle_info({:tcp, _socket, payload}, %{socket: socket, node: node} = state) do
     :inet.setopts(socket, active: :once)
@@ -95,12 +97,7 @@ defmodule Acs.StatsTcpConn do
     {:stop, :normal, state}
   end
   def handle_info(:heartbeart, %{socket: socket} = state) do
-    case :gen_tcp.send(socket, "ping \r\n") do 
-      :ok ->
-        {:noreply, state}
-      _ ->
-        {:stop, :normal, state}
-    end
+    {:stop, :normal, state}
   end
   def handle_info(info, state) do
     info "stats tcp connection receive info: #{inspect info}"
@@ -118,7 +115,6 @@ defmodule Acs.StatsTcpConn do
     decr_online_counter(node, app_id, platform, user_id)
     do_stat(state)
     :gen_tcp.close(socket)
-    :erlang.cancel_timer(timer)
     :ok
   end
   def terminate(reason, %{socket: socket, 
@@ -131,17 +127,14 @@ defmodule Acs.StatsTcpConn do
     info "inactive stats tcp connection terminate with reason: #{reason}, #{inspect state}"
     decr_online_counter(node, app_id, platform, user_id)
     :gen_tcp.close(socket)
-    :erlang.cancel_timer(timer)
     :ok
   end
   def terminate(reason, %{socket: socket, timer: timer} = state) do
     info "stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     :gen_tcp.close(socket)
-    :erlang.cancel_timer(timer)
     :ok
   end
   def terminate(_reason, %{timer: timer}) do
-    :erlang.cancel_timer(timer)
     :ok
   end
 

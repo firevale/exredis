@@ -46,7 +46,7 @@ defmodule Acs.StatsTcpConn do
 
   def init(_) do
     d "stats tcp connection process start...."
-    {:ok, timer} = :timer.send_interval(5, :heartbeart)
+    {:ok, timer} = :timer.send_interval(5000, :heartbeart)
     node = System.get_env("ACS_NODE_NAME")
     {:ok, %{socket: nil, node: node, timer: timer}}
   end
@@ -108,6 +108,7 @@ defmodule Acs.StatsTcpConn do
   end
 
   def terminate(reason, %{socket: socket, 
+    timer: timer,
     active: true,
     node: node,
     app_id: app_id,
@@ -117,9 +118,11 @@ defmodule Acs.StatsTcpConn do
     decr_online_counter(node, app_id, platform, user_id)
     do_stat(state)
     :gen_tcp.close(socket)
+    :erlang.cancel_timer(timer)
     :ok
   end
   def terminate(reason, %{socket: socket, 
+    timer: timer,
     active: false,
     node: node,
     app_id: app_id,
@@ -128,14 +131,17 @@ defmodule Acs.StatsTcpConn do
     info "inactive stats tcp connection terminate with reason: #{reason}, #{inspect state}"
     decr_online_counter(node, app_id, platform, user_id)
     :gen_tcp.close(socket)
+    :erlang.cancel_timer(timer)
     :ok
   end
-  def terminate(reason, %{socket: socket} = state) do
+  def terminate(reason, %{socket: socket, timer: timer} = state) do
     info "stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     :gen_tcp.close(socket)
+    :erlang.cancel_timer(timer)
     :ok
   end
-  def terminate(_reason, %{}) do
+  def terminate(_reason, %{timer: timer}) do
+    :erlang.cancel_timer(timer)
     :ok
   end
 

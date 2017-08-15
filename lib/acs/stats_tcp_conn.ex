@@ -71,7 +71,7 @@ defmodule Acs.StatsTcpConn do
     :gen_tcp.send(socket, "pong\r\n")
     :inet.setopts(socket, active: :once)
     {:ok, timer} = :timer.send_after(10000, :heartbeart)
-    d "receive ping, return pong"
+    # d "receive ping, return pong"
     {:noreply, %{state | timer: timer}}
   end
   def handle_info({:tcp, _socket, payload}, %{socket: socket} = state) do

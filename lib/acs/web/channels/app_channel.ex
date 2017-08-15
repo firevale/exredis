@@ -153,7 +153,7 @@ defmodule Acs.Web.AppChannel do
     Logger.metadata(user_id: user_id)
 
     if user_id != last_user_id do 
-      decr_online_counter(node, app_id, platform, state.user_id)
+      decr_online_counter(node, app_id, platform, last_user_id)
       incr_online_counter(node, app_id, platform, user_id)
     end
 

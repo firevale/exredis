@@ -26,7 +26,7 @@ defmodule Acs.RedisAppUser do
                       where: au.user_id == ^user_id
                       
               case StatsRepo.one!(query) do 
-                0 -> Redis.sadd("_danu.#{today}.#{app_id}.#{platform}", user_id) 
+                0 -> Redis.sadd("acs.danu.#{today}.#{app_id}.#{platform}", user_id) 
                 _ -> :ok
               end
 

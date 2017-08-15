@@ -184,8 +184,8 @@ defmodule Acs.PaymentHelper do
     now = DateTime.utc_now()
     today = Timex.local() |> Timex.to_date()
 
-    Redis.sadd("_dapu.#{today}.#{app_id}.#{platform}", user_id)
-    Redis.incrby("_totalfee.#{today}.#{app_id}.#{platform}", fee)
+    Redis.sadd("acs.dapu.#{today}.#{app_id}.#{platform}", user_id)
+    Redis.incrby("acs.totalfee.#{today}.#{app_id}.#{platform}", fee)
     
     # update app user payment info
     case StatsRepo.get(AppUser, app_user_id) do 

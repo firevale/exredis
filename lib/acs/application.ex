@@ -27,7 +27,6 @@ defmodule Acs.Application do
     # Define workers and child supervisors to be supervised
     children = [
 
-
       # Start the Ecto repository
       supervisor(Acs.Repo, []),
       supervisor(Acs.StatsRepo, []),

@@ -316,17 +316,17 @@ defmodule Acs.StatsTcpConn do
   end
 
   def dlu_key(date, app_id) do 
-    "acs.dlu.#{app_id}.#{date}"
+    "acs.dlu.#{date}.#{app_id}"
   end
   def dlu_key(date, app_id, platform) do 
-    "acs.dlu.#{app_id}.#{platform}.#{date}"
+    "acs.dlu.#{date}.#{app_id}.#{platform}"
   end
 
   def dau_key(date, app_id) do 
-    "acs.dau.#{app_id}.#{date}"
+    "acs.dau.#{date}.#{app_id}"
   end
   def dau_key(date, app_id, platform) do 
-    "acs.dau.#{app_id}.#{platform}.#{date}"
+    "acs.dau.#{date}.#{app_id}.#{platform}"
   end
 
   def online_key(node, app_id) do 

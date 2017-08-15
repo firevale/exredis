@@ -33,24 +33,32 @@ defmodule Acs.Web.Admin.StatsController do
     conn |> json(%{
       success: true,
       stats: %{
+        dlu: %{
+          total: Redis.scard("acs.dlu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dlu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dlu.#{today}.#{app_id}.android"),
+        },
         dau: %{
-          ios: Redis.scard("_dau.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_dau.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.dau.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dau.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dau.#{today}.#{app_id}.android"),
         },
         danu: %{
-          ios: Redis.scard("_danu.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_danu.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.danu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.danu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.danu.#{today}.#{app_id}.android"),
         },
         dapu: %{
-          ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.dapu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dapu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dapu.#{today}.#{app_id}.android"),
         },
         fee: %{
-          ios: case Redis.get("_totalfee.#{today}.#{app_id}.ios") do 
+          ios: case Redis.get("acs.totalfee.#{today}.#{app_id}.ios") do 
                 :undefined -> 0
                 x -> String.to_integer(x)
                 end,
-          android: case Redis.get("_totalfee.#{today}.#{app_id}.android") do 
+          android: case Redis.get("acs.totalfee.#{today}.#{app_id}.android") do 
                       :undefined -> 0
                       x when is_bitstring(x) -> String.to_integer(x)
                     end,

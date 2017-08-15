@@ -230,15 +230,15 @@ defmodule Acs.Web.CronController do
     today = Timex.to_date(now)
 
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
-      n_all = Enum.reduce(Redis.keys("online_counter.#{app_id}.*"), 0, fn(key, n) ->
+      n_all = Enum.reduce(Redis.keys("acs.online_counter.#{app_id}.*"), 0, fn(key, n) ->
         n + Redis.hlen(key)
       end)  
 
-      n_ios = Enum.reduce(Redis.keys("ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
+      n_ios = Enum.reduce(Redis.keys("acs.ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
         n + Redis.hlen(key)
       end)   
 
-      n_android = Enum.reduce(Redis.keys("ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
+      n_android = Enum.reduce(Redis.keys("acs.ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
         n + Redis.hlen(key)
       end)   
 
@@ -316,24 +316,32 @@ defmodule Acs.Web.CronController do
             data: [ n_all, n_ios, n_android ],
           },
           brief_stats: %{
+            dlu: %{
+              total: Redis.scard("acs.dlu.#{today}.#{app_id}"),
+              ios: Redis.scard("acs.dlu.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dlu.#{today}.#{app_id}.android"),
+            },
             dau: %{
-              ios: Redis.scard("_dau.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_dau.#{today}.#{app_id}.android"),
+              total: Redis.scard("acs.dau.#{today}.#{app_id}"),
+              ios: Redis.scard("acs.dau.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dau.#{today}.#{app_id}.android"),
             },
             danu: %{
-              ios: Redis.scard("_danu.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_danu.#{today}.#{app_id}.android"),
+              total: Redis.scard("acs.danu.#{today}.#{app_id}"),
+              ios: Redis.scard("acs.danu.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.danu.#{today}.#{app_id}.android"),
             },
             dapu: %{
-              ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"),
-              android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
+              total: Redis.scard("acs.dapu.#{today}.#{app_id}"),
+              ios: Redis.scard("acs.dapu.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dapu.#{today}.#{app_id}.android"),
             },
             fee: %{
-              ios: case Redis.get("_totalfee.#{today}.#{app_id}.ios") do 
+              ios: case Redis.get("acs.totalfee.#{today}.#{app_id}.ios") do 
                     :undefined -> 0
                     x -> String.to_integer(x)
                    end,
-              android: case Redis.get("_totalfee.#{today}.#{app_id}.android") do 
+              android: case Redis.get("acs.totalfee.#{today}.#{app_id}.android") do 
                          :undefined -> 0
                          x when is_bitstring(x) -> String.to_integer(x)
                        end,
@@ -346,16 +354,22 @@ defmodule Acs.Web.CronController do
   end
 
   def daily_refresh(conn, params) do 
-    date = Timex.local |> Timex.shift(days: -1) |> Timex.to_date
+    date = Timex.local |> Timex.shift(days: -2) |> Timex.to_date
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
-      Redis.del("_dau.#{date}.#{app_id}.ios")
-      Redis.del("_dau.#{date}.#{app_id}.android")
-      Redis.del("_danu.#{date}.#{app_id}.ios")
-      Redis.del("_danu.#{date}.#{app_id}.android")
-      Redis.del("_dapu.#{date}.#{app_id}.ios")
-      Redis.del("_dapu.#{date}.#{app_id}.android")
-      Redis.del("_totalfee.#{date}.#{app_id}.ios")
-      Redis.del("_totalfee.#{date}.#{app_id}.android")
+      Redis.del("acs.dau.#{date}.#{app_id}")
+      Redis.del("acs.dau.#{date}.#{app_id}.ios")
+      Redis.del("acs.dau.#{date}.#{app_id}.android")
+      Redis.del("acs.dlu.#{date}.#{app_id}")
+      Redis.del("acs.dlu.#{date}.#{app_id}.ios")
+      Redis.del("acs.dlu.#{date}.#{app_id}.android")
+      Redis.del("acs.danu.#{date}.#{app_id}")
+      Redis.del("acs.danu.#{date}.#{app_id}.ios")
+      Redis.del("acs.danu.#{date}.#{app_id}.android")
+      Redis.del("acs.dapu.#{date}.#{app_id}")
+      Redis.del("acs.dapu.#{date}.#{app_id}.ios")
+      Redis.del("acs.dapu.#{date}.#{app_id}.android")
+      Redis.del("acs.totalfee.#{date}.#{app_id}.ios")
+      Redis.del("acs.totalfee.#{date}.#{app_id}.android")
     end)
 
     conn |> json(%{success: true, message: "done"})
@@ -363,9 +377,8 @@ defmodule Acs.Web.CronController do
 
   def daily_report(conn, params) do 
     date = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
-    apps = Repo.all(from app in App, select: map(app, [:id]), where: app.active == true)
-    Enum.each(apps, fn(x) -> 
-      DailyReportGenerator.generate(x.id, date)
+    Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
+      DailyReportGenerator.generate(app_id, date)
     end)
 
     conn |> json(%{success: true, message: "daily_report done"})

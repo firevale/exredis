@@ -54,7 +54,6 @@ defmodule Acs.Application do
       worker(TcpServer, [9527, [:binary, 
         packet: 2, 
         active: :false, 
-        keepalive: true, 
         reuseaddr: true, 
         nodelay: true], Acs.StatsTcpConn]),
 

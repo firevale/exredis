@@ -4,7 +4,7 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>
-          <p class="title">{{ briefStats ? briefStats.dau.ios + briefStats.dau.android : 0 }}  
+          <p class="title">{{ briefStats ? briefStats.dau.ios + briefStats.dau.android : 0 }}
             <sub>[ios: {{ briefStats ? briefStats.dau.ios : 0  }}, android: {{ briefStats ? briefStats.dau.android : 0 }}]</sub>
           </p>
         </div>
@@ -12,7 +12,7 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.danu') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}  
+          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
             <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
           </p>
         </div>
@@ -20,7 +20,7 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.totalFee') }}</p>
-          <p class="title">{{ briefStats ? (briefStats.fee.ios + briefStats.fee.android) / 100 : 0 }}  
+          <p class="title">{{ briefStats ? (briefStats.fee.ios + briefStats.fee.android) / 100 : 0 }}
             <sub>[ios: {{ briefStats ? briefStats.fee.ios / 100 : 0  }}, android: {{ briefStats ? briefStats.fee.android / 100 : 0 }}]</sub>
           </p>
         </div>
@@ -28,7 +28,7 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.paidUserNumber') }}</p>
-          <p class="title">{{ briefStats ? briefStats.dapu.ios + briefStats.dapu.android : 0 }}  
+          <p class="title">{{ briefStats ? briefStats.dapu.ios + briefStats.dapu.android : 0 }}
             <sub>[ios: {{ briefStats ? briefStats.dapu.ios : 0  }}, android: {{ briefStats ? briefStats.dapu.android : 0 }}]</sub>
           </p>
         </div>
@@ -86,7 +86,7 @@ export default {
     },
 
     getBriefStats: async function() {
-      let result = await this.$acs.getBriefStats(this.$route.params.appId) 
+      let result = await this.$acs.getBriefStats(this.$route.params.appId)
 
       if (result.success) {
         this.setAppBriefStats(result.stats)
@@ -107,17 +107,19 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 .dashboard {
-  .box:not(:last-child) {
-    margin-bottom: 0;
-  }
-  article.chart {
-    background: #212733;
-    div {
-      flex-grow: 1;
+  .box {
+    padding: 1.25rem !important;
+    &:not(:last-child) {
+      margin-bottom: 0;
+    }
+    article.chart {
       background: #212733;
+      div {
+        flex-grow: 1;
+        background: #212733;
+      }
     }
   }
   p.title {

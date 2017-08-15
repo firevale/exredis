@@ -206,7 +206,11 @@ export default {
       if (val) {
         this.page = 0
         // this.fetchData()
-        this.getDetails()
+        if (this.platform != "all") {
+          this.platform = "all"
+        } else {
+          this.getDetails()
+        }
       }
     },
   },
@@ -214,7 +218,7 @@ export default {
   methods: {
     changePlatform: function(chart) {
       if (chart.active[0]) {
-        this.platform = chart.active[0]._model.label == 'iPhone' ? 'ios' : 'android'
+        this.platform = chart.active[0]._model.label == 'iOS' ? 'ios' : 'android'
       } else {
         this.platform = 'all'
       }
@@ -304,7 +308,7 @@ export default {
 
       var iphone = chart_models.find(r => r.platform == "ios")
       if (iphone) {
-        this.chart_platforms.labels.push("iPhone")
+        this.chart_platforms.labels.push("iOS")
         this.chart_platforms.datasets[0].data.push(iphone.count)
         this.chart_platforms.datasets[0].backgroundColor.push('rgba(54, 162, 235, 0.8)')
       }

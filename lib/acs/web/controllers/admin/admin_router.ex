@@ -45,6 +45,12 @@ defmodule Acs.Web.AdminRouter do
       post "/delete_app_goods", AdminController, :delete_app_goods
     end
 
+    scope "/log" do
+      pipe_through :admin_app
+      post "/get_operate_log", AdminController, :get_operate_log
+      post "/add_operate_log", AdminController, :add_operate_log
+    end
+
     scope "/mall" do
       pipe_through :admin_app
       post  "/update_mall_icon", MallController, :update_mall_icon

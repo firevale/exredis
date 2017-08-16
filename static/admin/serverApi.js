@@ -312,6 +312,14 @@ export default {
       getStatsDeviceDetails(params) {
         return post('/admin_actions/stats/get_stats_device_details', params)
       },
+
+      getOperateLog(params) {
+        return post('/admin_actions/log/get_operate_log', params)
+      },
+
+      addOperateLog(params) {
+        return post('/admin_actions/log/add_operate_log', params)
+      },
     }
   }
 }

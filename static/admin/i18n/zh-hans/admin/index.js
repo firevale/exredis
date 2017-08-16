@@ -7,6 +7,7 @@ import mall from './mall'
 import user from './user'
 import routes from './routes'
 import setting from './setting'
+import operateLog from './operateLog'
 import stats from './stats'
 import customerService from './customerService'
 import notification from './notification'
@@ -154,6 +155,7 @@ export default {
   news,
   sdks,
   setting,
+  operateLog,
   stats,
   wcp,
   customerService,

@@ -353,4 +353,39 @@ defmodule Acs.Web.AdminController do
     end
   end
 
+  def get_operate_log(conn, %{"app_id" => app_id, "user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
+    totalQuery = from ol in OperateLog, where: ol.app_id == ^app_id, select: count(ol.id)
+    totalQuery = case String.length(user_id) do
+      0 -> totalQuery
+      _ -> where(totalQuery, [ol], ol.user_id == ^user_id)
+    end
+    total = Repo.one!(totalQuery)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from ol in OperateLog,
+              select: ol,
+              limit: ^records_per_page,
+              where: ol.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: ol.id]
+    query = case String.length(user_id) do
+      0 -> query
+      _ -> where(query, [ol], ol.user_id == ^user_id)
+    end
+    logs = Repo.all(query)
+
+    conn |> json(%{success: true, logs: logs, total: total_page})
+  end
+
+  def add_operate_log(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"operate_type" => _operate_type, "log" => _log} = log) do
+    log = log |> Map.put("user_id", user_id) |> Map.put("app_id", app_id)
+    case OperateLog.changeset(%OperateLog{}, log) |> Repo.insert do
+      {:ok, _new_log} ->
+        conn |> json(%{success: true})
+
+      {:error, %{errors: errors}} ->
+        conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
+
 end

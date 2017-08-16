@@ -1,6 +1,7 @@
 export default {
   dashboard: '概况',
   appConfig: '修改配置',
+  settings: '系统设置',
   adminUserManage: '角色管理',
   loginCode: '激活码',
   loginCodeManage: '激活码管理',

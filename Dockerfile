@@ -23,4 +23,3 @@ RUN  mkdir -p /code && \
     git config --global http.sslVerify false
 
 ENTRYPOINT ["/bin/zsh"]
-CMD ["tail", "-f", "/tmp/info.log"]

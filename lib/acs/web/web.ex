@@ -102,6 +102,7 @@ defmodule Acs.Web do
       alias  Acs.MallOrderDetail
       alias  Acs.MallOPLog
 
+      alias  Acs.OperateLog
     end
   end
 

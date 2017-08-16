@@ -33,6 +33,10 @@ export default new Router({
           name: 'AppDashboard',
           component: require('../views/app/dashboard')
         }, {
+          path: 'setting',
+          name: 'Setting',
+          component: require('../views/app/setting')
+        },{
           name: 'AppConfig',
           path: 'config',
           component: require('../views/app/config/main')

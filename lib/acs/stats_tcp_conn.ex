@@ -5,6 +5,8 @@ defmodule Acs.StatsTcpConn do
   require Redis
   require Utils
 
+  import Ecto.Query
+
   alias  Acs.StatsRepo 
   alias  Acs.Stats.Device
   alias  Acs.Stats.AppDevice
@@ -22,16 +24,16 @@ defmodule Acs.StatsTcpConn do
     GenServer.call(pid, {:set_socket, socket})
   end
 
-  def send_msg(user_id, %{} = msg) do 
-    case Process.whereis(String.to_atom("u#{user_id}")) do 
+  def send_msg(app_id, user_id, %{} = msg) do 
+    case Process.whereis(String.to_atom("u#{app_id}#{user_id}")) do 
       nil ->
         {:error, :not_exist}
       pid ->
         GenServer.call(pid, {:send_message, Poison.encode!(msg)})
     end
   end
-  def send_msg!(user_id, %{} = msg) do 
-    GenServer.call(String.to_atom("u#{user_id}"), {:send_message, Poison.encode!(msg)})
+  def send_msg!(app_id, user_id, %{} = msg) do 
+    GenServer.call(String.to_atom("u#{app_id}#{user_id}"), {:send_message, Poison.encode!(msg)})
   end
 
   @doc """
@@ -150,7 +152,7 @@ defmodule Acs.StatsTcpConn do
     } = payload
   }, %{node: node} = state) do 
     user_id = String.to_integer("#{user_id}")
-    pname = String.to_atom("u#{user_id}") 
+    pname = String.to_atom("u#{app_id}#{user_id}") 
     case Process.whereis(pname) do 
       nil -> :ok 
       _pid -> Process.unregister(pname)
@@ -202,6 +204,7 @@ defmodule Acs.StatsTcpConn do
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    incr_danu(today, app_id, user_id, platform)
     incr_online_counter(node, app_id, platform, user_id)
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 
@@ -238,17 +241,13 @@ defmodule Acs.StatsTcpConn do
     end
 
     if state.active do 
-       {app_user, app_device, app_user_daily_activity, app_device_daily_activity} = do_stat(state)    
+      do_stat(state)    
     end
     {:ok, models} = init_stat_data(%{state | user_id: user_id})
     new_state = Map.merge(state, models) 
       |> Map.put(:user_id, user_id)
       |> Map.put(:today, today)
       |> Map.put(:join_at, Timex.to_unix(now))
-      |> Map.put(:app_user, app_user)
-      |> Map.put(:app_device, app_device)
-      |> Map.put(:app_user_daily_activity, app_user_daily_activity)
-      |> Map.put(:app_device_daily_activity, app_device_daily_activity)      
     {:ok, new_state}
   end
 
@@ -259,13 +258,9 @@ defmodule Acs.StatsTcpConn do
     platform: platform, 
     user_id: user_id} = state) do 
     decr_online_counter(node, app_id, platform, user_id)
-    {app_user, app_device, app_user_daily_activity, app_device_daily_activity} = do_stat(state)
+    do_stat(state)
 
     new_state = state 
-      |> Map.put(:app_user, app_user)
-      |> Map.put(:app_device, app_device)
-      |> Map.put(:app_user_daily_activity, app_user_daily_activity)
-      |> Map.put(:app_device_daily_activity, app_device_daily_activity)
       |> Map.put(:active, false)
 
     {:ok, new_state}
@@ -397,42 +392,64 @@ defmodule Acs.StatsTcpConn do
                  user_id: user_id,
                  device_id: device_id,
                  today: today,
-                 join_at: join_at,
-                 app_user: app_user,
-                 app_device: app_device,
-                 app_user_daily_activity: app_user_daily_activity,
-                 app_device_daily_activity: app_device_daily_activity}) do
+                 join_at: join_at
+                 }) do
 
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
     if active_seconds > 30 do
       utc_now = DateTime.utc_now()
-      {
-        AppUser.changeset(app_user, %{
-          active_seconds: app_user.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
 
-        AppDevice.changeset(app_device, %{
-          active_seconds: app_device.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
+      app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
+      app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
+      app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
+      app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
 
-        AppUserDailyActivity.changeset(app_user_daily_activity, %{
-          active_seconds: app_user_daily_activity.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
+      new_app_user = AppUser.changeset(app_user, %{
+        active_seconds: app_user.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
 
-        AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
-          active_seconds: app_device_daily_activity.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!
-      }
-    else 
-      {app_user, app_device, app_user_daily_activity, app_device_daily_activity}
+      RedisAppUser.refresh(new_app_user)
+
+      new_app_device = AppDevice.changeset(app_device, %{
+        active_seconds: app_device.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppDevice.refresh(new_app_device)
+
+      new_app_user_daily_activity = AppUserDailyActivity.changeset(app_user_daily_activity, %{
+        active_seconds: app_user_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppUserDailyActivity.refresh(new_app_user_daily_activity)
+
+      new_app_device_daily_activity = AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
+        active_seconds: app_device_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppDeviceDailyActivity.refresh(new_app_device_daily_activity)
     end
   end
   defp do_stat(_socket), do: :ok
+
+  def incr_danu(today, app_id, user_id, platform) do 
+    query = from au in AppUser, 
+            select: count(1),
+            where: au.app_id == ^app_id,
+            where: au.user_id == ^user_id
+            
+    case StatsRepo.one!(query) do 
+      0 -> 
+        Redis.sadd("acs.danu.#{today}.#{app_id}", user_id) 
+        Redis.sadd("acs.danu.#{today}.#{app_id}.#{platform}", user_id) 
+      _ -> 
+        :ok
+    end
+end
 
 end

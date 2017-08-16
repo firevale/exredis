@@ -9,6 +9,12 @@ defmodule Acs.RedisAppDevice do
 
   @app_device_cache_key     "fvac.app_device_cache"
 
+  def refresh(%AppDevice{} = app_device) do 
+    key = "#{@app_user_cache_key}.#{app_device.app_id}.#{app_device.zone_id}.#{app_device.device_id}"
+    Redis.setex(key, 3600 * 24, AppDevice.to_redis(app_device))
+    Cachex.del(:default, key) # force other node refresh from redis
+  end
+
   def find(app_id, zone_id, device_id, platform) do 
     key = "#{@app_device_cache_key}.#{app_id}.#{zone_id}.#{device_id}"
 

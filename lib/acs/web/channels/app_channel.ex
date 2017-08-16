@@ -10,7 +10,9 @@ defmodule Acs.Web.AppChannel do
     online_key: 2, 
     online_key: 3, 
     incr_online_counter: 4, 
-    decr_online_counter: 4]
+    decr_online_counter: 4,
+    incr_danu: 4,
+   ]
 
   alias   Acs.RedisAccessToken
   alias   Acs.RedisAppUser
@@ -107,6 +109,7 @@ defmodule Acs.Web.AppChannel do
       Redis.sadd(dau_key(today, app_id), user_id)
       Redis.sadd(dlu_key(today, app_id, platform), user_id)
       Redis.sadd(dau_key(today, app_id, platform), user_id)
+      incr_danu(today, app_id, user_id, platform)
       incr_online_counter(node, app_id, platform, user_id)
 
       socket = init_stat_data(payload, today, socket)
@@ -157,7 +160,7 @@ defmodule Acs.Web.AppChannel do
       incr_online_counter(node, app_id, platform, user_id)
     end
 
-    socket = do_stat(socket)
+    do_stat(socket)
     now = Timex.local()
     today = Timex.to_date(now)
     socket = init_stat_data(payload, today, socket)
@@ -198,6 +201,7 @@ defmodule Acs.Web.AppChannel do
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    incr_danu(today, app_id, user_id, platform)
     incr_online_counter(node, app_id, platform, user_id)
 
     socket = init_stat_data(%{"app_user_id" => app_user_id,
@@ -234,7 +238,7 @@ defmodule Acs.Web.AppChannel do
     platform: platform}} = socket) do
     info "channel paused, assigns: #{inspect socket.assigns}"
     decr_online_counter(node, app_id, platform, user_id)
-    socket = do_stat(socket) 
+    do_stat(socket) 
     {:noreply, socket |> assign(:active, false) }
   end
   def handle_in("pause", _payload, %{assigns: %{
@@ -360,6 +364,8 @@ defmodule Acs.Web.AppChannel do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
+
+
     app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
       app_user_name: app_user_name,
       app_user_id: app_user_id,
@@ -411,38 +417,42 @@ defmodule Acs.Web.AppChannel do
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
-    {app_user, app_device, app_user_daily_activity, app_device_daily_activity} = if active_seconds > 30 do
+    if active_seconds > 30 do
       utc_now = DateTime.utc_now()
-      {
-        AppUser.changeset(app_user, %{
-          active_seconds: app_user.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
 
-        AppDevice.changeset(app_device, %{
-          active_seconds: app_device.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
+      app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
+      app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
+      app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
+      app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
 
-        AppUserDailyActivity.changeset(app_user_daily_activity, %{
-          active_seconds: app_user_daily_activity.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!,
+      new_app_user = AppUser.changeset(app_user, %{
+        active_seconds: app_user.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
 
-        AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
-          active_seconds: app_device_daily_activity.active_seconds + active_seconds,
-          last_active_at: utc_now,
-        }) |> StatsRepo.update!
-      }
-    else 
-      {app_user, app_device, app_user_daily_activity, app_device_daily_activity}
+      RedisAppUser.refresh(new_app_user)
+
+      new_app_device = AppDevice.changeset(app_device, %{
+        active_seconds: app_device.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppDevice.refresh(new_app_device)
+
+      new_app_user_daily_activity = AppUserDailyActivity.changeset(app_user_daily_activity, %{
+        active_seconds: app_user_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppUserDailyActivity.refresh(new_app_user_daily_activity)
+
+      new_app_device_daily_activity = AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
+        active_seconds: app_device_daily_activity.active_seconds + active_seconds,
+        last_active_at: utc_now,
+      }) |> StatsRepo.update!
+
+      RedisAppDeviceDailyActivity.refresh(new_app_device_daily_activity)
     end
-
-    socket
-      |> assign(:app_user, app_user)
-      |> assign(:app_device, app_device)
-      |> assign(:app_user_daily_activity, app_user_daily_activity)
-      |> assign(:app_device_daily_activity, app_device_daily_activity)
   end
   defp do_stat(_socket), do: :ok
 

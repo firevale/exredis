@@ -9,6 +9,7 @@
 *.log
 *.orig
 yarn.lock
+.env
 
 # Generated on crash by the VM
 erl_crash.dump

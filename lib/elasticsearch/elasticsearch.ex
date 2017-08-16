@@ -78,13 +78,15 @@ defmodule Elasticsearch do
     end
   end
 
-  def delete_type(index, type) do
-    :poolboy.transaction :elasticsearch, fn(worker) ->
-      Worker.request %{worker: worker,
-                       method: :delete,
-                       path: [index, type]}
-    end
-  end
+  # delete type is no longer supported by elasticsearch
+  # should delete whole index instead
+  # def delete_type(index, type) do
+  #   :poolboy.transaction :elasticsearch, fn(worker) ->
+  #     Worker.request %{worker: worker,
+  #                      method: :delete,
+  #                      path: [index, type]}
+  #   end
+  # end
 
   def index(%{index: nil}), do: {:error, "invalid index"}
   def index(%{index: ""}), do: {:error, "invalid index"}

@@ -2,29 +2,9 @@
   <div>
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false">
       <div class="message-body">
-        <div class="talk">
-          <div class="user-info">系统</div>
-          <div class="content box">激活码领取尚未开启，有关“先锋首测”的最新消息小狐狸这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
-        </div>
-        <div class="talk">
-          <div class="user-info is-right">系统</div>
-          <div class="content box">这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
-        </div>
-        <div class="talk">
-          <div class="user-info">系统</div>
-          <div class="content box">激活码领取尚未开启，有关“先锋首测”的最新消息小狐狸这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
-        </div>
-        <div class="talk">
-          <div class="user-info is-right">系统</div>
-          <div class="content box">这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
-        </div>
-        <div class="talk">
-          <div class="user-info">系统</div>
-          <div class="content box">激活码领取尚未开启，有关“先锋首测”的最新消息小狐狸这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
-        </div>
-        <div class="talk">
-          <div class="user-info is-right">系统</div>
-          <div class="content box">这是一段信息这是一段信息这是一段信息这是一段信息这是一段信息</div>
+        <div v-for="msg in messages" class="talk">
+          <div class="user-info" :class="{'is-right':  msg.from.startsWith('gh_')}">{{ msg.from.startsWith("gh_")? "系统": userName }}</div>
+          <div class="content box">{{msg.content}}</div>
         </div>
       </div>
       <div class="form">
@@ -49,12 +29,16 @@ export default {
   data() {
     return {
       visible: false,
-      message: undefined
+      message: undefined,
+      messages: [],
     }
   },
   computed: {
     title() {
       return `与${this.message.fromname}的对话`
+    },
+    userName() {
+      return this.message.from.startsWith("gh_") ? this.message.toname : this.message.fromname
     }
   },
   watch: {
@@ -69,18 +53,24 @@ export default {
       this.visible = true
       this.message = message
       console.info(this.message)
+      this.fetchData()
     },
     close() {
       this.visible = false
+    },
+    async fetchData() {
+      this.messages = []
+      var appId = this.$route.params.appId
+      var openId = this.message.from.startsWith("gh_") ? this.message.to : this.message.from
+      var result = await this.$acs.getUserMessageList(appId, openId)
+      if (result.success) {
+        this.messages = result.messages
+      }
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-.el-dialog--small {
-  width: 700px !important;
-}
-
 .message-body {
   height: 300px;
   overflow-y: scroll;

@@ -283,6 +283,12 @@ export default {
           records_per_page
         })
       },
+      getUserMessageList(app_id, open_id) {
+        return post('/admin_actions/wcp/get_user_message_list', {
+          app_id,
+          open_id
+        })
+      },
 
       getOnlineChart(app_id) {
         return post('/admin_actions/stats/onlines', {

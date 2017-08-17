@@ -258,7 +258,7 @@ defmodule Acs.PaymentHelper do
         case RedisAppDeviceDailyActivity.find(app_device.id, today) do 
           %AppDeviceDailyActivity{app_device_id: ^app_device_id, date: ^today} = adda ->
             new_adda = AppDeviceDailyActivity.changeset(adda, %{pay_amount: adda.pay_amount + fee}) |> StatsRepo.update!
-            RedisAppDeviceActivity.refresh(new_adda)
+            RedisAppDeviceDailyActivity.refresh(new_adda)
           _ ->
             error "can not get app device daily activity by app_user_id: #{app_device_id}, date: #{today}"
         end

@@ -16,7 +16,7 @@
             <tbody v-show="logs && logs.length > 0">
               <tr v-for="(log, index) in logs">
                 <td> {{ log.id }} </td>
-                <td> {{ log.user_id }} </td>
+                <td> {{ log.user.email }} </td>
                 <td> {{ log.operate_type }} </td>
                 <td style="max-width:400px;"> {{ log.log }} </td>
                 <td> {{ log.inserted_at | formatServerDateTime }} </td>

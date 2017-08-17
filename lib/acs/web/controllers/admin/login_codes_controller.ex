@@ -3,12 +3,12 @@ defmodule Acs.Web.Admin.LoginCodesController do
 
   alias   Ecto.Adapters.SQL
 
-  def gen_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do 
+  def gen_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number}) do 
     1..number |> Enum.reduce(3, fn(_n, code_length) -> 
       gen_uniq_code(app_id, code_length)
     end)
   
-    AdminController.add_operate_log(acs_admin_id, app_id, "gen_codes", params)
+    AdminController.add_operate_log(acs_admin_id, app_id, "gen_codes", %{"number" => number})
     AppLoginCode.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
@@ -30,7 +30,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
     end
   end
 
-  def del_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do 
+  def del_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number}) do 
     number = "#{number}" |> String.to_integer
     available_number = Redis.scard("_acs.login_codes.available.#{app_id}")
 
@@ -50,7 +50,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
       Redis.srem("_acs.login_codes.all.#{app_id}", removed)
     end
 
-    AdminController.add_operate_log(acs_admin_id, app_id, "del_codes", params)
+    AdminController.add_operate_log(acs_admin_id, app_id, "del_codes", %{"number" => number})
     AppLoginCode.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
@@ -64,7 +64,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
     })
   end
 
-  def assign_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do
+  def assign_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id, "number" => number}) do
     owner = "admin.#{admin_user_id}"
 
     query = from c in AppLoginCode,
@@ -100,7 +100,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
 
       codes = Repo.all(query)
 
-      AdminController.add_operate_log(admin_user_id, app_id, "assign_codes", params)
+      AdminController.add_operate_log(admin_user_id, app_id, "assign_codes", %{"number" => number})
       AppLoginCode.refresh_stats_info(app_id)
       conn |> json(%{success: true, codes: codes})
     end

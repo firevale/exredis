@@ -179,11 +179,12 @@ defmodule Acs.Web.AppSdkInfoController do
     binding = case Repo.get_by(AppSdkBinding, app_id: app_id, sdk: sdk) do 
       nil ->
         AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: app_id, sdk: sdk, binding: binding}) |> Repo.insert!
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", %{app_id: app_id, sdk: sdk, binding: binding})
       sdk_binding ->
         AppSdkBinding.changeset(sdk_binding, %{binding: binding}) |> Repo.update!
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", %{binding: binding})
     end
 
-    AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", binding)
     RedisApp.refresh(app_id)
     conn |> json(%{success: true, binding: binding})
   end

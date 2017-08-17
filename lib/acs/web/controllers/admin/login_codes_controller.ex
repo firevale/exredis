@@ -2,12 +2,14 @@ defmodule Acs.Web.Admin.LoginCodesController do
   use Acs.Web, :controller
 
   alias   Ecto.Adapters.SQL
+  alias   Acs.Web.AdminController
 
-  def gen_codes(conn, %{"app_id" => app_id, "number" => number}) do 
+  def gen_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do 
     1..number |> Enum.reduce(3, fn(_n, code_length) -> 
       gen_uniq_code(app_id, code_length)
     end)
-
+  
+    AdminController.add_operate_log(acs_admin_id, app_id, "gen_codes", params)
     AppLoginCode.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
@@ -29,7 +31,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
     end
   end
 
-  def del_codes(conn, %{"app_id" => app_id, "number" => number}) do 
+  def del_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do 
     number = "#{number}" |> String.to_integer
     available_number = Redis.scard("_acs.login_codes.available.#{app_id}")
 
@@ -49,6 +51,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
       Redis.srem("_acs.login_codes.all.#{app_id}", removed)
     end
 
+    AdminController.add_operate_log(acs_admin_id, app_id, "del_codes", params)
     AppLoginCode.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
@@ -62,7 +65,7 @@ defmodule Acs.Web.Admin.LoginCodesController do
     })
   end
 
-  def assign_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id, "number" => number}) do
+  def assign_codes(%{private: %{acs_admin_id: admin_user_id}} = conn, %{"app_id" => app_id, "number" => number} = params) do
     owner = "admin.#{admin_user_id}"
 
     query = from c in AppLoginCode,
@@ -97,6 +100,8 @@ defmodule Acs.Web.Admin.LoginCodesController do
         where: c.app_id == ^app_id and c.owner == ^owner
 
       codes = Repo.all(query)
+
+      AdminController.add_operate_log(admin_user_id, app_id, "assign_codes", params)
       AppLoginCode.refresh_stats_info(app_id)
       conn |> json(%{success: true, codes: codes})
     end

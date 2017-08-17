@@ -5,7 +5,7 @@ defmodule Acs.OperateLog do
 
   schema "operate_logs" do
     field :operate_type, :string
-    field :log, :binary
+    field :log, :map
 
     belongs_to :app, Acs.App, type: :string
     belongs_to :user, Acs.User, type: :integer

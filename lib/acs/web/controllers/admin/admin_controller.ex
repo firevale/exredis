@@ -377,7 +377,14 @@ defmodule Acs.Web.AdminController do
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 
-  def add_operate_log(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"operate_type" => _operate_type, "log" => _log} = log) do
+  def add_operate_log(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"operate_type" => operate_type, "log" => log}) do
+    case add_operate_log(user_id, app_id, operate_type, log) do
+      :ok ->
+        conn |> json(%{success: true})
+      :error ->
+        conn |> json(%{success: false})
+    end
+
     log = log |> Map.put("user_id", user_id) |> Map.put("app_id", app_id)
     case OperateLog.changeset(%OperateLog{}, log) |> Repo.insert do
       {:ok, _new_log} ->
@@ -385,6 +392,16 @@ defmodule Acs.Web.AdminController do
 
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
+
+  def add_operate_log(user_id, app_id, operate_type, log) do
+    params = %{user_id: user_id, app_id: app_id, operate_type: operate_type, log: log}
+    case OperateLog.changeset(%OperateLog{}, params) |> Repo.insert do
+      {:ok, _new_log} ->
+        :ok
+      {:error, %{errors: _errors}} ->
+        :error
     end
   end
 

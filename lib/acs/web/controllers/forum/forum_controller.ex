@@ -76,7 +76,7 @@ defmodule Acs.Web.ForumController do
   end
 
   # update_forum_info
-  def update_forum_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
+  def update_forum_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
     case Repo.get_by(Forum, id: forum_id, app_id: app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound"})
@@ -85,6 +85,7 @@ defmodule Acs.Web.ForumController do
         Forum.changeset(forum, forum_info) |> Repo.update!
         RedisForum.refresh(forum_id)
         RedisApp.refreshForumActive(forum.app_id,forum_info["active"])
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_forum_info", forum_info)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -96,18 +97,19 @@ defmodule Acs.Web.ForumController do
   def update_section_info(conn, %{"section" => %{"forum_id" => ""}}) do
     conn |> json(%{success: false, i18n_message: "error.server.emptyForumId"})
   end
-  def update_section_info(conn, %{"section" => %{
-      "id" => id,
-      "title" => _title,
-      "sort" => _sort,
-      "active" => _active,
-      "forum_id" => _forum_id,
-    } = section}) do
+  def update_section_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
+                          %{"section" => %{
+                          "id" => id,
+                          "title" => _title,
+                          "sort" => _sort,
+                          "active" => _active,
+                          "forum_id" => _forum_id} = section}) do
     case Repo.get(ForumSection, id) do
       nil ->
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
             RedisForum.refresh(new_section.forum_id)
+            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", section)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -118,6 +120,7 @@ defmodule Acs.Web.ForumController do
         case ForumSection.changeset(old_section, section) |> Repo.update do
           {:ok, new_section} ->
             RedisForum.refresh(new_section.forum_id)
+            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", section)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->

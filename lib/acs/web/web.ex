@@ -103,6 +103,7 @@ defmodule Acs.Web do
       alias  Acs.MallOPLog
 
       alias  Acs.OperateLog
+      alias  Acs.Web.AdminController
     end
   end
 

@@ -201,7 +201,7 @@ defmodule Acs.StatsTcpConn do
   }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id, node: node} = state) do 
     now = Timex.local()
     today = Timex.to_date(now)
-    yestoday = now |> Timex.shift(days: -1) |> Timex.to_date 
+    yesterday = now |> Timex.shift(days: -1) |> Timex.to_date 
 
     Redis.sadd(dlu_key(today, app_id), user_id)
     Redis.sadd(dau_key(today, app_id), user_id)
@@ -210,12 +210,12 @@ defmodule Acs.StatsTcpConn do
     Redis.sadd(dld_key(today, app_id, platform), device_id)
     Redis.sadd(dad_key(today, app_id, platform), device_id)
 
-    if Redis.sismember(dau_key(yestoday, app_id), user_id) do 
+    if Redis.sismember(dau_key(yesterday, app_id), user_id) do 
       Redis.sadd(da2nu_key(today, app_id), user_id)
       Redis.sadd(da2nu_key(today, app_id, platform), user_id)
     end
 
-    if Redis.sismember(dad_key(yestoday, app_id, platform), device_id) do 
+    if Redis.sismember(dad_key(yesterday, app_id, platform), device_id) do 
       Redis.sadd(da2nd_key(today, app_id, platform), device_id)
     end
 
@@ -241,11 +241,11 @@ defmodule Acs.StatsTcpConn do
     } = payload
   }, %{app_id: app_id, platform: platform, node: node, device_id: device_id, app_user_id: app_user_id} = state) do 
     Logger.metadata(user_id: user_id)
-    if app_user_id != "" do 
-      now = Timex.local()
-      today = Timex.to_date(now)
-      yestoday = now |> Timex.shift(days: -1) |> Timex.to_date 
+    now = Timex.local()
+    today = Timex.to_date(now)
+    yesterday = now |> Timex.shift(days: -1) |> Timex.to_date 
 
+    if app_user_id != "" do 
       Redis.sadd(dlu_key(today, app_id), user_id)
       Redis.sadd(dau_key(today, app_id), user_id)
       Redis.sadd(dlu_key(today, app_id, platform), user_id)
@@ -253,12 +253,12 @@ defmodule Acs.StatsTcpConn do
       Redis.sadd(dld_key(today, app_id, platform), device_id)
       Redis.sadd(dad_key(today, app_id, platform), device_id)
 
-      if Redis.sismember(dau_key(yestoday, app_id), user_id) do 
+      if Redis.sismember(dau_key(yesterday, app_id), user_id) do 
         Redis.sadd(da2nu_key(today, app_id), user_id)
         Redis.sadd(da2nu_key(today, app_id, platform), user_id)
       end
 
-      if Redis.sismember(dad_key(yestoday, app_id, platform), device_id) do 
+      if Redis.sismember(dad_key(yesterday, app_id, platform), device_id) do 
         Redis.sadd(da2nd_key(today, app_id, platform), device_id)
       end
 

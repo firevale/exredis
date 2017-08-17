@@ -143,7 +143,7 @@ defmodule Acs.Web.AppChannel do
   # by sending replies to requests from the client
   def handle_in("reset", %{"access_token" => _access_token,
                            "user_id" => user_id,
-                           "app_user_id" => _app_user_id,
+                           "app_user_id" => app_user_id,
                            "app_user_name" => _app_user_name,
                            "app_user_level" => _app_user_level,
                            "zone_id" => zone_id,
@@ -152,32 +152,48 @@ defmodule Acs.Web.AppChannel do
                           %{assigns: %{node: node,
                                        app_id: app_id, 
                                        user_id: last_user_id, 
+                                       app_user_id: last_app_user_id,
                                        platform: platform}} =  socket) do
     info "receive reset channel request with payload: #{inspect payload}"
     Logger.metadata(user_id: user_id)
 
     now = Timex.local()
     today = Timex.to_date(now)
-    
-    if user_id != last_user_id do 
-      # add user stats
-      Redis.sadd(dlu_key(today, app_id), user_id)
-      Redis.sadd(dau_key(today, app_id), user_id)
-      Redis.sadd(dlu_key(today, app_id, platform), user_id)
-      Redis.sadd(dau_key(today, app_id, platform), user_id)
 
-      decr_online_counter(node, app_id, platform, last_user_id)
-      incr_online_counter(node, app_id, platform, user_id)
+    Redis.sadd(dlu_key(today, app_id), user_id)
+    Redis.sadd(dlu_key(today, app_id, platform), user_id)
+
+    if app_user_id != "" and last_app_user_id != "" do                                     
+      if user_id != last_user_id do 
+        # add user stats
+        Redis.sadd(dau_key(today, app_id), user_id)
+        Redis.sadd(dau_key(today, app_id, platform), user_id)
+
+        decr_online_counter(node, app_id, platform, last_user_id)
+        incr_online_counter(node, app_id, platform, user_id)
+      end
+
+      do_stat(socket)
+      init_stat_data(payload, today)
+      {:noreply, socket 
+        |> assign(:user_id, user_id)
+        |> assign(:active, true)
+        |> assign(:join_at, Utils.unix_timestamp)
+        |> assign(:app_user_id, app_user_id)
+        |> assign(:today, today)
+        |> assign(:zone_id, "#{zone_id}") 
+      }
+    else
+      if last_app_user_id != "" do 
+        do_stat(socket)
+      end
+
+      {:noreply, socket 
+        |> assign(:user_id, user_id)
+        |> assign(:active, false)
+        |> assign(:today, today)
+      }      
     end
-
-    do_stat(socket)
-    init_stat_data(payload, today)
-    {:noreply, socket |> assign(:user_id, user_id)
-                      |> assign(:join_at, Timex.to_unix(now))
-                      |> assign(:zone_id, "#{zone_id}")
-                      |> assign(:active, true)
-                      |> assign(:today, today)
-    }
   end
   def handle_in("reset", payload, socket) do
     info "receive unknown reset, payload: #{inspect payload}, assigns: #{inspect socket.assigns}"

@@ -165,6 +165,7 @@ defmodule Acs.StatsTcpConn do
         today = Timex.to_date(now)
         Redis.sadd(dlu_key(today, app_id), user_id)
         Redis.sadd(dlu_key(today, app_id, platform), user_id)
+        Redis.sadd(dld_key(today, app_id, platform), device_id)
         info "#{today} user login, user_id: #{user_id}, device_id: #{device_id}"
         new_state = state 
           |> Map.put(:access_token, access_token_id)
@@ -204,7 +205,8 @@ defmodule Acs.StatsTcpConn do
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
-    incr_danu(today, app_id, user_id, platform)
+    Redis.sadd(dld_key(today, app_id, platform), device_id)
+    Redis.sadd(dad_key(today, app_id, platform), device_id)
     incr_online_counter(node, app_id, platform, user_id)
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 
@@ -216,8 +218,8 @@ defmodule Acs.StatsTcpConn do
       |> Map.put(:today, today)
       |> Map.put(:join_at, Timex.to_unix(now))
       |> Map.put(:active, true)
-    {:ok, models} = init_stat_data(new_state)
-    {:ok, Map.merge(new_state, models)}
+    init_stat_data(new_state)
+    {:ok, new_state}
   end
 
   defp handle_message(%{
@@ -233,6 +235,9 @@ defmodule Acs.StatsTcpConn do
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
+    Redis.sadd(dld_key(today, app_id, platform), device_id)
+    Redis.sadd(dad_key(today, app_id, platform), device_id)
+
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
 
     if user_id != state.user_id do 
@@ -243,11 +248,12 @@ defmodule Acs.StatsTcpConn do
     if state.active do 
       do_stat(state)    
     end
-    {:ok, models} = init_stat_data(%{state | user_id: user_id})
-    new_state = Map.merge(state, models) 
+
+    new_state = state
       |> Map.put(:user_id, user_id)
       |> Map.put(:today, today)
       |> Map.put(:join_at, Timex.to_unix(now))
+    init_stat_data(new_state)
     {:ok, new_state}
   end
 
@@ -292,9 +298,9 @@ defmodule Acs.StatsTcpConn do
       |> Map.put(:join_at, Timex.to_unix(now))
       |> Map.put(:active, true)
 
-    {:ok, models} = init_stat_data(new_state)
+    init_stat_data(new_state)
 
-    {:ok, Map.merge(new_state, models)}
+    {:ok, new_state}
   end
   defp handle_message(%{type: "resume"}, state) do 
     {:ok, state}
@@ -325,6 +331,13 @@ defmodule Acs.StatsTcpConn do
     "acs.dau.#{date}.#{app_id}.#{platform}"
   end
 
+  def dld_key(date, app_id, platform) do 
+    "acs.dld.#{date}.#{app_id}.#{platform}"
+  end
+  def dad_key(date, app_id, platform) do 
+    "acs.dad.#{date}.#{app_id}.#{platform}"
+  end
+
   def online_key(node, app_id) do 
     "acs.online_counter.#{app_id}.#{node}"
   end
@@ -345,8 +358,8 @@ defmodule Acs.StatsTcpConn do
                         today: today}) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
-    app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
-    app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
+    app_user = RedisAppUser.find(app_id, zone_id, user_id, platform) 
+    case StatsRepo.update(AppUser.changeset(app_user, %{
       app_user_name: app_user_name,
       app_user_id: app_user_id,
       last_active_at: utc_now,
@@ -362,7 +375,7 @@ defmodule Acs.StatsTcpConn do
         app_user
     end
 
-    app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
+    RedisAppUserDailyActivity.find(app_user.id, today)
 
     if is_nil(RedisDevice.find(device_id)) do
       # client may join channel twice at the same time, ignore the second one
@@ -374,14 +387,8 @@ defmodule Acs.StatsTcpConn do
     end
 
     app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
-    app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
-
-    {:ok, %{
-      app_user: app_user,
-      app_device: app_device, 
-      app_user_daily_activity: app_user_daily_activity,
-      app_device_daily_activity: app_device_daily_activity
-    }}
+    RedisAppDeviceDailyActivity.find(app_device.id, today)
+    :ok
   end
   defp init_stat_data(_), do: :ok
 
@@ -436,20 +443,4 @@ defmodule Acs.StatsTcpConn do
     end
   end
   defp do_stat(_socket), do: :ok
-
-  def incr_danu(today, app_id, user_id, platform) do 
-    query = from au in AppUser, 
-            select: count(1),
-            where: au.app_id == ^app_id,
-            where: au.user_id == ^user_id
-            
-    case StatsRepo.one!(query) do 
-      0 -> 
-        Redis.sadd("acs.danu.#{today}.#{app_id}", user_id) 
-        Redis.sadd("acs.danu.#{today}.#{app_id}.#{platform}", user_id) 
-      _ -> 
-        :ok
-    end
-end
-
 end

@@ -5,13 +5,12 @@ defmodule Acs.Web.AppChannel do
   import  Acs.StatsTcpConn, only: [
     dlu_key: 2, 
     dlu_key: 3, 
+    dld_key: 3, 
     dau_key: 2, 
     dau_key: 3, 
-    online_key: 2, 
-    online_key: 3, 
+    dad_key: 3, 
     incr_online_counter: 4, 
     decr_online_counter: 4,
-    incr_danu: 4,
    ]
 
   alias   Acs.RedisAccessToken
@@ -61,6 +60,7 @@ defmodule Acs.Web.AppChannel do
       today = Timex.local |> Timex.to_date
       Redis.sadd(dlu_key(today, app_id), user_id)
       Redis.sadd(dlu_key(today, app_id, platform), user_id)
+      Redis.sadd(dld_key(today, app_id, platform), device_id)
 
       {:ok, socket |> assign(:user_id, user_id)
                    |> assign(:app_id, app_id)
@@ -109,10 +109,11 @@ defmodule Acs.Web.AppChannel do
       Redis.sadd(dau_key(today, app_id), user_id)
       Redis.sadd(dlu_key(today, app_id, platform), user_id)
       Redis.sadd(dau_key(today, app_id, platform), user_id)
-      incr_danu(today, app_id, user_id, platform)
+      Redis.sadd(dld_key(today, app_id, platform), device_id)
+      Redis.sadd(dad_key(today, app_id, platform), device_id)
       incr_online_counter(node, app_id, platform, user_id)
 
-      socket = init_stat_data(payload, today, socket)
+      init_stat_data(payload, today)
 
       {:ok, socket |> assign(:user_id, user_id)
                    |> assign(:app_id, app_id)
@@ -155,15 +156,22 @@ defmodule Acs.Web.AppChannel do
     info "receive reset channel request with payload: #{inspect payload}"
     Logger.metadata(user_id: user_id)
 
+    now = Timex.local()
+    today = Timex.to_date(now)
+    
     if user_id != last_user_id do 
+      # add user stats
+      Redis.sadd(dlu_key(today, app_id), user_id)
+      Redis.sadd(dau_key(today, app_id), user_id)
+      Redis.sadd(dlu_key(today, app_id, platform), user_id)
+      Redis.sadd(dau_key(today, app_id, platform), user_id)
+
       decr_online_counter(node, app_id, platform, last_user_id)
       incr_online_counter(node, app_id, platform, user_id)
     end
 
     do_stat(socket)
-    now = Timex.local()
-    today = Timex.to_date(now)
-    socket = init_stat_data(payload, today, socket)
+    init_stat_data(payload, today)
     {:noreply, socket |> assign(:user_id, user_id)
                       |> assign(:join_at, Timex.to_unix(now))
                       |> assign(:zone_id, "#{zone_id}")
@@ -201,27 +209,29 @@ defmodule Acs.Web.AppChannel do
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
-    incr_danu(today, app_id, user_id, platform)
+    Redis.sadd(dld_key(today, app_id, platform), device_id)
+    Redis.sadd(dad_key(today, app_id, platform), device_id)
     incr_online_counter(node, app_id, platform, user_id)
 
-    socket = init_stat_data(%{"app_user_id" => app_user_id,
-                              "app_user_name" => app_user_name,
-                              "app_user_level" => app_user_level,
-                              "zone_id" => zone_id,
-                              "zone_name" => zone_name,
-                              "app_id" => app_id,
-                              "user_id" => user_id,
-                              "device_id" => device_id,
-                              "device_model" => device_model,
-                              "os_ver" => os_ver,
-                              "platform" => platform,
-                              }, today, socket)
+    init_stat_data(%{"app_user_id" => app_user_id,
+                     "app_user_name" => app_user_name,
+                     "app_user_level" => app_user_level,
+                     "zone_id" => zone_id,
+                     "zone_name" => zone_name,
+                     "app_id" => app_id,
+                     "user_id" => user_id,
+                     "device_id" => device_id,
+                     "device_model" => device_model,
+                     "os_ver" => os_ver,
+                     "platform" => platform,
+                     }, today)
 
-    {:noreply, socket 
-                |> assign(:zone_id, zone_id)
-                |> assign(:join_at, Timex.to_unix(now))
-                |> assign(:active, true)
-                |> assign(:app_user_id, app_user_id)
+    {:noreply, 
+      socket 
+        |> assign(:zone_id, zone_id)
+        |> assign(:join_at, Timex.to_unix(now))
+        |> assign(:active, true)
+        |> assign(:app_user_id, app_user_id)
     }
   end
   def handle_in("updateGameData", payload, socket) do
@@ -230,25 +240,17 @@ defmodule Acs.Web.AppChannel do
   end
   
 
+
   def handle_in("pause", _payload, %{assigns: %{
-    active: true, 
-    node: node,
-    user_id: user_id, 
-    app_id: app_id, 
-    platform: platform}} = socket) do
-    info "channel paused, assigns: #{inspect socket.assigns}"
-    decr_online_counter(node, app_id, platform, user_id)
-    do_stat(socket) 
-    {:noreply, socket |> assign(:active, false) }
-  end
-  def handle_in("pause", _payload, %{assigns: %{
-    active: false, 
     node: node,
     user_id: user_id,
     app_id: app_id, 
     platform: platform}} = socket) do
     info "channel paused, assigns: #{inspect socket.assigns}"
     decr_online_counter(node, app_id, platform, user_id)
+    if socket.assigns[:active] do 
+      do_stat(socket) 
+    end
     {:noreply, socket |> assign(:active, false) }
   end
   def handle_in("pause", _payload, socket) do 
@@ -257,20 +259,6 @@ defmodule Acs.Web.AppChannel do
   end
 
   def handle_in("resume", _payload, %{assigns: %{
-    active: true, 
-    node: node,
-    user_id: user_id, 
-    app_id: app_id, 
-    app_user_id: "",
-    platform: platform}} = socket) do
-    info "channel resume, assigns: #{inspect socket.assigns}"
-    incr_online_counter(node, app_id, platform, user_id)
-    {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
-                      |> assign(:active, true)
-    }
-  end
-  def handle_in("resume", _payload, %{assigns: %{
-    active: false, 
     node: node,
     user_id: user_id, 
     app_id: app_id, 
@@ -360,11 +348,10 @@ defmodule Acs.Web.AppChannel do
                         "app_user_id" => app_user_id,
                         "app_user_name" => app_user_name,
                         "app_user_level" => app_user_level,
-                        "zone_id" => zone_id}, today, socket) do
+                        "zone_id" => zone_id}, today) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
     app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
-
 
     app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
       app_user_name: app_user_name,
@@ -382,7 +369,7 @@ defmodule Acs.Web.AppChannel do
         app_user
     end
 
-    app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
+    RedisAppUserDailyActivity.find(app_user.id, today)
 
     if is_nil(RedisDevice.find(device_id)) do
       # client may join channel twice at the same time, ignore the second one
@@ -394,12 +381,7 @@ defmodule Acs.Web.AppChannel do
     end
 
     app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
-    app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
-
-    socket |> assign(:app_user, app_user)
-           |> assign(:app_device, app_device)
-           |> assign(:app_user_daily_activity, app_user_daily_activity)
-           |> assign(:app_device_daily_activity, app_device_daily_activity)
+    RedisAppDeviceDailyActivity.find(app_device.id, today)
   end
 
   defp do_stat(%{assigns: %{app_id: app_id,
@@ -409,11 +391,7 @@ defmodule Acs.Web.AppChannel do
                             user_id: user_id,
                             device_id: device_id,
                             today: today,
-                            join_at: join_at,
-                            app_user: app_user,
-                            app_device: app_device,
-                            app_user_daily_activity: app_user_daily_activity,
-                            app_device_daily_activity: app_device_daily_activity}} = socket) do
+                            join_at: join_at}} = socket) do
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 

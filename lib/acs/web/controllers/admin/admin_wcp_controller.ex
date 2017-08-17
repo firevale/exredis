@@ -126,6 +126,17 @@ defmodule Acs.Web.AdminWcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def get_user_message_list(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
+     query = 
+       from msg in AppWcpMessage,
+       where: msg.app_id == ^app_id and (msg.from == ^open_id or msg.to ==  ^open_id),
+       select: map(msg, [:id, :from, :to, :msg_type, :content, :inserted_at]),
+       order_by: [:id]
+      
+     messages =Repo.all(query)
+     conn |> json(%{success: true, messages: messages })
+  end
+
   # delete_wcp_message
   def delete_wcp_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"message_id" => message_id} = params) do
     case Repo.get(AppWcpMessage, message_id) do

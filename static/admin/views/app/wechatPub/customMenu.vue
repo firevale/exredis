@@ -36,7 +36,7 @@
         </div>
         <div class="column is-10">
           <div class="columns is-multiline" v-if="wcpParams.menu">
-            <div class="column is-one-third">
+            <div class="column is-one-third" v-dragula="wcpParams.menu.button[0].sub_button" bag="column0">
               <div class="column" v-for="(button, index) in wcpParams.menu.button[0].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
@@ -49,7 +49,7 @@
                 </p>
               </div>
             </div>
-            <div class="column is-one-third">
+            <div class="column is-one-third" v-dragula="wcpParams.menu.button[1].sub_button" bag="column1">
               <div class="column" v-for="(button, index) in wcpParams.menu.button[1].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
@@ -62,7 +62,7 @@
                 </p>
               </div>
             </div>
-            <div class="column is-one-third">
+            <div class="column is-one-third" v-dragula="wcpParams.menu.button[2].sub_button" bag="column2">
               <div class="column" v-for="(button, index) in wcpParams.menu.button[2].sub_button" :key="button.name">
                 <input class="input" type="text" @click.prevent="setCurrentButton(button)" v-model.trim="button.name">
               </div>
@@ -120,10 +120,9 @@
     <div class="column is-12 has-text-centered">
       <p style="margin: 5px auto">
         <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnGetMenu')"
-          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="getMenu()" ></input>
+          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="getMenu()"></input>
         <input type="button" style="display: inline-block; font-size: 1rem;" :value="$t('admin.wcp.btnUpdateMenu')"
-          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="updateMenu()"
-        ></input>
+          class="button is-primary" :class="loading ? 'is-disabled' : ''" @click.prevent="updateMenu()"></input>
       </p>
     </div>
   </div>
@@ -141,6 +140,11 @@ import {
 import Toast from 'common/components/toast'
 
 export default {
+  created: function() {
+    Vue.vueDragula.options(this.bagId, {
+      direction: 'vertical',
+    })
+  },
   mounted: async function() {
     this.addWcpEmptyParams()
   },
@@ -243,8 +247,9 @@ export default {
     updateMenu: async function() {
       this.loading = true
       let newmenu = JSON.parse(JSON.stringify(this.wcpParams.menu)); //deep copy
-      newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, '').replace(/,null/g, ''))
-      
+      newmenu = JSON.parse(JSON.stringify(this.cleanEmpty(newmenu)).replace(/null,/g, '').replace(
+        /,null/g, ''))
+
       let response = await this.$acs.updateWcpMenu({
         app_id: this.wcpParams.app_id,
         menu: newmenu
@@ -261,8 +266,8 @@ export default {
     cleanEmpty: function(obj) {
       for (var i in obj) {
         var value = obj[i];
-        if((typeof value === 'object') && !Array.isArray(value)){
-          if(!value["name"] || value["name"].trim() === '') {
+        if ((typeof value === 'object') && !Array.isArray(value)) {
+          if (!value["name"] || value["name"].trim() === '') {
             delete obj[i];
           }
         }
@@ -345,3 +350,30 @@ export default {
   },
 }
 </script>
+<style scoped>
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+}
+
+.gu-hide {
+  display: none !important;
+}
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+</style>

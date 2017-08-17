@@ -9,36 +9,44 @@
       </span>
     </div>
     <div class="tile is-parent is-vertical">
-      <article class="tile is-child is-12">
-        <div class="table-responsive">
-          <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead v-show="messages && messages.length > 0">
-              <tr>
-                <th>{{ $t('admin.wcp.msgId') }}</th>
-                <th>{{ $t('admin.wcp.msgFrom') }}</th>
-                <th>{{ $t('admin.wcp.msgTo')}}</th>
-                <th>{{ $t('admin.wcp.msgContent')}}</th>
-                <th>{{ $t('admin.wcp.msgType')}}</th>
-                <th>{{ $t('admin.wcp.msgTime')}}</th>
-              </tr>
-            </thead>
-            <tbody v-show="messages && messages.length > 0">
-              <tr v-for="(message, index) in messages" :key="message.id">
-                <td> {{ message.id }} </td>
-                <td> {{ getMsgUser(message.from, message.fromname) }} </td>
-                <td> {{ getMsgUser(message.to, message.toname) }} </td>
-                <td style="max-width:400px;"> {{ message.content }} </td>
-                <td> {{ message.msg_type }} </td>
-                <td> {{ message.inserted_at | formatServerDateTime }} </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="tile is-child box">
+        <el-table ref="tbl" stripe :data="messages" style="width: 100%" border :row-key="getRowKey" :expand-row-keys="expandKeys"
+          @row-dblclick="rowClick">
+          <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
+          </el-table-column>
+          <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
+            <template scope="scope">
+              {{ getMsgUser(scope.row.from, scope.row.fromname) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.wcp.msgTo')" width="180">
+            <template scope="scope">
+              {{ getMsgUser(scope.row.to, scope.row.toname) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.wcp.msgContent')" width="400">
+            <template scope="scope">
+              <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"> {{ scope.row.content }} </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="total_mem_size" :label="$t('admin.wcp.msgType')" width="120">
+            <template scope="scope">
+              {{ scope.row.msg_type }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.wcp.msgTime')" sortable="custom" width="180">
+            <template scope="scope">
+              {{ scope.row.inserted_at | formatServerDateTime }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div v-if="messages && messages.length > 0" class="ele-pagination">
+          <el-pagination layout="prev, pager, next" :page-count="total" @current-change="onPageChange">
+          </el-pagination>
         </div>
-      </article>
-      <article class="tile is-child is-12">
-        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-      </article>
+      </div>
     </div>
+    <talk ref="talk" @close="showTalkModal = false"></talk>
   </div>
 </template>
 <script>
@@ -47,6 +55,7 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
+import talk from './talk'
 import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
@@ -54,6 +63,10 @@ import {
 import Pagination from 'admin/components/Pagination'
 
 export default {
+  components: {
+    Pagination,
+    talk
+  },
   data() {
     return {
       keyword: "",
@@ -61,7 +74,9 @@ export default {
       page: 1,
       total: 1,
       recordsPerPage: 20,
-      loading: false
+      loading: false,
+      expandKeys: [],
+      showTalkModal: false,
     }
   },
 
@@ -70,9 +85,16 @@ export default {
   },
 
   methods: {
+    getRowKey: function(row) {
+      return row.id
+    },
+    rowClick: function(row, event) {
+      this.$refs.talk.open(row)
+    },
     getMessageList: async function(page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.getMessageList(this.$route.params.appId, this.keyword, page, recordsPerPage)
+      let result = await this.$acs.getMessageList(this.$route.params.appId, this.keyword, page,
+        recordsPerPage)
 
       if (result.success) {
         this.total = result.total
@@ -83,7 +105,7 @@ export default {
     },
 
     getMsgUser: function(openid, name) {
-      if(openid.indexOf('gh_') >= 0)
+      if (openid.indexOf('gh_') >= 0)
         return '系统'
       else
         return name ? name : openid
@@ -129,9 +151,7 @@ export default {
 
   },
 
-  components: {
-    Pagination,
-  }
+
 
 }
 </script>

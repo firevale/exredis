@@ -321,15 +321,30 @@ defmodule Acs.Web.CronController do
               ios: Redis.scard("acs.dlu.#{today}.#{app_id}.ios"),
               android: Redis.scard("acs.dlu.#{today}.#{app_id}.android"),
             },
+            dld: %{
+              total: Redis.scard("acs.dld.#{today}.#{app_id}.ios") + Redis.scard("acs.dld.#{today}.#{app_id}.android"),
+              ios: Redis.scard("acs.dld.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dld.#{today}.#{app_id}.android"),
+            },
             dau: %{
               total: Redis.scard("acs.dau.#{today}.#{app_id}"),
               ios: Redis.scard("acs.dau.#{today}.#{app_id}.ios"),
               android: Redis.scard("acs.dau.#{today}.#{app_id}.android"),
             },
+            dad: %{
+              total: Redis.scard("acs.dad.#{today}.#{app_id}.ios") + Redis.scard("acs.dad.#{today}.#{app_id}.android"),
+              ios: Redis.scard("acs.dad.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dad.#{today}.#{app_id}.android"),
+            },
             danu: %{
               total: Redis.scard("acs.danu.#{today}.#{app_id}"),
               ios: Redis.scard("acs.danu.#{today}.#{app_id}.ios"),
               android: Redis.scard("acs.danu.#{today}.#{app_id}.android"),
+            },
+            dand: %{
+              total: Redis.scard("acs.dand.#{today}.#{app_id}.ios") + Redis.scard("acs.dand.#{today}.#{app_id}.android"),
+              ios: Redis.scard("acs.dand.#{today}.#{app_id}.ios"),
+              android: Redis.scard("acs.dand.#{today}.#{app_id}.android"),
             },
             dapu: %{
               total: Redis.scard("acs.dapu.#{today}.#{app_id}"),
@@ -354,7 +369,7 @@ defmodule Acs.Web.CronController do
   end
 
   def daily_refresh(conn, params) do 
-    date = Timex.local |> Timex.shift(days: -2) |> Timex.to_date
+    date = Timex.local |> Timex.shift(days: -14) |> Timex.to_date
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       Redis.del("acs.dau.#{date}.#{app_id}")
       Redis.del("acs.dau.#{date}.#{app_id}.ios")

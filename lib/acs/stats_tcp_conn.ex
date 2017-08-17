@@ -201,12 +201,24 @@ defmodule Acs.StatsTcpConn do
   }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id, node: node} = state) do 
     now = Timex.local()
     today = Timex.to_date(now)
+    yestoday = now |> Timex.shift(days: -1) |> Timex.to_date 
+
     Redis.sadd(dlu_key(today, app_id), user_id)
     Redis.sadd(dau_key(today, app_id), user_id)
     Redis.sadd(dlu_key(today, app_id, platform), user_id)
     Redis.sadd(dau_key(today, app_id, platform), user_id)
     Redis.sadd(dld_key(today, app_id, platform), device_id)
     Redis.sadd(dad_key(today, app_id, platform), device_id)
+
+    if Redis.sismember(dau_key(yestoday, app_id), user_id) do 
+      Redis.sadd(da2nu_key(today, app_id), user_id)
+      Redis.sadd(da2nu_key(today, app_id, platform), user_id)
+    end
+
+    if Redis.sismember(dad_key(yestoday, app_id, platform), device_id) do 
+      Redis.sadd(da2nd_key(today, app_id, platform), device_id)
+    end
+
     incr_online_counter(node, app_id, platform, user_id)
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 
@@ -227,34 +239,66 @@ defmodule Acs.StatsTcpConn do
     payload: %{
       user_id: user_id,
     } = payload
-  }, %{app_id: app_id, platform: platform, node: node, device_id: device_id} = state) do 
+  }, %{app_id: app_id, platform: platform, node: node, device_id: device_id, app_user_id: app_user_id} = state) do 
     Logger.metadata(user_id: user_id)
-    now = Timex.local()
-    today = Timex.to_date(now)
-    Redis.sadd(dlu_key(today, app_id), user_id)
-    Redis.sadd(dau_key(today, app_id), user_id)
-    Redis.sadd(dlu_key(today, app_id, platform), user_id)
-    Redis.sadd(dau_key(today, app_id, platform), user_id)
-    Redis.sadd(dld_key(today, app_id, platform), device_id)
-    Redis.sadd(dad_key(today, app_id, platform), device_id)
+    if app_user_id != "" do 
+      now = Timex.local()
+      today = Timex.to_date(now)
+      yestoday = now |> Timex.shift(days: -1) |> Timex.to_date 
 
-    info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
+      Redis.sadd(dlu_key(today, app_id), user_id)
+      Redis.sadd(dau_key(today, app_id), user_id)
+      Redis.sadd(dlu_key(today, app_id, platform), user_id)
+      Redis.sadd(dau_key(today, app_id, platform), user_id)
+      Redis.sadd(dld_key(today, app_id, platform), device_id)
+      Redis.sadd(dad_key(today, app_id, platform), device_id)
 
-    if user_id != state.user_id do 
-      decr_online_counter(node, app_id, platform, state.user_id)
-      incr_online_counter(node, app_id, platform, user_id)
+      if Redis.sismember(dau_key(yestoday, app_id), user_id) do 
+        Redis.sadd(da2nu_key(today, app_id), user_id)
+        Redis.sadd(da2nu_key(today, app_id, platform), user_id)
+      end
+
+      if Redis.sismember(dad_key(yestoday, app_id, platform), device_id) do 
+        Redis.sadd(da2nd_key(today, app_id, platform), device_id)
+      end
+
+      info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
+
+      if user_id != state.user_id do 
+        decr_online_counter(node, app_id, platform, state.user_id)
+        incr_online_counter(node, app_id, platform, user_id)
+      end
+
+      if state.active do 
+        do_stat(state)    
+      end
+      new_state = state
+        |> Map.put(:user_id, user_id)
+        |> Map.put(:today, today)
+        |> Map.put(:join_at, Timex.to_unix(now))
+      init_stat_data(new_state)
+      {:ok, new_state}
+    else
+      new_state = state
+        |> Map.put(:user_id, user_id)
+        |> Map.put(:today, today)
+        |> Map.put(:join_at, Timex.to_unix(now))
+      {:ok, new_state} 
     end
-
-    if state.active do 
-      do_stat(state)    
-    end
-
+  end
+  defp handle_message(%{
+    type: "reset",
+    payload: %{
+      user_id: user_id,
+    } = payload
+  }, state) do 
+    now = Timex.local
+    today = now |> Timex.to_date
     new_state = state
       |> Map.put(:user_id, user_id)
       |> Map.put(:today, today)
       |> Map.put(:join_at, Timex.to_unix(now))
-    init_stat_data(new_state)
-    {:ok, new_state}
+    {:ok, new_state} 
   end
 
   defp handle_message(%{type: "pause"}, %{
@@ -331,11 +375,23 @@ defmodule Acs.StatsTcpConn do
     "acs.dau.#{date}.#{app_id}.#{platform}"
   end
 
+  def da2nu_key(date, app_id) do 
+    "acs.da2nu.#{date}.#{app_id}"
+  end
+  def da2nu_key(date, app_id, platform) do 
+    "acs.da2nu.#{date}.#{app_id}.#{platform}"
+  end
+
   def dld_key(date, app_id, platform) do 
     "acs.dld.#{date}.#{app_id}.#{platform}"
   end
+
   def dad_key(date, app_id, platform) do 
     "acs.dad.#{date}.#{app_id}.#{platform}"
+  end
+
+  def da2nd_key(date, app_id, platform) do 
+    "acs.da2nd.#{date}.#{app_id}.#{platform}"
   end
 
   def online_key(node, app_id) do 

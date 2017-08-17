@@ -30,6 +30,7 @@ const state = {
     },
     {
       path: '/admin/app/:appId/setting',
+      
       meta: {
         icon: 'fa-cog',
         level: '1,2,',

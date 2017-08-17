@@ -41,12 +41,13 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # update_wcp_params
-  def update_wcp_params(conn, %{"app_id" => app_id} = wcpParams) do
+  def update_wcp_params(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id} = wcpParams) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
         # update
         case AppWcpConfig.changeset(config, wcpParams) |> Repo.update do
           {:ok, new_wcp} ->
+            AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_params", wcpParams)
             RedisAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
@@ -63,7 +64,7 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # update_wcp_menus
-  def update_wcp_menus(conn, %{"app_id" => app_id, "menu" => menu}) do
+  def update_wcp_menus(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "menu" => menu} = params) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
@@ -71,6 +72,7 @@ defmodule Acs.Web.AdminWcpController do
       %AppWcpConfig{} = config ->
         case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
           {:ok, new_wcp} ->
+            AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_menus", params)
             RedisAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
@@ -124,11 +126,12 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # delete_wcp_message
-  def delete_wcp_message(conn, %{"message_id" => message_id}) do
+  def delete_wcp_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"message_id" => message_id} = params) do
     case Repo.get(AppWcpMessage, message_id) do
       %AppWcpMessage{} = message ->
         case Repo.delete(message) do
           {:ok, _} ->
+            AdminController.add_operate_log(acs_admin_id, app_id, "delete_wcp_message", params)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -163,7 +166,7 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # update_wcp_message_rule
-  def update_wcp_message_rule(conn, %{"app_id" => app_id, "keywords" => keywords, "response" => response} = rule) do
+  def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "keywords" => keywords, "response" => response} = rule) do
     d "rule: #{inspect rule, pretty: true}"
     case Repo.get(App, app_id) do
       nil ->
@@ -175,6 +178,7 @@ defmodule Acs.Web.AdminWcpController do
             # add new
             case AppWcpMessageRule.changeset(%AppWcpMessageRule{}, rule) |> Repo.insert do
               {:ok, new_rule} ->
+                AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", rule)
                 RedisAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
@@ -186,6 +190,7 @@ defmodule Acs.Web.AdminWcpController do
             # update
             case AppWcpMessageRule.changeset(msgrule, rule) |> Repo.update do
               {:ok, new_rule} ->
+                AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", rule)
                 RedisAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
@@ -200,11 +205,12 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # delete_wcp_message_rule
-  def delete_wcp_message_rule(conn, %{"rule_id" => rule_id}) do
+  def delete_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"rule_id" => rule_id} = params) do
     case Repo.get(AppWcpMessageRule, rule_id) do
       %AppWcpMessageRule{} = rule ->
         case Repo.delete(rule) do
           {:ok, _} ->
+            AdminController.add_operate_log(acs_admin_id, app_id, "delete_wcp_message_rule", params)
             RedisAppWcpMessageRule.refresh(rule.app_id)
             conn |> json(%{success: true})
 
@@ -235,11 +241,12 @@ defmodule Acs.Web.AdminWcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end  
 
-  def upload_wcp_file(conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename}}) do
+  def upload_wcp_file(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename} = params}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
         case Utils.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
+            AdminController.add_operate_log(acs_admin_id, app_id, "upload_wcp_file", params)
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
             conn |> json(%{success: true, filename: filename})
           
@@ -268,11 +275,12 @@ defmodule Acs.Web.AdminWcpController do
     end
   end 
 
-  def update_wcp_menu(conn, %{"app_id" => app_id, "menu" => menu}) do
+  def update_wcp_menu(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "menu" => menu} = params) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
         result = Menu.create(app_id, menu)
         if(result.errcode == 0) do
+          AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_menu", params)
           AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update!
           conn |> json(%{success: true, result: result})
         else

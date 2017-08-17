@@ -175,7 +175,7 @@ defmodule Acs.Web.AppSdkInfoController do
     conn |> send_resp(500, "bad request") |> halt 
   end
 
-  defp _update_app_sdk_info(conn, app_id, sdk, binding) do 
+  defp _update_app_sdk_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, app_id, sdk, binding) do 
     binding = case Repo.get_by(AppSdkBinding, app_id: app_id, sdk: sdk) do 
       nil ->
         AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: app_id, sdk: sdk, binding: binding}) |> Repo.insert!
@@ -183,6 +183,7 @@ defmodule Acs.Web.AppSdkInfoController do
         AppSdkBinding.changeset(sdk_binding, %{binding: binding}) |> Repo.update!
     end
 
+    AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", binding)
     RedisApp.refresh(app_id)
     conn |> json(%{success: true, binding: binding})
   end

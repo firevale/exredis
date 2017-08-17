@@ -14,5 +14,6 @@ defmodule Acs.Repo.Migrations.AddAppWcpUser do
     end
 
     create unique_index(:app_wcp_users, [:app_id, :openid])
+    create index(:app_wcp_users, [:openid])
   end
 end

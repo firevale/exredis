@@ -117,7 +117,7 @@ defmodule Acs.Web.GamesController do
   # update_news
   def update_news(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
                   "news_id" => news_id,
-                  "app_id" => _app_id,
+                  "app_id" => app_id,
                   "title" => title,
                   "content" => content,
                   "group" => _group,
@@ -129,6 +129,7 @@ defmodule Acs.Web.GamesController do
         case AppNews.changeset(%AppNews{}, news) |> Repo.insert do
           {:ok, new_news} ->
             news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
+            AdminController.add_operate_log(user_id, app_id, "update_news", news)
             conn |> json(%{success: true, news: news, i18n_message: "admin.news.addSuccess"})
           {:error, %{errors: _errors}} ->
             conn |> json(%{success: false, message: "admin.error.networkError"})
@@ -138,6 +139,7 @@ defmodule Acs.Web.GamesController do
         # update
         AppNews.changeset(ns, %{title: title, content: content, is_top: is_top}) |> Repo.update!
         news = news |> Map.put("id", ns.id) |> Map.put("created_at", ns.inserted_at)
+        AdminController.add_operate_log(user_id, app_id, "update_news", news)
         conn |> json(%{success: true, news: news, i18n_message: "admin.news.updateSuccess"})
     end
 
@@ -147,13 +149,14 @@ defmodule Acs.Web.GamesController do
   end
 
   # toggle_news_status
-  def toggle_news_status(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
-                  %{"news_id" => news_id}) do
+  def toggle_news_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+                  %{"news_id" => news_id} = params) do
     case Repo.get(AppNews, news_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.newsNotFound"})
       %AppNews{} = news ->
         AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
+        AdminController.add_operate_log(user_id, app_id, "toggle_news_status", params)
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end

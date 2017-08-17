@@ -54,7 +54,6 @@ export default {
     open(message) {
       this.visible = true
       this.message = message
-      console.info(this.message)
       this.fetchData()
     },
     close() {
@@ -92,9 +91,35 @@ div.talk {
   .content.box {
     padding: .5rem !important;
     .datetime {
-        color: gray;
+      color: gray;
       text-align: right;
     }
+  }
+}
+
+.dialog-fade-enter-active {
+  animation: dialog-fade-in .3s;
+}
+
+.dialog-fade-leave-active {
+  animation: dialog-fade-out .3s;
+}
+
+@keyframes dialog-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 </style>

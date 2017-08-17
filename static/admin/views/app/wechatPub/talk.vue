@@ -4,7 +4,9 @@
       <div class="message-body">
         <div v-for="msg in messages" class="talk">
           <div class="user-info" :class="{'is-right':  msg.from.startsWith('gh_')}">{{ msg.from.startsWith("gh_")? "系统": userName }}</div>
-          <div class="content box">{{msg.content}}</div>
+          <div class="content box">{{msg.content}}
+            <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
+          </div>
         </div>
       </div>
       <div class="form">
@@ -35,7 +37,7 @@ export default {
   },
   computed: {
     title() {
-      return `与${this.message.fromname}的对话`
+      return `与${this.userName}的对话`
     },
     userName() {
       return this.message.from.startsWith("gh_") ? this.message.toname : this.message.fromname
@@ -87,8 +89,12 @@ div.talk {
       text-align: right;
     }
   }
-  .box {
+  .content.box {
     padding: .5rem !important;
+    .datetime {
+        color: gray;
+      text-align: right;
+    }
   }
 }
 </style>

@@ -6,8 +6,15 @@ defmodule Acs.RedisAppDevice do
 
   require Cachex
   use     Timex
+  import  Ecto.Query
 
-  @app_device_cache_key     "fvac.app_device_cache"
+  @app_device_cache_key     "acs.app_device_cache"
+
+  def refresh(%AppDevice{} = app_device) do 
+    key = "#{@app_user_cache_key}.#{app_device.app_id}.#{app_device.zone_id}.#{app_device.device_id}"
+    Redis.setex(key, 3600 * 24, AppDevice.to_redis(app_device))
+    Cachex.del(:default, key) # force other node refresh from redis
+  end
 
   def find(app_id, zone_id, device_id, platform) do 
     key = "#{@app_device_cache_key}.#{app_id}.#{zone_id}.#{device_id}"
@@ -17,18 +24,20 @@ defmodule Acs.RedisAppDevice do
         :undefined ->
           case StatsRepo.get_by(AppDevice, app_id: app_id, device_id: device_id, zone_id: zone_id) do 
             nil ->  
-              {:ok, appDevice} = AppDevice.changeset(%AppDevice{}, %{
+              {:ok, app_device} = AppDevice.changeset(%AppDevice{}, %{
                 app_id: app_id, 
                 device_id: device_id, 
                 zone_id: zone_id,
                 platform: platform,
                 reg_date: Timex.local |> Timex.to_date}) |> StatsRepo.insert
-              Redis.setex(key, 3600 * 24, AppDevice.to_redis(appDevice))
-              {:commit, appDevice}
+              refresh(app_device)
+              today = Timex.local() |> Timex.to_date()
+              incr_dand(today, app_id, device_id, platform) 
+              {:commit, app_device}
 
-            %AppDevice{} = appDevice ->
-              Redis.setex(key, 3600 * 24, AppDevice.to_redis(appDevice))
-              {:commit, appDevice}
+            %AppDevice{} = app_device ->
+              refresh(app_device)
+              {:commit, app_device}
           end
 
         raw -> 
@@ -53,6 +62,21 @@ defmodule Acs.RedisAppDevice do
           end
       end
     end)
+  end
+
+  def incr_dand(today, app_id, device_id, platform) do 
+    query = from ad in AppDevice, 
+            select: count(1),
+            where: ad.app_id == ^app_id,
+            where: ad.device_id == ^device_id
+            
+    case StatsRepo.one!(query) do 
+      0 -> 
+        Redis.sadd("acs.dand.#{today}.#{app_id}", device_id) 
+        Redis.sadd("acs.dand.#{today}.#{app_id}.#{platform}", device_id) 
+      _ -> 
+        :ok
+    end
   end
 
 end

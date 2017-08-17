@@ -38,18 +38,20 @@ defmodule Acs.MallGoods do
   end
 
   def init_mapping() do
-    mapping = %{
-            properties: %{
-              id: %{type: :keyword},
-              app_id: %{type: :keyword},
-              name: %{type: :text, analyzer: :ik_smart},
-              description:  %{type: :text, analyzer: :ik_smart},
-              user_id: %{type: :integer},
-              active: %{type: :boolean},
-              inserted_at: %{type: :date}
-            }
-         }
+    unless Elasticsearch.is_type?("mall", "goods") do
+      mapping = %{
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          name: %{type: :text, analyzer: :ik_smart},
+          description:  %{type: :text, analyzer: :ik_smart},
+          user_id: %{type: :integer},
+          active: %{type: :boolean},
+          inserted_at: %{type: :date}
+        }
+      }
 
-      Elasticsearch.put_mapping(%{index: "mall", type: "goods" ,mapping: mapping, params: nil})
+      Elasticsearch.put_mapping(%{index: "mall", type: "goods", mapping: mapping, params: nil})
+    end
   end
 end

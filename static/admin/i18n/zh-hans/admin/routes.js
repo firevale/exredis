@@ -11,6 +11,7 @@ export default {
   Forums: '论坛管理',
   Malls: '商城管理',
   Faq: '问题反馈',
+  Setting: '系统设置',
   Settings: '系统设置',
   AppInfo: '应用基本信息',
   NewApp: '添加新应用',

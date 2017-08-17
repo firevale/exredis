@@ -29,31 +29,112 @@ defmodule Acs.Web.Admin.StatsController do
   end
 
   def brief_stats(conn, %{"app_id" => app_id}) do 
-    today = Timex.to_date(Timex.local)
+    now = Timex.local()
+    today = Timex.to_date(now)
+    yesterday = now |> Timex.shift(days: -1) |> Timex.to_date()
+
+    yesterday_danu = Redis.scard("acs.danu.#{yesterday}.#{app_id}") 
+    u_retention = if yesterday_danu > 0 do 
+      Redis.scard("acs.da2nu.#{today}.#{app_id}") / yesterday_danu * 100
+    else 
+      -1
+    end
+
+    yesterday_danu_ios = Redis.scard("acs.danu.#{yesterday}.#{app_id}.ios") 
+    u_retention_ios = if yesterday_danu_ios > 0 do 
+      Redis.scard("acs.da2nu.#{today}.#{app_id}.ios") / yesterday_danu_ios * 100
+    else 
+      -1
+    end
+
+    yesterday_danu_android = Redis.scard("acs.danu.#{yesterday}.#{app_id}.android") 
+    u_retention_android = if yesterday_danu_android > 0 do 
+      Redis.scard("acs.da2nu.#{today}.#{app_id}.android") / yesterday_danu_android * 100
+    else 
+      -1
+    end
+  
+    da2nd_ios = Redis.scard("acs.da2nd.#{today}.#{app_id}.ios") 
+    da2nd_android = Redis.scard("acs.da2nd.#{today}.#{app_id}.android") 
+
+    yesterday_dand = Redis.scard("acs.dand.#{yesterday}.#{app_id}") 
+    d_retention = if yesterday_dand > 0 do 
+      (da2nd_ios + da2nd_android) / yesterday_dand * 100
+    else 
+      -1
+    end
+
+    yesterday_dand_ios = Redis.scard("acs.dand.#{yesterday}.#{app_id}.ios") 
+    d_retention_ios = if yesterday_dand_ios > 0 do 
+      da2nd_ios / yesterday_dand_ios * 100
+    else 
+      -1
+    end
+
+    yesterday_dand_android = Redis.scard("acs.dand.#{yesterday}.#{app_id}.android") 
+    d_retention_android = if yesterday_dand_android > 0 do 
+      da2nd_android / yesterday_dand_android * 100
+    else 
+      -1
+    end
+
     conn |> json(%{
       success: true,
       stats: %{
+        dlu: %{
+          total: Redis.scard("acs.dlu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dlu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dlu.#{today}.#{app_id}.android"),
+        },
+        dld: %{
+          total: Redis.scard("acs.dld.#{today}.#{app_id}.ios") + Redis.scard("acs.dld.#{today}.#{app_id}.android"),
+          ios: Redis.scard("acs.dld.#{today}.#{app_id}.ios"),
+          android: Redis.scard("acs.dld.#{today}.#{app_id}.android"),
+        },
         dau: %{
-          ios: Redis.scard("_dau.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_dau.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.dau.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dau.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dau.#{today}.#{app_id}.android"),
+        },
+        dad: %{
+          total: Redis.scard("acs.dad.#{today}.#{app_id}.ios") + Redis.scard("acs.dad.#{today}.#{app_id}.android"),
+          ios: Redis.scard("acs.dad.#{today}.#{app_id}.ios"),
+          android: Redis.scard("acs.dad.#{today}.#{app_id}.android"),
         },
         danu: %{
-          ios: Redis.scard("_danu.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_danu.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.danu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.danu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.danu.#{today}.#{app_id}.android"),
+        },
+        dand: %{
+          total: Redis.scard("acs.dand.#{today}.#{app_id}.ios") + Redis.scard("acs.dand.#{today}.#{app_id}.android"),
+          ios: Redis.scard("acs.dand.#{today}.#{app_id}.ios"),
+          android: Redis.scard("acs.dand.#{today}.#{app_id}.android"),
         },
         dapu: %{
-          ios: Redis.scard("_dapu.#{today}.#{app_id}.ios"), 
-          android: Redis.scard("_dapu.#{today}.#{app_id}.android"),
+          total: Redis.scard("acs.dapu.#{today}.#{app_id}"),  
+          ios: Redis.scard("acs.dapu.#{today}.#{app_id}.ios"), 
+          android: Redis.scard("acs.dapu.#{today}.#{app_id}.android"),
+        },
+        u2_retention: %{
+          total: u_retention,
+          ios: u_retention_ios,
+          android: u_retention_android,
+        },
+        d2_retention: %{
+          total: d_retention,
+          ios: d_retention_ios,
+          android: d_retention_android,
         },
         fee: %{
-          ios: case Redis.get("_totalfee.#{today}.#{app_id}.ios") do 
+          ios: case Redis.get("acs.totalfee.#{today}.#{app_id}.ios") do 
                 :undefined -> 0
                 x -> String.to_integer(x)
-                end,
-          android: case Redis.get("_totalfee.#{today}.#{app_id}.android") do 
-                      :undefined -> 0
-                      x when is_bitstring(x) -> String.to_integer(x)
-                    end,
+               end,
+          android: case Redis.get("acs.totalfee.#{today}.#{app_id}.android") do 
+                     :undefined -> 0
+                     x when is_bitstring(x) -> String.to_integer(x)
+                   end,
         }
       }
     })  
@@ -286,16 +367,16 @@ defmodule Acs.Web.Admin.StatsController do
           query
       end
     
-      total_mem_size = Map.get(order_bys,"total_mem_size")
-      query_order_mem =
-        case total_mem_size do
-          "asc" ->
-            order_by(query_order_count, [ad, device], device.total_mem_size)
-          "desc" ->
-            order_by(query_order_count, [ad, device], desc: device.total_mem_size)
-          _ ->
-            query_order_count
-        end
+    total_mem_size = Map.get(order_bys,"total_mem_size")
+    query_order_mem =
+      case total_mem_size do
+        "asc" ->
+          order_by(query_order_count, [ad, device], device.total_mem_size)
+        "desc" ->
+          order_by(query_order_count, [ad, device], desc: device.total_mem_size)
+        _ ->
+          query_order_count
+      end
   end
   
 end

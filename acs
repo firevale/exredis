@@ -1,145 +1,68 @@
 #!/bin/sh
 
-PWD=`dirname $0`
+cd `dirname $0`
+PWD=`pwd`
 USERNAME=`whoami`
+
+echo "USERNAME=${USERNAME}" > .env
+echo "PWD=${PWD}" >> .env
 
 build() {
 	docker pull docker-registry.firevale.com/ass_dev:latest
-	docker build ${PWD} -f ${PWD}/Dockerfile -t docker-registry.firevale.com/acs_dev
+	docker build ${PWD} -f ${PWD}/Dockerfile -t acs_web:latest
 }
 
 check_build_image() {
-	docker images | grep -qi 'docker-registry.firevale.com/acs_dev' || build
+	docker images | grep -qi 'acs_web' || build
 }
 
 docker_run() {
 	mkdir -p _build/yarn_cache _build/hex_cache
-	docker run -it --workdir /code \
-								 --privileged \
-								 --rm \
-								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -e "ACS_MYSQL_USER=root" \
-								 -e "ACS_MYSQL_PASSWORD=firevale" \
-								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
-								 -e "ACS_HOST=${USERNAME}.firevale.com" \
-								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
-								 -p 80:4000 \
-								 -p 9527:9527 \
-								 -v ${PWD}:/code \
-								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
-								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
-								 --name acs \
-								 --network acs_default \
-								 --link acs_mysql:acs_mysql \
-								 --link acs_elasticsearch:acs_elasticsearch \
-								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev $1
+	docker-compose up -d --remove-orphans
+	docker-compose exec web $1
 }
 
 console() {
 	docker-compose up -d
 	check_build_image
-	docker_run /start.sh
-}
-
-run() {
-	mkdir -p _build/yarn_cache _build/hex_cache
-	docker-compose up -d
-	check_build_image
-	docker run -it --workdir /code \
-								 --privileged \
-								 --rm \
-								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -e "ACS_MYSQL_USER=root" \
-								 -e "ACS_MYSQL_PASSWORD=firevale" \
-								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
-								 -e "ACS_HOST=${USERNAME}.firevale.com" \
-								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
-								 -p 80:4000 \
-								 -p 9527:9527 \
-								 -v ${PWD}:/code \
-								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
-								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
-								 --name acs \
-								 --network acs_default \
-								 --link acs_mysql:acs_mysql \
-								 --link acs_elasticsearch:acs_elasticsearch \
-								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev -c 'iex -S mix phoenix.server'
-}
-
-new_for_test() {
-	mkdir -p _build/yarn_cache _build/hex_cache
-	docker-compose up -d
-	check_build_image
-	docker run -it --workdir /code \
-								 --privileged \
-								 --rm \
-								 -e "ACS_MYSQL_HOSTNAME=acs_mysql" \
-								 -e "ACS_MYSQL_USER=root" \
-								 -e "ACS_MYSQL_PASSWORD=firevale" \
-								 -e "ACS_REDIS_HOSTNAME=acs_redis" \
-								 -e "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch" \
-								 -e "ACS_NODE_NAME=${USERNAME}.firevale.com" \
-								 -v ${PWD}:/code \
-								 -v ${PWD}/_build/yarn_cache:/usr/local/share/.cache \
-								 -v ${PWD}/_build/hex_cache:/opt/app/.cache \
-								 --name acs \
-								 --network acs_default \
-								 --link acs_mysql:acs_mysql \
-								 --link acs_elasticsearch:acs_elasticsearch \
-								 --link acs_redis:acs_redis \
-								 docker-registry.firevale.com/acs_dev -c 'mix test'
+	docker_run iex -S mix phx.server
 }
 
 mix() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
-	if [ $? -eq 0 ]; then
-		docker exec acs mix $@
-	else
-		echo "acs container is not started yet, run ./acs shell or ./acs console to start it first!"
-	fi
+	docker-compose exec web mix $@
 }
 
 yarn() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
-	if [ $? -eq 0 ]; then
-		docker exec acs /bin/zsh -c "cd /code/static/ && yarn $@ --no-bin-links"
-	else
-		echo "acs container is not started yet, run ./acs shell or ./acs console to start it first!"
-	fi
+	docker-compose exec web /bin/zsh -c "cd /code/static/ && yarn $@ --no-bin-links"
 }
 
 test() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
-	if [ $? -eq 0 ]; then
-		docker exec acs mix test
-	else
-		new_for_test
-	fi
+  docker-compose exec web mix test
 }
 
 test_reset() {
-	docker ps | awk '{if(NR>1) print $NF}' | grep -e 'acs$' > /dev/null
-	if [ $? -eq 0 ]; then
-		docker exec -e MIX_ENV=test acs mix ecto.drop -r Acs.Repo
-		docker exec -e MIX_ENV=test acs mix ecto.create -r Acs.Repo
-		docker exec -e MIX_ENV=test acs mix ecto.migrate -r Acs.Repo
-		docker exec -e MIX_ENV=test acs mix ecto.drop -r Acs.StatsRepo
-		docker exec -e MIX_ENV=test acs mix ecto.create -r Acs.StatsRepo
-		docker exec -e MIX_ENV=test acs mix ecto.migrate -r Acs.StatsRepo
-		docker exec -e MIX_ENV=test acs mix run priv/repo/test_seeds.exs
-	else
-		new_for_test
-	fi
+	docker-compose exec web mix ecto.drop -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.create -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.migrate -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.drop -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix ecto.create -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix ecto.migrate -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix run priv/repo/test_seeds.exs MIX_ENV=test
+}
+
+reset_repo() {
+	docker-compose exec web mix ecto.drop -r Acs.Repo 
+	docker-compose exec web mix ecto.create -r Acs.Repo
+	docker-compose exec web mix ecto.migrate -r Acs.Repo
+	docker-compose exec web mix ecto.drop -r Acs.StatsRepo
+	docker-compose exec web mix ecto.create -r Acs.StatsRepo 
+	docker-compose exec web mix ecto.migrate -r Acs.StatsRepo
+	docker-compose exec web mix run priv/repo/seeds.exs
 }
 
 shell() {
-	docker-compose up -d
 	check_build_image
-	docker_run
+	docker_run /bin/zsh
 }
 
 update() {
@@ -171,6 +94,9 @@ case "$1" in
 		;;
 	test_reset)
 		test_reset
+		;;
+	reset_repo)
+		reset_repo
 		;;
 	mix)
 		mix ${@:2}

@@ -27,7 +27,6 @@ defmodule Acs.Application do
     # Define workers and child supervisors to be supervised
     children = [
 
-
       # Start the Ecto repository
       supervisor(Acs.Repo, []),
       supervisor(Acs.StatsRepo, []),
@@ -74,7 +73,7 @@ defmodule Acs.Application do
     init_elasticsearch_mappings()
     check_user_id_counter()
     reset_online_counter()
-    # return res
+    
     res
   end
 
@@ -85,6 +84,16 @@ defmodule Acs.Application do
   end
 
   defp init_elasticsearch_mappings() do
+    ~w(acs forum mall customer_service) |> Enum.each(fn(index) -> 
+      unless Elasticsearch.is_index?(index) do 
+        Elasticsearch.create_index(index, %{
+          number_of_shards: 5,
+          number_of_replicas: 1,
+        })
+      end
+    end)
+
+    Acs.User.init_mapping()
     Acs.AppOrder.init_mapping()
     Acs.Forum.init_mapping()
     Acs.Question.init_mapping()

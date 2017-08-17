@@ -69,42 +69,34 @@ defmodule Acs.MallOrder do
   end
 
   def init_mapping() do
-    unless Elasticsearch.is_index?("mall") do
-         settings = %{
-           number_of_shards: 5,
-           number_of_replicas: 1,
-         }
-
-         mapping = %{
-           properties: %{
-             id: %{type: :keyword},
-             goods_name: %{type: :text, analyzer: :ik_smart},
-             app_id: %{type: :keyword},
-             platform: %{type: :keyword},
-             device_id: %{type: :keyword},
-             user_ip: %{type: :keyword},
-             user_id: %{type: :integer},
-             currency: %{type: :keyword},
-             paid_type: %{type: :keyword},
-             memo: %{type: :text, analyzer: :ik_smart},
-             address: %{
-               properties: %{
-                  name: %{type: :keyword},
-                  mobile: %{type: :keyword},
-                  address: %{type: :text, analyzer: :ik_smart},
-                  area: %{type: :text, analyzer: :ik_smart},                 
-                  area_code: %{type: :keyword}
-                }
-             },
-             transaction_id: %{type: :keyword},
-             status: %{type: :integer},
-             inserted_at: %{type: :date}
-           }
-         }
-
-         Elasticsearch.create_index("mall", settings, %{
-           orders: mapping
-         })
+    unless Elasticsearch.is_type?("mall", "orders") do
+      mapping = %{
+        properties: %{
+          id: %{type: :keyword},
+          goods_name: %{type: :text, analyzer: :ik_smart},
+          app_id: %{type: :keyword},
+          platform: %{type: :keyword},
+          device_id: %{type: :keyword},
+          user_ip: %{type: :keyword},
+          user_id: %{type: :integer},
+          currency: %{type: :keyword},
+          paid_type: %{type: :keyword},
+          memo: %{type: :text, analyzer: :ik_smart},
+          address: %{
+            properties: %{
+              name: %{type: :keyword},
+              mobile: %{type: :keyword},
+              address: %{type: :text, analyzer: :ik_smart},
+              area: %{type: :text, analyzer: :ik_smart},                 
+              area_code: %{type: :keyword}
+            }
+          },
+          transaction_id: %{type: :keyword},
+          status: %{type: :integer},
+          inserted_at: %{type: :date}
+        }
+      }
+      Elasticsearch.put_mapping(%{index: "mall", type: "orders", mapping: mapping, params: nil})
     end
   end
 end

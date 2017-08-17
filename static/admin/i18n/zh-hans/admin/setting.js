@@ -1,5 +1,6 @@
  export default {
    basicInfo: '基本信息',
+   operateLog: '操作日志',
    keywordInfo: '敏感词配置',
    notFound: '配置项没有找到',
    id: '配置编号',

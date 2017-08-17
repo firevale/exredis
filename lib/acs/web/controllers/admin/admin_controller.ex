@@ -49,23 +49,25 @@ defmodule Acs.Web.AdminController do
     conn |> json(%{success: true, sdks: @sdks, admin_level: admin_level})
   end
 
-  def update_app_info(conn, %{"app" => %{"id" => app_id} = app_info}) do
+  def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"id" => app_id} = app_info}) do
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} = app ->
         {:ok, new_app} = App.changeset(app, app_info) |> Repo.update
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_info", app_info)
         _update_app_features(conn, new_app)
     end
   end
-  def update_app_info(conn, %{"app" => %{"name" => _app_name} = app_info}) do
+  def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"name" => _app_name} = app_info}) do
     app_info = Map.put(app_info, "id", Utils.generate_token(16)) |> Map.put("secret", Utils.generate_token())
     case App.changeset(%App{}, app_info) |> Repo.insert do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
 
       {:ok, app} ->
+        AdminController.add_operate_log(acs_admin_id, app.id, "update_app_info", app_info)
         _update_app_features(conn, app)
     end
   end
@@ -195,7 +197,7 @@ defmodule Acs.Web.AdminController do
     min_width: 128,
     format: "png",
     resize_to_limit: [width: 128, height: 128]] when action == :update_app_icon
-  def update_app_icon(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
+  def update_app_icon(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: image_file_path}} = params) do
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
@@ -204,6 +206,7 @@ defmodule Acs.Web.AdminController do
         {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "app_icons")
         App.changeset(app, %{icon: icon_path}) |> Repo.update!
         RedisApp.refresh(app_id)
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_icon", params)
         conn |> json(%{success: true, icon_url: icon_path})
 
       _ ->
@@ -217,7 +220,7 @@ defmodule Acs.Web.AdminController do
     min_width: 128,
     format: "png",
     resize_to_limit: [width: 128, height: 128]] when action == :update_goods_icon
-  def update_goods_icon(conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{path: image_file_path}}) do
+  def update_goods_icon(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "goods_id" => goods_id, "file" => %{path: image_file_path}} = params) do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
@@ -228,6 +231,7 @@ defmodule Acs.Web.AdminController do
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
         AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
         RedisApp.refresh(app_id)
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_icon", params)
         conn |> json(%{success: true, icon_url: image_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -241,7 +245,7 @@ defmodule Acs.Web.AdminController do
   def delete_app_goods(conn, %{"goods_id" => ""}) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-  def delete_app_goods(conn, %{"goods_id" => goods_id, "app_id" => app_id}) do
+  def delete_app_goods(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"goods_id" => goods_id, "app_id" => app_id} = params) do
     case Repo.get(AppGoods, goods_id) do
       nil ->
         conn |> json(%{success: false,
@@ -252,6 +256,7 @@ defmodule Acs.Web.AdminController do
         case Repo.delete(goods) do
           {:ok, _} ->
             RedisApp.refresh(app_id)
+            AdminController.add_operate_log(acs_admin_id, app_id, "delete_app_goods", params)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -268,12 +273,13 @@ defmodule Acs.Web.AdminController do
   def update_app_goods_product_id(conn, %{"product_id_info" => %{"product_id" => ""}}) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-  def update_app_goods_product_id(conn, %{"product_id_info" => %{} = product_id_info, "app_id" => app_id}) do
+  def update_app_goods_product_id(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"product_id_info" => %{} = product_id_info, "app_id" => app_id} = params) do
     case Repo.get_by(AppGoodsProductId, app_goods_id: product_id_info["app_goods_id"], sdk: product_id_info["sdk"]) do
       nil ->
         case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do
           {:ok, new_product_id_info} ->
              RedisApp.refresh(app_id)
+             AdminController.add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -284,6 +290,7 @@ defmodule Acs.Web.AdminController do
         case AppGoodsProductId.changeset(product_id_record, product_id_info) |> Repo.update do
           {:ok, new_product_id_info} ->
              RedisApp.refresh(app_id)
+             AdminController.add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -350,6 +357,59 @@ defmodule Acs.Web.AdminController do
       error ->
         error "search orders failed: #{inspect error, pretty: true}"
         conn |> json(%{success: false})
+    end
+  end
+
+  def get_operate_log(conn, %{"app_id" => app_id, "user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
+    totalQuery = from ol in OperateLog, where: ol.app_id == ^app_id, select: count(ol.id)
+    totalQuery = case String.length(user_id) do
+      0 -> totalQuery
+      _ -> where(totalQuery, [ol], ol.user_id == ^user_id)
+    end
+    total = Repo.one!(totalQuery)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from ol in OperateLog,
+              select: ol,
+              limit: ^records_per_page,
+              where: ol.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: ol.id]
+    query = case String.length(user_id) do
+      0 -> query
+      _ -> where(query, [ol], ol.user_id == ^user_id)
+    end
+    logs = Repo.all(query)
+
+    conn |> json(%{success: true, logs: logs, total: total_page})
+  end
+
+  def add_operate_log(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"operate_type" => operate_type, "log" => log}) do
+    case add_operate_log(user_id, app_id, operate_type, log) do
+      :ok ->
+        conn |> json(%{success: true})
+      :error ->
+        conn |> json(%{success: false})
+    end
+
+    log = log |> Map.put("user_id", user_id) |> Map.put("app_id", app_id)
+    case OperateLog.changeset(%OperateLog{}, log) |> Repo.insert do
+      {:ok, _new_log} ->
+        conn |> json(%{success: true})
+
+      {:error, %{errors: errors}} ->
+        conn |> json(%{success: false, message: translate_errors(errors)})
+    end
+  end
+
+  def add_operate_log(user_id, app_id, operate_type, log) do
+    params = %{user_id: user_id, app_id: app_id, operate_type: operate_type, log: log}
+    case OperateLog.changeset(%OperateLog{}, params) |> Repo.insert do
+      {:ok, _new_log} ->
+        :ok
+      {:error, %{errors: _errors}} ->
+        d "--------------- add_operate_log fail:#{inspect _errors, pretty: true}"
+        :error
     end
   end
 

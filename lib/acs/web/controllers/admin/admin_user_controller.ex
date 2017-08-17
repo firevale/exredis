@@ -23,7 +23,8 @@ defmodule Acs.Web.AdminUserController do
     conn |> json(%{success: true, level: level})
   end
 
-  def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
+  def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
+                    %{"admin_id" => admin_id , "level" => level, "account_id" => account_id} = params) do
     if(RedisAdminUser.get_admin_level(admin_id, nil) == 1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
@@ -38,6 +39,7 @@ defmodule Acs.Web.AdminUserController do
           case AdminUser.changeset(%AdminUser{}, %{user_id: admin_id, account_id: account_id, admin_level: level, active: true, app_id: app_id}) |> Repo.insert do
             {:ok, _new_admin_user} ->
               RedisAdminUser.refresh(admin_id, app_id)
+              AdminController.add_operate_log(acs_admin_id, app_id, "add_admin_user", params)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
             {:error, what} ->
               error "add admin user failed, error: #{inspect what}"
@@ -93,7 +95,8 @@ defmodule Acs.Web.AdminUserController do
     conn |> json(%{success: true, users: users})
   end
 
-  def delete_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, %{"admin_user_id" => admin_user_id}) do
+  def delete_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
+                        %{"admin_user_id" => admin_user_id} = params) do
     query = from au in AdminUser,
             select: au,
             where: au.id == ^admin_user_id and au.app_id == ^app_id
@@ -107,6 +110,7 @@ defmodule Acs.Web.AdminUserController do
           case Repo.delete(user) do
             {:ok, _} ->
               RedisAdminUser.refresh(user.id, user.app_id)
+              AdminController.add_operate_log(acs_admin_id, app_id, "delete_admin_user", params)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, message: translate_errors(errors)})

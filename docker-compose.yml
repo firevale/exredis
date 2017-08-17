@@ -1,27 +1,43 @@
-version: '2'
+version: '3'
 services:
   mysql:
     image: docker-registry.firevale.com/mysql:latest
     container_name: acs_mysql
+    restart: always
     environment:
       - MYSQL_DATABASE=acs_dev
       - MYSQL_ROOT_PASSWORD=firevale
     ports:
-      - "3307:3306"
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: acs_phpmyamdin
+    restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=acs_mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=firevale
+      - PMA_ABSOLUTE_URI="http://${USERNAME}.firevale.com/mysql/"
+    expose: 
+      - "80"
   redis:
     image: docker-registry.firevale.com/redis
     container_name: acs_redis
+    restart: always
     command: ['redis-server', '--loglevel', 'debug', '--logfile', '/data/redis-server.log']
     ports:
-      - "6380:6379"
+      - "6379:6379"
   elasticsearch:
     container_name: acs_elasticsearch
+    restart: always
     environment:
       - cluster.name=acs
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
-      - "9201:9200"
+      - "9200:9200"
     ulimits:
       memlock:
         soft: -1
@@ -30,3 +46,45 @@ services:
         soft: 65536
         hard: 65536
     image: docker-registry.firevale.com/elasticsearch:latest
+  dejavu:
+    image: docker-registry.firevale.com/dejavu:latest
+    container_name: acs_dejavu
+    restart: always
+    expose:
+      - "1358"
+  web: 
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    expose:
+      - "4000"
+    ports:
+      - "9527:9527"
+    environment:
+      - "ACS_MYSQL_HOSTNAME=acs_mysql"
+      - "ACS_MYSQL_USER=root"
+      - "ACS_MYSQL_PASSWORD=firevale"
+      - "ACS_REDIS_HOSTNAME=acs_redis"
+      - "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
+      - "ACS_HOST=${USERNAME}.firevale.com"
+      - "ACS_NODE_NAME=${USERNAME}.firevale.com"
+    volumes:
+      - ${PWD}:/code
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+  nginx: 
+    image: docker-registry.firevale.com/nginx:latest
+    container_name: acs_nginx
+    restart: always
+    volumes:
+      - ./dev.conf:/etc/nginx/conf.d/dev.conf
+    ports: 
+      - "80:80"
+    depends_on:
+      - web
+
+    
+

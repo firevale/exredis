@@ -10,6 +10,12 @@ defmodule Acs.RedisAppUser do
 
   @app_user_cache_key     "acs.app_user_cache"
 
+  def refresh(%AppUser{} = app_user) do 
+    key = "#{@app_user_cache_key}.#{app_user.app_id}.#{app_user.zone_id}.#{app_user.user_id}"
+    Redis.setex(key, 3600 * 24, AppUser.to_redis(app_user))
+    Cachex.del(:default, key) # force other node refresh from redis
+  end
+
   def find(app_id, zone_id, user_id, platform) do 
     key = "#{@app_user_cache_key}.#{app_id}.#{zone_id}.#{user_id}"
 
@@ -18,26 +24,16 @@ defmodule Acs.RedisAppUser do
         :undefined ->
           case StatsRepo.get_by(AppUser, app_id: app_id, user_id: user_id, zone_id: zone_id) do 
             nil ->  
-              today = Timex.local |> Timex.to_date 
-
-              query = from au in AppUser, 
-                      select: count(1),
-                      where: au.app_id == ^app_id,
-                      where: au.user_id == ^user_id
-                      
-              case StatsRepo.one!(query) do 
-                0 -> Redis.sadd("_danu.#{today}.#{app_id}.#{platform}", user_id) 
-                _ -> :ok
-              end
-
+              today = Timex.local |> Timex.to_date
               {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
                 app_id: app_id, 
                 user_id: user_id, 
                 zone_id: zone_id,
                 platform: platform,
-                reg_date: today}) |> StatsRepo.insert
-              Redis.setex(key, 3600 * 24, AppUser.to_redis(app_user))
-              {:commit, app_user}
+                reg_date: today}) |> StatsRepo.insert!              
+              refresh(app_user)
+              incr_danu(today, app_id, user_id, platform) 
+              {:ignore, app_user}
 
             %AppUser{} = app_user ->
               Redis.setex(key, 3600 * 24, AppUser.to_redis(app_user))
@@ -69,6 +65,21 @@ defmodule Acs.RedisAppUser do
           end
       end
     end)
+  end
+
+  def incr_danu(today, app_id, user_id, platform) do 
+    query = from au in AppUser, 
+            select: count(1),
+            where: au.app_id == ^app_id,
+            where: au.user_id == ^user_id
+            
+    case StatsRepo.one!(query) do 
+      0 -> 
+        Redis.sadd("acs.danu.#{today}.#{app_id}", user_id) 
+        Redis.sadd("acs.danu.#{today}.#{app_id}.#{platform}", user_id) 
+      _ -> 
+        :ok
+    end
   end
 
 end

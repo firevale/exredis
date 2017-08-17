@@ -67,7 +67,8 @@ defmodule Acs.Web.MallController do
   end
 
   # update_mall_info
-  def update_mall_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"mall" => %{"id" => mall_id} = mall_info}) do
+  def update_mall_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
+                                %{"mall" => %{"id" => mall_id} = mall_info}) do
     case Repo.get_by(Mall, id: mall_id, app_id: app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound"})
@@ -75,6 +76,7 @@ defmodule Acs.Web.MallController do
       %Mall{} = mall ->
         Mall.changeset(mall, mall_info) |> Repo.update!
         RedisApp.update(mall.app_id, mall_info["active"])
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_mall_info", mall_info)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
   end
@@ -151,7 +153,8 @@ defmodule Acs.Web.MallController do
     square: true,
     format: ["png", "jpeg", "jpg"],
     reformat: "jpg"] when action == :update_goods_pic
-  def update_goods_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
+  def update_goods_pic(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
+                      %{"goods_id" => goods_id, "file" => %{path: image_file_path}} = params) do
    case Repo.get(MallGoods, goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
@@ -160,6 +163,7 @@ defmodule Acs.Web.MallController do
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         MallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         RedisMall.refresh(goods)
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", params)
         conn |> json(%{success: true, pic_url: image_path})
 
       _ ->
@@ -175,8 +179,10 @@ defmodule Acs.Web.MallController do
     format: ["png", "jpeg", "jpg"],
     reformat: "jpg"
   ] when action == :update_goods_content_pic
-  def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
+  def update_goods_content_pic(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
+                              %{"goods_id" => goods_id, "file" => %{path: image_file_path}} = params) do
     {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_pics/#{goods_id}")
+    AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_content_pic", params)
     conn |> json(%{success: true, link: image_path})
   end
 
@@ -203,6 +209,7 @@ defmodule Acs.Web.MallController do
             {:ok, new_goods} ->
               goods = goods |> Map.put("inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               RedisMall.refreshById(id)
+              AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: _errors}} ->
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
@@ -219,6 +226,7 @@ defmodule Acs.Web.MallController do
             goods = goods |> Map.put("user_id", user_id)
             MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock}) |> Repo.update!
             RedisMall.refreshById(id)
+            AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
     end
@@ -228,13 +236,14 @@ defmodule Acs.Web.MallController do
   end
 
   # toggle_goods_status
-  def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
-                  %{"goods_id" => goods_id}) do
+  def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+                  %{"goods_id" => goods_id} = params) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       %MallGoods{} = goods ->
         MallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
+        AdminController.add_operate_log(user_id, app_id, "toggle_goods_status", params)
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end
@@ -243,8 +252,8 @@ defmodule Acs.Web.MallController do
   end
 
   # delete_goods
-  def delete_goods(%Plug.Conn{private: %{acs_admin_id: _user_id}} = conn,
-                     %{"goods_id" => goods_id}) do
+  def delete_goods(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+                     %{"goods_id" => goods_id} = params) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
@@ -255,6 +264,7 @@ defmodule Acs.Web.MallController do
           case Repo.delete(goods) do
             {:ok, _} ->
               RedisMall.delete(goods_id)
+              AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
             {:error, %{errors: errors}} ->

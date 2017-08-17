@@ -65,13 +65,8 @@ defmodule Acs.AppOrder do
   end
 
   def init_mapping() do
-   unless Elasticsearch.is_index?("acs") do
-      settings = %{
-        number_of_shards: 5,
-        number_of_replicas: 1,
-      }
-
-      orders_mapping = %{
+   unless Elasticsearch.is_type?("acs", "orders") do
+      mapping = %{
         properties: %{
           app_id: %{type: :keyword},
           user_id: %{type: :keyword},
@@ -85,9 +80,7 @@ defmodule Acs.AppOrder do
         }
       }
 
-      Elasticsearch.create_index("acs", settings, %{
-        orders: orders_mapping
-      })
+      Elasticsearch.put_mapping(%{index: "acs", type: "orders", mapping: mapping, params: nil}) 
     end
   end
 end

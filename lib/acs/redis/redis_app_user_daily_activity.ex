@@ -7,6 +7,13 @@ defmodule Acs.RedisAppUserDailyActivity do
 
   @cache_key     "fvac.app_user_da_cache"
 
+
+  def refresh(%AppUserDailyActivity{} = auda) do 
+    key = "#{@app_user_cache_key}.#{auda.app_user_id}.#{auda.date}"
+    Redis.setex(key, 3600 * 24, AppUserDailyActivity.to_redis(auda))
+    Cachex.del(:default, key) # force other node refresh from redis
+  end
+
   def find(app_user_id, date) do 
     key = "#{@cache_key}.#{app_user_id}.#{date}"
 

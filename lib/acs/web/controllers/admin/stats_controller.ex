@@ -367,16 +367,16 @@ defmodule Acs.Web.Admin.StatsController do
           query
       end
     
-      total_mem_size = Map.get(order_bys,"total_mem_size")
-      query_order_mem =
-        case total_mem_size do
-          "asc" ->
-            order_by(query_order_count, [ad, device], device.total_mem_size)
-          "desc" ->
-            order_by(query_order_count, [ad, device], desc: device.total_mem_size)
-          _ ->
-            query_order_count
-        end
+    total_mem_size = Map.get(order_bys,"total_mem_size")
+    query_order_mem =
+      case total_mem_size do
+        "asc" ->
+          order_by(query_order_count, [ad, device], device.total_mem_size)
+        "desc" ->
+          order_by(query_order_count, [ad, device], desc: device.total_mem_size)
+        _ ->
+          query_order_count
+      end
   end
   
 end

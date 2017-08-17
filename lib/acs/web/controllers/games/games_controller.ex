@@ -137,9 +137,10 @@ defmodule Acs.Web.GamesController do
         
       %AppNews{} = ns ->
         # update
-        AppNews.changeset(ns, %{title: title, content: content, is_top: is_top}) |> Repo.update!
+        changed = AppNews.changeset(ns, %{title: title, content: content, is_top: is_top})
+        changed |> Repo.update!
         news = news |> Map.put("id", ns.id) |> Map.put("created_at", ns.inserted_at)
-        AdminController.add_operate_log(user_id, app_id, "update_news", news)
+        AdminController.add_operate_log(user_id, app_id, "update_news", changed.changes)
         conn |> json(%{success: true, news: news, i18n_message: "admin.news.updateSuccess"})
     end
 
@@ -150,13 +151,13 @@ defmodule Acs.Web.GamesController do
 
   # toggle_news_status
   def toggle_news_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
-                  %{"news_id" => news_id} = params) do
+                  %{"news_id" => news_id}) do
     case Repo.get(AppNews, news_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.newsNotFound"})
       %AppNews{} = news ->
         AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
-        AdminController.add_operate_log(user_id, app_id, "toggle_news_status", params)
+        AdminController.add_operate_log(user_id, app_id, "toggle_news_status", %{"news_id" => news_id, "active" => !news.active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end

@@ -82,10 +82,11 @@ defmodule Acs.Web.ForumController do
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound"})
 
       %Forum{} = forum ->
-        Forum.changeset(forum, forum_info) |> Repo.update!
+        changed = Forum.changeset(forum, forum_info)
+        changed |> Repo.update!
         RedisForum.refresh(forum_id)
         RedisApp.refreshForumActive(forum.app_id,forum_info["active"])
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_forum_info", forum_info)
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_forum_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -117,10 +118,11 @@ defmodule Acs.Web.ForumController do
         end
 
       %ForumSection{} = old_section ->
-        case ForumSection.changeset(old_section, section) |> Repo.update do
+        changed = ForumSection.changeset(old_section, section)
+        case changed |> Repo.update do
           {:ok, new_section} ->
             RedisForum.refresh(new_section.forum_id)
-            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", section)
+            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", changed.changes)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->

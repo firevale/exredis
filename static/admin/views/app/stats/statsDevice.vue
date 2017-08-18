@@ -1,7 +1,7 @@
 <template>
   <div class="mod-body">
     <div class="toolbar" style="margin-bottom:1rem;">
-      <el-radio-group v-model="statsType" @change="changePlatform">
+      <el-radio-group v-model="statsType" @change="changeStatsType">
         <el-radio-button label="model">机型</el-radio-button>
         <el-radio-button label="os">操作系统</el-radio-button>
       </el-radio-group>
@@ -52,7 +52,7 @@
           </header>
           <div class="card-content is-paddingless">
             <!-- 机型 -->
-            <el-table v-if="statsType == 'model'" stripe :data="reports" style="width: 100%" @filter-change="filterMemSize"
+            <el-table v-if="statsType == 'model'" key="tb-model" stripe :data="reports" style="width: 100%" @filter-change="filterMemSize"
               @sort-change="sortChange">
               <el-table-column label="机型" width="500">
                 <template scope="scope">
@@ -68,12 +68,10 @@
               <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
               </el-table-column>
               <el-table-column>
-                <template scope="scope">
-                </template>
               </el-table-column>
             </el-table>
             <!-- 操作系统 -->
-            <el-table v-else stripe :data="reports" style="width: 100%" @sort-change="sortChange">
+            <el-table v-if="statsType == 'os'" key="tb-os" stripe :data="reports" style="width: 100%" @sort-change="sortChange">
               <el-table-column label="操作系统" width="500">
                 <template scope="scope">
                   {{ scope.row.os != null ? scope.row.os : "" }}
@@ -82,8 +80,6 @@
               <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
               </el-table-column>
               <el-table-column>
-                <template scope="scope">
-                </template>
               </el-table-column>
             </el-table>
             <div v-if="reports && reports.length>0" class="ele-pagination">
@@ -212,21 +208,19 @@ export default {
         this.fetchData()
         this.getDetails()
       }
-    },
-    'statsType': function(val) {
-      if (val) {
-        this.page = 0
-        // this.fetchData()
-        if (this.platform != "all") {
-          this.platform = "all"
-        } else {
-          this.getDetails()
-        }
-      }
-    },
+    }
   },
 
   methods: {
+    changeStatsType: function() {
+      this.page = 0
+      if (this.platform != "all") {
+        this.platform = "all"
+      } else {
+        this.fetchData()
+        this.getDetails()
+      }
+    },
     changePlatform: function(chart) {
       if (chart.active && chart.active.length > 0) {
         this.platform = chart.active[0]._model.label == 'iOS' ? 'ios' : 'android'

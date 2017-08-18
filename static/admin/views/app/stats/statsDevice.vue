@@ -19,7 +19,7 @@
     <div class="tile is-ancestor is-vertical">
       <div class="tile">
         <div class="tile is-4 is-parent">
-          <div class="tile is-child box card">
+          <div class="tile is-child box card is-paddingless">
             <header class="card-header">
               <p class="card-header-title">
                 <span class="icon">
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="tile is-parent">
-          <div class="tile is-child  box card">
+          <div class="tile is-child  box card is-paddingless">
             <header class="card-header">
               <p class="card-header-title">{{statsType =="model" ?"设备机型":"操作系统"}}
               </p>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="tile is-parent">
-        <div class="tile is-child box">
+        <div class="tile is-child box is-paddingless">
           <header class="card-header">
             <p class="card-header-title">明细数据
             </p>
@@ -362,7 +362,7 @@ export default {
         page: this.page,
         records_per_page: 10
       }
-
+      this.reports = []
       let result = await this.$acs.getStatsDeviceDetails(data)
       if (result.success) {
         this.reports = result.reports

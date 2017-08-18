@@ -17,7 +17,7 @@
         :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
-    <table id="retention-table" class="box data-load" width="100%" border="0" cellspacing="0">
+    <table id="retention-table" class="retention box data-load" width="100%" border="0" cellspacing="0">
       <thead>
         <tr>
           <th style="width:150px">首次使用时间</th>
@@ -187,6 +187,12 @@ export default {
 }
 </script>
 <style lang="scss">
+.retention {
+  &.box {
+    padding: 0!important;
+  }
+}
+
 .columns:not(:last-child) {
   margin-bottom: 0 !important;
 }

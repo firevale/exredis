@@ -187,10 +187,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.box {
-  padding: 0!important;
-}
-
 .columns:not(:last-child) {
   margin-bottom: 0 !important;
 }

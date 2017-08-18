@@ -34,12 +34,23 @@ defmodule Acs.AppWcpMessage do
            msg_type: %{type: :keyword},
            from: %{type: :object},
            to: %{type: :object},
+           admin_user: %{type: :object},
            content: %{type: :text, analyzer: :ik_smart},
            inserted_at: %{type: :date},
          }
        }
- 
-       Elasticsearch.put_mapping(%{index: "wcp", type: "messages", mapping: mapping, params: nil}) 
+
+       Elasticsearch.put_mapping(%{index: "wcp", type: "messages", mapping: mapping, params: nil})
      end
+   end
+
+   def index(message) when is_map(message) do
+      Elasticsearch.index(%{
+        index: "wcp",
+        type: "messages",
+        doc: message,
+        params: nil,
+        id: nil
+      })
    end
 end

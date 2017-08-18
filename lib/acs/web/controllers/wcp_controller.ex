@@ -18,14 +18,14 @@ defmodule Acs.Web.WcpController do
   def on_receive_message(conn, %{"app_id" => app_id} = params) do
     msg = conn.assigns[:msg]
 
-    Process.spawn(fn() -> 
+    Process.spawn(fn() ->
       openid = msg.fromusername
-      user_info = Wcp.User.info(app_id, openid) 
+      user_info = Wcp.User.info(app_id, openid)
 
-      case Map.get(user_info, :openid) do 
+      case Map.get(user_info, :openid) do
         ^openid ->
-          {:ok, wcp_user} = case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do 
-            nil -> 
+          {:ok, wcp_user} = case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do
+            nil ->
               AppWcpUser.changeset(%AppWcpUser{}, %{
                 openid: user_info.openid,
                 nickname: user_info.nickname,
@@ -35,7 +35,7 @@ defmodule Acs.Web.WcpController do
                 country: user_info.country,
                 app_id: app_id
               }) |> Repo.insert
-              
+
             wcp_user ->
               AppWcpUser.changeset(wcp_user, %{
                 openid: user_info.openid,
@@ -45,7 +45,7 @@ defmodule Acs.Web.WcpController do
                 city: user_info.city,
                 country: user_info.country,
                 app_id: app_id
-              }) |> Repo.update              
+              }) |> Repo.update
           end
           RedisAppWcpUser.refresh(wcp_user)
         _ ->
@@ -53,41 +53,40 @@ defmodule Acs.Web.WcpController do
       end
     end, [])
 
-    case msg.msgtype do 
-      "text" ->
-        AppWcpMessage.changeset(%AppWcpMessage{}, 
-          %{from: msg.fromusername, 
-            to: msg.tousername, 
-            msg_type: msg.msgtype, 
-            content: msg.content, 
-            create_time: msg.createtime,
-            app_id: app_id}) |> Repo.insert
+    wcp_user = RedisAppWcpUser.find(app_id, msg.fromusername)
 
-      "event" -> 
-        AppWcpMessage.changeset(%AppWcpMessage{}, 
-          %{from: msg.fromusername, 
-            to: msg.tousername, 
-            msg_type: msg.msgtype, 
-            content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}", 
-            create_time: msg.createtime,
-            app_id: app_id}) |> Repo.insert
+    case msg.msgtype do
+      "text" ->
+        AppWcpMessage.index(%{from: wcp_user,
+          to: %{openid: msg.tousername, nickname: "系统"},
+          msg_type: msg.msgtype,
+          content: msg.content,
+          create_time: msg.createtime,
+          app_id: app_id})
+
+      "event" ->
+        AppWcpMessage.index(%{from: wcp_user,
+          to: %{openid: msg.tousername, nickname: "系统"},
+          msg_type: msg.msgtype,
+          content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
+          create_time: msg.createtime,
+          app_id: app_id})
       _ ->
         :do_nothing
     end
-    
-    case AppWcpResponse.build_reply(app_id, msg) do 
+
+    case AppWcpResponse.build_reply(app_id, msg) do
       nil ->
         info "response is nil, return success"
-        conn |> text("success") 
+        conn |> text("success")
 
       %{} = reply ->
-        AppWcpMessage.changeset(%AppWcpMessage{}, 
-          %{from: reply.from, 
-            to: reply.to, 
-            msg_type: "text", 
-            content: reply.content, 
-            create_time: DateTime.to_unix(DateTime.utc_now),
-            app_id: app_id}) |> Repo.insert        
+        AppWcpMessage.index(%{to: wcp_user,
+          from: %{openid: reply.from, nickname: "系统"},
+          msg_type: "text",
+          content: reply.content,
+          create_time: DateTime.to_unix(DateTime.utc_now),
+          app_id: app_id})
         conn |> render("text.xml", reply: reply)
     end
   end

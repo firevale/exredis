@@ -83,7 +83,7 @@
               </el-table-column>
             </el-table>
             <div v-if="reports && reports.length>0" class="ele-pagination">
-              <el-pagination layout="prev, pager, next" :page-count="total" @current-change="changePage">
+              <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="changePage">
               </el-pagination>
             </div>
           </div>
@@ -204,7 +204,7 @@ export default {
   watch: {
     'platform': function(val) {
       if (val) {
-        this.page = 0
+        this.page = 1
         this.fetchData()
         this.getDetails()
       }
@@ -213,7 +213,7 @@ export default {
 
   methods: {
     changeStatsType: function() {
-      this.page = 0
+      this.page = 1
       if (this.platform != "all") {
         this.platform = "all"
       } else {
@@ -229,11 +229,11 @@ export default {
       }
     },
     changePage: function(page) {
-      this.page = page - 1
+      // this.page = page
       this.getDetails()
     },
     filterMemSize: function(filters) {
-      this.page = 0
+      this.page = 1
       this.memSize = filters.memSize[0] || []
       this.getDetails()
     },
@@ -251,19 +251,19 @@ export default {
         this.orderBy[column.prop] = "asc"
       }
 
-      this.page = 0
+      this.page = 1
       this.getDetails()
     },
     changeDateType: async function(val) {
       if (val != 'custom') {
-        this.page = 0
+        this.page = 1
         await this.fetchData()
       } else {
         this.$refs.datePicker.handleFocus()
       }
     },
     changeDateRange: function(val) {
-      this.page = 0
+      this.page = 1
       this.fetchData()
       this.getDetails()
     },
@@ -359,7 +359,7 @@ export default {
         start_date: this.dateRange[0].Format("yyyy-MM-dd"),
         end_date: this.dateRange[1].Format("yyyy-MM-dd"),
         order_by: this.orderBy,
-        page: this.page + 1,
+        page: this.page,
         records_per_page: 10
       }
 
@@ -367,7 +367,6 @@ export default {
       if (result.success) {
         this.reports = result.reports
         this.total = result.total
-        this.page++
       }
     },
   },

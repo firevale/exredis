@@ -84,7 +84,7 @@ defmodule Acs.Application do
   end
 
   defp init_elasticsearch_mappings() do
-    ~w(acs forum mall customer_service) |> Enum.each(fn(index) -> 
+    ~w(acs forum mall customer_service wcp) |> Enum.each(fn(index) -> 
       unless Elasticsearch.is_index?(index) do 
         Elasticsearch.create_index(index, %{
           number_of_shards: 5,
@@ -99,6 +99,7 @@ defmodule Acs.Application do
     Acs.Question.init_mapping()
     Acs.MallOrder.init_mapping()
     Acs.MallGoods.init_mapping()
+    Acs.AppWcpMessage.init_mapping()
   end
 
   defp check_user_id_counter() do 

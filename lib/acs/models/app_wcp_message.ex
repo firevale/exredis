@@ -25,4 +25,21 @@ defmodule Acs.AppWcpMessage do
     |> cast(params, [:from, :to, :msg_type, :content, :create_time, :app_id])
     |> validate_required([:from, :to, :msg_type, :content])
   end
+
+  def init_mapping() do
+    unless Elasticsearch.is_type?("wcp", "messages") do
+       mapping = %{
+         properties: %{
+           app_id: %{type: :keyword},
+           msg_type: %{type: :keyword},
+           from: %{type: :object},
+           to: %{type: :object},
+           content: %{type: :text, analyzer: :ik_smart},
+           inserted_at: %{type: :date},
+         }
+       }
+ 
+       Elasticsearch.put_mapping(%{index: "wcp", type: "messages", mapping: mapping, params: nil}) 
+     end
+   end
 end

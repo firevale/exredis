@@ -51,19 +51,30 @@
             </p>
           </header>
           <div class="card-content is-paddingless">
-            <el-table stripe :data="reports" style="width: 100%" @filter-change="filterMemSize" @sort-change="sortChange">
-              <el-table-column v-if="statsType == 'model'" label="机型" width="500">
+            <!-- 机型 -->
+            <el-table v-if="statsType == 'model'" stripe :data="reports" style="width: 100%" @filter-change="filterMemSize"
+              @sort-change="sortChange">
+              <el-table-column label="机型" width="500">
                 <template scope="scope">
                   {{ scope.row.alias != null ? scope.row.alias : scope.row.model }}
                 </template>
               </el-table-column>
-              <el-table-column v-if="statsType == 'model'" prop="total_mem_size" align="right" label="内存" width="180"
-                :filters="mem_filter_opts" :filter-multiple="false" column-key="memSize" sortable="custom">
+              <el-table-column prop="total_mem_size" align="right" label="内存" width="180" :filters="mem_filter_opts"
+                :filter-multiple="false" column-key="memSize" sortable="custom">
                 <template scope="scope">
                   {{ scope.row.total_mem_size | bytesToSize }}
                 </template>
               </el-table-column>
-              <el-table-column v-if="statsType == 'os'" label="操作系统" width="500">
+              <el-table-column prop="count" label="数量" align="right" sortable="custom" width="180">
+              </el-table-column>
+              <el-table-column>
+                <template scope="scope">
+                </template>
+              </el-table-column>
+            </el-table>
+            <!-- 操作系统 -->
+            <el-table v-else stripe :data="reports" style="width: 100%" @sort-change="sortChange">
+              <el-table-column label="操作系统" width="500">
                 <template scope="scope">
                   {{ scope.row.os != null ? scope.row.os : "" }}
                 </template>

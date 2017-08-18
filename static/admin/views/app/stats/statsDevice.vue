@@ -217,7 +217,7 @@ export default {
 
   methods: {
     changePlatform: function(chart) {
-      if (chart.active[0]) {
+      if (chart.active && chart.active.length > 0) {
         this.platform = chart.active[0]._model.label == 'iOS' ? 'ios' : 'android'
       } else {
         this.platform = 'all'
@@ -249,13 +249,16 @@ export default {
       this.page = 0
       this.getDetails()
     },
-    changeDateType: function(val) {
-      if (val != 'custom')
-        this.fetchData()
-      else
+    changeDateType: async function(val) {
+      if (val != 'custom') {
+        this.page = 0
+        await this.fetchData()
+      } else {
         this.$refs.datePicker.handleFocus()
+      }
     },
     changeDateRange: function(val) {
+      this.page = 0
       this.fetchData()
       this.getDetails()
     },

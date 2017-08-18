@@ -72,7 +72,7 @@
             </el-table>
             <!-- 操作系统 -->
             <el-table v-if="statsType == 'os'" key="tb-os" stripe :data="reports" style="width: 100%" @sort-change="sortChange">
-              <el-table-column label="操作系统" width="500">
+              <el-table-column label="操作系统" width="200">
                 <template scope="scope">
                   {{ scope.row.os != null ? scope.row.os : "" }}
                 </template>

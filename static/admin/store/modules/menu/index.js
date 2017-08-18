@@ -29,14 +29,6 @@ const state = {
       },
     },
     {
-      path: '/admin/app/:appId/setting',
-      meta: {
-        icon: 'fa-cog',
-        level: '1,2,',
-        label: i18n.t('admin.menu.settings'),
-      },
-    },
-    {
       path: '/admin/app/:appId/config/',
       meta: {
         icon: 'fa-bars',
@@ -215,6 +207,14 @@ const state = {
         icon: 'fa-comments',
         level: '1,2,3,',
         label: i18n.t('admin.menu.customerService'),
+      },
+    },
+    {
+      path: '/admin/app/:appId/setting',
+      meta: {
+        icon: 'fa-cog',
+        level: '1,2,',
+        label: i18n.t('admin.menu.settings'),
       },
     },
   ]

@@ -10,8 +10,8 @@
     </div>
     <div class="tile is-parent is-vertical">
       <div class="tile is-child box is-paddingless">
-        <el-table ref="tbl" stripe :data="messages" style="width: 100%" border :row-key="getRowKey" :expand-row-keys="expandKeys"
-          @row-dblclick="rowClick">
+        <el-table ref="tbl" stripe :data="messages" style="width: 100%" border @row-dblclick="rowClick" @sort-change="sortChange"
+        :default-sort = "{prop: 'inserted_at', order: 'descending'}">
           <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
           </el-table-column> -->
           <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
@@ -34,7 +34,7 @@
               {{ scope.row.msg_type }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgTime')" sortable="custom" width="180">
+          <el-table-column :label="$t('admin.wcp.msgTime')" prop="inserted_at" sortable="custom" width="180">
             <template scope="scope">
               {{ scope.row.inserted_at | formatServerDateTime }}
             </template>
@@ -75,7 +75,7 @@ export default {
       total: 1,
       recordsPerPage: 20,
       loading: false,
-      expandKeys: [],
+      sorts: {},
       showTalkModal: false,
     }
   },
@@ -93,21 +93,20 @@ export default {
     },
     getMessageList: async function() {
       this.loading = true
-      let result = await this.$acs.getMessageList(this.$route.params.appId, this.keyword, this.page,
-        this.recordsPerPage)
+     var data = {
+        app_id: this.$route.params.appId,
+        keyword: this.keyword,
+        page: this.page,
+        records_per_page: this.recordsPerPage,
+        sorts: this.sorts
+      }
 
+      let result = await this.$acs.getMessageList(data)
       if (result.success) {
         this.total = result.total
         this.messages = result.messages
       }
       this.loading = false
-    },
-
-    getMsgUser: function(openid, name) {
-      if (openid.indexOf('gh_') >= 0)
-        return '系统'
-      else
-        return name ? name : openid
     },
 
     onPageChange: function() {
@@ -119,39 +118,22 @@ export default {
       this.page = 1
       await this.getMessageList()
     },
+    sortChange: function(column) {
+      var field = column.prop
 
-    viewDetail: function(message) {
-      this.$router.push({
-        name: 'WcpViewMsg',
-        params: {
-          message: message
-        },
-      })
-    },
-
-    deleteMsg: function(message, index) {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.messages.confirmDeleteMessage'),
-        type: 'danger',
-        onOK: _ => {
-          this._deleteMsg(message, index)
-        },
-      })
-    },
-
-    _deleteMsg: async function(message, index) {
-      let result = await this.$acs.deleteMessage(message.id, this.$t('admin.operateSuccess'))
-
-      if (result.success) {
-        this.messages.splice(index, 1)
+      if (column.column == null) {
+        this.sorts = {}
+      } else if (column.order == "descending") {
+        this.sorts[column.prop] = "desc"
+      } else {
+        this.sorts[column.prop] = "asc"
       }
+
+      this.page = 1
+      this.getMessageList()
     },
 
   },
-
-
 
 }
 </script>

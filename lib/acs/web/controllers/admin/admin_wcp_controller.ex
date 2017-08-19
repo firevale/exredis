@@ -87,34 +87,41 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # get_message_list
-  def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+  def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
+    build_sort =  
+      fn (key, exp) ->
+        order_by = Map.get(sorts,key) 
+        Map.put_new(exp, key, %{order: order_by})
+      end
+    sort = Enum.reduce(Map.keys(sorts), Map.new, build_sort)
+    
     query = %{
       query: %{
         bool: %{
-          must: %{term: %{app_id: app_id}},
+          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.id"}}],
           should: [],
           minimum_should_match: 0,
           boost: 1.0,
         },
       },
-      sort: %{inserted_at: %{order: :desc}},
+      sort: sort,
       from: (page - 1) * records_per_page,
       size: records_per_page,
     }
-
+    
     query =
       if String.length(keyword)>0 do
         _query = update_in(query.query.bool.minimum_should_match, fn v -> 1 end)
         update_in(_query.query.bool.should, fn should ->
-            condition = 
-              [
-                %{match: %{content: keyword}},
-                %{term: %{"from.openid": keyword}},
-                %{match: %{"from.nickname": keyword}},
-                %{match: %{"to.nickname": keyword}},
-                %{term: %{"to.openid": keyword}},
-              ]
-            should ++ condition
+          condition = 
+            [
+              %{match: %{content: keyword}},
+              %{term: %{"from.openid": keyword}},
+              %{match: %{"from.nickname": keyword}},
+              %{match: %{"to.nickname": keyword}},
+              %{term: %{"to.openid": keyword}} 
+            ]
+          should ++ condition
         end)
       else
         query
@@ -153,6 +160,33 @@ defmodule Acs.Web.AdminWcpController do
         json(conn, %{success: true, messages: messages})
       _ ->
         json(conn, %{success: false})
+    end
+  end
+
+  def reply_user_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, 
+                          %{"app_id" => app_id,  "open_id" => open_id, "content" => content}) do
+    admin_user = RedisUser.find(acs_admin_id) |> Map.take([:nickname, :age, :email])                       
+    case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do
+      %AppWcpUser{} = wcp_user ->
+        resp = Wcp.Message.Custom.send_text(app_id, open_id, content)
+        case resp do
+          %{errcode: 0, errmsg: "ok"} ->
+            message = %{
+              admin_user: admin_user,
+              from: %{openid: "#", nickname: "系统"},
+              to: wcp_user,
+              msg_type: "text",
+              content: content,
+              inserted_at: Ecto.DateTime.utc,
+              app_id: app_id
+             }
+            AppWcpMessage.index(message)
+            json(conn, %{success: true, message: message})
+          %{} = err ->
+            json(conn, %{success: false, message: err})
+        end 
+      _ ->
+        json(conn, %{success: false, message: "wcp_user不存在"})
     end
   end
 

@@ -16,15 +16,6 @@ defmodule Wcp.Message.Custom do
     message =
       "text"
       |> build_message(%{"content" => content})
-
-    AppWcpMessage.changeset(%AppWcpMessage{}, 
-      %{from: "system", 
-        to: openid, 
-        msg_type: "text", 
-        content: content, 
-        create_time: Timex.local |> Timex.to_unix,
-        app_id: app_id}) |> Repo.insert
-        
     deliver(app_id, openid, message)
   end
 

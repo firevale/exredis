@@ -275,13 +275,8 @@ export default {
         })
       },
 
-      getMessageList(app_id, keyword, page, records_per_page) {
-        return post('/admin_actions/wcp/get_message_list', {
-          app_id,
-          keyword,
-          page,
-          records_per_page
-        })
+      getMessageList(data) {
+        return post('/admin_actions/wcp/get_message_list', data)
       },
       getUserMessageList(app_id, open_id) {
         return post('/admin_actions/wcp/get_user_message_list', {
@@ -289,7 +284,13 @@ export default {
           open_id
         })
       },
-
+      replyUserMessage(app_id, open_id, content) {
+        return post('/admin_actions/wcp/reply_user_message', {
+          app_id,
+          open_id,
+          content
+        })
+      },
       getOnlineChart(app_id) {
         return post('/admin_actions/stats/onlines', {
           app_id

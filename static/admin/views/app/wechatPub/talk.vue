@@ -3,7 +3,7 @@
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false">
       <div class="message-body">
         <div v-for="msg in messages" class="talk">
-          <div class="user-info" :class="{'is-right':  !msg.from.id}">{{ msg.from.id ? userName :"系统" }}</div>
+          <div class="user-info" :class="{'is-right': !msg.from.id}">{{ msg.from.id ? userName :"系统" }}</div>
           <div class="content box">{{msg.content}}
             <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
           </div>
@@ -12,13 +12,13 @@
       <div class="form">
         <div class="field">
           <div class="control">
-            <textarea class="textarea" placeholder="请输入回复内容" style="min-height:80px"></textarea>
+            <textarea class="textarea" v-model="content" placeholder="请输入回复内容" style="min-height:80px"></textarea>
           </div>
         </div>
       </div>
       <div class="field">
         <div class="control">
-          <button class="button is-primary">
+          <button class="button is-primary" @click="reply" :disabled="content.trim() == '' ?  'disabled' : undefined">
             回复
           </button>
         </div>
@@ -33,6 +33,7 @@ export default {
       visible: false,
       message: undefined,
       messages: [],
+      content: '',
     }
   },
   computed: {
@@ -58,6 +59,15 @@ export default {
     },
     close() {
       this.visible = false
+    },
+    async reply() {
+      var appId = this.$route.params.appId
+      var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
+      var result = await this.$acs.replyUserMessage(appId, openId, this.content)
+      if (result.success) {
+        this.messages.push(result.message)
+        this.content = ''
+      }
     },
     async fetchData() {
       this.messages = []

@@ -53,14 +53,14 @@
           <div class="card-content is-paddingless">
             <!-- 机型 -->
             <el-table v-if="statsType == 'model'" key="tb-model" stripe :data="reports" style="width: 100%" @filter-change="filterMemSize"
-              @sort-change="sortChange">
+              @sort-change="sortChange" :default-sort = "{prop: 'count', order: 'descending'}">
               <el-table-column label="机型" width="500">
                 <template scope="scope">
                   {{ scope.row.alias != null ? scope.row.alias : scope.row.model }}
                 </template>
               </el-table-column>
               <el-table-column prop="total_mem_size" align="right" label="内存" width="180" :filters="mem_filter_opts"
-                :filter-multiple="false" column-key="memSize" sortable="custom">
+                :filter-multiple="false" column-key="memSize">
                 <template scope="scope">
                   {{ scope.row.total_mem_size | bytesToSize }}
                 </template>
@@ -71,7 +71,8 @@
               </el-table-column>
             </el-table>
             <!-- 操作系统 -->
-            <el-table v-if="statsType == 'os'" key="tb-os" stripe :data="reports" style="width: 100%" @sort-change="sortChange">
+            <el-table v-if="statsType == 'os'" key="tb-os" stripe :data="reports" style="width: 100%" @sort-change="sortChange"
+            :default-sort = "{prop: 'count', order: 'descending'}">
               <el-table-column label="操作系统" width="200">
                 <template scope="scope">
                   {{ scope.row.os != null ? scope.row.os : "" }}

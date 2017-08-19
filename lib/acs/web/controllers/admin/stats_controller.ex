@@ -308,7 +308,6 @@ defmodule Acs.Web.Admin.StatsController do
       from ad in AppDevice,
         left_join: device in assoc(ad, :device),
         where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
-        order_by: [desc: count(ad.id)],
         offset: ^((page - 1) * records_per_page),
         limit: ^records_per_page
     
@@ -326,7 +325,7 @@ defmodule Acs.Web.Admin.StatsController do
         "os" ->  #操作系统
           query_platform
           |> group_by([ad,device], device.os) 
-          |> select([ad,device], %{count: count(ad.id), os: device.os})
+          |> select([ad,device], %{count: fragment(" ? as count", count(ad.id)), os: device.os})
         
         "model" -> #机型
           query_model_base =
@@ -360,9 +359,9 @@ defmodule Acs.Web.Admin.StatsController do
     query_order_count =
       case _count do
         "asc" ->
-          order_by(query, [ad, device], :count)
+          order_by(query, fragment("count"))
         "desc" ->
-          order_by(query, [ad, device], desc: :count)
+          order_by(query, fragment("count desc"))
         _ ->
           query
       end

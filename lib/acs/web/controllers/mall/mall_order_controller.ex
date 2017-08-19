@@ -59,11 +59,11 @@ defmodule Acs.Web.MallOrderController do
             must: %{term: %{app_id: app_id}},
             should: [
               %{term: %{id: keyword}},
-              %{term: %{goods_name: keyword}},
+              %{match: %{goods_name: keyword}},
               %{term: %{app_id: keyword}},
               %{term: %{user_ip: keyword}},
-              %{term: %{memo: keyword}},
-              %{term: %{"address.name": keyword}},
+              %{match: %{memo: keyword}},
+              %{match: %{"address.name": keyword}},
               %{term: %{"address.mobile": keyword}},
               %{term: %{transaction_id: keyword}}
             ],

@@ -94,7 +94,7 @@ defmodule Acs.Web.AdminWcpController do
         Map.put_new(exp, key, %{order: order_by})
       end
     sort = Enum.reduce(Map.keys(sorts), Map.new, build_sort)
-    
+
     query = %{
       query: %{
         bool: %{
@@ -153,6 +153,7 @@ defmodule Acs.Web.AdminWcpController do
         },
       },
       sort: %{inserted_at: %{order: :asc}},
+      size: 10000,
     }
 
     case AppWcpMessage.search(query) do

@@ -10,6 +10,7 @@ defmodule Acs.Web.WcpController do
   alias Acs.RedisAppWcpUser
 
   require Wcp.User
+  require Utils
 
   def index(conn, %{"echostr" => echostr}) do
     conn |> text(echostr)
@@ -61,6 +62,7 @@ defmodule Acs.Web.WcpController do
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: msg.content,
+          inserted_at: Ecto.DateTime.utc,
           create_time: msg.createtime,
           app_id: app_id})
 
@@ -70,6 +72,7 @@ defmodule Acs.Web.WcpController do
           msg_type: msg.msgtype,
           content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
           create_time: msg.createtime,
+          inserted_at: Ecto.DateTime.utc,
           app_id: app_id})
       _ ->
         :do_nothing
@@ -85,7 +88,7 @@ defmodule Acs.Web.WcpController do
           from: %{openid: reply.from, nickname: "系统"},
           msg_type: "text",
           content: reply.content,
-          create_time: DateTime.to_unix(DateTime.utc_now),
+          inserted_at: Ecto.DateTime.utc,
           app_id: app_id})
         conn |> render("text.xml", reply: reply)
     end

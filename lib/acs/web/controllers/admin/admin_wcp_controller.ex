@@ -88,53 +88,72 @@ defmodule Acs.Web.AdminWcpController do
 
   # get_message_list
   def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
-    total_query = case String.length(keyword) >0 do
-          false -> 
-            from msg in AppWcpMessage, where: msg.app_id == ^app_id, select: count(msg.id)
-          true -> 
-            from msg in AppWcpMessage, where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")), select: count(msg.id)
-        end
-    total = Repo.one!(total_query)
-    total_page = round(Float.ceil(total / records_per_page))
+    query = %{
+      query: %{
+        bool: %{
+          must: %{term: %{app_id: app_id}},
+          should: [],
+          minimum_should_match: 0,
+          boost: 1.0,
+        },
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
 
-    query = case String.length(keyword) >0 do
-              false ->
-                from msg in AppWcpMessage,
-                          left_join: f in AppWcpUser, on: f.openid == msg.from,
-                          left_join: t in AppWcpUser, on: t.openid == msg.to,
-                          select: %{id: msg.id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content, fromname: f.nickname, toname: t.nickname},
-                          limit: ^records_per_page,
-                          where: msg.app_id == ^app_id,
-                          offset: ^((page - 1) * records_per_page),
-                          order_by: [desc: msg.id]
+    query =
+      if String.length(keyword)>0 do
+        _query = update_in(query.query.bool.minimum_should_match, fn v -> 1 end)
+        update_in(_query.query.bool.should, fn should ->
+            condition = 
+              [
+                %{match: %{content: keyword}},
+                %{term: %{"from.openid": keyword}},
+                %{match: %{"from.nickname": keyword}},
+                %{match: %{"to.nickname": keyword}},
+                %{term: %{"to.openid": keyword}},
+              ]
+            should ++ condition
+        end)
+      else
+        query
+      end
 
-              true -> 
-                from msg in AppWcpMessage,
-                          left_join: f in AppWcpUser, on: f.openid == msg.from,
-                          left_join: t in AppWcpUser, on: t.openid == msg.to,
-                          select: %{id: msg.id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content, fromname: f.nickname, toname: t.nickname},
-                          limit: ^records_per_page,
-                          where: msg.app_id == ^app_id and (like(msg.from, ^"%#{keyword}%") or like(msg.to, ^"%#{keyword}%") or like(msg.content, ^"%#{keyword}%")),
-                          offset: ^((page - 1) * records_per_page),
-                          order_by: [desc: msg.id]
-            end
-
-    message = Repo.all(query)
-    conn |> json(%{success: true, message: message, total: total_page})
+    case AppWcpMessage.search(query) do
+      {:ok, total, messages} ->
+        total_page = round(Float.ceil(total/records_per_page))
+        json(conn, %{success: true, messages: messages, total: total_page})
+      _ ->
+        json(conn, %{success: false})
+    end
   end
   def get_message_list(conn, _params) do 
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def get_user_message_list(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
-     query = 
-       from msg in AppWcpMessage,
-       where: msg.app_id == ^app_id and (msg.from == ^open_id or msg.to ==  ^open_id),
-       select: map(msg, [:id, :from, :to, :msg_type, :content, :inserted_at]),
-       order_by: [:id]
-      
-     messages =Repo.all(query)
-     conn |> json(%{success: true, messages: messages })
+    query = %{
+      query: %{
+        bool: %{
+          must: %{term: %{app_id: app_id}},
+          should: [
+            %{term: %{"from.openid": open_id}},
+            %{term: %{"to.openid": open_id}}
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      sort: %{inserted_at: %{order: :asc}},
+    }
+
+    case AppWcpMessage.search(query) do
+      {:ok, total, messages} ->
+        json(conn, %{success: true, messages: messages})
+      _ ->
+        json(conn, %{success: false})
+    end
   end
 
   # delete_wcp_message

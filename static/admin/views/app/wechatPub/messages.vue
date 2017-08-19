@@ -9,19 +9,19 @@
       </span>
     </div>
     <div class="tile is-parent is-vertical">
-      <div class="tile is-child box">
+      <div class="tile is-child box is-paddingless">
         <el-table ref="tbl" stripe :data="messages" style="width: 100%" border :row-key="getRowKey" :expand-row-keys="expandKeys"
           @row-dblclick="rowClick">
-          <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
-          </el-table-column>
+          <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
+          </el-table-column> -->
           <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
             <template scope="scope">
-              {{ getMsgUser(scope.row.from, scope.row.fromname) }}
+              {{ scope.row.from && scope.row.from.nickname ? scope.row.from.nickname : "" }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('admin.wcp.msgTo')" width="180">
             <template scope="scope">
-              {{ getMsgUser(scope.row.to, scope.row.toname) }}
+              {{ scope.row.to && scope.row.to.nickname ? scope.row.to.nickname : "" }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('admin.wcp.msgContent')" width="400">
@@ -41,7 +41,7 @@
           </el-table-column>
         </el-table>
         <div v-if="messages && messages.length > 0" class="ele-pagination">
-          <el-pagination layout="prev, pager, next" :page-count="total" @current-change="onPageChange">
+          <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
           </el-pagination>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default {
   },
 
   mounted: function() {
-    this.getMessageList(this.page, this.recordsPerPage)
+    this.getMessageList()
   },
 
   methods: {
@@ -91,15 +91,14 @@ export default {
     rowClick: function(row, event) {
       this.$refs.talk.open(row)
     },
-    getMessageList: async function(page, recordsPerPage) {
+    getMessageList: async function() {
       this.loading = true
-      let result = await this.$acs.getMessageList(this.$route.params.appId, this.keyword, page,
-        recordsPerPage)
+      let result = await this.$acs.getMessageList(this.$route.params.appId, this.keyword, this.page,
+        this.recordsPerPage)
 
       if (result.success) {
         this.total = result.total
-        this.messages = result.message
-        this.page = page
+        this.messages = result.messages
       }
       this.loading = false
     },
@@ -111,13 +110,14 @@ export default {
         return name ? name : openid
     },
 
-    onPageChange: function(page) {
-      this.getMessageList(page, this.recordsPerPage)
+    onPageChange: function() {
+      this.getMessageList(this.page, this.recordsPerPage)
     },
 
     onSearchBoxSubmit: async function() {
-      this.page = 0
-      await this.getMessageList(this.page, this.recordsPerPage)
+      this.messages = []
+      this.page = 1
+      await this.getMessageList()
     },
 
     viewDetail: function(message) {

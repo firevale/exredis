@@ -3,7 +3,7 @@
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false">
       <div class="message-body">
         <div v-for="msg in messages" class="talk">
-          <div class="user-info" :class="{'is-right':  msg.from.startsWith('gh_')}">{{ msg.from.startsWith("gh_")? "系统": userName }}</div>
+          <div class="user-info" :class="{'is-right':  !msg.from.id}">{{ msg.from.id ? userName :"系统" }}</div>
           <div class="content box">{{msg.content}}
             <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
           </div>
@@ -40,7 +40,7 @@ export default {
       return `与${this.userName}的对话`
     },
     userName() {
-      return this.message.from.startsWith("gh_") ? this.message.toname : this.message.fromname
+      return this.message.from.id ? this.message.from.nickname : this.message.to.nickname
     }
   },
   watch: {
@@ -62,7 +62,7 @@ export default {
     async fetchData() {
       this.messages = []
       var appId = this.$route.params.appId
-      var openId = this.message.from.startsWith("gh_") ? this.message.to : this.message.from
+      var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
       var result = await this.$acs.getUserMessageList(appId, openId)
       if (result.success) {
         this.messages = result.messages

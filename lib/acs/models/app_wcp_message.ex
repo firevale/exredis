@@ -32,9 +32,18 @@ defmodule Acs.AppWcpMessage do
          properties: %{
            app_id: %{type: :keyword},
            msg_type: %{type: :keyword},
-           from: %{type: :object},
-           to: %{type: :object},
-           admin_user: %{type: :object},
+           from: %{ properties: %{
+             openid: %{type: :keyword},
+             nickname:  %{type: :text, analyzer: :ik_smart},
+           }},
+           to: %{ properties: %{
+            openid: %{type: :keyword},
+            nickname:  %{type: :text, analyzer: :ik_smart},
+          }},
+           admin_user: %{ properties: %{
+            email: %{type: :keyword},
+            nickname:  %{type: :text, analyzer: :ik_smart},
+          }},
            content: %{type: :text, analyzer: :ik_smart},
            inserted_at: %{type: :date},
          }
@@ -52,5 +61,17 @@ defmodule Acs.AppWcpMessage do
         params: nil,
         id: nil
       })
+   end
+
+   def search(query) do
+     case Elasticsearch.search(%{index: "wcp", type: "messages", query: query, params: %{timeout: "1m"}}) do
+        {:ok, %{hits: %{hits: hits, total: total}}} ->
+          messages = 
+            Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
+          {:ok, total, messages}
+        error ->
+          error "search orders failed: #{inspect error, pretty: true}"
+          throw(error)
+     end
    end
 end

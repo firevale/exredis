@@ -124,8 +124,8 @@ defmodule Acs.Web.MallController do
                 should: [
                   %{term: %{id: keyword}},
                   %{term: %{app_id: keyword}},
-                  %{term: %{name: keyword}},
-                  %{term: %{description: keyword}},
+                  %{match: %{name: keyword}},
+                  %{match: %{description: keyword}},
                 ],
                 minimum_should_match: 1,
                 boost: 1.0,

@@ -70,7 +70,7 @@ defmodule Acs.AppWcpMessage do
             Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
           {:ok, total, messages}
         error ->
-          error "search orders failed: #{inspect error, pretty: true}"
+          error "search failed: #{inspect error, pretty: true}"
           throw(error)
      end
    end

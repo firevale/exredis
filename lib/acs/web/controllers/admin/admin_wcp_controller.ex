@@ -8,14 +8,14 @@ defmodule Acs.Web.AdminWcpController do
   alias Acs.RedisAppWcpMessageRule
   alias Acs.AppWcpUser
   import Acs.UploadImagePlugs
-  alias Wcp.Menu 
+  alias Wcp.Menu
 
   # add_wcp_empty_params
   def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
-      
+
       %App{} = app ->
         case Repo.get_by(AppWcpConfig, app_id: app_id) do
           nil ->
@@ -33,10 +33,10 @@ defmodule Acs.Web.AdminWcpController do
             # do nothing
             conn |> json(%{success: true, wcpconfig: config})
         end
-      
+
     end
   end
-  def add_wcp_empty_params(conn, _params) do 
+  def add_wcp_empty_params(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -55,12 +55,12 @@ defmodule Acs.Web.AdminWcpController do
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
         end
-      
-      _ -> 
+
+      _ ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
   end
-  def update_wcp_params(conn, _params) do 
+  def update_wcp_params(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -82,15 +82,15 @@ defmodule Acs.Web.AdminWcpController do
         end
     end
   end
-  def update_wcp_menus(conn, _params) do 
+  def update_wcp_menus(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # get_message_list
   def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
-    build_sort =  
+    build_sort =
       fn (key, exp) ->
-        order_by = Map.get(sorts,key) 
+        order_by = Map.get(sorts,key)
         Map.put_new(exp, key, %{order: order_by})
       end
     sort = Enum.reduce(Map.keys(sorts), Map.new, build_sort)
@@ -108,18 +108,18 @@ defmodule Acs.Web.AdminWcpController do
       from: (page - 1) * records_per_page,
       size: records_per_page,
     }
-    
+
     query =
       if String.length(keyword)>0 do
         _query = update_in(query.query.bool.minimum_should_match, fn v -> 1 end)
         update_in(_query.query.bool.should, fn should ->
-          condition = 
+          condition =
             [
               %{match: %{content: keyword}},
               %{term: %{"from.openid": keyword}},
               %{match: %{"from.nickname": keyword}},
               %{match: %{"to.nickname": keyword}},
-              %{term: %{"to.openid": keyword}} 
+              %{term: %{"to.openid": keyword}}
             ]
           should ++ condition
         end)
@@ -135,9 +135,45 @@ defmodule Acs.Web.AdminWcpController do
         json(conn, %{success: false})
     end
   end
-  def get_message_list(conn, _params) do 
+  def get_message_list(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
+
+  defp _fetch_wcp_user(app_id, open_id) do
+    if String.starts_with?(open_id, "gh_") do
+      %{openid: app_id, nickname: "系统" }
+    else
+      Acs.RedisAppWcpUser.find(app_id, open_id)
+    end
+  end
+  def import_message_list() do
+    max_id = Repo.one!( from msg in AppWcpMessage, select: max(msg.id))
+    Enum.map_every(0..max_id, 100, fn current_id ->
+      query = 
+        from msg in AppWcpMessage,
+          select: %{app_id: msg.app_id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content},
+          limit: 100,
+          where: msg.id >= ^current_id,
+          order_by: [msg.id]
+
+       messages = Repo.all(query)
+       d "正在导入 ID:#{current_id}"
+       if messages && messages != [] do
+        Enum.map(messages, fn msg ->
+          from = _fetch_wcp_user(msg.app_id, msg.from)
+          to = _fetch_wcp_user(msg.app_id, msg.to)
+          AppWcpMessage.index(%{
+            from: from,
+            to: to,
+            msg_type: msg.msg_type,
+            content: msg.content,
+            inserted_at: msg.inserted_at,
+            app_id: msg.app_id})
+        end)
+       end
+    end)
+  end
+
 
   def get_user_message_list(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
     query = %{
@@ -164,9 +200,9 @@ defmodule Acs.Web.AdminWcpController do
     end
   end
 
-  def reply_user_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, 
+  def reply_user_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn,
                           %{"app_id" => app_id,  "open_id" => open_id, "content" => content}) do
-    admin_user = RedisUser.find(acs_admin_id) |> Map.take([:nickname, :age, :email])                       
+    admin_user = RedisUser.find(acs_admin_id) |> Map.take([:nickname, :age, :email])
     case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do
       %AppWcpUser{} = wcp_user ->
         resp = Wcp.Message.Custom.send_text(app_id, open_id, content)
@@ -185,7 +221,7 @@ defmodule Acs.Web.AdminWcpController do
             json(conn, %{success: true, message: message})
           %{} = err ->
             json(conn, %{success: false, message: err})
-        end 
+        end
       _ ->
         json(conn, %{success: false, message: "wcp_user不存在"})
     end
@@ -207,7 +243,7 @@ defmodule Acs.Web.AdminWcpController do
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
-  def delete_wcp_message(conn, _params) do 
+  def delete_wcp_message(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -227,7 +263,7 @@ defmodule Acs.Web.AdminWcpController do
 
     conn |> json(%{success: true, rules: rules, total: total_page})
   end
-  def get_rule_list(conn, _params) do 
+  def get_rule_list(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -267,7 +303,7 @@ defmodule Acs.Web.AdminWcpController do
         end
     end
   end
-  def update_wcp_message_rule(conn, _params) do 
+  def update_wcp_message_rule(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -288,25 +324,25 @@ defmodule Acs.Web.AdminWcpController do
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
     end
   end
-  def delete_wcp_message_rule(conn, _params) do 
+  def delete_wcp_message_rule(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   plug :check_upload_image, [
-    param_name: "file", 
+    param_name: "file",
     format: ["jpg", "jpeg", "png"],
     reformat: "jpeg"] when action in [:upload_wcp_image]
   plug :convert_base64_image, [param_name: "file"] when action in [:upload_wcp_image]
   def upload_wcp_image(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(from: image_file_path, 
-        to: "wcp/#{app_id}/", 
+    {:ok, image_path, width, height} =
+      Utils.deploy_image_file_return_size(from: image_file_path,
+        to: "wcp/#{app_id}/",
         low_quality: true)
     conn |> json(%{success: true, app_id: app_id, link: image_path, width: width, height: height})
   end
   def upload_wcp_image(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-  end  
+  end
 
   def upload_wcp_file(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename}}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
@@ -316,15 +352,15 @@ defmodule Acs.Web.AdminWcpController do
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
             AdminController.add_operate_log(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
             conn |> json(%{success: true, filename: filename})
-          
+
           {:error, errinfo} ->
             conn |> json(%{success: false, errinfo: errinfo})
-        end 
+        end
 
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
-  end 
+  end
 
   def get_wcp_menu(conn, %{"app_id" => app_id}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
@@ -340,7 +376,7 @@ defmodule Acs.Web.AdminWcpController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
-  end 
+  end
 
   def update_wcp_menu(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "menu" => menu}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
@@ -357,6 +393,6 @@ defmodule Acs.Web.AdminWcpController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
-  end 
+  end
 
 end

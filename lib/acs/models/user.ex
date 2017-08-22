@@ -62,6 +62,7 @@ defmodule Acs.User do
               zone_id: %{type: :keyword},
               game_user_id: %{type: :keyword},
               game_user_name: %{type: :text, analyzer: :ik_smart},
+              game_user_level: %{type: :integer},
               pay_amount:  %{type: :integer},
             }
           }, 
@@ -71,5 +72,15 @@ defmodule Acs.User do
       Elasticsearch.put_mapping(%{index: "acs", type: "user", mapping: mapping, params: nil})
      end
    end
+
+   def index(user) when is_map(user) do
+    Elasticsearch.index(%{
+      index: "acs",
+      type: "user",
+      doc: user,
+      params: nil,
+      id: user.id
+    })
+ end
 
 end

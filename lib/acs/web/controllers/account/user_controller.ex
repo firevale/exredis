@@ -602,4 +602,34 @@ defmodule Acs.Web.UserController do
         %{success: true}
     end
   end
+
+  def import_data() do
+    max_id = StatsRepo.one!( from user in Acs.Stats.AppUser, select: max(user.id))
+    Enum.map_every(0..max_id, 100, fn current_id ->
+      query = 
+        from app_user in Acs.Stats.AppUser,
+        select: map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount]),
+        where: app_user.id >= ^current_id,
+        limit: 100,
+        order_by: [app_user.id]
+      users = StatsRepo.all(query)
+      if users && users != [] do
+        Enum.map(users, fn app_user ->
+          case RedisUser.find(app_user.user_id) do
+            %RedisUser{} = user ->
+              Acs.User.index(%{
+              id: user.id,
+              email: user.email,
+              mobile: user.mobile,
+              nickname: user.nickname,
+              device_id: user.device_id,
+              inserted_at: user.inserted_at,
+              app_users: [ app_user]})
+           _ ->
+            :nothing
+           end
+        end)
+       end
+    end)
+  end
 end

@@ -46,19 +46,29 @@ defmodule Acs.User do
   end
 
   def init_mapping() do
-    unless Elasticsearch.is_type?("acs", "users") do
+    unless Elasticsearch.is_type?("acs", "user") do
       mapping = %{
         properties: %{
           id: %{type: :integer},
-          email: %{type: :text},
-          mobile: %{type: :integer},
+          email: %{type: :keyword},
+          mobile: %{type: :keyword},
           nickname: %{type: :text, analyzer: :ik_smart},
-          app_user_ids: %{type: :keyword}, 
-          app_user_names: %{type: :text, analyzer: :ik_smart},
+          device_id: %{type: :keyword},
+          inserted_at: %{type: :date},
+          app_users: %{
+            type: :nested,
+            properties: %{
+              app_id: %{type: :keyword},
+              zone_id: %{type: :keyword},
+              game_user_id: %{type: :keyword},
+              game_user_name: %{type: :text, analyzer: :ik_smart},
+              pay_amount:  %{type: :integer},
+            }
+          }, 
         }
       }
 
-      Elasticsearch.put_mapping(%{index: "acs", type: "users", mapping: mapping, params: nil})
+      Elasticsearch.put_mapping(%{index: "acs", type: "user", mapping: mapping, params: nil})
      end
    end
 

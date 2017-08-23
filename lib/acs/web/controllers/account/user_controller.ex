@@ -455,55 +455,64 @@ defmodule Acs.Web.UserController do
   end
 
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
-    "keyword" => "", "page" => _page, "records_per_page" => _records_per_page}) do
-    conn |> json(%{success: true, users: []})
+    "keyword" => "", "page" => page, "records_per_page" => records_per_page}) do
+    query = %{
+      query: %{
+        bool: %{
+          must: [ %{term: %{app_id: "32338E302CAE3892F299404671C52280"}}],
+          should: [],
+          minimum_should_match: 0,
+          boost: 1.0,
+        },
+      },
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    case AppUser.search(query) do
+      {:ok, total, app_users} ->
+        total_page = round(Float.ceil(total/records_per_page))
+        json(conn, %{success: true, total: total_page, users: app_users})
+      _ ->
+        json(conn, %{success: false})
+    end
   end
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
-    "keyword" => keyword, "page" => _page, "records_per_page" => _records_per_page}) do
-
-    query = from app_user in Acs.Stats.AppUser,
-              where: app_user.app_id == ^app_id,
-              select: map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount])
-
-    query =
-      case Integer.parse(keyword) do
-        {int_keyword, ""} ->
-          query |> where([au], au.app_user_id == ^keyword or au.user_id == ^int_keyword)
-
-        _  ->
-          if String.length(keyword) > 0 do
-            query_user =  
-              from u in User,
-              where: like(u.nickname, ^"%#{keyword}%") or u.email == ^keyword,
-              select: u.id
-
-            ids = Repo.all(query_user)
-
-            query |> where([au], like(au.app_user_name, ^"%#{keyword}%") or au.user_id in ^ids)
-          else 
-            query
-          end
+    "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+      query = %{
+        query: %{
+          bool: %{
+            filter: [ %{term: %{app_id: "32338E302CAE3892F299404671C52280"}}],
+            should: [
+              %{match: %{game_user_name: keyword}},
+              %{term: %{game_user_id: keyword}},
+              %{has_parent: %{ 
+                parent_type: "user",
+                query: %{
+                  should: [
+                    %{term: %{email: keyword}},
+                    %{match: %{nickname: keyword}}
+                  ]
+                }
+              }}
+            ],
+            minimum_should_match: 1,
+            boost: 1.0,
+          },
+        },
+        from: (page - 1) * records_per_page,
+        size: records_per_page,
+      }
+  
+      case AppUser.search(query) do
+        {:ok, total, app_users} ->
+          total_page = round(Float.ceil(total/records_per_page))
+          json(conn, %{success: true, total: total_page, users: app_users})
+        _ ->
+          json(conn, %{success: false})
       end
-
-    app_users = StatsRepo.all(query)
-
-    users = 
-      Enum.map(app_users, fn app_user -> 
-        user_id = app_user.user_id
-        user = 
-          case Process.get("user_#{user_id}") do 
-            nil -> 
-              user_db = RedisUser.find(user_id) |> Map.take([:nickname, :age, :email, :gender, :avatar_url, :inserted_at])
-              Process.put("user_#{user_id}", user_db)
-              user_db
-
-            user_cache ->
-              user_cache
-        end
-        Map.merge(app_user, user)
-      end)
-      
-    conn |> json(%{success: true, users: users})
+    
+    conn |> json(%{success: true, users: []})
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 
@@ -608,7 +617,7 @@ defmodule Acs.Web.UserController do
     Enum.map_every(0..max_id, 100, fn current_id ->
       query = 
         from app_user in Acs.Stats.AppUser,
-        select: map(app_user, [:user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount]),
+        select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at]),
         where: app_user.id >= ^current_id,
         limit: 100,
         order_by: [app_user.id]
@@ -617,14 +626,33 @@ defmodule Acs.Web.UserController do
         Enum.map(users, fn app_user ->
           case RedisUser.find(app_user.user_id) do
             %RedisUser{} = user ->
-              Acs.User.index(%{
-              id: user.id,
-              email: user.email,
-              mobile: user.mobile,
-              nickname: user.nickname,
-              device_id: user.device_id,
-              inserted_at: user.inserted_at,
-              app_users: [ app_user]})
+              Elasticsearch.index(%{index: "acs",
+                type: "user",
+                params: nil,
+                id: user.id,
+                doc: %{
+                  id: user.id,
+                  email: user.email,
+                  mobile: user.mobile,
+                  nickname: user.nickname,
+                  device_id: user.device_id,
+                  inserted_at: user.inserted_at
+                }})
+              
+              Elasticsearch.index(%{index: "acs",
+                type: "app_users",
+                params: %{parent: user.id},
+                id: app_user.id,
+                doc: %{
+                  id: app_user.id,
+                  app_id: app_user.app_id,
+                  zone_id: app_user.zone_id,
+                  game_user_id: app_user.app_user_id,
+                  game_user_name: app_user.app_user_name,
+                  game_user_level: app_user.app_user_level,
+                  pay_amount:  app_user.pay_amount,
+                  inserted_at: app_user.inserted_at,
+                }})
            _ ->
             :nothing
            end

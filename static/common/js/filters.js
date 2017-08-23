@@ -87,6 +87,13 @@ export const formatPrice = val => {
     return 0
 }
 
+export const secondFormatHour = val => {
+  if (val)
+    return parseFloat(val / 3600).toFixed(1)
+  else
+    return 0
+}
+
 // export const filterKeyword = val => {
 //   if (val) {
 //     return filter.replaceKeyword(val, '*')

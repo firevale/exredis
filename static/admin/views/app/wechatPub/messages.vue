@@ -10,8 +10,8 @@
     </div>
     <div class="tile is-ancestor ">
       <div class="tile is-parent is-vertical">
-        <el-table  class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%" border @row-dblclick="rowClick" @sort-change="sortChange"
-        :default-sort = "{prop: 'inserted_at', order: 'descending'}">
+        <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%"
+          border @row-dblclick="rowClick" @sort-change="sortChange" :default-sort="{prop: 'inserted_at', order: 'descending'}">
           <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
           </el-table-column> -->
           <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
@@ -38,6 +38,8 @@
             <template scope="scope">
               {{ scope.row.inserted_at | formatServerDateTime }}
             </template>
+          </el-table-column>
+          <el-table-column>
           </el-table-column>
         </el-table>
         <div v-if="messages && messages.length > 0" class="tile is-child  ele-pagination">
@@ -93,7 +95,7 @@ export default {
     },
     getMessageList: async function() {
       this.loading = true
-     var data = {
+      var data = {
         app_id: this.$route.params.appId,
         keyword: this.keyword,
         page: this.page,

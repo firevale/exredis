@@ -459,7 +459,6 @@ defmodule Acs.Web.UserController do
     query = %{
       query: %{
         bool: %{
-          must: [ %{term: %{app_id: "32338E302CAE3892F299404671C52280"}}],
           should: [],
           minimum_should_match: 0,
           boost: 1.0,
@@ -469,7 +468,7 @@ defmodule Acs.Web.UserController do
       size: records_per_page,
     }
 
-    case AppUser.search(query) do
+    case User.search(query) do
       {:ok, total, app_users} ->
         total_page = round(Float.ceil(total/records_per_page))
         json(conn, %{success: true, total: total_page, users: app_users})
@@ -482,18 +481,23 @@ defmodule Acs.Web.UserController do
       query = %{
         query: %{
           bool: %{
-            filter: [ %{term: %{app_id: "32338E302CAE3892F299404671C52280"}}],
+            # filter: [ %{term: %{app_id: "978A7D84040FE589ED0C76295131E43D"}}],
             should: [
-              %{match: %{game_user_name: keyword}},
-              %{term: %{game_user_id: keyword}},
-              %{has_parent: %{ 
-                parent_type: "user",
+              %{term: %{id: keyword}},
+              %{term: %{email: keyword}},
+              %{term: %{mobile: keyword}},
+              %{match: %{nickname: keyword}},
+              %{has_child: %{ 
+                child_type: "app_users",
                 query: %{
-                  should: [
-                    %{term: %{email: keyword}},
-                    %{match: %{nickname: keyword}}
-                  ]
-                }
+                  bool: %{
+                    should: [
+                      %{match: %{game_user_name: keyword}},
+                      %{term: %{game_user_id: keyword}}
+                    ]
+                  }
+                },
+                inner_hits: %{}
               }}
             ],
             minimum_should_match: 1,
@@ -504,7 +508,7 @@ defmodule Acs.Web.UserController do
         size: records_per_page,
       }
   
-      case AppUser.search(query) do
+      case User.search(query) do
         {:ok, total, app_users} ->
           total_page = round(Float.ceil(total/records_per_page))
           json(conn, %{success: true, total: total_page, users: app_users})

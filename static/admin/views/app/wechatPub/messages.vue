@@ -8,9 +8,9 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <div class="tile is-parent is-vertical">
-      <div class="tile is-child box is-paddingless">
-        <el-table ref="tbl" stripe :data="messages" style="width: 100%" border @row-dblclick="rowClick" @sort-change="sortChange"
+    <div class="tile is-ancestor ">
+      <div class="tile is-parent is-vertical">
+        <el-table  class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%" border @row-dblclick="rowClick" @sort-change="sortChange"
         :default-sort = "{prop: 'inserted_at', order: 'descending'}">
           <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
           </el-table-column> -->
@@ -40,7 +40,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div v-if="messages && messages.length > 0" class="ele-pagination">
+        <div v-if="messages && messages.length > 0" class="tile is-child  ele-pagination">
           <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
           </el-pagination>
         </div>

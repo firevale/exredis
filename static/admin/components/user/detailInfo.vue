@@ -15,41 +15,17 @@
         <el-table-column prop="inserted_at" label="注册时间" width="180">
         </el-table-column>
       </el-table>
-      <div v-for="(user,index) in appUsers">
-        <br/>
-        <el-button :type="buttonType[index]" class="width-200">{{user.app_id}}</el-button>
-        <br/>
-        <el-card class="box-card" v-for="app in user.app_info">
+      <br/>
+      <div v-for="user in appUsers">
+        <el-card class="box-card" v-for="(app, index) in user.app_info">
           <br/>
           <div slot="header" class="clearfix">
             <span style="line-height: 36px;">
-              <el-tag :type="tagType[index]">{{app.app_name}}</el-tag>
+              <el-button :type="buttonType[index]" class="width-200">{{app.app_name}}</el-button>
             </span>
           </div>
-          <div class="text item">
-            <div class="el-row has-text-centered">
-              <div class="el-col el-col-6">
-                <div>昵称
-                  <div>{{app.game_user_name}}</div>
-                </div>
-              </div>
-              <div class="el-col el-col-6">
-                <div>等级
-                  <div>{{app.app_user_level}}</div>
-                </div>
-              </div>
-              <div class="el-col el-col-6">
-                <div>充值金额(人民币)
-                  <div>{{app.pay_amount | formatPrice}}</div>
-                </div>
-              </div>
-              <div class="el-col el-col-6">
-                <div>活跃时间(小时)
-                  <div>{{ app.active_seconds | secondFormatHour}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <app-user-list :appUsers="showAppUser(user.app_info)">
+          </app-user-list>
         </el-card>
       </div>
     </div>
@@ -59,6 +35,9 @@
 import {
   Modal
 } from 'vue-bulma-modal'
+import * as filters from 'common/js/filters'
+
+import AppUserList from 'admin/components/user/appUserList'
 
 export default {
   props: {
@@ -77,12 +56,17 @@ export default {
   },
   data() {
     return {
-      tagType: ["success", "danger", "primary", "warning", "gray"],
       buttonType: ["success", "danger", "info", "text", "warning", "primary"],
+    }
+  },
+  methods: {
+    showAppUser: function(user) {
+      return user
     }
   },
   components: {
     Modal,
+    AppUserList
   },
 }
 </script>

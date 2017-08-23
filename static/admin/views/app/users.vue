@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="users-page">
     <div class="control has-icon has-icon-left">
       <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchUsers')"
         v-model="keyword">
@@ -10,45 +10,49 @@
     </div>
     <div class="tile is-ancestor" v-if="!initing && users.length > 0">
       <div class="tile is-parent is-vertical">
-        <article class="tile is-child is-12">
-          <div class="table-responsive">
-            <table class="table is-narrow">
-              <thead>
-                <tr>
-                  <th class="has-text-left">{{ $t('admin.user.fields.avatar') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.id') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.nickname') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.appUserName') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.email') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.gender') }}</th>
-                  <th class="has-text-left">{{ $t('admin.user.fields.insertedAt')}}</th>
-                  <th class="has-text-left"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <template v-for="user in users">
-                  <tr>
-                    <td class="is-icon">
-                      <figure class="image is-48x48">
-                        <img :src="user.avatar_url ? user.avatar_url : 'https://placehold.it/48x48' | imageStaticUrl"></img>
-                      </figure>
-                      <td> {{ user.user_id }}</td>
-                    </td>
-                    <td> {{ user.nickname }}</td>
-                    <td> {{ user.app_user_name }}</td>
-                    <td> {{ user.email }}</td>
-                    <td> {{ user.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale')
-                      }} </td>
-                    <td> {{ user.inserted_at | formatServerDateTime }} </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </article>
-        <article class="tile is-child is-12">
-          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-        </article>
+        <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="users" style="width: 100%"
+          :default-sort="{prop: 'inserted_at', order: 'descending'}">
+          <el-table-column type="expand" class="is-paddingless">
+            <template scope="scope">
+              <el-table :data="scope.row.app_users" style="width: 100%">
+                <el-table-column prop="game_user_id" label="游戏角色ID" width="200">
+                </el-table-column>
+                <el-table-column prop="game_user_name" label="角色名称" width="200">
+                </el-table-column>
+                <el-table-column>
+                </el-table-column>
+              </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.user.fields.avatar')" width="80">
+            <template scope="scope">
+              <figure class="image is-48x48">
+                <img :src="scope.row.avatar_url ? scope.row.avatar_url : 'https://placehold.it/48x48' | imageStaticUrl"></img>
+              </figure>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.user.fields.nickname')" width="200">
+            <template scope="scope">
+              {{ scope.row.nickname }} </template>
+          </el-table-column>
+          <el-table-column :label="$t('admin.user.fields.email')" width="200">
+            <template scope="scope">
+              {{ scope.row.email }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="mobile" :label="$t('admin.user.fields.mobile')" width="180">
+          </el-table-column>
+          <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" sortable="custom" width="180">
+            <template scope="scope">
+              <span style="font-family:'microsoft yahei', Tahoma, Geneva, Verdana, sans-serif"> {{ scope.row.inserted_at | formatServerDateTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column></el-table-column>
+        </el-table>
+        <div v-if="users && users.length > 0" class="tile ele-pagination">
+          <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
+          </el-pagination>
+        </div>
       </div>
     </div>
     <div class="box" v-else>
@@ -95,7 +99,7 @@ export default {
       loading: false,
       initing: true,
       users: [],
-      page: 0,
+      page: 1,
       total: 1,
       recordsPerPage: 10,
     }
@@ -162,12 +166,11 @@ export default {
     },
 
     onPageChange: async function(page) {
-      this.page = page
       await this.searchUsers()
     },
 
     onSearchBoxSubmit: async function() {
-      this.page = 0
+      this.page = 1
       await this.searchUsers()
     },
 
@@ -175,14 +178,12 @@ export default {
       this.searching = true
       let result = await this.$acs.searchUsers({
         keyword: this.keyword,
-        page: this.page + 1,
+        page: this.page,
         records_per_page: this.recordsPerPage
       })
       if (result.success) {
         this.total = result.total
         this.users = result.users
-        this.page = result.page
-
       }
       this.searching = false
     },
@@ -195,9 +196,16 @@ export default {
 }
 </script>
 <style lang="scss">
+.users-page {
+  .el-table__expanded-cell {
+    padding: 5px;
+  }
+}
+
 .control {
   padding-bottom: 1rem;
 }
+
 .table {
   tbody {
     td {

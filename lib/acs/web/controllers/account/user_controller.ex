@@ -458,7 +458,10 @@ defmodule Acs.Web.UserController do
     "keyword" => "", "page" => page, "records_per_page" => records_per_page}) do
     query = %{
       query: %{
-       term: %{app_id: app_id}
+        has_child: %{ 
+          child_type: "app_users",
+          query:  %{term: %{app_id: app_id}}
+        }
       },
       from: (page - 1) * records_per_page,
       size: records_per_page,
@@ -476,7 +479,6 @@ defmodule Acs.Web.UserController do
       query = %{
         query: %{
           bool: %{
-            filter: [ %{term: %{app_id: app_id}}],
             should: [
               %{term: %{id: keyword}},
               %{term: %{email: keyword}},
@@ -486,10 +488,12 @@ defmodule Acs.Web.UserController do
                 child_type: "app_users",
                 query: %{
                   bool: %{
+                    must: %{term: %{app_id: app_id}},
                     should: [
                       %{match: %{game_user_name: keyword}},
                       %{term: %{game_user_id: keyword}}
-                    ]
+                    ],
+                    minimum_should_match: 1
                   }
                 },
                 inner_hits: %{}
@@ -507,7 +511,7 @@ defmodule Acs.Web.UserController do
       total_page = round(Float.ceil(total/records_per_page))
       users = Acs.Users.get_users_by_ids(app_id, ids)
 
-      conn |> json(%{success: true, users: users})
+      conn |> json(%{success: true, total: total_page, users: users})
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 

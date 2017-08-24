@@ -466,15 +466,14 @@ defmodule Acs.Web.UserController do
       },
       from: (page - 1) * records_per_page,
       size: records_per_page,
+      sort: %{ inserted_at: %{ order: :desc} }
     }
 
-    case User.search(query) do
-      {:ok, total, app_users} ->
-        total_page = round(Float.ceil(total/records_per_page))
-        json(conn, %{success: true, total: total_page, users: app_users})
-      _ ->
-        json(conn, %{success: false})
-    end
+    {:ok, total, ids} =  User.search(query)
+    total_page = round(Float.ceil(total/records_per_page))
+    users = Acs.Users.get_users_by_ids(app_id, ids)
+
+    conn |> json(%{success: true, total: total_page, users: users})
   end
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
     "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do

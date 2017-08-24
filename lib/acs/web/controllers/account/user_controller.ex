@@ -520,6 +520,12 @@ defmodule Acs.Web.UserController do
       conn |> json(%{success: true, total: total_page, users: users})
   end
 
+  def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id}) when is_integer(id) do
+    user = Acs.Users.get_users_by_ids(app_id, id)
+    
+    conn |> json(%{success: true, user: user})
+  end
+
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do
     code = String.upcase(code)
 

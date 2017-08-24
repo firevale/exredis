@@ -508,15 +508,11 @@ defmodule Acs.Web.UserController do
         size: records_per_page,
       }
   
-      case User.search(query) do
-        {:ok, total, app_users} ->
-          total_page = round(Float.ceil(total/records_per_page))
-          json(conn, %{success: true, total: total_page, users: app_users})
-        _ ->
-          json(conn, %{success: false})
-      end
-    
-    conn |> json(%{success: true, users: []})
+      {:ok, total, ids} =  User.search(query)
+      total_page = round(Float.ceil(total/records_per_page))
+      users = Acs.Users.get_users_by_ids(app_id, ids)
+
+      conn |> json(%{success: true, users: users})
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 

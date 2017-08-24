@@ -87,21 +87,12 @@ defmodule Acs.User do
   def search(query) do
     case Elasticsearch.search(%{index: "acs", type: "user", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
-        users = 
-          Enum.map(hits, fn(%{_id: _id, _source: %{} = user, inner_hits: %{} = inner_hits}) -> 
-            case  inner_hits  do
-               %{app_users: %{hits: %{hits: app_users_hits}}} ->
-                app_users = Enum.map(app_users_hits, fn(%{_id: _id, _source: %{} = app_user}) -> app_user end)
-                Map.put_new(user, :app_users, app_users)
-              error ->
-                throw(error)
-            end
-          end)
-        {:ok, total, users}
+        ids = Enum.map(hits, &(&1._id))
+        {:ok, total, ids }
       error ->
         # error "search failed: #{inspect error, pretty: true}"
         throw(error)
-   end
+    end
   end
 
 end

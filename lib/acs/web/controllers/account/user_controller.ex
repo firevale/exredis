@@ -1,11 +1,11 @@
 defmodule Acs.Web.UserController do
   use Acs.Web, :controller
-  import Acs.UploadImagePlugs 
+  import Acs.UploadImagePlugs
 
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_user_id
-  plug :fetch_session_user_id  
+  plug :fetch_session_user_id
   plug :fetch_session_user
   plug :no_emoji, [param_name: "nickname"] when action == :update_nickname
 
@@ -53,7 +53,7 @@ defmodule Acs.Web.UserController do
             {:ok, user} ->
               create_and_response_access_token(conn, user, app_id, device_id, platform)
             _ ->
-              conn 
+              conn
                 |> put_session(:failed_attempts, failed_attempts + 1)
                 |> put_session(:last_failed_timestamp, now)
                 |> json(%{success: false, i18n_message: "error.server.passwordNotMatch"})
@@ -79,7 +79,7 @@ defmodule Acs.Web.UserController do
       case RedisUser.bind_anonymous_user(account_id, password, device_id) do
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.anonymousUserNotFound"})
-          
+
         %RedisUser{} = user ->
           create_and_response_access_token(conn, user, app_id, device_id, platform)
       end
@@ -130,7 +130,7 @@ defmodule Acs.Web.UserController do
         _ ->
           conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
       end
-    end      
+    end
   end
 
   def update_password(conn, %{"key" => account_id, "token" => verify_code, "password" => password}) do
@@ -160,27 +160,27 @@ defmodule Acs.Web.UserController do
     end
   end
 
-  def update_mobile(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+  def update_mobile(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn,
                     %{"mobile" => mobile, "verify_code" => verify_code}) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
-        case RedisUser.find(mobile) do 
-          nil -> _update_mobile(conn, user, mobile) 
-          %{id: ^user_id} -> _update_mobile(conn, user, mobile) 
+        case RedisUser.find(mobile) do
+          nil -> _update_mobile(conn, user, mobile)
+          %{id: ^user_id} -> _update_mobile(conn, user, mobile)
           _ -> conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
     end
   end
-  def update_mobile(conn, _) do 
+  def update_mobile(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-  defp _update_mobile(conn, user, mobile) do 
+  defp _update_mobile(conn, user, mobile) do
     user = %{user | mobile: mobile, device_id: nil}
-    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do 
+    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
       %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
-    else 
+    else
       user
     end
     RedisUser.save!(user)
@@ -189,11 +189,11 @@ defmodule Acs.Web.UserController do
          |> json(%{success: true})
   end
 
-  def update_email(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+  def update_email(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn,
                    %{"email" => email, "verify_code" => verify_code}) do
     case get_session(conn, :bind_email_verify_code) do
       ^verify_code ->
-        case RedisUser.find(email) do 
+        case RedisUser.find(email) do
           nil -> _update_email(conn, user, email)
           %{id: ^user_id} -> _update_email(conn, user, email)
           _ -> conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
@@ -202,14 +202,14 @@ defmodule Acs.Web.UserController do
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
     end
   end
-  def update_email(conn, _) do 
+  def update_email(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-  defp _update_email(conn, user, email) do 
+  defp _update_email(conn, user, email) do
     user = %{user | email: email, device_id: nil}
-    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do 
+    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
       %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
-    else 
+    else
       user
     end
     RedisUser.save!(user)
@@ -218,9 +218,9 @@ defmodule Acs.Web.UserController do
          |> json(%{success: true})
   end
 
-  def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn, 
+  def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn,
                       %{"nickname" => nickname}) do
-    
+
     check_out = check_userid(nickname)
     if(check_out && !check_out.success) do
       conn |> json(check_out)
@@ -229,8 +229,8 @@ defmodule Acs.Web.UserController do
               select: count(1),
               where: u.nickname == ^nickname and u.id != ^user_id
 
-      case Repo.one!(query) do 
-        0 -> 
+      case Repo.one!(query) do
+        0 ->
           user = %{user | nickname: nickname}
           RedisUser.save!(user)
           conn |> json(%{success: true})
@@ -239,17 +239,17 @@ defmodule Acs.Web.UserController do
       end
     end
   end
-  def update_nickname(conn, _) do 
+  def update_nickname(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn, 
+  def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn,
                            %{"resident_id" => resident_id, "resident_name" => resident_name}) do
     user = %{user | resident_id: resident_id, resident_name: resident_name}
     RedisUser.save!(user)
     conn |> json(%{success: true})
   end
-  def update_resident_info(conn, _) do 
+  def update_resident_info(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -299,7 +299,7 @@ defmodule Acs.Web.UserController do
                         ttl: 604800,
                         binding: %{}
                       })
-                      
+
                     %RedisApp{} = app ->
                       token = RedisAccessToken.create(%{
                         app_id: app_id,
@@ -311,8 +311,8 @@ defmodule Acs.Web.UserController do
                         binding: %{}
                       })
 
-                      if app.restrict_login do 
-                        case RedisLoginCode.find(app.id, user.id) do 
+                      if app.restrict_login do
+                        case RedisLoginCode.find(app.id, user.id) do
                           nil -> token
                           %{code: code} ->
                             %{token | login_code: code}
@@ -331,8 +331,8 @@ defmodule Acs.Web.UserController do
       |> delete_session(:register_account_id)
 
     app = conn.private[:acs_app]
-    
-    if app && app.restrict_login && is_nil(access_token.login_code) do 
+
+    if app && app.restrict_login && is_nil(access_token.login_code) do
       conn |> json(%{success: false, action: "show_login_code"})
     else
       conn |> json(%{
@@ -344,7 +344,7 @@ defmodule Acs.Web.UserController do
               user_mobile: user.mobile || "",
               nick_name: user.nickname,
               is_anonymous: is_anonymous,
-              avatar_url: case user.avatar_url do 
+              avatar_url: case user.avatar_url do
                             nil -> nil
                             "/" <> _ -> static_url(conn, user.avatar_url)
                             "http" <> _ -> user.avatar_url
@@ -404,7 +404,7 @@ defmodule Acs.Web.UserController do
         end
     end
   end
-  def verify_token(conn, _params) do 
+  def verify_token(conn, _params) do
     conn |> json(%{success: false, message: "app not found, check your verify token url & location"})
   end
 
@@ -412,12 +412,12 @@ defmodule Acs.Web.UserController do
     case RedisAccessToken.find(token_id) do
       nil ->
         conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
-      
+
       token ->
-        case RedisUser.find(token.user_id) do 
+        case RedisUser.find(token.user_id) do
           nil ->
             conn |> json(%{success: false, message: "user not found"})
-          
+
           user ->
             conn |> json(%{success: true, user: %{id: user.id, email: user.email}})
         end
@@ -430,20 +430,20 @@ defmodule Acs.Web.UserController do
 
   plug :convert_base64_image, [param_name: "file"] when action == :update_avatar
   plug :check_upload_image, [
-    param_name: "file", 
-    sqare: true, 
+    param_name: "file",
+    sqare: true,
     format: ["jpg", "jpeg", "png"],
-    min_width: 128, 
+    min_width: 128,
     reformat: "jpg",
     resize: [width: 128, height: 128]] when action == :update_avatar
-  def update_avatar(%Plug.Conn{private: %{acs_session_user: user}} = conn, %{"file" => %{path: image_file_path}}) do 
+  def update_avatar(%Plug.Conn{private: %{acs_session_user: user}} = conn, %{"file" => %{path: image_file_path}}) do
     _update_avatar(conn, user, image_file_path)
   end
-  def update_avatar(%Plug.Conn{private: %{image_file_path: image_file_path, acs_session_user: user}} = conn, _) do 
+  def update_avatar(%Plug.Conn{private: %{image_file_path: image_file_path, acs_session_user: user}} = conn, _) do
     _update_avatar(conn, user, image_file_path)
   end
 
-  defp _update_avatar(conn, user, image_file_path) do 
+  defp _update_avatar(conn, user, image_file_path) do
     {:ok, avatar_path} = Utils.deploy_image_file(from: image_file_path, to: "user_avatars")
     new_user = RedisUser.save(%{user | avatar_url: avatar_path})
     conn |> json(%{success: true, user: %{
@@ -458,7 +458,7 @@ defmodule Acs.Web.UserController do
     "keyword" => "", "page" => page, "records_per_page" => records_per_page}) do
     query = %{
       query: %{
-        has_child: %{ 
+        has_child: %{
           child_type: "app_users",
           query:  %{term: %{app_id: app_id}}
         }
@@ -479,24 +479,30 @@ defmodule Acs.Web.UserController do
       query = %{
         query: %{
           bool: %{
+            must: %{
+              has_child: %{
+                child_type: "app_users",
+                query: %{
+                  bool: %{
+                    must: %{term: %{app_id: app_id}}
+                  }
+                },
+            }},
             should: [
               %{term: %{id: keyword}},
               %{term: %{email: keyword}},
               %{term: %{mobile: keyword}},
               %{match: %{nickname: keyword}},
-              %{has_child: %{ 
+              %{has_child: %{
                 child_type: "app_users",
                 query: %{
                   bool: %{
-                    must: %{term: %{app_id: app_id}},
                     should: [
                       %{match: %{game_user_name: keyword}},
                       %{term: %{game_user_id: keyword}}
                     ],
                     minimum_should_match: 1
-                  }
-                },
-                inner_hits: %{}
+                }}
               }}
             ],
             minimum_should_match: 1,
@@ -506,7 +512,7 @@ defmodule Acs.Web.UserController do
         from: (page - 1) * records_per_page,
         size: records_per_page,
       }
-  
+
       {:ok, total, ids} =  User.search(query)
       total_page = round(Float.ceil(total/records_per_page))
       users = Acs.Users.get_users_by_ids(app_id, ids)
@@ -514,28 +520,28 @@ defmodule Acs.Web.UserController do
       conn |> json(%{success: true, total: total_page, users: users})
   end
 
-  def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do 
+  def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do
     code = String.upcase(code)
 
-    case RedisLoginCode.find(app_id, code) do 
+    case RedisLoginCode.find(app_id, code) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
 
       %{code: ^code, owner: nil} ->
         conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
-      
+
       %{code: ^code} = login_code ->
-        case get_session(conn, :access_token) do 
+        case get_session(conn, :access_token) do
           nil ->
             conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
 
           token_id ->
-            case RedisAccessToken.find(token_id) do 
+            case RedisAccessToken.find(token_id) do
               nil ->
                 conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
 
               %{app_id: ^app_id, id: ^token_id, user_id: user_id} = access_token ->
-                case login_code.user_id do 
+                case login_code.user_id do
                   nil ->
                     now = DateTime.utc_now()
                     login_code = Repo.get_by(AppLoginCode, app_id: app_id, code: code)
@@ -556,14 +562,14 @@ defmodule Acs.Web.UserController do
                   _ ->
                     conn |> json(%{success: false, i18n_message: "error.server.loginCodeUsed"})
                 end
-              
+
               _ ->
                 conn |> json(%{success: false, i18n_message: "error.server.networkError"})
             end
         end
     end
   end
-  def bind_login_code(conn, _) do 
+  def bind_login_code(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -573,7 +579,7 @@ defmodule Acs.Web.UserController do
           |> json(%{success: true, state: state})
   end
 
-  defp response_access_token(conn, access_token) do 
+  defp response_access_token(conn, access_token) do
     user = RedisUser.find(access_token.user_id)
     conn |> json(%{
             success: true,
@@ -584,7 +590,7 @@ defmodule Acs.Web.UserController do
             user_mobile: user.mobile || "",
             nick_name: user.nickname,
             is_anonymous: access_token.anonymous,
-            avatar_url: case user.avatar_url do 
+            avatar_url: case user.avatar_url do
                           nil -> nil
                           "/" <> _ -> static_url(conn, user.avatar_url)
                           "http" <> _ -> user.avatar_url
@@ -598,7 +604,7 @@ defmodule Acs.Web.UserController do
   # check text by netease dun
   defp check_userid(userid) do
     # %{success: true}
-    case SDKNeteaseDun.check_userid(userid) do 
+    case SDKNeteaseDun.check_userid(userid) do
       {:error, label, info} ->
         if label do
           %{success: false, i18n_message: "account.error.userIdCheckFail"}
@@ -606,7 +612,7 @@ defmodule Acs.Web.UserController do
           %{success: false, message: info}
         end
 
-      _ -> 
+      _ ->
         %{success: true}
     end
   end
@@ -614,7 +620,7 @@ defmodule Acs.Web.UserController do
   def import_data() do
     max_id = StatsRepo.one!( from user in Acs.Stats.AppUser, select: max(user.id))
     Enum.map_every(0..max_id, 100, fn current_id ->
-      query = 
+      query =
         from app_user in Acs.Stats.AppUser,
         select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at]),
         where: app_user.id >= ^current_id,
@@ -637,7 +643,7 @@ defmodule Acs.Web.UserController do
                   device_id: user.device_id,
                   inserted_at: user.inserted_at
                 }})
-              
+
               Elasticsearch.index(%{index: "acs",
                 type: "app_users",
                 params: %{parent: user.id},

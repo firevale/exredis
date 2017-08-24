@@ -641,6 +641,7 @@ defmodule Acs.Web.UserController do
                 doc: %{
                   id: app_user.id,
                   app_id: app_user.app_id,
+                  # app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5",
                   zone_id: app_user.zone_id,
                   game_user_id: app_user.app_user_id,
                   game_user_name: app_user.app_user_name,

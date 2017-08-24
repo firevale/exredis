@@ -11,7 +11,7 @@
     <div class="tile is-ancestor" v-if="!initing && users.length > 0">
       <div class="tile is-parent is-vertical">
         <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="users" style="width: 100%"
-          :default-sort="{prop: 'inserted_at', order: 'descending'}">
+          @row-dblclick="showDetails" :default-sort="{prop: 'inserted_at', order: 'descending'}">
           <el-table-column type="expand" class="is-paddingless">
             <template scope="scope">
               <el-table :data="scope.row.app_users" style="width: 100%">
@@ -44,7 +44,7 @@
           </el-table-column>
           <el-table-column :label="$t('admin.user.fields.gender')" width="100">
             <template scope="scope">
-              {{ scope.row.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale')  }}
+              {{ scope.row.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale') }}
             </template>
           </el-table-column>
           <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" sortable="custom" width="180">
@@ -95,6 +95,7 @@ import {
 import * as getters from 'admin/store/getters'
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
+import UserDetail from 'admin/components/user'
 
 export default {
   data: function() {
@@ -192,11 +193,15 @@ export default {
       }
       this.searching = false
     },
+    showDetails: function(row, event) {
+      UserDetail.show(row.id)
+    },
   },
 
   components: {
     Pagination,
-    Tooltip
+    Tooltip,
+    UserDetail
   }
 }
 </script>

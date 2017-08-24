@@ -1,5 +1,6 @@
 <template>
-  <el-table :data="appUsers" show-summary :summary-method="getSummaries">
+  <!-- <el-table :data="appUsers" show-summary :summary-method="getSummaries"> -->
+  <el-table :data="appUsers">
     <el-table-column prop="app_user_name" label="游戏ID" width="200">
     </el-table-column>
     <el-table-column prop="app_user_level" label="等级">
@@ -24,10 +25,10 @@ export default {
   },
   methods: {
     formatPrice(row, column) {
-      return filters.formatPrice(row.pay_amount)
+      return filters.formatPrice(row.pay_amount) + ' 元'
     },
     secondFormatHour(row, column) {
-      return filters.secondFormatHour(row.active_seconds)
+      return filters.secondFormatHour(row.active_seconds) + ' 小时'
     },
     formatServerDateTime: function(row, column) {
       return filters.formatServerDateTime(row.inserted_at)

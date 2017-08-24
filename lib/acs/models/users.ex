@@ -26,9 +26,19 @@ defmodule Acs.Users do
               from app_user in AppUser,
                 where: app_user.app_id == ^app_id and app_user.user_id == ^user.id,
                 select: map(app_user, [:zone_id, :app_user_id, :app_user_name, :app_user_level, :active_seconds,
-                  :pay_amount, :last_active_at, :inserted_at])
+                  :pay_amount, :last_active_at, :inserted_at]),
+                order_by: [asc: app_user.zone_id]
             app_users = StatsRepo.all(app_users_query)
-            Map.put_new(user, :app_users, app_users)
+            Map.put_new(%{
+              id: user.id,
+              email: user.email,
+              mobile: user.mobile,
+              gender: user.gender,
+              nickname: user.nickname,
+              age: user.age,
+              inserted_at: user.inserted_at
+              },
+              :app_users, app_users)
           end)
       _ ->
         []

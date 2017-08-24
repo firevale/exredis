@@ -24,9 +24,34 @@
               <el-button :type="buttonType[index]" class="width-200">{{app.zone_id}}区</el-button>
             </span>
           </div>
-          <app-user-list :appUsers="appUsers">
+          <app-user-list :appUsers="showAppUsers(app)">
           </app-user-list>
         </el-card>
+        <div class="columns is-multiline ">
+          <div class="column is-8">
+          </div>
+          <div class="column has-text-right">
+            <div class=" has-text-left">
+              <h1 class="title is-marginless">合计：</h1>
+              <h2 class="subtitle is-marginless">充值金额：<strong>{{ summaryAmount | formatPrice }} 元</strong>
+              </h2>
+              <h2 class="subtitle is-marginless">活跃时长：<strong>{{ summarySeconds| secondFormatHour }}小时</strong>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="box">
+      <div class="hero-body has-text-centered">
+        <div>
+          <span class="icon is-large">
+            <i class="fa fa-spinner fa-spin"></i>
+          </span>
+          <h2 class="subtitle" style="margin-top: 10px">
+                 数据加载中
+            </h2>
+        </div>
       </div>
     </div>
   </modal>
@@ -57,18 +82,26 @@ export default {
     return {
       buttonType: ["success", "danger", "info", "text", "warning", "primary"],
       user: undefined,
-      appUsers: undefined
+      appUsers: undefined,
+      summarySeconds: 0,
+      summaryAmount: 0
     }
   },
   methods: {
-    showAppUser: function(user) {
-      return user
+    showAppUsers: function(user) {
+      let users = []
+      users.push(user)
+      return users
     },
     getUser: async function() {
       let result = await this.$acs.getUserById(this.id)
       if (result.success) {
         this.user = result.user
         this.appUsers = this.user[0].app_users
+        for (var app of this.appUsers) {
+          this.summaryAmount += parseInt(app.pay_amount)
+          this.summarySeconds += parseInt(app.active_seconds)
+        }
       }
     },
     formatServerDateTime: function(row, column) {

@@ -458,11 +458,7 @@ defmodule Acs.Web.UserController do
     "keyword" => "", "page" => page, "records_per_page" => records_per_page}) do
     query = %{
       query: %{
-        bool: %{
-          should: [],
-          minimum_should_match: 0,
-          boost: 1.0,
-        },
+       term: %{app_id: app_id}
       },
       from: (page - 1) * records_per_page,
       size: records_per_page,
@@ -480,7 +476,7 @@ defmodule Acs.Web.UserController do
       query = %{
         query: %{
           bool: %{
-            # filter: [ %{term: %{app_id: "978A7D84040FE589ED0C76295131E43D"}}],
+            filter: [ %{term: %{app_id: app_id}}],
             should: [
               %{term: %{id: keyword}},
               %{term: %{email: keyword}},

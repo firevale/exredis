@@ -42,6 +42,11 @@
           </el-table-column>
           <el-table-column prop="mobile" :label="$t('admin.user.fields.mobile')" width="180">
           </el-table-column>
+          <el-table-column :label="$t('admin.user.fields.gender')" width="100">
+            <template scope="scope">
+              {{ scope.row.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale')  }}
+            </template>
+          </el-table-column>
           <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" sortable="custom" width="180">
             <template scope="scope">
               <span style="font-family:'microsoft yahei', Tahoma, Geneva, Verdana, sans-serif"> {{ scope.row.inserted_at | formatServerDateTime }}</span>

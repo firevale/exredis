@@ -1,6 +1,6 @@
 <template>
   <modal :visible="visible" class="user-detail">
-    <div class="box">
+    <div class="box" v-if="user">
       <el-table :data="user">
         <el-table-column prop="email" label="账号" width="180">
         </el-table-column>
@@ -10,21 +10,21 @@
         </el-table-column>
         <el-table-column prop="age" label="年龄">
         </el-table-column>
-        <el-table-column prop="sex" label="性别">
+        <el-table-column prop="gender" label="性别">
         </el-table-column>
-        <el-table-column prop="inserted_at" label="注册时间" width="180">
+        <el-table-column prop="inserted_at" label="注册时间" width="180" :formatter="formatServerDateTime">
         </el-table-column>
       </el-table>
       <br/>
-      <div v-for="user in appUsers">
-        <el-card class="box-card" v-for="(app, index) in user.app_info">
+      <div v-if="appUsers">
+        <el-card class="box-card" v-for="(app, index) in appUsers">
           <br/>
           <div slot="header" class="clearfix">
             <span style="line-height: 36px;">
-              <el-button :type="buttonType[index]" class="width-200">{{app.app_name}}</el-button>
+              <el-button :type="buttonType[index]" class="width-200">{{app.zone_id}}区</el-button>
             </span>
           </div>
-          <app-user-list :appUsers="showAppUser(user.app_info)">
+          <app-user-list :appUsers="appUsers">
           </app-user-list>
         </el-card>
       </div>
@@ -45,23 +45,34 @@ export default {
       type: Boolean,
       default: false
     },
-    user: {
-      type: Array,
-      default: undefined
+    id: {
+      type: Number,
+      default: 0
     },
-    appUsers: {
-      type: Array,
-      default: []
-    },
+  },
+  mounted: async function() {
+    this.getUser()
   },
   data() {
     return {
       buttonType: ["success", "danger", "info", "text", "warning", "primary"],
+      user: undefined,
+      appUsers: undefined
     }
   },
   methods: {
     showAppUser: function(user) {
       return user
+    },
+    getUser: async function() {
+      let result = await this.$acs.getUserById(this.id)
+      if (result.success) {
+        this.user = result.user
+        this.appUsers = this.user[0].app_users
+      }
+    },
+    formatServerDateTime: function(row, column) {
+      return filters.formatServerDateTime(row.inserted_at)
     }
   },
   components: {

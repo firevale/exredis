@@ -91,6 +91,7 @@ defmodule Acs.Web.AdminRouter do
     scope "/user" do
       pipe_through :admin_customer_service
       post  "/search_users", UserController, :search_users
+      # post  "/get_user_by_id", UserController, :get_user_by_id
 
       post  "/add_user", AdminUserController, :add_user
       post  "/get_admin_user_by_app", AdminUserController, :get_admin_user_by_app

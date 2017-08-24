@@ -1,14 +1,14 @@
 <template>
   <el-table :data="appUsers" show-summary :summary-method="getSummaries">
-    <el-table-column prop="game_user_name" label="游戏ID" width="200">
-    </el-table-column>
-    <el-table-column prop="game_user_name" label="昵称" width="200">
+    <el-table-column prop="app_user_name" label="游戏ID" width="200">
     </el-table-column>
     <el-table-column prop="app_user_level" label="等级">
     </el-table-column>
+    <el-table-column prop="last_active_at" label="最后活跃时间" width="200" :formatter="formatServerDateTime">
+    </el-table-column>
     <el-table-column prop="pay_amount" label="充值金额" :formatter="formatPrice" width="150">
     </el-table-column>
-    <el-table-column prop="active_seconds" label="活跃时间" :formatter="secondFormatHour" width="150">
+    <el-table-column prop="active_seconds" label="活跃时长" :formatter="secondFormatHour" width="150">
     </el-table-column>
   </el-table>
 </template>
@@ -28,6 +28,9 @@ export default {
     },
     secondFormatHour(row, column) {
       return filters.secondFormatHour(row.active_seconds)
+    },
+    formatServerDateTime: function(row, column) {
+      return filters.formatServerDateTime(row.inserted_at)
     },
     getSummaries(param) {
       const {

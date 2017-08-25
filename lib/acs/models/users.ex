@@ -20,8 +20,8 @@ defmodule Acs.Users do
         []
       ids_list ->
         users = Enum.map(ids, fn id -> RedisUser.find(id) end)
-        users_inner_app_users = 
-          Enum.map(users, fn user ->
+        |> Enum.filter(&(&1 != nil))
+        |> Enum.map(fn user ->
             app_users_query =
               from app_user in AppUser,
                 where: app_user.app_id == ^app_id and app_user.user_id == ^user.id,
@@ -29,16 +29,8 @@ defmodule Acs.Users do
                   :pay_amount, :last_active_at, :inserted_at]),
                 order_by: [asc: app_user.zone_id]
             app_users = StatsRepo.all(app_users_query)
-            Map.put_new(%{
-              id: user.id,
-              email: user.email,
-              mobile: user.mobile,
-              gender: user.gender,
-              nickname: user.nickname,
-              age: user.age,
-              inserted_at: user.inserted_at
-              },
-              :app_users, app_users)
+            Map.put_new(Map.take(user, [:id, :email, :mobile, :gender, :nickname, :age, 
+              :inserted_at]), :app_users, app_users)
           end)
       _ ->
         []

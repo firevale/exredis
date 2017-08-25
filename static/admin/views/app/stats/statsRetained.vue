@@ -17,42 +17,48 @@
         :picker-options="pickerOptions" @change="changeDateRange">
       </el-date-picker>
     </div>
-    <table id="retention-table" class="retention box data-load" width="100%" border="0" cellspacing="0">
-      <thead>
-        <tr>
-          <th style="width:150px">首次使用时间</th>
-          <th style="width:100px">新增用户</th>
-          <th colspan="9">留存率</th>
-        </tr>
-        <tr id="daily_after_period" class="after_period_indicator" style="display: table-row;">
-          <th colspan="2"></th>
-          <th> 1日留存 </th>
-          <th> 2日留存 </th>
-          <th> 3日留存 </th>
-          <th> 4日留存 </th>
-          <th> 5日留存 </th>
-          <th> 6日留存</th>
-          <th> 7日留存</th>
-          <th> 14日留存 </th>
-          <th> 30日留存 </th>
-        </tr>
-      </thead>
-      <tbody id="data-list">
-        <tr v-for="report in reports">
-          <td>{{report.date}}</td>
-          <td>{{report.danu}}</td>
-          <retention-row :value="calcRate(report,1)"> </retention-row>
-          <retention-row :value="calcRate(report,2)"> </retention-row>
-          <retention-row :value="calcRate(report,3)"> </retention-row>
-          <retention-row :value="calcRate(report,4)"> </retention-row>
-          <retention-row :value="calcRate(report,5)"> </retention-row>
-          <retention-row :value="calcRate(report,6)"> </retention-row>
-          <retention-row :value="calcRate(report,7)"> </retention-row>
-          <retention-row :value="calcRate(report,14)"> </retention-row>
-          <retention-row :value="calcRate(report,30)"> </retention-row>
-        </tr>
-      </tbody>
-    </table>
+    <div class="box card is-paddingless">
+      <header class="card-header">
+        <p class="card-header-title">留存明细
+        </p>
+      </header>
+      <table id="retention-table" class="retention  data-load" width="100%" border="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th style="width:150px">首次使用时间</th>
+            <th style="width:100px">新增用户</th>
+            <th colspan="9">留存率</th>
+          </tr>
+          <tr id="daily_after_period" class="after_period_indicator" style="display: table-row;">
+            <th colspan="2"></th>
+            <th> 1日留存 </th>
+            <th> 2日留存 </th>
+            <th> 3日留存 </th>
+            <th> 4日留存 </th>
+            <th> 5日留存 </th>
+            <th> 6日留存</th>
+            <th> 7日留存</th>
+            <th> 14日留存 </th>
+            <th> 30日留存 </th>
+          </tr>
+        </thead>
+        <tbody id="data-list">
+          <tr v-for="report in reports">
+            <td>{{report.date}}</td>
+            <td>{{report.danu}}</td>
+            <retention-row :value="calcRate(report,1)"> </retention-row>
+            <retention-row :value="calcRate(report,2)"> </retention-row>
+            <retention-row :value="calcRate(report,3)"> </retention-row>
+            <retention-row :value="calcRate(report,4)"> </retention-row>
+            <retention-row :value="calcRate(report,5)"> </retention-row>
+            <retention-row :value="calcRate(report,6)"> </retention-row>
+            <retention-row :value="calcRate(report,7)"> </retention-row>
+            <retention-row :value="calcRate(report,14)"> </retention-row>
+            <retention-row :value="calcRate(report,30)"> </retention-row>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 <script>

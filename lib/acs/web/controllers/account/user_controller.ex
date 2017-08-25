@@ -628,7 +628,8 @@ defmodule Acs.Web.UserController do
     Enum.map_every(0..max_id, 100, fn current_id ->
       query =
         from app_user in Acs.Stats.AppUser,
-        select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at]),
+        select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at,
+        :reg_date, :last_active_at, :last_paid_at, :first_paid_at, :platform, :updated_at]),
         where: app_user.id >= ^current_id,
         limit: 100,
         order_by: [app_user.id]
@@ -641,14 +642,7 @@ defmodule Acs.Web.UserController do
                 type: "user",
                 params: nil,
                 id: user.id,
-                doc: %{
-                  id: user.id,
-                  email: user.email,
-                  mobile: user.mobile,
-                  nickname: user.nickname,
-                  device_id: user.device_id,
-                  inserted_at: user.inserted_at
-                }})
+                doc: user})
 
               Elasticsearch.index(%{index: "acs",
                 type: "app_users",
@@ -664,6 +658,12 @@ defmodule Acs.Web.UserController do
                   game_user_level: app_user.app_user_level,
                   pay_amount:  app_user.pay_amount,
                   inserted_at: app_user.inserted_at,
+                  reg_date: app_user.reg_date,
+                  last_active_at: app_user.last_active_at,
+                  last_paid_at: app_user.last_paid_at,
+                  first_paid_at: app_user.first_paid_at,
+                  platform: app_user.platform,
+                  updated_at: app_user.updated_at
                 }})
            _ ->
             :nothing

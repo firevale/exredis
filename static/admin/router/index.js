@@ -133,6 +133,11 @@ export default new Router({
           name: 'StatsDevice',
           path: 'statsDevice',
           component: require('../views/app/stats/statsDevice')
+        },
+        {
+          name: 'StatsTiming',
+          path: 'statsTiming',
+          component: require('../views/app/stats/statsTiming')
         }
       ],
     }, {

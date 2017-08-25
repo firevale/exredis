@@ -32,15 +32,21 @@
           </header>
           <div class="card-content is-paddingless">
             <!-- 操作系统 -->
-            <el-table stripe :data="reports" style="width: 100%" @sort-change="sortChange" :default-sort="{prop: 'count', order: 'descending'}">
+            <el-table stripe :data=" this.timings" style="width: 100%" @sort-change="sortChange">
               <el-table-column label="时长" width="200">
                 <template scope="scope">
-                  <!-- {{ scope.row.os != null ? scope.row.os : "" }} -->
+                  {{ labels[scope.$index] }}
                 </template>
               </el-table-column>
-              <el-table-column prop="count" label="启动次数" align="right" sortable="custom" width="180">
+              <el-table-column label="启动次数" align="right" sortable width="180">
+                <template scope="scope">
+                  {{ scope.row }}
+                </template>
               </el-table-column>
-              <el-table-column prop="count" label="启动次数占比" align="right" sortable="custom" width="180">
+              <el-table-column label="启动次数占比" align="right" sortable width="180">
+                <template scope="scope">
+                  {{ scope.row }}
+                </template>
               </el-table-column>
               <el-table-column>
               </el-table-column>
@@ -85,7 +91,6 @@ export default {
   async mounted() {
     this.date = this.defaultDate
     await this.fetchData()
-    await this.getDetails()
   },
 
   data() {
@@ -105,6 +110,9 @@ export default {
           return date > limitDate
         }
       },
+      labels: ['0-5分钟', '5-10分钟', '10-15分钟', '15-20分钟', '20-25分钟', '25-30分钟', '30-35分钟',
+        '35-40分钟', '40-45分钟', '45-50分钟', '50-55分钟', '55-60分钟', '60分钟以上'
+      ],
       reports_colors: ['rgba(75, 192, 192, 0.8)',
         'rgba(255, 99, 132, 0.8)',
         'rgba(54, 162, 235, 0.8)',
@@ -147,6 +155,10 @@ export default {
           _this.platform = 'all'
         }
       }
+    },
+    timings() {
+      var platform_index = this.platform == "all" ? 0 : (this.platform == "android" ? 1 : 2)
+      return this.platform_timings[platform_index]
     }
   },
 
@@ -161,9 +173,7 @@ export default {
     changePlatform: function(chart) {
       this.update_chart()
     },
-    changePage: function(page) {
-      this.getDetails()
-    },
+    changePage: function(page) {},
     sortChange: function(column) {
       var field = column.prop
 
@@ -196,46 +206,21 @@ export default {
       }
     },
     update_chart() {
-      if (!this.platform_timings || this.platform_timings.length != 3) {
-        return
-      }
-
       this.chart_reports = Object.assign({}, {
-        labels: ['0-5分钟', '5-10分钟', '10-15分钟', '15-20分钟', '20-25分钟', '25-30分钟', '30-35分钟',
-          '35-40分钟', '40-45分钟', '45-50分钟', '50-55分钟', '55-60分钟', '60分钟以上'
-        ],
+        labels: this.labels,
         datasets: [{
           data: [],
           backgroundColor: []
         }]
       })
 
-      var platform_index = this.platform == "all" ? 0 : (this.platform == "android" ? 1 : 2)
-      this.platform_timings[platform_index].forEach((timing, index) => {
+      this.timings.forEach((timing, index) => {
         // this.chart_reports.datasets[0].data.push(timing)
         this.chart_reports.datasets[0].data.push(Math.round(Math.random() * 100))
         this.chart_reports.datasets[0].backgroundColor.push(this.reports_colors[0])
       })
 
-    },
-    getDetails: async function() {
-      var data = {
-        platform: this.platform,
-        stats_type: this.statsType,
-        mem_size: this.memSize,
-        start_date: this.dateRange[0].Format("yyyy-MM-dd"),
-        end_date: this.dateRange[1].Format("yyyy-MM-dd"),
-        order_by: this.orderBy,
-        page: this.page,
-        records_per_page: 10
-      }
-      this.reports = []
-      // let result = await this.$acs.getStatsDeviceDetails(data)
-      // if (result.success) {
-      //   this.reports = result.reports
-      //   this.total = result.total
-      // }
-    },
+    }
   },
 }
 </script>

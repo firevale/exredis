@@ -39,4 +39,5 @@ export default {
   StatsByDay: '每日统计',
   StatsRetained: '留存统计',
   StatsDevice: '设备终端',
+  StatsTiming: '使用时长',
 }

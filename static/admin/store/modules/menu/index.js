@@ -72,6 +72,15 @@ const state = {
             label: i18n.t('admin.menu.statsDevice'),
           },
         },
+        {
+          name: 'StatsTiming',
+          path: '/admin/app/:appId/statsTiming',
+          meta: {
+            icon: 'fa-clock-o',
+            level: '1,2,',
+            label: i18n.t('admin.menu.statsTiming'),
+          },
+        },
       ]
     },
     {

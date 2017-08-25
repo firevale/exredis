@@ -32,29 +32,25 @@
           </header>
           <div class="card-content is-paddingless">
             <!-- 操作系统 -->
-            <el-table stripe :data=" this.timings" style="width: 100%" @sort-change="sortChange">
+            <el-table stripe :data=" this.timings" style="width: 100%" >
               <el-table-column label="时长" width="200">
                 <template scope="scope">
                   {{ labels[scope.$index] }}
                 </template>
               </el-table-column>
-              <el-table-column label="启动次数" align="right" sortable width="180">
+              <el-table-column label="启动次数" align="right" width="180">
                 <template scope="scope">
                   {{ scope.row }}
                 </template>
               </el-table-column>
-              <el-table-column label="启动次数占比" align="right" sortable width="180">
+              <el-table-column label="启动次数占比" align="right" width="180">
                 <template scope="scope">
-                  {{ scope.row }}
+                  {{ ((scope.row/timings_total)*100).toFixed(2)  + '%' }}
                 </template>
               </el-table-column>
               <el-table-column>
               </el-table-column>
             </el-table>
-            <div v-if="reports && reports.length>0" class="ele-pagination">
-              <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="changePage">
-              </el-pagination>
-            </div>
           </div>
         </div>
       </div>
@@ -101,8 +97,6 @@ export default {
       orderBy: {},
       dateType: 'week',
       date: '',
-      page: 0,
-      total: 1,
       pickerOptions: {
         disabledDate: function(date) {
           var limitDate = new Date();
@@ -159,6 +153,11 @@ export default {
     timings() {
       var platform_index = this.platform == "all" ? 0 : (this.platform == "android" ? 1 : 2)
       return this.platform_timings[platform_index]
+    },
+    timings_total() {
+      return this.timings.reduce((sum, item) => {
+        return sum + item
+      }, 0)
     }
   },
 
@@ -167,34 +166,10 @@ export default {
       if (!date) {
         this.date = this.defaultDate
       }
-      this.page = 1
       this.fetchData()
     },
     changePlatform: function(chart) {
       this.update_chart()
-    },
-    changePage: function(page) {},
-    sortChange: function(column) {
-      var field = column.prop
-
-      if (column.column == null) {
-        this.orderBy = {}
-      } else if (column.order == "descending") {
-        this.orderBy[column.prop] = "desc"
-      } else {
-        this.orderBy[column.prop] = "asc"
-      }
-
-      this.page = 1
-      this.getDetails()
-    },
-    changeDateType: async function(val) {
-      if (val != 'custom') {
-        this.page = 1
-        await this.fetchData()
-      } else {
-        this.$refs.datePicker.handleFocus()
-      }
     },
     fetchData: async function() {
       let result = await this.$acs.getUserTimingByDay({
@@ -224,17 +199,3 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-.ele-pagination {
-  display: flex;
-  height: 60px;
-  align-items: center;
-  justify-content: center;
-  li.number {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}
-</style>

@@ -11,19 +11,7 @@
     <div class="tile is-ancestor" v-if="!initing && users.length > 0">
       <div class="tile is-parent is-vertical">
         <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="users" style="width: 100%"
-          @row-dblclick="showDetails" :default-sort="{prop: 'inserted_at', order: 'descending'}">
-          <el-table-column type="expand" class="is-paddingless">
-            <template scope="scope">
-              <el-table :data="scope.row.app_users" style="width: 100%">
-                <el-table-column prop="game_user_id" label="游戏角色ID" width="200">
-                </el-table-column>
-                <el-table-column prop="game_user_name" label="角色名称" width="200">
-                </el-table-column>
-                <el-table-column>
-                </el-table-column>
-              </el-table>
-            </template>
-          </el-table-column>
+          @row-dblclick="showDetails" >
           <el-table-column :label="$t('admin.user.fields.avatar')" width="80">
             <template scope="scope">
               <figure class="image is-48x48">
@@ -47,7 +35,7 @@
               {{ scope.row.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" sortable="custom" width="180">
+          <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" width="180">
             <template scope="scope">
               <span style="font-family:'microsoft yahei', Tahoma, Geneva, Verdana, sans-serif"> {{ scope.row.inserted_at | formatServerDateTime }}</span>
             </template>

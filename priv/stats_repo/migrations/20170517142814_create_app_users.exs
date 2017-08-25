@@ -3,12 +3,12 @@ defmodule Acs.StatsRepo.Migrations.CreateAppUsers do
 
   def change do
     create table(:app_users) do
-      add :app_id, :string
-      add :zone_id, :string, default: "0"
+      add :app_id, :string, size: 40
+      add :zone_id, :string, size: 50, default: "0"
       add :user_id, :integer
 
-      add :app_user_id, :string
-      add :app_user_name, :string
+      add :app_user_id, :string, size: 50
+      add :app_user_name, :string, size: 50
       add :app_user_level, :integer, default: 1
 
       add :active_seconds, :integer, default: 0

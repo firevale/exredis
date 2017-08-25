@@ -3,7 +3,7 @@ defmodule Acs.Repo.Migrations.CreateAdminUsers do
 
   def change do
     create table(:admin_users) do
-      add :account_id, :string
+      add :account_id, :string, size: 50
 
       timestamps()
     end

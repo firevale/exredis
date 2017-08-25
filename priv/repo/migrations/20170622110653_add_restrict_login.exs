@@ -7,13 +7,13 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     end
     
     create table(:app_login_codes) do 
-      add :code, :string
-      add :owner, :string
+      add :code, :string, size: 20
+      add :owner, :string, size: 100
 
       add :assigned_at, :utc_datetime
       add :used_at, :utc_datetime
 
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
       add :user_id, references(:users, type: :integer, on_delete: :delete_all)
 
       timestamps()
@@ -28,11 +28,11 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     create index(:app_login_codes, [:inserted_at])
 
     create table(:app_wcp_configs) do
-      add :verify_file, :string
-      add :wcp_app_id, :string
-      add :wcp_app_key, :string
-      add :token, :string
-      add :aes_key, :string
+      add :verify_file, :string, size: 100
+      add :wcp_app_id, :string, size: 100
+      add :wcp_app_key, :string, size: 100
+      add :token, :string, size: 50
+      add :aes_key, :string, size: 100
 
       add :menu, :map
 
@@ -44,7 +44,7 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
       add :owned_code_template, :string
       add :no_code_template, :string
 
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
 
       timestamps()
     end
@@ -56,12 +56,12 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     create index(:app_wcp_configs, [:app_id], unique: true, name: :app_wcp_configs_app_id_unique)
 
     create table(:app_wcp_messages) do 
-      add :from, :string
-      add :to, :string
-      add :msg_type, :string
+      add :from, :string, size: 100
+      add :to, :string, size: 100
+      add :msg_type, :string, size: 20
       add :content, :string
       add :create_time, :integer
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
 
       timestamps()
     end
@@ -70,9 +70,9 @@ defmodule Acs.Repo.Migrations.AddRestrictLogin do
     create index(:app_wcp_messages, [:app_id, :to])
 
     create table(:app_wcp_message_rules) do 
-      add :keywords, :string
+      add :keywords, :string, size: 120
       add :response, :string
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
       timestamps()
     end
 

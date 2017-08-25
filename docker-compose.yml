@@ -10,7 +10,7 @@ services:
     ports:
       - "3306:3306"
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: docker-registry.firevale.com/phpmyadmin
     container_name: acs_phpmyamdin
     restart: always
     environment:
@@ -19,7 +19,7 @@ services:
       - PMA_PORT=3306
       - PMA_USER=root
       - PMA_PASSWORD=firevale
-      - PMA_ABSOLUTE_URI="http://${USERNAME}.firevale.com/mysql/"
+      - PMA_ABSOLUTE_URI=http://${USERNAME}.firevale.com/mysql/
     expose: 
       - "80"
   redis:
@@ -46,12 +46,6 @@ services:
         soft: 65536
         hard: 65536
     image: docker-registry.firevale.com/elasticsearch:latest
-  dejavu:
-    image: docker-registry.firevale.com/dejavu:latest
-    container_name: acs_dejavu
-    restart: always
-    expose:
-      - "1358"
   web: 
     build:
       context: .

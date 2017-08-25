@@ -8,9 +8,9 @@ defmodule Acs.Repo.Migrations.CreateUser do
       add :id, :integer, primary_key: true
       add :email, :string, size: 50 
       add :mobile, :string, size: 20
-      add :device_id, :string
-      add :encrypted_password, :string
-      add :nickname, :string
+      add :device_id, :string, size: 100
+      add :encrypted_password, :string, size: 100
+      add :nickname, :string, size: 50
       add :resident_id, :string, size: 25
       add :resident_name, :string, size: 20
       add :gender, :string, size: 5

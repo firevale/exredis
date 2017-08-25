@@ -45,6 +45,7 @@ config :acs, Acs.Repo,
   password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
   database: "acs_dev",
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
+  charset: "utf8mb4",
   pool_size: 10
 
 config :acs, Acs.StatsRepo,
@@ -53,6 +54,7 @@ config :acs, Acs.StatsRepo,
   password: System.get_env("ACS_MYSQL_PASSWORD") || "firevale",
   database: "acs_stats_dev",
   hostname: System.get_env("ACS_MYSQL_HOSTNAME") || "localhost",
+  charset: "utf8mb4",
   pool_size: 10
 
 config :acs, :elasticsearch,

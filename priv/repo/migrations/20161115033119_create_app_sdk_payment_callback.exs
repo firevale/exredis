@@ -3,10 +3,10 @@ defmodule Acs.Repo.Migrations.CreateAppSdkPaymentCallback do
 
   def change do
     create table(:app_sdk_payment_callbacks) do
-      add :platform, :string
-      add :sdk, :string
+      add :platform, :string, size: 20
+      add :sdk, :string, size: 50
       add :payment_callback, :string
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
 
       timestamps()
     end

@@ -423,6 +423,10 @@ defmodule Acs.Web.UserController do
         end
     end
   end
+  def get_token_user(conn, params) do 
+    d "params: #{inspect params}"
+    conn |> json(%{success: false})
+  end
 
   def authorization_token(conn, params) do
     conn |> redirect(to: "/login/?#{URI.encode_query(params)}")

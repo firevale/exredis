@@ -3,8 +3,8 @@ defmodule Acs.Repo.Migrations.CreateMeishengSmsMo do
 
   def change do
     create table(:meisheng_sms_mo) do
-      add :mobile, :string
-      add :recv_code, :string
+      add :mobile, :string, size: 20
+      add :recv_code, :string, size: 20
       add :content, :string
       add :recv_time, :utc_datetime
 

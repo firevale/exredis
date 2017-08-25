@@ -8,7 +8,7 @@ defmodule Acs.Repo.Migrations.CreateMallOPLog do
       add :status, :integer
       add :changed_status, :integer
       add :admin_user, :string
-      add :mall_order_id, references(:mall_orders, type: :string, on_delete: :delete_all)
+      add :mall_order_id, references(:mall_orders, type: :string, on_delete: :delete_all), size: 100
       timestamps()
     end
 

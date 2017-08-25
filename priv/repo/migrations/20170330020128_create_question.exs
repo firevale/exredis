@@ -11,7 +11,7 @@ defmodule Acs.Repo.Migrations.CreateQuestion do
       add :reply_at, :utc_datetime 
       add :platform, :string
 
-      add :app_id, references(:apps, type: :string, on_delete: :nothing)
+      add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
       timestamps()
     end

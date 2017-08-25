@@ -3,10 +3,10 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
 
   def change do
     create table(:mall_orders, primary_key: false) do
-      add :id, :string, primary_key: true
+      add :id, :string, size: 100, primary_key: true
       add :platform, :string, size: 10
-      add :device_id, :string
-      add :user_ip, :string       #IP地址
+      add :device_id, :string, size: 100
+      add :user_ip, :string, size: 20 
 
       add :goods_name, :string
       add :price, :integer, default: 0
@@ -27,10 +27,10 @@ defmodule Acs.Repo.Migrations.CreateMallOrder do
       add :debug_mode, :boolean, default: false
       add :fee, :integer, default: 0
       add :transaction_currency, :string
-      add :transaction_id, :string
+      add :transaction_id, :string, size: 120
       add :transaction_status, :string, size: 20
 
-      add :app_id, references(:apps, type: :string, on_delete: :nothing)
+      add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
 
       timestamps()

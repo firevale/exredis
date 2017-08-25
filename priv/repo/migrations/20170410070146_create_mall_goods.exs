@@ -3,7 +3,7 @@ defmodule Acs.Repo.Migrations.CreateMallGoods do
 
   def change do
     create table(:mall_goods, primary_key: false) do
-      add :id, :string, primary_key: true
+      add :id, :string, size: 100, primary_key: true
       add :name, :string
       add :description, :binary
 
@@ -16,7 +16,7 @@ defmodule Acs.Repo.Migrations.CreateMallGoods do
       add :reads, :integer, default: 0
       add :active, :boolean, default: false
 
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
       add :user_id, references(:users, type: :integer, on_delete: :nothing)
 
       timestamps()

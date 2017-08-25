@@ -3,10 +3,10 @@ defmodule Acs.Repo.Migrations.CreateUserSdkBinding do
 
   def change do
     create table(:user_sdk_bindings) do 
-      add :sdk, :string
-      add :sdk_user_id, :string
+      add :sdk, :string, size: 50
+      add :sdk_user_id, :string, size: 50
 
-      add :app_id, references(:apps, type: :string, on_delete: :delete_all)
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
       add :user_id, references(:users, type: :integer, on_delete: :delete_all)
 
       timestamps()

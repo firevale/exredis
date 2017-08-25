@@ -7,7 +7,7 @@ defmodule Acs.Repo.Migrations.CreateMall do
       add :active, :boolean, default: false
       add :icon, :string
 
-      add :app_id, references(:apps, type: :string, on_delete: :nothing)
+      add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
 
       timestamps()
     end

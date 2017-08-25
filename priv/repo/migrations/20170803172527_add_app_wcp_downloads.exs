@@ -1,4 +1,4 @@
-defmodule Acs.Repo.Migrations.AddAppWcpUser do
+defmodule Acs.Repo.Migrations.AddAppWcpDownloads do
   use Ecto.Migration
 
   def change do
@@ -24,7 +24,7 @@ defmodule Acs.Repo.Migrations.AddAppWcpUser do
     end
 
     alter table(:app_wcp_users) do 
-      add :tf_email, :string
+      add :tf_email, :string, size: 100
     end
 
     create index(:app_wcp_users, [:tf_email])

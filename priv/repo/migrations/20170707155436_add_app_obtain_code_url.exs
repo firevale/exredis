@@ -1,4 +1,4 @@
-defmodule Acs.Repo.Migrations.AddAppWcpUser do
+defmodule Acs.Repo.Migrations.AddAppObtainCodeUrl do
   use Ecto.Migration
 
   def change do

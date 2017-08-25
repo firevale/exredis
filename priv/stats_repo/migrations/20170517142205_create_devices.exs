@@ -3,10 +3,10 @@ defmodule Acs.StatsRepo.Migrations.CreateDevices do
 
   def change do
     create table(:devices, primary_key: false) do
-      add :id, :string, primary_key: true
-      add :model, :string
-      add :platform, :string
-      add :os, :string
+      add :id, :string, size: 100, primary_key: true
+      add :model, :string, size: 50
+      add :platform, :string, size: 20
+      add :os, :string, size: 20
 
       timestamps()
     end

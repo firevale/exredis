@@ -3,7 +3,7 @@ defmodule Acs.Repo.Migrations.CreateApp do
 
   def change do
     create table(:apps, primary_key: false) do
-      add :id, :string, primary_key: true
+      add :id, :string, size: 40, primary_key: true
       add :secret, :string
       add :name, :string, size: 30
       add :icon, :string

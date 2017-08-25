@@ -8,10 +8,10 @@ defmodule Acs.StatsRepo.Migrations.CreateAppDevices do
       add :last_paid_at, :utc_datetime
       add :last_active_at, :utc_datetime
       add :reg_date, :date # add this field for daily report calculation
-      add :zone_id, :string, default: "0"
-      add :app_id, :string
+      add :zone_id, :string, size: 50, default: "0"
+      add :app_id, :string, size: 40
       
-      add :device_id, references(:devices, type: :string, on_delete: :delete_all)
+      add :device_id, references(:devices, type: :string, on_delete: :delete_all), size: 100
 
       timestamps()
     end

@@ -3,9 +3,9 @@ defmodule Acs.Repo.Migrations.CreateAcs.Stats.DailyReport do
 
   def change do
     create table(:stats_daily_reports) do
-      add :app_id, :string
+      add :app_id, :string, size: 40
       add :date, :date
-      add :platform, :string
+      add :platform, :string, size: 20
 
       add :dau, :integer, default: 0
       add :danu, :integer, default: 0

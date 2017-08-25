@@ -46,30 +46,41 @@ defmodule Acs.User do
   end
 
   def init_mapping() do
-    unless Elasticsearch.is_type?("acs", "user") do
+     unless Elasticsearch.is_type?("acs", "user") do
       mapping = %{
         properties: %{
-          id: %{type: :integer},
+          id: %{type: :keyword},
           email: %{type: :keyword},
           mobile: %{type: :keyword},
           nickname: %{type: :text, analyzer: :ik_smart},
           device_id: %{type: :keyword},
-          inserted_at: %{type: :date},
-          app_users: %{
-            type: :nested,
-            properties: %{
-              app_id: %{type: :keyword},
-              zone_id: %{type: :keyword},
-              game_user_id: %{type: :keyword},
-              game_user_name: %{type: :text, analyzer: :ik_smart},
-              pay_amount:  %{type: :integer},
-            }
-          }, 
+          inserted_at: %{type: :date}
+          }
         }
-      }
 
       Elasticsearch.put_mapping(%{index: "acs", type: "user", mapping: mapping, params: nil})
      end
    end
+
+   def index(user) when is_map(user) do
+    Elasticsearch.index(%{
+      index: "acs",
+      type: "user",
+      doc: user,
+      params: nil,
+      id: user.id
+    })
+  end
+
+  def search(query) do
+    case Elasticsearch.search(%{index: "acs", type: "user", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        ids = Enum.map(hits, &(&1._id))
+        {:ok, total, ids }
+      error ->
+        # error "search failed: #{inspect error, pretty: true}"
+        throw(error)
+    end
+  end
 
 end

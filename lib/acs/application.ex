@@ -93,6 +93,7 @@ defmodule Acs.Application do
       end
     end)
 
+    Acs.Stats.AppUser.init_mapping()
     Acs.User.init_mapping()
     Acs.AppOrder.init_mapping()
     Acs.Forum.init_mapping()

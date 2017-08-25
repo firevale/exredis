@@ -53,7 +53,7 @@
           <div class="card-content is-paddingless">
             <!-- 机型 -->
             <el-table v-if="statsType == 'model'" key="tb-model" stripe :data="reports" style="width: 100%" @filter-change="filterMemSize"
-              @sort-change="sortChange" :default-sort = "{prop: 'count', order: 'descending'}">
+              @sort-change="sortChange" :default-sort="{prop: 'count', order: 'descending'}">
               <el-table-column label="机型" width="500">
                 <template scope="scope">
                   {{ scope.row.alias != null ? scope.row.alias : scope.row.model }}
@@ -72,7 +72,7 @@
             </el-table>
             <!-- 操作系统 -->
             <el-table v-if="statsType == 'os'" key="tb-os" stripe :data="reports" style="width: 100%" @sort-change="sortChange"
-            :default-sort = "{prop: 'count', order: 'descending'}">
+              :default-sort="{prop: 'count', order: 'descending'}">
               <el-table-column label="操作系统" width="200">
                 <template scope="scope">
                   {{ scope.row.os != null ? scope.row.os : "" }}
@@ -196,6 +196,9 @@ export default {
       return {
         responsive: true,
         maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
         onClick: function() {
           _this.platform = 'all'
         }

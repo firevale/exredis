@@ -461,7 +461,7 @@ defmodule Acs.Web.CronController do
   end
 
   def daily_report(conn, params) do 
-    date = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
+    {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       DailyReportGenerator.generate(app_id, date)
     end)

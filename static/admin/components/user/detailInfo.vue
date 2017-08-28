@@ -10,7 +10,10 @@
         </el-table-column>
         <el-table-column prop="age" label="年龄">
         </el-table-column>
-        <el-table-column prop="gender" label="性别">
+        <el-table-column label="性别">
+          <template scope="scope">
+            {{ scope.row.gender =='male' ? '男' : '女' }}
+          </template>
         </el-table-column>
         <el-table-column prop="inserted_at" label="注册时间" width="180" :formatter="formatServerDateTime">
         </el-table-column>
@@ -49,8 +52,8 @@
             <i class="fa fa-spinner fa-spin"></i>
           </span>
           <h2 class="subtitle" style="margin-top: 10px">
-                 数据加载中
-            </h2>
+            数据加载中
+          </h2>
         </div>
       </div>
     </div>

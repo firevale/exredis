@@ -13,7 +13,7 @@
       <el-tab-pane :key="tb" v-for="(tb, index) in tbs" :label="getTabName(tb)" :name="getTabName(tb)">
         <by-day :days="tb"></by-day>
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="custom">
         <span slot="label"><i class="el-icon-date"></i> {{$t('admin.stats.addTab')}}</span>
         <el-date-picker v-model="date" :editable="false" type="date" @change="changeDate" :placeholder="$t('admin.stats.selectDate')">
         </el-date-picker>
@@ -57,7 +57,8 @@ export default {
         var date = new Date()
         var dateFormat = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
         var diff = new Date(dateFormat).DateDiff('d', dt)
-        if (diff < 0) diff += -1
+        let zero = diff == 0 && 1 / diff < 0
+        if (diff.toString().indexOf('-') >= 0 || zero) diff += -1
 
         let arrs = this.tbs
         arrs.push(diff)
@@ -92,10 +93,17 @@ export default {
         let newArr = this.tbs.filter(item => item !== diff);
         this.tbs.length = 0;
         this.tbs.push.apply(this.tbs, newArr);
-
-        this.activeName = this.getTabName(this.tbs[0])
+        if (this.tbs.length > 0)
+          this.activeName = this.getTabName(this.tbs[0])
+        else
+          this.activeName = 'custom'
       }
     }
   },
 }
 </script>
+<style lang="scss">
+.el-tabs__new-tab {
+  display: none;
+}
+</style>

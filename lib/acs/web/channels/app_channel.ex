@@ -215,7 +215,7 @@ defmodule Acs.Web.AppChannel do
                                                  device_id: device_id, 
                                                  device_model: device_model,
                                                  os_ver: os_ver,
-                                                 today: today,
+                                                 today: _today,
                                                  node: node,
                                                  platform: platform}} =  socket) do
     info "receive update game data request with payload: #{inspect payload}"
@@ -317,7 +317,7 @@ defmodule Acs.Web.AppChannel do
     {:noreply, socket}
   end
 
-  def terminate(reason, %{assigns: %{
+  def terminate(_reason, %{assigns: %{
     active: true, 
     node: node,
     user_id: user_id,
@@ -332,7 +332,7 @@ defmodule Acs.Web.AppChannel do
     end
     :ok
   end
-  def terminate(reason, %{assigns: %{
+  def terminate(_reason, %{assigns: %{
     active: false,
     node: node,
     user_id: user_id,
@@ -346,7 +346,7 @@ defmodule Acs.Web.AppChannel do
     end
     :ok
   end
-  def terminate(reason, socket) do
+  def terminate(_reason, socket) do
     info "channel terminated with: #{inspect socket.assigns}"
     case Map.get(socket.assigns, :hb_interval) do 
       nil -> :do_nothing
@@ -407,7 +407,7 @@ defmodule Acs.Web.AppChannel do
                             user_id: user_id,
                             device_id: device_id,
                             today: today,
-                            join_at: join_at}} = socket) do
+                            join_at: join_at}}) do
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 

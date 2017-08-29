@@ -411,8 +411,8 @@ defmodule Acs.Web.AdminController do
     case OperateLog.changeset(%OperateLog{}, params) |> Repo.insert do
       {:ok, _new_log} ->
         :ok
-      {:error, %{errors: _errors}} ->
-        d "--------------- add_operate_log fail:#{inspect _errors, pretty: true}"
+      {:error, %{errors: errors}} ->
+        d "--------------- add_operate_log fail:#{inspect errors, pretty: true}"
         :error
     end
   end

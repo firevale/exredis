@@ -16,7 +16,7 @@ defmodule Acs.Web.WcpController do
     conn |> text(echostr)
   end
 
-  def on_receive_message(conn, %{"app_id" => app_id} = params) do
+  def on_receive_message(conn, %{"app_id" => app_id} = _params) do
     msg = conn.assigns[:msg]
 
     Process.spawn(fn() ->

@@ -79,7 +79,7 @@ defmodule Acs.Web.PageController do
     conn |> send_resp(500, gettext("app not found"))
   end
 
-  def show_forum_page(%Plug.Conn{private: %{ is_mobile: is_mobile}} = conn, _params) do
+  def show_forum_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
     theme_file = String.starts_with?(conn.request_path, "/m") && "/css/themes/jqxs_mobile.css" || "/css/themes/jqxs.css"
     conn |> put_layout(:app)
          |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, link_files: [theme_file] )

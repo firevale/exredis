@@ -220,7 +220,7 @@ defmodule Acs.Web.Admin.StatsController do
     conn |> json(%{success: true, reports: reports})
   end
 
-  def get_stats_device(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+  def get_stats_device(%Plug.Conn{private: %{acs_app_id: _app_id}} = conn, 
                         %{"platform" => platform, "stats_type" => stats_type, "start_date" => start_date, "end_date" => end_date}) do
     query_platform = 
       from ad in AppDevice,
@@ -259,7 +259,7 @@ defmodule Acs.Web.Admin.StatsController do
     conn |> json(%{success: true, platforms: platform_reports, reports: reports})
   end
 
-  def get_stats_device_details(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+  def get_stats_device_details(%Plug.Conn{private: %{acs_app_id: _app_id}} = conn, 
      %{"platform" => platform , "stats_type" => stats_type, "mem_size" => mem_size, "order_by" => order_bys,
       "start_date" => start_date, "end_date" => end_date, "page" => page , "records_per_page" => records_per_page}) do
     query_group_by = 
@@ -275,7 +275,7 @@ defmodule Acs.Web.Admin.StatsController do
         "model" ->
           query_device_model =
             case mem_size do
-              [start_size, end_size] = mem_size ->
+              [start_size, end_size] ->
                 query_group_by
                 |> join(:left, [ad, device], info in DeviceInfo, device.model == info.id)
                 |> where([ad, device, info], info.total_mem_size >= ^start_size and info.total_mem_size < ^end_size)
@@ -336,7 +336,7 @@ defmodule Acs.Web.Admin.StatsController do
           #机型 - 内存大小
           query_mem =
             case mem_size do
-              [start_size, end_size] = mem_size ->
+              [start_size, end_size] ->
                 query_model_base
                 |> join(:left, [ad, device], info in DeviceInfo, device.model == info.id)
                 |> where([ad, device, info], info.total_mem_size >= ^start_size and info.total_mem_size < ^end_size)
@@ -344,7 +344,7 @@ defmodule Acs.Web.Admin.StatsController do
                 query_model_base
             end
 
-          query_model =
+          _query_model =
             query_mem
             |> subquery()
             |> join(:left, [device], info in DeviceInfo, device.model == info.id) 
@@ -355,9 +355,9 @@ defmodule Acs.Web.Admin.StatsController do
     _query_order_by(query_stats_type, order_bys)
   end
   defp _query_order_by(query, order_bys) do
-    _count = Map.get(order_bys,"count")
+    count = Map.get(order_bys,"count")
     query_order_count =
-      case _count do
+      case count do
         "asc" ->
           order_by(query, fragment("count"))
         "desc" ->
@@ -367,7 +367,7 @@ defmodule Acs.Web.Admin.StatsController do
       end
     
     total_mem_size = Map.get(order_bys,"total_mem_size")
-    query_order_mem =
+    _query_order_mem =
       case total_mem_size do
         "asc" ->
           order_by(query_order_count, [ad, device], device.total_mem_size)

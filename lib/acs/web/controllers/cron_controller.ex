@@ -1,6 +1,5 @@
 defmodule Acs.Web.CronController do
   use     Acs.Web, :controller
-  alias   Acs.App
   alias   Acs.PaymentHelper
   alias   Acs.MeishengSmsSender
   alias   Acs.ChaoxinNotifier
@@ -423,7 +422,7 @@ defmodule Acs.Web.CronController do
     conn |> json(%{success: true, message: "done"})
   end
 
-  def daily_refresh(conn, params) do 
+  def daily_refresh(conn, _params) do 
     date = Timex.local |> Timex.shift(days: -15) |> Timex.to_date
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       Redis.del("acs.dau.#{date}.#{app_id}")
@@ -460,7 +459,7 @@ defmodule Acs.Web.CronController do
     conn |> json(%{success: true, message: "done"})
   end
 
-  def daily_report(conn, params) do 
+  def daily_report(conn, _params) do 
     {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Redis.smembers("online_apps"), fn(app_id) -> 
       DailyReportGenerator.generate(app_id, date)

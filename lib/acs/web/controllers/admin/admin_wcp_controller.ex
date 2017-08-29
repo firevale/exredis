@@ -16,7 +16,7 @@ defmodule Acs.Web.AdminWcpController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
-      %App{} = app ->
+      %App{} ->
         case Repo.get_by(AppWcpConfig, app_id: app_id) do
           nil ->
             # add new
@@ -111,8 +111,8 @@ defmodule Acs.Web.AdminWcpController do
 
     query =
       if String.length(keyword)>0 do
-        _query = update_in(query.query.bool.minimum_should_match, fn v -> 1 end)
-        update_in(_query.query.bool.should, fn should ->
+        query1 = update_in(query.query.bool.minimum_should_match, fn _v -> 1 end)
+        update_in(query1.query.bool.should, fn should ->
           condition =
             [
               %{match: %{content: keyword}},
@@ -193,7 +193,7 @@ defmodule Acs.Web.AdminWcpController do
     }
 
     case AppWcpMessage.search(query) do
-      {:ok, total, messages} ->
+      {:ok, _total, messages} ->
         json(conn, %{success: true, messages: messages})
       _ ->
         json(conn, %{success: false})
@@ -268,13 +268,13 @@ defmodule Acs.Web.AdminWcpController do
   end
 
   # update_wcp_message_rule
-  def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "keywords" => keywords, "response" => response} = rule) do
+  def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "keywords" => keywords, "response" => _response} = rule) do
     d "rule: #{inspect rule, pretty: true}"
     case Repo.get(App, app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
-      %App{} = app ->
+      %App{} ->
         case Repo.get_by(AppWcpMessageRule, %{app_id: app_id, keywords: keywords}) do
           nil ->
             # add new

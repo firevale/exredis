@@ -1,8 +1,6 @@
 defmodule Acs.Web.Admin.LoginCodesController do
   use Acs.Web, :controller
 
-  alias   Ecto.Adapters.SQL
-
   def gen_codes(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "number" => number}) do 
     1..number |> Enum.reduce(3, fn(_n, code_length) -> 
       gen_uniq_code(app_id, code_length)

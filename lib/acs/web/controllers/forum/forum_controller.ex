@@ -821,7 +821,7 @@ defmodule Acs.Web.ForumController do
   end
 
   # check text by netease dun
-  defp check_txt(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _opts) do
+  defp check_txt(%Plug.Conn{private: %{acs_session_user_id: _user_id}} = conn, _opts) do
 
     check_out = case conn.params["title"] do
       x when x in [nil, "undefined", "null"] ->

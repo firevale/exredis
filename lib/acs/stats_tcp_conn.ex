@@ -5,8 +5,6 @@ defmodule Acs.StatsTcpConn do
   require Redis
   require Utils
 
-  import Ecto.Query
-
   alias  Acs.StatsRepo 
   alias  Acs.Stats.Device
   alias  Acs.Stats.AppDevice
@@ -96,7 +94,7 @@ defmodule Acs.StatsTcpConn do
   def handle_info({:tcp_closed, _socket}, state) do
     {:stop, :normal, state}
   end
-  def handle_info(:heartbeart, %{socket: socket} = state) do
+  def handle_info(:heartbeart, %{socket: _socket} = state) do
     {:stop, :normal, state}
   end
   def handle_info(info, state) do
@@ -105,7 +103,7 @@ defmodule Acs.StatsTcpConn do
   end
 
   def terminate(reason, %{socket: socket, 
-    timer: timer,
+    timer: _timer,
     active: true,
     node: node,
     app_id: app_id,
@@ -118,7 +116,7 @@ defmodule Acs.StatsTcpConn do
     :ok
   end
   def terminate(reason, %{socket: socket, 
-    timer: timer,
+    timer: _timer,
     active: false,
     node: node,
     app_id: app_id,
@@ -129,12 +127,12 @@ defmodule Acs.StatsTcpConn do
     :gen_tcp.close(socket)
     :ok
   end
-  def terminate(reason, %{socket: socket, timer: timer} = state) do
+  def terminate(reason, %{socket: socket, timer: _timer} = state) do
     info "stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     :gen_tcp.close(socket)
     :ok
   end
-  def terminate(_reason, %{timer: timer}) do
+  def terminate(_reason, %{timer: _timer}) do
     :ok
   end
 
@@ -150,7 +148,7 @@ defmodule Acs.StatsTcpConn do
       os_ver: os_ver,
       sdk: sdk
     } = payload
-  }, %{node: node} = state) do 
+  }, %{node: _node} = state) do 
     user_id = String.to_integer("#{user_id}")
     pname = String.to_atom("u#{app_id}#{user_id}") 
     case Process.whereis(pname) do 
@@ -185,7 +183,7 @@ defmodule Acs.StatsTcpConn do
     end
   end
 
-  defp handle_message(%{type: "updateGameData", payload: %{app_user_id: ""} = payload}, %{node: node} = state) do 
+  defp handle_message(%{type: "updateGameData", payload: %{app_user_id: ""} = payload}, %{node: _node} = state) do 
     info "receive invalid updateGameData message: #{inspect payload}, #{inspect state}"
     :error
   end
@@ -197,7 +195,7 @@ defmodule Acs.StatsTcpConn do
       app_user_level: app_user_level,
       zone_id: zone_id, 
       zone_name: zone_name
-    } = payload
+    }
   }, %{app_id: app_id, platform: platform, user_id: user_id, device_id: device_id, node: node} = state) do 
     now = Timex.local()
     today = Timex.to_date(now)
@@ -238,7 +236,7 @@ defmodule Acs.StatsTcpConn do
     type: "reset",
     payload: %{
       user_id: user_id,
-    } = payload
+    }
   }, %{app_id: app_id, platform: platform, node: node, device_id: device_id, app_user_id: app_user_id} = state) do 
     Logger.metadata(user_id: user_id)
     now = Timex.local()
@@ -290,7 +288,7 @@ defmodule Acs.StatsTcpConn do
     type: "reset",
     payload: %{
       user_id: user_id,
-    } = payload
+    }
   }, state) do 
     now = Timex.local
     today = now |> Timex.to_date

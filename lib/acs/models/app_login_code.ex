@@ -47,7 +47,7 @@ defmodule Acs.AppLoginCode do
 
   def find_by_openid(app_id, openid) do 
     key = "_acs.login_codes.owns.#{app_id}.#{openid}"
-    Cachex.get!(:default, "_acs.login_codes.owns.#{app_id}.#{openid}", fallback: fn(redis_key) -> 
+    Cachex.get!(:default, key, fallback: fn(redis_key) -> 
       case Redis.get(redis_key) do 
         :undefined -> 
           owner = "openid.#{openid}"
@@ -71,8 +71,9 @@ defmodule Acs.AppLoginCode do
   end
 
   def clear_stats_cache(app_id) do 
-    Redis.del("_acs.login_code.stats_info.#{app_id}")
-    Cachex.del(:default, "_acs.login_code.stats_info.#{app_id}")
+    key = "_acs.login_code.stats_info.#{app_id}"
+    Redis.del(key)
+    Cachex.del(:default, key)
   end
 
   def refresh_stats_info(app_id) do 

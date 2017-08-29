@@ -3,11 +3,7 @@ defmodule Acs.WcpLoginCodeResponse do
   alias Acs.RedisAppWcpConfig
   alias Acs.AppLoginCode
   alias Acs.RedisApp 
-
-  alias   Acs.Repo
-  import  Ecto.Query
-
-  alias   Ecto.Adapters.SQL
+  alias Acs.Repo
 
   defmodule Scripts do
     import Redis.Script

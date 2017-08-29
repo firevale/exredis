@@ -13,7 +13,7 @@ defmodule Acs.RedisNeteaseDun do
       case Redis.get(redis_key) do
         :undefined ->
           :null
-        raw ->
+        _raw ->
           :exist
       end
     end)

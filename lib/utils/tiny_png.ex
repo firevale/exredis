@@ -1,11 +1,17 @@
 defmodule Utils.Tinypng do
   require HTTPoison
+  require Redis
   use LogAlias
   alias Utils.JSON
 
   @api_key "vFezemVJCvE6VYpWy6sFqB2Puja57XGm"
+  @redis_cache_key "fvac.tiny_list"
 
   def tinify(image_path) do 
+    Redis.sadd(@redis_cache_key, image_path)
+  end
+
+  def tinify_bg(image_path) do 
     response  = HTTPoison.post!("https://api.tinify.com/shrink", {:file, image_path}, [],
       [recv_timeout: 60_000, 
        follow_redirect: true,

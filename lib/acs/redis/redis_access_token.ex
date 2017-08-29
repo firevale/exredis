@@ -21,12 +21,12 @@ defmodule Acs.RedisAccessToken do
   @token_ttl                 604800
 
   def create(%{
-      app_id: app_id,
-      user_id: user_id,
+      app_id: _app_id,
+      user_id: _user_id,
       device_id: device_id,
       platform: _platform,
-      ttl: ttl,
-      binding: binding
+      ttl: _ttl,
+      binding: _binding
     } = params) when is_bitstring(device_id) do
 
     ts = Utils.unix_timestamp

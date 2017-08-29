@@ -79,7 +79,7 @@ defmodule SDKNeteaseDun do
     try do
       timestamp = Utils.unix_timestamp
       nonce = Utils.nonce
-      dataId = Utils.generate_token
+      # dataId = Utils.generate_token
 
       response = Httpc.post_msg(@check_img_url, %{
                           "secretId" => @secretId,

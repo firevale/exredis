@@ -7,6 +7,7 @@ defmodule Acs.Web.CronController do
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
   alias   Acs.Stats.DailyReportGenerator
+  alias   Utils.Tinypng
   use     Timex
 
   require Redis
@@ -466,5 +467,16 @@ defmodule Acs.Web.CronController do
     end)
 
     conn |> json(%{success: true, message: "daily_report done"})
+  end
+
+  def tinify_schedule(conn, _params) do
+    redis_cache_key = "fvac.tiny_list"
+    icount = Redis.scard(redis_cache_key)
+    if icount > 0 do
+      Enum.each(Redis.smembers(redis_cache_key), fn(image_path) -> 
+        Tinypng.tinify_bg(image_path)
+      end) 
+    end
+    conn |> json(%{success: true, message: "tinify_schedule done(#{icount})"})
   end
 end

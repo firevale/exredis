@@ -130,7 +130,7 @@ defmodule Acs.Web.WechatController do
   end
 
   # authlogin
-  def authlogin(%Plug.Conn{private: %{acs_app_id: app_id,
+  def authlogin(%Plug.Conn{private: %{acs_app_id: _app_id,
                                       acs_device_id: device_id,
                                       acs_platform: platform,
                                       acs_app: %RedisApp{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,

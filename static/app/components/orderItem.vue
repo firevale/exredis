@@ -14,7 +14,7 @@
           <div class="media is-mobile" style="margin-right:1rem;">
             <figure class="media-left">
               <p class="image is-64x64">
-                <img :src="detail.goods_pic.split('|')[0]">
+                <img :src="detail.goods_pic.split('|')[0] | imageStaticUrl">
               </p>
             </figure>
             <div class="media-content">
@@ -57,7 +57,7 @@ export default {
     viewOrderDetail: function(order) {
       let orderItem = {}
       orderItem.id = order.id
-      orderItem.snapshots=order.snapshots
+      orderItem.snapshots = order.snapshots
       orderItem.price = order.price
       orderItem.final_price = order.final_price
       orderItem.currency = order.currency

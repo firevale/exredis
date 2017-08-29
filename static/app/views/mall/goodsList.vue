@@ -2,13 +2,15 @@
   <div class="mall-index">
     <scroller :on-load-more="loadmore" ref="scroller">
       <div class="columns is-multiline is-mobile goods-content">
-        <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList" key="item.name" tag="div"
-          @tap="showGoodsDetail(item)">
+        <v-touch class="column is-half has-text-centered goods-item is-paddingless" v-for="item in goodsList"
+          key="item.name" tag="div" @tap="showGoodsDetail(item)">
           <div class="tile is-vertical is-parent">
             <div class="tile">
-              <figure class="has-hairline-border">
-                <img class="image is-400x400" v-if="item.pic" :src="item.pic.split('|')[0]">
-                <img v-else src="https://placehold.it/400x400?text=400x400">
+              <figure v-if="!item.pic" class="has-hairline-border">
+                <img src="https://placehold.it/400x400?text=400x400">
+              </figure>
+              <figure v-else class="has-hairline-border">
+                <img class="image" v-if="item.pic" :src="item.pic.split('|')[0] | imageStaticUrl">
               </figure>
             </div>
             <div class="tile ">

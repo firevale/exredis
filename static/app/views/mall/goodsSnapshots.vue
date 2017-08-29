@@ -12,7 +12,7 @@
           </div>
           <div class="column is-12">
             <div class="card-image has-text-centered">
-              <img style="width:400px" v-if="goods.pic" :src="goods.pic.split('|')[0]">
+              <img style="width:400px" v-if="goods.pic" :src="goods.pic.split('|')[0] | imageStaticUrl">
               <img style="width:400px" v-else src="https://placehold.it/400x400?text=400x400">
             </div>
           </div>

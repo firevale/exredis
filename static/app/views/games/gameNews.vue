@@ -6,7 +6,7 @@
           <div class="has-text-centered">
             <div>
               <figure>
-                <img :src="item.pic" style="padding: .5rem; border-radius: .5rem;"></img>
+                <img :src="item.pic | imageStaticUrl" style="padding: .5rem; border-radius: .5rem;"></img>
               </figure>
               <h5 class="title is-5" style="padding:0 .5rem;">{{ item.title }}</h5>
             </div>
@@ -14,8 +14,9 @@
         </v-touch>
       </nav>
       <div class="content" style="margin: 1rem;">
-        <v-touch v-for="item in news" :key="item.id" class="tile is-vertical has-bottom-line post-list-item" v-on:tap="showNewsDetail(item)">
-          <article class="media">
+        <v-touch v-for="item in news" :key="item.id" class="tile is-vertical has-bottom-line post-list-item"
+          v-on:tap="showNewsDetail(item)">
+          <article class="media is-clickable">
             <div class="media-content">
               <div class="level is-mobile">
                 <div class="level-left level-item" @click="showNewsDetail(item)">
@@ -33,7 +34,6 @@
   </scroller>
 </template>
 <script>
-
 export default {
   created: async function() {
     await this.fetchTopNews()
@@ -83,7 +83,9 @@ export default {
     },
 
     showNewsDetail(item) {
-      this.$router.push({path: `/games/${this.$route.params.app_id}/news/${item.id}`})
+      this.$router.push({
+        path: `/games/${this.$route.params.app_id}/news/${item.id}`
+      })
     },
   },
 

@@ -4,7 +4,7 @@
       <article class="tile is-child notification" v-for="app in appList" @click.prevent="showGames(app.id)">
         <div class="tile is-parent">
           <div class="tile is-vertical is-child">
-            <img :src="app.icon ? app.icon : 'https://placehold.it/64x64?text=128x128'"></img>
+            <img :src="app.icon ? (app.icon | imageStaticUrl) : 'https://placehold.it/64x64?text=128x128'"></img>
             <h2 style="font-weight: bold"> {{app.name}} </h2>
           </div>
         </div>

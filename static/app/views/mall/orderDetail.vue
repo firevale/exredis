@@ -15,7 +15,7 @@
             <div class="media" style="margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
-                  <img :src="detail.goods_pic.split('|')[0]">
+                  <img :src="detail.goods_pic.split('|')[0] | imageStaticUrl">
                 </p>
               </figure>
               <div class="media-content">

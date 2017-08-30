@@ -474,7 +474,13 @@ defmodule Acs.Web.CronController do
     icount = Redis.scard(redis_cache_key)
     if icount > 0 do
       Enum.each(Redis.smembers(redis_cache_key), fn(image_path) -> 
-        Tinypng.tinify_bg(image_path)
+        try do 
+          :ok = Tinypng.tinify_bg(image_path)
+          Redis.srem(redis_cache_key, image_path)
+        catch
+          :error, _e ->
+            nil
+        end
       end) 
     end
     conn |> json(%{success: true, message: "tinify_schedule done(#{icount})"})

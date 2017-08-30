@@ -7,7 +7,7 @@ defmodule Utils.Tinypng do
   @api_key "vFezemVJCvE6VYpWy6sFqB2Puja57XGm"
   @redis_cache_key "fvac.tiny_list"
 
-  def tinify(image_path) do 
+  def tinify(image_path) do
     Redis.sadd(@redis_cache_key, image_path)
   end
 

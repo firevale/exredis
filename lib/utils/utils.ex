@@ -285,7 +285,9 @@ defmodule Utils do
           [file_md5 | _] = String.split(md5sum_result)
           file_name = "#{file_md5}.#{ext}"
           case File.cp(src, Path.join(dest, file_name)) do 
-            :ok -> {:ok, file_name}
+            :ok ->
+              Tinypng.tinify(Path.join(dest, file_name))
+              {:ok, file_name}
             {:error, reason} -> {:error, reason} 
           end
         {:error, reason} -> {:error, reason} 
@@ -305,8 +307,6 @@ defmodule Utils do
       %Mogrify.Image{format: "jpg", width: width, height: height} -> {"jpg", width, height}
       %Mogrify.Image{format: "gif", width: width, height: height} -> {"gif", width, height}
     end
-
-    Tinypng.tinify(from)
 
     relative_path = Path.join("/images", "/#{to}")
     url_path = Path.join("/img", "/#{to}")

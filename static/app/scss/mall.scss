@@ -18,10 +18,9 @@
 
 .mall-index {
   position: relative;
-  margin: 1rem;
   .goods-content {
     width: 96%;
-    margin: -.5rem auto 0rem auto;
+    margin: .5rem auto 0rem auto;
     .goods-item {
       width: 100%;
       height: 100%;
@@ -79,7 +78,7 @@
     justify-content: flex-start;
     align-items: center;
     .content-item {
-      width: 3rem;
+      width: 3.2rem;
       height: 3rem;
       flex-grow: 0;
       flex-shrink: 1;
@@ -88,6 +87,10 @@
       background-color: $blue;
       border-color: $white;
       color: $white;
+      overflow: hidden;
+    }
+    .button {
+      padding: 0 !important;
     }
   }
   .goods-buyNow {

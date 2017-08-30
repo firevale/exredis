@@ -46,10 +46,9 @@
       <div v-else class="columns is-multiline is-mobile">
         <div class="column is-6 border-right">
           <div class="left-content">
-            <a class="button is-large has-hairline-border content-item" @click.prevent="quantityPlus">-</a>
-            <input v-model.trim="quantity" class="input is-large has-text-centered has-hairline-border content-item"
-              style="width:4rem;" @blur.prevent="quantityChange" type="number" :value="quantity">
-            <a class="button is-large has-hairline-border content-item" @click.prevent="quantityReduce">+</a>
+            <input type="button" class="button is-large has-hairline-border content-item" value="-" @click.prevent="quantityPlus"/>
+            <input v-model.trim="quantity" class="input is-large has-text-centered has-hairline-border content-item" style="width:4rem;" @blur.prevent="quantityChange" type="number" :value="quantity">
+            <input type="button" class="button is-large has-hairline-border content-item" value="+" @click.prevent="quantityReduce"/>
           </div>
         </div>
         <div class="column is-6">

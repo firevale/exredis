@@ -1,20 +1,20 @@
 defmodule Utils.Crypto do 
-  use LogAlias
+  require Utils
 
   def md5_sign(s) when is_bitstring(s) do
-    :crypto.hash(:md5, s) |> to_hex |> String.downcase
+    :crypto.hash(:md5, s) |> Utils.to_hex |> String.downcase
   end
 
   def hmacsha1_sign(source, key) when is_bitstring(source) and is_bitstring(key) do 
-    :crypto.hmac(:sha, key, source) |> to_hex |> String.downcase  
+    :crypto.hmac(:sha, key, source) |> Utils.to_hex |> String.downcase  
   end
 
   def hmacsha256_sign(source, key) when is_bitstring(source) and is_bitstring(key) do 
-    :crypto.hmac(:sha256, key, source) |> to_hex |> String.downcase
+    :crypto.hmac(:sha256, key, source) |> Utils.to_hex |> String.downcase
   end
 
   def hmacmd5_sign(source, key) when is_bitstring(source) and is_bitstring(key) do 
-    :crypto.hmac(:md5, key, source) |> to_hex |> String.downcase
+    :crypto.hmac(:md5, key, source) |> Utils.to_hex |> String.downcase
   end
 
   def rsa_priv_sign(priv_key_file, s, type \\ :sha) do

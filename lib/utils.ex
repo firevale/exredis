@@ -1,6 +1,5 @@
 defmodule Utils do 
   use Bitwise
-  use LogAlias
   
   def unix_timestamp do
     :erlang.system_time(:seconds)

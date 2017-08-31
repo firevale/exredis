@@ -1,15 +1,15 @@
 defmodule Utils.Httpc do
   use     HTTPotion.Base
+  use     Utils.LogAlias
   alias   Utils.JSON
-  use     LogAlias
 
   def get_msg(url, params) do
     info "http get: #{url <> "?" <> URI.encode_query(params)}"
     get(url <> "?" <> URI.encode_query(params))
   end
 
-  def post_msg(url, msg, timeout \\ 30_000) do
-    info "http post: #{url} msg: #{URI.encode_query(msg)}"
+  def post_form(url, msg, timeout \\ 30_000) do
+    info "http post: #{url} form: #{URI.encode_query(msg)}"
     post(url, body: URI.encode_query(msg),
               headers: ["Content-Type": "application/x-www-form-urlencoded"],
               timeout: timeout)

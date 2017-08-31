@@ -9,7 +9,7 @@ defmodule Exredis.Helper do
       def unquote(cmd_name)(unquote_splicing(margs)) do
         f = unquote(fun)
         command = List.flatten [unquote_splicing(method)|[unquote_splicing(margs)]]
-        res = Exredis.Helper.command(command)
+        {:ok, res} = Exredis.Helper.command(command)
         if f, do: f.(res), else: res
       end
     end

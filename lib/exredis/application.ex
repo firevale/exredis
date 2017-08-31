@@ -15,7 +15,7 @@ defmodule Exredis.Application do
     password = Application.get_env(:exredis, :password, "")
 
     redix_workers = for i <- 0..(pool_size - 1) do
-      worker(Redix, [[host: host, port: port, db: db, password: password], [name: :"redix_#{i}"]], id: {Redix, i})
+      worker(Redix, [[host: host, port: port, database: db, password: password], [name: :"redix_#{i}"]], id: {Redix, i})
     end
 
     Supervisor.start_link(redix_workers, strategy: :one_for_one, name: Exredis.Supervisor)

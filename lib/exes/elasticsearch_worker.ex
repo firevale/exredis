@@ -40,7 +40,7 @@ defmodule Elasticsearch.Worker do
 
   def init(args) do 
     base_url = ["http://", host_to_binary(args[:host]), ":", port_to_binary(args[:port]), "/"] |> Enum.join("")
-    d "elasticsearch base_url: #{base_url}"
+    info "elasticsearch base_url: #{base_url}"
     {:ok, %{base_url: base_url} }
   end
 

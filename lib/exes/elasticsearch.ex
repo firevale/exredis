@@ -97,6 +97,11 @@ defmodule Elasticsearch do
       _index(worker, index, type, doc, id, params)
     end
   end
+  def index(%{index: index, type: type, doc: doc = %{}, id: id}) do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      _index(worker, index, type, doc, id, nil)
+    end
+  end
   defp _index(worker, index, type, doc, nil, params) do
     Worker.request %{worker: worker,
                      method: :post,
@@ -123,6 +128,11 @@ defmodule Elasticsearch do
       _update(worker, index, type, doc, id, params)
     end
   end
+  def update %{index: index, type: type, doc: doc = %{}, id: id} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      _update(worker, index, type, doc, id, nil)
+    end
+  end
   defp _update(worker, index, type, doc, id, params) do
     Worker.request %{worker: worker,
                      method: :post,
@@ -142,6 +152,11 @@ defmodule Elasticsearch do
       _delete(worker, index, type, id, params)
     end
   end
+  def delete %{index: index, type: type, id: id} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      _delete(worker, index, type, id, nil)
+    end
+  end
   defp _delete(worker, index, type, id, params) do
     Worker.request %{worker: worker,
                      method: :delete,
@@ -159,6 +174,14 @@ defmodule Elasticsearch do
                        method: :get,
                        path: [index, type, id, "_source"],
                        params: params}
+    end
+  end
+  def get %{index: index, type: type, id: id} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      Worker.request %{worker: worker,
+                       method: :get,
+                       path: [index, type, id, "_source"],
+                       params: nil}
     end
   end
 
@@ -184,6 +207,11 @@ defmodule Elasticsearch do
   def search %{index: index, type: type, query: query, params: params} do
     :poolboy.transaction :elasticsearch, fn(worker) ->
       _search(worker, index, type, query, params)
+    end
+  end
+  def search %{index: index, type: type, query: query} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      _search(worker, index, type, query, nil)
     end
   end
   defp _search(worker, index, type, query, params) do
@@ -219,12 +247,26 @@ defmodule Elasticsearch do
                        params: params}
     end
   end
+  def put_mapping %{index: index, type: type, mapping: mapping} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      Worker.request %{worker: worker,
+                       method: :put,
+                       path: [index, "_mapping", type],
+                       body: mapping,
+                       params: nil}
+    end
+  end
 
   def count(%{index: nil}), do: {:error, "invalid index"}
   def count(%{index: ""}), do: {:error, "invalid index"}
   def count %{index: index, type: type, query: query, params: params} do
     :poolboy.transaction :elasticsearch, fn(worker) ->
       _count(worker, index, type, query, params)
+    end
+  end
+  def count %{index: index, type: type, query: query} do
+    :poolboy.transaction :elasticsearch, fn(worker) ->
+      _count(worker, index, type, query, nil)
     end
   end
   defp _count(worker, index, type, query, params) do

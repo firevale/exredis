@@ -2,7 +2,7 @@
   <div>
     <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
       <tab-pane icon="fa fa-clone" :label="$t('admin.setting.basicInfo')">
-        <basic-info-editor></basic-info-editor>
+        <basic-info-editor group="basicInfo"></basic-info-editor>
       </tab-pane>
     </tabs>
   </div>

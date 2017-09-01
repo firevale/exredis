@@ -138,7 +138,27 @@ export default new Router({
           name: 'StatsTiming',
           path: 'statsTiming',
           component: require('../views/app/stats/statsTiming')
-        }
+        },
+        {
+          name: 'PointSetting',
+          path: 'pointSetting',
+          component: require('../views/app/pointMall/pointSetting')
+        },
+        {
+          name: 'PointLog',
+          path: 'pointLog',
+          component: require('../views/app/pointMall/pointLog')
+        },
+        {
+          name: 'PointGoods',
+          path: 'pointGoods',
+          component: require('../views/app/pointMall/pointGoods')
+        },
+        {
+          name: 'PointOrder',
+          path: 'pointOrder',
+          component: require('../views/app/pointMall/pointOrder')
+        },
       ],
     }, {
       path: '*',

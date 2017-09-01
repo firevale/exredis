@@ -31,4 +31,9 @@ export default {
   statsRetained: '留存统计',
   statsDevice: '设备终端',
   statsTiming: '使用时长',
+  pointsMall: '积分商城',
+  pointSetting: '积分配置',
+  pointLog: '积分纪录',
+  pointGoods: '商品管理',
+  pointOrder: '订单管理',
 }

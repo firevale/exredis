@@ -4,7 +4,7 @@
       <article class="tile is-child">
         <div class="table-responsive">
           <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead v-show="settings && settings.length > 0">
+            <thead>
               <tr>
                 <th>{{ $t('admin.setting.configName') }}</th>
                 <th>{{ $t('admin.setting.configValue')}}</th>
@@ -55,7 +55,9 @@ import {
 } from 'vuex'
 
 import Vue from 'vue'
-import {i18n} from 'admin/vue-i18n'
+import {
+  i18n
+} from 'admin/vue-i18n'
 
 import {
   showMessageBox
@@ -75,6 +77,12 @@ const openSettingInfoDialog = (propsData = {
 }
 
 export default {
+  props: {
+    group: {
+      type: String,
+      default: ''
+    },
+  },
 
   mounted: function() {
     this.getBasicSettings()
@@ -91,7 +99,7 @@ export default {
     getBasicSettings: async function() {
       this.processing = true
       let result = await this.$acs.getSettingsByGroup({
-        group: "basicInfo",
+        group: this.group,
       })
       if (result.success) {
         this.settings = result.settings
@@ -136,7 +144,7 @@ export default {
           id: '',
           name: '',
           value: '',
-          group: '',
+          group: this.group,
           memo: '',
           active: true,
         },

@@ -11,7 +11,7 @@ defmodule Acs.Web.PageController do
   plug :fetch_body_class
   plug :check_is_admin when action in  [:show_admin_page, :show_admin_app_page]
   plug :check_admin_authorization, [admin_level: 2] when action == :show_admin_app_page
-  plug :check_forum_manager when action == :show_forum_page
+  plug :check_forum_manager when action in [:show_bbs_page, :show_forum_page]
 
   @sm_provider                  Application.get_env(:acs, :sm_provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
@@ -79,10 +79,15 @@ defmodule Acs.Web.PageController do
     conn |> send_resp(500, gettext("app not found"))
   end
 
+  def show_bbs_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
+    conn |> put_layout(:app)
+         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported)
+  end
+
   def show_forum_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
     theme_file = String.starts_with?(conn.request_path, "/m") && "/css/themes/jqxs_mobile.css" || "/css/themes/jqxs.css"
-    conn |> put_layout(:app)
-         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, link_files: [theme_file] )
+    conn |> put_layout(:forum)
+         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, link_files: [] )
   end
 
    # 问题反馈

@@ -1,5 +1,6 @@
 defmodule Excache.Fastlane do
   use GenServer
+  use Utils.LogAlias
 
   def start_link(opts \\ []), do: GenServer.start_link(__MODULE__, opts)
 
@@ -10,6 +11,7 @@ defmodule Excache.Fastlane do
 
   def fastlane(_pid, payload, _options) do
     payload = Poison.decode!(payload, keys: :atoms)
+    d "receive payload: #{inspect payload}"
     handle_payload(payload)
   end
 

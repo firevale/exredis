@@ -17,7 +17,7 @@ defmodule Excache.Application do
       # {Excache.Worker, arg},
       supervisor(Redix.PubSub.Fastlane, [Excache.PubSub.Redis, cfg ++ [pool_size: pool_size]]),
       
-      worker(Excache.FastLane, []),
+      worker(Excache.Fastlane, []),
 
       worker(Cachex, [:default, [
         default_ttl: :timer.seconds(60), 

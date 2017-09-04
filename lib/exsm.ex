@@ -2,7 +2,7 @@ defmodule Exsm do
   use     Utils.LogAlias
   alias   Exsm.MeishengService
 
-  @sender Application.get_env(:exsm, :sm_provider, :none)
+  @sender Application.get_env(:exsm, :provider, :none)
 
   def send_verify_code(mobile, code) do 
     case @sender do 

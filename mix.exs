@@ -26,7 +26,7 @@ defmodule Excache.Mixfile do
       {:exutils, git: "https://gitpub.firevale.com/platform/exutils.git", tag: "0.0.1"},
       {:redix_pubsub_fastlane, "~> 0.3", repo: hex_repo()},
       {:cachex, "~> 2.1", repo: hex_repo()},
-      {:poison, "~> 3.1", override: true, repo: hex_repo()},
+      {:poison, "~> 3.1", repo: hex_repo()},
     ]
   end
 

@@ -1,13 +1,11 @@
-@import "~bulma";
-@import "../bulma-fix";
-
 @import "../variables";
 $primary: #b3182e;
 
+@import "~bulma";
+@import "../bulma-fix";
+
 @import "common/scss/mixins";
-@import "../global";
-@import "../icons";
-@import 'common/scss/animation.scss';
+
 
 .tab-bar {
   display: flex;

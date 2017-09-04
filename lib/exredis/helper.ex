@@ -19,6 +19,39 @@ defmodule Exredis.Helper do
     Redix.command(:"redix_#{random_index()}", command)
   end
 
+  def conn_cfg() do 
+    host = Application.get_env(:exredis, :host, "localhost")
+    port = Application.get_env(:exredis, :port, 6379)
+    db = Application.get_env(:exredis, :db, 0)
+    password = Application.get_env(:exredis, :password, nil)
+
+    host = case host do 
+      {:env, varname} -> System.get_env(varname)
+      v -> v
+    end
+
+    db = case db do 
+      {:env, varname} -> System.get_env(varname) |> String.to_integer
+      v when is_integer(v) -> v
+      v when is_bitstring(v) -> String.to_integer(v)
+      _ -> 0
+    end
+
+    port = case port do 
+      {:env, varname} -> System.get_env(varname) |> String.to_integer
+      v when is_integer(v) -> v
+      v when is_bitstring(v) -> String.to_integer(v)
+      _ -> 6379 
+    end
+
+    password = case password do 
+      {:env, varname} -> System.get_env(varname) 
+      v -> v
+    end
+
+    [host: host, port: port, database: db, password: password]
+  end
+
   defp random_index() do
     rem(System.unique_integer([:positive]), 5)
   end

@@ -32,7 +32,11 @@ defmodule Acs.Forum do
           forum_id: %{type: :integer},
           user_id: %{type: :integer},
           section_id: %{type: :integer},
-          title: %{type: :text, analyzer: :ik_smart},
+          title: %{type: :text, analyzer: :ik_smart,
+            fields: %{ 
+              suggest: %{type: :text, analyzer: :trigram}
+            }
+          },
           content: %{type: :text, analyzer: :ik_smart},
           is_top: %{type: :boolean},
           is_hot: %{type: :boolean},

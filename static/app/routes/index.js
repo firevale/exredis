@@ -1,3 +1,4 @@
+import bbsRoutes from './bbs'
 import forumsRoutes from './forum'
 import forumsMobileRoutes from './forum_mobile'
 import payment from './payment'
@@ -12,6 +13,7 @@ export default function(VueRouter) {
     routes: [
       ...forumsMobileRoutes,
       ...forumsRoutes,
+      ...bbsRoutes,
       ...customerServiceRoutes,
       ...gamesRoutes,
       ...account,

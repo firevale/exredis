@@ -1,4 +1,13 @@
-@import "../base";
+@import "./variables";
+@import "./jqxs_m_p";
+$primary: #b3182e;
+@import "~bulma";
+@import "./bulma-fix";
+@import "common/scss/mixins";
+@import "./global";
+@import "./icons";
+@import 'common/scss/animation.scss';
+
 
 .tab-bar {
   display: flex;
@@ -204,60 +213,13 @@ form.post {
 }
 
 .post-list-item.isTop+.post-list-item:not(.isTop) {
-  margin-top:.4rem;
-  :before {
+  margin-top: .4rem;
+   :before {
     @include bottom-line(.5rem,
     $bottom-line-light);
     top: -.5rem;
     width: 100vw;
     left: 0;
-  }
-}
-
-.person {
-  display: flex;
-  flex-flow: column nowrap;
-  .info {
-    padding: 0.8rem 2rem 0.8rem;
-    font-size: 1.1rem;
-    figure {
-      margin-top: 0.4rem;
-      margin-right: 2rem;
-    }
-    p {
-      line-height: 2rem;
-    }
-  }
-  .content {
-    .content-item {
-      padding: 0.6rem 0;
-      .tile.is-vertical>.tile:not(:last-child) {
-        margin-bottom: 0.5rem;
-      }
-      h5 {
-        display: inline-block;
-        margin-bottom: 0;
-      }
-      .has-background {
-        background-color: $bottom-line-light;
-      }
-      .tag.is-outlined {
-        margin-left: 1em;
-        padding: 0 .2em;
-        border-radius: 3px;
-        background-color: transparent;
-        border: 1px solid $primary;
-        color: $primary;
-      }
-      .level:not(:last-child) {
-        margin-bottom: 0;
-        padding: 0 1em 1em;
-      }
-      .subtitle {
-        font-size: 1.2em;
-        color: $bottom-line-dark;
-      }
-    }
   }
 }
 
@@ -362,4 +324,3 @@ form.post {
     margin-left: 1.1rem;
   }
 }
-

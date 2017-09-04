@@ -1,3 +1,11 @@
+@function virtual-pixel($value) {
+  @return ($value / 1242) * 100vw;
+}
+
+@function virtual-rem($value) {
+  @return $value * 0.0189rem;
+}
+
 @mixin bottom-line($height, $color) {
   display: block;
   position: absolute;

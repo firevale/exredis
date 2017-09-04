@@ -26,9 +26,9 @@ defmodule Excache.Hook do
   The return type of this function should be `{ :ok, new_state }`, anything else
   is not accepted.
   """
-  def handle_notify({:del, keys} = msg, {:ok, _}, _state) do
+  def handle_notify({:del, [key | _]} = msg, {:ok, _}, _state) do
     node = System.get_env("NODE")
-    payload = Poison.encode!(%{action: :del, keys: keys, node: node})
+    payload = Poison.encode!(%{action: :del, key: key, node: node})
     Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
     {:ok, msg}
   end

@@ -22,7 +22,7 @@ defmodule Excache.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exredis, git: "https://gitpub.firevale.com/platform/exredis.git", tag: "0.0.6"},
+      {:exredis, git: "https://gitpub.firevale.com/platform/exredis.git", tag: "0.0.8"},
       {:exutils, git: "https://gitpub.firevale.com/platform/exutils.git", tag: "0.0.1"},
       {:redix_pubsub_fastlane, "~> 0.3", repo: hex_repo()},
       {:cachex, "~> 2.1", repo: hex_repo()},

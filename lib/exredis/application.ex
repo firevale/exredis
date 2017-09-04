@@ -10,7 +10,7 @@ defmodule Exredis.Application do
 
     pool_size = Application.get_env(:exredis, :pool_size, 5)
 
-    redix_workers = for i <- 0..(cfg[:pool] - 1) do
+    redix_workers = for i <- 0..(pool_size - 1) do
       worker(Redix, [Exredis.Helper.conn_cfg(), [name: :"redix_#{i}"]], id: {Redix, i})
     end
 

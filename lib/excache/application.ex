@@ -10,19 +10,12 @@ defmodule Excache.Application do
     
     # List all child processes to be supervised
     pool_size = Application.get_env(:exredis, :pool_size, 5)
-    host = Application.get_env(:exredis, :host, "localhost")
-    port = Application.get_env(:exredis, :port, 6379)
-    db = Application.get_env(:exredis, :db, 0)
-    password = Application.get_env(:exredis, :password, nil)
+    cfg = Exredis.Helper.conn_cfg()
 
     children = [
       # Starts a worker by calling: Excache.Worker.start_link(arg)
       # {Excache.Worker, arg},
-      supervisor(Redix.PubSub.Fastlane, [Excache.PubSub.Redis, [host: host,
-                                                                port: port,
-                                                                database: db,
-                                                                password: password,
-                                                                pool_size: pool_size]]),
+      supervisor(Redix.PubSub.Fastlane, [Excache.PubSub.Redis, cfg ++ [pool_size: pool_size]]),
       
       worker(Excache.FastLane, []),
 

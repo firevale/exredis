@@ -1,47 +1,50 @@
 <template>
-  <div class="edit-address columns is-multiline is-mobile">
+  <div class="edit-address">
     <form v-if="address.id>0" @submit.prevent="handleSubmit">
-      <div class="column is-12 has-bottom-line">
-        <div class="level is-mobile">
-          <div class="level-item">
-            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.name') }}：</span>
-            <input class="input no-border" type="text" v-model.trim="address.name">
-          </div>
-        </div>
-      </div>
-      <div class="column is-12 has-bottom-line">
-        <div class="level is-mobile">
-          <div class="level-item">
-            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.mobile') }}：</span>
-            <input class="input no-border" type="number" v-model.trim="address.mobile">
-          </div>
-        </div>
-      </div>
-      <div class="column is-12 has-bottom-line">
-        <div class="level is-mobile has-text-left">
-          <div class="level-item">
-            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.area') }}：</span>
-            <div style="width:100%">
-              <city-select v-if="provinceCode>0" :_province="provinceCode" :_city="cityCode" :_district="districtCode"
-                @onSelect="onSelect"></city-select>
+      <div class="columns is-multiline is-mobile is-paddingless is-marginless">
+        <div class="column is-12 has-bottom-line">
+          <div class="level is-mobile">
+            <div class="level-item">
+              <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.name') }}：</span>
+              <input class="input no-border" type="text" v-model.trim="address.name">
             </div>
           </div>
         </div>
-      </div>
-      <div class="column is-12 has-bottom-line">
-        <div class="level is-mobile">
-          <div class="level-item">
-            <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.address') }}：</span>
-            <input class="input no-border" type="text" v-model="address.address">
+        <div class="column is-12 has-bottom-line">
+          <div class="level is-mobile">
+            <div class="level-item">
+              <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.mobile') }}：</span>
+              <input class="input no-border" type="number" v-model.trim="address.mobile">
+            </div>
           </div>
         </div>
-      </div>
-      <div class="column is-12 has-text-centered">
-        <div class="tile is-full has-text-left" style="margin: 0.5rem" v-show="errorHint">
-          <span class="icon is-sign">!</span>
-          <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
+        <div class="column is-12 has-bottom-line">
+          <div class="level is-mobile has-text-left">
+            <div class="level-item">
+              <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.area') }}：</span>
+              <div style="width:100%">
+                <city-select v-if="provinceCode>0" :_province="provinceCode" :_city="cityCode" :_district="districtCode"
+                  @onSelect="onSelect"></city-select>
+              </div>
+            </div>
+          </div>
         </div>
-        <v-touch class="button is-info is-large is-fullwidth" tag="a" @tap="handleSubmit" :class="processing || $v.$invalid ? 'is-disabled' : ''" :disabled="$v.$invalid">{{$t('common.save') }}</v-touch>
+        <div class="column is-12 has-bottom-line">
+          <div class="level is-mobile">
+            <div class="level-item">
+              <span class="subtitle is-5 is-normal width-5">{{$t('mall.address.fields.address') }}：</span>
+              <input class="input no-border" type="text" v-model="address.address">
+            </div>
+          </div>
+        </div>
+        <div class="column is-12 has-text-centered">
+          <div class="tile is-full has-text-left" style="margin: 0.5rem" v-show="errorHint">
+            <span class="icon is-sign">!</span>
+            <span class="is-primary" style="font-size: 1rem">{{errorHint}}</span>
+          </div>
+          <v-touch class="button is-info is-large is-fullwidth" tag="a" @tap="handleSubmit" :class="processing || $v.$invalid ? 'is-disabled' : ''"
+            :disabled="$v.$invalid">{{$t('common.save') }}</v-touch>
+        </div>
       </div>
     </form>
   </div>
@@ -147,7 +150,7 @@ export default {
       districtCode: ''
     }
   },
-  
+
   methods: {
     handleSubmit: async function() {
       if (!this.processing) {

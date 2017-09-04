@@ -1,7 +1,7 @@
 <template>
   <div class="my-addresses">
     <div class="flex-take-rest addresses-content">
-      <scroller ref="scroller" style="margin-bottom:-3.6rem;">
+      <scroller ref="scroller">
         <div v-for="item in addressesList" class="card">
           <v-touch class="card-header" tag="header" @tap="showAddressDetail(item.id)">
             <div class="card-header-title">
@@ -30,7 +30,7 @@
               </div>
               <div class="column is-paddingless">
                 <v-touch class="subtitle is-5 is-normal" tag="a" @tap="deleteAddress(item.id)" style="display:flex;align-items:center;">
-                <i style="margin-right:0.5rem; margin-top:0.1rem;" class="icon image-icon icon-remove"></i>{{$t('common.delete')
+                  <i style="margin-right:0.5rem; margin-top:0.1rem;" class="icon image-icon icon-remove"></i>{{$t('common.delete')
                   }}
                 </v-touch>
               </div>

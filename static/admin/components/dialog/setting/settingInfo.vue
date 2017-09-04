@@ -17,14 +17,14 @@
         <p class="control">
           <input class="input" type="text" v-model.trim="setting.memo">
         </p>
-        <label class="label"> {{ $t('admin.setting.configGroup') }}: </label>
+        <!-- <label class="label"> {{ $t('admin.setting.configGroup') }}: </label>
         <p class="control">
           <span class="select">
             <select v-model.trim="setting.group">
               <option v-for="group in groups" :value="group">{{$t('admin.setting.groups.' + group)}}</option>
             </select>
           </span>
-        </p>
+        </p> -->
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>

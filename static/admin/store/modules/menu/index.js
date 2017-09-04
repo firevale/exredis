@@ -187,6 +187,46 @@ const state = {
       },
     },
     {
+      meta: {
+        must: 'has_mall',
+        icon: 'fa-shopping-bag',
+        level: '1,2,',
+        label: i18n.t('admin.menu.pointsMall'),
+        expanded: false,
+      },
+
+      children: [{
+        name: 'PointSetting',
+        path: '/admin/app/:appId/pointSetting',
+        meta: {
+          icon: 'fa-registered',
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointSetting'),
+        },
+      }, {
+        name: 'PointLog',
+        path: '/admin/app/:appId/pointLog',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointLog'),
+        }
+      }, {
+        name: 'PointGoods',
+        path: '/admin/app/:appId/pointGoods',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointGoods'),
+        },
+      }, {
+        name: 'PointOrder',
+        path: '/admin/app/:appId/pointOrder',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointOrder'),
+        },
+      }, ]
+    },
+    {
       path: '/admin/app/:appId/activity',
       meta: {
         icon: 'fa-joomla',

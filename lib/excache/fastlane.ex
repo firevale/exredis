@@ -1,7 +1,7 @@
 defmodule Excache.Fastlane do
   use GenServer
 
-  def start_link(opts \\ []), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  def start_link(opts \\ []), do: GenServer.start_link(__MODULE__, opts)
 
   def init(opts) do
     :ok = Redix.PubSub.Fastlane.subscribe(Excache.PubSub.Redis, "my_channel", {self(), __MODULE__, []})

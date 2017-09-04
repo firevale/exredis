@@ -16,6 +16,11 @@ defmodule Acs.Web.Router do
     get  "/forum", PageController, :show_forum_page
     get  "/forum/index", PageController, :show_forum_page
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
+
+    get  "/bbs", PageController, :show_forum_page
+    get  "/bbs/index", PageController, :show_forum_page
+    get  "/bbs/:forum_id/*path", PageController, :show_forum_page
+
     get  "/show_app_forum", PageController, :show_app_forum
     get  "/show_app_mall", PageController, :show_app_mall
     get  "/show_app_games", PageController, :show_app_games
@@ -43,6 +48,7 @@ defmodule Acs.Web.Router do
     get  "/forum", PageController, :show_forum_page
     get  "/forum/index", PageController, :show_forum_page
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
+
     get  "/games/*path", PageController, :show_games_page
     get  "/account/*path", PageController, :show_account_page
     get  "/mall/*path",  PageController, :show_mall_page

@@ -1,38 +1,38 @@
 export default [{
   path: '/forum/index',
-  name: 'm_forumList',
+  name: 'forumList',
   component: require('../views/mobile/forum.vue')
 }, {
   path: '/forum/:forumId',
-  name: 'm_forum',
+  name: 'forum',
   component: require('../views/mobile/main.vue'),
   children: [{
     path: 'index',
-    name: 'm_postList',
+    name: 'postList',
     component: require('../views/mobile/postList.vue')
   }, {
     path: 'search',
-    name: 'm_search',
+    name: 'search',
     component: require('../views/mobile/search.vue')
   }, {
     path: 'detail/:postId',
-    name: 'm_detail',
+    name: 'detail',
     component: require('../views/mobile/postDetail.vue'),
   }, {
     path: 'comment/:postId',
-    name: 'm_newComment',
+    name: 'newComment',
     component: require('../views/mobile/newComment.vue')
   }, {
     path: 'newPost',
-    name: 'm_newPost',
+    name: 'newPost',
     component: require('../views/mobile/newPost.vue')
   }, {
     path: 'preview',
-    name: 'm_preview',
+    name: 'preview',
     component: require('../views/mobile/postPreview.vue')
   }, {
     path: 'personalPage',
-    name: 'm_personalPage',
+    name: 'personalPage',
     component: require('../views/mobile/personalPage.vue')
   }, ]
 }, ]

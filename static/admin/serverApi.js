@@ -331,6 +331,14 @@ export default {
       addOperateLog(params) {
         return post('/admin_actions/log/add_operate_log', params)
       },
+
+      getPointLogs(params) {
+        return post('/admin_actions/point/get_point_logs', params)
+      },
+
+      addPoint(params, successMessage) {
+        return post('/admin_actions/point/admin_add_point', params, successMessage)
+      },
     }
   }
 }

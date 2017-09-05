@@ -1,88 +1,150 @@
 <template>
-  <form name="basicInfo" @submit.prevent="handleSubmit">
-    <div class="columns is-multiline">
-      <div class="column is-4">
-        <label class="label"> {{ $t('admin.mall.id')}}: {{mall.id}} </label>
-      </div>
-      <div class="column is-4">
-        <label class="label"> {{ $t('admin.mall.created_at')}}: {{mall.inserted_at | formatServerDateTime}} </label>
-      </div>
-      <div class="column is-8">
-        <label class="label"> {{ $t('admin.mall.appId')}}: </label>
-        <p class="control">
-          <input class="input is-disabled" disabled type="text" v-model.trim="mall.app_id">
-        </p>
-      </div>
-      <div class="column is-8">
-        <label class="label"> {{ $t('admin.mall.title')}}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="mall.title">
-        </p>
-      </div>
-      <div class="column is-8">
-        <p class="control">
-          <label class="checkbox">
-            <input class="checkbox" type="checkbox" v-model.trim="mall.active"> {{ $t('admin.mall.active')}}
-          </label>
-        </p>
-      </div>
+  <div class="tile is-ancestor">
+    <div class="tile is-parent is-vertical">
+      <article class="tile is-child is-12">
+        <div class="column">
+          <a class="button is-primary" style="min-width: 100px" @click="addPoint">
+            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.add') }}
+          </a>
+        </div>
+      </article>
+      <article class="tile is-child is-12">
+        <div class="table-responsive">
+          <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
+            <div class="column">
+              <p>{{ $t('admin.point.id') }}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.user') }}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.log_type') }}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.point')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.memo')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.inserted_at')}}</p>
+            </div>
+          </div>
+          <div v-if="logs">
+            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="logs && logs.length > 0"
+              v-for="(log, index) in logs" :key="log.id">
+              <div class="column">
+                <p>{{ log.id }}</p>
+              </div>
+              <div class="column">
+                <p>{{ log.user_id }}</p>
+              </div>              
+              <div class="column">
+                <p>{{ log.log_type }}</p>
+              </div>
+              <div class="column">
+                <p>{{ log.point }}</p>
+              </div>
+              <div class="column">
+                <p>{{ log.memo }}</p>
+              </div>
+              <div class="column">
+                <p>{{ log.inserted_at | formatServerDateTime }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="tile is-child is-12">
+        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+      </article>
     </div>
-    <div class="container has-text-centered" style="margin-top: 15px">
-      <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
-    </div>
-  </form>
+  </div>
 </template>
 <script>
-import axios from 'axios'
+import Vue from 'vue'
 import {
-  mapGetters,
-  mapActions
-} from 'vuex'
+  i18n
+} from 'admin/vue-i18n'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
+
+import {
+  showMessageBox
+} from 'admin/components/dialog/messageBox'
+
+import Pagination from 'admin/components/Pagination'
+import pointDialog from 'admin/components/dialog/app/addPoint'
+
+const pointDialogComponent = Vue.extend(pointDialog)
+const openPointDialog = (propsData = {
+  visible: true
+}) => {
+  return new pointDialogComponent({
+    i18n,
+    el: document.createElement('div'),
+ propsData
+  })
+}
 
 export default {
-  props: {
-    mall: Object,
-  },
-
   data() {
     return {
-      processing: false
+      logs: [],
+      page: 1,
+      total: 1,
+      recordsPerPage: 20,
+      loading: false,
+      userId: ''
     }
   },
 
-  methods: {
-    ...mapActions([
-      'addMall',
-      'setApp'
-    ]),
+  created: async function() {
+    this.getLogs(this.page, this.recordsPerPage)
+  },
 
-    handleSubmit: async function() {
-      this.processing = true
-      let result = await this.$acs.updateMallInfo({
-        mall: this.mall
-      }, this.$t('admin.notification.message.mallInfoUpdated'))
+  methods: {
+    getLogs: async function(page, recordsPerPage) {
+      this.loading = true
+      let result = await this.$acs.getPointLogs({
+        user_id: this.userId,
+        page: page,
+        records_per_page: recordsPerPage
+      })
+      this.loading = false
       if (result.success) {
-        axios.post('/admin_actions/fetch_app', {
-            app_id: this.mall.app_id
-          })
-          .then(response => response.data)
-          .then(result => {
-            if (result.success) {
-              this.setApp(result.app)
-            }
-          })
-      }
-      this.processing = false
-      if (result.mall) {
-        this.addMall(result.mall)
-        this.$nextTick(_ => {
-          this.$router.replace({
-            path: '/admin/malls/edit/${result.mall.id}'
-          })
-        })
+        this.total = result.total_page
+        this.logs = result.logs
+        this.page = page
       }
     },
+
+    onPageChange: function(page) {
+      this.getLogs(page, this.recordsPerPage)
+    },
+
+    addPoint: function() {
+      openPointDialog({
+        pointLog: {
+          id: 0,
+          log_type: 'admin_op',
+          memo: '',
+          point: 0,
+          user_id: ''
+        },
+        visible: true,
+        callback: log => {
+          this.logs.unshift(log)
+        },
+      })
+    },
   },
+
+  components: {
+    Pagination,
+  }
 
 }
 </script>

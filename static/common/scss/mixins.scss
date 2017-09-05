@@ -1,8 +1,8 @@
-@function virtual-pixel($value) {
+@function virtual-m-pixel($value) {
   @return ($value / 1242) * 100vw;
 }
 
-@function virtual-rem($value) {
+@function virtual-m-rem($value) {
   @return $value * 0.0189rem;
 }
 

@@ -1,30 +1,20 @@
 <template>
-<div class="tile is-ancestor is-vertical root-container">
-  <div class="top-bar flex-fixed-size">
-    <router-link class="title-bar" :to="{name: 'postList'}" tag="div">
-      <h4 class="title is-4">{{forumInfo.title}}</h4>
-    </router-link>
-    <nav class="nav">
-      <div class="nav-left has-text-left">
-        <span v-show="inApp" class="icon image-icon icon-back" @click.prevent="onBtnBackClicked"></span>
+  <div class="root-container">
+    <nav class="header level is-mobile">
+      <div class="level-left">
+        <p class="level-item">-</p>
       </div>
-      <div class="nav-center">
-      </div>
-      <div class="nav-right has-text-right top-icon">
-        <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
-        <a v-if="$route.name == 'postList'" class="icon image-icon icon-user" @click.prevent="showPage('personalPage')"></a>
-        <a v-if="$route.name == 'postList'" class="button level-button is-info" @click.prevent="showPage('newPost')">{{$t('forum.postList.newPost')}}</a>
-        <a v-if="$route.name == 'detail'" class="button level-button is-info" @click.prevent="showPage('newComment')">{{$t('forum.writeComment.btnTitle')}}</a>
+      <div class="level-right">
+        <router-link class="level-item icon icon-user" :to="{name: 'search'}"></router-link>
+        <router-link class="level-item icon icon-search" :to="{name: 'search'}"></router-link>
       </div>
     </nav>
+    <transition :name="transitionName">
+      <router-view class="content-container flex-take-rest"> </router-view>
+    </transition>
   </div>
-  <transition :name="transitionName">
-    <router-view class="content-container flex-take-rest forum"> </router-view>
-  </transition>
-</div>
 </template>
 <script>
-
 import Vue from '../../vue-installed'
 import {
   mapGetters,
@@ -60,7 +50,7 @@ export default {
           vm.updateForumInfo(result.forum)
           filter.init(result.keyword)
 
-          if(window.acsConfig.user){
+          if (window.acsConfig.user) {
             vm.setUserProfile(window.acsConfig.user)
           }
         })

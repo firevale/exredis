@@ -12,6 +12,7 @@ import stats from './stats'
 import customerService from './customerService'
 import notification from './notification'
 import wcp from './wcp'
+import point from './point'
 import error from 'common/i18n/zh-hans/error'
 
 export default {
@@ -158,6 +159,7 @@ export default {
   operateLog,
   stats,
   wcp,
+  point,
   customerService,
   notification,
   error

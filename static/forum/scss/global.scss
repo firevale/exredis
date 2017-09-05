@@ -1,6 +1,6 @@
 html {
   font-size: 12px !important;
-  -webkit-text-size-adjust: none; 
+  -webkit-text-size-adjust: none;
 }
 
 body {
@@ -18,28 +18,11 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-body:not(.in-app) {
-  .show-in-app {
-    display: none;
-  }
-}
-
-body.in-app *:not(input) {
-  user-select: none;
-}
-
-body.in-app {
-  .ql-editor,
-  .ql-editor * {
-    user-select: text;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-}
 
 #app {
   width: 100vw;
   height: 100vh;
-  background-color: $white;
+  background-color: $grey;
   transform: translateZ(0);
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
@@ -55,6 +38,28 @@ body.in-app {
   position: relative;
   &.is-ancestor {
     margin: 0;
+  }
+}
+
+.content-container {
+  margin: 0 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  -ms-overflow-style: none;
+  position: relative;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  &.slide-right-enter-active,
+  &.slide-right-leave-active,
+  &.slide-left-enter-active,
+  &.slide-left-leave-active {
+    flex-basis: calc(100% - 5rem);
+  }
+  &.slide-right-enter-active,
+  &.slide-left-enter-active {
+    top: calc(5rem - 100%);
   }
 }
 
@@ -131,29 +136,6 @@ button[type="submit"].button,
 
 input.input:focus {
   border-color: $blue;
-}
-
-.content-container {
-  margin: 0 1.5rem;
-  background-color: $white;
-  overflow: hidden;
-  display: flex;
-  flex-flow: column nowrap;
-  -ms-overflow-style: none;
-  position: relative;
-  &::-webkit-scrollbar {
-    width: 0 !important;
-  }
-  &.slide-right-enter-active,
-  &.slide-right-leave-active,
-  &.slide-left-enter-active,
-  &.slide-left-leave-active {
-    flex-basis: calc(100% - 5rem);
-  }
-  &.slide-right-enter-active,
-  &.slide-left-enter-active {
-    top: calc(5rem - 100%);
-  }
 }
 
 .flex-fixed-size {

@@ -7,4 +7,10 @@
    inserted_at: '积分时间',
    user_id: '用户ID',
    user: '用户',
+
+   task: {
+     add: '添加新任务',
+     taskbar: '任务栏',
+     
+   },
  }

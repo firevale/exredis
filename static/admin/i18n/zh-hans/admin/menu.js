@@ -36,4 +36,9 @@ export default {
   pointLog: '积分纪录',
   pointGoods: '商品管理',
   pointOrder: '订单管理',
+  pointTasks: '积分任务',
+  pointTaskbar: '任务栏',
+  pointDaySign: '日常签到',
+  pointDayQuestion: '每日问答',
+  pointRoulette: '大轮盘',
 }

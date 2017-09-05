@@ -1,27 +1,26 @@
 <template>
   <div class="content-item has-bottom-line">
     <div class="level is-mobile">
-      <v-touch class="level-left level-item is-clickable" @tap="showDetail">
+      <v-touch class="level-item is-clickable" @tap="showDetail">
         <div class="tile is-vertical">
           <div class="tile">
-            <h5 class="title is-5 fn-nowrap" style="width: calc(100vw - 10rem);">[{{ itemData.section.title }}] {{ itemData.title }}</h5>
+            <h5 class="title is-5"><span class="section-name">[{{ itemData.section.title }}]</span> {{ itemData.title }}</h5>
             <a v-show="itemData.newComment" class="tag is-outlined">{{ $t('forum.personal.newComment') }}</a>
           </div>
           <div class="tile">
             <span class="size-1-1 is-thickness is-dark">{{ itemData.inserted_at | formatServerDateTime }}</span>
             <span class="size-1-1 is-thickness is-dark" style="margin: 0 1rem">|</span>
             <span class="size-1-1 is-thickness is-dark">{{ itemData.comms + '/' + itemData.reads }}</span>
+            <v-touch v-if="isManager && !itemData.active" class="is-narrow is-clickable" tag="span">
+              <span class="icon image-icon icon-lock is-small"></span>
+              <span class="is-danger" @click.prevent="confirmDeArchivePost"> {{ $t('forum.detail.openPost')}}</span>
+            </v-touch>
+            <v-touch v-else class="is-narrow is-clickable" tag="span">
+              <span class="icon image-icon icon-trash is-small"></span>
+              <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
+            </v-touch>
           </div>
         </div>
-      </v-touch>
-      <v-touch v-if="isManager && !itemData.active" class="level-right level-item is-narrow is-clickable" tag="div"
-        style="height:4rem">
-        <span class="icon image-icon icon-lock is-small"></span>
-        <span class="is-danger" style="margin-left:0.25rem" @click.prevent="confirmDeArchivePost"> {{ $t('forum.detail.openPost')}}</span>
-      </v-touch>
-      <v-touch v-else class="level-right level-item is-narrow is-clickable" tag="div" style="height:4rem">
-        <span class="icon image-icon icon-trash is-small"></span>
-        <span class="is-danger" @click.prevent="confirmDeletePost"> {{ $t('forum.personal.deleteBtn') }}</span>
       </v-touch>
     </div>
   </div>

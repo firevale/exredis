@@ -178,6 +178,10 @@ export default new Router({
           name: 'PointRoulette',
           path: 'pointRoulette',
           component: require('../views/app/pointTask/pointRoulette')
+        },{
+          name: 'EditPointGoods',
+          path: 'pointMall/edit_goods',
+          component: require('../views/app/pointMall/editGoods')
         },
       ],
     }, {

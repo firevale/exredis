@@ -8,7 +8,7 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <router-link class="button is-primary pull-right" :to="{name: 'EditGoods', params: {goodsId: '', currency: currency}}">
+    <router-link class="button is-primary pull-right" :to="{name: 'EditPointGoods', params: {goodsId: ''}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
     </router-link>
     <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
@@ -17,8 +17,9 @@
           <div class="columns">
             <div class="column is-parent is-one-third">
               <figure class="image" style="display: block">
-                <img :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/256x256?text=未上传'"
+                <img v-if="goods.pic" :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/256x256?text=未上传'"
                   style="width:120px; height:120px;"></img>
+                <img v-else src="https://placehold.it/256x256?text=未上传" style="width:120px; height:120px;"></img>
               </figure>
             </div>
             <div class="column is-parent is-vertical">
@@ -100,7 +101,6 @@ export default {
       total: 1,
       recordsPerPage: 8,
       appId: "",
-      currency: "",
     }
   },
 
@@ -116,14 +116,13 @@ export default {
   watch: {
     app(newVal) {
       this.appId = newVal.id
-      this.currency = newVal.currency
       this.fetchPointGoods(this.page, this.recordsPerPage)
     }
   },
 
   methods: {
     getPrice: function(price) {
-      return "¥" + parseFloat(price / 100).toFixed(2)
+      return price + "积分"
     },
 
     onPageChange: function(page) {
@@ -142,8 +141,7 @@ export default {
       this.$router.push({
         name: 'EditPointGoods',
         params: {
-          goodsId: goods_id,
-          currency: this.currency
+          goodsId: goods_id
         }
       })
     },

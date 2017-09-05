@@ -158,6 +158,8 @@ defmodule Acs.Web.AdminRouter do
       post  "/toggle_goods_status", PointMallController, :toggle_goods_status
       post  "/delete_goods", PointMallController, :delete_goods
       post  "/get_goods_detail", PointMallController, :get_goods_detail
+      post  "/update_goods_pic", PointMallController, :update_goods_pic
+      post  "/update_goods_content_pic", PointMallController, :update_goods_content_pic
     end
 
   end

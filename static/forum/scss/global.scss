@@ -44,7 +44,7 @@ input::-webkit-inner-spin-button {
 }
 
 .content-container {
-  margin: 0 1.5rem;
+  width: 100%;
   overflow: hidden;
   display: flex;
   flex-flow: column nowrap;
@@ -150,6 +150,10 @@ input.input:focus {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
+}
+
+.has-divider {
+  margin-bottom: virtual-m-rem(40);
 }
 
 .has-bottom-line {

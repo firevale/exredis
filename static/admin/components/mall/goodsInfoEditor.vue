@@ -17,8 +17,9 @@
           <div class="columns">
             <div class="column is-parent is-one-third">
               <figure class="image" style="display: block">
-                <img :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/256x256?text=未上传'"
+                <img v-if="goods.pic" :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/256x256?text=未上传'"
                   style="width:120px; height:120px;"></img>
+                <img v-else src="https://placehold.it/256x256?text=未上传" style="width:120px; height:120px;"></img>
               </figure>
             </div>
             <div class="column is-parent is-vertical">

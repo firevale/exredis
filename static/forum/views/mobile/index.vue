@@ -49,60 +49,65 @@
           | 论坛版块
         </p>
       </header>
-      <div class="card-content forum-info">
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            <p>综合讨论 </p>
-            <p><small> 最新公告，更新维护</small></p>
+      <div class="card-content">
+        <div class="forum-info">
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              <p>综合讨论 </p>
+              <p><small> 最新公告，更新维护</small></p>
+            </div>
+          </div>
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              综合讨论
+              <br><small> 最新公告，更新维护</small>
+            </div>
+          </div>
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              综合讨论
+              <br><small> 最新公告，更新维护</small>
+            </div>
+          </div>
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              综合讨论
+              <br><small> 最新公告，更新维护</small>
+            </div>
+          </div>
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              综合讨论
+              <br><small> 最新公告，更新维护</small>
+            </div>
+          </div>
+          <div class="forum-item">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/1_16.png">
+            </figure>
+            <div class="forum-content">
+              综合讨论
+              <br><small> 最新公告，更新维护</small>
+            </div>
           </div>
         </div>
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            综合讨论
-            <br><small> 最新公告，更新维护</small>
-          </div>
-        </div>
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            综合讨论
-            <br><small> 最新公告，更新维护</small>
-          </div>
-        </div>
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            综合讨论
-            <br><small> 最新公告，更新维护</small>
-          </div>
-        </div>
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            综合讨论
-            <br><small> 最新公告，更新维护</small>
-          </div>
-        </div>
-        <div class="forum-item">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/1_16.png">
-          </figure>
-          <div class="forum-content">
-            综合讨论
-            <br><small> 最新公告，更新维护</small>
-          </div>
+        <div>
+          <a class="button load-more">查看更多</a>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-defmodule Acs.StatsApplication do
+defmodule AcsStats.Application do
   @moduledoc """
   The Acs Application Service.
 
@@ -13,7 +13,7 @@ defmodule Acs.StatsApplication do
     import Supervisor.Spec, warn: false
 
     Supervisor.start_link([
-      supervisor(Acs.StatsRepo, []),
-    ], strategy: :one_for_one, name: Acs.StatsSupervisor)
+      supervisor(AcsStats.Repo, []),
+    ], strategy: :one_for_one, name: AcsStats.Supervisor)
   end
 end

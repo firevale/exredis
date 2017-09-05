@@ -1,4 +1,4 @@
-defmodule Acs.StatsRepo do
+defmodule AcsStats.Repo do
   use Ecto.Repo, otp_app: :acs_stats
 
   @doc """

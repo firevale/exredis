@@ -1,4 +1,4 @@
-defmodule Acs.Mixfile do
+defmodule AcsStats.Mixfile do
   use Mix.Project
 
   def project do
@@ -22,7 +22,7 @@ defmodule Acs.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Acs.StatsApplication, []},
+      mod: {AcsStats.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

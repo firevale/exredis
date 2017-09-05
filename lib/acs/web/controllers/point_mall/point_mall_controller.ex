@@ -31,7 +31,7 @@ defmodule Acs.Web.PointMallController do
               order_by: [desc: g.inserted_at],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active])
+              select: map(g, [:id, :name, :pic, :price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
 
         query = if(String.length(keyword)>0) do
           query |> where([p], p.id in ^ids)
@@ -92,10 +92,10 @@ defmodule Acs.Web.PointMallController do
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
       %PointMallGoods{} = goods ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
+        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "point_goods_icon/#{goods_id}")
         PointMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         RedisPointMall.refresh(goods)
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
+        AdminController.add_operate_log(acs_admin_id, app_id, "update_point_goods_pic", %{pic: image_path})
         conn |> json(%{success: true, pic_url: image_path})
 
       _ ->
@@ -126,6 +126,9 @@ defmodule Acs.Web.PointMallController do
                 "price" => price,
                 "postage" => postage,
                 "stock" => stock,
+                "is_virtual" => is_virtual,
+                "begin_time" => begin_time,
+                "end_time" => end_time,
                 "is_new" => is_new} = goods) do
     case is_new do
       true ->
@@ -134,12 +137,12 @@ defmodule Acs.Web.PointMallController do
         if(count > 0) do
           conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
         else
-          goods = goods |> Map.put("user_id", user_id)
+          goods = Map.put(goods, "user_id", user_id)
           case PointMallGoods.changeset(%PointMallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               RedisPointMall.refreshById(id)
-              AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
+              AdminController.add_operate_log(user_id, app_id, "update_point_goods", goods)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: _errors}} ->
               conn |> json(%{success: false, i18n_message: "error.server.networkError"})
@@ -154,10 +157,10 @@ defmodule Acs.Web.PointMallController do
 
           %PointMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
-            changed = PointMallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock})
+            changed = PointMallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock, is_virtual: is_virtual, begin_time: begin_time, end_time: end_time})
             changed |> Repo.update!
             RedisPointMall.refreshById(id)
-            AdminController.add_operate_log(user_id, app_id, "update_goods", changed.changes)
+            AdminController.add_operate_log(user_id, app_id, "update_point_goods", changed.changes)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
     end
@@ -174,7 +177,7 @@ defmodule Acs.Web.PointMallController do
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       %PointMallGoods{} = goods ->
         PointMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
-        AdminController.add_operate_log(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => !goods.active})
+        AdminController.add_operate_log(user_id, app_id, "toggle_point_goods_status", %{"goods_id" => goods_id, "active" => !goods.active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end
@@ -195,7 +198,7 @@ defmodule Acs.Web.PointMallController do
           case Repo.delete(goods) do
             {:ok, _} ->
               RedisPointMall.delete(goods_id)
-              AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
+              AdminController.add_operate_log(user_id, app_id, "delete_point_goods", params)
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
             {:error, %{errors: errors}} ->
@@ -209,7 +212,7 @@ defmodule Acs.Web.PointMallController do
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = RedisMall.find(goods_id)
+    goods = RedisPointMall.find(goods_id)
     add_goods_click(goods_id,1)
     conn |> json(%{success: true, goods: goods})
   end

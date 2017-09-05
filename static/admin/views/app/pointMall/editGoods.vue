@@ -22,21 +22,31 @@
             </div>
             <div class="field is-horizontal">
               <div class="field-label">
-                <label class="label">{{ $t('admin.mall.goods.currency') }}</label>
+                <label class="label">{{ $t('admin.mall.goods.price') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="text" disabled v-model.trim="goods.currency">
+                <input class="input" type="number" v-model.trim="goods.price">
               </div>
             </div>
             <div class="field is-horizontal">
               <div class="field-label">
-                <label class="label">{{ $t('admin.mall.goods.price') }}</label>
+                <label class="label">{{ $t('admin.mall.goods.stock') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="number" v-model.trim="realPrice">
+                <input class="input" type="number" v-model.trim="goods.stock">
               </div>
             </div>
             <div class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.is_virtual') }}</label>
+              </div>
+              <div class="field-body">
+                <label class="checkbox">
+                  <input type="checkbox" v-model.trim="goods.is_virtual">
+                </label>
+              </div>
+            </div>
+            <div v-if="!goods.is_virtual" class="field is-horizontal">
               <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
               </div>
@@ -46,10 +56,14 @@
             </div>
             <div class="field is-horizontal">
               <div class="field-label">
-                <label class="label">{{ $t('admin.mall.goods.stock') }}</label>
+                <label class="label">{{ $t('admin.mall.goods.time') }}</label>
               </div>
               <div class="field-body">
-                <input class="input" type="number" v-model.trim="goods.stock">
+                从&nbsp;
+                <el-date-picker v-model.trim="goods.begin_time" :editable="false" type="date" :placeholder="$t('admin.mall.goods.begin_time')">
+                </el-date-picker>&nbsp;到&nbsp;
+                <el-date-picker v-model.trim="goods.end_time" :editable="false" type="date" :placeholder="$t('admin.mall.goods.end_time')">
+                </el-date-picker>
               </div>
             </div>
           </article>
@@ -131,7 +145,6 @@ const touchMap = new WeakMap()
 export default {
   mounted: function() {
     let gid = this.$route.params.goodsId
-    let currency = this.$route.params.currency
     if (gid) {
       this.isNew = false
       this.getGoodsDetail(gid)
@@ -145,8 +158,10 @@ export default {
         price: 0,
         postage: 0,
         stock: 0,
-        currency: currency,
         app_id: this.$route.params.appId,
+        is_virtual: true,
+        begin_time: '',
+        end_time: '',
       }
       this.pics = new Array(6);
     }
@@ -191,7 +206,6 @@ export default {
       publishing: false,
       isNew: false,
       editor: undefined,
-      realPrice: 0.00,
       realPostage: 0.00,
       bagId: "picBag"
     }
@@ -221,22 +235,12 @@ export default {
   },
 
   watch: {
-    realPrice: function() {
-      this.goods.price = Math.round(this.realPrice * 100)
-    },
     realPostage: function() {
       this.goods.postage = Math.round(this.realPostage * 100)
     }
   },
 
   methods: {
-    getPrice: function(price) {
-      if (price)
-        return parseFloat(price / 100).toFixed(2)
-      else
-        return 0
-    },
-
     setEditor: function(editor) {
       this.editor = editor
     },
@@ -252,7 +256,7 @@ export default {
     onShowImageUpload: function(index) {
       if (this.goods.id.length > 0) {
         showImageUploadDialog(this.$i18n, {
-          postAction: '/admin_actions/mall/update_goods_pic',
+          postAction: '/admin_actions/point_mall/update_goods_pic',
           data: {
             goods_id: this.goods.id
           },
@@ -271,12 +275,11 @@ export default {
 
     getGoodsDetail: async function(goodsId) {
       this.loading = true
-      let result = await this.$acs.getGoodsDetail({
+      let result = await this.$acs.getPointGoodsDetail({
         goods_id: goodsId
       })
       if (result.success) {
         this.goods = result.goods
-        if (this.goods.price > 0) this.realPrice = parseFloat(this.goods.price / 100).toFixed(2)
         if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
           2)
         this.pics = this.goods.pic ? this.goods.pic.split('|') : "|||||".split('|')
@@ -287,7 +290,7 @@ export default {
 
     onInsertImage: function(editor) {
       showFileUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/mall/update_goods_content_pic',
+        postAction: '/admin_actions/point_mall/update_goods_content_pic',
         accept: 'image/jpeg, image/png',
         data: {
           app_id: this.goods.app_id
@@ -322,13 +325,13 @@ export default {
           message: this.$t('admin.messages.confirmDeleteMallGoods'),
           type: 'danger',
           onOK: async _ => {
-            let result = await this.$acs.deleteMallGoods({
+            let result = await this.$acs.deletePointGoods({
               app_id: this.goods.app_id,
               goods_id: this.goods.id
             }, this.$t('admin.notification.message.mallGoodsDeleted'))
             if (result.success) {
               this.$router.replace({
-                name: 'EditMall',
+                name: 'EditPointGoods',
                 params: {
                   appId: this.goods.app_id
                 }
@@ -368,7 +371,7 @@ export default {
     },
 
     toggleStatus: async function() {
-      let result = await this.$acs.toggleGoodsStatus({
+      let result = await this.$acs.togglePointGoodsStatus({
         goods_id: this.goods.id
       }, this.$t('admin.operateSuccess'))
       if (result.success) {
@@ -404,7 +407,7 @@ export default {
 
     handleSubmit: async function() {
       this.saving = true
-      let result = await this.$acs.updateGoods({
+      let result = await this.$acs.updatePointGoods({
         id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,
@@ -413,7 +416,9 @@ export default {
         price: this.goods.price,
         postage: this.goods.postage,
         stock: this.goods.stock,
-        currency: this.goods.currency,
+        is_virtual: this.goods.is_virtual,
+        begin_time: this.goods.begin_time,
+        end_time: this.goods.end_time,
         is_new: this.isNew
       })
       if (result.success) {

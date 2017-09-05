@@ -1,15 +1,11 @@
 export default [{
-  path: '/forum/index',
-  name: 'forumList',
-  component: require('../views/mobile/forum.vue')
-}, {
   path: '/forum/:forumId',
   name: 'forum',
   component: require('../views/mobile/main.vue'),
   children: [{
     path: 'index',
-    name: 'postList',
-    component: require('../views/mobile/postList.vue')
+    name: 'index',
+    component: require('../views/mobile/index.vue')
   }, {
     path: 'search',
     name: 'search',

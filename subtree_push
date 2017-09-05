@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for p in extcp exes exsm exredis excache exutils
+do
+   git subtree push --prefix=apps/$p $p acs
+   git subtree split --rejoin --prefix=apps/$p 
+done

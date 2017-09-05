@@ -38,5 +38,9 @@ export default [{
     path: 'myProfile',
     name: 'myProfile',
     component: require('../views/mobile/myProfile.vue')
+  }, {
+    path: 'editMobile',
+    name: 'editMobile',
+    component: require('../views/mobile/editMobile.vue')
   }]
 }, ]

@@ -34,5 +34,9 @@ export default [{
     path: 'personalPage',
     name: 'personalPage',
     component: require('../views/mobile/personalPage.vue')
-  }, ]
+  }, {
+    path: 'myProfile',
+    name: 'myProfile',
+    component: require('../views/mobile/myProfile.vue')
+  }]
 }, ]

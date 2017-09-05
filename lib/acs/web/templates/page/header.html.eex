@@ -1,3 +1,0 @@
-<%= for file <- @conn.assigns[:link_files] || [] do %>
-<link href="<%= static_url(@conn, file) %>" rel="stylesheet"/>
-<% end %>

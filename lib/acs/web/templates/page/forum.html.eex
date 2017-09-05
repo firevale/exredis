@@ -1,1 +1,0 @@
-isAdmin: <%= @conn.private[:acs_is_forum_admin] %>,

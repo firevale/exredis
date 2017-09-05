@@ -1,6 +1,17 @@
+@import "common/scss/mixins";
 .icon {
-  &.nav-icon {
-    cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  &.icon-user {
+    width: virtual-m-rem(60);
+    height: virtual-m-rem(60);
+    background-image: url("~assets/themes/jqxs_mobile/1_06.png");
+  }
+  &.icon-search {
+    width: virtual-m-rem(60);
+    height: virtual-m-rem(60);
+    background-image: url("~assets/themes/jqxs_mobile/1_08.png");
   }
   &.icon-close {
     background-image: url("~assets/times@2x.png");

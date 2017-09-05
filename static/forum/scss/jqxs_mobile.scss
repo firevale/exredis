@@ -1,14 +1,20 @@
+@import "~normalize.css";
 @import "./variables";
 $primary: #b3182e;
-@import "common/scss/reset";
 @import "~bulma";
 @import "./bulma-fix";
+$fa-font-path: '~font-awesome/fonts/';
+@import '~font-awesome/scss/font-awesome';
 @import "common/scss/mixins";
 @import "./global";
 @import "./icons";
 @import 'common/scss/animation.scss';
 @import "./jqxs_m_p";
-.header{
-  height: virtual-rem(130);
+html {
+  font-size: 100%;
+}
+
+.header {
+  height: virtual-m-rem(130);
   background: $black;
 }

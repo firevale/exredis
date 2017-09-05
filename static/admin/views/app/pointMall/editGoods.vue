@@ -293,7 +293,7 @@ export default {
         postAction: '/admin_actions/point_mall/update_goods_content_pic',
         accept: 'image/jpeg, image/png',
         data: {
-          app_id: this.goods.app_id
+          goods_id: this.goods.id
         },
         headers: {
           'x-csrf-token': window.acsConfig.csrfToken

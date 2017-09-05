@@ -1,45 +1,45 @@
+@import "common/scss/mixins";
 .person {
-  display: flex;
-  flex-flow: column nowrap;
-  .info {
-    padding: 0.8rem 2rem 0.8rem;
-    font-size: 1.1rem;
-    figure {
-      margin-top: 0.4rem;
-      margin-right: 2rem;
+  width: 100%;
+  margin: 0 !important;
+  .media {
+    padding: .5rem 1rem;
+    margin-bottom: 1rem;
+    .media-left {
+      padding-top: virtual-rem(30);
     }
-    p {
-      line-height: 2rem;
+    .info {
+      margin: 0 0 0 .8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      line-height: virtual-rem(110);
+    }
+    .media-right {
+      p {
+        line-height: virtual-rem(80);
+        &:first-child {
+          margin-top: virtual-rem(20);
+        }
+        &:last-child {
+          margin-top: virtual-rem(30);
+        }
+      }
     }
   }
   .content {
     .content-item {
-      padding: 0.6rem 0;
-      .tile.is-vertical>.tile:not(:last-child) {
-        margin-bottom: 0.5rem;
+      margin-left: virtual-rem(30);
+      margin-right: virtual-rem(30);
+      .section-name {
+        color: #44adec;
+        font-weight: 400;
       }
       h5 {
-        display: inline-block;
-        margin-bottom: 0;
-      }
-      .has-background {
-        background-color: $bottom-line-light;
-      }
-      .tag.is-outlined {
-        margin-left: 1em;
-        padding: 0 .2em;
-        border-radius: 3px;
-        background-color: transparent;
-        border: 1px solid $primary;
-        color: $primary;
-      }
-      .level:not(:last-child) {
-        margin-bottom: 0;
-        padding: 0 1em 1em;
-      }
-      .subtitle {
-        font-size: 1.2em;
-        color: $bottom-line-dark;
+        width: 98vw;
+        word-wrap: break-word;
+        word-break: normal;
       }
     }
   }

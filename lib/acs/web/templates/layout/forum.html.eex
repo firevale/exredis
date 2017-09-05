@@ -43,7 +43,7 @@
         <% end %>
         show_logout: <%= @conn.params["can_log_out"] == "1" %>,
         imagesUrl: '<%= static_url(@conn, "/images/") %>',
-        defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
+        defaultAvatarUrl: '<%= static_url(@conn, "/images/themes/jqxs_mobile/19_03-2_03.png") %>',
         isMobileAccountSupported: <%= @is_mobile_account_supported %>,
         <%= render @view_module, @view_template, assigns %>
       }

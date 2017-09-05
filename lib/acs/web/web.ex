@@ -104,6 +104,10 @@ defmodule Acs.Web do
 
       alias  Acs.OperateLog
       alias  Acs.Web.AdminController
+
+      alias  Acs.PointLog
+      alias  Acs.PointMallGoods
+      alias  Acs.PointMallOrder
     end
   end
 

@@ -143,5 +143,13 @@ defmodule Acs.Web.AdminRouter do
       post  "/get_wcp_menu", AdminWcpController, :get_wcp_menu
       post  "/update_wcp_menu", AdminWcpController, :update_wcp_menu
     end
+
+    scope "/point" do
+      pipe_through :admin_app
+      post "/get_point_logs", PointController, :get_point_logs
+      post "/admin_add_point", PointController, :admin_add_point
+      
+    end
+
   end
 end

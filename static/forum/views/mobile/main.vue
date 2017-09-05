@@ -1,6 +1,6 @@
 <template>
 <div class="tile is-ancestor is-vertical root-container">
-  <div class="top-bar flex-fixed-size">
+  <div class="header flex-fixed-size">
     <router-link class="title-bar" :to="{name: 'postList'}" tag="div">
       <h4 class="title is-4">{{forumInfo.title}}</h4>
     </router-link>
@@ -13,7 +13,6 @@
       <div class="nav-right has-text-right top-icon">
         <router-link v-if="$route.name == 'postList'" class="icon image-icon icon-search" :to="{name: 'search'}"></router-link>
         <a v-if="$route.name == 'postList'" class="icon image-icon icon-user" @click.prevent="showPage('personalPage')"></a>
-        <a v-if="$route.name == 'postList'" class="button level-button is-info" @click.prevent="showPage('newPost')">{{$t('forum.postList.newPost')}}</a>
         <a v-if="$route.name == 'detail'" class="button level-button is-info" @click.prevent="showPage('newComment')">{{$t('forum.writeComment.btnTitle')}}</a>
       </div>
     </nav>

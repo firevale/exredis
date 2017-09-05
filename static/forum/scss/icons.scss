@@ -3,6 +3,11 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% 100%;
+  &.icon-jqxs {
+    width: virtual-m-rem(211);
+    height: virtual-m-rem(108);
+    background-image: url("~assets/themes/jqxs_mobile/1_03.png");
+  }
   &.icon-user {
     width: virtual-m-rem(60);
     height: virtual-m-rem(60);

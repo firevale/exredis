@@ -140,11 +140,6 @@ export default new Router({
           component: require('../views/app/stats/statsTiming')
         },
         {
-          name: 'PointSetting',
-          path: 'pointSetting',
-          component: require('../views/app/pointMall/pointSetting')
-        },
-        {
           name: 'PointLog',
           path: 'pointLog',
           component: require('../views/app/pointMall/pointLog')
@@ -158,6 +153,31 @@ export default new Router({
           name: 'PointOrder',
           path: 'pointOrder',
           component: require('../views/app/pointMall/pointOrder')
+        },
+        {
+          name: 'PointSetting',
+          path: 'pointSetting',
+          component: require('../views/app/pointTask/pointSetting')
+        },
+        {
+          name: 'PointTaskbar',
+          path: 'pointTaskbar',
+          component: require('../views/app/pointTask/pointTaskbar')
+        },
+        {
+          name: 'PointDaySign',
+          path: 'pointDaySign',
+          component: require('../views/app/pointTask/pointDaySign')
+        },
+        {
+          name: 'PointDayQuestion',
+          path: 'pointDayQuestion',
+          component: require('../views/app/pointTask/pointDayQuestion')
+        },
+        {
+          name: 'PointRoulette',
+          path: 'pointRoulette',
+          component: require('../views/app/pointTask/pointRoulette')
         },
       ],
     }, {

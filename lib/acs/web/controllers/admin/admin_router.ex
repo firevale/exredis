@@ -151,5 +151,14 @@ defmodule Acs.Web.AdminRouter do
       
     end
 
+    scope "/point_mall" do
+      pipe_through :admin_app
+      post  "/fetch_goods", PointMallController, :fetch_goods
+      post  "/update_goods", PointMallController, :update_goods
+      post  "/toggle_goods_status", PointMallController, :toggle_goods_status
+      post  "/delete_goods", PointMallController, :delete_goods
+      post  "/get_goods_detail", PointMallController, :get_goods_detail
+    end
+
   end
 end

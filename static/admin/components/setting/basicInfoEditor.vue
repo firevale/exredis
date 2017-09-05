@@ -1,48 +1,63 @@
 <template>
   <div class="tile is-ancestor">
-    <div class="tile is-parent">
-      <article class="tile is-child">
+    <div class="tile is-parent is-vertical">
+      <article class="tile is-child is-12">
+        <div class="column">
+          <a class="button is-primary" style="min-width: 100px" @click="addNewSetting">
+            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.setting.add') }}
+          </a>
+        </div>
+      </article>
+      <article class="tile is-child is-12">
         <div class="table-responsive">
-          <table class="table is-bordered is-striped is-narrow goods-table">
-            <thead>
-              <tr>
-                <th>{{ $t('admin.setting.configName') }}</th>
-                <th>{{ $t('admin.setting.configValue')}}</th>
-                <th>{{ $t('admin.setting.memo')}}</th>
-                <th>{{ $t('admin.setting.active')}}</th>
-                <th>{{ $t('admin.setting.edit')}}</th>
-                <th>{{ $t('admin.setting.delete')}}</th>
-              </tr>
-            </thead>
-            <tfoot>
-              <tr>
-                <th :colspan="6" style="text-align: center; vertical-align: bottom; height: 60px; border: none">
-                  <a class="button is-primary" style="min-width: 100px" @click="addNewSetting">
-                    <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.setting.add') }}
-                  </a>
-                </th>
-              </tr>
-            </tfoot>
-            <tbody v-show="settings && settings.length > 0">
-              <tr v-for="(setting, index) in settings">
-                <td> {{ setting.name }} </td>
-                <td> {{ setting.value }} </td>
-                <td> {{ setting.memo }} </td>
-                <td v-if="setting.active">正常</td>
-                <td v-else>禁用</td>
-                <td class="is-icon">
-                  <a @click.prevent="editSettingInfo(setting, index)">
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                </td>
-                <td class="is-icon">
-                  <a @click.prevent="delSetting(setting.name, index)">
-                    <i class="fa fa-trash-o"></i>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
+            <div class="column">
+              <p>{{ $t('admin.setting.configName') }}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.setting.configValue') }}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.setting.memo')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.setting.active')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.setting.edit')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.setting.delete')}}</p>
+            </div>
+          </div>
+          <div v-if="settings">
+            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="settings && settings.length > 0"
+              v-for="(setting, index) in settings" :key="setting.id">
+              <div class="column">
+                <p>{{ setting.name }}</p>
+              </div>
+              <div class="column">
+                <p>{{ setting.value }}</p>
+              </div>
+              <div class="column">
+                <p>{{ setting.memo }}</p>
+              </div>
+              <div class="column">
+                <p v-if="setting.active">正常</p>
+                <p v-else>禁用</p>
+              </div>
+              <div class="column">
+                <a @click.prevent="editSettingInfo(setting, index)">
+                  <i class="fa fa-pencil"></i>
+                </a>
+              </div>
+              <div class="column">
+                <a @click.prevent="delSetting(setting.name, index)">
+                  <i class="fa fa-trash-o"></i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
     </div>

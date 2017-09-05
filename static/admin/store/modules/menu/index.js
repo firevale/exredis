@@ -194,16 +194,7 @@ const state = {
         label: i18n.t('admin.menu.pointsMall'),
         expanded: false,
       },
-
       children: [{
-        name: 'PointSetting',
-        path: '/admin/app/:appId/pointSetting',
-        meta: {
-          icon: 'fa-registered',
-          level: '1,2,',
-          label: i18n.t('admin.menu.pointSetting'),
-        },
-      }, {
         name: 'PointLog',
         path: '/admin/app/:appId/pointLog',
         meta: {
@@ -225,6 +216,52 @@ const state = {
           label: i18n.t('admin.menu.pointOrder'),
         },
       }, ]
+    },
+    {
+      meta: {
+        must: 'has_mall',
+        icon: 'fa-tasks',
+        level: '1,2,',
+        label: i18n.t('admin.menu.pointTasks'),
+        expanded: false,
+      },
+      children: [{
+        name: 'PointSetting',
+        path: '/admin/app/:appId/pointSetting',
+        meta: {
+          icon: 'fa-registered',
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointSetting'),
+        },
+      }, {
+        name: 'PointTaskbar',
+        path: '/admin/app/:appId/pointTaskbar',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointTaskbar'),
+        }
+      }, {
+        name: 'PointDaySign',
+        path: '/admin/app/:appId/pointDaySign',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointDaySign'),
+        },
+      }, {
+        name: 'PointDayQuestion',
+        path: '/admin/app/:appId/pointDayQuestion',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointDayQuestion'),
+        },
+      }, {
+        name: 'PointRoulette',
+        path: '/admin/app/:appId/pointRoulette',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.pointRoulette'),
+        },
+      },]
     },
     {
       path: '/admin/app/:appId/activity',

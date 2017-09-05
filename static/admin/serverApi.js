@@ -339,6 +339,26 @@ export default {
       addPoint(params, successMessage) {
         return post('/admin_actions/point/admin_add_point', params, successMessage)
       },
+
+      fetchPointGoods(params) {
+        return post('/admin_actions/point_mall/fetch_goods', params)
+      },
+
+      updatePointGoods(params) {
+        return post('/admin_actions/point_mall/update_goods', params)
+      },
+
+      togglePointGoodsStatus(params) {
+        return post('/admin_actions/point_mall/toggle_goods_status', params)
+      },
+
+      deletePointGoods(params) {
+        return post('/admin_actions/point_mall/delete_goods', params)
+      },
+
+      getPointGoodsDetail(params) {
+        return post('/admin_actions/point_mall/get_goods_detail', params)
+      },
     }
   }
 }

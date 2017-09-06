@@ -38,6 +38,14 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
+.load-more {
+  width: 100%;
+  margin: virtual-m-rem(40) 0;
+  height: virtual-m-rem(110);
+  background-color: $grey;
+  color: black;
+}
+
 .index-page {
   .index-swiper {
     height: virtual-m-rem(600);
@@ -52,15 +60,14 @@ $fa-font-path: '~font-awesome/fonts/';
     }
   }
   .forum-section {
-    .forum-info{
+    .forum-info {
       display: flex;
       flex-wrap: wrap;
-
     }
     .forum-item {
       height: virtual-m-rem(200);
       width: 50%;
-      padding: 0 virtual-m-rem(33);
+      padding: 0 virtual-m-rem(30);
       display: flex;
       align-items: center;
       img {
@@ -68,7 +75,7 @@ $fa-font-path: '~font-awesome/fonts/';
         height: virtual-m-rem(130);
       }
       .forum-content {
-        margin-left:virtual-m-rem(36);
+        margin-left: virtual-m-rem(36);
         line-height: virtual-m-rem(60);
         small {
           font-size: virtual-m-rem(36);

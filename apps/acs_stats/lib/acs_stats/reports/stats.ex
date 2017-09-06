@@ -1,4 +1,4 @@
-defmodule AcsStats.Stats do
+defmodule AcsStats.Reports do
   @moduledoc """
   The Stats context.
   """
@@ -6,7 +6,7 @@ defmodule AcsStats.Stats do
   import Ecto.Query, warn: false
   alias AcsStats.Repo
 
-  alias AcsStats.Stats.DailyDeviceRetention
+  alias AcsStats.Reports.DailyDeviceRetention
 
   @doc """
   Returns the list of stats_daily_device_retentions.
@@ -102,7 +102,7 @@ defmodule AcsStats.Stats do
     DailyDeviceRetention.changeset(daily_device_retention, %{})
   end
 
-  alias AcsStats.Stats.DailyDeviceTiming
+  alias AcsStats.Reports.DailyDeviceTiming
 
   @doc """
   Returns the list of stats_daily_device_timings.
@@ -198,7 +198,7 @@ defmodule AcsStats.Stats do
     DailyDeviceTiming.changeset(daily_device_timing, %{})
   end
 
-  alias AcsStats.Stats.DailyReport
+  alias AcsStats.Reports.DailyReport
 
   @doc """
   Returns the list of stats_daily_reports.
@@ -294,7 +294,7 @@ defmodule AcsStats.Stats do
     DailyReport.changeset(daily_report, %{})
   end
 
-  alias AcsStats.Stats.DailyUserRetention
+  alias AcsStats.Reports.DailyUserRetention
 
   @doc """
   Returns the list of stats_daily_user_retentions.
@@ -390,7 +390,7 @@ defmodule AcsStats.Stats do
     DailyUserRetention.changeset(daily_user_retention, %{})
   end
 
-  alias AcsStats.Stats.DailyUserTiming
+  alias AcsStats.Reports.DailyUserTiming
 
   @doc """
   Returns the list of stats_daily_user_timings.

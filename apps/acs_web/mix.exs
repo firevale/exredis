@@ -44,6 +44,7 @@ defmodule AcsWeb.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:acs, in_umbrella: true},
+      {:acs_stats, in_umbrella: true},
       {:cowboy, "~> 1.0"}
     ]
   end

@@ -13,6 +13,7 @@ defmodule Acs.Apps.AppSdkPaymentCallback do
     timestamps()
   end
 
+  use Utils.Redisable
   @sdks Application.get_env(:acs, :sdks, [])
 
   @doc false

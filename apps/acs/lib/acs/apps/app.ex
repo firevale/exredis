@@ -46,6 +46,8 @@ defmodule Acs.Apps.App do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%App{} = app, attrs) do
     app

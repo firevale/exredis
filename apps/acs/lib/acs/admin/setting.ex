@@ -4,7 +4,7 @@ defmodule Acs.Admin.Setting do
   alias Acs.Admin.Setting
 
   @derive {Poison.Encoder, except: [:__meta__]}
-  
+
   schema "admin_settings" do
     field :name, :string
     field :value, :binary
@@ -14,6 +14,8 @@ defmodule Acs.Admin.Setting do
 
     timestamps()
   end
+
+  use Utils.Redisable
 
   @doc false
   def changeset(%Setting{} = setting, attrs) do

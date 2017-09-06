@@ -16,6 +16,8 @@ defmodule Acs.Forums.ForumComment do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%ForumComment{} = forum_comment, attrs) do
     forum_comment

@@ -13,6 +13,8 @@ defmodule Acs.Admin.User do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%Acs.Admin.User{} = user, attrs) do
     user

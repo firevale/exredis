@@ -25,6 +25,8 @@ defmodule Acs.Forums.ForumPost do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%ForumPost{} = forum_post, attrs) do
     forum_post

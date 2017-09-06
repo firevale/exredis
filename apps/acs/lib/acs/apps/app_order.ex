@@ -46,6 +46,8 @@ defmodule Acs.Apps.AppOrder do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @platforms Application.get_env(:acs, :platforms, [])
   @sdks Application.get_env(:acs, :sdks, [])
 

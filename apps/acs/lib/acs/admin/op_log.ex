@@ -15,6 +15,8 @@ defmodule Acs.Admin.OpLog do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%OpLog{} = op_log, attrs) do
     op_log

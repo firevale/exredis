@@ -11,6 +11,8 @@ defmodule Acs.Forums.ForumManager do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%ForumManager{} = forum_manager, attrs) do
     forum_manager

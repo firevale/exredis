@@ -19,9 +19,9 @@ defmodule AcsStats.Reports.DailyReport do
     field :total_fee, :integer, default: 0   # daily paid amount sum
 
     has_many :user_retentions, AcsStats.Reports.DailyUserRetention, foreign_key: :report_id  #1，2，3，5，7，14，30
-    has_many :user_timings, AcsStats.Reports.DailyUserTiming  # 0-5，5-10，10-15～ 55-60，60+
-    has_many :device_retentions, AcsStats.Reports.DailyDeviceRetention 
-    has_many :device_timings, AcsStats.Reports.DailyDeviceTiming 
+    has_many :user_timings, AcsStats.Reports.DailyUserTiming, foreign_key: :report_id # 0-5，5-10，10-15～ 55-60，60+
+    has_many :device_retentions, AcsStats.Reports.DailyDeviceRetention, foreign_key: :report_id  
+    has_many :device_timings, AcsStats.Reports.DailyDeviceTiming, foreign_key: :report_id  
 
     timestamps()
   end

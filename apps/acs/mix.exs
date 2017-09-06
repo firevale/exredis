@@ -39,6 +39,8 @@ defmodule Acs.Mixfile do
       {:mariaex, ">= 0.0.0"},
       {:ecto, "~> 2.1"},
       {:exutils, in_umbrella: true},
+      {:exredis, in_umbrella: true},
+      {:excache, in_umbrella: true},
     ]
   end
 

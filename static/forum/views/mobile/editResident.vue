@@ -17,6 +17,6 @@
       <span>&nbsp;身份证号错误</span>
     </p>
     <p class="tip-msg">确认后不可更改，请填写您的真实身份信息</p>
-    <a class="buttons btn-binding binding"></a>
+    <a class="buttons btn-confirm confirm"></a>
   </div>
 </template>

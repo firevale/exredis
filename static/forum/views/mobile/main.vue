@@ -7,7 +7,7 @@
         <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
       </div>
       <div class="level-item is-menu menu-right">
-        <router-link class="menu icon icon-user" :to="{name: 'search'}"></router-link>
+        <router-link class="menu icon icon-user" :to="{name: 'myProfile'}"></router-link>
         <router-link class="menu icon icon-search" :to="{name: 'search'}"></router-link>
       </div>
     </nav>

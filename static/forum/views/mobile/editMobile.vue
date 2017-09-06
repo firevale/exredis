@@ -1,5 +1,13 @@
 <template>
   <div class="account">
+    <div class="binding-msg">
+      <p>您当前的手机号：
+        <span>18800000000</span>
+      </p>
+      <p>
+        更换手机后，下次登录可使用新手机号登录
+      </p>
+    </div>
     <div class="fields">
       <div class="field">
         <div class="control">

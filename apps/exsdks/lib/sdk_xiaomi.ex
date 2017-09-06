@@ -4,6 +4,7 @@ defmodule SDKXiaomi do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://mis.migc.xiaomi.com/api/biz/service/verifySession.do"
   
@@ -13,7 +14,7 @@ defmodule SDKXiaomi do
          appId: appId,
          session: accessToken,
          uid: userId,
-         signature: Utils.hmacsha1_sign("appId=#{appId}&session=#{accessToken}&uid=#{userId}", appSecret)
+         signature: Crypto.hmacsha1_sign("appId=#{appId}&session=#{accessToken}&uid=#{userId}", appSecret)
         })
       
 
@@ -38,7 +39,7 @@ defmodule SDKXiaomi do
                          |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
                          
 
-    our_sign = Utils.hmacsha1_sign(sign_string, appSecret)
+    our_sign = Crypto.hmacsha1_sign(sign_string, appSecret)
     our_sign == params["signature"]
   end
 

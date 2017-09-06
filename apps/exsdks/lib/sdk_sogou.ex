@@ -4,15 +4,16 @@ defmodule SDKSogou do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl  "http://api.app.wan.sogou.com/api/v1/login/verify"
 
   def validate_session(gid, session_key, user_id, app_secret) do 	 
     try do 
-      auth = "gid=#{gid}&session_key=#{session_key}&user_id=#{user_id}&#{app_secret}" |> Utils.md5_sign
+      auth = "gid=#{gid}&session_key=#{session_key}&user_id=#{user_id}&#{app_secret}" |> Crypto.md5_sign
 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                                           "gid" => gid,
                                           "user_id" => user_id,
                                           "session_key" => session_key,
@@ -50,7 +51,7 @@ defmodule SDKSogou do
                          
     sign_string = sign_string <> "&" <> pay_key
 
-    our_sign = Utils.md5_sign(sign_string)
+    our_sign = Crypto.md5_sign(sign_string)
 
     our_sign == params["auth"]
 

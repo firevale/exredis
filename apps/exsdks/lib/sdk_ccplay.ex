@@ -1,6 +1,7 @@
 defmodule SDKCCPlay do
   require Logger
   require Utils
+  alias   Utils.Crypto
 
   #cc 没有验证token
   def validate_session(_app_id, _app_key, _token) do 
@@ -13,7 +14,7 @@ defmodule SDKCCPlay do
                          |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
                          
     sign_string = sign_string <> "&" <> payKey 
-    our_sign = Utils.md5_sign(sign_string)
+    our_sign = Crypto.md5_sign(sign_string)
     our_sign == params["sign"]
 
   end

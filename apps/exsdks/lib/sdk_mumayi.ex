@@ -3,6 +3,7 @@ defmodule SDKMumayi do
   require Logger
 
   alias   Utils.Httpc
+  alias   Utils.Crypto
   require Utils
   use Bitwise
 
@@ -10,7 +11,7 @@ defmodule SDKMumayi do
 
   def validate_session(token, uid) do 	 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                                           "token" => token,
                                           "uid" => uid
                                           })
@@ -33,10 +34,10 @@ defmodule SDKMumayi do
       false
     else
       << verifyStr :: binary-size(8), data :: binary >> = tradeSign
-      case data |> Utils.md5_sign |> :binary.part(0, 8) do 
+      case data |> Crypto.md5_sign |> :binary.part(0, 8) do 
         ^verifyStr ->
           << key_b :: binary-size(6), rest :: binary >> = data
-          rand_key = Utils.md5_sign(key_b <> app_key) |> String.to_char_list
+          rand_key = Crypto.md5_sign(key_b <> app_key) |> String.to_char_list
           
           signedOrderID = Base.decode64!(rest) |> String.to_char_list |> Enum.with_index |> Enum.map_join("", fn{c, i} ->
             << Bitwise.bxor(c,  Enum.at(rand_key, rem(i, 32))) >>

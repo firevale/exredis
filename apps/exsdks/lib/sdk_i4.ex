@@ -3,12 +3,13 @@ defmodule SDKI4 do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "https://pay.i4.cn/member_third.action"
 
   def validate_session(session_id) do 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{"token" => session_id})
+      response = Httpc.post_form(@baseUrl, %{"token" => session_id})
 
       if Httpc.success?(response) do 
        
@@ -33,7 +34,7 @@ defmodule SDKI4 do
 
 
   def validate_payment(rsa_key, params) do 
-    plain_text = Utils.rsa_pubseg_decrypt2(rsa_key, params["sign"] |> String.replace("\n", ""))
+    plain_text = Crypto.rsa_pubseg_decrypt2(rsa_key, params["sign"] |> String.replace("\n", ""))
 
     case URI.decode_query(plain_text) do 
       %{"status" => "0"} -> 

@@ -3,6 +3,7 @@ defmodule SDKIYouxi do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "https://open.play.cn/oauth/token"
 
@@ -11,7 +12,7 @@ defmodule SDKIYouxi do
 
     {sign_sort, sign} = signature(client_id, client_secret, timestamp, sdk_version)
 
-    response = Httpc.post_msg(@baseUrl, %{
+    response = Httpc.post_form(@baseUrl, %{
                                           "client_id" => client_id,
                                           "client_secret" => client_secret,
                                           "code" => auth_code,
@@ -42,7 +43,7 @@ defmodule SDKIYouxi do
                                             "order_time" => order_time,
                                             "method" => method,
                                             "sign" => sign}) do 
-    our_sign = "#{cp_order_id}#{correlator}#{order_time}#{method}#{client_secret}" |> Utils.md5_sign
+    our_sign = "#{cp_order_id}#{correlator}#{order_time}#{method}#{client_secret}" |> Crypto.md5_sign
     our_sign == sign
   end
 
@@ -50,7 +51,7 @@ defmodule SDKIYouxi do
                                             "correlator" => correlator, 
                                             "method" => method,
                                             "sign" => sign}) do 
-    our_sign = "#{cp_order_id}#{correlator}#{method}#{client_secret}" |> Utils.md5_sign
+    our_sign = "#{cp_order_id}#{correlator}#{method}#{client_secret}" |> Crypto.md5_sign
     our_sign == sign
   end
 
@@ -65,7 +66,7 @@ defmodule SDKIYouxi do
                                           "method" => method,
                                           "sign" => sign}) do 
     sign_data = "#{cp_order_id}#{correlator}#{result_code}#{fee}#{pay_type}#{method}#{client_secret}"
-    our_sign = sign_data |> Utils.md5_sign
+    our_sign = sign_data |> Crypto.md5_sign
     our_sign == sign
   end
 
@@ -73,7 +74,7 @@ defmodule SDKIYouxi do
 
   defp signature(client_id, client_secret, timestamp, sdk_version) do 
     sort = "timestamp&sign_method&client_secret&client_id&version" 
-    sign = "#{timestamp}MD5#{client_secret}#{client_id}#{sdk_version}" |> Utils.md5_sign
+    sign = "#{timestamp}MD5#{client_secret}#{client_id}#{sdk_version}" |> Crypto.md5_sign
     {sort, sign}
   end
 end

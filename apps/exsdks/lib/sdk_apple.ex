@@ -1,6 +1,6 @@
 defmodule SDKApple do 
   require Logger
-  use     LogAlias 
+  use     Utils.LogAlias
   alias   Utils.Httpc
   alias   Utils.JSON 
 

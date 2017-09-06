@@ -8,7 +8,7 @@ defmodule SDKAnzhi do
 
   def validate_session(appkey, appsecret, sid) do 	 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                                           "time" => Timex.format!(Timex.local, "%Y%m%d%H%M%S", :strftime),
                                           "appkey" => appkey,
                                           "sid" => sid,

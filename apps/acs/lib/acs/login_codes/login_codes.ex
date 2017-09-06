@@ -8,97 +8,164 @@ defmodule Acs.LoginCodes do
 
   alias Acs.LoginCodes.AppLoginCode
 
-  @doc """
-  Returns the list of app_login_codes.
+  require Exredis
+  require Excache
 
-  ## Examples
-
-      iex> list_app_login_codes()
-      [%AppLoginCode{}, ...]
-
-  """
-  def list_app_login_codes do
-    Repo.all(AppLoginCode)
+  def stats_info(app_id) do 
+    Excache.get!(stats_key(app_id), fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do 
+        nil -> 
+          {:commit, refresh_stats_info(app_id)}
+        raw -> 
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+      end
+    end)
   end
 
-  @doc """
-  Gets a single app_login_code.
+  def find_by_openid(app_id, openid) do 
+    key = "_acs.login_codes.owns.#{app_id}.#{openid}"
+    Excache.get!(key, fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do 
+        nil -> 
+          owner = "openid.#{openid}"
+          query = from c in AppLoginCode,
+                    select: c,
+                    where: c.owner == ^owner
 
-  Raises `Ecto.NoResultsError` if the App login code does not exist.
-
-  ## Examples
-
-      iex> get_app_login_code!(123)
-      %AppLoginCode{}
-
-      iex> get_app_login_code!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_app_login_code!(id), do: Repo.get!(AppLoginCode, id)
-
-  @doc """
-  Creates a app_login_code.
-
-  ## Examples
-
-      iex> create_app_login_code(%{field: value})
-      {:ok, %AppLoginCode{}}
-
-      iex> create_app_login_code(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_app_login_code(attrs \\ %{}) do
-    %AppLoginCode{}
-    |> AppLoginCode.changeset(attrs)
-    |> Repo.insert()
+          case Repo.one(query) do 
+            %AppLoginCode{code: code, owner: ^owner} ->
+              Exredis.set(redis_key, code)
+              {:commit, code}
+            
+            _ -> 
+              {:ignore, nil}
+          end
+        
+        code -> 
+          {:commit, code}
+      end
+    end)
   end
 
-  @doc """
-  Updates a app_login_code.
-
-  ## Examples
-
-      iex> update_app_login_code(app_login_code, %{field: new_value})
-      {:ok, %AppLoginCode{}}
-
-      iex> update_app_login_code(app_login_code, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_app_login_code(%AppLoginCode{} = app_login_code, attrs) do
-    app_login_code
-    |> AppLoginCode.changeset(attrs)
-    |> Repo.update()
+  def clear_stats_cache(app_id) do 
+    key = "_acs.login_code.stats_info.#{app_id}"
+    Exredis.del(key)
+    Excache.del(key)
   end
 
-  @doc """
-  Deletes a AppLoginCode.
+  def refresh_stats_info(app_id) do 
+    Excache.del(stats_key(app_id))
 
-  ## Examples
+    total = Exredis.scard("_acs.login_codes.all.#{app_id}")
+    available = Exredis.scard("_acs.login_codes.available.#{app_id}")
+    assigned = Exredis.scard("_acs.login_codes.assigned.#{app_id}")
 
-      iex> delete_app_login_code(app_login_code)
-      {:ok, %AppLoginCode{}}
+    query = from c in AppLoginCode,
+            select: count(1),
+            where: c.app_id == ^app_id,
+            where: not is_nil(c.owner),
+            where: not is_nil(c.user_id)
 
-      iex> delete_app_login_code(app_login_code)
-      {:error, %Ecto.Changeset{}}
+    used = Repo.one(query)
 
-  """
-  def delete_app_login_code(%AppLoginCode{} = app_login_code) do
-    Repo.delete(app_login_code)
+    info = %{
+      total: total,
+      available: available,
+      assigned: assigned,
+      used: used
+    }
+
+    Exredis.set(stats_key(app_id), info |> :erlang.term_to_binary |> Base.encode64)
+
+    info
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking app_login_code changes.
+  def daily_chart_data(app_id, ndays) do 
+    Excache.get!(daily_chart_key(app_id, ndays), fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do 
+        nil ->
+          now = Timex.local
+          chart = refresh_daily_chart_data(app_id, ndays)
+          Exredis.set(redis_key, Poison.encode!(chart))
+          Exredis.expireat(redis_key, Timex.end_of_day(now) |> Timex.to_unix) 
+          {:commit, chart}
+        
+        raw ->
+          {:commit, Poison.decode!(raw, keys: :atoms)}
+      end
+    end)
+  end
 
-  ## Examples
+  def refresh_daily_chart_data(app_id, ndays) do 
+    key = daily_chart_key(app_id, ndays)
+    Exredis.del(key)
+    Excache.del(key)
+    with dates <- latest_dates(ndays),
+         assigned_data <- daily_assigned_data(app_id, ndays, dates),
+         used_data <- daily_used_data(app_id, ndays, dates)
+    do 
+      %{
+        labels: dates,
+        datasets: [
+          %{
+            label: "已分配(用户)",
+            data: assigned_data,
+          },
+          %{
+            label: "已使用(用户)",
+            data: used_data
+          }
+        ]
+       }
+    end
+  end
 
-      iex> change_app_login_code(app_login_code)
-      %Ecto.Changeset{source: %AppLoginCode{}}
+  defp daily_assigned_data(app_id, ndays, dates) do 
+    query = from c in AppLoginCode, 
+      select: {fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.assigned_at), count(c.code)}, 
+      group_by: fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.assigned_at), 
+      where: c.app_id == ^app_id and not is_nil(c.assigned_at) and c.assigned_at > ago(^ndays, "day"),
+      where: not like(c.owner, "admin.%")
+    
+    counters = case Repo.all(query) do 
+      l when is_list(l) -> Enum.into(l, %{})
+      _ -> %{}
+    end
 
-  """
-  def change_app_login_code(%AppLoginCode{} = app_login_code) do
-    AppLoginCode.changeset(app_login_code, %{})
+    dates |> Enum.map(fn(date) -> 
+      Map.get(counters, date, 0)
+    end)
+  end
+
+  defp daily_used_data(app_id, ndays, dates) do 
+    query = from c in AppLoginCode, 
+      select: {fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.used_at), count(c.code)}, 
+      group_by: fragment("date_format(date(convert_tz(?, '+00:00', '+08:00')), '%Y-%m-%d')", c.used_at), 
+      where: c.app_id == ^app_id and not is_nil(c.used_at) and c.used_at > ago(^ndays, "day"), 
+      where: not like(c.owner, "admin.%")
+    
+    counters = case Repo.all(query) do 
+      l when is_list(l) -> Enum.into(l, %{})
+      _ -> %{}
+    end
+
+    dates |> Enum.map(fn(date) -> 
+      Map.get(counters, date, 0)
+    end)
+  end
+
+  defp latest_dates(ndays) do 
+    now = Timex.local 
+    0..ndays |> Enum.map(fn(n) -> 
+      now |> Timex.shift(days: -n) |> Timex.to_date |> to_string 
+    end) |> Enum.reverse 
+  end
+  
+  defp stats_key(app_id) do 
+    "_acs.login_code.stats_info.#{app_id}"
+  end
+
+  defp daily_chart_key(app_id, ndays) do 
+    "_acs.login_code.daily_chart_data.#{app_id}.#{ndays}"
   end
 end

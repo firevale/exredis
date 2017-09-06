@@ -27,6 +27,7 @@ defmodule Exwcp.Mixfile do
     [
       {:plug, "~> 1.4"},
       {:httpoison, "~> 0.13"},
+      {:floki, "~> 0.18"},
       {:exredis, in_umbrella: true},
       {:exutils, in_umbrella: true},
       {:excache, in_umbrella: true},

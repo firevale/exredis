@@ -16,9 +16,9 @@ defmodule AcsStats.Devices.AppDevice do
 
     field :app_id, :string
     field :zone_id, :string
-    belongs_to :device, Acs.Stats.Device, type: :string
+    belongs_to :device, AcsStats.Devices.Device, type: :string
 
-    has_many :daily_activities, Acs.Stats.AppDeviceDailyActivity
+    has_many :daily_activities, AcsStats.Devices.AppDeviceDailyActivity
 
     timestamps()
   end

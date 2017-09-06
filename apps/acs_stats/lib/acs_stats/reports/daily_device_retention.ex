@@ -1,14 +1,14 @@
-defmodule AcsStats.Stats.DailyDeviceRetention do
+defmodule AcsStats.Reports.DailyDeviceRetention do
   use Ecto.Schema
   import Ecto.Changeset
-  alias AcsStats.Stats.DailyDeviceRetention
+  alias AcsStats.Reports.DailyDeviceRetention
 
 
   schema "stats_daily_device_retentions" do
     field :nday, :integer
     field :retention, :integer
 
-    belongs_to :report, Acs.Stats.DailyReport
+    belongs_to :report, AcsStats.Reports.DailyReport
 
     timestamps()
   end

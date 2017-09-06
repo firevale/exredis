@@ -22,7 +22,7 @@ defmodule AcsStats.Users.AppUser do
 
     field :platform, :string # platform that the app user inserted
 
-    has_many :daily_activities, Acs.Stats.AppUserDailyActivity
+    has_many :daily_activities, AcsStats.Users.AppUserDailyActivity
 
     timestamps()
   end

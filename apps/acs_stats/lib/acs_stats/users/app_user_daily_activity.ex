@@ -10,7 +10,7 @@ defmodule AcsStats.Users.AppUserDailyActivity do
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
 
-    belongs_to :app_user, Acs.Stats.AppUser
+    belongs_to :app_user, AcsStats.Users.AppUser
 
     timestamps()
   end

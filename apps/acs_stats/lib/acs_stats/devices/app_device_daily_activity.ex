@@ -9,7 +9,7 @@ defmodule AcsStats.Devices.AppDeviceDailyActivity do
     
     field :active_seconds, :integer, default: 0
     field :pay_amount, :integer, default: 0
-    belongs_to :app_device, Acs.Stats.AppDevice
+    belongs_to :app_device, AcsStats.Devices.AppDevice
 
     timestamps()
   end

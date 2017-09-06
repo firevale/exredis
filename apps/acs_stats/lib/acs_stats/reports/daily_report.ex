@@ -1,7 +1,7 @@
-defmodule AcsStats.Stats.DailyReport do
+defmodule AcsStats.Reports.DailyReport do
   use Ecto.Schema
   import Ecto.Changeset
-  alias AcsStats.Stats.DailyReport
+  alias AcsStats.Reports.DailyReport
 
 
   schema "stats_daily_reports" do
@@ -18,10 +18,10 @@ defmodule AcsStats.Stats.DailyReport do
     
     field :total_fee, :integer, default: 0   # daily paid amount sum
 
-    has_many :user_retentions, Acs.Stats.DailyUserRetention, foreign_key: :report_id  #1，2，3，5，7，14，30
-    has_many :user_timings, Acs.Stats.DailyUserTiming  # 0-5，5-10，10-15～ 55-60，60+
-    has_many :device_retentions, Acs.Stats.DailyDeviceRetention 
-    has_many :device_timings, Acs.Stats.DailyDeviceTiming 
+    has_many :user_retentions, AcsStats.Reports.DailyUserRetention, foreign_key: :report_id  #1，2，3，5，7，14，30
+    has_many :user_timings, AcsStats.Reports.DailyUserTiming  # 0-5，5-10，10-15～ 55-60，60+
+    has_many :device_retentions, AcsStats.Reports.DailyDeviceRetention 
+    has_many :device_timings, AcsStats.Reports.DailyDeviceTiming 
 
     timestamps()
   end

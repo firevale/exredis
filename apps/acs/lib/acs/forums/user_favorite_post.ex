@@ -10,6 +10,8 @@ defmodule Acs.Forums.UserFavoritePost do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%UserFavoritePost{} = user_favorite_post, attrs) do
     user_favorite_post

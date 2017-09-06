@@ -14,6 +14,7 @@ defmodule Acs.Apps.AppGoodsProductId do
     timestamps()
   end
 
+  use Utils.Redisable
   @sdks Application.get_env(:acs, :sdks, [])
 
   @doc false

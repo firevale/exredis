@@ -20,6 +20,8 @@ defmodule Acs.Apps.AppNews do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppNews{} = app_news, attrs) do
     app_news

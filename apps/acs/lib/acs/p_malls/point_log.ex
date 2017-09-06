@@ -16,6 +16,8 @@ defmodule Acs.PMalls.PointLog do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%PointLog{} = point_log, attrs) do
     point_log

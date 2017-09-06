@@ -20,6 +20,8 @@ defmodule Acs.Apps.AppQuestion do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppQuestion{} = app_question, attrs) do
     app_question

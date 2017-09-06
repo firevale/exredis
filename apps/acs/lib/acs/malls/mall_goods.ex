@@ -26,6 +26,8 @@ defmodule Acs.Malls.MallGoods do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%MallGoods{} = mall_goods, attrs) do
     mall_goods

@@ -18,6 +18,8 @@ defmodule Acs.Apps.AppGoods do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppGoods{} = app_goods, attrs) do
     app_goods

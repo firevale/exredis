@@ -14,6 +14,8 @@ defmodule Acs.Forums.ForumSection do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%ForumSection{} = forum_section, attrs) do
     forum_section

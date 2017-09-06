@@ -30,6 +30,8 @@ defmodule Acs.PMalls.PMallGoods do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%PMallGoods{} = p_mall_goods, attrs) do
     p_mall_goods

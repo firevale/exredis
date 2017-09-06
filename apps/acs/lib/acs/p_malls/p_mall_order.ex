@@ -52,6 +52,8 @@ defmodule Acs.PMalls.PMallOrder do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%PMallOrder{} = p_mall_order, attrs) do
     p_mall_order

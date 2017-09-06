@@ -13,6 +13,8 @@ defmodule Acs.Apps.AppSdkBinding do
     timestamps()
   end
 
+  use Utils.Redisable
+  
   @sdks Application.get_env(:acs, :sdks, [])
 
   @doc false

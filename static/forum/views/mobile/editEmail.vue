@@ -1,17 +1,14 @@
 <template>
   <div class="account">
     <div class="binding-msg">
-      <p>您当前的手机号：
-        <span>18800000000</span>
-      </p>
-      <p>
-        更换手机后，下次登录可使用新手机号登录
+      <p>您已绑定的邮箱为
+        <span>fireball@fireball.com</span>
       </p>
     </div>
     <div class="fields">
       <div class="field">
         <div class="control">
-          <input class="input" type="text" placeholder="请输入绑定手机号">
+          <input class="input" type="text" placeholder="请输入绑定邮箱">
         </div>
       </div>
       <div class="field has-addons">
@@ -27,7 +24,7 @@
     </div>
     <p class="tip-error">
       <span class="icon icon-error-tip"></span>
-      <span>&nbsp;手机号错误</span>
+      <span>&nbsp;验证码错误</span>
     </p>
     <a class="buttons btn-binding binding"></a>
   </div>

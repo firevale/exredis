@@ -18,6 +18,11 @@
 .buttons {
   background-size: contain;
   background-repeat: no-repeat;
+  &.btn-confirm {
+    width: virtual-m-rem(960);
+    height: virtual-m-rem(100);
+    background-image: url("~assets/themes/jqxs_mobile/Group_28.png");
+  }
   &.btn-binding {
     width: virtual-m-rem(960);
     height: virtual-m-rem(100);
@@ -33,7 +38,7 @@
     height: virtual-m-rem(80);
     background-image: url("~assets/themes/jqxs_mobile/Group_22.png");
   }
-  &.btn-binding-realname {
+  &.btn-binding-resident {
     width: virtual-m-rem(230);
     height: virtual-m-rem(80);
     background-image: url("~assets/themes/jqxs_mobile/Group_23.png");
@@ -43,10 +48,16 @@
     height: virtual-m-rem(100);
     background-image: url("~assets/themes/jqxs_mobile/Group_24.png");
   }
+  &.btn-change {
+    width: virtual-m-rem(230);
+    height: virtual-m-rem(80);
+    background-image: url("~assets/themes/jqxs_mobile/Group_45.png");
+  }
 }
 
 .my_profile {
   background-color: #fff;
+  padding-top: virtual-m-rem(70);
   .nickname {
     display: flex;
     align-items: center;
@@ -57,8 +68,8 @@
     margin-top: virtual-m-rem(40);
     line-height: virtual-m-rem(200);
     .level {
-      padding-left: virtual-m-rem(30);
-      padding-right: virtual-m-rem(30);
+      padding-left: virtual-m-rem(35);
+      padding-right: virtual-m-rem(35);
     }
     .level:not(:last-child) {
       margin-bottom: 0 !important;
@@ -71,7 +82,7 @@
     width: 88vw;
     height: virtual-m-rem(502);
     position: fixed;
-    top: 38vh;
+    top: 35vh;
     left: 6vw;
     background: rgba(255, 255, 255, 0.9);
     border-radius: virtual-m-rem(20);
@@ -150,5 +161,25 @@
   .binding {
     width: virtual-m-rem(960);
     margin: virtual-m-rem(100) auto 0 auto;
+  }
+  .confirm {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(30) auto 0 auto;
+  }
+  .binding-msg {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(30) auto virtual-m-rem(70) auto;
+    span {
+      color: #b3182e;
+    }
+  }
+  .tip-error {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(10) auto 0 auto;
+    color: #b3182e;
+  }
+  .tip-msg {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(10) auto 0 auto;
   }
 }

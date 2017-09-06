@@ -46,7 +46,9 @@ export default {
     stockList: '库存：{stock} / 销量: {sold}',
     saveFirst: '请先保存商品',
     up: '已上架',
-    down: '已下架'
+    down: '已下架',
+    timeFormat: '开始日期不能大于结束日期',
+    needTime: '必须填写开始日期和结束日期',
   },
   order: {
     buttons: {

@@ -151,4 +151,13 @@
     width: virtual-m-rem(960);
     margin: virtual-m-rem(100) auto 0 auto;
   }
+  .tip-error {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(10) auto 0 auto;
+    color: #b3182e;
+  }
+  .tip-msg {
+    width: virtual-m-rem(960);
+    margin: virtual-m-rem(10) auto 0 auto;
+  }
 }

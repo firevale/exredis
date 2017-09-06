@@ -3,7 +3,6 @@ defmodule Acs.Accounts.UserAddress do
   import Ecto.Changeset
   alias Acs.Accounts.UserAddress
 
-
   schema "user_addresses" do
     field :name, :string
     field :mobile, :string

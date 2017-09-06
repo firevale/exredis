@@ -59,9 +59,8 @@
                 <label class="label">{{ $t('admin.mall.goods.time') }}</label>
               </div>
               <div class="field-body">
-                从&nbsp;
                 <el-date-picker v-model.trim="goods.begin_time" :editable="false" type="date" :placeholder="$t('admin.mall.goods.begin_time')">
-                </el-date-picker>&nbsp;到&nbsp;
+                </el-date-picker>&nbsp;-&nbsp;
                 <el-date-picker v-model.trim="goods.end_time" :editable="false" type="date" :placeholder="$t('admin.mall.goods.end_time')">
                 </el-date-picker>
               </div>
@@ -356,6 +355,16 @@ export default {
         })
       } else {
         //上架
+        if (this.goods.begin_time && this.goods.end_time) {
+          if (this.goods.begin_time > this.goods.end_time) {
+            this.showWarning(this.$t('admin.mall.goods.timeFormat'))
+            return;
+          }
+        } else {
+          this.showWarning(this.$t('admin.mall.goods.needTime'))
+          return;
+        }
+
         if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price
           .length == 0 || this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods
           .id.length == 0) {
@@ -394,6 +403,16 @@ export default {
     },
 
     onSave: function() {
+      if (this.goods.begin_time && this.goods.end_time) {
+        if (this.goods.begin_time > this.goods.end_time) {
+          this.showWarning(this.$t('admin.mall.goods.timeFormat'))
+          return;
+        }
+      } else {
+        this.showWarning(this.$t('admin.mall.goods.needTime'))
+        return;
+      }
+
       if (this.goods.name.length == 0 || this.goods.description.length == 0 || this.goods.price.length ==
         0 ||
         this.goods.stock.length == 0 || this.goods.postage.length == 0 || this.goods.id.length ==

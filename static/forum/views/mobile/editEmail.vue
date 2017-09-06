@@ -1,5 +1,10 @@
 <template>
   <div class="account">
+    <div class="binding-msg">
+      <p>您已绑定的邮箱为
+        <span>fireball@fireball.com</span>
+      </p>
+    </div>
     <div class="fields">
       <div class="field">
         <div class="control">

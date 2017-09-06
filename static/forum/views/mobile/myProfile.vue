@@ -17,7 +17,8 @@
           <span>绑定手机：未绑定</span>
         </div>
         <div class="level-right">
-          <a class="buttons btn-binding-mobile"></a>
+          <router-link class="buttons btn-binding-mobile" :to="{name: 'editMobile'}"></router-link>
+          <!-- <router-link class="buttons btn-change" :to="{name: 'editMobile'}"></router-link> -->
         </div>
       </div>
       <div class="level is-mobile has-bottom-line">
@@ -25,15 +26,17 @@
           <span>绑定邮箱：未绑定</span>
         </div>
         <div class="level-right">
-          <a class="buttons btn-binding-email"></a>
+          <router-link class="buttons btn-binding-email" :to="{name: 'editEmail'}"></router-link>
+          <!-- <router-link class="buttons btn-change" :to="{name: 'editEmail'}"></router-link> -->
         </div>
       </div>
       <div class="level is-mobile has-bottom-line">
         <div class="level-left">
-          <span>实名认证：未绑定</span>
+          <span>实名认证：未认证</span>
         </div>
         <div class="level-right">
-          <a class="buttons btn-binding-realname"></a>
+          <router-link class="buttons btn-binding-resident" :to="{name: 'editResident'}"></router-link>
+          <!-- <router-link class="buttons btn-change" :to="{name: 'editResident'}"></router-link> -->
         </div>
       </div>
     </div>

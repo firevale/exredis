@@ -4,15 +4,19 @@ defmodule Acs.Forums.ForumManager do
   alias Acs.Forums.ForumManager
 
 
+  @derive {Poison.Encoder, except: [:forum, :user, :__meta__]}
   schema "forums_managers" do
-
+    belongs_to :forum, Acs.Forums.Forum
+    belongs_to :user, Acs.Accounts.User, type: :integer
     timestamps()
   end
 
   @doc false
   def changeset(%ForumManager{} = forum_manager, attrs) do
     forum_manager
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:forum_id, :user_id])
+    |> validate_required([:forum_id, :user_id])
+    |> foreign_key_constraint(:forum_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

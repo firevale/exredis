@@ -17,7 +17,7 @@ defmodule Acs.PMalls.PMallOrder do
 
   @derive {Poison.Encoder, except: [:app, :user, :goods, :user_address, :__meta__]}
   @primary_key false
-  schema "point_mall_orders" do
+  schema "pmall_orders" do
     field :id, :string, primary_key: true
     field :platform, :string, size: 10
     field :device_id, :string

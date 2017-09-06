@@ -10,6 +10,8 @@ defmodule AcsStats.Repo.Migrations.CreateAppDevices do
       add :reg_date, :date # add this field for daily report calculation
       add :zone_id, :string, size: 50, default: "0"
       add :app_id, :string, size: 40
+      add :first_paid_at, :utc_datetime
+      add :platform, :string
       
       add :device_id, references(:devices, type: :string, on_delete: :delete_all), size: 100
 
@@ -25,7 +27,9 @@ defmodule AcsStats.Repo.Migrations.CreateAppDevices do
     create index(:app_devices, [:app_id, :zone_id, :reg_date])
     create index(:app_devices, [:app_id, :reg_date])
     create index(:app_devices, [:app_id, :device_id])
-    create index(:app_devices, [:app_id, :device_id, :zone_id], unique: true)
+    create unique_index(:app_devices, [:app_id, :device_id, :zone_id])
+    create index(:app_devices, [:platform])
+    create index(:app_devices, [:first_paid_at])
   end
 end
 

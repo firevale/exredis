@@ -5,7 +5,7 @@ defmodule Acs.Wcp.AppWcpUser do
 
   @derive {Poison.Encoder, except: [:app, :__meta__]}
 
-  schema "app_wcp_uesers" do
+  schema "app_wcp_users" do
     field :openid, :string       
     field :nickname, :string
     field :sex, :integer

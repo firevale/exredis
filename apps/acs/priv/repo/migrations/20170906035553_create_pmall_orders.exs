@@ -1,8 +1,8 @@
-defmodule Acs.Repo.Migrations.CreateMallOrders do
+defmodule Acs.Repo.Migrations.CreatePointMallOrders do
   use Ecto.Migration
 
   def change do
-    create table(:mall_orders, primary_key: false) do
+    create table(:pmall_orders, primary_key: false) do
       add :id, :string, size: 100, primary_key: true
       add :platform, :string, size: 10
       add :device_id, :string, size: 100
@@ -36,10 +36,10 @@ defmodule Acs.Repo.Migrations.CreateMallOrders do
       timestamps()
     end
 
-    create index(:mall_orders, [:app_id])
-    create index(:mall_orders, [:user_id])
-    create index(:mall_orders, [:user_id, :status])
-    create unique_index(:mall_orders, [:transaction_id])
+    create index(:pmall_orders, [:app_id])
+    create index(:pmall_orders, [:user_id])
+    create index(:pmall_orders, [:user_id, :status])
+    create unique_index(:pmall_orders, [:transaction_id])
 
   end
 end

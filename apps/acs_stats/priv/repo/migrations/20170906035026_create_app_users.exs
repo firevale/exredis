@@ -17,6 +17,8 @@ defmodule AcsStats.Repo.Migrations.CreateAppUsers do
       add :reg_date, :date
       add :last_active_at, :utc_datetime
       add :last_paid_at, :utc_datetime
+      add :first_paid_at, :utc_datetime
+      add :platform, :string
 
       timestamps()
     end
@@ -32,6 +34,8 @@ defmodule AcsStats.Repo.Migrations.CreateAppUsers do
     create index(:app_users, [:app_id, :reg_date])
     create index(:app_users, [:app_id, :zone_id, :reg_date])
     create index(:app_users, [:app_id, :user_id])
-    create index(:app_users, [:app_id, :user_id, :zone_id], unique: true)
+    create unique_index(:app_users, [:app_id, :user_id, :zone_id])
+    create index(:app_users, [:platform])
+    create index(:app_users, [:first_paid_at])
   end
 end

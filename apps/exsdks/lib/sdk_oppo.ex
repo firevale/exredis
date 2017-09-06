@@ -5,6 +5,7 @@ defmodule SDKOppo do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl       "http://thapi.nearme.com.cn/account/GetUserInfoByGame"
@@ -96,7 +97,7 @@ defmodule SDKOppo do
 
     key_file = Application.app_dir(:acs, @oppo_key_file)
 
-    Utils.rsa_public_verify(key_file, base_string, sign)
+    Crypto.rsa_public_verify(key_file, base_string, sign)
   end
 
 end

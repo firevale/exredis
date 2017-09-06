@@ -4,6 +4,7 @@ defmodule SDKUC do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @debug_baseUrl       "http://sdk.test4.g.uc.cn/cp/account.verifySession"
@@ -23,7 +24,7 @@ defmodule SDKUC do
       id: Utils.unix_timestamp,
       data: %{sid: access_token},
       game: %{gameId: app_id},
-      sign: Utils.md5_sign("sid=#{access_token}#{app_key}")
+      sign: Crypto.md5_sign("sid=#{access_token}#{app_key}")
       })
 
 
@@ -46,7 +47,7 @@ defmodule SDKUC do
 
    
     sign_string = sign_string <> app_key
-    our_sign = Utils.md5_sign(sign_string)
+    our_sign = Crypto.md5_sign(sign_string)
     our_sign == params["sign"]
   end
 

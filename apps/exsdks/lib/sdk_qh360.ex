@@ -4,6 +4,7 @@ defmodule SDKQh360 do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl       "https://openapi.360.cn/user/me"
@@ -32,7 +33,7 @@ defmodule SDKQh360 do
                          |> Enum.map_join("#", fn({_k, v}) -> "#{v}" end)
 
     sign_string = sign_string <> "#" <> app_secret
-    our_sign = Utils.md5_sign(sign_string)
+    our_sign = Crypto.md5_sign(sign_string)
     our_sign == params["sign"]
   end
 

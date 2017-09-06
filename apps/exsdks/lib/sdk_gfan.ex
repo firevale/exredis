@@ -4,6 +4,7 @@ defmodule SDKGFan do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl  "http://api.gfan.com/uc1/common/verify_token"
@@ -38,7 +39,7 @@ defmodule SDKGFan do
   end
 
   def validate_payment(uid, params) do 
-    our_sign = Utils.md5_sign( uid <> params["time"] |> to_string )
+    our_sign = Crypto.md5_sign( uid <> params["time"] |> to_string )
     params["sign"] == our_sign
   end
 

@@ -1,9 +1,10 @@
 defmodule SDKAlipay do
   import  SweetXml
-  require Utils
-  use     LogAlias
+  require Utils 
+  use     Utils.LogAlias
   alias   Utils.Httpc
-  require XmlUtils
+  alias   Utils.Xml
+  alias   Utils.Crypto
 
   @verify_gateway_ssl "https://mapi.alipay.com/gateway.do?service=notify_verify"
   # @verify_gateway     "http://notify.alipay.com/trade/notify_query.do"
@@ -79,7 +80,7 @@ defmodule SDKAlipay do
       _input_charset: @config[:input_charset]
     ]
 
-    response = Httpc.post_msg(@config[:gateway], params_with_sign(param_tokens))
+    response = Httpc.post_form(@config[:gateway], params_with_sign(param_tokens))
 
     if Httpc.success?(response) do
       info "alipay direct success, response: #{inspect response.body, pretty: true}"
@@ -97,7 +98,7 @@ defmodule SDKAlipay do
       res_data = case @config[:sign_type] do
                    "0001" ->
                       key_file = Application.app_dir(:acs, @config[:private_key])
-                      Utils.rsa_priv_decrypt(key_file, query["res_data"])
+                      Crypto.rsa_priv_decrypt(key_file, query["res_data"])
                    _ ->
                      query["res_data"]
                  end
@@ -138,7 +139,7 @@ defmodule SDKAlipay do
       = case sec_id do
           "0001" ->
             key_file = Application.app_dir(:acs, @config[:private_key])
-            Utils.rsa_priv_decrypt(key_file, notify_data)
+            Crypto.rsa_priv_decrypt(key_file, notify_data)
 
           _ ->
             notify_data
@@ -147,7 +148,7 @@ defmodule SDKAlipay do
     params = Map.put(params, "notify_data", notify_data)
 
     if verify_notify_sign(params) do
-      notify = XmlUtils.convert(notify_data)
+      notify = Xml.convert(notify_data)
 
       cond do
         is_nil(notify[:notify_id]) ->
@@ -172,11 +173,11 @@ defmodule SDKAlipay do
 
     case sec_id do
       "MD5" ->
-        sign == Utils.md5_sign("#{param_string}#{@config[:key]}")
+        sign == Crypto.md5_sign("#{param_string}#{@config[:key]}")
 
       x when x in ["RSA", "0001"] ->
         key_file = Application.app_dir(:acs, @config[:alipay_public_key])
-        Utils.rsa_public_verify(key_file, param_string, sign)
+        Crypto.rsa_public_verify(key_file, param_string, sign)
 
       _ ->
         false
@@ -193,10 +194,10 @@ defmodule SDKAlipay do
   defp params_with_sign(params) do
     sign = case params[:sec_id] do
       "MD5" ->
-        Utils.md5_sign("#{make_param_string(params)}#{@config[:key]}")
+        Crypto.md5_sign("#{make_param_string(params)}#{@config[:key]}")
       x when x in ["0001", "RSA"] ->
         key_file = Application.app_dir(:acs, @config[:private_key])
-        Utils.rsa_priv_sign(key_file, make_param_string(params))
+        Crypto.rsa_priv_sign(key_file, make_param_string(params))
       _ ->
         "invald"
     end

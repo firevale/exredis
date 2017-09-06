@@ -3,7 +3,8 @@ defmodule SDKNeteaseDun do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
-  use     LogAlias
+  alias   Utils.Crypto
+  use     Utils.LogAlias
 
   @dun_config         Application.get_env(:acs, :netease_dun)
   @check_txt_url      @dun_config[:check_txt_url]
@@ -30,7 +31,7 @@ defmodule SDKNeteaseDun do
       nonce = Utils.nonce
       dataId = Utils.generate_token
 
-      response = Httpc.post_msg(@check_txt_url, %{
+      response = Httpc.post_form(@check_txt_url, %{
                           "secretId" => @secretId,
                           "businessId" => businessId,
                           "version" => @version,
@@ -38,7 +39,7 @@ defmodule SDKNeteaseDun do
                           "nonce" => nonce,
                           "dataId" => dataId,
                           "content" => content,
-                          "signature" => Utils.md5_sign("businessId#{businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
+                          "signature" => Crypto.md5_sign("businessId#{businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
                           })
 
       if Httpc.success?(response) do 
@@ -81,14 +82,14 @@ defmodule SDKNeteaseDun do
       nonce = Utils.nonce
       # dataId = Utils.generate_token
 
-      response = Httpc.post_msg(@check_img_url, %{
+      response = Httpc.post_form(@check_img_url, %{
                           "secretId" => @secretId,
                           "businessId" => @img_businessId,
                           "version" => @version,
                           "timestamp" => timestamp,
                           "nonce" => nonce,
                           "images" => images,
-                          "signature" => Utils.md5_sign("businessId#{@img_businessId}images#{images}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
+                          "signature" => Crypto.md5_sign("businessId#{@img_businessId}images#{images}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
                           })
       info "netease dun check response: #{inspect response}"
       

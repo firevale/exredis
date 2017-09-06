@@ -3,11 +3,12 @@ defmodule SDKHuawei do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "https://api.vmall.com/rest.php"
 
   def validate_session(access_token) do   
-    response = Httpc.post_msg(@baseUrl, %{
+    response = Httpc.post_form(@baseUrl, %{
                                           "nsp_svc" => "OpenUP.User.getInfo",
                                           "nsp_ts" => Utils.unix_timestamp,
                                           "access_token" => access_token
@@ -38,7 +39,7 @@ defmodule SDKHuawei do
                          |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end) 
                    
     sign = URI.decode(sign)
-    Utils.rsa_public_verify2(pub_key, sign_string, sign, :sha) 
+    Crypto.rsa_public_verify2(pub_key, sign_string, sign, :sha) 
   end
 
 end

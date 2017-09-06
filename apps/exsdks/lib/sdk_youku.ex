@@ -3,12 +3,13 @@ defmodule SDKYouku do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://sdk.api.gamex.mobile.youku.com/game/user/infomation"
 
   def validate_session(appKey, payKey, sessionId) do 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                                            "sessionid" => sessionId,
                                            "appkey" => appKey,
                                            "sign" => session_sign(appKey, payKey, sessionId)
@@ -46,7 +47,7 @@ defmodule SDKYouku do
                               "passthrough" => baseUrl}) do 
 
     sign_string = "#{baseUrl}?apporderID=#{apporderID}&price=#{price}&uid=#{uid}"                  
-    our_sign = Utils.hmacmd5_sign(sign_string, payKey)
+    our_sign = Crypto.hmacmd5_sign(sign_string, payKey)
     our_sign == sign
   end
 
@@ -54,7 +55,7 @@ defmodule SDKYouku do
 
 
   defp session_sign(appKey, payKey, sessionId) do 
-    Utils.hmacmd5_sign("appkey=#{appKey}&sessionid=#{sessionId}", payKey)
+    Crypto.hmacmd5_sign("appkey=#{appKey}&sessionid=#{sessionId}", payKey)
   end
 
 end

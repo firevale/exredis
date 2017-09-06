@@ -3,6 +3,7 @@ defmodule SDKPP do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://passport_i.25pp.com:8080/account?tunnel-command=2852126760"
 
@@ -10,7 +11,7 @@ defmodule SDKPP do
     try do 
       sign_string = "sid=" <> sessionId <> appKey 
 
-      signmd5 = Utils.md5_sign(sign_string)
+      signmd5 = Crypto.md5_sign(sign_string)
 
       response = Httpc.post_json(@baseUrl,  %{
                               "id" => Utils.unix_timestamp,  
@@ -44,7 +45,7 @@ defmodule SDKPP do
   end
 
   def validate_payment(payKey, params) do 
-    decoded_str = Utils.rsa_pub_decrypt2(payKey, params["sign"])
+    decoded_str = Crypto.rsa_pub_decrypt2(payKey, params["sign"])
 
     case JSON.decode(decoded_str) do 
       {:ok, jres = %{}} ->

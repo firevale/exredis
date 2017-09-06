@@ -5,6 +5,7 @@ defmodule SDKQxz do
   # alias   Utils.Httpc
   # alias   Utils.JSON
   require Utils
+  alias   Utils.Crypto
 
   # @baseUrl  "http://api.appchina.com/appchina-usersdk/user/v2/get.json"
 
@@ -16,7 +17,7 @@ defmodule SDKQxz do
   def validate_payment(key, params, signature) do 
     sign_string = params |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
 
-    our_sign = Utils.md5_sign(sign_string <> key) 
+    our_sign = Crypto.md5_sign(sign_string <> key) 
     our_sign == signature
   end
 

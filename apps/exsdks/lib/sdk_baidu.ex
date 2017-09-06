@@ -4,16 +4,17 @@ defmodule SDKBaidu do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://querysdkapi.91.com/CpLoginStateQuery.ashx"
 
   def validate_session(appId, uin, accessToken, appSecret) do 
     
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                           "AppID" => appId,
                           "AccessToken" => accessToken,
-                          "Sign" => Utils.md5_sign("#{appId}#{accessToken}#{appSecret}")
+                          "Sign" => Crypto.md5_sign("#{appId}#{accessToken}#{appSecret}")
                           })
 
       if Httpc.success?(response) do 
@@ -22,7 +23,7 @@ defmodule SDKBaidu do
           {:ok, res} -> 
             if res["ResultCode"] == 1 do 
               content = res["Content"] |> URI.decode # for verify sign
-              our_sign = Utils.md5_sign("#{res["AppID"]}#{res["ResultCode"]}#{content}#{appSecret}")
+              our_sign = Crypto.md5_sign("#{res["AppID"]}#{res["ResultCode"]}#{content}#{appSecret}")
               content = content |> Base.decode64! # get real content
 
               if our_sign == res["Sign"] do 
@@ -59,8 +60,8 @@ defmodule SDKBaidu do
 
     sign_str = "#{appId}#{trans_no}#{order_id}#{content}#{appSecret}" 
 
-    Logger.info "sign_str = #{sign_str}, our_sign = #{Utils.md5_sign(sign_str)}, their_sign: #{sign}\n"
-    Utils.md5_sign(sign_str) == sign 
+    Logger.info "sign_str = #{sign_str}, our_sign = #{Crypto.md5_sign(sign_str)}, their_sign: #{sign}\n"
+    Crypto.md5_sign(sign_str) == sign 
   end
 
   def validate_payment(_, _) do 

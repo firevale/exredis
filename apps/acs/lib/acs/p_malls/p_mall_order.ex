@@ -16,6 +16,7 @@ defmodule Acs.PMalls.PMallOrder do
   end
 
   @derive {Poison.Encoder, except: [:app, :user, :goods, :user_address, :__meta__]}
+  @primary_key false
   schema "point_mall_orders" do
     field :id, :string, primary_key: true
     field :platform, :string, size: 10
@@ -46,7 +47,7 @@ defmodule Acs.PMalls.PMallOrder do
     
     belongs_to :app,  Acs.Apps.App, type: :string
     belongs_to :user, Acs.Accounts.User, type: :integer
-    has_many :goods, Acs.PMallGoods, references: :id
+    belongs_to :goods, Acs.PMalls.PMallGoods, type: :string
 
     timestamps()
   end

@@ -4,6 +4,8 @@ defmodule Acs.PMalls.PMallGoods do
   alias Acs.PMalls.PMallGoods
 
   @derive {Poison.Encoder, except: [:app, :user, :__meta__]}
+
+  @primary_key false
   schema "pmall_goods" do
     field :id, :string, primary_key: true
     field :name, :string
@@ -24,6 +26,7 @@ defmodule Acs.PMalls.PMallGoods do
 
     belongs_to :app, Acs.Apps.App, type: :string
     belongs_to :user, Acs.Accounts.User, type: :integer
+
     timestamps()
   end
 

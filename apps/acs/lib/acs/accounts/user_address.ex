@@ -17,6 +17,8 @@ defmodule Acs.Accounts.UserAddress do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%UserAddress{} = user_address, attrs) do
     user_address

@@ -10,7 +10,6 @@ defmodule Acs.Malls.Mall do
     field :icon, :string
 
     belongs_to :app, Acs.Apps.App, type: :string
-    has_many :goods, Acs.MallGoods, references: :id
 
     timestamps()
   end

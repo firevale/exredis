@@ -27,6 +27,7 @@ defmodule Exsdks.Mixfile do
     [
       {:oauther, "~> 1.1"},
       {:sweet_xml, "~> 0.6"},
+      {:timex, "~> 3.1"},
       {:exutils, in_umbrella: true},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},

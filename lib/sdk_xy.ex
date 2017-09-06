@@ -3,6 +3,7 @@ defmodule SDKXY do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://passport.xyzs.com/checkLogin.php"
   
@@ -10,7 +11,7 @@ defmodule SDKXY do
 
   def validate_session(appId, sessionId, uid) do 
     try do 
-      response = Httpc.post_msg(@baseUrl, %{
+      response = Httpc.post_form(@baseUrl, %{
                                            "uid" => uid,
                                            "appid" => appId,
                                            "token" => sessionId
@@ -46,7 +47,7 @@ defmodule SDKXY do
                          
     
     sign_string = appKey <> sign_string 
-    our_sign = Utils.md5_sign(sign_string)
+    our_sign = Crypto.md5_sign(sign_string)
     our_sign == params["sig"]
 
   end

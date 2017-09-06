@@ -3,6 +3,7 @@ defmodule SDKTBT do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://tgi.tongbu.com/api/LoginCheck.ashx"
 
@@ -42,7 +43,7 @@ defmodule SDKTBT do
 
 
     sign_str = sign_str <> "&key=#{appKey}"            
-    our_sign = Utils.md5_sign(sign_str)
+    our_sign = Crypto.md5_sign(sign_str)
     our_sign == their_sign
   end
 

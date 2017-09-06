@@ -4,6 +4,7 @@ defmodule SDKDownjoy do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl  "http://ngsdk.d.cn/api/cp/checkToken"
@@ -14,7 +15,7 @@ defmodule SDKDownjoy do
                                           "appid" => appid,
                                           "token" => token,
                                           "umid" => umid,
-                                          "sig" => Utils.md5_sign("#{appid}|#{appkey}|#{token}|#{umid}")
+                                          "sig" => Crypto.md5_sign("#{appid}|#{appkey}|#{token}|#{umid}")
                                           })
 
       
@@ -43,7 +44,7 @@ defmodule SDKDownjoy do
                  |> Enum.map_join("&", &("#{&1}=#{params[&1]}"))
 
     sign_str = sign_str <> "&key=#{paymentKey}"         
-    our_sign = Utils.md5_sign(sign_str)
+    our_sign = Crypto.md5_sign(sign_str)
     our_sign == their_sign
   end
 

@@ -3,6 +3,7 @@ defmodule SDKIIApple do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://ucenter.iiapple.com/foreign/oauth/verification.php"
 
@@ -11,7 +12,7 @@ defmodule SDKIIApple do
 
     sign_string = params |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
 
-    sign = Utils.md5_sign(Utils.md5_sign(sign_string) <> app_key)
+    sign = Crypto.md5_sign(Crypto.md5_sign(sign_string) <> app_key)
 
     params = Map.put(params, "_sign", sign)
 
@@ -31,7 +32,7 @@ defmodule SDKIIApple do
                          |> Enum.sort 
                          |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end) 
 
-    our_sign = Utils.md5_sign(Utils.md5_sign(sign_string) <> app_key)
+    our_sign = Crypto.md5_sign(Crypto.md5_sign(sign_string) <> app_key)
 
     our_sign == their_sign   
   end

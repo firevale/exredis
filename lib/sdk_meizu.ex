@@ -4,6 +4,7 @@ defmodule SDKMeizu do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl  "https://api.game.meizu.com/game/security/checksession"
@@ -12,11 +13,11 @@ defmodule SDKMeizu do
     try do 
       params = %{"app_id" => app_id, "session_id" => session_id, "uid" => uid, "ts" => Utils.unix_timestamp}
       sign_string = params |> Enum.sort  |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
-      sign = Utils.md5_sign(sign_string <> ":" <> app_secret)
+      sign = Crypto.md5_sign(sign_string <> ":" <> app_secret)
       params = Map.put(params, "sign_type", "md5")
       params = Map.put(params, "sign", sign)
 
-      response = Httpc.post_msg(@baseUrl, params)
+      response = Httpc.post_form(@baseUrl, params)
 
       if Httpc.success?(response) do 
         # Logger.info "validate meizu session response: #{inspect response.body}"
@@ -46,7 +47,7 @@ defmodule SDKMeizu do
                  |> Enum.map_join("&", &("#{&1}=#{params[&1]}"))
 
     sign_str = sign_str <> ":#{appSecret}"
-    our_sign = Utils.md5_sign(sign_str)
+    our_sign = Crypto.md5_sign(sign_str)
     our_sign == their_sign
   end
 

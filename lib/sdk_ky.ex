@@ -3,13 +3,14 @@ defmodule SDKKY do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://f_signin.bppstore.com/loginCheck.php"
 
   def validate_session(app_key, access_token) do   
     response = Httpc.get_msg(@baseUrl, %{
                                           "tokenKey" => access_token,
-                                          "sign" => Utils.md5_sign("#{app_key}#{access_token}")
+                                          "sign" => Crypto.md5_sign("#{app_key}#{access_token}")
                                           })
 
     if Httpc.success?(response) do 
@@ -28,14 +29,12 @@ defmodule SDKKY do
     sign_string = params |> Enum.reject(fn({k, _v}) -> k == "client_id" or k == "format" or k == "sign" end) 
                          |> Enum.sort 
                          |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
-                         
-   
 
-    Utils.rsa_public_verify2(rsa_key, sign_string, params["sign"])
+     Crypto.rsa_public_verify2(rsa_key, sign_string, params["sign"])
   end
 
   def get_total_fee(rsa_key, %{"notify_data" => notify_data}) do
-    decoded_str = Utils.rsa_pub_decrypt2(rsa_key, notify_data)
+    decoded_str = Crypto.rsa_pub_decrypt2(rsa_key, notify_data)
 
     case URI.decode_query(decoded_str) do 
       %{"payresult" => "0", "fee" => fee} -> 

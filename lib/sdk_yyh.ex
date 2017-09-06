@@ -4,6 +4,7 @@ defmodule SDKYYH do
 
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Utils
 
   @baseUrl  "http://api.appchina.com/appchina-usersdk/user/v2/get.json"
@@ -39,7 +40,7 @@ defmodule SDKYYH do
     << _ :: binary-size(40), key2 :: binary >> = key |> Base.decode64!
     [private_key, mod_key] = key2 |> Base.decode64! |> String.split("+")
 
-    msg_md5  = Utils.md5_sign(transdata)
+    msg_md5  = Crypto.md5_sign(transdata)
     sign_md5 = decrypt_rsa(sign |> String.strip, private_key, mod_key)
 
     msg_md5 == sign_md5

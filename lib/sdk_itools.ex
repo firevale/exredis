@@ -4,6 +4,7 @@ defmodule SDKItools do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "https://pay.slooti.com/"
 
@@ -14,7 +15,7 @@ defmodule SDKItools do
                           "r" => "auth/verify",
                           "appid" => appId,
                           "sessionid" => accessToken,
-                          "sign" => Utils.md5_sign("appid=#{appId}&sessionid=#{accessToken}")
+                          "sign" => Crypto.md5_sign("appid=#{appId}&sessionid=#{accessToken}")
                           })
 
       if Httpc.success?(response) do 

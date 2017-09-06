@@ -3,6 +3,7 @@ defmodule SDKNdcom do
   alias   Utils.Httpc
   require Utils
   alias   Utils.JSON
+  alias   Utils.Crypto
 
   @baseUrl "http://service.sj.91.com/usercenter/AP.aspx"
 
@@ -13,7 +14,7 @@ defmodule SDKNdcom do
                                           "Act" => 4,
                                           "Uin" => uin,
                                           "SessionID" => sessionId,
-                                          "Sign" => Utils.md5_sign("#{appId}4#{uin}#{sessionId}#{appKey}")
+                                          "Sign" => Crypto.md5_sign("#{appId}4#{uin}#{sessionId}#{appKey}")
                                           })
 
       if Httpc.success?(response) do 
@@ -50,7 +51,7 @@ defmodule SDKNdcom do
 
         sign_str = keys |> Enum.map_join("", &(params[&1] |> to_string))
         sign_str = sign_str <> appKey
-        Utils.md5_sign(sign_str) == sign_theirs
+        Crypto.md5_sign(sign_str) == sign_theirs
     end
   end
 

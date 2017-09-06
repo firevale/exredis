@@ -50,7 +50,6 @@ defmodule Exwcp.Plugs.CheckMsgSignature do
               |> register_before_send(fn(conn) -> 
                 case conn.resp_body do 
                   "<xml>" <> _ ->
-                    info "raw response: #{inspect conn.resp_body, pretty: true}"
                     encrypted_message = encrypt(conn.resp_body, appid, aes_key)
                     %{"timestamp" => timestamp, 
                       "nonce" => nonce} = conn.params

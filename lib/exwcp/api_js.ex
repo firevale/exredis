@@ -12,8 +12,7 @@ defmodule Exwcp.ApiJs do
         %{errcode: 0, ticket: ticket} -> 
           {:commit, ticket}
 
-        what -> 
-          error "get ticket failed: #{inspect what}"
+        _what -> 
           {:ignore, nil}
       end
     end)

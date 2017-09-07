@@ -12,17 +12,27 @@
             <input class="input" type="text" v-model.trim="residentId" :placeholder="$t('forum.placeholder.inputResidentId')">
           </div>
         </div>
+        <div class="field" v-show="errorHint">
+          <div class="control">
+            <span class="icon icon-error-tip"></span>
+            <span>&nbsp;{{ errorHint }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <p class="subtitle"> {{ $t('forum.placeholder.residentIdTips') }}</p>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
+              :class="{'is-disabled': $v.$invalid,
+    'is-loading': processing}">
+              {{ $t('forum.account.confirm') }}
+            </v-touch>
+          </div>
+        </div>
       </div>
-      <p v-show="errorHint" class="tip-error">
-        <span class="icon icon-error-tip"></span>
-        <span>&nbsp;{{ errorHint }}</span>
-      </p>
-      <p class="tip-msg"> {{ $t('forum.placeholder.residentIdTips') }}</p>
-      <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
-        :class="{'is-disabled': $v.$invalid,
-      'is-loading': processing}">
-        {{ $t('forum.account.confirm') }}
-      </v-touch>
     </form>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div class="account">
     <form @submit.prevent="onSubmit">
       <div class="fields">
-        <div v-if="userInfo.email" class="field binding-msg">
+        <div v-if="userInfo.email" class="field">
           <div class="control">
             {{ $t('forum.account.hint.currentBoundEmail') }}
             <span>{{initEmail}}</span>
@@ -24,18 +24,22 @@
             </v-touch>
           </div>
         </div>
+        <div class="field" v-show="errorHint">
+          <div class="control">
+            <span class="icon icon-error-tip"></span>
+            <span>{{ errorHint }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
+              :class="{'is-disabled': $v.$invalid,
+                'is-loading': processing}">
+              {{ $t('forum.account.bind') }}
+            </v-touch>
+          </div>
+        </div>
       </div>
-      <p v-show="errorHint" class="tip-error">
-        <span class="icon icon-error-tip"></span>
-        <span>{{ errorHint }}</span>
-      </p>
-      <p class="submit">
-        <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
-          :class="{'is-disabled': $v.$invalid,
-          'is-loading': processing}">
-          {{ $t('forum.account.bind') }}
-        </v-touch>
-      </p>
     </form>
   </div>
 </template>

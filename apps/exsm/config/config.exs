@@ -6,9 +6,7 @@ config :exsm, ecto_repos: [Exsm.Repo]
 
 config :exsm, Exsm.Repo,
   adapter: Ecto.Adapters.MySQL,
-  charset: "utf8mb4",
-  pool_size: 10,
-  pool_max_overflow: 10
+  pool_size: 10
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

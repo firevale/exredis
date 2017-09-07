@@ -389,4 +389,100 @@ defmodule Acs.Malls do
   def change_mall_goods(%MallGoods{} = mall_goods) do
     MallGoods.changeset(mall_goods, %{})
   end
+
+  alias Acs.Malls.MallOrderLog
+
+  @doc """
+  Returns the list of mall_order_logs.
+
+  ## Examples
+
+      iex> list_mall_order_logs()
+      [%MallOrderLog{}, ...]
+
+  """
+  def list_mall_order_logs do
+    Repo.all(MallOrderLog)
+  end
+
+  @doc """
+  Gets a single mall_order_log.
+
+  Raises `Ecto.NoResultsError` if the Mall order log does not exist.
+
+  ## Examples
+
+      iex> get_mall_order_log!(123)
+      %MallOrderLog{}
+
+      iex> get_mall_order_log!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_mall_order_log!(id), do: Repo.get!(MallOrderLog, id)
+
+  @doc """
+  Creates a mall_order_log.
+
+  ## Examples
+
+      iex> create_mall_order_log(%{field: value})
+      {:ok, %MallOrderLog{}}
+
+      iex> create_mall_order_log(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_mall_order_log(attrs \\ %{}) do
+    %MallOrderLog{}
+    |> MallOrderLog.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a mall_order_log.
+
+  ## Examples
+
+      iex> update_mall_order_log(mall_order_log, %{field: new_value})
+      {:ok, %MallOrderLog{}}
+
+      iex> update_mall_order_log(mall_order_log, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_mall_order_log(%MallOrderLog{} = mall_order_log, attrs) do
+    mall_order_log
+    |> MallOrderLog.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a MallOrderLog.
+
+  ## Examples
+
+      iex> delete_mall_order_log(mall_order_log)
+      {:ok, %MallOrderLog{}}
+
+      iex> delete_mall_order_log(mall_order_log)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_mall_order_log(%MallOrderLog{} = mall_order_log) do
+    Repo.delete(mall_order_log)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking mall_order_log changes.
+
+  ## Examples
+
+      iex> change_mall_order_log(mall_order_log)
+      %Ecto.Changeset{source: %MallOrderLog{}}
+
+  """
+  def change_mall_order_log(%MallOrderLog{} = mall_order_log) do
+    MallOrderLog.changeset(mall_order_log, %{})
+  end
 end

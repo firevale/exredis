@@ -7,7 +7,7 @@ defmodule Acs.Search do
 
   alias Acs.Apps.AppOrder
 
-  def search_orders(app_id, keyword, page, records_per_page) do 
+  def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
       query: %{
         bool: %{

@@ -19,7 +19,7 @@ defmodule AcsStats.Repo.Migrations.CreateStatsDailyReports do
       timestamps()
     end
 
-    create index(:stats_daily_reports, [:app_id, :date, :platform], unique: true)
+    create unique_index(:stats_daily_reports, [:app_id, :date, :platform])
   end
 end
 

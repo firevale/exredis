@@ -12,7 +12,7 @@ defmodule AcsStats.Repo.Migrations.CreateStatsDailyUserRetentions do
     end
 
     create index(:stats_daily_user_retentions, [:report_id])
-    create index(:stats_daily_user_retentions, [:nday, :report_id], unique: true)
+    create unique_index(:stats_daily_user_retentions, [:nday, :report_id])
 
   end
 end

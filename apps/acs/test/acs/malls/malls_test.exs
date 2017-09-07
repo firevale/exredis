@@ -234,4 +234,62 @@ defmodule Acs.MallsTest do
       assert %Ecto.Changeset{} = Malls.change_mall_goods(mall_goods)
     end
   end
+
+  describe "mall_order_logs" do
+    alias Acs.Malls.MallOrderLog
+
+    @valid_attrs %{}
+    @update_attrs %{}
+    @invalid_attrs %{}
+
+    def mall_order_log_fixture(attrs \\ %{}) do
+      {:ok, mall_order_log} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Malls.create_mall_order_log()
+
+      mall_order_log
+    end
+
+    test "list_mall_order_logs/0 returns all mall_order_logs" do
+      mall_order_log = mall_order_log_fixture()
+      assert Malls.list_mall_order_logs() == [mall_order_log]
+    end
+
+    test "get_mall_order_log!/1 returns the mall_order_log with given id" do
+      mall_order_log = mall_order_log_fixture()
+      assert Malls.get_mall_order_log!(mall_order_log.id) == mall_order_log
+    end
+
+    test "create_mall_order_log/1 with valid data creates a mall_order_log" do
+      assert {:ok, %MallOrderLog{} = mall_order_log} = Malls.create_mall_order_log(@valid_attrs)
+    end
+
+    test "create_mall_order_log/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Malls.create_mall_order_log(@invalid_attrs)
+    end
+
+    test "update_mall_order_log/2 with valid data updates the mall_order_log" do
+      mall_order_log = mall_order_log_fixture()
+      assert {:ok, mall_order_log} = Malls.update_mall_order_log(mall_order_log, @update_attrs)
+      assert %MallOrderLog{} = mall_order_log
+    end
+
+    test "update_mall_order_log/2 with invalid data returns error changeset" do
+      mall_order_log = mall_order_log_fixture()
+      assert {:error, %Ecto.Changeset{}} = Malls.update_mall_order_log(mall_order_log, @invalid_attrs)
+      assert mall_order_log == Malls.get_mall_order_log!(mall_order_log.id)
+    end
+
+    test "delete_mall_order_log/1 deletes the mall_order_log" do
+      mall_order_log = mall_order_log_fixture()
+      assert {:ok, %MallOrderLog{}} = Malls.delete_mall_order_log(mall_order_log)
+      assert_raise Ecto.NoResultsError, fn -> Malls.get_mall_order_log!(mall_order_log.id) end
+    end
+
+    test "change_mall_order_log/1 returns a mall_order_log changeset" do
+      mall_order_log = mall_order_log_fixture()
+      assert %Ecto.Changeset{} = Malls.change_mall_order_log(mall_order_log)
+    end
+  end
 end

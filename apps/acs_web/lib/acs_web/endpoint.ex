@@ -47,11 +47,32 @@ defmodule AcsWeb.Endpoint do
   configuration should be loaded from the system environment.
   """
   def init(_key, config) do
+    {:ok, config |> env_port() |> env_redis_pubsub()}
+  end
+
+  defp env_port(config) do 
     if config[:load_from_system_env] do
       port = System.get_env("PORT") || raise "expected the PORT environment variable to be set"
-      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
+      Keyword.put(config, :http, [:inet6, port: port])
     else
-      {:ok, config}
+      config
+    end
+  end
+
+  defp env_redis_pubsub(config) do 
+    case config[:pubsub][:adapter] do 
+      Phoenix.PubSub.Redis ->
+        node = System.get_env("NODE") || raise "expected the NODE environment variable to be set"
+        redis_config = Exredis.Helper.conn_cfg()
+        pubsub = 
+          config[:pubsub] 
+            |> Keyword.merge(redis_config)
+            |> Keyword.put(:node_name, node)
+        
+        config |> Keyword.put(:pubsub, pubsub)
+
+      _ -> 
+        config
     end
   end
 end

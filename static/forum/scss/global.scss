@@ -34,7 +34,6 @@ input::-webkit-inner-spin-button {
 
 .root-container {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   position: relative;
@@ -45,24 +44,9 @@ input::-webkit-inner-spin-button {
 
 .content-container {
   width: 100%;
-  overflow: hidden;
   display: flex;
   flex-flow: column nowrap;
-  -ms-overflow-style: none;
   position: relative;
-  &::-webkit-scrollbar {
-    width: 0 !important;
-  }
-  &.slide-right-enter-active,
-  &.slide-right-leave-active,
-  &.slide-left-enter-active,
-  &.slide-left-leave-active {
-    flex-basis: calc(100% - 5rem);
-  }
-  &.slide-right-enter-active,
-  &.slide-left-enter-active {
-    top: calc(5rem - 100%);
-  }
 }
 
 .title {
@@ -246,7 +230,7 @@ only screen and (min-resolution: 1.25dppx) {
   width: 400px;
 }
 
-.fn-nowrap {
+.is-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

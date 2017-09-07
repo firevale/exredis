@@ -1,11 +1,12 @@
 defmodule Acs.Search do 
-  use Utils.LogAlias
+  use     Utils.LogAlias
   require Elasticsearch
 
   alias  Acs.Repo
   import Ecto.Query, warn: false
 
   alias Acs.Apps.AppOrder
+  alias Acs.Accounts
 
   def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
@@ -94,26 +95,20 @@ defmodule Acs.Search do
           _source: %{
             user_id: user_id,
             forum_id: forum_id,
-             section_id: section_id}
-            } = hit) ->
+            section_id: section_id
+          }
+        } = hit) ->
 
-          user = case Process.get("user_#{user_id}") do 
-                  nil -> 
-                    user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
-                    Process.put("user_#{user_id}", user_db)
-                    user_db
-                  user_cache ->
-                    user_cache
-                end
+          user = Accounts.get_user(String.to_integer("#{user_id}")) 
                   
           forum = case Process.get("forum_#{forum_id}") do
-                    nil ->
-                      forum_new = RedisForum.find(forum_id)
-                      Process.put("forum_#{forum_id}", forum_new)
-                      forum_new 
-                    forum_cache ->
-                      forum_cache
-                  end
+            nil ->
+              forum_new = RedisForum.find(forum_id)
+              Process.put("forum_#{forum_id}", forum_new)
+              forum_new 
+            forum_cache ->
+              forum_cache
+          end
 
           section = if forum && forum.sections && section_id  do
                       forum.sections[section_id |> to_string |> String.to_atom]
@@ -195,34 +190,34 @@ defmodule Acs.Search do
 
   def search_mall_goods(keyword, page, records_per_page) do
     if String.length(keyword)>0 do
-          query = %{
-            query: %{
-              bool: %{
-                should: [
-                  %{term: %{id: keyword}},
-                  %{term: %{app_id: keyword}},
-                  %{match: %{name: keyword}},
-                  %{match: %{description: keyword}},
-                ],
-                minimum_should_match: 1,
-                boost: 1.0,
-              },
-            },
-            sort: %{inserted_at: %{order: :desc}},
-            from: (page - 1) * records_per_page,
-            size: records_per_page,
-          }
+      query = %{
+        query: %{
+          bool: %{
+            should: [
+              %{term: %{id: keyword}},
+              %{term: %{app_id: keyword}},
+              %{match: %{name: keyword}},
+              %{match: %{description: keyword}},
+            ],
+            minimum_should_match: 1,
+            boost: 1.0,
+          },
+        },
+        sort: %{inserted_at: %{order: :desc}},
+        from: (page - 1) * records_per_page,
+        size: records_per_page,
+      }
 
-          case Elasticsearch.search(%{index: "mall", type: "goods", query: query, params: %{timeout: "1m"}}) do
-            {:ok, %{hits: %{hits: hits, total: total}}} ->
-              ids = Enum.map(hits, &(&1._id))
-              {:ok, total, ids }
-            error ->
-             throw(error)
-          end
-        else
-          {:ok,0, {}}
-        end
+      case Elasticsearch.search(%{index: "mall", type: "goods", query: query, params: %{timeout: "1m"}}) do
+        {:ok, %{hits: %{hits: hits, total: total}}} ->
+          ids = Enum.map(hits, &(&1._id))
+          {:ok, total, ids }
+        error ->
+          throw(error)
+      end
+    else
+      {:ok, 0, {}}
+    end
   end
 
   def search_pmall_orders(app_id,keyword,page,records_per_page) do
@@ -311,7 +306,7 @@ defmodule Acs.Search do
           query: keyword,
           fields: [:title],
         }},
-          filter: %{ term: %{active: true} }
+          filter: %{term: %{active: true} }
         }
       },
       from: ((page - 1) * records_per_page),
@@ -320,9 +315,7 @@ defmodule Acs.Search do
 
     case Elasticsearch.search(%{index: "customer_service", type: "questions", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
-        questions = Enum.map(hits, fn(%{
-          _id: _id,
-        } = hit) ->
+        questions = Enum.map(hits, fn(%{_id: _id} = hit) ->
           %{
             id: hit._source.id,
             title: hit._source.title,
@@ -330,12 +323,11 @@ defmodule Acs.Search do
             active: hit._source.active,
             inserted_at: hit._source.inserted_at
           }
-
         end)
         total_page = round(Float.ceil(total/records_per_page))
-        {:ok, questions, total_page }
+        {:ok, questions, total_page}
       error ->
-        error "search failed: #{inspect error, pretty: true}"
+        error "search failed: #{inspect error}"
         throw(error)
     end
   end

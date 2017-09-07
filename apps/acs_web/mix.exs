@@ -45,6 +45,7 @@ defmodule AcsWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:acs, in_umbrella: true},
       {:acs_stats, in_umbrella: true},
+      {:exsm, in_umbrella: true},
       {:cowboy, "~> 1.0"}
     ]
   end

@@ -5,7 +5,6 @@ defmodule Acs.Malls.MallOrderLog do
 
 
   schema "mall_order_logs" do
-
     field :content, :map
     field :status, :integer
     field :changed_status, :integer

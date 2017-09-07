@@ -1,12 +1,11 @@
 defmodule SDKNeteaseDun do
-
-  alias   Utils.Httpc
   require Utils
+  alias   Utils.Httpc
   alias   Utils.JSON
   alias   Utils.Crypto
   use     Utils.LogAlias
 
-  @dun_config         Application.get_env(:acs, :netease_dun)
+  @dun_config         Application.get_env(:exsdks, :netease_dun)
   @check_txt_url      @dun_config[:check_txt_url]
   @check_img_url      @dun_config[:check_img_url]
   @secretId           @dun_config[:secretId]
@@ -25,43 +24,39 @@ defmodule SDKNeteaseDun do
   end
 
   defp _check_txt(content, businessId) do 
-    
     try do
       timestamp = Utils.unix_timestamp
       nonce = Utils.nonce
       dataId = Utils.generate_token
 
       response = Httpc.post_form(@check_txt_url, %{
-                          "secretId" => @secretId,
-                          "businessId" => businessId,
-                          "version" => @version,
-                          "timestamp" => timestamp,
-                          "nonce" => nonce,
-                          "dataId" => dataId,
-                          "content" => content,
-                          "signature" => Crypto.md5_sign("businessId#{businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
-                          })
+        "secretId" => @secretId,
+        "businessId" => businessId,
+        "version" => @version,
+        "timestamp" => timestamp,
+        "nonce" => nonce,
+        "dataId" => dataId,
+        "content" => content,
+        "signature" => Crypto.md5_sign("businessId#{businessId}content#{content}dataId#{dataId}nonce#{nonce}secretId#{@secretId}timestamp#{timestamp}version#{@version}#{@secretKey}")
+      })
 
       if Httpc.success?(response) do 
         case JSON.decode(response.body) do 
-          {:ok, res} ->
-            
-            if res["code"] == 200 do 
-              result = res["result"]
-              case result["action"] do
-                2 ->
-                  [labels] = result["labels"]
-                  {:error, "error.sdks.netease.label#{labels["label"]}", ""}
-                
-                _ ->
-                  {:ok, "error.sdks.netease.checkPass"}
-              end
-
-            else 
-              error "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"
-              {:error, "", "netease dun check txt failed, code = #{res["code"]}, msg = #{res["msg"]}"}
+          {:ok, %{"code" => 200, "result" => result}} ->
+            case result["action"] do
+              2 ->
+                [labels] = result["labels"]
+                {:error, "error.sdks.netease.label#{labels["label"]}", ""}
+              
+              _ ->
+                {:ok, "error.sdks.netease.checkPass"}
             end
-          _ -> 
+
+          {:ok, %{"code" => code, "msg" => msg}} ->
+            error "netease dun check txt failed, code = #{code}, msg = #{msg}"
+            {:error, "", "netease dun check txt failed, code = #{code}, msg = #{msg}"}
+
+        _ -> 
             error "netease dun check txt error, not a json response"
             {:error, "", "netease dun check txt error, not a json response"}
         end 
@@ -80,8 +75,6 @@ defmodule SDKNeteaseDun do
     try do
       timestamp = Utils.unix_timestamp
       nonce = Utils.nonce
-      # dataId = Utils.generate_token
-
       response = Httpc.post_form(@check_img_url, %{
                           "secretId" => @secretId,
                           "businessId" => @img_businessId,

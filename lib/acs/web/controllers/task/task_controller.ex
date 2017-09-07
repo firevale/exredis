@@ -15,8 +15,8 @@ defmodule Acs.Web.TaskController do
   # update_task
   def update_task(%Plug.Conn{private: %{acs_admin_id: _admin_id, acs_app_id: app_id}} = conn, %{
                             "id" => id,
-                            "name" => title,
-                            "sub_name" => sub_title,
+                            "name" => name,
+                            "sub_name" => sub_name,
                             "point" => point, 
                             "path" => path,
                             "active" => active,
@@ -74,7 +74,7 @@ defmodule Acs.Web.TaskController do
         conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})
 
       %TaskBar{} = task ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "task_pics/#{id}")
+        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "task_pics/#{task_id}")
         TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
         conn |> json(%{success: true, pic: image_path})
       _ ->

@@ -43,7 +43,7 @@ defmodule Acs.Web do
       import  Acs.Web.ErrorHelpers
 
       import  Acs.Plugs
-
+      import Acs.UploadImagePlugs
       require Redis
 
       require Utils
@@ -139,6 +139,7 @@ defmodule Acs.Web do
       use Phoenix.Router
       import Acs.Plugs
       import Acs.PlugsPipeline
+      import Acs.UploadImagePlugs
     end
   end
 

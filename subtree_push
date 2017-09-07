@@ -2,6 +2,7 @@
 
 for p in extcp exes exsm exredis excache exutils exsdks exwcp
 do
+   git subtree pull --prefix=apps/$p $p acs
    git subtree push --prefix=apps/$p $p acs
    git subtree split --rejoin --prefix=apps/$p 
 done

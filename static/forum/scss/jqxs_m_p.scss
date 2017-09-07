@@ -62,7 +62,6 @@
 }
 
 .my_profile {
-  background-color: #fff;
   padding-top: virtual-m-rem(70);
   .info {
     display: flex;
@@ -105,7 +104,6 @@
     padding-left: virtual-m-rem(130);
     padding-right: virtual-m-rem(130);
     display: flex;
-    justify-content: center;
     align-items: center;
     text-align: center;
   }
@@ -174,9 +172,11 @@
 .account {
   background-color: #fff;
   padding-top: virtual-m-rem(150);
-  .fields {
+  form {
     width: virtual-m-rem(960);
     margin: 0 auto 0 auto;
+  }
+  .fields {
     line-height: virtual-m-rem(140);
     input {
       height: virtual-m-rem(120);
@@ -185,16 +185,13 @@
   }
   .binding {
     display: block;
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(100) auto 0 auto;
+    margin-top: virtual-m-rem(100);
   }
   .confirm {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(30) auto 0 auto;
+    margin-top: virtual-m-rem(30);
   }
   .binding-msg {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(30) auto virtual-m-rem(120) auto;
+    margin: virtual-m-rem(10) auto virtual-m-rem(90) auto;
     span {
       color: #b3182e;
     }
@@ -203,20 +200,17 @@
     width: virtual-m-rem(400);
   }
   .submit {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(90) auto 0 auto;
+    margin-top: virtual-m-rem(90);
     .is-submit {
       border-radius: virtual-m-rem(10);
       font-size: virtual-m-rem(60);
     }
   }
   .tip-error {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(10) auto 0 auto;
+    margin-top: virtual-m-rem(10);
     color: #b3182e;
   }
   .tip-msg {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(10) auto 0 auto;
+    margin-top: virtual-m-rem(10);
   }
 }

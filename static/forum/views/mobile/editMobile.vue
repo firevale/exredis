@@ -1,12 +1,13 @@
 <template>
   <div class="account">
     <form @submit.prevent="onSubmit">
-      <div v-if="userInfo.email" class="binding-msg">
-        <p>{{ $t('forum.account.hint.currentBoundMobile') }}
-          <span>{{initMobile}}</span>
-        </p>
-      </div>
       <div class="fields">
+        <div v-if="userInfo.mobile" class="field binding-msg">
+          <div class="control">
+            {{ $t('forum.account.hint.currentBoundMobile') }}
+            <span>{{initMobile}}</span>
+          </div>
+        </div>
         <div class="field">
           <div class="control">
             <input class="input" type="text" v-model.trim="mobile" @input="handleValidation" :placeholder="$t('forum.placeholder.inputMobileNumber')">

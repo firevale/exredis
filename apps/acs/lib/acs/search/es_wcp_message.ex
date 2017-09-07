@@ -7,8 +7,7 @@ defmodule Acs.Search.ESWcpMessage do
         index: "wcp",
         type: "messages",
         doc: message,
-        params: nil,
-        id: nil
+        id: message.id
       })
     end
 

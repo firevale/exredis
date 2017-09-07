@@ -10,6 +10,7 @@ defmodule Acs.LoginCodes do
 
   require Exredis
   require Excache
+  require Timex
 
   def stats_info(app_id) do 
     Excache.get!(stats_key(app_id), fallback: fn(redis_key) -> 

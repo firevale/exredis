@@ -15,7 +15,7 @@ defmodule Acs.Cache.CachedUser do
     Excache.get!(key(user_id), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case refresh(app_id) do 
+          case refresh(user_id) do 
             nil -> {:ignore, nil}
             user -> {:commit, user}
           end
@@ -129,7 +129,7 @@ defmodule Acs.Cache.CachedUser do
   defp key(user_id), do: "#{@key_base}.#{user_id}" 
   defp device_key(device_id), do: "#{@key_base}.device.#{device_id}" 
   defp email_key(email), do: "#{@key_base}.email.#{email}" 
-  defp mobile_key(mobile), do: "#{@key_base}.mobile.#{email}" 
+  defp mobile_key(mobile), do: "#{@key_base}.mobile.#{mobile}" 
   defp sdk_key(sdk, sdk_user_id), do: "#{@key_base}.sdk.#{sdk}.#{sdk_user_id}" 
 
 end

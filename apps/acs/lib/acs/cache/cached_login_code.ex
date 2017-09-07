@@ -16,7 +16,7 @@ defmodule Acs.Cache.RedisLoginCode do
     Excache.get!(key(app_id, key_field), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case refresh(app_id, key_field, false) do 
+          case refresh(app_id, key_field) do 
             nil -> {:ignore, nil}
             app_login_code -> {:commit, app_login_code}
           end

@@ -88,8 +88,8 @@
     padding-right: .7rem;
   }
   .is-change {
-    width: 4rem;
-    height: 2rem;
+    width: 4.5rem;
+    height: 1.8rem;
   }
   .info {
     display: flex;
@@ -134,6 +134,15 @@
     position: absolute;
     top: .756rem;
     right: .756rem;
+  }
+}
+
+.personal {
+  .info {
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    padding: .8rem;
   }
 }
 

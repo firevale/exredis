@@ -162,5 +162,14 @@ defmodule Acs.Web.AdminRouter do
       post  "/update_goods_content_pic", PointMallController, :update_goods_content_pic
     end
 
+    scope "/task" do
+      pipe_through :admin_app
+      post "/get_task_list", TaskController, :get_task_list
+      post "/update_task", TaskController, :update_task
+      post "/toggle_task_status", TaskController, :toggle_task_status
+      post "/upload_task_pic", TaskController, :upload_task_pic
+      
+    end
+
   end
 end

@@ -108,6 +108,8 @@ defmodule Acs.Web do
       alias  Acs.PointLog
       alias  Acs.PointMallGoods
       alias  Acs.PointMallOrder
+
+      alias  Acs.TaskBar
     end
   end
 

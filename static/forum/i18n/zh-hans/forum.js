@@ -109,7 +109,9 @@ export default {
     notBound: '未绑定',
     bind: '绑定',
     update: '修改',
+    confirm: '确认',
     notAuthenticated: '未认证',
+    authenticated: '已认证',
     fetchVeiryCode: '获取验证码',
     cooldownText: '重新发送({timer}s)',
     hint: {
@@ -129,7 +131,10 @@ export default {
     inputMobileNumber: '请输入手机号码',
     inputVerifyCode: '请输入验证码',
     inputEmail: '请输入邮箱地址',
-    headportrait: '很抱歉，手机版论坛暂不支持更换头像您可以登录电脑版论坛进行更换'
+    inputResidentName: '请输入您的真实姓名',
+    inputResidentId: '请输入您的身份证号码',
+    headportraitTips: '很抱歉，手机版论坛暂不支持更换头像您可以登录电脑版论坛进行更换',
+    residentIdTips:'确认后不可更改，请填写您的真实身份信息'
   },
   error: {
     nickNameError: '昵称不得少于4个字符',

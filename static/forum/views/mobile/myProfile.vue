@@ -48,8 +48,8 @@
       </div>
       <div class="level is-mobile has-bottom-line" v-if="isMobileAccountSupported">
         <div class="level-left">
-          <span>{{ $t('forum.account.residentInfo') }}{{ userInfo.resident_id || $t('forum.account.notAuthenticated')
-            }}
+          <span>{{ $t('forum.account.residentInfo') }}{{ userInfo.resident_id? $t('forum.account.authenticated')
+            : $t('forum.account.notAuthenticated') }}
           </span>
         </div>
         <div class="level-right">
@@ -65,7 +65,7 @@
     </div>
     <div v-show="visible" class="mask" @click="closeTipMsg">
       <div class="tip-message">
-        {{$t('forum.placeholder.headportrait')}}
+        {{$t('forum.placeholder.headportraitTips')}}
         <div class="icon icon-close close">
         </div>
       </div>
@@ -96,28 +96,22 @@ export default {
     ...mapGetters([
       'userInfo'
     ]),
-
     isInApp() {
       return acs.isInApp
     },
-
     isMobileAccountSupported() {
       return acs.isMobileAccountSupported
     },
-
     showLogout() {
       return acs.showLogout
     },
-
     avatarUrl() {
       return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
     },
-
     email() {
       return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t(
         'forum.account.notBound')
     },
-
     mobile() {
       return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t(
         'forum.account.notBound')
@@ -142,11 +136,9 @@ export default {
         action: 'logout',
       })
     },
-
     checkCharacter: function(val) {
       return /^[\w\u4e00-\u9fa5]+$/gi.test(this.nickname)
     },
-
     onSubmit: async function() {
       if (!this.checkCharacter(this.nickname)) {
         this.tipError = true

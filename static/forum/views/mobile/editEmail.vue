@@ -1,12 +1,13 @@
 <template>
   <div class="account">
     <form @submit.prevent="onSubmit">
-      <div v-if="userInfo.email" class="binding-msg">
-        <p>{{ $t('forum.account.hint.currentBoundEmail') }}
-          <span>{{initEmail}}</span>
-        </p>
-      </div>
       <div class="fields">
+        <div v-if="userInfo.email" class="field binding-msg">
+          <div class="control">
+            {{ $t('forum.account.hint.currentBoundEmail') }}
+            <span>{{initEmail}}</span>
+          </div>
+        </div>
         <div class="field">
           <div class="control">
             <input class="input" type="text" v-model.trim="email" @input="handleValidation" :placeholder="$t('forum.placeholder.inputEmail')">
@@ -18,7 +19,7 @@
           </div>
           <div class="control">
             <v-touch tag="button" type="button" class="button is-primary verfy" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
-                'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
+                    'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
               {{ btnFetchVerifyCodeTitle }}
             </v-touch>
           </div>
@@ -31,7 +32,7 @@
       <p class="submit">
         <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
           :class="{'is-disabled': $v.$invalid,
-      'is-loading': processing}">
+          'is-loading': processing}">
           {{ $t('forum.account.bind') }}
         </v-touch>
       </p>

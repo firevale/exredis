@@ -4,6 +4,8 @@ defmodule Exsm.MeishengService do
 
   import  SweetXml
 
+  alias   Exsm.MeishengSms
+
   @config             Application.get_env(:exsm, __MODULE__, [])
   @server_ip          @config[:server_ip]
   @server_port        @config[:server_port]
@@ -31,6 +33,13 @@ defmodule Exsm.MeishengService do
       case response.body |> xpath(~x"/sms/mt/status/text()"i) do 
         0 ->
           msg_id = response.body |> xpath(~x"/sms/mt/msgid/text()"s)
+          MeishengSms.changeset(%MeishengSms{}, %{
+            msg_id: msg_id,
+            mobile: mobile,
+            template_id: @template_verify,
+            content: "@1@=#{token}",
+            status: MeishengSms.Status.sent
+          }) |> Repo.insert!          
           {:ok, msg_id}
         100 ->
           error("sms verify code send failed, to: #{mobile}")
@@ -129,14 +138,19 @@ defmodule Exsm.MeishengService do
     })
 
     if Httpc.success?(response) do 
-      {:ok, response.body 
-              |> xpath(~x"/sms/mo"l,
-                mobile: ~x"./mobile/text()"s,
-                recv_code: ~x"./recvcode/text()"s,
-                content: ~x"./content/text()"s,
-                recv_time: ~x"./time/text()"s, 
-              ) 
-      }
+      mos =  
+        response.body 
+          |> xpath(~x"/sms/mo"l,
+              mobile: ~x"./mobile/text()"s,
+              recv_code: ~x"./recvcode/text()"s,
+              content: ~x"./content/text()"s,
+              recv_time: ~x"./time/text()"s) 
+
+      mos |> Enum.each(fn(report) -> 
+        MeishengSmsMo.changeset(%MeishengSmsMo{}, report) |> Repo.insert!
+      end)
+
+      {:ok, mos}
     else
        error("Meisheng query mo failed, response: #{inspect response}")
       :error

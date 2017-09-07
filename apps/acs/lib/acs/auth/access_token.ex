@@ -18,14 +18,14 @@ defmodule Acs.Auth.AccessToken do
   @access_token_key          "acs.keys.access_token"
 
   def create(%{
-    app_id: _app_id,
-    user_id: _user_id,
-    device_id: device_id,
-    platform: _platform,
-    ttl: _ttl,
-    binding: _binding
-  } = params) when is_bitstring(device_id) do
-    ts = Utils.unix_timestamp
+      app_id: _app_id,
+      user_id: _user_id,
+      device_id: device_id,
+      platform: _platform,
+      ttl: _ttl,
+      binding: _binding
+    } = params) when is_bitstring(device_id) do
+    ts = Utils.unix_timestamp()
     token = Map.merge(%__MODULE__{
       id: Utils.generate_token,
       created_at: ts,

@@ -18,6 +18,7 @@ defmodule Exsm.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {Exsm.Application, []},
       extra_applications: [:logger]
     ]
   end
@@ -25,17 +26,13 @@ defmodule Exsm.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:sweet_xml, "~> 0.6", repo: hex_repo()},
+      {:mariaex, ">= 0.0.0"},
+      {:ecto, "~> 2.1"},
+      {:sweet_xml, "~> 0.6"},
       {:exutils, in_umbrella: true},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
   end
 
-  defp hex_repo() do 
-    case System.get_env("HEX_REPO") do 
-      "upyun" -> :upyun
-      _ -> :hexpm
-    end
-  end
 end

@@ -12,11 +12,10 @@ defmodule Acs.Auth.AccessToken do
 
   require Exredis
   require Excache
-  use     Utils.Jsonable
+  use     Utils.Redisable
   use     Utils.LogAlias
 
   @access_token_key          "acs.keys.access_token"
-  @token_ttl                 604800
 
   def create(%{
     app_id: _app_id,
@@ -36,7 +35,7 @@ defmodule Acs.Auth.AccessToken do
   end
 
   def save(%__MODULE__{} = token) do
-    Exredis.setex(key(token), token.ttl, to_json(token))
+    Exredis.setex(key(token), token.ttl, to_redis(token))
   end
 
   def get(nil), do: nil
@@ -44,7 +43,7 @@ defmodule Acs.Auth.AccessToken do
     Excache.get!(key(token_id), fallback: fn(key) -> 
       case Exredis.get(key) do
         nil -> {:ignore, nil}
-        json -> {:commit, from_json(json)}
+        json -> {:commit, from_redis(json)}
       end
     end)
   end

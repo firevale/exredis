@@ -8,6 +8,29 @@ config :exsm, Exsm.MeishengService,
   secret: "kbmrtjhw6njk",
   template_verify: "JSM41501-0001"
 
+config :exsdks, :alipay,
+  certs_root: "/code/priv/certs",
+  notify_url: "https://fvac.firevale.com/api/pay/alipay/notify",
+  callback_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}",
+  merchant_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}"
+
+config :exsdks, :wechat,
+  prepay_url: "https://api.mch.weixin.qq.com/pay/unifiedorder",
+  check_url: "https://api.mch.weixin.qq.com/pay/orderquery",
+  close_url: "https://api.mch.weixin.qq.com/pay/closeorder",
+  refund_url: "https://api.mch.weixin.qq.com/secapi/pay/refund",
+  refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery",
+  auth_base_url: "https://api.weixin.qq.com/sns"
+
+config :exsdks, :netease_dun,
+  secretId: "f94740b35af60351d389117156eef9aa",
+  secretKey: "09b5a40215c5bc3b4c8159d8901d7f46",
+  txt_businessId: "3fcaa4a970b5444ed676ffbffc545588",
+  img_businessId: "afcb2720bea5912effcbda7a85a904b8",
+  user_businessId: "65497b57a490592212b91c1d3305b757",
+  check_txt_url: "https://api.aq.163.com/v3/text/check",
+  check_img_url: "https://api.aq.163.com/v3/image/check"
+
 config :acs, :chaoxin_bot,
   api_key: "239277:1d9ee0a4c5e5e54cad94f165c13734b1",
   default_group_id: 127697
@@ -42,26 +65,9 @@ config :acs, Acs.SendCloudMailer,
   from: "noreply@sdmail.firevale.com",
   reply: "noreply@sdmail.firevale.com"
 
-config :acs, :alipay,
-  certs_root: "priv/certs",
-  notify_url: "https://fvac.firevale.com/api/pay/alipay/notify",
-  callback_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}",
-  merchant_url: "https://fvac.firevale.com/payment/pay_proxy?merchant_order_id={order_id}"
 
-config :acs, :wechat,
-  prepay_url: "https://api.mch.weixin.qq.com/pay/unifiedorder",
-  check_url: "https://api.mch.weixin.qq.com/pay/orderquery",
-  close_url: "https://api.mch.weixin.qq.com/pay/closeorder",
-  refund_url: "https://api.mch.weixin.qq.com/secapi/pay/refund",
-  refundquery_url: "https://api.mch.weixin.qq.com/pay/refundquery",
-  auth_base_url: "https://api.weixin.qq.com/sns"
 
-config :acs, :netease_dun,
-  secretId: "f94740b35af60351d389117156eef9aa",
-  secretKey: "09b5a40215c5bc3b4c8159d8901d7f46",
-  txt_businessId: "3fcaa4a970b5444ed676ffbffc545588",
-  img_businessId: "afcb2720bea5912effcbda7a85a904b8",
-  user_businessId: "65497b57a490592212b91c1d3305b757",
-  check_txt_url: "https://api.aq.163.com/v3/text/check",
-  check_img_url: "https://api.aq.163.com/v3/image/check"
+
+
+
 

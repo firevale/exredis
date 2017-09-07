@@ -11,7 +11,7 @@ defmodule Acs.Accounts do
   alias Acs.Cache.CachedUser
   alias Utils.Password
 
-  def create_user!(account_id, password) when is_bitstring(account_id), is_bitstring(password) do 
+  def create_user!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 
     User.changeset(%User{}, gen_user_attr!(account_id, password)) |> Repo.insert!
   end
 
@@ -21,7 +21,7 @@ defmodule Acs.Accounts do
   def get_user(account_id) when is_bitstring(account_id) do 
     CachedUser.get_by(parse_account_id(account_id), account_id)
   end
-  
+
   def get_user!(user_id) when is_integer(user_id) do 
     CachedUser.get!(user_id)
   end
@@ -45,7 +45,7 @@ defmodule Acs.Accounts do
       nil -> nil
       user = %User{} ->
         attr = gen_user_attr!(account_id, password) |> Map.put(:device_id, nil) 
-        new_user = User.changeset(user) |> Repo.update!        
+        new_user = User.changeset(user, attr) |> Repo.update!        
         CachedUser.del_device_index(device_id)
         CachedUser.refresh(new_user)
         new_user
@@ -80,7 +80,7 @@ defmodule Acs.Accounts do
     end
   end
 
-  defp gen_user_attr!(account_id, password) when is_bitstring(account_id), is_bitstring(password) do 
+  defp gen_user_attr!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 
     attr = %{encrypted_password: Password.hash(password), nickname: gen_nickname()}
     case parse_account_id(account_id) do 
       :mobile -> Map.put(attr, :mobile, account_id)

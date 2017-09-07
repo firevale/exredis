@@ -18,7 +18,7 @@ defmodule Acs.Malls.MallOrderLog do
   @doc false
   def changeset(%MallOrderLog{} = mall_order_log, attrs) do
     mall_order_log
-    |> cast(params, [:content, :status, :changed_status, :admin_user, :mall_order_id])
+    |> cast(attrs, [:content, :status, :changed_status, :admin_user, :mall_order_id])
     |> validate_required([:status, :changed_status, :mall_order_id])
     |> foreign_key_constraint(:mall_order_id)
   end

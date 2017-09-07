@@ -34,7 +34,7 @@ defmodule Acs.CachePMallGoods do
 
     case Repo.get(PMallGoods, goods_id) do 
       nil -> nil
-      %MallGoods{} = goods -> refresh(goods)
+      %PMallGoods{} = goods -> refresh(goods)
     end
   end
 

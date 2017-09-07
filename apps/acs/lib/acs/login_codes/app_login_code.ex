@@ -17,6 +17,8 @@ defmodule Acs.LoginCodes.AppLoginCode do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppLoginCode{} = app_login_code, attrs) do
     app_login_code

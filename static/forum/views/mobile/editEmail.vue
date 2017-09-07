@@ -1,31 +1,168 @@
 <template>
   <div class="account">
-    <div class="binding-msg">
-      <p>您已绑定的邮箱为
-        <span>fireball@fireball.com</span>
-      </p>
-    </div>
-    <div class="fields">
-      <div class="field">
-        <div class="control">
-          <input class="input" type="text" placeholder="请输入绑定邮箱">
+    <form @submit.prevent="onSubmit">
+      <div class="fields">
+        <div v-if="userInfo.email" class="field">
+          <div class="control">
+            {{ $t('forum.account.hint.currentBoundEmail') }}
+            <span>{{initEmail}}</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <input class="input" type="text" v-model.trim="email" @input="handleValidation" :placeholder="$t('forum.placeholder.inputEmail')">
+          </div>
+        </div>
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input" type="text" v-model.trim="verifyCode" :placeholder="$t('forum.placeholder.inputVerifyCode')">
+          </div>
+          <div class="control">
+            <v-touch tag="button" type="button" class="button is-primary verfy" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
+                    'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
+              {{ btnFetchVerifyCodeTitle }}
+            </v-touch>
+          </div>
+        </div>
+        <div class="field" v-show="errorHint">
+          <div class="control">
+            <span class="icon icon-error-tip"></span>
+            <span>{{ errorHint }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control">
+            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
+              :class="{'is-disabled': $v.$invalid,
+                'is-loading': processing}">
+              {{ $t('forum.account.bind') }}
+            </v-touch>
+          </div>
         </div>
       </div>
-      <div class="field has-addons">
-        <div class="control">
-          <input class="input" type="text" placeholder="请输入验证码">
-        </div>
-        <div class="control">
-          <v-touch tag="a" class="button is-primary">
-            获取验证码
-          </v-touch>
-        </div>
-      </div>
-    </div>
-    <p class="tip-error">
-      <span class="icon icon-error-tip"></span>
-      <span>&nbsp;验证码错误</span>
-    </p>
-    <a class="buttons btn-binding binding"></a>
+    </form>
   </div>
 </template>
+<script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+import {
+  required,
+} from 'vuelidate/lib/validators'
+
+import {
+  email,
+  verifyCode
+} from '../../components/validators'
+
+import formMixin from '../../components/formMixin'
+import * as utils from 'common/js/utils'
+import Toast from 'common/components/toast'
+
+export default {
+  data() {
+    return {
+      email: '',
+      verifyCode: '',
+      errorMessage: '',
+      sendingVerifyCode: false,
+      cooldownCounter: 0,
+      processing: false,
+    }
+  },
+  validations() {
+    let email = {
+      required,
+      valid: function(val) {
+        return utils.isValidEmail(val)
+      },
+      changed: function(val) {
+        return utils.isValidEmail(this.userInfo.email) ? (val != this.userInfo.email) : true
+      },
+    }
+    return {
+      email,
+      verifyCode
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ]),
+    initEmail() {
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t(
+        'forum.account.notBound')
+    },
+    btnFetchVerifyCodeTitle() {
+      if (this.cooldownCounter > 0) {
+        return this.$t('forum.account.cooldownText', {
+          timer: this.cooldownCounter
+        })
+      } else {
+        return this.$t('forum.account.fetchVeiryCode')
+      }
+    },
+    boundEmail() {
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : ''
+    }
+  },
+  methods: {
+    ...mapActions(['updateUserEmail']),
+
+    onSubmit: async function() {
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.updateUserEmail({
+          email: this.email,
+          verify_code: this.verifyCode
+        })
+        if (result.success) {
+          this.updateUserEmail(this.email)
+          window.acsConfig.user.email = this.email
+
+          this.$nextTick(_ => {
+            Toast.show(this.$t('forum.account.messages.emailBindSuccess', {
+              email: this.email
+            }))
+            this.$router.back()
+          })
+        } else {
+          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+        }
+        this.processing = false
+      }
+    },
+    cooldownTimer: function() {
+      if (this.cooldownCounter > 0) {
+        this.cooldownCounter--;
+        setTimeout(this.cooldownTimer, 1000);
+      }
+    },
+    sendEmailVerifyCode: async function() {
+      try {
+        if (!utils.isValidEmail(this.email)) {
+          this.errorHint = this.$t('error.validation.invalidEmailAddress')
+        } else {
+          this.sendingVerifyCode = true
+          let result = await this.$acs.sendBindEmailVerifyCode(this.email)
+          if (result.success) {
+            this.cooldownCounter = 60
+            setTimeout(this.cooldownTimer, 1000)
+          } else {
+            this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+          }
+          this.sendingVerifyCode = false
+        }
+      } catch (_) {
+        this.setErrorMessage(this.$t('error.server.networkError'))
+        this.sendingVerifyCode = false
+      }
+    },
+  },
+
+  mixins: [formMixin]
+}
+</script>

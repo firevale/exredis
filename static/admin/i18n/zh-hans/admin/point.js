@@ -11,6 +11,8 @@
    task: {
      add: '添加新任务',
      taskbar: '任务栏',
-     
-   },
+     addSuccess: '任务添加成功',
+     updateSuccess: '任务修改成功',
+     taskNotFound: '任务不存在',
+   }
  }

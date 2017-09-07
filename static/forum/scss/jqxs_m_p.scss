@@ -53,50 +53,73 @@
     height: virtual-m-rem(80);
     background-image: url("~assets/themes/jqxs_mobile/Group_45.png");
   }
+  &.btn-save {
+    display: block;
+    width: virtual-m-rem(150);
+    height: virtual-m-rem(80);
+    background-image: url("~assets/themes/jqxs_mobile/19_03_03.png");
+  }
 }
 
 .my_profile {
-  background-color: #fff;
-  padding-top: virtual-m-rem(70);
-  .nickname {
+  .section {
+    padding: 1.5rem 0rem;
+  }
+  .content {
+    margin-top: 1rem;
+    line-height: 3.5rem;
+    .level-left {
+      padding-left: .7rem;
+    }
+    .level-right {
+      padding-right: .7rem;
+    }
+  }
+  .info {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: virtual-m-rem(55);
-  }
-  .binding {
-    margin-top: virtual-m-rem(40);
-    line-height: virtual-m-rem(200);
-    .level {
-      padding-left: virtual-m-rem(35);
-      padding-right: virtual-m-rem(35);
+    line-height: 1.0395rem;
+    span:not(:last-child) {
+      margin-right: .8505rem;
     }
-    .level:not(:last-child) {
-      margin-bottom: 0 !important;
+    input {
+      width: 6.615rem;
+      height: 1.89rem;
+    }
+    .nickname {
+      margin-top: .189rem;
     }
   }
   .logout {
-    margin-top: virtual-m-rem(120);
+    margin-top: 2.268rem;
+  }
+  .tip-error {
+    margin-left: 3.402rem;
+    margin-top: .378rem;
+    span {
+      color: #b3182e;
+      padding-left: .189rem;
+    }
   }
   .tip-message {
     width: 88vw;
-    height: virtual-m-rem(502);
+    height: 9.4878rem;
     position: fixed;
     top: 35vh;
     left: 6vw;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: virtual-m-rem(20);
-    padding-left: virtual-m-rem(130);
-    padding-right: virtual-m-rem(130);
+    border-radius: .378rem;
+    padding-left: 2.457rem;
+    padding-right: 2.457rem;
     display: flex;
-    justify-content: center;
     align-items: center;
     text-align: center;
+    background: rgba(255, 255, 255, 0.9);
   }
   .close {
     position: absolute;
-    top: virtual-m-rem(40);
-    right: virtual-m-rem(40);
+    top: .756rem;
+    right: .756rem;
   }
 }
 
@@ -148,38 +171,19 @@
 
 .account {
   background-color: #fff;
-  padding-top: virtual-m-rem(150);
-  .fields {
-    width: virtual-m-rem(960);
+  padding-top: 2.835rem;
+  form {
+    width: 18.144rem;
     margin: 0 auto 0 auto;
-    line-height: virtual-m-rem(140);
+  }
+  .fields {
+    line-height: 2.268rem;
     input {
-      height: virtual-m-rem(120);
+      height: 2.268rem;
       border: 1px solid #b3182e;
     }
   }
-  .binding {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(100) auto 0 auto;
-  }
-  .confirm {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(30) auto 0 auto;
-  }
-  .binding-msg {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(30) auto virtual-m-rem(70) auto;
-    span {
-      color: #b3182e;
-    }
-  }
-  .tip-error {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(10) auto 0 auto;
-    color: #b3182e;
-  }
-  .tip-msg {
-    width: virtual-m-rem(960);
-    margin: virtual-m-rem(10) auto 0 auto;
+  .verfy {
+    width: 7.56rem;
   }
 }

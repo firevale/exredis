@@ -109,6 +109,7 @@ export default {
     notBound: '未绑定',
     bind: '绑定',
     update: '修改',
+    change: '更换',
     confirm: '确认',
     notAuthenticated: '未认证',
     authenticated: '已认证',

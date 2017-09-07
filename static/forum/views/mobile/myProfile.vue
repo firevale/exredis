@@ -3,56 +3,54 @@
     <section class="section has-text-centered">
       <div class="container">
         <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>
-        <p class="subtitle">
-          <p class="info">
-            <span class="nickname">
-              {{ $t('forum.personal.nickname') }}
-              <label v-if="!editName"> {{ userInfo.nickname }}</label>
-            </span>
-            <span v-if="!editName">
-              <a class="icon icon-edit" @click="editNickName"></a>
-            </span>
-            <span v-if="editName">
-              <input class="input" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
-                :value="userInfo.nickname">
-            </span>
-            <span v-if="editName">
-              <a class="buttons btn-save" @click="onSubmit"></a>
-            </span>
-          </p>
-          <p v-if="tipError" class="tip-error">
-            <i class="icon icon-error-tip"></i>
-            <span>{{$t('forum.error.nickNameError')}}</span>
-          </p>
+        <p class="info">
+          <span class="nickname">
+            {{ $t('forum.personal.nickname') }}
+            <label v-if="!editName"> {{ userInfo.nickname }}</label>
+          </span>
+          <span v-if="!editName">
+            <a class="icon icon-edit" @click="editNickName"></a>
+          </span>
+          <span v-if="editName">
+            <input class="input" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
+              :value="userInfo.nickname">
+          </span>
+          <span v-if="editName">
+            <a class="buttons btn-save" @click="onSubmit"></a>
+          </span>
+        </p>
+        <p v-if="tipError" class="tip-error">
+          <i class="icon icon-error-tip"></i>
+          <strong>{{$t('forum.error.nickNameError')}}</strong>
         </p>
         <div class="content">
           <div class="level is-mobile has-bottom-line">
             <div class="level-left">
-              <span>{{ $t('forum.account.mobile') }}{{ mobile }}</span>
+              <span class="title">{{ $t('forum.account.mobile') }}{{ mobile }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.mobile" class="buttons btn-change" :to="{name: 'editMobile'}"></router-link>
-              <router-link v-else class="buttons btn-binding-mobile" :to="{name: 'editMobile'}"></router-link>
+              <router-link v-if="userInfo.mobile" class="button is-primary has-radius is-change" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.mobile') }}</small></router-link>
             </div>
           </div>
           <div class="level is-mobile has-bottom-line">
             <div class="level-left">
-              <span>{{ $t('forum.account.email') }}{{ email }}</span>
+              <span class="title">{{ $t('forum.account.email') }}{{ email }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.email" class="buttons btn-change" :to="{name: 'editEmail'}"></router-link>
-              <router-link v-else class="buttons btn-binding-email" :to="{name: 'editEmail'}"></router-link>
+              <router-link v-if="userInfo.email" class="button is-primary has-radius is-change" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.email') }}</small></router-link>
             </div>
           </div>
           <div class="level is-mobile has-bottom-line" v-if="isMobileAccountSupported">
             <div class="level-left">
-              <span>{{ $t('forum.account.residentInfo') }}{{ userInfo.resident_id? $t('forum.account.authenticated')
+              <span class="title">{{ $t('forum.account.residentInfo') }}{{ userInfo.resident_id? $t('forum.account.authenticated')
                 : $t('forum.account.notAuthenticated') }}
               </span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.resident_id" class="buttons btn-change" :to="{name: 'editResident'}"></router-link>
-              <router-link v-else class="buttons btn-binding-resident" :to="{name: 'editResident'}"></router-link>
+              <router-link v-if="userInfo.resident_id" class="button is-primary has-radius is-change" :to="{name: 'editResident'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editResident'}"><small>{{ $t('forum.account.residentInfo') }}</small></router-link>
             </div>
           </div>
           <div class="level is-mobile has-text-centered">
@@ -62,8 +60,8 @@
           </div>
         </div>
         <div v-show="visible" class="mask" @click="closeTipMsg">
-          <div class="tip-message">
-            {{$t('forum.placeholder.headportraitTips')}}
+          <div class="tip-message has-radius">
+            <p class="title">{{$t('forum.placeholder.headportraitTips')}}</p>
             <div class="icon icon-close close">
             </div>
           </div>

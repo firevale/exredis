@@ -25,6 +25,8 @@ defmodule Acs.Umbrella.Mixfile do
     [
       {:ex_syslogger, "~> 1.3"},
       {:phoenix_pubsub_redis, "~> 2.1"},
+      {:redix, "~> 0.6", override: true},
+      {:redix_pubsub, "~> 0.4", override: true},
       {:distillery, "~> 1.5", runtime: false},
     ]
   end

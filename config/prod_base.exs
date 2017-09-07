@@ -7,7 +7,8 @@ config :acs_web, AcsWeb.Endpoint,
   code_reloader: false,
   check_origin: ["//*.firevale.com"],
   cache_static_lookup: true,
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: "XDHtULB0Xe5LZKNgIG4Qs+gLJbpoJktXhVgcNzFneTjQ2jiNTWpdThBvmadmd7GX"
 
 config :phoenix, :serve_endpoints, true
 

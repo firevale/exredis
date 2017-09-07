@@ -37,9 +37,9 @@
     </div>
     <div class="forum-section card is-shadowless has-divider">
       <header class="card-header">
-        <strong class="card-header-title">
+        <p class="card-header-title">
             | 论坛版块
-        </strong>
+        </p>
       </header>
       <div class="card-content">
         <div class="forum-info">
@@ -87,9 +87,9 @@
     </div>
     <div class="article-section card is-shadowless has-divider">
       <header class="card-header">
-        <strong class="card-header-title">
+        <p class="card-header-title">
           | 热门推荐
-          </strong>
+        </p>
       </header>
       <div class="card-content">
         <v-touch class="media article">

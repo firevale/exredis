@@ -66,6 +66,7 @@ $fa-font-path: '~font-awesome/fonts/';
       width: 50%;
       display: flex;
       align-items: center;
+      figure,
       img {
         width: virtual-m-rem(130);
         height: virtual-m-rem(130);
@@ -94,22 +95,17 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .list-page {
   .article {
-    &.no-wrap {
-      height: virtual-m-rem(110);
-      line-height: virtual-m-rem(110);
-    }
+    padding: .55rem 0;
     .icon {
       margin-right: virtual-m-rem(20);
     }
-    img.thumb{
+    img.thumb {
       max-height: virtual-m-rem(214);
       max-width: virtual-m-rem(380);
     }
-    &+.article {
+    &:not(:last-child) {
       border-bottom: 1px solid $grey;
     }
   }
-  .top-article {
-    background-color: $white;
-  }
+  .top-article {}
 }

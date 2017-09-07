@@ -1,23 +1,25 @@
 <template>
   <div class="list-page">
     <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
-    <div class="frame top-article has-divider">
-      <v-touch class="is-content article .no-wrap is-ellipsis">
-        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
-      </v-touch>
-      <v-touch class="is-content article .no-wrap is-ellipsis">
-        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
-      </v-touch>
-      <v-touch class="is-content article .no-wrap is-ellipsis">
-        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
-      </v-touch>
-      <div class="is-content">
-        <a class="button load-more">查看更多</a>
+    <div class="card top-article has-divider">
+      <div class="card-content">
+        <v-touch class="article">
+          <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
+        </v-touch>
+        <v-touch class="article">
+          <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
+        </v-touch>
+        <v-touch class="article">
+          <p class=" title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
+        </v-touch>
+        <div class="">
+          <a class="button load-more">查看更多</a>
+        </div>
       </div>
     </div>
-    <div class="frame card is-shadowless has-divider">
+    <div class="card has-divider">
       <header class="card-header">
-        <p class="header-title">
+        <p class="card-header-title">
           全部 | 热门 | 精品
         </p>
       </header>

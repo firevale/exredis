@@ -5,6 +5,8 @@ defmodule Exsm.MeishengService do
   import  SweetXml
 
   alias   Exsm.MeishengSms
+  alias   Exsm.MeishengSmsMo
+  alias   Exsm.Repo
 
   @config             Application.get_env(:exsm, __MODULE__, [])
   @server_ip          @config[:server_ip]

@@ -1,4 +1,4 @@
-defmodule Acs.Admin.User do
+defmodule Acs.Admin.AdminUser do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -16,7 +16,7 @@ defmodule Acs.Admin.User do
   use Utils.Redisable
 
   @doc false
-  def changeset(%Acs.Admin.User{} = user, attrs) do
+  def changeset(%Acs.Admin.AdminUser{} = user, attrs) do
     user
     |> cast(attrs, [:account_id, :active, :admin_level, :app_id, :user_id])
     |> validate_required([:account_id, :user_id])

@@ -23,7 +23,7 @@ defmodule Acs.Mixfile do
   def application do
     [
       mod: {Acs.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :exutils, :runtime_tools]
     ]
   end
 
@@ -41,6 +41,7 @@ defmodule Acs.Mixfile do
       {:exutils, in_umbrella: true},
       {:exredis, in_umbrella: true},
       {:excache, in_umbrella: true},
+      {:exes,    in_umbrella: true},
     ]
   end
 

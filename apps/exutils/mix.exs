@@ -25,6 +25,8 @@ defmodule Exutils.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
+      {:comeonin, "~> 3.1"},
       {:poison, "~> 3.1"},
       {:httpotion, "~> 3.0"},
     ]

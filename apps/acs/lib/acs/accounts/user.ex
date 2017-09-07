@@ -3,9 +3,7 @@ defmodule Acs.Accounts.User do
   import Ecto.Changeset
   alias Acs.Accounts.User
 
-  @primary_key false
   schema "users" do
-    field :id, :integer, primary_key: true
     field :email, :string
     field :mobile, :string
     field :encrypted_password, :string
@@ -25,8 +23,7 @@ defmodule Acs.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:id, :email, :mobile, :encrypted_password, :device_id, :nickname, :resident_id, :resident_name, :gender, :age, :avatar_url])
-    |> validate_required([:id])
+    |> cast(attrs, [:email, :mobile, :encrypted_password, :device_id, :nickname, :resident_id, :resident_name, :gender, :age, :avatar_url])
     |> validate_format(:email, ~r/^[^@]+@[^@]+$/)
     |> validate_format(:mobile, ~r/^1\d+$/)
     |> unique_constraint(:mobile)

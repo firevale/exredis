@@ -39,8 +39,8 @@ defmodule Acs.Auth.AccessToken do
     Exredis.setex(key(token), token.ttl, to_json(token))
   end
 
-  def find(nil), do: nil
-  def find(token_id) when is_bitstring(token_id) do
+  def get(nil), do: nil
+  def get(token_id) when is_bitstring(token_id) do
     Excache.get!(key(token_id), fallback: fn(key) -> 
       case Exredis.get(key) do
         nil -> {:ignore, nil}

@@ -101,4 +101,37 @@ export default {
     gameNotice: '游戏公告',
     gameNews: '官方新闻'
   },
+  account: {
+    mobile: '绑定手机：',
+    email: '绑定邮箱：',
+    residentInfo: '实名认证：',
+    logout: '退出登录',
+    notBound: '未绑定',
+    bind: '绑定',
+    update: '修改',
+    notAuthenticated: '未认证',
+    fetchVeiryCode: '获取验证码',
+    cooldownText: '重新发送({timer}s)',
+    hint: {
+      currentBoundMobile: '您当前的手机号：',
+      currentBoundEmail: '您已绑定邮箱为',
+      currentNickName: '提示: 您当前的昵称为"{nickname}"',
+    },
+    messages: {
+      mobileBindSuccess: '已绑定手机{mobile}',
+      emailBindSuccess: '已绑定邮箱{email}',
+      nicknameUpdated: '昵称已成功修改',
+      residentInfoUpdated: '实名制信息已成功更新',
+    },
+  },
+  placeholder: {
+    nickname: '请输入昵称',
+    inputMobileNumber: '请输入手机号码',
+    inputVerifyCode: '请输入验证码',
+    inputEmail: '请输入邮箱地址',
+    headportrait: '很抱歉，手机版论坛暂不支持更换头像您可以登录电脑版论坛进行更换'
+  },
+  error: {
+    nickNameError: '昵称不得少于4个字符',
+  }
 }

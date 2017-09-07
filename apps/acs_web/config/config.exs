@@ -8,7 +8,7 @@ use Mix.Config
 # General application configuration
 config :acs_web,
   namespace: AcsWeb,
-  ecto_repos: [Acs.Repo]
+  ecto_repos: [Acs.Repo, AcsStats.Repo, Exsm.Repo]
 
 # Configures the endpoint
 config :acs_web, AcsWeb.Endpoint,

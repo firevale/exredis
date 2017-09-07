@@ -7,9 +7,8 @@ defmodule SDKAlipay do
   alias   Utils.Crypto
 
   @verify_gateway_ssl "https://mapi.alipay.com/gateway.do?service=notify_verify"
-  # @verify_gateway     "http://notify.alipay.com/trade/notify_query.do"
 
-  @alipay_config      Application.get_env(:acs, :alipay)
+  @alipay_config      Application.get_env(:exsdks, :alipay)
   @key_root           @alipay_config[:certs_root]
   @notify_url         @alipay_config[:notify_url]
   @callback_url       @alipay_config[:callback_url]

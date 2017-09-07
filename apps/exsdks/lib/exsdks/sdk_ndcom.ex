@@ -10,12 +10,12 @@ defmodule SDKNdcom do
   def validate_session(appId, appKey, uin, sessionId) do 
     try do 
       response = Httpc.get_msg(@baseUrl, %{
-                                          "AppId" => appId,
-                                          "Act" => 4,
-                                          "Uin" => uin,
-                                          "SessionID" => sessionId,
-                                          "Sign" => Crypto.md5_sign("#{appId}4#{uin}#{sessionId}#{appKey}")
-                                          })
+        "AppId" => appId,
+        "Act" => 4,
+        "Uin" => uin,
+        "SessionID" => sessionId,
+        "Sign" => Crypto.md5_sign("#{appId}4#{uin}#{sessionId}#{appKey}")
+      })
 
       if Httpc.success?(response) do 
         case JSON.decode(response.body) do 
@@ -46,8 +46,7 @@ defmodule SDKNdcom do
       v when is_bitstring(v) ->
         keys = ["AppId", "Act", "ProductName", "ConsumeStreamId", 
                 "CooOrderSerial", "Uin", "GoodsId", "GoodsInfo", "GoodsCount",
-                "OriginalMoney", "OrderMoney", "Note", "PayStatus", "CreateTime"
-                ]
+                "OriginalMoney", "OrderMoney", "Note", "PayStatus", "CreateTime"]
 
         sign_str = keys |> Enum.map_join("", &(params[&1] |> to_string))
         sign_str = sign_str <> appKey

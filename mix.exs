@@ -23,6 +23,8 @@ defmodule Acs.Umbrella.Mixfile do
   # and cannot be accessed from applications inside the apps folder
   defp deps do
     [
+      {:ex_syslogger, "~> 1.3"},
+      {:phoenix_pubsub_redis, "~> 2.1"},
       {:distillery, "~> 1.5", runtime: false},
     ]
   end

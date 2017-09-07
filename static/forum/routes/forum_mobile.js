@@ -7,6 +7,10 @@ export default [{
     name: 'index',
     component: require('../views/mobile/index.vue')
   }, {
+    path: 'list',
+    name: 'list',
+    component: require('../views/mobile/postList.vue')
+  }, {
     path: 'search',
     name: 'search',
     component: require('../views/mobile/search.vue')

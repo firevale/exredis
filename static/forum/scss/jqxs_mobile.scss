@@ -1,7 +1,4 @@
-@import "~normalize.css";
-@import "./variables";
-$primary: #b3182e;
-@import "~bulma";
+@import "./initial-bulma";
 @import "./bulma-fix";
 $fa-font-path: '~font-awesome/fonts/';
 @import '~font-awesome/scss/font-awesome';
@@ -67,7 +64,6 @@ $fa-font-path: '~font-awesome/fonts/';
     .forum-item {
       height: virtual-m-rem(200);
       width: 50%;
-      padding: 0 virtual-m-rem(30);
       display: flex;
       align-items: center;
       img {
@@ -75,12 +71,7 @@ $fa-font-path: '~font-awesome/fonts/';
         height: virtual-m-rem(130);
       }
       .forum-content {
-        margin-left: virtual-m-rem(36);
-        line-height: virtual-m-rem(60);
-        small {
-          font-size: virtual-m-rem(36);
-          font-weight: 200;
-        }
+        margin-left: .5rem;
       }
     }
   }
@@ -93,44 +84,32 @@ $fa-font-path: '~font-awesome/fonts/';
         height: virtual-m-rem(178);
         width: virtual-m-rem(312);
       }
-      p {
-        &.article-title {
-          strong {
-            color: $blue;
-          }
-        }
-        &.intro {
-          line-height: virtual-m-rem(50);
-          height: virtual-m-rem(100);
-          text-overflow: hidden;
-          &.text-ellipsis:after {
-            content: "...";
-            position: absolute;
-            bottom: virtual-m-rem(10);
-            right: 0;
-            padding-left: 40px;
-          }
-        }
-      }
     }
-  }
-   // 通用部分
+  } // 通用部分
   .small-text {
     font-size: virtual-m-rem(36);
     font-weight: 200;
   }
-  .card {
+}
+
+.list-page {
+  .article {
+    &.no-wrap {
+      height: virtual-m-rem(110);
+      line-height: virtual-m-rem(110);
+    }
+    .icon {
+      margin-right: virtual-m-rem(20);
+    }
+    img.thumb{
+      max-height: virtual-m-rem(214);
+      max-width: virtual-m-rem(380);
+    }
+    &+.article {
+      border-bottom: 1px solid $grey;
+    }
+  }
+  .top-article {
     background-color: $white;
-        .card-header {
-      padding: 0 virtual-m-rem(33);
-      height: virtual-m-rem(124);
-      .header-title {
-        color: $primary;
-        line-height: virtual-m-rem(124);
-      }
-    }
-    .card-content {
-      padding: 0 virtual-m-rem(33);
-    }
   }
 }

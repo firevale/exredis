@@ -1,25 +1,39 @@
 <template>
-  <div>
-    <div class="flex-fixed-size has-bottom-line">
-      <div class="tab-bar">
-        <span class="icon image-icon icon-pull-down" @click="selectOrderByField"></span>
-        <span class="seperator"></span>
-        <div class="tile">
-          <v-touch @tap="setCurrentSectionId(0)" class="button" :class="currentSectionId == 0 ? 'is-primary' : 'is-grey'" tag="a">
-            {{ $t('forum.postList.all') }}
-          </v-touch>
-          <v-touch v-for="section in forumInfo.sections" @tap="setCurrentSectionId(section.id)" class="button" :key="section.id" :class="currentSectionId == section.id ? 'is-primary' : 'is-grey'"
-            tag="a">
-            {{ section.title }}
-          </v-touch>
-        </div>
+  <div class="list-page">
+    <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
+    <div class="frame top-article has-divider">
+      <v-touch class="is-content article .no-wrap is-ellipsis">
+        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+      </v-touch>
+      <v-touch class="is-content article .no-wrap is-ellipsis">
+        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+      </v-touch>
+      <v-touch class="is-content article .no-wrap is-ellipsis">
+        <i class="icon icon-top" />如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+      </v-touch>
+      <div class="is-content">
+        <a class="button load-more">查看更多</a>
       </div>
     </div>
-    <div class="flex-take-rest" style="position: relative">
-      <scroller :on-refresh="refresh" :on-load-more="loadmore" ref="scroller">
-        <post-list-item class="row" v-for="item in postList" :key="item.id" :post-info="item">
-        </post-list-item>
-      </scroller>
+    <div class="frame card is-shadowless has-divider">
+      <header class="card-header">
+        <p class="header-title">
+          全部 | 热门 | 精品
+        </p>
+      </header>
+      <div class="card-content">
+        <router-link class="article" :to="{name: 'list'}" tag="div">
+          如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
+          <div>
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+          </div>
+          <div class="level is-mobile">
+            <p class="level-item"></p>
+          </div>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -29,12 +43,12 @@ import {
   mapActions
 } from 'vuex'
 
-import postListItem from '../../components/postListItem'
+import sliderNav from 'forum/components/sliderNav'
 import menuModal from '../../components/menuModal'
 
 export default {
   components: {
-    postListItem,
+    sliderNav,
   },
 
   watch: {
@@ -58,6 +72,22 @@ export default {
       total: 1,
       recordsPerPage: 20,
       loading: false,
+      sections: [{
+          text: "综合讨论",
+          value: 'commonIssues'
+        }, {
+          text: "综合讨论",
+          value: 'commonIssues1'
+        },
+        {
+          text: "综合讨论",
+          value: 'commonIssues2'
+        },
+        {
+          text: "综合讨论",
+          value: 'commonIssues3'
+        }
+      ]
     }
   },
 

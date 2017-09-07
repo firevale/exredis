@@ -97,38 +97,36 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "~bulma/sass/utilities/variables.sass";
-@import "../scss/variables";
+@import "forum/scss/jqxs_mobile";
 .slider-nav {
   .nav {
     // $item-width: 13.2rem;
     margin-bottom: .5rem;
-    border-bottom: .5rem solid $bottom-line-light;
-    height: 4.8rem;
+    height: virtual-m-rem(148);
     .nav-center {
       position: relative;
       margin: 0;
       flex-grow: 1;
+      flex-shrink: 1;
+      justify-content: space-around;
+      .is-left {
+        flex-grow: 0;
+        flex-shrink: 0;
+        justify-content: flex-start;
+      }
       .slider-bar {
         position: absolute;
-        bottom: -.8rem;
+        bottom: 0;
         content: "";
         height: 1rem;
         left: 0;
-        background-image: url("~assets/nav-narrow@3x.png");
-        background-repeat: no-repeat;
-        background-size: 100px 0.8rem;
-        background-position: 0 bottom;
+        border-bottom: virtual-m-rem(5) solid $primary;
         transition: left 0.3s;
         transition-timing-function: ease;
       }
       .nav-item {
         color: $black;
-        justify-content: center;
-        font-size: 1.3rem;
         max-width: 13.2rem;
-        flex-grow: 1;
-        flex-shrink: 1;
         &.is-tab {
           padding: 0;
           border-bottom-width: 0;
@@ -137,19 +135,6 @@ export default {
           }
           &.is-active {
             color: $primary;
-          }
-          &:not(:nth-last-child(2)).has-right-line {
-            position: relative;
-            &:after {
-              display: block;
-              position: absolute;
-              width: 0;
-              height: 1.5rem;
-              top: 1.3rem;
-              right: 0rem;
-              content: "";
-              border-right: 0.12rem solid $bottom-line-light;
-            }
           }
         }
       }

@@ -1,0 +1,21 @@
+export default [{
+  path: '/account',
+  component: require('../views/account/main.vue'),
+  children: [{
+    path: 'my_profile',
+    name: 'MyProfile',
+    component: require('../views/account/myProfile.vue')
+  }, {
+    path: 'edit_nickname',
+    component: require('../views/account/editNickname.vue')
+  }, {
+    path: 'edit_mobile',
+    component: require('../views/account/editMobile.vue')
+  }, {
+    path: 'edit_email',
+    component: require('../views/account/editEmail.vue')
+  }, {
+    path: 'edit_resident',
+    component: require('../views/account/editResident.vue')
+  }, ]
+}, ]

@@ -1,0 +1,493 @@
+@import "./variables";
+@import "common/scss/mixins";
+@import "common/scss/reset";
+@import '~animate.css';
+.animated {
+  animation-duration: .377s;
+}
+
+@import '~bulma';
+$fa-font-path: '~font-awesome/fonts/';
+@import '~font-awesome/scss/font-awesome';
+.nprogress-container {
+  position: fixed !important;
+  width: 100%;
+  height: 50px;
+  z-index: 2048;
+  pointer-events: none;
+  #nprogress {
+    $color: #48e79a;
+    .bar {
+      background: $color;
+    }
+    .peg {
+      box-shadow: 0 0 10px $color, 0 0 5px $color;
+    }
+    .spinner-icon {
+      border-top-color: $color;
+      border-left-color: $color;
+    }
+  }
+}
+
+.app-main {
+  padding-top: 50px;
+  margin-left: 180px;
+  transform: translate3d(0, 0, 0);
+  @include mobile() {
+    margin-left: 0;
+  }
+}
+
+.flex-fixed-size {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+.flex-take-rest {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+.app-content {
+  padding: 20px;
+}
+
+.footer {
+  margin-left: 180px;
+  @include mobile() {
+    margin-left: 0;
+  }
+  .social a {
+    border-bottom: none !important;
+  }
+  .fa.fa-heart {
+    color: red;
+  }
+}
+
+.app-navbar {
+  position: fixed;
+  min-width: 100%;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+  z-index: 2;
+  .container {
+    margin: auto 10px;
+  }
+  .nav-right {
+    align-items: stretch;
+    align-items: stretch;
+    flex: 1;
+    justify-content: flex-end;
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+.nav-item img.logo {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+.hero-brand {
+  .vue {
+    margin-left: 10px;
+    color: $primary;
+  }
+  .admin {
+    color: #28374B;
+  }
+}
+
+.app-sidebar {
+  position: fixed;
+  top: 53px;
+  left: 0;
+  bottom: 0;
+  padding: 20px 0 50px;
+  width: 180px;
+  min-width: 45px;
+  max-height: 100vh;
+  height: calc(100% - 50px);
+  z-index: 10;
+  background: #FFF;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  @include mobile() {
+    transform: translate3d(-180px, 0, 0);
+  }
+  .icon {
+    vertical-align: baseline;
+    &.is-angle {
+      position: absolute;
+      right: 10px;
+      transition: transform .377s ease;
+    }
+  }
+  .menu-label {
+    padding-left: 5px;
+  }
+  .menu-list {
+    li a {
+      &[aria-expanded="true"] {
+        .is-angle {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    li a+ul {
+      margin: 0 10px 0 15px;
+    }
+  }
+}
+
+div.tab-content {
+  overflow: hidden;
+  div.tab-pane {
+    width: 100%;
+    &.div {
+      width: 100%;
+    }
+  }
+}
+
+.app-icon,
+.goods-icon {
+  cursor: pointer;
+  &:hover {
+    -webkit-filter: brightness(70%);
+    filter: brightness(70%);
+  }
+}
+
+div.sdk-icon,
+span.sdk-icon {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 auto 5px auto;
+  display: block;
+  @include border-radius(5px);
+  &:hover {
+    -webkit-filter: brightness(70%);
+    filter: brightness(70%);
+  }
+  &.need-configured {
+    -webkit-filter: opacity(50%) grayscale(100%);
+    /* Safari */
+    filter: opacity(50%) grayscale(100%);
+  }
+  &.anzhi {
+    background-image: url(~assets/anzhi.png);
+  }
+  &.applestore {
+    background-image: url(~assets/apple.png);
+  }
+  &.baidu {
+    background-image: url(~assets/baidu.png);
+  }
+  &.cc {
+    background-image: url(~assets/cc.png);
+  }
+  &.coolpad {
+    background-image: url(~assets/coolpad.png);
+  }
+  &.downjoy {
+    background-image: url(~assets/downjoy.png);
+  }
+  &.gfan {
+    background-image: url(~assets/gfan.png);
+  }
+  &.htc {
+    background-image: url(~assets/htc.png);
+  }
+  &.lenovo {
+    background-image: url(~assets/lenovo.png);
+  }
+  &.iyouxi {
+    background-image: url(~assets/iyouxi.png);
+  }
+  &.huawei {
+    background-image: url(~assets/huawei.jpg);
+  }
+  &.mumayi {
+    background-image: url(~assets/mumayi.png);
+  }
+  &.oppo {
+    background-image: url(~assets/oppo.jpg);
+  }
+  &.qh360 {
+    background-image: url(~assets/qh360.png);
+  }
+  &.qxz {
+    background-image: url(~assets/qxz.png);
+  }
+  &.sogou {
+    background-image: url(~assets/sogou.png);
+  }
+  &.uc {
+    background-image: url(~assets/uc.png);
+  }
+  &.vivo {
+    background-image: url(~assets/vivo.png);
+  }
+  &.wdj {
+    background-image: url(~assets/wdj.png);
+  }
+  &.xiaomi {
+    background-image: url(~assets/xiaomi.png);
+  }
+  &.youku {
+    background-image: url(~assets/youku.png);
+  }
+  &.yyh {
+    background-image: url(~assets/yyh.png);
+  }
+  &.ggplay {
+    background-image: url(~assets/ggplay.png);
+  }
+  &.facebook {
+    background-image: url(~assets/facebook.png);
+  }
+  &.haima {
+    background-image: url(~assets/haima.png);
+  }
+  &.i4 {
+    background-image: url(~assets/i4.png);
+  }
+  &.iiapple {
+    background-image: url(~assets/iiapple.png);
+  }
+  &.itools {
+    background-image: url(~assets/itools.png);
+  }
+  &.ky {
+    background-image: url(~assets/ky.png);
+  }
+  &.meizu {
+    background-image: url(~assets/meizu.png);
+  }
+  &.ndcom {
+    background-image: url(~assets/ndcom.png);
+  }
+  &.pp {
+    background-image: url(~assets/pp.png);
+  }
+  &.tbt {
+    background-image: url(~assets/tbt.png);
+  }
+  &.xy {
+    background-image: url(~assets/xy.png);
+  }
+  &.wechat {
+    background-image: url(~assets/wechat@2x.png);
+  }
+}
+
+div.add-sdk {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 5px auto;
+  display: flex;
+  @include border-radius(5px);
+  align-items: center;
+  justify-content: center;
+  &:active,
+  &:hover {
+    background: $primary;
+    color: #fff;
+  }
+  &:active {
+    background: darken($primary, 10%);
+  }
+}
+
+.goods-table {
+  thead,
+  tfoot,
+  tbody {
+    tr {
+      th {
+        text-align: center;
+      }
+      th,
+      td {
+        vertical-align: middle;
+        &.is-icon {
+          text-align: center;
+          figure.is-32x32 {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+          }
+          span.sdk-icon {
+            margin: 0;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+          }
+          a {
+            margin-right: 10px;
+            i.fa {
+              font-size: 20px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.drop-active {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: absolute;
+  opacity: .4;
+  background: #000;
+}
+
+span {
+  &.is-warning {
+    color: $warning;
+  }
+  &.is-danger {
+    color: $danger;
+  }
+  &.is-primary {
+    color: $primary;
+  }
+}
+
+span.is-sign {
+  background-color: #ff6600;
+  color: #ffffff;
+  border-radius: 50%;
+}
+
+i.is-success {
+  color: $success;
+}
+
+i.is-danger {
+  color: $danger;
+}
+
+i.is-info {
+  color: $info;
+}
+
+i.is-primary {
+  color: $primary;
+}
+
+div.modal-container,
+div.modal-content {
+  overflow-x: hidden;
+}
+
+nav.pagination {
+  ul {
+    width: 100%;
+    li {
+      display: inline-block;
+    }
+  }
+}
+
+form {
+  span.is-sign {
+    font-size: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    padding: 0;
+    margin-right: 0.5rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.ql-container {
+  min-height: 15rem;
+}
+
+label.file-upload {
+  span {
+    border: none !important;
+    font-size: 1rem !important;
+  }
+  &:before {
+    margin-bottom: 0 !important;
+    content: url('~assets/tag-picture@3x.png') !important;
+  }
+  &.file-selected {
+    span {
+      display: none !important;
+    }
+    &:before {
+      content: '' !important;
+    }
+  }
+}
+
+.currency {
+  &.CNY:before {
+    content: '¥';
+  }
+  &.USD:before {
+    content: '$';
+  }
+}
+
+.file-upload-modal {
+  a.button {
+    font-size: 1rem;
+    min-width: 6rem;
+  }
+}
+
+.icon {
+  &.image-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  &.icon-upload {
+    background-image: url("data:image/svg+xml;utf8,<svg width=\"1792\" height=\"1792\" viewBox=\"0 0 1792 1792\" xmlns=\"http://www.w3.org/2000/svg\">\
+                          <path d=\"M1344 1472q0-26-19-45t-45-19-45 19-19 45 19 45 45 19 45-19 19-45zm256 0q0-26-19-45t-45-19-45 \
+                          19-19 45 19 45 45 19 45-19 19-45zm128-224v320q0 40-28 68t-68 28h-1472q-40 0-68-28t-28-68v-320q0-40 \
+                          28-68t68-28h427q21 56 70.5 92t110.5 36h256q61 0 110.5-36t70.5-92h427q40 0 68 28t28 68zm-325-648q-17 \
+                          40-59 40h-256v448q0 26-19 45t-45 19h-256q-26 0-45-19t-19-45v-448h-256q-42 0-59-40-17-39 \
+                          14-69l448-448q18-19 45-19t45 19l448 448q31 30 14 69z\" fill=\"#fff\"/></svg>")
+  }
+  &.icon-spinner {
+    background-image: url("data:image/svg+xml;utf8,<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"512\" height=\"512\" viewBox=\"0 0 512 512\"> \
+    <g> \
+    </g> \
+  	<path d=\"M275.682 147.999c0 10.864-8.837 19.661-19.682 19.661v0c-10.875 0-19.681-8.796-19.681-19.661v-96.635c0-10.885 8.806-19.661 19.681-19.661v0c10.844 0 19.682 8.776 19.682 19.661v96.635z\" fill=\"#cacaca\" /> \
+  	<path d=\"M275.682 460.615c0 10.865-8.837 19.682-19.682 19.682v0c-10.875 0-19.681-8.817-19.681-19.682v-96.604c0-10.885 8.806-19.681 19.681-19.681v0c10.844 0 19.682 8.796 19.682 19.682v96.604z\" fill=\"#cacaca\" /> \
+  	<path d=\"M147.978 236.339c10.885 0 19.681 8.755 19.681 19.641v0c0 10.885-8.796 19.702-19.681 19.702h-96.624c-10.864 0-19.661-8.817-19.661-19.702v0c0-10.885 8.796-19.641 19.661-19.641h96.624z\" fill=\"#cacaca\" /> \
+  	<path d=\"M460.615 236.339c10.865 0 19.682 8.755 19.682 19.641v0c0 10.885-8.817 19.702-19.682 19.702h-96.584c-10.885 0-19.722-8.817-19.722-19.702v0c0-10.885 8.837-19.641 19.722-19.641h96.584z\" fill=\"#cacaca\" /> \
+  	<path d=\"M193.546 165.703c7.69 7.66 7.68 20.142 0 27.822v0c-7.701 7.701-20.162 7.701-27.853 0.020l-68.311-68.322c-7.68-7.701-7.68-20.142 0-27.863v0c7.68-7.68 20.121-7.68 27.822 0l68.342 68.342z\" fill=\"#cacaca\" /> \
+  	<path d=\"M414.597 386.775c7.7 7.68 7.7 20.163 0.021 27.863v0c-7.7 7.659-20.142 7.659-27.843-0.062l-68.311-68.26c-7.68-7.7-7.68-20.204 0-27.863v0c7.68-7.7 20.163-7.7 27.842 0l68.291 68.322z\" fill=\"#cacaca\" /> \
+  	<path d=\"M165.694 318.464c7.69-7.7 20.153-7.7 27.853 0v0c7.68 7.659 7.69 20.163 0 27.863l-68.342 68.322c-7.67 7.659-20.142 7.659-27.822-0.062v0c-7.68-7.68-7.68-20.122 0-27.801l68.311-68.322z\" fill=\"#cacaca\" /> \
+  	<path d=\"M386.775 97.362c7.7-7.68 20.142-7.68 27.822 0v0c7.7 7.68 7.7 20.183 0.021 27.863l-68.322 68.311c-7.68 7.68-20.163 7.68-27.843-0.020v0c-7.68-7.68-7.68-20.162 0-27.822l68.322-68.332z\" fill=\"#cacaca\" /> \
+    </svg>");
+  }
+} // @2x resources
+.admin-user {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  div {
+    padding: 0.3rem;
+  }
+}

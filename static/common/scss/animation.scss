@@ -1,0 +1,76 @@
+@mixin slideIn($from) {
+  0% {
+    opacity: 0.3;
+    transform: translate3d($from, 0, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInLeft {
+   @include slideIn(-100%);
+}
+@keyframes slideInRight {
+   @include slideIn(100%);
+}
+
+@mixin slideOut($to) {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d($to, 0, 0)
+  }
+}
+@keyframes slideOutLeft {
+   @include slideOut(-100%);
+}
+@keyframes slideOutRight {
+   @include slideOut(100%);
+}
+
+$animation-time: 0.25s;
+@mixin animation($name) {
+  animation-name: $name;
+  animation-duration: $animation-time;
+  animation-timing-function: ease;
+  animation-iteration-count: 1;
+}
+// use animation-name/duration/timing-function for safari
+.slide-left-enter-active {
+  @include animation(slideInRight);
+}
+
+.slide-left-leave-active {
+  @include animation(slideOutLeft);
+}
+
+.slide-right-enter-active {
+  @include animation(slideInLeft);
+}
+
+.slide-right-leave-active {
+  @include animation(slideOutRight);
+}
+
+@keyframes linear-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation-name: linear-rotate;
+  animation-duration: 1.2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}

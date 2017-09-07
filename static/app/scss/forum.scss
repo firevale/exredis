@@ -1,0 +1,362 @@
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-bottom: 0.3rem;
+  .icon-pull-down {
+    margin-top: 0.6rem;
+  }
+  .button {
+    font-weight: 500;
+    min-width: 5rem;
+    margin: 0.4rem 0.5rem 0.4rem 0;
+    height: 2rem;
+    font-size: 1rem;
+    &:active {
+      border-color: transparent;
+    }
+  }
+  span.seperator {
+    background-color: $grey;
+    margin: 0.4rem 1rem 0;
+    width: 1px;
+    height: 2rem;
+  }
+}
+
+.post-detail {
+  padding: 0.5rem 0;
+  font-size: 1.25rem;
+  .nav {
+    height: auto;
+    min-height: 2rem;
+    .post-title {
+      min-height: 1.35rem;
+      line-height: 1.5rem;
+      font-size: 1.35rem;
+      font-weight: 400;
+      white-space: normal;
+      margin-right: 0.5rem;
+    }
+    .tag {
+      margin-right: 0.5rem;
+    }
+    .nav-right {
+      flex-grow: 0;
+      flex-basis: auto;
+      .level-button {
+        min-width: 2rem;
+        padding: 0 0.2rem;
+        font-size: 1rem;
+      }
+      .icon {
+        width: 1.2rem;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        margin-right: 0;
+      }
+      span.is-darkred {
+        font-size: 1.1rem;
+      }
+    }
+  }
+  .favoriting {
+    padding: 0rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  h6.title {
+    font-size: 1.25rem;
+  }
+  .post-content {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    &.ql-container.ql-snow {
+      padding: 1rem;
+    }
+    .ql-editor {
+      padding: 0;
+      p {
+        word-break: break-all;
+      }
+    }
+  }
+  span.icon,
+  span.is-grey {
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+  }
+  .post-manage-bar {
+    padding: 0.5rem 2rem;
+    background-color: $bottom-line-light;
+    .nav-left {
+      flex-grow: 0;
+      flex-basis: 6rem;
+    }
+    .nav-center {
+      flex-grow: 1;
+      flex-basis: 6rem;
+    }
+    .nav-right {
+      flex-grow: 0;
+      flex-basis: 6rem;
+    }
+    .button {
+      font-size: 1.25rem;
+      line-height: 2.2rem;
+      height: 2.2rem;
+    }
+    .icon {
+      width: 1rem;
+      height: 1rem;
+      margin-right: 0.5rem !important;
+    }
+  }
+}
+
+form.post {
+  span.is-sign {
+    font-size: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    padding: 0;
+    margin-right: 0.5rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.back-top {
+  cursor: pointer;
+  position: fixed;
+  bottom: 3rem;
+  right: 3rem;
+  background: #ffffff;
+  display: flex;
+  font-size: 0.5rem;
+  border-radius: 0.3rem;
+  flex-direction: column;
+  color: $dark;
+  opacity: 0.9;
+  i {
+    color: $primary;
+    font-size: 3rem;
+  }
+}
+
+.post-list-item {
+  padding: 0.3rem 0;
+  cursor: pointer;
+  .title {
+    margin-bottom: 0;
+    font-weight: 400;
+  }
+  .level:first-child {
+    margin-top: 0.3rem;
+  }
+  .level:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+  .level:last-child {
+    margin-bottom: 0.3rem;
+  }
+  .level-item {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  .grey-text {
+    color: $text-grey;
+    font-size: 1.1rem;
+  }
+  span.is-primary {
+    font-size: 1.1rem;
+  }
+}
+
+.post-detail,
+.post-list-item {
+  .tag {
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    height: 1.3rem;
+    padding: 0.3rem;
+    width: 2.4rem;
+    color: $white;
+    &.is-essence {
+      background: $essence;
+    }
+    &.image-tag {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      &.has-picture {
+        background-image: url("~assets/tag-picture@3x.png");
+      }
+    }
+  }
+}
+
+.post-list-item.isTop+.post-list-item:not(.isTop) {
+  margin-top:.4rem;
+  :before {
+    @include bottom-line(.5rem,
+    $bottom-line-light);
+    top: -.5rem;
+    width: 100vw;
+    left: 0;
+  }
+}
+
+.person {
+  display: flex;
+  flex-flow: column nowrap;
+  .info {
+    padding: 0.8rem 2rem 0.8rem;
+    font-size: 1.1rem;
+    figure {
+      margin-top: 0.4rem;
+      margin-right: 2rem;
+    }
+    p {
+      line-height: 2rem;
+    }
+  }
+  .content {
+    .content-item {
+      padding: 0.6rem 0;
+      .tile.is-vertical>.tile:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+      h5 {
+        display: inline-block;
+        margin-bottom: 0;
+      }
+      .has-background {
+        background-color: $bottom-line-light;
+      }
+      .tag.is-outlined {
+        margin-left: 1em;
+        padding: 0 .2em;
+        border-radius: 3px;
+        background-color: transparent;
+        border: 1px solid $primary;
+        color: $primary;
+      }
+      .level:not(:last-child) {
+        margin-bottom: 0;
+        padding: 0 1em 1em;
+      }
+      .subtitle {
+        font-size: 1.2em;
+        color: $bottom-line-dark;
+      }
+    }
+  }
+}
+
+.search-page {
+  .search-bar {
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    .input,
+    .button {
+      border-radius: 0;
+    }
+  }
+}
+
+.control.has-icon {
+  span.icon.image-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    top: 0.65rem;
+    left: 0.65rem;
+    &.is-medium {
+      height: 2.25em;
+      top: 0;
+    }
+  }
+}
+
+.modal-content {
+  margin: 0;
+}
+
+.modal-card-body {
+  border-radius: 0.3rem;
+  &.modal-menu {
+    padding: 0;
+    width: 20rem;
+    margin: 0 auto;
+  }
+}
+
+.modal-background {
+  opacity: 0.34;
+}
+
+.modal-menu {
+  .level {
+    padding: 1rem 0;
+    margin-bottom: 0;
+  }
+  .level:not(:last-child) {
+    margin-bottom: 0;
+  }
+  .modal-menu-item {
+    cursor: pointer;
+    .level-left+.level-right {
+      margin-top: 0;
+    }
+    .active {
+      color: $primary;
+    }
+  }
+}
+
+.modal-footer {
+  background: #fff;
+  text-align: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  a {
+    width: 45%;
+    background-color: $dark;
+    border-radius: 5px;
+    font-size: 1.2rem;
+  }
+}
+
+.pagination {
+  ul {
+    margin: 0 auto;
+    li {
+      margin: 0 0.1rem;
+      float: left;
+    }
+  }
+}
+
+.pagination:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.ql-container {
+  min-height: 15rem;
+}
+
+.top-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  a {
+    margin-left: 1.1rem;
+  }
+}

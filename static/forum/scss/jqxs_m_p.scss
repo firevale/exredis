@@ -1,0 +1,46 @@
+@import "common/scss/mixins";
+.person {
+  width: 100%;
+  margin: 0 !important;
+  .media {
+    padding: .5rem 1rem;
+    margin-bottom: 1rem;
+    .media-left {
+      padding-top: virtual-rem(30);
+    }
+    .info {
+      margin: 0 0 0 .8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      line-height: virtual-rem(110);
+    }
+    .media-right {
+      p {
+        line-height: virtual-rem(80);
+        &:first-child {
+          margin-top: virtual-rem(20);
+        }
+        &:last-child {
+          margin-top: virtual-rem(30);
+        }
+      }
+    }
+  }
+  .content {
+    .content-item {
+      margin-left: virtual-rem(30);
+      margin-right: virtual-rem(30);
+      .section-name {
+        color: #44adec;
+        font-weight: 400;
+      }
+      h5 {
+        width: 98vw;
+        word-wrap: break-word;
+        word-break: normal;
+      }
+    }
+  }
+}

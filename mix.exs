@@ -1,34 +1,27 @@
-defmodule Exutils.Mixfile do
+defmodule Acs.Umbrella.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :exutils,
-      version: "0.1.0",
-      build_path: "../../_build",
-      config_path: "../../config/config.exs",
-      deps_path: "../../deps",
-      lockfile: "../../mix.lock",
-      elixir: "~> 1.4",
+      apps_path: "apps",
       start_permanent: Mix.env == :prod,
       deps: deps()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger]
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
+  # Dependencies can be Hex packages:
+  #
+  #   {:mydep, "~> 0.3.0"}
+  #
+  # Or git/path repositories:
+  #
+  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
+  #
+  # Type "mix help deps" for more examples and options.
+  #
+  # Dependencies listed here are available only for this project
+  # and cannot be accessed from applications inside the apps folder
   defp deps do
-    [
-      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
-      {:comeonin, "~> 3.1"},
-      {:poison, "~> 3.1"},
-      {:httpotion, "~> 3.0"},
-    ]
+    []
   end
 end

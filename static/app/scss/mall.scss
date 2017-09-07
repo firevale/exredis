@@ -1,0 +1,237 @@
+.currency {
+  &.CNY:before {
+    content: '¥';
+  }
+  &.USD:before {
+    content: '$';
+  }
+}
+
+.no-border {
+  border: 0;
+  box-shadow: none;
+}
+
+.width-5 {
+  width: 5rem;
+}
+
+.mall-index {
+  position: relative;
+  .goods-content {
+    width: 96%;
+    margin: .5rem auto 0rem auto;
+    .goods-item {
+      width: 100%;
+      height: 100%;
+      figure {
+        width: 100%;
+        height: 100%;
+      }
+      img {
+        width: 100%;
+        height: auto;
+        padding: 0.15rem;
+      }
+      .name {
+        padding-top: 1.0rem;
+        line-height: 2rem;
+      }
+      .price {
+        padding-top: 0.56rem;
+        line-height: 2rem;
+      }
+    }
+  }
+}
+
+.goods-detail {
+  margin: 0rem;
+  padding: 0rem;
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+  }
+  .goods-content {
+    position: relative;
+    margin-top: 0.3rem;
+  }
+  .goods-item {
+    margin-top: -.2rem;
+    margin-bottom: 0.6rem
+  }
+  .goods-description {
+    margin-top: 0.5rem;
+  }
+  .goods-bottom {
+    height: 4.5rem;
+    background-color: $blue;
+  }
+  .border-right {
+    border-right: 1px $white solid;
+  }
+  .left-content {
+    height: 4.5rem;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+    .content-item {
+      width: 3.2rem;
+      height: 3rem;
+      flex-grow: 0;
+      flex-shrink: 1;
+      flex-basis: auto;
+      margin-left: 3vw;
+      background-color: $blue;
+      border-color: $white;
+      color: $white;
+      overflow: hidden;
+    }
+    .button {
+      padding: 0 !important;
+    }
+  }
+  .goods-buyNow {
+    height: 4.5rem;
+    width: 100%;
+  }
+  .goods-sellOut {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $bottom-line-dark;
+    div {
+      color: $white;
+    }
+  }
+}
+
+.my-orders {
+  .media p:not(:last-child) {
+    margin-bottom: .2rem;
+  }
+  .item {}
+  .card {
+    box-shadow: none;
+    font-size: 1.25rem;
+    .is-vertical {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .has-bottom-line {
+      @extend .has-bottom-line;
+      border: none;
+      box-shadow: none;
+    }
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+    .card-header-title {
+      font-weight: normal;
+    }
+    .card-content {
+      padding: .5rem 0;
+    }
+    .card-footer-item.has-text-right {
+      justify-content: flex-end;
+    }
+    &:not(:last-child):after {
+      @include bottom-line(.5rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
+    }
+  }
+  .order-bottom {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    div {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.my-addresses {
+  .card {
+    box-shadow: none;
+    font-size: 1.25rem;
+    &:not(:last-child) {
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-header-icon {
+      padding-right: 1.5rem;
+    }
+    &:not(:last-child):after {
+      @include bottom-line(1.0rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
+    }
+  }
+  .addresses-content {
+    margin-top: 0.5rem;
+    position: relative;
+  }
+  .addresses-bottom {
+    height: 3.4rem;
+  }
+  .card-content {
+    .columns {
+      width: 95vw;
+    }
+  }
+  .tile {
+    p {
+      margin-top: -.5rem;
+    }
+  }
+}
+
+.place-order {
+  .card {
+    &:not(:last-child):after {
+      @include bottom-line(.5rem, $bottom-line-light);
+      width: 100vw;
+      bottom: -.5rem;
+    }
+  }
+  article {
+    padding: 1.0rem;
+    p {
+      line-height: 1.2rem;
+    }
+  }
+  .card-header-title {
+    span {
+      margin-left: 0.5rem;
+      &:not(:last-child) {
+        margin-left: 1.0rem;
+      }
+    }
+  }
+  .card-header-icon {
+    margin-right: 1.0rem;
+  }
+  .media-content {
+    p {
+      margin-bottom: 0rem;
+      &:not(:last-child) {
+        margin-bottom: 0.8rem;
+      }
+    }
+  }
+  .content {
+    p {
+      margin-top: -1rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+  .order-bottom {
+    margin-top: 1rem;
+    div {
+      margin-top: 1rem;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+.contact-service {
+  .contact-center {
+    margin: 0.5rem;
+  }
+  .bottom-content {
+    flex-direction: column;
+    align-content: flex-start;
+    letter-spacing: 0.12rem;
+    text-align: left;
+  }
+  .bottom-content p {
+    font-weight: 400;
+    margin-top: 0.5rem;
+  }
+  .bottom-content span {
+    font-weight: 400;
+    color: $primary;
+  }
+}
+
+.my-service {
+  position: relative;
+  top: 1rem;
+
+  .subtitle {
+    font-weight: 400;
+  }
+  .level-content {
+    padding: 0.12rem 1.5rem;
+  }
+  .level-left {
+    max-width: 95%;
+    overflow: hidden;
+  }
+  .level-left p,
+  .level-right p {
+    letter-spacing: 0.12rem;
+  }
+  .level-right .service-reply {
+    color: $primary;
+  }
+  .reply-content {
+    border: 1px $grey solid;
+    margin-top: 0.35rem;
+    padding: 1.0rem;
+    letter-spacing: 0.05rem;
+  }
+}

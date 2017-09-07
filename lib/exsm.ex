@@ -7,8 +7,8 @@ defmodule Exsm do
   def send_verify_code(mobile, code) do 
     case @sender do 
       :none ->
-        error "No SMS sender configured"
-        {:error, :no_provider}
+        info "sending mobile #{mobile} verify code: #{code}"
+        :ok
 
       :meisheng ->
         case MeishengService.send_verify_code(mobile, code) do 

@@ -3,7 +3,7 @@ defmodule Exservice.Tinypng do
   use   Utils.LogAlias
   alias Utils.JSON
 
-  @ksfile_cfg  Application.get_env(:exservice, Tinypng, "")
+  @api_key  Application.get_env(:exservice, Tinypng, "")
 
   def tinify(image_path) do 
     info "start tinify image file: #{image_path}"

@@ -2,6 +2,7 @@ defmodule Exservice.Chaoxin do
   use     Utils.LogAlias
   alias   Utils.Httpc
   alias   Utils.JSON
+  alias   Utils.Crypto
   require Exredis
 
   @chaoxin_cfg   Application.get_env(:exservice, Chaoxin, [api_key: "", default_group_id: ""])
@@ -20,13 +21,13 @@ defmodule Exservice.Chaoxin do
   end
   def send_text_msg(msg, group_id) do
     group_ctl_key = "exservice.chaoxin.#{group_id}"
-    msg_ctl_key = Utils.md5_sign("exservice.chaoxin.#{group_id}.#{msg}")
+    msg_ctl_key = Crypto.md5_sign("exservice.chaoxin.#{group_id}.#{msg}")
 
     case Exredis.get(group_ctl_key) do
       nil ->
         case Exredis.get(msg_ctl_key) do
           nil ->
-            response = Httpc.post_msg("https://botapi.chaoxin.com/sendTextMessage/#{@api_key}", %{
+            response = Httpc.post_form("https://botapi.chaoxin.com/sendTextMessage/#{@api_key}", %{
               chat_type: 0,
               chat_id: group_id,
               text: msg

@@ -31,7 +31,7 @@ defmodule Acs.Repo.Migrations.CreateMallOrders do
       add :transaction_status, :string, size: 20
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

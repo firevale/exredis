@@ -6,7 +6,7 @@ defmodule Acs.Repo.Migrations.CreateForumsManagers do
       add :logins, :integer, default: 0  #登录次数
 
       add :forum_id, references(:forums, on_delete: :nothing)
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

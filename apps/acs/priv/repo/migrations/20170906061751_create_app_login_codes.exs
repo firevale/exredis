@@ -3,14 +3,14 @@ defmodule Acs.Repo.Migrations.CreateAppLoginCodes do
 
   def change do
     create table(:app_login_codes) do
-      add :code, :string
-      add :owner, :string
+      add :code, :string, size: 20
+      add :owner, :string, size: 100
   
       add :assigned_at, :utc_datetime
       add :used_at, :utc_datetime
   
-      belongs_to :app, Acs.Apps.App, type: :string
-      belongs_to :user, Acs.Accounts.User, type: :integer
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

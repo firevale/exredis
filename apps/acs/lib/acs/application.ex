@@ -12,8 +12,10 @@ defmodule Acs.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Supervisor.start_link([
+    res = Supervisor.start_link([
       supervisor(Acs.Repo, []),
     ], strategy: :one_for_one, name: Acs.Supervisor)
+    Ecto.Migrator.run(Acs.Repo, Path.join(["#{:code.priv_dir(:acs)}", "repo", "migrations"]), :up, all: true)
+    res
   end
 end

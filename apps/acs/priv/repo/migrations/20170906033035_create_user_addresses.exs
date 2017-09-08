@@ -10,7 +10,7 @@ defmodule Acs.Repo.Migrations.CreateUserAddresses do
       add :area_code, :string
       add :is_default, :boolean, default: false
 
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

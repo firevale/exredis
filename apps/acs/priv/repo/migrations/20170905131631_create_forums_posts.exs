@@ -16,8 +16,8 @@ defmodule Acs.Repo.Migrations.CreateForumsPosts do
 
       add :forum_id, references(:forums, on_delete: :delete_all)
       add :section_id, references(:forums_sections, on_delete: :delete_all)
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
-      add :editer_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
+      add :editer_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

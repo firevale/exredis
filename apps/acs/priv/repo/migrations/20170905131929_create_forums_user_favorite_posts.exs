@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreateForumsUserFavoritePosts do
     create table(:forums_user_favorite_posts) do
 
       add :post_id, references(:forums_posts, on_delete: :delete_all)
-      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

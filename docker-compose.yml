@@ -34,6 +34,8 @@ services:
     restart: always
     environment:
       - cluster.name=acs
+      - node.name=${USERNAME}
+      - discovery.zen.minimum_master_nodes=1
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:

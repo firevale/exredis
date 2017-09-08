@@ -5,7 +5,8 @@ defmodule Acs.Umbrella.Mixfile do
     [
       apps_path: "apps",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases(),
     ]
   end
 
@@ -28,6 +29,19 @@ defmodule Acs.Umbrella.Mixfile do
       {:redix, "~> 0.6", override: true},
       {:redix_pubsub, "~> 0.4", override: true},
       {:distillery, "~> 1.5", runtime: false},
+    ]
+  end
+
+  defp aliases do
+    ["ecto.setup": ["ecto.create", 
+                    "ecto.migrate", 
+                    "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "test.reset": [
+                    "ecto.drop --quiet", 
+                    "ecto.create --quiet", 
+                    "ecto.migrate --quiet", 
+                    "run priv/repo/test_seeds.exs"],
     ]
   end
 end

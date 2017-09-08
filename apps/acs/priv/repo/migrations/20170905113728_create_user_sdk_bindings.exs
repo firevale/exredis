@@ -6,7 +6,7 @@ defmodule Acs.Repo.Migrations.CreateUserSdkBindings do
       add :sdk, :string, size: 50
       add :sdk_user_id, :string, size: 50
 
-      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

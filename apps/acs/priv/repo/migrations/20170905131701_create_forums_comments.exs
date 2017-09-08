@@ -8,8 +8,8 @@ defmodule Acs.Repo.Migrations.CreateForumsComments do
       add :floor, :integer
 
       add :post_id, references(:forums_posts, on_delete: :delete_all)
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
-      add :editer_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
+      add :editer_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

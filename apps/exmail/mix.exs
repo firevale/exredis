@@ -6,6 +6,7 @@ defmodule Exmail.Mixfile do
       app: :exmail,
       version: "0.1.0",
       elixir: "~> 1.4",
+      elixirc_paths: ["lib"],
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -30,6 +31,7 @@ defmodule Exmail.Mixfile do
       {:bamboo_smtp, "~> 1.4"},
       {:phoenix, "~> 1.3"},
       {:gettext, "~> 0.11"},
+      {:phoenix_html, "~> 2.10"},
 
       {:exutils, in_umbrella: true},
       # {:dep_from_hexpm, "~> 0.3.0"},

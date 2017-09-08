@@ -45,12 +45,12 @@ defmodule Acs.Cache.CachedForumHotPost do
       exids = Exredis.mget(redis_keys)
 
       {[], ps} = Enum.reduce(posts, {exids, []}, fn(post, {[x | exids], newPosts}) ->
-          case x do
-            "1" ->
-              {exids, [%{post | is_hot: true} | newPosts]}
-            _ ->
-              {exids, [post | newPosts]}
-          end
+        case x do
+          "1" ->
+            {exids, [%{post | is_hot: true} | newPosts]}
+          _ ->
+            {exids, [post | newPosts]}
+        end
       end)
       
       Enum.reverse(ps)

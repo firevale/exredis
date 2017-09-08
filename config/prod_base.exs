@@ -29,8 +29,4 @@ config :logger,
     {ExSyslogger, :exsyslog_info},
   ]
 
-config :exservice, KSFile,
-  domain: "ks3-cn-beijing-internal.ksyun.com",
-  bucket: "platform",
-  cdn_domain: "pfcdn.firevale.com",
-  cdn_scheme: "https"
+

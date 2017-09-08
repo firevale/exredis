@@ -81,6 +81,7 @@ release :acs do
     extcp: :permanent,
     exutils: :permanent,
     exwcp: :permanent,
+    exservice: :permanent,
     ex_syslogger: :permanent,
     phoenix_pubsub_redis: :permanent,
   ]

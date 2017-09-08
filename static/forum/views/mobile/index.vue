@@ -1,41 +1,45 @@
 <template>
   <div class="index-page">
-    <div class="index-swiper"> </div>
-    <div class="index-nav level is-mobile has-divider">
-      <router-link class="level-item" :to="{name: 'list'}">
-        <figure class="has-text-centered">
-          <img src="~assets/themes/jqxs_mobile/12_03.png">
-          <figcaption>
-            <small>游戏官网</small>
-          </figcaption>
-        </figure>
-      </router-link>
-      <router-link class="level-item" :to="{name: 'list'}">
-        <figure class="has-text-centered">
-          <img src="~assets/themes/jqxs_mobile/12_05.png">
-          <figcaption>
-            <small>新闻资讯</small>
-          </figcaption>
-        </figure>
-      </router-link>
-      <router-link class="level-item" :to="{name: 'list'}">
-        <figure class="has-text-centered">
-          <img src="~assets/themes/jqxs_mobile/12_07.png">
-          <figcaption>
-            <small>游戏攻略</small>
-          </figcaption>
-        </figure>
-      </router-link>
-      <router-link class="level-item" :to="{name: 'list'}">
-        <figure class="has-text-centered">
-          <img src="~assets/themes/jqxs_mobile/12_09.png">
-          <figcaption>
-            <small>联系客服</small>
-          </figcaption>
-        </figure>
-      </router-link>
+    <div class="index-swiper">
+      <img src="https://placehold.it/375x182?text=1242x600">
     </div>
-    <div class="forum-section card is-shadowless has-divider">
+    <div class="card index-nav has-divider">
+      <div class="card-content level is-mobile">
+        <router-link class="level-item" :to="{name: 'list'}">
+          <figure class="has-text-centered">
+            <img src="~assets/themes/jqxs_mobile/12_03.png">
+            <figcaption>
+              <small>游戏官网</small>
+            </figcaption>
+          </figure>
+        </router-link>
+        <router-link class="level-item" :to="{name: 'list'}">
+          <figure class="has-text-centered">
+            <img src="~assets/themes/jqxs_mobile/12_05.png">
+            <figcaption>
+              <small>新闻资讯</small>
+            </figcaption>
+          </figure>
+        </router-link>
+        <router-link class="level-item" :to="{name: 'list'}">
+          <figure class="has-text-centered">
+            <img src="~assets/themes/jqxs_mobile/12_07.png">
+            <figcaption>
+              <small>游戏攻略</small>
+            </figcaption>
+          </figure>
+        </router-link>
+        <router-link class="level-item" :to="{name: 'list'}">
+          <figure class="has-text-centered">
+            <img src="~assets/themes/jqxs_mobile/12_09.png">
+            <figcaption>
+              <small>联系客服</small>
+            </figcaption>
+          </figure>
+        </router-link>
+      </div>
+    </div>
+    <div class="card forum-section has-divider">
       <header class="card-header">
         <p class="card-header-title">
           | 论坛版块
@@ -85,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class="article-section card is-shadowless has-divider">
+    <div class="card article-section has-divider">
       <header class="card-header">
         <p class="card-header-title">
           | 热门推荐

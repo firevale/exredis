@@ -1,6 +1,6 @@
 <template>
   <div class="root-container">
-    <nav class="header level is-mobile is-marginless">
+    <nav class="flex-fixed-size header level is-mobile is-marginless">
       <div class="level-item">
       </div>
       <div class="level-item">

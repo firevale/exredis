@@ -1,6 +1,6 @@
 <template>
   <div class="detail-page">
-    <div class="card author-info has-divider">
+    <div class="flex-fixed-size card author-info has-divider">
       <div class="card-content ">
         <div class="comp-author-info">
           <figure>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <scroller ref="scroller" :on-load-more="loadmore">
+    <scroller class="flex-fixed-rest" ref="scroller" :on-load-more="loadmore">
     </scroller>
   </div>
 </template>

@@ -57,6 +57,10 @@ $subtitle-strong-weight: $weight-semibold;
   }
 }
 
+.subtitle:not(:last-child) {
+  margin-bottom: 0 !important;
+}
+
 //Card
 $card-shadow: none;
 $card-header-weight: $weight-normal;

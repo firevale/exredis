@@ -99,9 +99,33 @@ $fa-font-path: '~font-awesome/fonts/';
     .icon {
       margin-right: virtual-m-rem(20);
     }
-    img.thumb {
-      max-height: virtual-m-rem(214);
-      max-width: virtual-m-rem(380);
+    .thumbs {
+      img.thumb {
+        max-height: virtual-m-rem(214);
+        max-width: virtual-m-rem(380);
+      }
+      &+.article-footer {
+        margin-top: .5rem;
+      }
+    }
+    .article-footer {
+      position: relative;
+      overflow: hidden;
+      figure,
+      img {
+        width: virtual-m-rem(80);
+        height: virtual-m-rem(80);
+      }
+      .footer-left {
+        position: absolute;
+        left: virtual-m-rem(100);
+        bottom: 0;
+      }
+      .footer-right {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
     }
     &:not(:last-child) {
       border-bottom: 1px solid $grey;

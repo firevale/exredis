@@ -102,9 +102,9 @@ export default {
     gameNews: '官方新闻'
   },
   account: {
-    mobile: '绑定手机：',
-    email: '绑定邮箱：',
-    residentInfo: '实名认证：',
+    mobile: '绑定手机',
+    email: '绑定邮箱',
+    residentInfo: '实名认证',
     logout: '退出登录',
     notBound: '未绑定',
     bind: '绑定',

@@ -50,5 +50,9 @@ export default [{
     path: 'editResident',
     name: 'editResident',
     component: require('../views/mobile/editResident.vue')
+  }, {
+    path: 'otherPage',
+    name: 'otherPage',
+    component: require('../views/mobile/otherPage.vue')
   }]
 }, ]

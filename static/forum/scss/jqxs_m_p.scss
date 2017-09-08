@@ -23,6 +23,10 @@
   border-radius: virtual-m-rem(10) !important;
 }
 
+.no-radius {
+  border-radius: 0 !important;
+}
+
 .buttons {
   background-size: contain;
   background-repeat: no-repeat;
@@ -139,10 +143,32 @@
 
 .personal {
   .info {
-    background-color: $white;
     display: flex;
     align-items: center;
     padding: .8rem;
+    background-color: $white;
+  }
+  .article {
+    &:first-child {
+      padding-top: .3rem;
+    }
+    &:last-child {
+      padding-bottom: .3rem;
+    }
+    padding-left: .5rem;
+    padding-right: .4rem;
+  }
+  .card .media:not(:last-child) {
+    margin-bottom: .3rem;
+  }
+  .media+.media {
+    margin-top: 0;
+    padding-top: .5rem;
+  }
+  .article-date {
+    span {
+      margin-right: .7rem;
+    }
   }
 }
 

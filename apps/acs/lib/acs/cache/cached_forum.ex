@@ -1,40 +1,39 @@
 defmodule Acs.Cache.CachedForum do
   require Exredis
-  require Excache
+  use     Utils.LogAlias
 
   alias   Acs.Repo
 
   alias   Acs.Forums.Forum
 
-  @key_base     "acs.forum"
+  @key_base   "acs.forum"
 
-  def get(forum_id) do
-    Excache.get!(key(forum_id), fallback: fn(redis_key) ->    
-      case Exredis.get(redis_key) do
-        nil -> 
-          case refresh(forum_id) do 
-            nil -> {:ignore, nil}
-            forum -> {:commit, forum}
-          end
+  def get(id)  do
+    redis_key = "#{@key_base}.#{id}"
 
-        raw ->
-          {:commit, raw |> Forum.from_redis}
-      end
-    end)
+    case Exredis.get(redis_key) do
+      nil ->
+        case refresh(id) do 
+          nil -> {:ignore, nil}
+          forum -> {:commit, forum}
+        end
+        refresh(id)
+      raw ->
+        {:commit, raw |> Forum.from_redis}
+    end
   end
 
-  def refresh(forum_id) do
-    redis_key = "#{@key_base}.#{forum_id}"
+  def refresh(id)  do
+    redis_key = "#{@key_base}.#{id}"
 
-    case Repo.get(Forum, forum_id) do 
+    Excache.del(redis_key)
+
+    case Repo.get(Forum, id) do
       %Forum{} = forum ->
-        Exredis.set(key(forum_id), Forum.to_redis(forum))
-        key(forum_id) |> Excache.del # force all nodes to reload from redis
+        Exredis.set(redis_key, Forum.to_redis(forum))
         forum
       _ -> nil
     end
   end
-
-  defp key(forum_id), do: "#{@key_base}.#{forum_id}" 
 
 end

@@ -23,6 +23,8 @@ defmodule AcsStats.Devices.AppDevice do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppDevice{} = app_device, attrs) do
     app_device

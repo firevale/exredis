@@ -6,9 +6,9 @@ defmodule Acs.Search do
   import Ecto.Query, warn: false
 
   alias Acs.Apps.AppOrder
-  alias Acs.Accounts
-  alias Acs.Forums
-
+  alias Acs.Cache.CachedUser
+  alias Acs.Cache.CachedForum
+  
   def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
       query: %{
@@ -35,7 +35,7 @@ defmodule Acs.Search do
     }
 
     case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do
-      {:ok, %{hits: %{hits: hits, total: total}}} ->
+      {:ok, %{hits: %{hits: hits, total: _total}}} ->
         ids = Enum.map(hits, &(&1._id))
 
         query = from order in AppOrder,
@@ -96,17 +96,38 @@ defmodule Acs.Search do
           _source: %{
             user_id: user_id,
             forum_id: forum_id,
-            section_id: section_id
-          }
-        } = hit) ->
+             section_id: section_id}
+            } = hit) ->
+
+          user = case Process.get("user_#{user_id}") do 
+                  nil -> 
+                    user_db = CachedUser.get(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
+                    Process.put("user_#{user_id}", user_db)
+                    user_db
+                  user_cache ->
+                    user_cache
+                end
+                  
+          forum = case Process.get("forum_#{forum_id}") do
+                    nil ->
+                      forum_new = CachedForum.get(forum_id)
+                      Process.put("forum_#{forum_id}", forum_new)
+                      forum_new 
+                    forum_cache ->
+                      forum_cache
+                  end
+
+          section = if forum && forum.sections && section_id  do
+                      forum.sections[section_id |> to_string |> String.to_atom]
+                    end
           %{
             id: hit._id,
             forum_id: forum_id,
-            forum: Forums.get_forum(forum_id),
+            forum: forum,
             user_id: user_id,
-            user: Accounts.get_user(String.to_integer("#{user_id}")) ,
+            user: user,
             section_id: section_id,
-            section: Forums.get_forum_section(section_id),
+            section: section,
             title: hit._source.title,
             content: hit._source.content,
             is_top: hit._source.is_top,

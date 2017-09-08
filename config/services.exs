@@ -45,13 +45,13 @@ config :exservice, Chaoxin,
   default_group_id: 127697
 
 
-config :acs, Acs.MandrillMailer,
+config :exmail, Exmail.MandrillMailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: "lT0K0Wk-ZELrCy2CC5BPDg",
   from: "noreply@fvac.firevale.com",
   reply: "noreply@fvac.firevale.com"
 
-config :acs, Acs.SmtpMailer,
+config :exmail, Exmail.SmtpMailer,
   adapter: Bamboo.SMTPAdapter,
   server: "smtp.exmail.qq.com",
   port: 465,
@@ -61,7 +61,7 @@ config :acs, Acs.SmtpMailer,
   ssl: true, # can be `true`
   retries: 3
 
-config :acs, Acs.SendCloudMailer,
+config :exmail, Exmail.SendCloudMailer,
   user: "fvac_cn",
   key: "iXkBkVUk3OEfF5MY",
   from: "noreply@sdmail.firevale.com",

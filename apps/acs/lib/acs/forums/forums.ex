@@ -4,7 +4,6 @@ defmodule Acs.Forums do
   """
 
   import Ecto.Query, warn: false
-  alias Acs.Repo
 
   alias Acs.Cache.CachedForum
   alias Acs.Cache.CachedForumSection

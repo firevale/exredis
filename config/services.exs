@@ -44,7 +44,6 @@ config :exservice, Chaoxin,
   api_key: "239277:1d9ee0a4c5e5e54cad94f165c13734b1",
   default_group_id: 127697
 
-# Config UCloud UFile Management
 
 config :acs, Acs.MandrillMailer,
   adapter: Bamboo.MandrillAdapter,

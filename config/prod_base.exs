@@ -15,7 +15,6 @@ config :acs_web, AcsWeb.Endpoint,
 
 config :phoenix, :serve_endpoints, true
 
-
 # Do not include metadata nor timestamps in development logs
 config :logger, :exsyslog_info,
   level: :debug,
@@ -30,4 +29,8 @@ config :logger,
     {ExSyslogger, :exsyslog_info},
   ]
 
-config :acs, allow_origin: "//*.firevale.com"
+config :exservice, KSFile,
+  domain: "ks3-cn-beijing-internal.ksyun.com",
+  bucket: "platform",
+  cdn_domain: "pfcdn.firevale.com",
+  cdn_scheme: "https"

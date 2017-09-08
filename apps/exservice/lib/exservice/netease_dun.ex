@@ -1,4 +1,4 @@
-defmodule SDKNeteaseDun do
+defmodule Exservice.NeteaseDun do
   require Utils
   alias   Utils.Httpc
   alias   Utils.JSON

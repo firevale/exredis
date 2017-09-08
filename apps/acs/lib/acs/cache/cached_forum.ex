@@ -29,7 +29,7 @@ defmodule Acs.Cache.CachedForum do
     case Repo.get(Forum, forum_id) do 
       %Forum{} = forum ->
         Exredis.set(key(forum_id), Forum.to_redis(forum))
-        key(forum_id) |> Excache.del
+        key(forum_id) |> Excache.del # force all nodes to reload from redis
         forum
       _ -> nil
     end

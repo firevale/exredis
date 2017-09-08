@@ -54,6 +54,11 @@ defmodule Acs.Auth.AccessToken do
 
   def delete(%__MODULE__{} = token) do
     Exredis.del(key(token.id))
+    Excache.del(key(token.id))
+  end
+  def delete(token_id) do
+    Exredis.del(key(token_id))
+    Excache.del(key(token_id))
   end
 
   def expired_at(%__MODULE__{} = token) do

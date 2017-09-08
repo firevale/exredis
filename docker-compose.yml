@@ -59,8 +59,10 @@ services:
       - "ACS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_dev"
       - "ACS_STATS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_stats_dev"
       - "EXSM_DATABASE_URL=ecto://root:firevale@acs_mysql/exsm"
-      - "ACS_REDIS_HOSTNAME=acs_redis"
-      - "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
+      - "REDIS_HOSTNAME=acs_redis"
+      - "REDIS_PORT=6379"
+      - "REDIS_DATABASE=0"
+      - "ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
       - "ACS_HOST=${USERNAME}.firevale.com"
       - "NODE=${USERNAME}"
     volumes:

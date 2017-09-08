@@ -20,6 +20,7 @@ RUN mkdir -p /code && \
        echo 'cd /code && iex -S mix phx.server'; \
     } > /start.sh && \
     chmod a+x /start.sh && \
-    git config --global http.sslVerify false
+    git config --global http.sslVerify false && \
+    yarn config set registry 'https://registry.npm.taobao.org' 
 
 ENTRYPOINT ["/bin/zsh"]

@@ -19,7 +19,7 @@ var isDev = function() {
 }
 
 var outputPath = function() {
-  return path.resolve(__dirname, '../priv/static/')
+  return '/assets' 
 }
 
 var plugins = [

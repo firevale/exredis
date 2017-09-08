@@ -39,6 +39,8 @@ defmodule AcsWeb.Endpoint do
     key: "_acs_web_key",
     signing_salt: "LpoTwPvl"
 
+  plug CORSPlug, origin: ~r/https?.*firevale\.com$/
+
   plug AcsWeb.Router
 
   @doc """

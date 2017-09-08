@@ -5,7 +5,12 @@ defmodule Exmail.Mixfile do
     [
       app: :exmail,
       version: "0.1.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.4",
+      build_path: "../../_build",
+      config_path: "../../config/config.exs",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
+      compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
       deps: deps()
     ]

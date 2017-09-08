@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for p in extcp exes exsm exredis excache exutils exsdks exwcp exservice 
+for p in extcp exes exsm exredis excache exutils exsdks exwcp exservice exmail
 do
    git subtree pull --prefix=apps/$p $p acs --squash
    git subtree push --prefix=apps/$p $p acs --squash

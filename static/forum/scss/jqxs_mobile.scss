@@ -13,7 +13,6 @@ $fa-font-path: '~font-awesome/fonts/';
 //     margin-bottom: virtual-m-rem(40);
 //   }
 // }
-
 .header {
   height: virtual-m-rem(130);
   background: $black;
@@ -71,6 +70,10 @@ $fa-font-path: '~font-awesome/fonts/';
 .index-page {
   .index-swiper {
     height: virtual-m-rem(600);
+    img {
+      width: virtual-m-rem(1242);
+      height: virtual-m-rem(600);
+    }
   }
   .index-nav {
     height: virtual-m-rem(275);

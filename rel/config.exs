@@ -80,7 +80,11 @@ release :acs do
     exsm: :permanent,
     extcp: :permanent,
     exutils: :permanent,
-    exwcp: :permanent
+    exwcp: :permanent,
+    exservice: :permanent,
+    exmail: :permanent,
+    ex_syslogger: :permanent,
+    phoenix_pubsub_redis: :permanent,
   ]
   set vm_args: "rel/vm.args"
 

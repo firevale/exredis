@@ -8,8 +8,8 @@ defmodule AcsWeb.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :acs_web, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    at: "/", from: "/code/priv/static", gzip: false,
+    only: ~w(css fonts images js assets fonts favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -25,7 +25,8 @@ defmodule AcsWeb.Endpoint do
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Poison
+    json_decoder: Poison,
+    length: 100_000_000
 
   plug Plug.MethodOverride
   plug Plug.Head
@@ -38,6 +39,8 @@ defmodule AcsWeb.Endpoint do
     key: "_acs_web_key",
     signing_salt: "LpoTwPvl"
 
+  plug CORSPlug, origin: ~r/https?.*firevale\.com$/
+
   plug AcsWeb.Router
 
   @doc """
@@ -47,11 +50,32 @@ defmodule AcsWeb.Endpoint do
   configuration should be loaded from the system environment.
   """
   def init(_key, config) do
+    {:ok, config |> env_port() |> env_redis_pubsub()}
+  end
+
+  defp env_port(config) do 
     if config[:load_from_system_env] do
       port = System.get_env("PORT") || raise "expected the PORT environment variable to be set"
-      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
+      Keyword.put(config, :http, [:inet6, port: port])
     else
-      {:ok, config}
+      config
+    end
+  end
+
+  defp env_redis_pubsub(config) do 
+    case config[:pubsub][:adapter] do 
+      Phoenix.PubSub.Redis ->
+        node = System.get_env("NODE") || raise "expected the NODE environment variable to be set"
+        redis_config = Exredis.Helper.conn_cfg()
+        pubsub = 
+          config[:pubsub] 
+            |> Keyword.merge(redis_config)
+            |> Keyword.put(:node_name, node)
+        
+        config |> Keyword.put(:pubsub, pubsub)
+
+      _ -> 
+        config
     end
   end
 end

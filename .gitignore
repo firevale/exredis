@@ -3,7 +3,6 @@
 /db
 /deps
 /*.ez
-/rel/acs
 /var
 .DS_Store
 *.log

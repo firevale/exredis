@@ -6,7 +6,7 @@ defmodule SDKWechat do
   alias   Utils.Crypto
   alias   Utils.Xml
 
-  @wechat_config      Application.get_env(:acs, :wechat)
+  @wechat_config      Application.get_env(:exsdks, :wechat)
   @prepay_url         @wechat_config[:prepay_url]
   @auth_base_url      @wechat_config[:auth_base_url]
   @trade_type         "APP"

@@ -24,8 +24,8 @@ defmodule Acs.CachePMallGoods do
   end
 
   def refresh(goods = %PMallGoods{}) do
-    key(goods.id) |> Excache.del
     key(goods.id) |> Exredis.setex(7200, PMallGoods.to_redis(goods))
+    key(goods.id) |> Excache.del
     goods
   end
 

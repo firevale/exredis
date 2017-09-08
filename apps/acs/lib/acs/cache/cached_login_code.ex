@@ -29,8 +29,6 @@ defmodule Acs.Cache.RedisLoginCode do
   def refresh(app_id, key_field) do
     redis_key = key(app_id, key_field)
 
-    Excache.del(redis_key)
-
     db_model = if is_integer(key_field) do 
       Repo.get_by(AppLoginCode, app_id: app_id, user_id: key_field)
     else 
@@ -40,6 +38,7 @@ defmodule Acs.Cache.RedisLoginCode do
     case db_model do 
       %AppLoginCode{} = app_login_code ->
         Exredis.set(redis_key, app_login_code |> AppLoginCode.to_redis())
+        Excache.del(redis_key)
         app_login_code
       
       _ -> 

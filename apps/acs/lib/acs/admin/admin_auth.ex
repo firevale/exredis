@@ -1,21 +1,56 @@
-defmodule Acs.Cache.CachedAdminUser do
+defmodule Acs.AdminAuth do
   require Exredis
   require Excache 
 
-  use     Utils.LogAlias
+  import Ecto.Query, warn: false
+  alias Acs.Repo
 
-  alias   Acs.Repo
-  import  Ecto.Query
+  alias Acs.Admin.AdminUser
 
-  alias   Acs.Admin.AdminUser
+  def get_admin_appids(user_id) when is_integer(user_id) do
+    query = 
+      from au in AdminUser,
+        where: au.user_id == ^user_id,
+        where: au.active == true,
+        where: au.admin_level >= 1,
+        select: au.app_id
 
-  @admin_cache_key      "acs.adminuser.level"
+    Repo.all(query)
+  end
 
+  def is_admin(user_id) do 
+    Excache.get!("acs.isadminuser.#{user_id}", fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do 
+        nil ->
+          query = 
+            from au in AdminUser,
+              select: count(au.id),
+              where: au.user_id == ^user_id,
+              where: au.active == true
 
-  # TODO: ONLY cache admin user data, 
+          case Repo.one!(query) do
+            0 -> 
+              {:commit, false}
+
+            _ -> 
+              Exredis.setex(redis_key, 3600, "true")
+              Excache.del(redis_key)
+
+              {:commit, true}
+          end
+        _ ->
+          {:commit, true}
+      end
+    end)
+  end
+
+  def refresh_is_admin(user_id) do 
+    Exredis.del("acs.isadminuser.#{user_id}")
+    Excache.del("acs.isadminuser.#{user_id}")
+  end
+
   def get_admin_level(user_id, app_id \\ nil)  when is_integer(user_id) do
-    key = key(user_id, app_id)
-    Excache.get!(key, fallback: fn(redis_key) -> 
+    Excache.get!(key(user_id, app_id), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do
         nil -> 
           {:commit, refresh(user_id, app_id, false)}
@@ -26,41 +61,6 @@ defmodule Acs.Cache.CachedAdminUser do
           end
       end
     end)
-  end
-
-  def is_admin(user_id) do 
-    Excache.get!("acs.isadminuser.#{user_id}", fallback: fn(redis_key) -> 
-      case Exredis.get(redis_key) do 
-        nil ->
-          query = from au in AdminUser,
-                  select: count(au.id),
-                  where: au.user_id == ^user_id,
-                  where: au.active == true
-
-          case Repo.one!(query) do
-            0 -> 
-              {:ignore, false}
-            _ -> 
-              Exredis.setex(redis_key, 3600, "true")
-              {:commit, true}
-          end
-        _ ->
-          {:commit, true}
-      end
-    end)
-  end
-
-  # only when admin_level > 1
-  # TODO: move to some other place
-  def get_admin_appids(user_id)  when is_integer(user_id) do
-    query = 
-      from au in AdminUser,
-      where: au.user_id == ^user_id,
-      where: au.active == true,
-      where: au.admin_level >= 1,
-      select: au.app_id
-
-    Repo.all(query)
   end
 
   def refresh(user_id, app_id \\ nil, force_update \\ true)  do
@@ -95,6 +95,7 @@ defmodule Acs.Cache.CachedAdminUser do
     end
   end
 
+  @admin_cache_key      "acs.adminuser.level"
   defp key(user_id) when is_integer(user_id) do 
     "#{@admin_cache_key}.#{user_id}" 
   end
@@ -104,4 +105,7 @@ defmodule Acs.Cache.CachedAdminUser do
   defp key(user_id, app_id) when is_integer(user_id) do  
     "#{@admin_cache_key}.#{user_id}.#{app_id}"
   end
+
+
+
 end

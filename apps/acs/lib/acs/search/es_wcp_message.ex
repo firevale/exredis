@@ -3,13 +3,12 @@ defmodule Acs.Search.ESWcpMessage do
     alias Acs.Wcp.AppWcpMessage
 
     def index(%AppWcpMessage{} = message) do
-        Elasticsearch.index(%{
-            index: "wcp",
-            type: "messages",
-            doc: message,
-            params: nil,
-            id: nil
-          })
+      Elasticsearch.index(%{
+        index: "wcp",
+        type: "messages",
+        doc: message,
+        id: message.id
+      })
     end
 
 end

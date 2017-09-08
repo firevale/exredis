@@ -6,15 +6,9 @@ defmodule Acs.Search do
   import Ecto.Query, warn: false
 
   alias Acs.Apps.AppOrder
-<<<<<<< HEAD
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedForum
   
-=======
-  alias Acs.Accounts
-  alias Acs.Forums
-
->>>>>>> 0842e000362e27faba0424bbdedcfc8b16ed5c28
   def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
       query: %{
@@ -102,7 +96,6 @@ defmodule Acs.Search do
           _source: %{
             user_id: user_id,
             forum_id: forum_id,
-<<<<<<< HEAD
              section_id: section_id}
             } = hit) ->
 
@@ -127,19 +120,14 @@ defmodule Acs.Search do
           section = if forum && forum.sections && section_id  do
                       forum.sections[section_id |> to_string |> String.to_atom]
                     end
-=======
-            section_id: section_id
-          }
-        } = hit) ->
->>>>>>> 0842e000362e27faba0424bbdedcfc8b16ed5c28
           %{
             id: hit._id,
             forum_id: forum_id,
-            forum: Forums.get_forum(forum_id),
+            forum: forum,
             user_id: user_id,
-            user: Accounts.get_user(String.to_integer("#{user_id}")) ,
+            user: user,
             section_id: section_id,
-            section: Forums.get_forum_section(section_id),
+            section: section,
             title: hit._source.title,
             content: hit._source.content,
             is_top: hit._source.is_top,

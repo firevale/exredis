@@ -15,6 +15,8 @@ defmodule AcsStats.Users.AppUserDailyActivity do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%AppUserDailyActivity{} = app_user_daily_activity, attrs) do
     app_user_daily_activity

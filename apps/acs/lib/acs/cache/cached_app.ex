@@ -3,7 +3,6 @@ defmodule Acs.Cache.CachedApp do
   require Excache
 
   alias   Acs.Repo
-
   alias   Acs.Apps.App
 
   @key_base     "acs.app"
@@ -26,8 +25,6 @@ defmodule Acs.Cache.CachedApp do
   end
 
   def refresh(app_id) when is_bitstring(app_id) do
-    redis_key = "#{@key_base}.#{app_id}"
-
     case Repo.get(App, app_id) do 
       %App{} = app ->
         Exredis.set(key(app_id), App.to_redis(app))

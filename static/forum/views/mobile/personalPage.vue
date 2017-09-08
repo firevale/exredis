@@ -1,147 +1,48 @@
 <template>
-  <div class="personal">
-    <div class="media flex-fixed-size info has-divider">
-      <figure class="media-left is-clickable" @click="onShowMyProfile">
-        <i class="icon icon-head-portrait" v-lazy:background-image="avatarUrl" />
-      </figure>
-      <div class="media-content">
-        <p class="title">
-          {{ $t('forum.personal.nickname') }}{{ this.userInfo.nickname }}
-        </p>
-        <p class="title">
-          {{ $t('forum.personal.postCount') }}{{ this.userInfo.post_count}}
-        </p>
-        <p class="title">
-          {{ $t('forum.personal.registerTime') }}{{ this.userInfo.inserted_at | formatServerDate }}
-        </p>
-      </div>
-      <div class="media-right">
-        <p class="title">
-          <input type="button" value="个人资料" class="button is-primary" />
-        </p>
-        <p>
-          <input type="button" value="我的消息" class="button is-primary" />
-        </p>
-      </div>
-    </div>
-    <slider-nav class="flex-fixed-size has-divider" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
+  <div class="common-page">
     <div class="card has-divider">
       <div class="card-content">
-        <div class="box no-radius is-marginless	is-paddingless">
-          <v-touch class="media article">
-            <div class="media-content">
-              <p>
-                <strong>[综合讨论]</strong> 第一个原因自然是己&nbsp;<i class="icon icon-new-reply"></i>
-                <br>
-                <v-touch class="level is-mobile is-marginless is-paddingless">
-                  <div class="level-left">
-                    <p class="subtitle article-date">
-                      <span>2017-06-28 17:56</span>
-                      <span> | </span>
-                      <span>11111/11111</span>
-                    </p>
-                  </div>
-                  <figure class="level-right">
-                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
-                  </figure>
-                </v-touch>
-              </p>
-            </div>
-          </v-touch>
-          <v-touch class="media article">
-            <div class="media-content">
-              <p>
-                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
-                <br>
-                <v-touch class="level is-mobile is-marginless is-paddingless">
-                  <div class="level-left">
-                    <p class="subtitle article-date">
-                      <span>2017-06-28 17:56</span>
-                      <span> | </span>
-                      <span>11111/11111</span>
-                    </p>
-                  </div>
-                  <figure class="level-right">
-                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
-                  </figure>
-                </v-touch>
-              </p>
-            </div>
-          </v-touch>
-          <v-touch class="media article">
-            <div class="media-content">
-              <p>
-                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
-                <br>
-                <v-touch class="level is-mobile is-marginless is-paddingless">
-                  <div class="level-left">
-                    <p class="subtitle article-date">
-                      <span>2017-06-28 17:56</span>
-                      <span> | </span>
-                      <span>11111/11111</span>
-                    </p>
-                  </div>
-                  <figure class="level-right">
-                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
-                  </figure>
-                </v-touch>
-              </p>
-            </div>
-          </v-touch>
-          <v-touch class="media article">
-            <div class="media-content">
-              <p>
-                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
-                <br>
-                <v-touch class="level is-mobile is-marginless is-paddingless">
-                  <div class="level-left">
-                    <p class="subtitle article-date">
-                      <span>2017-06-28 17:56</span>
-                      <span> | </span>
-                      <span>11111/11111</span>
-                    </p>
-                  </div>
-                  <figure class="level-right">
-                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
-                  </figure>
-                </v-touch>
-              </p>
-            </div>
-          </v-touch>
-          <v-touch class="media article">
-            <div class="media-content">
-              <p>
-                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
-                <br>
-                <v-touch class="level is-mobile is-marginless is-paddingless">
-                  <div class="level-left">
-                    <p class="subtitle article-date">
-                      <span>2017-06-28 17:56</span>
-                      <span> | </span>
-                      <span>11111/11111</span>
-                    </p>
-                  </div>
-                  <figure class="level-right">
-                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
-                  </figure>
-                </v-touch>
-              </p>
-            </div>
-          </v-touch>
+        <div class="comp-author-info">
+          <i class="icon icon-head-portrait" />
+          <div class="item-left">
+            <p class="title">
+              昵称：firevale</p>
+            <p class="title">
+              ID：10238988323</p>
+            <p class="title">
+              等级：LV.1烟雨悠悠</p>
+          </div>
+          <div class="item-right has-text-top">
+            <p class="title">
+              <router-link class="button is-primary is-thickness has-radius" :to="{name: 'editResident'}"><small>个人资料</small></router-link>
+            </p>
+            <p class="title">
+              <router-link class="button is-primary is-thickness has-radius" :to="{name: 'editResident'}"><small>我的消息</small></router-link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    <!-- <div class="content flex-take-rest" style="position: relative">
-      <scroller :on-load-more="loadmore" ref="scroller">
-        <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
-          @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
-        <my-comment-list-item v-if="type == 'myComments'" v-for="item in commentList" :key="item.id" :item-data="item"></my-comment-list-item>
-        <my-favorite-list-item v-if="type == 'myFavor'" v-for="(item, index) in favoriteList" :key="item.id"
-          :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-favorite-list-item>
-        <my-post-list-item v-if="type == 'myBan' && isManager" v-for="(item, index) in banList" :key="item.id"
-          :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
-      </scroller>
-    </div> -->
+    <slider-nav class="has-divider" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <div class="card has-divider">
+      <div class="card-content">
+        <div v-for="n in 15" class="article">
+          <div class="comp-author-info">
+            <div class="item-left">
+              <p class="title is-ellipsis">
+                <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+              </p>
+              <p class="subtitle">
+                为什么猪女会这么打？ 第一个原因
+              </p>
+            </div>
+            <p class="item-right  has-text-bottom">
+              <i class="icon icon-remove" /><small><strong>删除</strong></small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -150,46 +51,15 @@ import {
   mapActions
 } from 'vuex'
 
-import {
-  showMobileMenu
-} from "common/components/mobileMenu"
-
 import Vue from 'vue'
 import sliderNav from '../../components/sliderNav'
-import myPostListItem from "../../components/myPostListItem"
-import myFavoriteListItem from "../../components/myFavoriteListItem"
-import myCommentListItem from "../../components/myCommentListItem"
-import CropUploadDialog from 'common/components/imageCropUpload'
-import * as filter from 'common/js/filters'
 
 export default {
   components: {
-    sliderNav,
-    myPostListItem,
-    myFavoriteListItem,
-    myCommentListItem,
+    sliderNav
   },
-
-  computed: {
-
-    isManager() {
-      return window.acsConfig.isAdmin == true
-    },
-    ...mapGetters([
-      'userInfo'
-    ]),
-    avatarUrl() {
-      return {
-        src: filter.imageStaticUrl(this.userInfo.avatar_url || window.acsConfig.defaultAvatarUrl),
-        error: window.acsConfig.defaultAvatarUrl,
-        loading: window.acsConfig.defaultAvatarUrl
-      }
-    },
-  },
-
   data() {
     return {
-      type: 'myPosts',
       menus: window.acsConfig.isAdmin == true ? [{
           text: this.$t('forum.personal.myPosts'),
           value: 'myPosts'
@@ -216,172 +86,9 @@ export default {
           text: this.$t('forum.personal.myFavor'),
           value: 'myFavor'
         }
-      ],
-      postList: [],
-      commentList: [],
-      favoriteList: [],
-      banList: [],
-      page: 0,
-      total: 1,
-      recordsPerPage: 10,
+      ]
     }
   },
 
-  mounted: async function() {
-    if (this.userInfo.post_count == 0) {
-      let result = await this.$acs.getUserPostCount(this.$route.params.forumId)
-
-      if (result.success) {
-        this.updateUserPostCount(result.post_count)
-      }
-    }
-  },
-
-  methods: {
-    ...mapActions([
-      'updateUserPostCount', 'decrUserPostCount'
-    ]),
-
-    switchMenu: function(item, index) {
-      this.type = item.value
-      this.resetScroller();
-    },
-
-    onShowMyProfile: function() {
-      this.$router.push({
-        path: '/account/my_profile'
-      })
-    },
-
-    resetScroller: function() {
-      this.page = 0
-      this.total = 1
-      this.postList = []
-      this.commentList = []
-      this.favoriteList = []
-      this.banList = []
-      if (this.$refs.scroller) {
-        this.$refs.scroller.$emit('reset')
-      }
-    },
-
-    loadmore: async function() {
-      switch (this.type) {
-        case "myPosts":
-          await this.getPostPage()
-          break;
-        case "myComments":
-          await this.getCommentPage()
-          break;
-        case "myFavor":
-          await this.getFavoritePage()
-          break;
-        case "myBan":
-          await this.getBanPage()
-          break;
-      }
-    },
-
-    onItemDelete(type, index) {
-      switch (type) {
-        case "myPost":
-          this.decrUserPostCount()
-          this.postList.splice(index, 1)
-          break;
-        case "banPost":
-          this.banList.splice(index, 1)
-          break;
-        case "myFavorite":
-          this.favoriteList.splice(index, 1)
-          break;
-      }
-    },
-
-    getPostPage: async function() {
-      // cancel last get paged post if we're requesting 
-      this.$acs.cancelGetUserPagedPost()
-      this.$acs.cancelGetUserPostComments()
-      this.$acs.cancelGetUserPostFavorites()
-      this.$acs.cancelGetPagedBanPost()
-
-      let result = await this.$acs.getUserPagedPost(this.$route.params.forumId,
-        this.page + 1, this.recordsPerPage)
-
-      if (result.success) {
-        this.postList = this.page == 0 ? result.posts : this.postList.concat(result.posts)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
-      }
-    },
-
-    getCommentPage: async function() {
-      // cancel last get paged post if we're requesting 
-      this.$acs.cancelGetUserPagedPost()
-      this.$acs.cancelGetUserPostComments()
-      this.$acs.cancelGetUserPostFavorites()
-      this.$acs.cancelGetPagedBanPost()
-
-      let result = await this.$acs.getUserPostComments(this.$route.params.forumId, this.page + 1,
-        this.recordsPerPage)
-
-      if (result.success) {
-        this.commentList = this.page == 0 ? result.comments : this.commentList.concat(result.comments)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
-      }
-    },
-
-    getFavoritePage: async function() {
-      // cancel last get paged post if we're requesting 
-      this.$acs.cancelGetUserPagedPost()
-      this.$acs.cancelGetUserPostComments()
-      this.$acs.cancelGetUserPostFavorites()
-      this.$acs.cancelGetPagedBanPost()
-
-      let result = await this.$acs.getUserPostFavorites(this.$route.params.forumId, this.page + 1,
-        this.recordsPerPage)
-
-      if (result.success) {
-        this.favoriteList = this.page == 0 ? result.favorites : this.favoriteList.concat(result.favorites)
-        this.total = result.total
-        this.page = this.page + 1
-
-        if (this.$refs.scroller && this.page >= this.total) {
-          this.$refs.scroller.$emit('all-loaded')
-        }
-      }
-    },
-
-    getBanPage: async function() {
-      if (this.isManager) {
-        // cancel last get paged post if we're requesting
-        this.$acs.cancelGetUserPagedPost()
-        this.$acs.cancelGetUserPostComments()
-        this.$acs.cancelGetUserPostFavorites()
-        this.$acs.cancelGetPagedBanPost()
-
-        let result = await this.$acs.getPagedBanPost(this.$route.params.forumId, this.page + 1,
-          this.recordsPerPage)
-
-        if (result.success) {
-          this.banList = this.page == 0 ? result.posts : this.banList.concat(result.posts)
-          this.total = result.total
-          this.page = this.page + 1
-
-          if (this.$refs.scroller && this.page >= this.total) {
-            this.$refs.scroller.$emit('all-loaded')
-          }
-        }
-      }
-    }
-  },
 }
 </script>

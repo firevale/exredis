@@ -1,19 +1,16 @@
 <template>
   <div class="my_profile">
-    <section class="section has-text-centered">
-      <div class="container">
+    <div class="card has-divider has-text-centered">
+      <div class="card-content">
         <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>
-        <p class="info">
-          <span class="nickname">
-            {{ $t('forum.personal.nickname') }}
-            <label v-if="!editName"> {{ userInfo.nickname }}</label>
-          </span>
-          <span v-if="!editName">
-            <a class="icon icon-edit" @click="editNickName"></a>
+        <p class="title" style="display:flex; align-items: center; justify-content: center;">昵称：
+          <label v-if="!editName"> {{ userInfo.nickname }}</label>
+          <span class="title" v-if="!editName">
+            &nbsp;&nbsp;<a class="icon icon-edit" @click="editNickName"></a>
           </span>
           <span v-if="editName">
             <input class="input" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
-              :value="userInfo.nickname">
+              :value="userInfo.nickname">&nbsp;&nbsp;
           </span>
           <span v-if="editName">
             <a class="buttons btn-save" @click="onSubmit"></a>
@@ -23,51 +20,59 @@
           <i class="icon icon-error-tip"></i>
           <strong>{{$t('forum.error.nickNameError')}}</strong>
         </p>
-        <div class="content">
-          <div class="level is-mobile has-bottom-line">
+      </div>
+    </div>
+    <div class="card has-divider">
+      <div class="card-content">
+        <div class="article">
+          <div class="level is-mobile">
             <div class="level-left">
               <span class="title">{{ $t('forum.account.mobile') }}：{{ mobile }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.mobile" class="button is-primary has-radius is-change" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.mobile') }}</small></router-link>
+              <router-link v-if="userInfo.mobile" class="button is-primary has-radius is-thickness" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.mobile') }}</small></router-link>
             </div>
           </div>
-          <div class="level is-mobile has-bottom-line">
+        </div>
+        <div class="article">
+          <div class="level is-mobile">
             <div class="level-left">
               <span class="title">{{ $t('forum.account.email') }}：{{ email }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.email" class="button is-primary has-radius is-change" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.email') }}</small></router-link>
+              <router-link v-if="userInfo.email" class="button is-primary has-radius is-thickness" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.email') }}</small></router-link>
             </div>
           </div>
-          <div class="level is-mobile has-bottom-line" v-if="isMobileAccountSupported">
+        </div>
+        <div class="article">
+          <div class="level is-mobile" v-if="isMobileAccountSupported">
             <div class="level-left">
               <span class="title">{{ $t('forum.account.residentInfo') }}：{{ userInfo.resident_id? $t('forum.account.authenticated')
                 : $t('forum.account.notAuthenticated') }}
               </span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.resident_id" class="button is-primary has-radius is-change" :to="{name: 'editResident'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-change" :to="{name: 'editResident'}"><small>{{ $t('forum.account.residentInfo') }}</small></router-link>
-            </div>
-          </div>
-          <div class="level is-mobile has-text-centered">
-            <div class="level-item">
-              <a v-if="isInApp && showLogout" class="buttons btn-logout logout" @click="logout"></a>
+              <router-link v-if="userInfo.resident_id" class="button is-primary has-radius is-thickness" :to="{name: 'editResident'}"><small>{{ $t('forum.account.change') }}</small></router-link>
+              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editResident'}"><small>{{ $t('forum.account.residentInfo') }}</small></router-link>
             </div>
           </div>
         </div>
-        <div v-show="visible" class="mask" @click="closeTipMsg">
-          <div class="tip-message has-radius">
-            <p class="title">{{$t('forum.placeholder.headportraitTips')}}</p>
-            <div class="icon icon-close close">
-            </div>
+        <div class="level is-mobile has-text-centered">
+          <div class="level-item">
+            <router-link class="button is-primary has-radius logout" :to="{name: 'editResident'}"><small>退出账号</small></router-link>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+    <div v-show="visible" class="mask" @click="closeTipMsg">
+      <div class="tip-message has-radius">
+        <p class="title">{{$t('forum.placeholder.headportraitTips')}}</p>
+        <div class="icon icon-close close">
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>

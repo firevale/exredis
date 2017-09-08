@@ -6,7 +6,9 @@ defmodule Acs.Search do
   import Ecto.Query, warn: false
 
   alias Acs.Apps.AppOrder
-
+  alias Acs.Cache.CachedUser
+  alias Acs.Cache.CachedForum
+  
   def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
       query: %{
@@ -33,7 +35,7 @@ defmodule Acs.Search do
     }
 
     case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do
-      {:ok, %{hits: %{hits: hits, total: total}}} ->
+      {:ok, %{hits: %{hits: hits, total: _total}}} ->
         ids = Enum.map(hits, &(&1._id))
 
         query = from order in AppOrder,
@@ -99,7 +101,7 @@ defmodule Acs.Search do
 
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
-                    user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
+                    user_db = CachedUser.get(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
                     Process.put("user_#{user_id}", user_db)
                     user_db
                   user_cache ->
@@ -108,7 +110,7 @@ defmodule Acs.Search do
                   
           forum = case Process.get("forum_#{forum_id}") do
                     nil ->
-                      forum_new = RedisForum.find(forum_id)
+                      forum_new = CachedForum.get(forum_id)
                       Process.put("forum_#{forum_id}", forum_new)
                       forum_new 
                     forum_cache ->

@@ -24,14 +24,12 @@ defmodule Acs.CacheMallGoods do
   end
 
   def refresh(goods = %MallGoods{}) do
-    key(goods.id) |> Excache.del
     key(goods.id) |> Exredis.setex(7200, MallGoods.to_redis(goods))
+    key(goods.id) |> Excache.del
     goods
   end
 
   def refresh(goods_id)  do
-    key(goods_id) |> Excache.del
-
     case Repo.get(MallGoods, goods_id) do 
       nil -> nil
       %MallGoods{} = goods -> refresh(goods)

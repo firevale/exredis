@@ -10,8 +10,7 @@ defmodule Acs.Cache.CachedAdminSetting do
   @key_base  "acs.admin_setting"
 
   def get(name)  do
-    key = "#{@key_base}.#{name}"
-    Excache.get!(key, fallback: fn(redis_key) -> 
+    Excache.get!(key(name), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do
         nil ->
           case refresh(name) do 
@@ -25,10 +24,6 @@ defmodule Acs.Cache.CachedAdminSetting do
   end
 
   def refresh(name)  do
-    key = "#{@key_base}.#{name}"
-
-    Excache.del(key)
-
     query = from s in Setting, 
       where: s.name == ^name,
       where: s.active == true
@@ -37,17 +32,17 @@ defmodule Acs.Cache.CachedAdminSetting do
       nil -> nil
 
       %Setting{value: value} = setting ->
-        Exredis.setex(key, 7200, value)
+        Exredis.setex(key(name), 7200, value)
+        Excache.del(key(name))
         value
     end
   end
 
   def del(name) do
-    with key <- "#{@key_base}.#{name}",
-      Exredis.del(key),
-      Excache.del(key),
-      %Setting{} = setting <- Repo.get_by(Setting, name: name),
-      {:ok, _} <- Repo.delete(setting)
+    with Exredis.del(key(name)),
+         Excache.del(key(name)),
+         %Setting{} = setting <- Repo.get_by(Setting, name: name),
+         {:ok, _} <- Repo.delete(setting)
     do
       {:ok, "ok"}
     else
@@ -55,5 +50,7 @@ defmodule Acs.Cache.CachedAdminSetting do
       {:error, %{errors: errors}} -> {:error, %{errors: errors}}
     end
   end
+
+  defp key(name), do: "#{@key_base}.#{name}"
 
 end

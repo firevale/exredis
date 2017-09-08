@@ -56,13 +56,15 @@ services:
     ports:
       - "9527:9527"
     environment:
-      - "ACS_MYSQL_HOSTNAME=acs_mysql"
-      - "ACS_MYSQL_USER=root"
-      - "ACS_MYSQL_PASSWORD=firevale"
-      - "ACS_REDIS_HOSTNAME=acs_redis"
-      - "ACS_ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
+      - "ACS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_dev"
+      - "ACS_STATS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_stats_dev"
+      - "EXSM_DATABASE_URL=ecto://root:firevale@acs_mysql/exsm"
+      - "REDIS_HOSTNAME=acs_redis"
+      - "REDIS_PORT=6379"
+      - "REDIS_DATABASE=0"
+      - "ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
       - "ACS_HOST=${USERNAME}.firevale.com"
-      - "ACS_NODE_NAME=${USERNAME}.firevale.com"
+      - "NODE=${USERNAME}"
     volumes:
       - ${PWD}:/code
     depends_on:

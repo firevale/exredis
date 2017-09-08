@@ -18,15 +18,15 @@ defmodule Exutils.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :pbkdf2, :comeonin]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:pbkdf2, "~> 2.0"}, # should modify rebar.config
-      {:comeonin, "~> 3.1"},
+      {:pbkdf2, "~> 2.0"}, 
+      {:comeonin, "~> 4.0"},
       {:poison, "~> 3.1"},
       {:httpotion, "~> 3.0"},
     ]

@@ -20,10 +20,10 @@ defmodule Acs.Cache.CachedAppWcpConfig do
   end
 
   def refresh(app_id) when is_bitstring(app_id) do
-    Excache.del(key(app_id))
     case Repo.get_by(AppWcpConfig, app_id: app_id) do 
       %AppWcpConfig{} = wcp_config ->
         Exredis.set(key(app_id), AppWcpConfig.to_redis(wcp_config))
+        Excache.del(key(app_id))
         wcp_config
       _ -> nil
     end

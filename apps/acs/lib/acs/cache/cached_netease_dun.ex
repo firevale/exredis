@@ -16,8 +16,8 @@ defmodule Acs.Cache.CachedNeteaseDun do
   end
 
   def refresh(name)  do
-    Exredis.del(name)
     key(name) |> Exredis.setex(3600 * 24 * 15 , name)
+    Exredis.del(name)
   end
 
   defp key(name), do: "#{@key_base}.#{name}" 

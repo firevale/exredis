@@ -6,16 +6,6 @@ defmodule Acs.Admin do
   import Ecto.Query, warn: false
   alias Acs.Repo
 
-  alias Acs.Admin.User
-
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
+  alias Acs.Admin.AdminUser
 
 end

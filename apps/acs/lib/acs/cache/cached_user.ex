@@ -117,8 +117,9 @@ defmodule Acs.Cache.CachedUser do
   end
 
   def refresh(user = %User{}) do 
-    Excache.del(key(user.id))
     Exredis.set(key(user.id), User.to_redis(user))
+    Excache.del(key(user.id))
+    user
   end
 
   def del_device_index(device_id) do 

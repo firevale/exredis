@@ -1,22 +1,20 @@
 use Mix.Config
 
 config :acs_web, AcsWeb.Endpoint,
-  http: [port: 4000, compress: true],
+  http: [:inet6, port: 4000, compress: true],
   ssl: false,
   debug_errors: false,
   code_reloader: false,
   check_origin: ["//*.firevale.com"],
   cache_static_lookup: true,
   cache_static_manifest: "priv/static/cache_manifest.json",
-  secret_key_base: "XDHtULB0Xe5LZKNgIG4Qs+gLJbpoJktXhVgcNzFneTjQ2jiNTWpdThBvmadmd7GX"
+  secret_key_base: "XDHtULB0Xe5LZKNgIG4Qs+gLJbpoJktXhVgcNzFneTjQ2jiNTWpdThBvmadmd7GX",
+  pubsub: [adapter: Phoenix.PubSub.Redis, name: AcsWeb.PubSub]
+  # redis pubsub config use exredis host/port, node name from env "NODE"
+  # see AcsWeb.Endpoint.init() function
 
 config :phoenix, :serve_endpoints, true
 
-# redis pubsub config use exredis host/port, node name from env "NODE"
-# see AcsWeb.Endpoint.init() function
-config :acs, AcsWeb.Endpoint,
-  pubsub: [adapter: Phoenix.PubSub.Redis,
-           name: AcsWeb.PubSub]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :exsyslog_info,

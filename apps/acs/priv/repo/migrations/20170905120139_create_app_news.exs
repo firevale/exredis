@@ -12,7 +12,7 @@ defmodule Acs.Repo.Migrations.CreateAppNews do
       add :active, :boolean, default: false
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

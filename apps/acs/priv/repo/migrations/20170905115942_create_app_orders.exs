@@ -29,7 +29,7 @@ defmodule Acs.Repo.Migrations.CreateAppOrders do
       add :app_user_id, :integer
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
-      add :user_id, references(:users, type: :integer, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
       add :goods_id, references(:app_goods, type: :string, on_delete: :nothing), size: 100
 
       timestamps()

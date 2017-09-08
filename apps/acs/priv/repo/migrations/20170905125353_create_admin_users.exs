@@ -8,7 +8,7 @@ defmodule Acs.Repo.Migrations.CreateAdminUsers do
       add :admin_level, :integer, default: 0
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 100
-      add :user_id, references(:users, type: :integer, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

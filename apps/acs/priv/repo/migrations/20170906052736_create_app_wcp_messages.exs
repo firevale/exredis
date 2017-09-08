@@ -4,8 +4,8 @@ defmodule Acs.Repo.Migrations.CreateAppWcpMessages do
   def change do
     create table(:app_wcp_messages) do
 
-      add :from, :string
-      add :to, :string
+      add :from, :string, size: 100
+      add :to, :string, size: 100
       add :msg_type, :string
       add :content, :binary
       add :create_time, :integer

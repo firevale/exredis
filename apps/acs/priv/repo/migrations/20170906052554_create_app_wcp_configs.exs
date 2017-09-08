@@ -3,13 +3,13 @@ defmodule Acs.Repo.Migrations.CreateAppWcpConfig do
 
   def change do
     create table(:app_wcp_configs) do
-      add :verify_file, :string    # 验证文件
-      add :wcp_app_id, :string    # 开发者ID
-      add :wcp_app_key, :string   # 开发者密码
-      add :token, :string         # 令牌
-      add :aes_key, :string       # 消息加解密密钥
+      add :verify_file, :string              # 验证文件
+      add :wcp_app_id, :string, size: 50     # 开发者ID
+      add :wcp_app_key, :string, size: 100   # 开发者密码
+      add :token, :string, size: 50          # 令牌
+      add :aes_key, :string, size: 100       # 消息加解密密钥
   
-      add :menu, :map             # 自定义菜单
+      add :menu, :map                     # 自定义菜单
   
       add :subscribed_response, :binary   # 订阅回复消息
       add :scan_response, :binary         # 扫码回复消息

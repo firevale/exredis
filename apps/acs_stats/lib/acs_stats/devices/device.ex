@@ -14,6 +14,8 @@ defmodule AcsStats.Devices.Device do
     timestamps()
   end
 
+  use Utils.Redisable
+
   @doc false
   def changeset(%Device{} = device, attrs) do
     device

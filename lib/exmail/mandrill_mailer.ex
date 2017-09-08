@@ -1,5 +1,5 @@
 defmodule Exmail.MandrillMailer do
-  use    Bamboo.Mailer, otp_app: :acs
+  use    Bamboo.Mailer, otp_app: :exmail
   import Bamboo.Email
   import Exmail.Gettext
   alias  Exmail.Emails

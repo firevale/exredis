@@ -1,4 +1,4 @@
-defmodule Acs.Cache.CachedDevice do
+defmodule AcsStats.Cache.CachedDevice do
   require Exredis
   require Excache
 

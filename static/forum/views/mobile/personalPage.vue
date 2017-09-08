@@ -24,8 +24,114 @@
         </p>
       </div>
     </div>
-    <slider-nav class="flex-fixed-size" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
-    <div class="content flex-take-rest" style="position: relative">
+    <slider-nav class="flex-fixed-size has-divider" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <div class="card has-divider">
+      <div class="card-content">
+        <div class="box no-radius is-marginless	is-paddingless">
+          <v-touch class="media article">
+            <div class="media-content">
+              <p>
+                <strong>[综合讨论]</strong> 第一个原因自然是己&nbsp;<i class="icon icon-new-reply"></i>
+                <br>
+                <v-touch class="level is-mobile is-marginless is-paddingless">
+                  <div class="level-left">
+                    <p class="subtitle article-date">
+                      <span>2017-06-28 17:56</span>
+                      <span> | </span>
+                      <span>11111/11111</span>
+                    </p>
+                  </div>
+                  <figure class="level-right">
+                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
+                  </figure>
+                </v-touch>
+              </p>
+            </div>
+          </v-touch>
+          <v-touch class="media article">
+            <div class="media-content">
+              <p>
+                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
+                <br>
+                <v-touch class="level is-mobile is-marginless is-paddingless">
+                  <div class="level-left">
+                    <p class="subtitle article-date">
+                      <span>2017-06-28 17:56</span>
+                      <span> | </span>
+                      <span>11111/11111</span>
+                    </p>
+                  </div>
+                  <figure class="level-right">
+                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
+                  </figure>
+                </v-touch>
+              </p>
+            </div>
+          </v-touch>
+          <v-touch class="media article">
+            <div class="media-content">
+              <p>
+                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
+                <br>
+                <v-touch class="level is-mobile is-marginless is-paddingless">
+                  <div class="level-left">
+                    <p class="subtitle article-date">
+                      <span>2017-06-28 17:56</span>
+                      <span> | </span>
+                      <span>11111/11111</span>
+                    </p>
+                  </div>
+                  <figure class="level-right">
+                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
+                  </figure>
+                </v-touch>
+              </p>
+            </div>
+          </v-touch>
+          <v-touch class="media article">
+            <div class="media-content">
+              <p>
+                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
+                <br>
+                <v-touch class="level is-mobile is-marginless is-paddingless">
+                  <div class="level-left">
+                    <p class="subtitle article-date">
+                      <span>2017-06-28 17:56</span>
+                      <span> | </span>
+                      <span>11111/11111</span>
+                    </p>
+                  </div>
+                  <figure class="level-right">
+                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
+                  </figure>
+                </v-touch>
+              </p>
+            </div>
+          </v-touch>
+          <v-touch class="media article">
+            <div class="media-content">
+              <p>
+                <strong>[综合讨论]</strong> 第一个原因自然是：己方辅助是牛头，对方adc是寒冰，对方的腿短和己&nbsp;<i class="icon icon-new-reply"></i>
+                <br>
+                <v-touch class="level is-mobile is-marginless is-paddingless">
+                  <div class="level-left">
+                    <p class="subtitle article-date">
+                      <span>2017-06-28 17:56</span>
+                      <span> | </span>
+                      <span>11111/11111</span>
+                    </p>
+                  </div>
+                  <figure class="level-right">
+                    <span><i class="icon icon-remove" /> <small><strong>删除</strong></small></span>
+                  </figure>
+                </v-touch>
+              </p>
+            </div>
+          </v-touch>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="content flex-take-rest" style="position: relative">
       <scroller :on-load-more="loadmore" ref="scroller">
         <my-post-list-item v-if="type == 'myPosts'" v-for="(item, index) in postList" :key="item.id" :item-data="item"
           @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
@@ -35,7 +141,7 @@
         <my-post-list-item v-if="type == 'myBan' && isManager" v-for="(item, index) in banList" :key="item.id"
           :item-data="item" @item-deleted="onItemDelete" :item-index="index"></my-post-list-item>
       </scroller>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>

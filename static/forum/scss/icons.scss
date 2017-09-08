@@ -53,6 +53,11 @@
     height: virtual-m-rem(53);
     background-image: url("~assets/themes/jqxs_mobile/Group_20.png");
   }
+  &.icon-remove {
+    width: virtual-m-rem(29);
+    height: virtual-m-rem(38);
+    background-image: url("~assets/themes/jqxs_mobile/Group_19.png");
+  }
   &.icon-head-portrait {
     width: virtual-m-rem(201);
     height: virtual-m-rem(201);
@@ -62,5 +67,10 @@
     width: virtual-m-rem(38);
     height: virtual-m-rem(38);
     background-image: url("~assets/themes/jqxs_mobile/Group_25.png");
+  }
+  &.icon-new-reply {
+    width: virtual-m-rem(130);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_18.png");
   }
 }

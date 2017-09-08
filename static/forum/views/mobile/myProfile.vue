@@ -26,7 +26,7 @@
         <div class="content">
           <div class="level is-mobile has-bottom-line">
             <div class="level-left">
-              <span class="title">{{ $t('forum.account.mobile') }}{{ mobile }}</span>
+              <span class="title">{{ $t('forum.account.mobile') }}：{{ mobile }}</span>
             </div>
             <div class="level-right">
               <router-link v-if="userInfo.mobile" class="button is-primary has-radius is-change" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.change') }}</small></router-link>
@@ -35,7 +35,7 @@
           </div>
           <div class="level is-mobile has-bottom-line">
             <div class="level-left">
-              <span class="title">{{ $t('forum.account.email') }}{{ email }}</span>
+              <span class="title">{{ $t('forum.account.email') }}：{{ email }}</span>
             </div>
             <div class="level-right">
               <router-link v-if="userInfo.email" class="button is-primary has-radius is-change" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.change') }}</small></router-link>
@@ -44,7 +44,7 @@
           </div>
           <div class="level is-mobile has-bottom-line" v-if="isMobileAccountSupported">
             <div class="level-left">
-              <span class="title">{{ $t('forum.account.residentInfo') }}{{ userInfo.resident_id? $t('forum.account.authenticated')
+              <span class="title">{{ $t('forum.account.residentInfo') }}：{{ userInfo.resident_id? $t('forum.account.authenticated')
                 : $t('forum.account.notAuthenticated') }}
               </span>
             </div>

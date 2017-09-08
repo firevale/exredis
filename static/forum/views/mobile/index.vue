@@ -38,12 +38,12 @@
     <div class="forum-section card is-shadowless has-divider">
       <header class="card-header">
         <p class="card-header-title">
-            | 论坛版块
+          | 论坛版块
         </p>
       </header>
       <div class="card-content">
         <div class="forum-info">
-          <div class="forum-item">
+          <router-link class="forum-item" :to="{name: 'list'}" tag="div">
             <figure>
               <img src="~assets/themes/jqxs_mobile/1_16.png">
             </figure>
@@ -51,8 +51,8 @@
               <p class="title">综合讨论 </p>
               <p class="subtitle"> 最新公告，更新维护</p>
             </div>
-          </div>
-          <div class="forum-item">
+          </router-link>
+          <router-link class="forum-item" :to="{name: 'list'}" tag="div">
             <figure>
               <img src="~assets/themes/jqxs_mobile/1_16.png">
             </figure>
@@ -60,8 +60,8 @@
               <p class="title">综合讨论 </p>
               <p class="subtitle"> 最新公告，更新维护</p>
             </div>
-          </div>
-          <div class="forum-item">
+          </router-link>
+          <router-link class="forum-item" :to="{name: 'list'}" tag="div">
             <figure>
               <img src="~assets/themes/jqxs_mobile/1_16.png">
             </figure>
@@ -69,8 +69,8 @@
               <p class="title">综合讨论 </p>
               <p class="subtitle"> 最新公告，更新维护</p>
             </div>
-          </div>
-          <div class="forum-item">
+          </router-link>
+          <router-link class="forum-item" :to="{name: 'list'}" tag="div">
             <figure>
               <img src="~assets/themes/jqxs_mobile/1_16.png">
             </figure>
@@ -78,7 +78,7 @@
               <p class="title">综合讨论 </p>
               <p class="subtitle"> 最新公告，更新维护</p>
             </div>
-          </div>
+          </router-link>
         </div>
         <div>
           <a class="button load-more">查看更多</a>

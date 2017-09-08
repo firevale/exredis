@@ -1,11 +1,20 @@
 <template>
-  <div style="position: relative">
+  <div class="detail-page">
+    <div class="card author-info has-divider">
+      <div class="card-content ">
+        <div class="comp-author-info">
+          <figure>
+            <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+          </figure>
+          <p class="item-left subtitle">
+            firevale-城岸
+            <br/> LV.1 烟雨游友
+          </p>
+          <p class="item-right">回复/查看 110/1000 </p>
+        </div>
+      </div>
+    </div>
     <scroller ref="scroller" :on-load-more="loadmore">
-      <post-detail-view v-if="postDetail" :post-data="postDetail" :on-showauthor-only="onShowAuthorOnly">
-      </post-detail-view>
-      <post-comment-view v-for="(comment, index) in commentList" :key="comment.id" :comment-data="comment"
-        :item-index="index" :nth="index + 1" @on-item-deleted="onItemDelete">
-      </post-comment-view>
     </scroller>
   </div>
 </template>

@@ -7,6 +7,7 @@ defmodule Acs.Search do
 
   alias Acs.Apps.AppOrder
   alias Acs.Accounts
+  alias Acs.Forums
 
   def search_app_order(app_id, keyword, page, records_per_page) do 
     query = %{
@@ -98,29 +99,14 @@ defmodule Acs.Search do
             section_id: section_id
           }
         } = hit) ->
-
-          user = Accounts.get_user(String.to_integer("#{user_id}")) 
-                  
-          forum = case Process.get("forum_#{forum_id}") do
-            nil ->
-              forum_new = RedisForum.find(forum_id)
-              Process.put("forum_#{forum_id}", forum_new)
-              forum_new 
-            forum_cache ->
-              forum_cache
-          end
-
-          section = if forum && forum.sections && section_id  do
-                      forum.sections[section_id |> to_string |> String.to_atom]
-                    end
           %{
             id: hit._id,
             forum_id: forum_id,
-            forum:  forum,
+            forum: Forums.get_forum(forum_id),
             user_id: user_id,
-            user: user,
+            user: Accounts.get_user(String.to_integer("#{user_id}")) ,
             section_id: section_id,
-            section: section,
+            section: Forums.get_forum_section(section_id),
             title: hit._source.title,
             content: hit._source.content,
             is_top: hit._source.is_top,

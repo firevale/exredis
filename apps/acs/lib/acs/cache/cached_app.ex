@@ -3,7 +3,6 @@ defmodule Acs.Cache.CachedApp do
   require Excache
 
   alias   Acs.Repo
-  import  Ecto.Query
 
   alias   Acs.Apps.App
 
@@ -29,11 +28,10 @@ defmodule Acs.Cache.CachedApp do
   def refresh(app_id) when is_bitstring(app_id) do
     redis_key = "#{@key_base}.#{app_id}"
 
-    key(app_id) |> Excache.del
-
     case Repo.get(App, app_id) do 
       %App{} = app ->
         Exredis.set(key(app_id), App.to_redis(app))
+        key(app_id) |> Excache.del
         app
       _ -> nil
     end

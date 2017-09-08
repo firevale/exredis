@@ -22,8 +22,6 @@ defmodule Acs.Cache.CachedAppWcpMessageRule do
   end
 
   def refresh(app_id) when is_bitstring(app_id) do
-    Excache.del(key(app_id))
-
     query = from r in AppWcpMessageRule,
             select: r,
             where: r.app_id == ^app_id
@@ -36,10 +34,12 @@ defmodule Acs.Cache.CachedAppWcpMessageRule do
           rule.keywords 
             |> String.split([",", " ", "，"], trim: true)
             |> Enum.map(fn(kw) ->
-              {kw, rule.response}
-            end)
+                 {kw, rule.response}
+               end)
         end) |> List.flatten |> Enum.into(%{})
+
         Exredis.set(key(app_id), rules |> :erlang.term_to_binary |> Base.encode64)
+        Excache.del(key(app_id))
         rules
 
       _ -> []

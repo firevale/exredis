@@ -43,6 +43,8 @@ defmodule AcsStats.Mixfile do
       {:exredis, in_umbrella: true},
       {:excache, in_umbrella: true},
       {:exes,    in_umbrella: true},
+      {:extcp,   in_umbrella: true},
+      {:acs,     in_umbrella: true},
     ]
   end
 

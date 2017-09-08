@@ -43,7 +43,6 @@ defmodule Acs.Mixfile do
       {:exredis,   in_umbrella: true},
       {:excache,   in_umbrella: true},
       {:exes,      in_umbrella: true},
-      {:acs_stats, in_umbrella: true},
     ]
   end
 

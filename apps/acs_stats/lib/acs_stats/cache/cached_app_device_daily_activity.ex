@@ -1,4 +1,4 @@
-defmodule Acs.Cache.CachedAppDeviceDailyActivity do
+defmodule AcsStats.Cache.CachedAppDeviceDailyActivity do
   require Exredis
   require Excache
 

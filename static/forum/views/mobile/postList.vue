@@ -3,15 +3,15 @@
     <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
     <div class="card top-article has-divider">
       <div class="card-content">
-        <v-touch class="article">
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
-        </v-touch>
-        <v-touch class="article">
+        </router-link>
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
-        </v-touch>
-        <v-touch class="article">
-          <p class=" title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
-        </v-touch>
+        </router-link>
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+          <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
+        </router-link>
         <div class="">
           <a class="button load-more">查看更多</a>
         </div>
@@ -24,15 +24,58 @@
         </p>
       </header>
       <div class="card-content">
-        <router-link class="article" :to="{name: 'list'}" tag="div">
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
-          <div>
+          <div class="thumbs">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">
           </div>
-          <div class="level is-mobile">
-            <p class="level-item"></p>
+          <div class="article-footer comp-author-info">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+            </figure>
+            <p class="item-left subtitle">
+              firevale-城岸
+              <br/> 2017-06-28 17:56
+            </p>
+            <p class="item-right  has-text-bottom subtitle">回复/查看 110/1000 </p>
+          </div>
+        </router-link>
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+          如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
+          <div class="thumbs">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+          </div>
+          <div class="article-footer comp-author-info">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+            </figure>
+            <p class="item-left subtitle">
+              firevale-城岸
+              <br/> 2017-06-28 17:56
+            </p>
+            <p class="item-right  has-text-bottom subtitle">回复/查看 110/1000 </p>
+          </div>
+        </router-link>
+        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+          如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
+          <div class="thumbs">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+            <img class="thumb" src="https://placehold.it/380x214?text=380x214">
+          </div>
+          <div class="article-footer comp-author-info">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+            </figure>
+            <p class="item-left subtitle">
+              firevale-城岸
+              <br/> 2017-06-28 17:56
+            </p>
+            <p class="item-right  has-text-bottom subtitle">回复/查看 110/1000 </p>
           </div>
         </router-link>
       </div>

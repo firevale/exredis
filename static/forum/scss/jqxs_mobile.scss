@@ -43,6 +43,31 @@ $fa-font-path: '~font-awesome/fonts/';
   color: black;
 }
 
+.comp-author-info {
+  position: relative;
+  overflow: hidden;
+  figure,
+  img {
+    width: virtual-m-rem(80);
+    height: virtual-m-rem(80);
+  }
+  .item-left {
+    position: absolute;
+    left: virtual-m-rem(100);
+    bottom: 0;
+  }
+  .item-right {
+    position: absolute;
+    right: 0;
+    &.has-text-top {
+      top: 0;
+    }
+    &.has-text-bottom {
+      bottom: 0;
+    }
+  }
+}
+
 .index-page {
   .index-swiper {
     height: virtual-m-rem(600);
@@ -86,10 +111,6 @@ $fa-font-path: '~font-awesome/fonts/';
         width: virtual-m-rem(312);
       }
     }
-  } // 通用部分
-  .small-text {
-    font-size: virtual-m-rem(36);
-    font-weight: 200;
   }
 }
 
@@ -99,13 +120,27 @@ $fa-font-path: '~font-awesome/fonts/';
     .icon {
       margin-right: virtual-m-rem(20);
     }
-    img.thumb {
-      max-height: virtual-m-rem(214);
-      max-width: virtual-m-rem(380);
+    .thumbs {
+      img.thumb {
+        max-height: virtual-m-rem(214);
+        max-width: virtual-m-rem(380);
+      }
+      &+.article-footer {
+        margin-top: .5rem;
+      }
     }
     &:not(:last-child) {
       border-bottom: 1px solid $grey;
     }
   }
-  .top-article {}
+}
+
+.detail-page {
+  position: relative;
+  .author-info {}
+  .scroller {
+    position: absolute;
+    top: virtual-m-rem(100);
+    bottom: 0;
+  }
 }

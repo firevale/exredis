@@ -101,7 +101,6 @@ export default {
 .slider-nav {
   .nav {
     // $item-width: 13.2rem;
-    margin-bottom: .5rem;
     height: virtual-m-rem(148);
     .nav-center {
       position: relative;

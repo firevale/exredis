@@ -15,20 +15,20 @@
         <div class="field" v-show="errorHint">
           <div class="control">
             <span class="icon icon-error-tip"></span>
-            <span>&nbsp;{{ errorHint }}</span>
+            <strong>&nbsp;{{ errorHint }}</strong>
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <p class="subtitle"> {{ $t('forum.placeholder.residentIdTips') }}</p>
+            <p class="title"> {{ $t('forum.placeholder.residentIdTips') }}</p>
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
+            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth has-radius" :disabled="$v.$invalid"
               :class="{'is-disabled': $v.$invalid,
     'is-loading': processing}">
-              {{ $t('forum.account.confirm') }}
+              <span class="title is-white">{{ $t('forum.account.confirm') }}</span>
             </v-touch>
           </div>
         </div>

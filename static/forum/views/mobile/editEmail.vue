@@ -4,8 +4,8 @@
       <div class="fields">
         <div v-if="userInfo.email" class="field">
           <div class="control">
-            {{ $t('forum.account.hint.currentBoundEmail') }}
-            <span>{{initEmail}}</span>
+            <span class="title">{{ $t('forum.account.hint.currentBoundEmail') }}</span>
+            <strong>{{initEmail}}</strong>
           </div>
         </div>
         <div class="field">
@@ -14,28 +14,29 @@
           </div>
         </div>
         <div class="field has-addons">
-          <div class="control">
-            <input class="input" type="text" v-model.trim="verifyCode" :placeholder="$t('forum.placeholder.inputVerifyCode')">
+          <div class="control is-expanded">
+            <input class="input is-fullwidth" type="text" v-model.trim="verifyCode" :placeholder="$t('forum.placeholder.inputVerifyCode')">
           </div>
           <div class="control">
-            <v-touch tag="button" type="button" class="button is-primary verfy" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
+            <v-touch tag="button" type="button" class="button is-primary" :class="{'is-disabled': $v.email.$invalid || cooldownCounter > 0,
                     'is-loading': sendingVerifyCode }" @tap="sendEmailVerifyCode" :disabled="$v.email.$invalid || cooldownCounter > 0">
-              {{ btnFetchVerifyCodeTitle }}
+              <small>{{ btnFetchVerifyCodeTitle }}</small>
             </v-touch>
           </div>
         </div>
         <div class="field" v-show="errorHint">
           <div class="control">
             <span class="icon icon-error-tip"></span>
-            <span>{{ errorHint }}</span>
+            <strong>{{ errorHint }}</strong>
           </div>
         </div>
+        <p class="title">&nbsp;</p>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth" :disabled="$v.$invalid"
+            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth has-radius" :disabled="$v.$invalid"
               :class="{'is-disabled': $v.$invalid,
                 'is-loading': processing}">
-              {{ $t('forum.account.bind') }}
+              <span class="title is-white">{{ $t('forum.account.bind') }}</span>
             </v-touch>
           </div>
         </div>
@@ -143,7 +144,9 @@ export default {
     },
     sendEmailVerifyCode: async function() {
       try {
-        if (!utils.isValidEmail(this.email)) {
+        if (this.email == "") {
+          return;
+        } else if (!utils.isValidEmail(this.email)) {
           this.errorHint = this.$t('error.validation.invalidEmailAddress')
         } else {
           this.sendingVerifyCode = true

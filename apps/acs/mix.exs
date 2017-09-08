@@ -39,10 +39,11 @@ defmodule Acs.Mixfile do
       {:mariaex, ">= 0.0.0"},
       {:ecto, "~> 2.1"},
       {:timex, "~> 3.1"},
-      {:exutils, in_umbrella: true},
-      {:exredis, in_umbrella: true},
-      {:excache, in_umbrella: true},
-      {:exes,    in_umbrella: true},
+      {:exutils,   in_umbrella: true},
+      {:exredis,   in_umbrella: true},
+      {:excache,   in_umbrella: true},
+      {:exes,      in_umbrella: true},
+      {:acs_stats, in_umbrella: true},
     ]
   end
 

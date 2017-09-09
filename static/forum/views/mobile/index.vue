@@ -3,7 +3,7 @@
     <div class="index-swiper">
       <img src="https://placehold.it/375x182?text=1242x600">
     </div>
-    <div class="card index-nav has-divider">
+    <div class="card index-nav ">
       <div class="card-content level is-mobile">
         <router-link class="level-item" :to="{name: 'list'}">
           <figure class="has-text-centered">
@@ -39,7 +39,7 @@
         </router-link>
       </div>
     </div>
-    <div class="card forum-section has-divider">
+    <div class="card forum-section ">
       <header class="card-header">
         <p class="card-header-title">
           | 论坛版块
@@ -89,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class="card article-section has-divider">
+    <div class="card article-section ">
       <header class="card-header">
         <p class="card-header-title">
           | 热门推荐

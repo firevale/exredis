@@ -135,10 +135,15 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .detail-page {
   position: relative;
-  .author-info {}
   .scroller {
     position: absolute;
     top: 0;
     bottom: 0;
+  }
+  .comment {
+    &:not(:last-child) {
+      border-bottom: 1px solid $grey;
+      margin-bottom: .5rem;
+    }
   }
 }

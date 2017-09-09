@@ -179,3 +179,15 @@ only screen and (min-resolution: 1.25dppx) {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.is-relative {
+  position: relative;
+  .is-left {
+    position: absolute;
+    left: 0;
+  }
+  .is-right {
+    position: absolute;
+    right: 0;
+  }
+}

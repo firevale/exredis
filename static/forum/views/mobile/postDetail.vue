@@ -1,7 +1,7 @@
 <template>
   <div class="detail-page">
     <scroller class="flex-fixed-rest" ref="scroller" :on-load-more="loadmore">
-      <div class="card author-info has-divider">
+      <div class="card author-info">
         <div class="card-content ">
           <div class="comp-author-info">
             <figure>
@@ -11,7 +11,109 @@
               firevale-城岸
               <br/> LV.1 烟雨游友
             </p>
-            <p class="item-right">回复/查看 110/1000 </p>
+            <div class="item-right">
+              <a class="button is-info is-small">楼主</a>
+              <a class="button is-primary is-small">回贴</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content ">
+          <p class="title">
+            <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+          </p>
+          <p class="subtitle is-relative">
+            <span>2017-09-07 14:00</span>
+            <span class="is-right">查看数/回复数 100/20</span>
+          </p>
+          <div class="content is-small">
+            最『宏大』的一个陷阱应该是，建立了把消费水平与个人成功、自我认同、和人生幸福划等号的价值体系。因为中国教育体系中对成功、幸福、梦想等关键话题的失语，这些关键词的定义权便被拱手送给了网红、微商、和购物导流网站。你没有梦想的时候，旅游公众号告
+          </div>
+          <div class="is-relative">
+            <a class="button is-link">举报</a>
+            <a class="button is-link is-right">
+              <span class="icon is-small">
+                <i class="fa fa-heart-o"></i>
+              </span>
+              <span>收藏</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card comments">
+        <div class="card-content">
+          <div class="comment">
+            <div class="comp-author-info">
+              <figure>
+                <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+              </figure>
+              <p class="item-left subtitle">
+                firevale-城岸
+                <span class="tag is-info subtitle">官方版主</span>
+                <br/> LV.1 烟雨游友
+              </p>
+              <div class="item-right subtitle has-text-right">
+                沙发
+                <br/> 2017-09-07 14:00
+              </div>
+            </div>
+            <div class="content is-small is-relative">
+              <blockquote>
+                <span class="subtitle">firevale发表于 2017-09-03 14:00
+                  <br/> 谢谢楼主分享</span>
+              </blockquote>
+              谢谢分享
+              <a class="button is-link is-right">举报</a>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="comp-author-info">
+              <figure>
+                <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+              </figure>
+              <p class="item-left subtitle">
+                firevale-城岸
+                <span class="tag is-success subtitle">官方版主</span>
+                <br/> LV.1 烟雨游友
+              </p>
+              <div class="item-right subtitle has-text-right">
+                沙发
+                <br/> 2017-09-07 14:00
+              </div>
+            </div>
+            <div class="content is-small is-relative">
+              <blockquote>
+                <span class="subtitle">firevale发表于 2017-09-03 14:00
+                  <br/> 谢谢楼主分享</span>
+              </blockquote>
+              谢谢分享
+              <a class="button is-link is-right">举报</a>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="comp-author-info">
+              <figure>
+                <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+              </figure>
+              <p class="item-left subtitle">
+                firevale-城岸
+                <span class="tag is-primary subtitle">官方版主</span>
+                <br/> LV.1 烟雨游友
+              </p>
+              <div class="item-right subtitle has-text-right">
+                沙发
+                <br/> 2017-09-07 14:00
+              </div>
+            </div>
+            <div class="content is-small is-relative">
+              <blockquote>
+                <span class="subtitle">firevale发表于 2017-09-03 14:00
+                  <br/> 谢谢楼主分享</span>
+              </blockquote>
+              谢谢分享
+              <a class="button is-link is-right">举报</a>
+            </div>
           </div>
         </div>
       </div>

@@ -1,9 +1,7 @@
 <template>
   <div class="list-page">
     <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
-    <div class="flex-fixed-size test">BBB</div>
-    
-    <div class="card top-article has-divider">
+    <div class="card top-article">
       <div class="card-content">
         <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
@@ -19,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="card has-divider">
+    <div class="card ">
       <header class="card-header">
         <p class="card-header-title">
           全部 | 热门 | 精品

@@ -1,17 +1,15 @@
 <template>
   <div class="root-container">
-    <nav class="flex-fixed-size header level is-mobile is-marginless">
-      <div class="level-item">
-      </div>
-      <div class="level-item">
+    <nav class="flex-fixed-size header">
+      <div class="forum-title">
         <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
       </div>
-      <div class="level-item is-menu menu-right">
+      <div class="menus">
         <router-link class="menu icon icon-user" :to="{name: 'myProfile'}"></router-link>
         <router-link class="menu icon icon-search" :to="{name: 'search'}"></router-link>
       </div>
     </nav>
-    <transition :name="transitionName">
+    <transition>
       <router-view class="content-container flex-take-rest"> </router-view>
     </transition>
   </div>

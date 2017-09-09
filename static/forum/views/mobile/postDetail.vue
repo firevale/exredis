@@ -1,20 +1,20 @@
 <template>
   <div class="detail-page">
-    <div class="flex-fixed-size card author-info has-divider">
-      <div class="card-content ">
-        <div class="comp-author-info">
-          <figure>
-            <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
-          </figure>
-          <p class="item-left subtitle">
-            firevale-城岸
-            <br/> LV.1 烟雨游友
-          </p>
-          <p class="item-right">回复/查看 110/1000 </p>
+    <scroller class="flex-fixed-rest" ref="scroller" :on-load-more="loadmore">
+      <div class="card author-info has-divider">
+        <div class="card-content ">
+          <div class="comp-author-info">
+            <figure>
+              <img src="~assets/themes/jqxs_mobile/2-5_03_03.png">
+            </figure>
+            <p class="item-left subtitle">
+              firevale-城岸
+              <br/> LV.1 烟雨游友
+            </p>
+            <p class="item-right">回复/查看 110/1000 </p>
+          </div>
         </div>
       </div>
-    </div>
-    <scroller class="flex-fixed-rest" ref="scroller" :on-load-more="loadmore">
     </scroller>
   </div>
 </template>

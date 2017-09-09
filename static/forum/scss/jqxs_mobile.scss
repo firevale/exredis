@@ -7,30 +7,19 @@ $fa-font-path: '~font-awesome/fonts/';
 @import "./icons";
 @import 'common/scss/animation.scss';
 @import "./jqxs_m_p";
-// .level:not(:last-child) {
-//   margin: 0;
-//   &.has-divider {
-//     margin-bottom: virtual-m-rem(40);
-//   }
-// }
-.header {
+
+
+nav.header {
   height: virtual-m-rem(130);
-  background: $black;
   padding: 0 virtual-m-rem(50);
-  .level-item {
-    width: 33%;
+  background: $black;
+  display: flex;
+  .forum-title {
+    flex: 1;
   }
-  .is-menu {
-    display: flex;
-    &.menu-left {
-      justify-content: flex-start;
-    }
-    &.menu-right {
-      justify-content: flex-end;
-    }
-    .menu:not(:last-child) {
-      margin-right: virtual-m-rem(60);
-    }
+  .menus {
+    height: virtual-m-rem(60);
+    flex: 0 0 virtual-m-rem(200);
   }
 }
 
@@ -141,7 +130,7 @@ $fa-font-path: '~font-awesome/fonts/';
   .author-info {}
   .scroller {
     position: absolute;
-    top: virtual-m-rem(100);
+    top: 0;
     bottom: 0;
   }
 }

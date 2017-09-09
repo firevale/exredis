@@ -1,12 +1,13 @@
 <template>
   <div class="root-container">
-    <nav class="flex-fixed-size header">
-      <div class="forum-title">
+    <nav class="header is-flex flex-fixed-size">
+      <div class="header-item flex-start"></div>
+      <div class="header-item flex-center">
         <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
       </div>
-      <div class="menus">
-        <router-link class="menu icon icon-user" :to="{name: 'myProfile'}"></router-link>
-        <router-link class="menu icon icon-search" :to="{name: 'search'}"></router-link>
+      <div class="header-item flex-right">
+        <router-link class="icon icon-user" :to="{name: 'myProfile'}"></router-link>
+        <router-link class="icon icon-search" :to="{name: 'search'}"></router-link>
       </div>
     </nav>
     <transition>

@@ -1,6 +1,8 @@
 <template>
   <div class="list-page">
     <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
+    <div class="flex-fixed-size test">BBB</div>
+    
     <div class="card top-article has-divider">
       <div class="card-content">
         <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">

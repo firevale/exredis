@@ -73,6 +73,18 @@ input.input:focus {
   flex-basis: auto;
 }
 
+.flex-left {
+  justify-content: flex-start;
+}
+
+.flex-center {
+  justify-content: center;
+}
+
+.flex-right {
+  justify-content: flex-end;
+}
+
 .has-divider {
   margin-bottom: virtual-m-rem(40);
 }

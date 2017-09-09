@@ -7,20 +7,25 @@ $fa-font-path: '~font-awesome/fonts/';
 @import "./icons";
 @import 'common/scss/animation.scss';
 @import "./jqxs_m_p";
-
-
-nav.header {
+.header {
   height: virtual-m-rem(130);
   padding: 0 virtual-m-rem(50);
   background: $black;
-  display: flex;
-  .forum-title {
-    flex: 1;
+  flex-shrink: 0;
+  align-items: center;
+  .header-item {
+    display: flex;
+    flex: 0 0 33.333%;
+    .icon:not(:last-child) {
+      margin-right: virtual-m-rem(33);
+    }
   }
-  .menus {
-    height: virtual-m-rem(60);
-    flex: 0 0 virtual-m-rem(200);
-  }
+}
+
+.test {
+  height: virtual-m-rem(130);
+  flex-shrink: 0;
+  background: $black;
 }
 
 .load-more {

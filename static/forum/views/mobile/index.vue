@@ -3,7 +3,6 @@
     <div class="index-swiper">
       <img src="https://placehold.it/375x182?text=1242x600">
     </div>
-    <div class="test">BBB</div>
     <div class="card index-nav has-divider">
       <div class="card-content level is-mobile">
         <router-link class="level-item" :to="{name: 'list'}">

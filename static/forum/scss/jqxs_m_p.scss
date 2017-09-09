@@ -20,51 +20,41 @@
 }
 
 .has-radius {
-  border-radius: virtual-m-rem(10) !important;
+  border-radius: virtual-m-rem(10);
 }
 
 .no-radius {
-  border-radius: 0 !important;
+  border-radius: 0;
+}
+
+.no-box-shadow {
+  box-shadow: none;
+}
+
+.tip-number {
+  position: absolute;
+  top: 0;
+  left: 1.95rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $primary;
+}
+
+.button {
+  &.is-thickness {
+    width: 4.5rem;
+    height: 1.85rem;
+  }
 }
 
 .buttons {
   background-size: contain;
   background-repeat: no-repeat;
-  &.btn-confirm {
-    width: virtual-m-rem(960);
-    height: virtual-m-rem(100);
-    background-image: url("~assets/themes/jqxs_mobile/Group_28.png");
-  }
-  &.btn-binding {
-    width: virtual-m-rem(960);
-    height: virtual-m-rem(100);
-    background-image: url("~assets/themes/jqxs_mobile/Group_27.png");
-  }
-  &.btn-binding-mobile {
-    width: virtual-m-rem(230);
-    height: virtual-m-rem(80);
-    background-image: url("~assets/themes/jqxs_mobile/Group_21.png");
-  }
-  &.btn-binding-email {
-    width: virtual-m-rem(230);
-    height: virtual-m-rem(80);
-    background-image: url("~assets/themes/jqxs_mobile/Group_22.png");
-  }
-  &.btn-binding-resident {
-    width: virtual-m-rem(230);
-    height: virtual-m-rem(80);
-    background-image: url("~assets/themes/jqxs_mobile/Group_23.png");
-  }
-  &.btn-logout {
-    width: virtual-m-rem(960);
-    height: virtual-m-rem(100);
-    background-image: url("~assets/themes/jqxs_mobile/Group_24.png");
-  }
-  &.btn-change {
-    width: virtual-m-rem(230);
-    height: virtual-m-rem(80);
-    background-image: url("~assets/themes/jqxs_mobile/Group_45.png");
-  }
   &.btn-save {
     display: block;
     width: virtual-m-rem(150);
@@ -73,46 +63,34 @@
   }
 }
 
+.common-page {
+  .article {
+    padding: .55rem .3rem;
+    &:not(:last-child) {
+      border-bottom: 1px solid $grey;
+    }
+    .article-date {
+      span {
+        margin-right: .7rem;
+      }
+    }
+  }
+}
+
 .my_profile {
-  .section {
-    padding: 1.5rem 0rem;
-  }
-  span {
-    &.title {
-      line-height: 3.5rem;
+  .article {
+    padding: 1.2rem .3rem;
+    &:not(:last-child) {
+      border-bottom: 1px solid $grey;
     }
   }
-  .content {
-    padding-top: 1rem;
-  }
-  .level-left {
-    padding-left: .7rem;
-  }
-  .level-right {
-    padding-right: .7rem;
-  }
-  .is-change {
-    width: 4.5rem;
-    height: 1.8rem;
-  }
-  .info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1.0395rem;
-    span:not(:last-child) {
-      margin-right: .8505rem;
-    }
-    input {
-      width: 6.615rem;
-      height: 1.89rem;
-    }
-    .nickname {
-      margin-top: .189rem;
-    }
+  input {
+    width: 6.615rem;
+    height: 1.89rem;
   }
   .logout {
-    margin-top: 2.268rem;
+    width: 78vw;
+    margin-top: 3rem;
   }
   .tip-error {
     margin-left: 3.402rem;
@@ -141,33 +119,11 @@
   }
 }
 
-.personal {
-  .info {
-    display: flex;
-    align-items: center;
-    padding: .8rem;
-    background-color: $white;
-  }
-  .article {
-    &:first-child {
-      padding-top: .3rem;
-    }
-    &:last-child {
-      padding-bottom: .3rem;
-    }
-    padding-left: .5rem;
-    padding-right: .4rem;
-  }
-  .card .media:not(:last-child) {
-    margin-bottom: .3rem;
-  }
-  .media+.media {
-    margin-top: 0;
-    padding-top: .5rem;
-  }
-  .article-date {
-    span {
-      margin-right: .7rem;
+.my-message {
+  .is-message {
+    padding: .7rem .7rem;
+    &:not(:last-child) {
+      border-bottom: 1px solid $grey;
     }
   }
 }

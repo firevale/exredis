@@ -54,5 +54,9 @@ export default [{
     path: 'otherPage',
     name: 'otherPage',
     component: require('../views/mobile/otherPage.vue')
+  }, {
+    path: 'myMessage',
+    name: 'myMessage',
+    component: require('../views/mobile/myMessage.vue')
   }]
 }, ]

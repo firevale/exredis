@@ -34,15 +34,18 @@ nav.header {
 .comp-author-info {
   position: relative;
   overflow: hidden;
+  display: flex;
   figure,
   img {
     width: virtual-m-rem(80);
     height: virtual-m-rem(80);
+    &.is-large {
+      width: virtual-m-rem(130);
+      height: virtual-m-rem(130);
+    }
   }
   .item-left {
-    position: absolute;
-    left: virtual-m-rem(100);
-    bottom: 0;
+    padding-left: virtual-m-rem(20)
   }
   .item-right {
     position: absolute;

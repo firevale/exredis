@@ -9,7 +9,7 @@
           <figure class="has-text-centered">
             <img src="~assets/themes/jqxs_mobile/12_03.png">
             <figcaption>
-              <small>游戏官网</small>
+              游戏官网
             </figcaption>
           </figure>
         </router-link>
@@ -17,7 +17,7 @@
           <figure class="has-text-centered">
             <img src="~assets/themes/jqxs_mobile/12_05.png">
             <figcaption>
-              <small>新闻资讯</small>
+              新闻资讯
             </figcaption>
           </figure>
         </router-link>
@@ -25,7 +25,7 @@
           <figure class="has-text-centered">
             <img src="~assets/themes/jqxs_mobile/12_07.png">
             <figcaption>
-              <small>游戏攻略</small>
+              游戏攻略
             </figcaption>
           </figure>
         </router-link>
@@ -33,7 +33,7 @@
           <figure class="has-text-centered">
             <img src="~assets/themes/jqxs_mobile/12_09.png">
             <figcaption>
-              <small>联系客服</small>
+              联系客服
             </figcaption>
           </figure>
         </router-link>

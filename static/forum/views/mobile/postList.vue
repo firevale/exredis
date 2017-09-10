@@ -3,13 +3,13 @@
     <slider-nav class="has-divider" :menus="sections" ref="nav"></slider-nav>
     <div class="card top-article">
       <div class="card-content">
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
         </router-link>
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
         </router-link>
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           <p class="title is-ellipsis"> <i class="icon icon-top" />如何评价 LPL夏季总决赛 EDG 夏季总决赛 EDG vs RNG 3:2 胜利？</p>
         </router-link>
         <div class="">
@@ -24,7 +24,7 @@
         </p>
       </header>
       <div class="card-content">
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
           <div class="thumbs">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">
@@ -42,7 +42,7 @@
             <p class="item-right  has-text-bottom subtitle">回复/查看 110/1000 </p>
           </div>
         </router-link>
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
           <div class="thumbs">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">
@@ -60,7 +60,7 @@
             <p class="item-right  has-text-bottom subtitle">回复/查看 110/1000 </p>
           </div>
         </router-link>
-        <router-link class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
+        <router-link class="article title" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
           如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？ <i class="icon icon-hot" /><i class="icon icon-vie" />
           <div class="thumbs">
             <img class="thumb" src="https://placehold.it/380x214?text=380x214">

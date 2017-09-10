@@ -57,10 +57,6 @@ button[type="submit"].button,
   margin: 0.5rem auto;
 }
 
-input.input:focus {
-  border-color: $blue;
-}
-
 .flex-fixed-size {
   flex-grow: 0;
   flex-shrink: 1;

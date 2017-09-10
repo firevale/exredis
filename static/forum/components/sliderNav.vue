@@ -127,6 +127,7 @@ export default {
         color: $black;
         max-width: 13.2rem;
         &.is-tab {
+          font-size: 1.167rem !important;
           padding: 0;
           border-bottom-width: 0;
           &:hover {

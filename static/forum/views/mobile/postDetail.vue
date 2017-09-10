@@ -27,7 +27,7 @@
             <span>2017-09-07 14:00</span>
             <span class="is-right">查看数/回复数 100/20</span>
           </p>
-          <div class="content is-small">
+          <div class="content">
             最『宏大』的一个陷阱应该是，建立了把消费水平与个人成功、自我认同、和人生幸福划等号的价值体系。因为中国教育体系中对成功、幸福、梦想等关键话题的失语，这些关键词的定义权便被拱手送给了网红、微商、和购物导流网站。你没有梦想的时候，旅游公众号告
           </div>
           <div class="is-relative">
@@ -58,7 +58,7 @@
                 <br/> 2017-09-07 14:00
               </div>
             </div>
-            <div class="content is-small is-relative">
+            <div class="content is-relative">
               <blockquote>
                 <span class="subtitle">firevale发表于 2017-09-03 14:00
                   <br/> 谢谢楼主分享</span>
@@ -82,7 +82,7 @@
                 <br/> 2017-09-07 14:00
               </div>
             </div>
-            <div class="content is-small is-relative">
+            <div class="content is-relative">
               <blockquote>
                 <span class="subtitle">firevale发表于 2017-09-03 14:00
                   <br/> 谢谢楼主分享</span>
@@ -106,7 +106,7 @@
                 <br/> 2017-09-07 14:00
               </div>
             </div>
-            <div class="content is-small is-relative">
+            <div class="content is-relative">
               <blockquote>
                 <span class="subtitle">firevale发表于 2017-09-03 14:00
                   <br/> 谢谢楼主分享</span>

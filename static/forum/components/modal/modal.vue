@@ -6,7 +6,7 @@
         <li v-for="menu in menus" @click="">{{menu}}</li>
       </ul>
       <template v-if="message">
-        <p class="title"> {{message}}</p>
+        <p> {{message}}</p>
         <button class="modal-close" @click="cancel"></button>
       </template>
     </div>

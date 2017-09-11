@@ -7,7 +7,9 @@
             <i class="icon icon-head-portrait" />
             <div class="item-left">
               <p class="title">
-                昵称：firevale</p>
+                昵称：firevale
+                <span class="tag is-info subtitle">官方版主</span>
+              </p>
               <p class="title">
                 ID：10238988323</p>
               <p class="title">

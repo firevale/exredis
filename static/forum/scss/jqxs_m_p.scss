@@ -14,7 +14,11 @@
 }
 
 .is-white {
-  color: $white;
+  color: $light;
+}
+
+.is-olive {
+  color: $olive;
 }
 
 .has-radius {
@@ -44,7 +48,7 @@
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 0.6rem;
-  color: $white;
+  color: $light;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +180,7 @@
 }
 
 .account {
-  background-color: #fff;
+  background-color: $light;
   padding-top: 2.8rem;
   form {
     width: 78vw;

@@ -1,4 +1,4 @@
-defmodule AcsStats.Tcp.StatsTcpConn do
+defmodule AcsWeb.Tcp.TcpConn do
   use GenServer
   use Utils.LogAlias
 

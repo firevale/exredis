@@ -10,6 +10,11 @@ defmodule AcsWeb.Application do
       supervisor(AcsWeb.Endpoint, []),
       # Start your own worker by calling: AcsWeb.Worker.start_link(arg1, arg2, arg3)
       # worker(AcsWeb.Worker, [arg1, arg2, arg3]),
+      worker(TcpServer, [port, [:binary, 
+        packet: 2, 
+        active: :false, 
+        reuseaddr: true, 
+        nodelay: true], AcsWeb.Tcp.TcpConn]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

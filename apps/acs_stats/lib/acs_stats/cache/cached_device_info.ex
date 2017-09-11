@@ -7,30 +7,31 @@ defmodule AcsStats.Cache.CachedDeviceInfo do
 
   @key_base  "acs.device_info"
 
-  def find(model) do 
-    key = "#{@key_base}.#{model}"
-
-    Excache.get!(key, fallback: fn(redis_key) -> 
+  def get(id) do 
+    Excache.get!(key(id), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do 
         nil ->
-          case Repo.get(DeviceInfo, model) do 
+          case Repo.get(DeviceInfo, id) do 
             nil -> {:ignore, nil}
 
             %DeviceInfo{} = device_info ->
-              Exredis.set(key, DeviceInfo.to_redis(device_info))
+              Exredis.set(redis_key, DeviceInfo.to_redis(device_info))
               {:commit, device_info}
           end
 
         raw -> 
-          case DeviceInfo.from_redis(raw) do 
-            %DeviceInfo{} = device_info ->
-              {:commit, device_info}
-
-            _  ->
-              {:ignore, nil}
-          end
+          DeviceInfo.from_redis(raw)
       end
     end)
   end
+
+  def refresh(%DeviceInfo{} = device_info) do 
+    Exredis.set(key(device_info), DeviceInfo.to_redis(device_info))
+    Excache.del(key(device_info))
+  end
+
+
+  defp key(id) when is_bitstring(id), do: "#{@key_base}.#{id}" 
+  defp key(%DeviceInfo{id: id}), do: "#{@key_base}.#{id}"  
 
 end

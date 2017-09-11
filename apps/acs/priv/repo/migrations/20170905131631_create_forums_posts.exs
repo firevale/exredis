@@ -14,7 +14,7 @@ defmodule Acs.Repo.Migrations.CreateForumsPosts do
       add :active, :boolean, default: true
       add :has_pic, :boolean, default: false
 
-      add :forum_id, references(:forums, on_delete: :delete_all)
+      add :forum_id, references(:forums, type: :string, on_delete: :delete_all), size: 20
       add :section_id, references(:forums_sections, on_delete: :delete_all)
       add :user_id, references(:users, on_delete: :nothing)
       add :editer_id, references(:users, on_delete: :nothing)

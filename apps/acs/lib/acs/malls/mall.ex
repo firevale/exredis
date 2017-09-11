@@ -4,7 +4,9 @@ defmodule Acs.Malls.Mall do
   alias Acs.Malls.Mall
 
   @derive {Poison.Encoder, except: [:app, :__meta__]}
+  @primary_key false
   schema "malls" do
+    field :id, :string, primary_key: true
     field :title, :string
     field :active, :boolean, default: false
     field :icon, :string

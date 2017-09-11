@@ -9,6 +9,14 @@ body {
   }
 }
 
+a {
+  border: none;
+  outline: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -181,9 +189,15 @@ only screen and (min-resolution: 1.25dppx) {
   .is-left {
     position: absolute;
     left: 0;
+    &.is-bottom {
+      bottom: 0;
+    }
   }
   .is-right {
     position: absolute;
     right: 0;
+    &.is-bottom {
+      bottom: 0;
+    }
   }
 }

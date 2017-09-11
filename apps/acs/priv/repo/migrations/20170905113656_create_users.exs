@@ -2,8 +2,7 @@ defmodule Acs.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do
-    # note:
-    # user record is just a replication from redis, so we use redis generated ID as its primary key 
+    
     create table(:users) do
       add :email, :string, size: 50 
       add :mobile, :string, size: 20

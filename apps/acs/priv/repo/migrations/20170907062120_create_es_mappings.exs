@@ -7,63 +7,73 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
     {:ok, _} = Application.ensure_all_started(:exes)
 
     Elasticsearch.delete_index("acs")
-    Elasticsearch.create_index("acs")
 
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        app_id: %{type: :keyword},
-        user_id: %{type: :keyword},
-        goods_id: %{type: :keyword},
-        device_id: %{type: :keyword},
-        cp_order_id: %{type: :text},
-        transaction_id: %{type: :text},
-        app_user_id: %{type: :keyword},
-        sdk_user_id: %{type: :keyword},
-        inserted_at: %{type: :date},
-      }
+    mappings = %{
+      orders: %{
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          user_id: %{type: :keyword},
+          goods_id: %{type: :keyword},
+          device_id: %{type: :keyword},
+          cp_order_id: %{type: :text},
+          transaction_id: %{type: :text},
+          app_user_id: %{type: :keyword},
+          sdk_user_id: %{type: :keyword},
+          inserted_at: %{type: :date},
+        }
+      },
+      users: %{
+        properties: %{
+          id: %{type: :keyword},
+          email: %{type: :keyword},
+          mobile: %{type: :keyword},
+          nickname: %{type: :text, analyzer: :ik_smart},
+          device_id: %{type: :keyword},
+          inserted_at: %{type: :date}
+        }
+      },
+      app_users: %{
+        _parent: %{type: :users},
+        properties: %{
+          app_id: %{type: :keyword},
+          zone_id: %{type: :keyword},
+          game_user_id: %{type: :keyword},
+          game_user_name: %{type: :text, analyzer: :ik_smart},
+          game_user_level: %{type: :integer},
+          pay_amount:  %{type: :integer}
+        }
+      },
     }
 
-    Elasticsearch.put_mapping(%{index: "acs", type: "orders", mapping: mapping}) 
-
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        email: %{type: :keyword},
-        mobile: %{type: :keyword},
-        nickname: %{type: :text, analyzer: :ik_smart},
-        device_id: %{type: :keyword},
-        inserted_at: %{type: :date}
-        }
-      }
-
-    Elasticsearch.put_mapping(%{index: "acs", type: "user", mapping: mapping})
+    Elasticsearch.create_index("acs", %{}, mappings)
 
     Elasticsearch.delete_index("wcp")
-    Elasticsearch.create_index("wcp")
 
-    mapping = %{
-      properties: %{
-        app_id: %{type: :keyword},
-        msg_type: %{type: :keyword},
-        from: %{ properties: %{
-          openid: %{type: :keyword},
-          nickname:  %{type: :text, analyzer: :ik_smart},
-        }},
-        to: %{ properties: %{
-          openid: %{type: :keyword},
-          nickname:  %{type: :text, analyzer: :ik_smart},
-        }},
-        admin_user: %{ properties: %{
-          email: %{type: :keyword},
-          nickname:  %{type: :text, analyzer: :ik_smart},
-        }},
-        content: %{type: :text, analyzer: :ik_smart},
-        inserted_at: %{type: :date},
+    mappings = %{
+      messages: %{
+        properties: %{
+          app_id: %{type: :keyword},
+          msg_type: %{type: :keyword},
+          from: %{ properties: %{
+            openid: %{type: :keyword},
+            nickname:  %{type: :text, analyzer: :ik_smart},
+          }},
+          to: %{ properties: %{
+            openid: %{type: :keyword},
+            nickname:  %{type: :text, analyzer: :ik_smart},
+          }},
+          admin_user: %{ properties: %{
+            email: %{type: :keyword},
+            nickname:  %{type: :text, analyzer: :ik_smart},
+          }},
+          content: %{type: :text, analyzer: :ik_smart},
+          inserted_at: %{type: :date},
+        }
       }
     }
 
-    Elasticsearch.put_mapping(%{index: "wcp", type: "messages", mapping: mapping})
+    Elasticsearch.create_index("wcp", %{}, mappings)
 
     Elasticsearch.delete_index("forum")
 

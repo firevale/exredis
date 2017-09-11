@@ -7,6 +7,7 @@ defmodule Acs.Apps.App do
   @primary_key false
   schema "apps" do
     field :id, :string, primary_key: true
+    field :alias, :string
     field :secret, :string
     field :name, :string
     field :icon, :string

@@ -3,14 +3,13 @@ defmodule AcsWeb.Plugs do
   import Ecto.Query
   use    Utils.LogAlias
 
-  alias   Acs.RedisApp
-  alias   Acs.RedisUser
-  alias   Acs.RedisAdminUser
-  alias   Acs.RedisAccessToken
+  alias   Acs.Apps.App
+  alias   Acs.Accounts.User
+  alias   Acs.Auth.AccessToken
   alias   Acs.Repo
-  alias   Acs.AdminUser
-  alias   Acs.ForumManager
-  alias   Acs.Forum
+  alias   Acs.Admin.AdminUser
+  alias   Acs.Forums.ForumManager
+  alias   Acs.Forums.Forum
 
   require Gettext
   require Exmoji.Scanner
@@ -159,7 +158,7 @@ defmodule AcsWeb.Plugs do
   def fetch_session_user_id(%Plug.Conn{private: private} = conn, _options) do
     with {:ok, :done} <- Map.fetch(private, :plug_session_fetch),
          token_id <- get_session(conn, :access_token),
-         %RedisAccessToken{user_id: user_id} <- RedisAccessToken.find(token_id)
+         %AccessToken{user_id: user_id} <- Auth.get_access_token(token_id)
     do
       conn |> put_private(:acs_session_user_id, user_id)
     else
@@ -277,20 +276,20 @@ defmodule AcsWeb.Plugs do
   end
 
   def fetch_app(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _options) do
-    case RedisApp.find(app_id) do
+    case CachedApp.get(app_id) do
       nil -> conn
-      %RedisApp{} = app ->
+      %App{} = app ->
         conn |> put_private(:acs_app, app)
     end
   end
   def fetch_app(%Plug.Conn{} = conn, _options), do: conn
 
   def fetch_user(%Plug.Conn{private: %{acs_user_id: user_id}} = conn, _options) do
-    case RedisUser.find("#{user_id}" |> String.to_integer) do
+    case CachedUser.get("#{user_id}" |> String.to_integer) do
       nil -> conn
-      %RedisUser{} = user ->
+      %User{} = user ->
         if is_nil(user.inserted_at) do
-          user = RedisUser.refresh("#{user_id}" |> String.to_integer)
+          user = CachedUser.refresh("#{user_id}" |> String.to_integer)
           conn |> put_private(:acs_user, user)
         else
           conn |> put_private(:acs_user, user)
@@ -303,9 +302,9 @@ defmodule AcsWeb.Plugs do
     case _fetch_header_access_token(conn) || _fetch_session_access_token(conn) do
       nil -> conn
       access_token ->
-        case RedisAccessToken.find(access_token) do
+        case Auth.get_access_token(access_token) do
           nil -> conn
-          %RedisAccessToken{} ->
+          %AccessToken{} ->
             conn |> put_session(:access_token, access_token)
                  |> put_private(:acs_access_token, access_token)
         end
@@ -373,15 +372,15 @@ defmodule AcsWeb.Plugs do
     _response_admin_access_failed(conn)
   end
   def check_is_admin(%Plug.Conn{private: %{acs_access_token: access_token, acs_platform: _platform}} = conn, _options) do
-    case RedisAccessToken.find(access_token) do
+    case Auth.get_access_token(access_token) do
       nil -> _response_admin_access_failed(conn)
 
-      %RedisAccessToken{user_id: user_id, app_id: _app_id, device_id: _device_id} ->
-        case RedisUser.find(user_id) do
+      %AccessToken{user_id: user_id, app_id: _app_id, device_id: _device_id} ->
+        case CachedUser.get(user_id) do
           nil -> _response_admin_access_failed(conn)
 
-          %RedisUser{} = user ->
-            if RedisAdminUser.is_admin(user_id) do 
+          %User{} = user ->
+            if CachedAdminUser.is_admin(user_id) do 
               conn |> put_private(:acs_admin_id, user.id)
             else
               _response_admin_access_failed(conn)
@@ -408,9 +407,9 @@ defmodule AcsWeb.Plugs do
 
  defp _get_user_admin_level(user_id, app_id) do
    if app_id do
-     RedisAdminUser.get_admin_level(user_id, app_id)
+    CachedAdminUser.get_admin_level(user_id, app_id)
    else
-     RedisAdminUser.get_admin_level(user_id)
+    CachedAdminUser.get_admin_level(user_id)
    end
  end
 
@@ -444,11 +443,11 @@ defmodule AcsWeb.Plugs do
   end
   def check_forum_manager(%Plug.Conn{private: %{acs_access_token: access_token},
                                      params: %{"forum_id" => forum_id}} = conn, _options) do
-   case RedisAccessToken.find(access_token) do
+   case Auth.get_access_token(access_token) do
      nil -> 
        conn |> put_private(:acs_is_forum_admin, false)
 
-     %RedisAccessToken{user_id: user_id} ->
+     %AccessToken{user_id: user_id} ->
         _check_forum_manager(conn, user_id, forum_id)
    end
   end
@@ -456,10 +455,10 @@ defmodule AcsWeb.Plugs do
     conn |> put_private(:acs_is_forum_admin, false)
   end
   defp _check_forum_manager(%Plug.Conn{} = conn, user_id, forum_id) do
-     case RedisUser.find(user_id) do
+     case CachedUser.get(user_id) do
        nil -> conn |> put_private(:acs_is_forum_admin, false)
 
-       %RedisUser{} ->
+       %User{} ->
          # check is admin user
         case Repo.get(Forum, forum_id) do
           nil -> conn |> put_private(:acs_is_forum_admin, false)

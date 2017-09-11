@@ -1,8 +1,6 @@
 defmodule AcsWeb.AppAdminSocket do
   use Phoenix.Socket
-  use LogAlias
-
-  alias Acs.RedisApp
+  use Utils.LogAlias
 
   ## Channels
   # channel "room:*", Acs.RoomChannel
@@ -33,7 +31,7 @@ defmodule AcsWeb.AppAdminSocket do
   #   end
   # end
 
-  def connect(params, socket) do
+  def connect(_params, socket) do
     d "receive admin socket connection request..."
     {:ok, socket}
   end

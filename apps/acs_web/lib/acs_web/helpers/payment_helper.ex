@@ -8,22 +8,19 @@ defmodule Acs.PaymentHelper do
 
   import  Ecto.Query
 
-  alias   Acs.AppOrder
-  alias   Acs.Stats.AppUser
-  alias   Acs.Stats.AppDevice
-  alias   Acs.Stats.AppUserDailyActivity
-  alias   Acs.Stats.AppDeviceDailyActivity
+  alias   Acs.Apps.AppOrder
+  alias   AcsStats.Users.AppUser
+  alias   AcsStats.Devices.AppDevice
+  alias   AcsStats.Users.AppUserDailyActivity
+  alias   AcsStats.Devices.AppDeviceDailyActivity
 
-  alias   Acs.RedisAppUser
-  alias   Acs.RedisDevice
-  alias   Acs.RedisAppDevice
-  alias   Acs.RedisAppUserDailyActivity
-  alias   Acs.RedisAppDeviceDailyActivity
+  alias   AcsStats.Cache.CachedAppUser
+  alias   AcsStats.Cache.CachedAppDevice
+  alias   AcsStats.Cache.CachedAppUserDailyActivity
+  alias   AcsStats.Cache.CachedAppDeviceDailyActivity
+  alias   Acs.Cache.CachedApp
 
-  alias   Acs.RedisApp
-  alias   Acs.ChaoxinNotifier
-
-  use     LogAlias
+  use     Utils.LogAlias
   use     Timex
 
   require Elasticsearch
@@ -31,7 +28,7 @@ defmodule Acs.PaymentHelper do
   @location Application.get_env(:acs, :location, "cn")
 
   def notify_cp(order = %AppOrder{}) do
-    case RedisApp.find(order.app_id) do
+    case CachedApp.get(order.app_id) do
       nil ->
         error "app id [#{order.app_id}] in order #{order.id} not exists"
         {:error, :app_not_found}
@@ -216,7 +213,7 @@ defmodule Acs.PaymentHelper do
     end
     
     # update app user payment info
-    case RedisAppUser.find(app_id, zone_id, user_id, platform) do 
+    case CachedAppUser.get(app_id, zone_id, user_id, platform) do 
       %AppUser{id: ^app_user_id, app_id: ^app_id} = app_user ->
         info "payment success, update app user #{app_user_id} of app: #{app_id}, fee: #{fee}"
         new_app_user = AppUser.changeset(app_user, %{
@@ -226,12 +223,12 @@ defmodule Acs.PaymentHelper do
           last_active_at: now,
           }) |> StatsRepo.update!
 
-        RedisAppUser.refresh(new_app_user)
+        CachedAppUser.refresh(new_app_user)
 
-        case RedisAppUserDailyActivity.find(app_user.id, today) do 
+        case CachedAppUserDailyActivity.get(app_user.id, today) do 
           %AppUserDailyActivity{app_user_id: ^app_user_id, date: ^today} = auda ->
             new_auda = AppUserDailyActivity.changeset(auda, %{pay_amount: auda.pay_amount + fee}) |> StatsRepo.update!
-            RedisAppUserDailyActivity.refresh(new_auda)
+            CachedAppUserDailyActivity.refresh(new_auda)
           _ ->
             error "can not get app user daily activity by app_user_id: #{app_user_id}, date: #{today}"
         end
@@ -243,7 +240,7 @@ defmodule Acs.PaymentHelper do
     end
 
     # update app device payment info
-    case RedisAppDevice.find(app_id, zone_id, device_id, platform) do 
+    case CachedAppDevice.get(app_id, zone_id, device_id, platform) do 
       %AppDevice{id: app_device_id, app_id: ^app_id, zone_id: ^zone_id, device_id: ^device_id} = app_device ->
         info "payment success, update app device #{device_id} of app: #{app_id}, fee: #{fee}"
         new_app_device = AppDevice.changeset(app_device, %{
@@ -253,12 +250,12 @@ defmodule Acs.PaymentHelper do
           last_active_at: now,
           }) |> StatsRepo.update!
 
-        RedisAppDevice.refresh(new_app_device)
+        CachedAppDevice.refresh(new_app_device)
 
-        case RedisAppDeviceDailyActivity.find(app_device.id, today) do 
+        case CachedAppDeviceDailyActivity.get(app_device.id, today) do 
           %AppDeviceDailyActivity{app_device_id: ^app_device_id, date: ^today} = adda ->
             new_adda = AppDeviceDailyActivity.changeset(adda, %{pay_amount: adda.pay_amount + fee}) |> StatsRepo.update!
-            RedisAppDeviceDailyActivity.refresh(new_adda)
+            CachedAppDeviceDailyActivity.refresh(new_adda)
           _ ->
             error "can not get app device daily activity by app_user_id: #{app_device_id}, date: #{today}"
         end

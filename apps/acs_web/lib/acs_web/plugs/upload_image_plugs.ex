@@ -1,6 +1,6 @@
 defmodule Acs.UploadImagePlugs do
   import Plug.Conn
-  use    LogAlias
+  use    Utils.LogAlias
   require Mogrify
   require Utils
 

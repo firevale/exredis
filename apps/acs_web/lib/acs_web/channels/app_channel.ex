@@ -13,12 +13,11 @@ defmodule AcsWeb.AppChannel do
     decr_online_counter: 4,
    ]
 
-  alias   Acs.RedisAccessToken
-  alias   Acs.RedisAppUser
-  alias   Acs.RedisDevice
-  alias   Acs.RedisAppDevice
-  alias   Acs.RedisAppUserDailyActivity
-  alias   Acs.RedisAppDeviceDailyActivity
+  alias   AcsStats.Cache.CachedDevice
+  alias   AcsStats.Cache.CachedAppDevice
+  alias   AcsStats.Cache.CachedAppUserDailyActivity
+  alias   AcsStats.Cache.CachedAppDeviceDailyActivity
+  alias   AcsStats.Devices.Device
 
   @heartbeart_duration 20000
 
@@ -367,7 +366,7 @@ defmodule AcsWeb.AppChannel do
                         "zone_id" => zone_id}, today) do
     zone_id = "#{zone_id}"
     utc_now = DateTime.utc_now()
-    app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
+    app_user = CachedAppUser.get(app_id, zone_id, user_id, platform)
 
     app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
       app_user_name: app_user_name,
@@ -385,9 +384,9 @@ defmodule AcsWeb.AppChannel do
         app_user
     end
 
-    RedisAppUserDailyActivity.find(app_user.id, today)
+    CachedAppUserDailyActivity.get(app_user.id, today)
 
-    if is_nil(RedisDevice.find(device_id)) do
+    if is_nil(CachedDevice.get(device_id)) do
       # client may join channel twice at the same time, ignore the second one
       Device.changeset(%Device{}, %{
         id: device_id,
@@ -396,8 +395,8 @@ defmodule AcsWeb.AppChannel do
         os: os}) |> StatsRepo.insert(on_conflict: :nothing)
     end
 
-    app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
-    RedisAppDeviceDailyActivity.find(app_device.id, today)
+    app_device = CachedAppDevice.get(app_id, zone_id, device_id, platform)
+    CachedAppDeviceDailyActivity.get(app_device.id, today)
   end
 
   defp do_stat(%{assigns: %{app_id: app_id,
@@ -414,38 +413,38 @@ defmodule AcsWeb.AppChannel do
     if active_seconds > 30 do
       utc_now = DateTime.utc_now()
 
-      app_user = RedisAppUser.find(app_id, zone_id, user_id, platform)
-      app_device = RedisAppDevice.find(app_id, zone_id, device_id, platform)
-      app_user_daily_activity = RedisAppUserDailyActivity.find(app_user.id, today)
-      app_device_daily_activity = RedisAppDeviceDailyActivity.find(app_device.id, today)
+      app_user = CachedAppUser.get(app_id, zone_id, user_id, platform)
+      app_device = CachedAppDevice.get(app_id, zone_id, device_id, platform)
+      app_user_daily_activity = CachedAppUserDailyActivity.get(app_user.id, today)
+      app_device_daily_activity = CachedAppDeviceDailyActivity.get(app_device.id, today)
 
       new_app_user = AppUser.changeset(app_user, %{
         active_seconds: app_user.active_seconds + active_seconds,
         last_active_at: utc_now,
       }) |> StatsRepo.update!
 
-      RedisAppUser.refresh(new_app_user)
+      CachedAppUser.refresh(new_app_user)
 
       new_app_device = AppDevice.changeset(app_device, %{
         active_seconds: app_device.active_seconds + active_seconds,
         last_active_at: utc_now,
       }) |> StatsRepo.update!
 
-      RedisAppDevice.refresh(new_app_device)
+      CachedAppDevice.refresh(new_app_device)
 
       new_app_user_daily_activity = AppUserDailyActivity.changeset(app_user_daily_activity, %{
         active_seconds: app_user_daily_activity.active_seconds + active_seconds,
         last_active_at: utc_now,
       }) |> StatsRepo.update!
 
-      RedisAppUserDailyActivity.refresh(new_app_user_daily_activity)
+      CachedAppUserDailyActivity.refresh(new_app_user_daily_activity)
 
       new_app_device_daily_activity = AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
         active_seconds: app_device_daily_activity.active_seconds + active_seconds,
         last_active_at: utc_now,
       }) |> StatsRepo.update!
 
-      RedisAppDeviceDailyActivity.refresh(new_app_device_daily_activity)
+      CachedAppDeviceDailyActivity.refresh(new_app_device_daily_activity)
     end
   end
   defp do_stat(_socket), do: :ok
@@ -459,7 +458,7 @@ defmodule AcsWeb.AppChannel do
                      "device_id" => device_id,
                      "user_id" => user_id}) do
     user_id = String.to_integer(user_id)
-    case RedisAccessToken.find(access_token_id) do
+    case Auth.get_access_token(access_token_id) do
       %{device_id: ^device_id, user_id: ^user_id} -> true
       _ -> false
     end

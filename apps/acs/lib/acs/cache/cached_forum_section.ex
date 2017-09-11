@@ -3,7 +3,6 @@ defmodule Acs.Cache.CachedForumSection do
   require Excache
 
   alias   Acs.Repo
-
   alias   Acs.Forums.ForumSection
 
   @key_base     "acs.forum_section"
@@ -24,12 +23,10 @@ defmodule Acs.Cache.CachedForumSection do
   end
 
   def refresh(forum_section_id) do
-    redis_key = "#{@key_base}.#{forum_section_id}"
-
     case Repo.get(ForumSection, forum_section_id) do 
       %ForumSection{} = forum_section ->
         Exredis.set(key(forum_section_id), ForumSection.to_redis(forum_section))
-        key(forum_section_id) |> Excache.del # force all nodes reload from redis
+        key(forum_section_id) |> Excache.del
         forum_section
       _ -> nil
     end

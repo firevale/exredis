@@ -3,8 +3,6 @@ defmodule Acs.CachePMallGoods do
   require Excache
 
   alias   Acs.Repo
-  import  Ecto.Query
-
   alias   Acs.PMalls.PMallGoods
 
   @key_base      "acs.pmall_goods"

@@ -1,0 +1,60 @@
+<% user = @conn.private[:acs_session_user] %>
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="utf-8"/>
+    <title>
+      <%= gettext "Firevale Platform Admin Page" %>
+    </title>
+    <meta name="admin" content="app-id=com.firevale.platform">
+    <meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta content="APP" name="description"/>
+    <meta content="APP" name="keywords"/>
+    <meta content="APP" name="author"/>
+    <meta content="APP" name="copyright"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no, email=no" name="format-detection"/>
+    <meta content="webkit" name="renderer"/>
+    <meta content="true" name="HandheldFriendly"/>
+    <meta content="320" name="MobileOptimized"/>
+    <meta content="portrait" name="screen-orientation"/>
+    <meta content="portrait" name="x5-orientation"/>
+    <meta content="yes" name="full-screen"/>
+    <meta content="true" name="x5-fullscreen"/>
+    
+    <meta content="application" name="browsermode"/>
+    <meta content="app" name="x5-page-mode"/>
+    <meta content="no" name="msapplication-tap-highlight"/>
+    <meta content="no-siteapp" http-equiv="Cache-Control"/>
+    <link href="<%= static_url(@conn, "/css/admin_commons.css") %>" rel="stylesheet"/>
+    <link href="<%= static_url(@conn, "/css/admin.css") %>" rel="stylesheet"/>
+</html>
+<body>
+  <div id="app"></div>
+  <script>
+    window.acsConfig = {
+      csrfToken: '<%= get_csrf_token() %>',
+      accessToken: '<%= @conn.private[:acs_access_token] %>',
+      browser: '<%= @conn.private[:acs_browser] %>',
+      <%= if !is_nil(user) do %>
+      user: {
+        id: <%= user.id %>,
+        nickname: '<%= user.nickname %>',
+        email: '<%= user.email %>',
+        mobile: '<%= user.mobile %>',
+        gender: '<%= user.gender %>',
+        resident_id: '<%= user.resident_id %>',
+        resident_name: '<%= user.resident_name %>',
+        avatar_url: '<%= user.avatar_url %>',
+        nil_password: <%= is_nil(user.encrypted_password) %>,
+      },
+      <% end %>
+      imagesUrl: '<%= static_url(@conn, "/images/") %>',
+    }
+    
+  </script>
+  <script src="<%= static_url(@conn, "/js/admin_commons.js") %>"></script>
+  <script src="<%= static_url(@conn, "/js/admin.js") %>"></script>
+</body>

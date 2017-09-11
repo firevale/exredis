@@ -184,12 +184,12 @@ $modal-close-right: 5px;
     padding: 2rem;
     border-radius: 5px;
     background: rgba($white, 0.9);
+    font-size: $size-medium;
     &.is-menu {
       align-self: flex-end;
       padding: 0;
       margin-bottom: 5px;
       ul {
-        font-size: $size-medium;
         text-align: center;
         li {
           height: 4rem;

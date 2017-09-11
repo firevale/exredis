@@ -1,15 +1,6 @@
 defmodule AcsWeb.AdminWcpController do
   use AcsWeb, :controller
 
-  alias Acs.AppWcpConfig
-  alias Acs.AppWcpMessage
-  alias Acs.AppWcpMessageRule
-  alias Acs.RedisAppWcpConfig
-  alias Acs.RedisAppWcpMessageRule
-  alias Acs.AppWcpUser
-  import Acs.UploadImagePlugs
-  alias Wcp.Menu
-
   # add_wcp_empty_params
   def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
     case Repo.get(App, app_id) do

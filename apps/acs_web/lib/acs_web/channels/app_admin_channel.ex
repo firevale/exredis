@@ -2,7 +2,6 @@ defmodule AcsWeb.AppAdminChannel do
   use AcsWeb, :channel
 
   require Utils
-  alias   Acs.RedisDevice
   alias   Acs.AdminUser
 
   def join("admin.app:" <> _, %{"access_token" => access_token,

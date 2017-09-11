@@ -24,13 +24,52 @@ defmodule AcsWeb do
       
       import Plug.Conn
       import AcsWeb.Router.Helpers
+      import AcsWeb.ErrorHelpers
       import AcsWeb.Gettext
+      import AcsWeb.Plugs
+      import Acs.UploadImagePlugs
 
       require Exredis
       require Utils
 
       import Ecto
       import Ecto.Query
+
+      alias Acs.Apps.App
+      alias Acs.Apps.AppNews
+      alias Acs.Apps.AppSdkBinding
+      alias Acs.Apps.AppGoods
+      alias Acs.Apps.AppGoodsProductId
+      alias Acs.LoginCodes.AppLoginCode
+
+      alias Acs.Forums.Forum
+      alias Acs.Forums.ForumSection
+      alias Acs.Malls.Mall
+
+      alias Acs.Admin.OpLog
+
+      alias Acs.Auth
+      alias Acs.Auth.AccessToken
+      alias Acs.Cache.CachedApp
+      alias Acs.Cache.CachedUser
+      alias Acs.Cache.CachedAppWcpConfig
+      alias Acs.Cache.CachedAppWcpMessageRule
+
+      alias Acs.Wcp.AppWcpConfig
+      alias Acs.Wcp.AppWcpMessage
+      alias Acs.Wcp.AppWcpMessageRule
+      alias Acs.Wcp.AppWcpUser
+
+      alias AcsStats.Cache.CachedDeviceInfo
+      alias AcsStats.Cache.CachedDevice
+      alias AcsStats.Devices.Device
+      alias AcsStats.Devices.DeviceInfo
+      alias AcsStats.Devices.AppDevice
+      alias AcsStats.Devices.AppDeviceDailyActivity
+      alias AcsStats.Users.AppUser
+      alias AcsStats.Users.AppUserDailyActivity 
+      
+      alias Exwcp.Menu
     end
   end
 
@@ -41,7 +80,7 @@ defmodule AcsWeb do
       use Utils.LogAlias
 
       # Import convenience functions from controllers
-      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
+      import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
@@ -67,7 +106,6 @@ defmodule AcsWeb do
 
       import AcsWeb.Plugs
       import AcsWeb.PlugsPipeline
-      import AcsWeb.UploadImagePlugs
     end
   end
 

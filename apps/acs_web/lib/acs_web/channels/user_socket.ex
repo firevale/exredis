@@ -1,8 +1,8 @@
 defmodule AcsWeb.UserSocket do
   use Phoenix.Socket
-  use LogAlias
+  use Utils.LogAlias
 
-  alias Acs.RedisApp
+  alias Acs.Cache.CachedApp
 
   ## Channels
   # channel "room:*", Acs.RoomChannel
@@ -25,7 +25,7 @@ defmodule AcsWeb.UserSocket do
   # performing token verification on connect.
 
   def connect(%{"app_id" => app_id}, socket) do 
-    case RedisApp.find(app_id) do 
+    case CachedApp.get(app_id) do 
       %{id: ^app_id} = _app ->
         {:ok, socket |> assign(:app_id, app_id)}
       _ ->

@@ -1,6 +1,5 @@
 defmodule AcsWeb.GamesRouter do
   use AcsWeb, :router
-  use LogAlias
 
   scope "/", AcsWeb do
     pipe_through :games

@@ -7,7 +7,7 @@
       </ul>
       <template v-if="message">
         <p class="title"> {{message}}</p>
-        <button class="modal-close" aria-label="close"></button>
+        <button class="modal-close" @click="cancel"></button>
       </template>
     </div>
   </div>

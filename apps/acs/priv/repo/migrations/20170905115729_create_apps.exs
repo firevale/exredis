@@ -4,6 +4,7 @@ defmodule Acs.Repo.Migrations.CreateApps do
   def change do
     create table(:apps, primary_key: false) do
       add :id, :string, size: 40, primary_key: true
+      add :alias, :string, size: 20
       add :secret, :string
       add :name, :string, size: 30
       add :icon, :string
@@ -14,6 +15,11 @@ defmodule Acs.Repo.Migrations.CreateApps do
       add :active, :boolean, default: true
       add :has_forum, :boolean, default: false
       add :has_mall, :boolean, default: false
+      add :restrict_login, :boolean, default: false
+      add :can_assign_code, :boolean, default: false
+      add :wcp_download_enabled, :boolean, default: false
+      add :obtain_code_url, :string
+
       add :chaoxin_group_id, :string   # 超信群组id， 用于发送超信通知
       
       add :cs_phone_number, :string
@@ -32,5 +38,6 @@ defmodule Acs.Repo.Migrations.CreateApps do
     end
 
     create unique_index(:apps, [:name])
+    create unique_index(:apps, [:alias])
   end
 end

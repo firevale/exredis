@@ -397,7 +397,7 @@ defmodule AcsWeb.AdminController do
     end
 
     log = log |> Map.put("user_id", user_id) |> Map.put("app_id", app_id)
-    case OperateLog.changeset(%OperateLog{}, log) |> Repo.insert do
+    case OpLog.changeset(%OpLog{}, log) |> Repo.insert do
       {:ok, _new_log} ->
         conn |> json(%{success: true})
 
@@ -408,7 +408,7 @@ defmodule AcsWeb.AdminController do
 
   def add_operate_log(user_id, app_id, operate_type, log) do
     params = %{user_id: user_id, app_id: app_id, operate_type: operate_type, log: log}
-    case OperateLog.changeset(%OperateLog{}, params) |> Repo.insert do
+    case OpLog.changeset(%OpLog{}, params) |> Repo.insert do
       {:ok, _new_log} ->
         :ok
       {:error, %{errors: errors}} ->

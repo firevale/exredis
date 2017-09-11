@@ -1,6 +1,5 @@
 defmodule AcsWeb.MallRouter do
   use AcsWeb, :router
-  use LogAlias
 
   scope "/", AcsWeb do
     pipe_through :mall

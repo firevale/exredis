@@ -1,14 +1,14 @@
 defmodule AcsWeb.AdminSettingController do
   use AcsWeb, :controller
 
-  alias Acs.AdminSetting
-  alias Acs.RedisSetting
+  alias Acs.Admin.Setting
+  alias Acs.Cache.CachedAdminSetting
 
   # get setting
   def get_setting(conn, %{"setting_name" => setting_name}) do
 
-    case Repo.get_by(AdminSetting, name: setting_name) do
-      %AdminSetting{} = setting ->
+    case Repo.get_by(Setting, name: setting_name) do
+      %Setting{} = setting ->
         conn |> json(%{success: true, setting: setting})
       _ ->
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
@@ -20,7 +20,7 @@ defmodule AcsWeb.AdminSettingController do
 
   # get setting from redis
   def get_setting_from_redis(conn, %{"setting_name" => setting_name}) do
-    setting = RedisSetting.find(setting_name)
+    setting = CachedAdminSetting.get(setting_name)
     conn |> json(%{success: true, setting: setting})
   end
   def get_setting_from_redis(conn, _) do
@@ -29,7 +29,7 @@ defmodule AcsWeb.AdminSettingController do
 
   # get settings
   def get_settings_by_group(conn, %{"group" => group}) do
-     query = from s in AdminSetting,
+     query = from s in Setting,
               where: s.group == ^group,
               order_by: [{:desc, s.id}]
       settings = Repo.all(query)
@@ -42,7 +42,7 @@ defmodule AcsWeb.AdminSettingController do
 
   # delete_setting
   def delete_setting(conn, %{"setting_name" => setting_name}) do
-    case RedisSetting.del(setting_name) do
+    case CachedAdminSetting.del(setting_name) do
       {:ok, _} ->
         conn |> json(%{success: true, i18n_message: "admin.setting.deleteOk"})
       
@@ -59,10 +59,10 @@ defmodule AcsWeb.AdminSettingController do
                         "setting_value" => setting_value,
                         "group" => _group} = params) do
     with setting <- params |> Map.put("active", true) |> Map.put("name", setting_name) |> Map.put("value", setting_value),
-      {:ok, setting} <- AdminSetting.changeset(%AdminSetting{}, setting) |> Repo.insert
+      {:ok, setting} <- Setting.changeset(%Setting{}, setting) |> Repo.insert
     do
       # add to redis
-      RedisSetting.find(setting_name)
+      CachedAdminSetting.get(setting_name)
 
       conn |> json(%{success: true, setting: setting})
     else
@@ -81,13 +81,13 @@ defmodule AcsWeb.AdminSettingController do
                             "setting_value" => setting_value,
                             "group" => _group,
                             "active" => active} = setting) do
-    case Repo.get_by(AdminSetting, name: setting_name) do
+    case Repo.get_by(Setting, name: setting_name) do
       nil ->
         # add new
         setting = setting |> Map.put("name", setting_name) |> Map.put("value", setting_value)
-        case AdminSetting.changeset(%AdminSetting{}, setting) |> Repo.insert do
+        case Setting.changeset(%Setting{}, setting) |> Repo.insert do
           {:ok, _} ->
-            RedisSetting.refresh(setting_name)
+            CachedAdminSetting.refresh(setting_name)
             conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.addOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
@@ -95,11 +95,11 @@ defmodule AcsWeb.AdminSettingController do
             conn |> json(%{success: false, i18n_message: "error.server.networkError"})
         end
 
-      %AdminSetting{} = setting ->
+      %Setting{} = setting ->
         # update
-        case AdminSetting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update() do
+        case Setting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update() do
           {:ok, _} ->
-            RedisSetting.refresh(setting_name) 
+            CachedAdminSetting.refresh(setting_name) 
             conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.updateOk"})
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, i18n_message: translate_errors(errors)})
@@ -113,11 +113,11 @@ defmodule AcsWeb.AdminSettingController do
                             "setting_value" => setting_value,
                             "active" => active}) do
 
-    with %AdminSetting{} = setting <- Repo.get(AdminSetting, setting_id),
-      {:ok, _} <- AdminSetting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update()
+    with %Setting{} = setting <- Repo.get(Setting, setting_id),
+      {:ok, _} <- Setting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update()
     do
       # refresh redis
-      RedisSetting.refresh(setting.name)
+      CachedAdminSetting.refresh(setting.name)
 
       conn |> json(%{success: true, i18n_message: "admin.setting.updateOk"})
     else

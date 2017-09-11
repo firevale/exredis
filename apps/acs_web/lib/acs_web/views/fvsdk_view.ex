@@ -1,7 +1,7 @@
 defmodule AcsWeb.FVSdkView do
   use AcsWeb, :view
 
-  alias Acs.RedisApp
+  alias Acs.Apps.App
 
   @custom_iap_config Application.get_env(:acs, :custom_iap, [])
 
@@ -29,7 +29,7 @@ defmodule AcsWeb.FVSdkView do
       @android_custom_iap_channels channels 
   end
 
-  def render("app_info.ios.3.json", %{app: %RedisApp{} = app, sdk: sdk}) do 
+  def render("app_info.ios.3.json", %{app: %App{} = app, sdk: sdk}) do 
     goods = transform_goods(app.goods, sdk)
     %{success: true,
       use_custom_iap: @ios_custom_iap,
@@ -45,7 +45,7 @@ defmodule AcsWeb.FVSdkView do
       goods: goods
      }
   end
-  def render("app_info.android.3.json", %{app: %RedisApp{} = app, sdk: sdk}) do 
+  def render("app_info.android.3.json", %{app: %App{} = app, sdk: sdk}) do 
     goods = transform_goods(app.goods, sdk)
     %{success: true,
       use_custom_iap: @android_custom_iap,
@@ -68,7 +68,7 @@ defmodule AcsWeb.FVSdkView do
      }
   end
 
-  def render("app_info.ios.json", %{app: %RedisApp{} = app}) do 
+  def render("app_info.ios.json", %{app: %App{} = app}) do 
     %{
       success: true,
       use_custom_iap: @ios_custom_iap,
@@ -76,7 +76,7 @@ defmodule AcsWeb.FVSdkView do
       goods: transform_app_goods_old(app)      
     }
   end
-  def render("app_info.android.json", %{app: %RedisApp{} = app}) do 
+  def render("app_info.android.json", %{app: %App{} = app}) do 
     %{
       success: true,
       use_custom_iap: @android_custom_iap,
@@ -97,7 +97,7 @@ defmodule AcsWeb.FVSdkView do
     end) |> Enum.into(%{})
   end
 
-  defp transform_app_goods_old(%RedisApp{} = app) do 
+  defp transform_app_goods_old(%App{} = app) do 
     app.goods |> Enum.map(fn({id, goods}) ->
       {id, %{id: id,
              currency: app.currency,

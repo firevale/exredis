@@ -1,8 +1,8 @@
 defmodule AcsWeb.AdminUserController do
   use AcsWeb, :controller
-  alias Acs.AdminUser
-  alias Acs.RedisUser
-  alias Acs.RedisAdminUser
+  alias Acs.Admin.AdminUser
+  alias Acs.Cache.CachedUser
+  alias Acs.Cache.CachedAdminUser
 
   def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
     queryAdminUser = from au in AdminUser,
@@ -19,16 +19,16 @@ defmodule AcsWeb.AdminUserController do
   end
 
   def get_current_user_level(%Plug.Conn{private: %{ acs_admin_id: acs_admin_id}} = conn, _) do
-    level = RedisAdminUser.get_admin_level(acs_admin_id, nil) 
+    level = CachedAdminUser.get_admin_level(acs_admin_id, nil) 
     conn |> json(%{success: true, level: level})
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
                     %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
-    if(RedisAdminUser.get_admin_level(admin_id, nil) == 1) do
+    if(CachedAdminUser.get_admin_level(admin_id, nil) == 1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
-    if(level == 2 and RedisAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
+    if(level == 2 and CachedAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     else 
       queryCount = from au in AdminUser, select: count(1), where: au.app_id == ^app_id and au.user_id == ^admin_id
@@ -39,7 +39,7 @@ defmodule AcsWeb.AdminUserController do
           new_user = %{user_id: admin_id, account_id: account_id, admin_level: level, active: true, app_id: app_id}
           case AdminUser.changeset(%AdminUser{}, new_user) |> Repo.insert do
             {:ok, _new_admin_user} ->
-              RedisAdminUser.refresh(admin_id, app_id)
+              CachedAdminUser.refresh(admin_id, app_id)
               AdminController.add_operate_log(acs_admin_id, app_id, "add_admin_user", new_user)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
             {:error, what} ->
@@ -105,12 +105,12 @@ defmodule AcsWeb.AdminUserController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.userNotExist"})
       %AdminUser{} = user ->
-        if(user.admin_level == 2 and RedisAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
+        if(user.admin_level == 2 and CachedAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
             conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         else
           case Repo.delete(user) do
             {:ok, _} ->
-              RedisAdminUser.refresh(user.id, user.app_id)
+              CachedAdminUser.refresh(user.id, user.app_id)
               AdminController.add_operate_log(acs_admin_id, app_id, "delete_admin_user", params)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
             {:error, %{errors: errors}} ->

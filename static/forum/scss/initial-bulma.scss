@@ -16,6 +16,10 @@ $info: $orange;
 $success: $blue;
 $warning: $red;
 $danger: $red;
+$light: $white !default;
+$dark: $grey-darker !default;
+$light-invert: $dark !default;
+$dark-invert: $light !default;
 $size-1: 3rem;
 $size-2: 2.5rem;
 $size-3: 2rem;
@@ -25,6 +29,7 @@ $size-6: 1rem;
 $size-7: 0.85rem;
 $size-small:0.85rem;
 $size-normal:$size-6;
+$size-medium: $size-5;
 $weight-light: 300;
 $weight-normal: 400;
 $weight-medium: 500;
@@ -165,6 +170,42 @@ $column-gap: 0; //无效？？
   &.is-gapless {
     &:not(:last-child) {
       margin-bottom: 0rem !important;
+    }
+  }
+}
+
+//modal
+$modal-background-background-color: rgba($black, 0.4);
+$modal-content-margin-mobile:10px;
+$modal-close-top: 5px;
+$modal-close-right: 5px;
+.modal {
+  .modal-content {
+    padding: 2rem;
+    border-radius: 5px;
+    background: rgba($white, 0.9);
+    &.is-menu {
+      align-self: flex-end;
+      padding: 0;
+      margin-bottom: 5px;
+      ul {
+        font-size: $size-medium;
+        text-align: center;
+        li {
+          height: 4rem;
+          line-height: 4rem;
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba($black, 0.1);
+          }
+        }
+      }
+    }
+    .modal-close {
+      position: absolute !important;
+      &:after,
+      &:before {
+        background-color: $light-invert;
+      }
     }
   }
 }

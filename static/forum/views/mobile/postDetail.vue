@@ -74,12 +74,12 @@
             <div class="card-content">
               <div class="control">
                 <label class="radio">
-                  <input type="radio" name="member">  剧情还原
+                  <input type="radio" name="member"> 剧情还原
                 </label>
               </div>
               <div class="control">
                 <label class="radio">
-                  <input type="radio" name="member">  剧情还原
+                  <input type="radio" name="member"> 剧情还原
                 </label>
               </div>
             </div>
@@ -90,32 +90,32 @@
             </div>
           </div>
           <div class="card vote">
-              <header class="card-header">
-                <p class="card-header-title">
-                  本次测试中您最满意的地方？（多选)
-                </p>
-              </header>
-              <div class="card-content">
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" name="member">  剧情还原
-                  </label>
-                </div>
-                <div class="control">
-                  <label class="checkbox">
-                    <input type="checkbox" name="member">  剧情还原
-                  </label>
-                </div>
+            <header class="card-header">
+              <p class="card-header-title">
+                本次测试中您最满意的地方？（多选)
+              </p>
+            </header>
+            <div class="card-content">
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" name="member"> 剧情还原
+                </label>
               </div>
-              <div class="card-footer">
-                <div class="card-footer-item">
-                  <a class="button is-link">投票</a>
-                </div>
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" name="member"> 剧情还原
+                </label>
               </div>
             </div>
+            <div class="card-footer">
+              <div class="card-footer-item">
+                <a class="button is-link">投票</a>
+              </div>
+            </div>
+          </div>
           <div class="is-relative">
-            <a class="button is-link">举报</a>
-            <a class="button is-link is-right">
+            <a class="button is-link" @click="report">举报</a>
+            <a class="button is-link is-right" @click="favorite">
               <span class="icon is-small">
                 <i class="fa fa-heart-o"></i>
               </span>
@@ -210,6 +210,8 @@ import {
   mapActions
 } from 'vuex'
 
+import modalDialog from '../../components/modal'
+
 import postDetailView from '../../components/postDetailView.vue'
 import postCommentView from '../../components/postCommentView.vue'
 
@@ -246,6 +248,16 @@ export default {
     ...mapActions([
       'setCurrentPostTitle'
     ]),
+    report() {
+      modalDialog.showModal({
+        menus: ["垃圾广告", "色情信息", "垃圾广告", "垃圾广告", "垃圾广告"],
+      })
+    },
+    favorite(){
+      modalDialog.showModal({
+        message: "垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息"
+      })
+    },
 
     onItemDelete(index) {
       //this.totalRecords--;

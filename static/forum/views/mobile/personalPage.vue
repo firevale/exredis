@@ -14,10 +14,10 @@
           </div>
           <div class="item-right has-text-top">
             <p class="title">
-              <router-link class="button is-primary is-thickness has-radius" :to="{name: 'editResident'}"><small>个人资料</small></router-link>
+              <router-link class="button is-primary is-small" :to="{name: 'myProfile'}">个人资料</router-link>
             </p>
             <p class="title">
-              <router-link class="button is-primary is-thickness has-radius" :to="{name: 'editResident'}"><small>我的消息</small></router-link>
+              <router-link class="button is-primary is-small" :to="{name: 'myMessage'}">我的消息</router-link>
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@
                 为什么猪女会这么打？ 第一个原因
               </p>
             </div>
-            <p class="item-right  has-text-bottom">
+            <p class="item-right has-text-bottom">
               <i class="icon icon-remove" /><small><strong>删除</strong></small>
             </p>
           </div>

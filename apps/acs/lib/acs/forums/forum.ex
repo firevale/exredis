@@ -4,7 +4,9 @@ defmodule Acs.Forums.Forum do
   alias Acs.Forums.Forum
 
   @derive {Poison.Encoder, except: [:app, :__meta__]}
+  @primary_key false
   schema "forums" do
+    field :id, :string, primary_key: true
     field :title, :string
     field :active, :boolean, default: true
     field :icon, :string

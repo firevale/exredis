@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreateForumsManagers do
     create table(:forums_managers) do
       add :logins, :integer, default: 0  #登录次数
 
-      add :forum_id, references(:forums, on_delete: :nothing)
+      add :forum_id, references(:forums, type: :string, on_delete: :nothing), size: 20
       add :user_id, references(:users, on_delete: :nothing)
 
       timestamps()

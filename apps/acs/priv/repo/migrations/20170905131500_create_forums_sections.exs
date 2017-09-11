@@ -7,7 +7,7 @@ defmodule Acs.Repo.Migrations.CreateForumsSections do
       add :sort, :integer  # 版块排序号
       add :active, :boolean, default: true
 
-      add :forum_id, references(:forums, on_delete: :delete_all)
+      add :forum_id, references(:forums, type: :string, on_delete: :delete_all), size: 20
 
       timestamps()
     end

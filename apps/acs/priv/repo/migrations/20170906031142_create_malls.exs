@@ -2,7 +2,8 @@ defmodule Acs.Repo.Migrations.CreateMalls do
   use Ecto.Migration
 
   def change do
-    create table(:malls) do
+    create table(:malls, primary_key: false) do
+      add :id, :string, size: 20, primary_key: true
       add :title, :string
       add :active, :boolean, default: false
       add :icon, :string

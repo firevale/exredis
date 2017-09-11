@@ -4,7 +4,7 @@
       <div class="card-content is-marginless is-paddingless">
         <div v-for="n in 15" class="is-message">
           <div class="comp-author-info">
-            <figure class="is-large">
+            <figure class="is-large is-relative">
               <img class="is-large" src="~assets/themes/jqxs_mobile/19_03-2_03.png">
               <small class="tip-number">{{n}}</small>
             </figure>

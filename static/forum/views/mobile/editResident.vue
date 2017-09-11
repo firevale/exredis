@@ -4,12 +4,12 @@
       <div class="fields">
         <div class="field">
           <div class="control">
-            <input class="input" type="text" v-model.trim="residentName" @input="handleValidation" :placeholder="$t('forum.placeholder.inputResidentName')">
+            <input class="input is-primary" type="text" v-model.trim="residentName" @input="handleValidation" :placeholder="$t('forum.placeholder.inputResidentName')">
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <input class="input" type="text" v-model.trim="residentId" :placeholder="$t('forum.placeholder.inputResidentId')">
+            <input class="input is-primary" type="text" v-model.trim="residentId" :placeholder="$t('forum.placeholder.inputResidentId')">
           </div>
         </div>
         <div class="field" v-show="errorHint">
@@ -25,7 +25,7 @@
         </div>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" type="submit" class="button is-primary is-submit is-fullwidth has-radius" :disabled="$v.$invalid"
+            <v-touch tag="button" type="submit" class="button is-primary is-fullwidth has-radius" :disabled="$v.$invalid"
               :class="{'is-disabled': $v.$invalid,
     'is-loading': processing}">
               <span class="title is-white">{{ $t('forum.account.confirm') }}</span>

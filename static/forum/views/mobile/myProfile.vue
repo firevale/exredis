@@ -1,6 +1,6 @@
 <template>
   <div class="my_profile">
-    <div class="card has-divider has-text-centered">
+    <div class="card has-text-centered">
       <div class="card-content">
         <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>
         <p class="title" style="display:flex; align-items: center; justify-content: center;">昵称：
@@ -9,7 +9,7 @@
             &nbsp;&nbsp;<a class="icon icon-edit" @click="editNickName"></a>
           </span>
           <span v-if="editName">
-            <input class="input" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
+            <input class="input is-primary" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
               :value="userInfo.nickname">&nbsp;&nbsp;
           </span>
           <span v-if="editName">
@@ -30,8 +30,8 @@
               <span class="title">{{ $t('forum.account.mobile') }}：{{ mobile }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.mobile" class="button is-primary has-radius is-thickness" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editMobile'}"><small>{{ $t('forum.account.mobile') }}</small></router-link>
+              <router-link v-if="userInfo.mobile" class="button is-primary is-small is-thickness" :to="{name: 'editMobile'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editMobile'}">{{ $t('forum.account.mobile') }}</router-link>
             </div>
           </div>
         </div>
@@ -41,8 +41,8 @@
               <span class="title">{{ $t('forum.account.email') }}：{{ email }}</span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.email" class="button is-primary has-radius is-thickness" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editEmail'}"><small>{{ $t('forum.account.email') }}</small></router-link>
+              <router-link v-if="userInfo.email" class="button is-primary is-small is-thickness" :to="{name: 'editEmail'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editEmail'}">{{ $t('forum.account.email') }}</router-link>
             </div>
           </div>
         </div>
@@ -54,14 +54,14 @@
               </span>
             </div>
             <div class="level-right">
-              <router-link v-if="userInfo.resident_id" class="button is-primary has-radius is-thickness" :to="{name: 'editResident'}"><small>{{ $t('forum.account.change') }}</small></router-link>
-              <router-link v-else class="button is-primary has-radius is-thickness" :to="{name: 'editResident'}"><small>{{ $t('forum.account.residentInfo') }}</small></router-link>
+              <router-link v-if="userInfo.resident_id" class="button is-primary is-small is-thickness" :to="{name: 'editResident'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editResident'}">{{ $t('forum.account.residentInfo') }}</router-link>
             </div>
           </div>
         </div>
         <div class="level is-mobile has-text-centered">
           <div class="level-item">
-            <router-link class="button is-primary has-radius logout" :to="{name: 'editResident'}"><small>退出账号</small></router-link>
+            <router-link class="button is-primary is-small logout" :to="{name: 'editResident'}">退出账号</router-link>
           </div>
         </div>
       </div>

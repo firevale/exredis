@@ -22,12 +22,6 @@
     }
   }
 
-  .test {
-    height: virtual-m-rem(130);
-    flex-shrink: 0;
-    background: $black;
-  }
-
   .load-more {
     width: 100%;
     margin: virtual-m-rem(40) 0;
@@ -140,8 +134,7 @@
       top: 0;
       bottom: 0;
     }
-    .vote-item {
-    }
+    .vote-item {}
     .comment {
       &:not(:last-child) {
         border-bottom: 1px solid $grey;

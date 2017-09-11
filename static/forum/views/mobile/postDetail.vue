@@ -30,6 +30,41 @@
           <div class="content">
             最『宏大』的一个陷阱应该是，建立了把消费水平与个人成功、自我认同、和人生幸福划等号的价值体系。因为中国教育体系中对成功、幸福、梦想等关键话题的失语，这些关键词的定义权便被拱手送给了网红、微商、和购物导流网站。你没有梦想的时候，旅游公众号告
           </div>
+          <div class="card vote">
+            <header class="card-header">
+              <p class="card-header-title">
+                本次测试中您最满意的地方？（己投票)
+              </p>
+            </header>
+            <div class="card-content">
+              <div class="vote-item columns is-mobile is-gapless">
+                <p class="column is-three-quarters">
+                  剧情还原
+                  <br/>
+                  <progress class="progress is-info" value="85" max="100">15%</progress>
+                </p>
+                <p class="column is-one-quarters has-text-right">
+                  <br/> 3188票 41%
+                </p>
+              </div>
+              <div class="vote-item columns is-mobile">
+                <p class="column is-three-quarters">
+                  剧情还原
+                  <br/>
+                  <progress class="progress is-info" value="45" max="100">15%</progress>
+                </p>
+                <p class="column is-one-quarters has-text-right">
+                  <br/> 3188票 41%
+                </p>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-footer-item">
+                己投票
+                <!-- <a class="button is-link">投票</a> -->
+              </div>
+            </div>
+          </div>
           <div class="is-relative">
             <a class="button is-link">举报</a>
             <a class="button is-link is-right">

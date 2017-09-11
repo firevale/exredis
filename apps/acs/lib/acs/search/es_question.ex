@@ -1,6 +1,5 @@
 defmodule Acs.Search.ESQuestion do 
     require Elasticsearch
-    alias Acs.Apps.AppQuestion
 
     def index(contact) do
       Elasticsearch.index(%{

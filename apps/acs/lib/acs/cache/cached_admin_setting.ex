@@ -31,7 +31,7 @@ defmodule Acs.Cache.CachedAdminSetting do
     case Repo.one(query) do
       nil -> nil
 
-      %Setting{value: value} = setting ->
+      %Setting{value: value} ->
         Exredis.setex(key(name), 7200, value)
         Excache.del(key(name))
         value

@@ -2,9 +2,6 @@ defmodule AcsWeb.FVSdkController do
   use     AcsWeb, :controller
   use     Timex
 
-  alias   Acs.RedisDeviceInfo
-  alias   Acs.Stats.DeviceInfo
-
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version
@@ -24,7 +21,7 @@ defmodule AcsWeb.FVSdkController do
         case get_req_header(conn, "acs-device-memory") do 
           [] -> :ok
           [mem] ->
-            case RedisDeviceInfo.find(v) do 
+            case CachedDeviceInfo.get(v) do 
               nil ->
                 DeviceInfo.changeset(%DeviceInfo{}, %{id: v, total_mem_size: mem}) |> StatsRepo.insert
               device_info ->
@@ -34,7 +31,7 @@ defmodule AcsWeb.FVSdkController do
         v
     end
 
-    case RedisDevice.find(device_id) do 
+    case CachedDevice.get(device_id) do 
       nil -> 
         Device.changeset(%Device{}, %{id: device_id, 
           model: device_model, 
@@ -49,13 +46,13 @@ defmodule AcsWeb.FVSdkController do
   end
   defp record_device_info(conn, _options), do: conn
 
-  def get_app_info(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
+  def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app,
                                          acs_platform: "ios",
                                          acs_api_version: "3"}} = conn,
                     %{"sdk" => sdk}) do
     conn |> render("app_info.ios.3.json", %{app: app, sdk: sdk})
   end
-  def get_app_info(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
+  def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app,
                                          acs_platform: "android",
                                          acs_api_version: "3"}} = conn,
                     %{"sdk" => sdk}) do
@@ -63,11 +60,11 @@ defmodule AcsWeb.FVSdkController do
   end
 
   # 兼容旧版本sdk
-  def get_app_info(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn,
+  def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                    %{"platform" => "ios"}) do
     conn |> render("app_info.ios.json", %{app: app})
   end
-  def get_app_info(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn,
+  def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                    %{"platform" => "android"}) do
     conn |> render("app_info.android.json", %{app: app})
   end
@@ -84,7 +81,7 @@ defmodule AcsWeb.FVSdkController do
   end
 
   # 兼容旧版fvsdk, 客户端每5分钟汇报一次
-  def report_activity(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
+  def report_activity(%Plug.Conn{private: %{acs_app: %App{} = app,
                                             acs_device_id: device_id,
                                             acs_platform: platform}} = conn,
                      %{"user_id" => user_id,

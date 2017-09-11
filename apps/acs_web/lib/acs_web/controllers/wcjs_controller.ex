@@ -2,11 +2,11 @@ defmodule AcsWeb.WcjsController do
   use AcsWeb, :controller
 
   alias Wcp.ApiJs
-  alias Acs.AppWcpConfig
-  alias Acs.RedisAppWcpConfig
+  alias Acs.Wcp.AppWcpConfig
+  alias Acs.Cache.CachedAppWcpConfig
 
   def signature(conn, %{"app_id" => app_id, "wcp_app_id" => wcp_app_id, "url" => url}) do 
-    case RedisAppWcpConfig.find(app_id) do 
+    case CachedAppWcpConfig.get(app_id) do 
       %AppWcpConfig{wcp_app_id: ^wcp_app_id} ->  
         case ApiJs.ticket(app_id) do 
           nil ->

@@ -1,6 +1,6 @@
 defmodule AcsWeb.ForumRouter do
   use AcsWeb, :router
-  use LogAlias
+  use Utils.LogAlias
 
   scope "/", AcsWeb do
     pipe_through :forum

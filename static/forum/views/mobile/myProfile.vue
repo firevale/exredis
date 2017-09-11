@@ -66,13 +66,6 @@
         </div>
       </div>
     </div>
-    <div v-show="visible" class="mask" @click="closeTipMsg">
-      <div class="tip-message has-radius">
-        <p class="title">{{$t('forum.placeholder.headportraitTips')}}</p>
-        <div class="icon icon-close close">
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -81,6 +74,7 @@ import {
   mapActions
 } from 'vuex'
 
+import modalDialog from '../../components/modal'
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'
@@ -89,7 +83,6 @@ import nativeApi from 'common/js/nativeApi'
 export default {
   data() {
     return {
-      visible: false,
       editName: false,
       nickname: '',
       tipError: false
@@ -125,10 +118,9 @@ export default {
     ...mapActions(['updateUserNickname']),
 
     showTipMsg: function() {
-      this.visible = true
-    },
-    closeTipMsg: function() {
-      this.visible = false
+      modalDialog.showMessage(
+        this.$t('forum.placeholder.headportraitTips')
+      )
     },
     editNickName: function() {
       this.editName = true

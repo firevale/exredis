@@ -13,18 +13,6 @@
   height: virtual-m-rem(210);
 }
 
-.mask {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100%;
-  display: block;
-  background: rgba(0, 0, 0, 0.4);
-}
-
 .is-white {
   color: $white;
 }
@@ -159,24 +147,6 @@
     span {
       padding-left: .189rem;
     }
-  }
-  .tip-message {
-    position: fixed;
-    top: 35vh;
-    left: 6vw;
-    height: 10rem;
-    width: 88vw;
-    padding-left: 4.5rem;
-    padding-right: 4.5rem;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  .close {
-    position: absolute;
-    top: .756rem;
-    right: .756rem;
   }
 }
 

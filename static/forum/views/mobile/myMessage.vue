@@ -14,7 +14,7 @@
               <p class="title">
                 今天去不去LOL辅导课</p>
             </div>
-            <p class="item-right  has-text-top">
+            <p class="item-right has-text-top">
               <span class="subtitle">2017-09-12 12:33</span>
             </p>
           </div>

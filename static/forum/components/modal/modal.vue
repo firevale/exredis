@@ -3,7 +3,7 @@
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content" :class="{'is-menu': menus.length>0}">
       <ul>
-        <li v-for="menu in menus">{{menu}}</li>
+        <li v-for="menu in menus" @click="">{{menu}}</li>
       </ul>
       <template v-if="message">
         <p class="title"> {{message}}</p>
@@ -29,8 +29,7 @@ export default {
       default: []
     },
     message: '',
-    selectedValue: undefined,
-    onOk: {
+    onSelect: {
       type: Function,
       default: undefined
     },
@@ -51,11 +50,10 @@ export default {
   },
 
   methods: {
-    ok(menuItem) {
-      this.selectedValue = menuItem.value
+    select(menuItem) {
       this.visible = false
-      if (typeof this.onOk == 'function') {
-        this.onOk(menuItem)
+      if (typeof this.onSelect == 'function') {
+        this.onSelect(menuItem)
       }
     },
 

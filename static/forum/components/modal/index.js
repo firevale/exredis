@@ -3,10 +3,10 @@ import Vue from 'vue'
 const ModalDialog = Vue.extend(require('./modal'))
 
 export default {
-  showModal: function(propsData) {
-    return new ModalDialog({ el: document.createElement('div'), propsData, })
+  showMenu: function(menus, onSelect) {
+    return new ModalDialog({ el: document.createElement('div'), propsData: { menus, onSelect } })
   },
-  show: function(propsData) {
-    return new ModalDialog({ el: document.createElement('div'), propsData, })
+  showMessage: function(message) {
+    return new ModalDialog({ el: document.createElement('div'), propsData: { message } })
   }
 }

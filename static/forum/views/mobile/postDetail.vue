@@ -114,7 +114,7 @@
             </div>
           </div>
           <div class="is-relative">
-            <a class="button is-link" @click="report">举报</a>
+            <a class="button is-link" @click="showReport">举报</a>
             <a class="button is-link is-right" @click="favorite">
               <span class="icon is-small">
                 <i class="fa fa-heart-o"></i>
@@ -248,15 +248,16 @@ export default {
     ...mapActions([
       'setCurrentPostTitle'
     ]),
-    report() {
-      modalDialog.showModal({
-        menus: ["垃圾广告", "色情信息", "垃圾广告", "垃圾广告", "垃圾广告"],
-      })
+    showReport() {
+      modalDialog.showMenu(
+        ["垃圾广告", "色情信息", "垃圾广告", "垃圾广告", "垃圾广告"], this.report
+      )
     },
-    favorite(){
-      modalDialog.showModal({
-        message: "垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息"
-      })
+    report(menu) {
+      alert(menu)
+    },
+    favorite() {
+      modalDialog.showMessage("垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息")
     },
 
     onItemDelete(index) {

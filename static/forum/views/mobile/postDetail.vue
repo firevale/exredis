@@ -65,6 +65,54 @@
               </div>
             </div>
           </div>
+          <div class="card vote">
+            <header class="card-header">
+              <p class="card-header-title">
+                本次测试中您最满意的地方？（单选)
+              </p>
+            </header>
+            <div class="card-content">
+              <div class="control">
+                <label class="radio">
+                  <input type="radio" name="member">  剧情还原
+                </label>
+              </div>
+              <div class="control">
+                <label class="radio">
+                  <input type="radio" name="member">  剧情还原
+                </label>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-footer-item">
+                <a class="button is-link">投票</a>
+              </div>
+            </div>
+          </div>
+          <div class="card vote">
+              <header class="card-header">
+                <p class="card-header-title">
+                  本次测试中您最满意的地方？（多选)
+                </p>
+              </header>
+              <div class="card-content">
+                <div class="control">
+                  <label class="checkbox">
+                    <input type="checkbox" name="member">  剧情还原
+                  </label>
+                </div>
+                <div class="control">
+                  <label class="checkbox">
+                    <input type="checkbox" name="member">  剧情还原
+                  </label>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="card-footer-item">
+                  <a class="button is-link">投票</a>
+                </div>
+              </div>
+            </div>
           <div class="is-relative">
             <a class="button is-link">举报</a>
             <a class="button is-link is-right">

@@ -1,4 +1,4 @@
-defmodule AcsWeb.UserSocket do
+defmodule AcsWeb.AppAdminSocket do
   use Phoenix.Socket
   use LogAlias
 
@@ -6,7 +6,7 @@ defmodule AcsWeb.UserSocket do
 
   ## Channels
   # channel "room:*", Acs.RoomChannel
-  channel "app:*", AcsWeb.AppChannel
+  channel "admin.app:*", AcsWeb.AppAdminChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -24,36 +24,18 @@ defmodule AcsWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
 
-  def connect(%{"app_id" => app_id}, socket) do 
-    case RedisApp.find(app_id) do 
-      %{id: ^app_id} = _app ->
-        {:ok, socket |> assign(:app_id, app_id)}
-      _ ->
-        :error
-    end
-  end
-
-  # def connect(%{"access_token_id" => token_id,
-  #               "device_id" => device_id,
-  #               "device_model" => device_model, 
-  #               "os_ver" => os_ver, 
-  #               "platform" => platform}, socket) do 
-
-  #   case RedisAccessToken.find(token_id) do 
-  #     %{device_id: ^device_id} = token ->
-  #       {:ok, socket |> assign(:user_id, token.user_id)
-  #                    |> assign(:app_id, token.app_id)
-  #                    |> assign(:device_id, device_id)
-  #                    |> assign(:os_ver, os_ver)
-  #                    |> assign(:platform, platform)}
+  # def connect(%{"app_id" => app_id}, socket) do 
+  #   case RedisApp.find(app_id) do 
+  #     %{id: ^app_id} = _app ->
+  #       {:ok, socket |> assign(:app_id, app_id)}
   #     _ ->
   #       :error
   #   end
   # end
 
-  def connect(params, _socket) do
-    d "websocket connection params: #{inspect params, pretty: true}"
-    :error
+  def connect(params, socket) do
+    d "receive admin socket connection request..."
+    {:ok, socket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -66,6 +48,6 @@ defmodule AcsWeb.UserSocket do
   #     AcsWeb.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(%{assigns: %{device_id: device_id}}), do: "user_socket:#{device_id}" 
+  def id(%{assigns: %{user_id: user_id}}), do: "user_socket:#{user_id}" 
   def id(_socket), do: nil
 end

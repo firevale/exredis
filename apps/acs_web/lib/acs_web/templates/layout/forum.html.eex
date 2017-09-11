@@ -10,8 +10,8 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <link href="<%= static_url(@conn, "/css/app_commons.css") %>" rel="stylesheet"/>
-    <link href="<%= static_url(@conn, "/css/app.css") %>" rel="stylesheet"/>
+    <link href="<%= static_url(@conn, "/css/forum_commons.css") %>" rel="stylesheet"/>
+    <link href="<%= static_url(@conn, "/css/forum.css") %>" rel="stylesheet"/>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">
@@ -43,13 +43,13 @@
         <% end %>
         show_logout: <%= @conn.params["can_log_out"] == "1" %>,
         imagesUrl: '<%= static_url(@conn, "/images/") %>',
-        defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
+        defaultAvatarUrl: '<%= static_url(@conn, "/images/themes/jqxs_mobile/19_03-2_03.png") %>',
         isMobileAccountSupported: <%= @is_mobile_account_supported %>,
         <%= render @view_module, @view_template, assigns %>
       }
     </script>
-    <script src="<%= static_url(@conn, "/js/app_commons.js") %>"></script>
-    <script src="<%= static_url(@conn, "/js/app.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>
+    <script src="<%= static_url(@conn, "/js/forum.js") %>"></script>
   </body>
 </html>
 

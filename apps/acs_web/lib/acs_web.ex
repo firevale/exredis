@@ -20,9 +20,17 @@ defmodule AcsWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: AcsWeb
+      use Utils.LogAlias
+      
       import Plug.Conn
       import AcsWeb.Router.Helpers
       import AcsWeb.Gettext
+
+      require Exredis
+      require Utils
+
+      import Ecto
+      import Ecto.Query
     end
   end
 
@@ -30,6 +38,7 @@ defmodule AcsWeb do
     quote do
       use Phoenix.View, root: "lib/acs_web/templates",
                         namespace: AcsWeb
+      use Utils.LogAlias
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
@@ -40,21 +49,37 @@ defmodule AcsWeb do
       import AcsWeb.Router.Helpers
       import AcsWeb.ErrorHelpers
       import AcsWeb.Gettext
+
+      alias  Utils.JSON
+
+      import Ecto
+      import Ecto.Query
     end
   end
 
   def router do
     quote do
       use Phoenix.Router
+      use Utils.LogAlias
+
       import Plug.Conn
       import Phoenix.Controller
+
+      import AcsWeb.Plugs
+      import AcsWeb.PlugsPipeline
+      import AcsWeb.UploadImagePlugs
     end
   end
 
   def channel do
     quote do
       use Phoenix.Channel
+      use Utils.LogAlias
+
       import AcsWeb.Gettext
+
+      import Ecto
+      import Ecto.Query
     end
   end
 

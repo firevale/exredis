@@ -176,4 +176,62 @@ defmodule Acs.PMallsTest do
       assert %Ecto.Changeset{} = PMalls.change_p_mall_goods(p_mall_goods)
     end
   end
+
+  describe "pmall_task_bars" do
+    alias Acs.PMalls.TaskBar
+
+    @valid_attrs %{}
+    @update_attrs %{}
+    @invalid_attrs %{}
+
+    def task_bar_fixture(attrs \\ %{}) do
+      {:ok, task_bar} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> PMalls.create_task_bar()
+
+      task_bar
+    end
+
+    test "list_pmall_task_bars/0 returns all pmall_task_bars" do
+      task_bar = task_bar_fixture()
+      assert PMalls.list_pmall_task_bars() == [task_bar]
+    end
+
+    test "get_task_bar!/1 returns the task_bar with given id" do
+      task_bar = task_bar_fixture()
+      assert PMalls.get_task_bar!(task_bar.id) == task_bar
+    end
+
+    test "create_task_bar/1 with valid data creates a task_bar" do
+      assert {:ok, %TaskBar{} = task_bar} = PMalls.create_task_bar(@valid_attrs)
+    end
+
+    test "create_task_bar/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = PMalls.create_task_bar(@invalid_attrs)
+    end
+
+    test "update_task_bar/2 with valid data updates the task_bar" do
+      task_bar = task_bar_fixture()
+      assert {:ok, task_bar} = PMalls.update_task_bar(task_bar, @update_attrs)
+      assert %TaskBar{} = task_bar
+    end
+
+    test "update_task_bar/2 with invalid data returns error changeset" do
+      task_bar = task_bar_fixture()
+      assert {:error, %Ecto.Changeset{}} = PMalls.update_task_bar(task_bar, @invalid_attrs)
+      assert task_bar == PMalls.get_task_bar!(task_bar.id)
+    end
+
+    test "delete_task_bar/1 deletes the task_bar" do
+      task_bar = task_bar_fixture()
+      assert {:ok, %TaskBar{}} = PMalls.delete_task_bar(task_bar)
+      assert_raise Ecto.NoResultsError, fn -> PMalls.get_task_bar!(task_bar.id) end
+    end
+
+    test "change_task_bar/1 returns a task_bar changeset" do
+      task_bar = task_bar_fixture()
+      assert %Ecto.Changeset{} = PMalls.change_task_bar(task_bar)
+    end
+  end
 end

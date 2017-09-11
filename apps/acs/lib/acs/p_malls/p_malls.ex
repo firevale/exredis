@@ -293,4 +293,100 @@ defmodule Acs.PMalls do
   def change_p_mall_goods(%PMallGoods{} = p_mall_goods) do
     PMallGoods.changeset(p_mall_goods, %{})
   end
+
+  alias Acs.PMalls.TaskBar
+
+  @doc """
+  Returns the list of pmall_task_bars.
+
+  ## Examples
+
+      iex> list_pmall_task_bars()
+      [%TaskBar{}, ...]
+
+  """
+  def list_pmall_task_bars do
+    Repo.all(TaskBar)
+  end
+
+  @doc """
+  Gets a single task_bar.
+
+  Raises `Ecto.NoResultsError` if the Task bar does not exist.
+
+  ## Examples
+
+      iex> get_task_bar!(123)
+      %TaskBar{}
+
+      iex> get_task_bar!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_task_bar!(id), do: Repo.get!(TaskBar, id)
+
+  @doc """
+  Creates a task_bar.
+
+  ## Examples
+
+      iex> create_task_bar(%{field: value})
+      {:ok, %TaskBar{}}
+
+      iex> create_task_bar(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_task_bar(attrs \\ %{}) do
+    %TaskBar{}
+    |> TaskBar.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a task_bar.
+
+  ## Examples
+
+      iex> update_task_bar(task_bar, %{field: new_value})
+      {:ok, %TaskBar{}}
+
+      iex> update_task_bar(task_bar, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_task_bar(%TaskBar{} = task_bar, attrs) do
+    task_bar
+    |> TaskBar.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a TaskBar.
+
+  ## Examples
+
+      iex> delete_task_bar(task_bar)
+      {:ok, %TaskBar{}}
+
+      iex> delete_task_bar(task_bar)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_task_bar(%TaskBar{} = task_bar) do
+    Repo.delete(task_bar)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking task_bar changes.
+
+  ## Examples
+
+      iex> change_task_bar(task_bar)
+      %Ecto.Changeset{source: %TaskBar{}}
+
+  """
+  def change_task_bar(%TaskBar{} = task_bar) do
+    TaskBar.changeset(task_bar, %{})
+  end
 end

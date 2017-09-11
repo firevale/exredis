@@ -1,10 +1,7 @@
 defmodule Acs.Cache.CachedForumHotPost do
   require Exredis
   use     Utils.LogAlias
-
-  alias   Acs.Repo
-  import  Ecto.Query
-
+  
   alias   Acs.Cache.CachedAdminSetting
 
   @key_base   "acs.forum_hot_post"

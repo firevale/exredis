@@ -3,13 +3,11 @@ defmodule Acs.Cache.CachedUser do
   require Excache
 
   alias   Acs.Repo
-  import  Ecto.Query
-
   alias   Acs.Accounts.User
   alias   Acs.Accounts.UserSdkBinding
 
 
-  @key_base       "acs.user"
+  @key_base    "acs.user"
 
   def get(user_id) when is_integer(user_id) do
     Excache.get!(key(user_id), fallback: fn(redis_key) ->    

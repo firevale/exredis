@@ -14,7 +14,7 @@
                 等级：LV.1烟雨悠悠</p>
             </div>
             <p class="item-right  has-text-bottom">
-              <a class="button is-primary">发消息</a>
+              <a class="button is-primary" href="replyMessage">发消息</a>
             </p>
           </div>
         </div>

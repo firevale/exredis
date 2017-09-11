@@ -58,5 +58,13 @@ export default [{
     path: 'myMessage',
     name: 'myMessage',
     component: require('../views/mobile/myMessage.vue')
+  }, {
+    path: 'newMessage',
+    name: 'newMessage',
+    component: require('../views/mobile/newMessage.vue')
+  }, {
+    path: 'replyMessage',
+    name: 'replyMessage',
+    component: require('../views/mobile/replyMessage.vue')
   }]
 }, ]

@@ -3,6 +3,16 @@
   margin: 0 !important;
 }
 
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $black;
+  width: 100vw;
+  height: virtual-m-rem(210);
+}
+
 .mask {
   position: fixed;
   left: 0;
@@ -23,12 +33,20 @@
   border-radius: virtual-m-rem(10);
 }
 
+.no-border {
+  border: 0;
+}
+
 .no-radius {
   border-radius: 0;
 }
 
 .no-box-shadow {
   box-shadow: none;
+}
+
+.align-items {
+  align-items: center;
 }
 
 .tip-number {
@@ -47,8 +65,10 @@
 
 .button {
   &.is-thickness {
-    width: 4.5rem;
-    height: 1.85rem;
+    width: 5rem;
+  }
+  &.is-blackness {
+    width: 8rem;
   }
 }
 
@@ -60,6 +80,46 @@
     width: virtual-m-rem(150);
     height: virtual-m-rem(80);
     background-image: url("~assets/themes/jqxs_mobile/19_03_03.png");
+  }
+  &.btn-logo {
+    position: absolute;
+    top: - virtual-m-rem(50);
+    left: virtual-m-rem(150);
+    width: virtual-m-rem(230);
+    height: virtual-m-rem(230);
+    background-image: url("~assets/themes/jqxs_mobile/icon1.png");
+  }
+  &.btn-title {
+    position: absolute;
+    top: virtual-m-rem(50);
+    left: virtual-m-rem(410);
+    width: virtual-m-rem(350);
+    height: virtual-m-rem(109);
+    background-image: url("~assets/themes/jqxs_mobile/title.png");
+  }
+  &.btn-download {
+    position: absolute;
+    top: virtual-m-rem(20);
+    right: virtual-m-rem(20);
+    width: virtual-m-rem(413);
+    height: virtual-m-rem(170);
+    background-image: url("~assets/themes/jqxs_mobile/download.png");
+  }
+  &.btn-footer-close {
+    position: absolute;
+    top: virtual-m-rem(72.5);
+    left: virtual-m-rem(38);
+    width: virtual-m-rem(76);
+    height: virtual-m-rem(65);
+    background-image: url("~assets/themes/jqxs_mobile/df_03.png");
+  }
+  &.btn-back-top {
+    position: fixed;
+    bottom: virtual-m-rem(220);
+    right: virtual-m-rem(20);
+    width: virtual-m-rem(120);
+    height: virtual-m-rem(120);
+    background-image: url("~assets/themes/jqxs_mobile/Group_2.png");
   }
 }
 
@@ -78,7 +138,7 @@
   }
 }
 
-.my_profile {
+.my-profile {
   .article {
     padding: 1.2rem .3rem;
     &:not(:last-child) {
@@ -121,11 +181,27 @@
 }
 
 .my-message {
-  .is-message {
+  .message-item {
     padding: .7rem .7rem;
     &:not(:last-child) {
       border-bottom: 1px solid $grey;
     }
+  }
+}
+
+.common-message {
+  .spacing {
+    padding-top: 2.5rem;
+    padding-bottom: 1rem;
+  }
+  .content {
+    &:not(:last-child) {
+      border: 1px solid $grey
+    }
+  }
+  .icon {
+    margin-left: virtual-m-rem(20);
+    margin-right: virtual-m-rem(10);
   }
 }
 

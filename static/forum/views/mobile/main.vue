@@ -13,6 +13,13 @@
     <transition>
       <router-view class="content-container flex-take-rest"> </router-view>
     </transition>
+    <div v-show="showFooterBar" class="footer-bar">
+      <a class="buttons btn-footer-close" @click="closeFooter"></a>
+      <a class="buttons btn-logo"></a>
+      <a class="buttons btn-title"></a>
+      <a class="buttons btn-download"></a>
+    </div>
+    <a class="buttons btn-back-top" href="#"></a>
   </div>
 </template>
 <script>
@@ -31,6 +38,7 @@ export default {
     return {
       inApp: window.acsConfig.inApp,
       canGoBack: false,
+      showFooterBar: true,
     }
   },
 
@@ -88,6 +96,9 @@ export default {
           name: routerName
         })
       })
+    },
+    closeFooter: function() {
+      this.showFooterBar = false
     }
   },
 

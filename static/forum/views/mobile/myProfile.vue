@@ -1,5 +1,5 @@
 <template>
-  <div class="my_profile">
+  <div class="my-profile">
     <div class="card has-text-centered">
       <div class="card-content">
         <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>

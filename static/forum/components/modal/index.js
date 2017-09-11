@@ -7,6 +7,6 @@ export default {
     return new ModalDialog({ el: document.createElement('div'), propsData: { menus, onSelect } })
   },
   showMessage: function(message) {
-    return new ModalDialog({ el: document.createElement('div'), propsData: { message } })
+    return new ModalDialog({ el: document.createElement('div'), propsData: { menus: [], message } })
   }
 }

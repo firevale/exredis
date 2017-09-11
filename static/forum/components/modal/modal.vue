@@ -3,7 +3,7 @@
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content" :class="{'is-menu': menus.length>0}">
       <ul>
-        <li v-for="menu in menus" @click="">{{menu}}</li>
+        <li v-for="menu in menus" @click="select(menu)">{{menu}}</li>
       </ul>
       <template v-if="message">
         <p> {{message}}</p>

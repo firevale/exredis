@@ -53,7 +53,7 @@ defmodule AcsWeb.MallController do
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound", i18n_message_object: %{mall_id: mall_id}})
 
       %Mall{} = mall ->
-        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "mall_icons")
+        {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "mall_icons")
         Mall.changeset(mall, %{icon: icon_path}) |> Repo.update!
         conn |> json(%{success: true, icon_url: icon_path})
       _ ->
@@ -156,7 +156,7 @@ defmodule AcsWeb.MallController do
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
       %MallGoods{} = goods ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         MallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         CachedMall.refresh(goods)
         AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
@@ -176,7 +176,7 @@ defmodule AcsWeb.MallController do
     reformat: "jpg"
   ] when action == :update_goods_content_pic
   def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_pics/#{goods_id}")
+    {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_pics/#{goods_id}")
     conn |> json(%{success: true, link: image_path})
   end
 

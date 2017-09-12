@@ -88,8 +88,8 @@ defmodule AcsWeb.SdkPay.AppOrderController do
                         }
 
         sign_string = post_params |> Enum.sort |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
-        vivo_cp_key_md5 = Utils.md5_sign(vivo_cp_key)
-        sign = Utils.md5_sign(sign_string <> "&" <> vivo_cp_key_md5)
+        vivo_cp_key_md5 = Crypto.md5_sign(vivo_cp_key)
+        sign = Crypto.md5_sign(sign_string <> "&" <> vivo_cp_key_md5)
         post_params = Map.put(post_params, "signMethod", "MD5")
         post_params = Map.put(post_params, "signature", sign)
 
@@ -158,7 +158,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
                         }
 
         sign_string = meizu_params |> Enum.sort  |> Enum.map_join("&", fn({k, v}) -> "#{k}=#{v}" end)
-        sign = Utils.md5_sign(sign_string <> ":" <> meizu_app_secret)
+        sign = Crypto.md5_sign(sign_string <> ":" <> meizu_app_secret)
         meizu_params = Map.put(meizu_params, "sign_type", "md5")
         meizu_params = Map.put(meizu_params, "sign", sign)
 

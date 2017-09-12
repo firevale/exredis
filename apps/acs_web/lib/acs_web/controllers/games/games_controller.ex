@@ -181,7 +181,7 @@ defmodule AcsWeb.GamesController do
         conn |> json(%{success: false, i18n_message: "error.server.newsNotFound", i18n_message_object: %{news_id: news_id}})
 
       %AppNews{} = news ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "news_pics/#{news_id}")
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "news_pics/#{news_id}")
         AppNews.changeset(news, %{pic: image_path}) |> Repo.update!
         conn |> json(%{success: true, pic: image_path})
       _ ->
@@ -199,7 +199,7 @@ defmodule AcsWeb.GamesController do
     ] when action == :upload_news_pic
   def upload_news_pic(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(
+      DeployUploadedFile.deploy_image_file_return_size(
         from: image_file_path, 
         to: "news_pics/#{app_id}", 
         low_quality: true)

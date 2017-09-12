@@ -1,6 +1,8 @@
 defmodule AcsWeb.ForumController do
   use AcsWeb, :controller
 
+  alias Emservice.NeteaseDun
+
   plug :fetch_app_id
   plug :fetch_session_user_id  
   plug :fetch_session_user
@@ -819,7 +821,7 @@ defmodule AcsWeb.ForumController do
       x when x in [nil, "undefined", "null"] ->
         %{success: true}
 
-      title -> case SDKNeteaseDun.check_txt(title) do 
+      title -> case NeteaseDun.check_txt(title) do 
         {:error, label, info} ->
           if label do
             %{success: false, i18n_message: "forum.newPost.titleFilterFail"}
@@ -832,7 +834,7 @@ defmodule AcsWeb.ForumController do
     end
     
     check_out = case check_out.success do
-      true -> case SDKNeteaseDun.check_txt(conn.params["content"]) do 
+      true -> case NeteaseDun.check_txt(conn.params["content"]) do 
           {:error, label, info} ->
             if label do
               %{success: false, i18n_message: "forum.newPost.contentFilterFail"}
@@ -865,7 +867,7 @@ defmodule AcsWeb.ForumController do
         %{success: false, i18n_message: "forum.newPost.imageFilterFail"}
       
       :null ->
-        case SDKNeteaseDun.check_img(images) do 
+        case NeteaseDun.check_img(images) do 
           {:error, label, info} ->
             CachedNeteaseDun.refresh(image_path)
 

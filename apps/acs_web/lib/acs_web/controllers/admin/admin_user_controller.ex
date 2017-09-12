@@ -5,27 +5,12 @@ defmodule AcsWeb.AdminUserController do
   alias Acs.AdminAuth
   alias Acs.Accounts
 
-  def search_user(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
-    query = from au in AdminUser,
-      select: au.user_id,
-      where: au.admin_level == 1 or au.app_id == ^app_id
-
-    admin_user_ids = Repo.all(query)
-
-    query = from user in User,
-            select: map(user, [:id, :nickname, :email, :mobile, :inserted_at]),
-            where: not user.id in ^admin_user_ids,
-            where: like(user.email, ^"%#{keyword}%") or like(user.mobile, ^"%#{keyword}%"),
-            order_by: [desc: user.inserted_at]
-
-    users = Repo.all(query)
-
-    conn |> json(%{success: true, users: users})
+  def search_user(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"keyword" => keyword}) do
+    conn |> json(%{success: true, users: Admin.search_user(app_id, keyword)})
   end
 
   def get_current_user_level(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, _) do
-    level = AdminAuth.get_admin_level(acs_admin_id, nil) 
-    conn |> json(%{success: true, level: level})
+    conn |> json(%{success: true, level: AdminAuth.get_admin_level(acs_admin_id, nil)})
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 

@@ -9,6 +9,8 @@ defmodule Acs.Admin do
   alias Acs.Admin.AdminUser
   alias Acs.Admin.OpLog
 
+  alias Acs.Accounts.User
+
   def add_admin_user(app_id, user_id, email, level) do 
     admin_user = Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) || %AdminUser{}
     AdminUser.changeset(admin_user, %{
@@ -57,6 +59,22 @@ defmodule Acs.Admin do
         where: au.active == true,
         where: au.admin_level >= 1,
         select: au.app_id
+
+    Repo.all(query)
+  end
+
+  def search_user(app_id, keyword) do 
+    query = from au in AdminUser,
+      select: au.user_id,
+      where: au.admin_level == 1 or au.app_id == ^app_id
+
+    admin_user_ids = Repo.all(query)
+
+    query = from user in User,
+            select: map(user, [:id, :nickname, :email, :mobile, :inserted_at]),
+            where: not user.id in ^admin_user_ids,
+            where: like(user.email, ^"%#{keyword}%") or like(user.mobile, ^"%#{keyword}%"),
+            order_by: [desc: user.inserted_at]
 
     Repo.all(query)
   end

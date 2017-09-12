@@ -6,7 +6,7 @@ defmodule AcsWeb.SdkPay.CoolpadCallbackController do
 
     case app.sdk_bindings.coolpad do 
       %{"pay_pub_key" => pay_pub_key} ->
-        if Utils.rsa_public_verify2(pay_pub_key, transdata, sign, :md5) do  
+        if Crypto.rsa_public_verify2(pay_pub_key, transdata, sign, :md5) do  
           pay_info = JSON.decode!(transdata)
 
           case Repo.get(AppOrder, pay_info["cporderid"]) do 

@@ -74,7 +74,7 @@ defmodule AcsWeb.TaskController do
         conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})
 
       %TaskBar{} = task ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "task_pics/#{task_id}")
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "task_pics/#{task_id}")
         TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
         conn |> json(%{success: true, pic: image_path})
       _ ->

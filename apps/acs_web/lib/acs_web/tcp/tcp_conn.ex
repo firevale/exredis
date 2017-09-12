@@ -6,6 +6,8 @@ defmodule AcsWeb.Tcp.TcpConn do
   require Utils
   require AcsStats
 
+  alias Acs.Auth
+
   def set_socket(pid, socket) do
     GenServer.call(pid, {:set_socket, socket})
   end
@@ -182,7 +184,7 @@ defmodule AcsWeb.Tcp.TcpConn do
 
     AcsStats.add_online_user(node, app_id, platform, user_id)
     AcsStats.log_app_user(today, app_id, zone_id, user_id, platform, sdk, app_user_id, app_user_name, app_user_level)
-    AcsStats.log_app_device(today, app_id, platform, sdk)
+    AcsStats.log_app_device(today, app_id, device_id, platform, sdk)
 
     info "#{today} user enter game, user_id: #{user_id}, device_id: #{device_id}"
     new_state = state 

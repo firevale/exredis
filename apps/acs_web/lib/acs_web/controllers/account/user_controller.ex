@@ -383,7 +383,7 @@ defmodule AcsWeb.UserController do
         conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
 
       token ->
-        case Utils.md5_sign("#{token_id}#{app.secret}") do
+        case Crypto.md5_sign("#{token_id}#{app.secret}") do
           ^sign ->
             if user.id == token.user_id do
               conn |> json(%{success: true,
@@ -446,7 +446,7 @@ defmodule AcsWeb.UserController do
   end
 
   defp _update_avatar(conn, user, image_file_path) do
-    {:ok, avatar_path} = Utils.deploy_image_file(from: image_file_path, to: "user_avatars")
+    {:ok, avatar_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "user_avatars")
     new_user = CachedUser.save(%{user | avatar_url: avatar_path})
     conn |> json(%{success: true, user: %{
       id: new_user.id,

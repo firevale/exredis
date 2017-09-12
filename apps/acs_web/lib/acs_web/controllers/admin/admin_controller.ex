@@ -57,7 +57,7 @@ defmodule AcsWeb.AdminController do
       %App{} = app ->
         changed = App.changeset(app, app_info)
         {:ok, new_app} = changed |> Repo.update
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_info", changed.changes)
+        add_operate_log(acs_admin_id, app_id, "update_app_info", changed.changes)
         _update_app_features(conn, new_app)
     end
   end
@@ -68,7 +68,7 @@ defmodule AcsWeb.AdminController do
         conn |> json(%{success: false, message: translate_errors(errors)})
 
       {:ok, app} ->
-        AdminController.add_operate_log(acs_admin_id, app.id, "update_app_info", app_info)
+        add_operate_log(acs_admin_id, app.id, "update_app_info", app_info)
         _update_app_features(conn, app)
     end
   end
@@ -204,10 +204,10 @@ defmodule AcsWeb.AdminController do
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
 
       %App{} = app ->
-        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "app_icons")
+        {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "app_icons")
         App.changeset(app, %{icon: icon_path}) |> Repo.update!
         RedisApp.refresh(app_id)
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
+        add_operate_log(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
         conn |> json(%{success: true, icon_url: icon_path})
 
       _ ->
@@ -229,10 +229,10 @@ defmodule AcsWeb.AdminController do
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id, icon: _icon_url} = goods ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icons")
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icons")
         AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
         RedisApp.refresh(app_id)
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_icon", %{icon: image_path})
+        add_operate_log(acs_admin_id, app_id, "update_goods_icon", %{icon: image_path})
         conn |> json(%{success: true, icon_url: image_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -257,7 +257,7 @@ defmodule AcsWeb.AdminController do
         case Repo.delete(goods) do
           {:ok, _} ->
             RedisApp.refresh(app_id)
-            AdminController.add_operate_log(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
+            add_operate_log(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -280,7 +280,7 @@ defmodule AcsWeb.AdminController do
         case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do
           {:ok, new_product_id_info} ->
              RedisApp.refresh(app_id)
-             AdminController.add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
+             add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -292,7 +292,7 @@ defmodule AcsWeb.AdminController do
         case changed |> Repo.update do
           {:ok, new_product_id_info} ->
              RedisApp.refresh(app_id)
-             AdminController.add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", changed.changes)
+             add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", changed.changes)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->

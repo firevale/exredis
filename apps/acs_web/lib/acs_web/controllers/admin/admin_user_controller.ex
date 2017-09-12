@@ -121,7 +121,7 @@ defmodule AcsWeb.AdminUserController do
   end
   
   def get_user_from_redis(conn, %{"user_id" => user_id}) do
-    user = RedisUser.find(user_id) 
+    user = CachedUser.get(user_id) 
     conn |> json(%{success: true, user: user})
   end
 end

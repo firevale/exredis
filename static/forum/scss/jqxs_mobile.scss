@@ -134,7 +134,14 @@
       top: 0;
       bottom: 0;
     }
-    .vote-item {}
+    .forum-admin {
+      position: fixed;
+      bottom: 0;
+      padding: $size-normal;
+      width: 100%;
+      background: $black;
+      z-index: 2;
+    }
     .comment {
       &:not(:last-child) {
         border-bottom: 1px solid $grey;

@@ -11,6 +11,7 @@ $grey: #ececec;
 $white: #ffffff;
 $grey-darker: hsl(0, 0%, 21%);
 $grey-dark: hsl(0, 0%, 29%);
+$grey-light: #a7a6a6;
 $primary: #b3182e;
 $info: $orange;
 $success: $blue;
@@ -20,16 +21,18 @@ $light: $white !default;
 $dark: $grey-darker !default;
 $light-invert: $dark !default;
 $dark-invert: $light !default;
+$grey-light-invert:$white;
 $size-1: 3rem;
 $size-2: 2.5rem;
 $size-3: 2rem;
-$size-4: 1.5rem;
+$size-4: 1.3rem;
 $size-5: 1.167rem;
 $size-6: 1rem;
 $size-7: 0.85rem;
 $size-small:0.85rem;
 $size-normal:$size-6;
 $size-medium: $size-5;
+$size-large: $size-4;
 $weight-light: 300;
 $weight-normal: 400;
 $weight-medium: 500;
@@ -93,6 +96,11 @@ $button-link-hover-color:$info;
 .button {
   padding-left: .85rem !important;
   padding-right: .85rem !important;
+  &.is-grey {
+    background-color: $grey-light;
+    border-color: transparent;
+    color: $grey-light-invert;
+  }
   &.is-link {
     text-decoration: none !important;
     padding: 0 !important;
@@ -103,6 +111,10 @@ $button-link-hover-color:$info;
       text-decoration: none !important;
       box-shadow: none !important; // background-color: transparent !important;
     }
+  }
+  &.is-large {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
   }
 }
 
@@ -179,6 +191,9 @@ $modal-background-background-color: rgba($black, 0.4);
 $modal-content-margin-mobile:10px;
 $modal-close-top: 5px;
 $modal-close-right: 5px;
+$modal-card-title-color: $text2;
+$modal-card-head-padding:1.5rem .65rem;
+$modal-card-head-background-color: $white;
 .modal {
   .modal-content {
     padding: 2rem;
@@ -205,6 +220,25 @@ $modal-close-right: 5px;
       &:after,
       &:before {
         background-color: $light-invert;
+      }
+    }
+  }
+  .modal-card {
+    .modal-card-head {
+      .modal-card-title {
+        width: 100%;
+        font-size: $size-normal;
+      }
+    }
+    .modal-card-body {
+      padding: .65rem;
+    }
+    .modal-card-foot {
+      &.is-centred {
+        justify-content: center;
+      }
+      .button {
+        min-width: 10rem;
       }
     }
   }

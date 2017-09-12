@@ -13,7 +13,7 @@
             </p>
             <div class="item-right">
               <a class="button is-info is-small">楼主</a>
-              <a class="button is-primary is-small">回贴</a>
+              <a class="button is-primary is-small" @click="showCommentModal">回贴</a>
             </div>
           </div>
         </div>
@@ -201,6 +201,35 @@
         </div>
       </div>
     </scroller>
+    <div class="forum-admin">
+      <div class="field is-grouped is-grouped-centered">
+        <p class="control is-expanded">
+          <a class="button is-info is-large is-fullwidth is-radiusless">
+            <span class="icon">
+              <i class="fa fa-times"></i>
+            </span>
+            <span>取消封贴</span>
+          </a>
+        </p>
+        <p class="control is-expanded">
+          <a class="button is-primary is-large is-fullwidth is-radiusless">
+            <span class="icon">
+              <i class="fa fa-star-o"></i>
+            </span>
+            <span>取消精品</span>
+          </a>
+        </p>
+        <p class="control is-expanded">
+          <a class="button is-success is-large is-fullwidth is-radiusless">
+            <span class="icon">
+              <i class="fa fa-level-up"></i>
+            </span>
+            <span>置顶</span>
+          </a>
+        </p>
+      </div>
+    </div>
+    <reply-post-modal ref="commentModal"></reply-post-modal>
   </div>
 </template>
 <script>
@@ -210,8 +239,8 @@ import {
   mapActions
 } from 'vuex'
 
-import modalDialog from '../../components/modal'
-
+import modalDialog from '../../components/modalDialog'
+import replyPostModal from './replyPostModal'
 import postDetailView from '../../components/postDetailView.vue'
 import postCommentView from '../../components/postCommentView.vue'
 
@@ -223,6 +252,7 @@ export default {
   components: {
     postDetailView,
     postCommentView,
+    replyPostModal,
   },
   computed: {
     postId() {
@@ -259,7 +289,9 @@ export default {
     favorite() {
       modalDialog.showMessage("垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息垃圾广告色情信息")
     },
-
+    showCommentModal(){
+      this.$refs.commentModal.show();
+    },
     onItemDelete(index) {
       //this.totalRecords--;
       this.commentList[index].content = "回复已被删除"

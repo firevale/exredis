@@ -141,7 +141,7 @@ defmodule AcsWeb.MallOrderController do
             Repo.transaction(fn ->
               # goods stock
               MallGoods.changeset(goods, %{stock: goods.stock - quantity, sold: goods.sold + quantity}) |> Repo.update()
-              CacheMallGoods.refresh(goods)
+              CachedMallGoods.refresh(goods)
 
               # add order
               mapGoods= Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
@@ -249,7 +249,7 @@ defmodule AcsWeb.MallOrderController do
               Repo.rollback("admin.mall.order.messages.stockOut")
             else
               MallGoods.changeset(goods, %{stock: goods.stock - detail.amount, sold: goods.sold + detail.amount}) |> Repo.update()
-              CacheMallGoods.refresh(goods)
+              CachedMallGoods.refresh(goods)
             end
           end)
 
@@ -284,7 +284,7 @@ defmodule AcsWeb.MallOrderController do
             Enum.each(order.details, fn(detail) ->
               goods = Repo.get(MallGoods, detail.mall_goods_id)
               MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-              CacheMallGoods.refresh(goods)
+              CachedMallGoods.refresh(goods)
             end)
 
             from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])

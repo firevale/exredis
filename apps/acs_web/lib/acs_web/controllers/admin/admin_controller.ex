@@ -1,12 +1,10 @@
 defmodule AcsWeb.AdminController do
   use AcsWeb, :controller
 
-  import  Acs.UploadImagePlugs
   require Exsdks
-  alias   Acs.RedisAdminUser
 
   def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
-    admin_level = RedisAdminUser.get_admin_level(user_id)
+    admin_level = AdminAuth.get_admin_level(user_id)
     query =  from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,

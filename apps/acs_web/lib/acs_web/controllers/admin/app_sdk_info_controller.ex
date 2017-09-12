@@ -185,7 +185,7 @@ defmodule AcsWeb.AppSdkInfoController do
         AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", %{binding: binding})
     end
 
-    RedisApp.refresh(app_id)
+    CachedApp.refresh(app_id)
     conn |> json(%{success: true, binding: binding})
   end
 

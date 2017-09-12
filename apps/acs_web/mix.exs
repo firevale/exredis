@@ -54,6 +54,7 @@ defmodule AcsWeb.Mixfile do
       {:exservice, in_umbrella: true},
       {:extcp, in_umbrella: true},
       {:exwcp, in_umbrella: true},
+      {:exmail, in_umbrella: true},
     ]
   end
 

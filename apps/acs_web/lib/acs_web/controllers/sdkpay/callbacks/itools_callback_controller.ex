@@ -6,7 +6,7 @@ defmodule AcsWeb.SdkPay.ItoolsCallbackController do
     case app.sdk_bindings.itools do
       %{"app_id" => _app_id, "app_key" => _app_key, "rsa_key" => rsa_key} ->
 
-        notify_data = Utils.rsa_pubseg_decrypt2(rsa_key, notify_data)
+        notify_data = Crypto.rsa_pubseg_decrypt2(rsa_key, notify_data)
 
         if Crypto.rsa_public_verify2(rsa_key, notify_data, sign) do  
           %{"order_id_com" => order_id, "order_id" => sdk_order_id, "amount" => amount} = JSON.decode!(notify_data)

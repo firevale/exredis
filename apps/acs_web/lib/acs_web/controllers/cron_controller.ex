@@ -49,7 +49,7 @@ defmodule AcsWeb.CronController do
   end
 
   def report_sms_amount(conn, _params) do 
-    {:ok, amount} = MeishengSmsSender.get_amount()
+    {:ok, amount} = MeishengService.get_amount()
     {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
     Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
@@ -73,9 +73,9 @@ defmodule AcsWeb.CronController do
                   select: od,
                   where: od.mall_order_id == ^order_id
     Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = RedisMall.find(detail.mall_goods_id) 
+      goods = CachedMallGoods.find(detail.mall_goods_id) 
       MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-      RedisMall.refresh(goods)
+      CachedMallGoods.refresh(goods)
     end)
   end
 

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.BaiduCallbackController do
   use     AcsWeb, :controller
   require SDKBaidu
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn,
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                         %{"AppID" => baidu_app_id,
                           "Content" => content,
                           "CooperatorOrderSerial" => order_id,

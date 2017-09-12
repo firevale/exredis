@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.OppoCallbackController do
   use     AcsWeb, :controller
   require SDKOppo
   
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"partnerOrder" => order_id, 
                            "notifyId" => trans_no, 
                            "price" => amount} = params) do

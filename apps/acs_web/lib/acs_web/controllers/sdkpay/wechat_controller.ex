@@ -1,14 +1,13 @@
 defmodule AcsWeb.WechatController do
   use     AcsWeb, :controller
   require SDKWechat
-  require AcsWeb.Router.Helpers
 
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_access_token
 
   # prepay
-  def prepay(%Plug.Conn{private: %{acs_app: %RedisApp{
+  def prepay(%Plug.Conn{private: %{acs_app: %App{
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
@@ -40,7 +39,7 @@ defmodule AcsWeb.WechatController do
   end
 
   # mallprepay
-  def mallprepay(%Plug.Conn{private: %{acs_app: %RedisApp{
+  def mallprepay(%Plug.Conn{private: %{acs_app: %App{
                         sdk_bindings: %{wechat: wechat_info}}}} = conn,
              %{"payment_order_id" => order_id} = _params) do
 
@@ -133,7 +132,7 @@ defmodule AcsWeb.WechatController do
   def authlogin(%Plug.Conn{private: %{acs_app_id: _app_id,
                                       acs_device_id: device_id,
                                       acs_platform: platform,
-                                      acs_app: %RedisApp{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,
+                                      acs_app: %App{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,
                 %{"state" => state, "code" => code}) do
     session_state = get_session(conn, :wechat_login_state)
    
@@ -141,7 +140,7 @@ defmodule AcsWeb.WechatController do
         {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
         #  {:ok, _openid, nickname, _sex, _headimgurl} <- SDKWechat.get_auth_user_info(access_token, openid)
     do
-      case RedisUser.bind_sdk_user(%{sdk: :wechat, 
+      case Accounts.bind_sdk_user(%{sdk: :wechat, 
                                      app_id: app.id, 
                                      sdk_user_id: openid, 
                                      email: nil,
@@ -150,7 +149,7 @@ defmodule AcsWeb.WechatController do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id, 
             user_id: user.id,
             device_id: device_id,
@@ -162,7 +161,7 @@ defmodule AcsWeb.WechatController do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

@@ -13,7 +13,7 @@ defmodule AcsWeb.FacebookAuthBind do
 
     case SDKFacebook.me(facebook_app_secret, %{fields: "id,email,name,gender"}, facebook_access_token) do
       %{"id" => facebook_user_id, "email" => email, "name" => facebook_nickname} -> 
-        case CachedUser.bind_sdk_user(%{sdk: :facebook, 
+        case Accounts.bind_sdk_user(%{sdk: :facebook, 
                                        app_id: app.id, 
                                        sdk_user_id: facebook_user_id, 
                                        email: email,

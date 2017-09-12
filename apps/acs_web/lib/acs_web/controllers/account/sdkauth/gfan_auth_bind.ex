@@ -5,14 +5,14 @@ defmodule AcsWeb.GFanAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{gfan: %{"app_key" => gfan_app_key}}} = app,
+                acs_app: %App{sdk_bindings: %{gfan: %{"app_key" => gfan_app_key}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"gf_access_token" => gfan_access_token,
               "gf_user_id" => gfan_user_id} = params) do
 
     if SDKGFan.validate_session(gfan_app_key, gfan_access_token, gfan_user_id) do
-      case RedisUser.bind_sdk_user(%{sdk: :gfan, 
+      case Accounts.bind_sdk_user(%{sdk: :gfan, 
                                      app_id: app.id, 
                                      sdk_user_id: gfan_user_id, 
                                      email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.GFanAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.GFanAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

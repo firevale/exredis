@@ -1,4 +1,4 @@
-defmodule Acs.Cache.RedisLoginCode do
+defmodule Acs.Cache.CachedLoginCode do
   require Exredis
   require Excache
 

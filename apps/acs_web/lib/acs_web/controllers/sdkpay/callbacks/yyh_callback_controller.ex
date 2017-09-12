@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.YYHCallbackController do
   use     AcsWeb, :controller
   require SDKYYH
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"transdata" => transdata, "sign" => sign} = params) do
     case app.sdk_bindings.yyh do
       %{pay_key: pay_key} ->

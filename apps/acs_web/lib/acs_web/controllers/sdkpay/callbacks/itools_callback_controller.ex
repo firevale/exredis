@@ -1,7 +1,7 @@
 defmodule AcsWeb.SdkPay.ItoolsCallbackController do
   use    AcsWeb, :controller
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"notify_data" => notify_data, "sign" => sign} = params) do
     case app.sdk_bindings.itools do
       %{"app_id" => _app_id, "app_key" => _app_key, "rsa_key" => rsa_key} ->

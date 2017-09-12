@@ -1,7 +1,7 @@
 defmodule AcsWeb.SdkPay.AnzhiCallbackController do
   use    AcsWeb, :controller
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"data" => notify_data} = params) do 
     case app.sdk_bindings.anzhi do 
       nil ->

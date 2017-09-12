@@ -5,14 +5,14 @@ defmodule AcsWeb.CCPlayAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{cc: %{"app_id" => cc_app_id, "app_key" => cc_app_key}}} = app,
+                acs_app: %App{sdk_bindings: %{cc: %{"app_id" => cc_app_id, "app_key" => cc_app_key}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"cc_access_token" => cc_access_token,
               "cc_user_id" => cc_user_id} = params) do
 
     if SDKCCPlay.validate_session(cc_app_id, cc_app_key, cc_access_token) do
-      case RedisUser.bind_sdk_user(%{sdk: :cc, 
+      case Accounts.bind_sdk_user(%{sdk: :cc, 
                                      app_id: app.id, 
                                      sdk_user_id: cc_user_id, 
                                      email: nil,
@@ -22,7 +22,7 @@ defmodule AcsWeb.CCPlayAuthBind do
                                      avatar_url: nil}) do 
 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -34,7 +34,7 @@ defmodule AcsWeb.CCPlayAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

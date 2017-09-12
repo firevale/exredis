@@ -5,14 +5,14 @@ defmodule AcsWeb.I4AuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{i4: %{}}} = app,
+                acs_app: %App{sdk_bindings: %{i4: %{}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"i4_session_id" => i4_session_id,
               "i4_user_id" => i4_user_id} = params) do
 
     if SDKI4.validate_session(i4_session_id) do
-      case RedisUser.bind_sdk_user(%{sdk: :i4, 
+      case Accounts.bind_sdk_user(%{sdk: :i4, 
                                      app_id: app.id, 
                                      sdk_user_id: i4_user_id, 
                                      email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.I4AuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.I4AuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

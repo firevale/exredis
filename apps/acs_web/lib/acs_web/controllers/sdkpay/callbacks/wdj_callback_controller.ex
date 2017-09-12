@@ -1,7 +1,7 @@
 defmodule AcsWeb.SdkPay.WandoujiaCallbackController do
   use    AcsWeb, :controller
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"content" => content, 
                           "sign" => sign} = params) do
 

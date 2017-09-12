@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.VivoCallbackController do
   use     AcsWeb, :controller
   require SDKVivo
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"cpOrderNumber" => order_id, 
                            "orderNumber" => trans_no, 
                            "orderAmount" => amount} = params) do

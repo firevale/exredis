@@ -5,14 +5,14 @@ defmodule AcsWeb.AnzhiAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{anzhi: %{"app_key" => anzhi_app_key, "app_secret" => anzhi_app_secret}}} = app,
+                acs_app: %App{sdk_bindings: %{anzhi: %{"app_key" => anzhi_app_key, "app_secret" => anzhi_app_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"anzhi_access_token" => anzhi_access_token,
               "anzhi_user_id" => anzhi_user_id} = params) do
 
     if SDKAnzhi.validate_session(anzhi_app_key, anzhi_app_secret, anzhi_access_token) do
-      case RedisUser.bind_sdk_user(%{sdk: :anzhi, 
+      case Accounts.bind_sdk_user(%{sdk: :anzhi, 
                                      app_id: app.id, 
                                      sdk_user_id: anzhi_user_id, 
                                      email: nil,
@@ -20,7 +20,7 @@ defmodule AcsWeb.AnzhiAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -32,7 +32,7 @@ defmodule AcsWeb.AnzhiAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

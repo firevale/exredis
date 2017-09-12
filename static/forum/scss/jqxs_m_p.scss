@@ -109,6 +109,15 @@
     height: virtual-m-rem(120);
     background-image: url("~assets/themes/jqxs_mobile/Group_2.png");
   }
+
+  &.btn-new-post {
+    position: fixed;
+    bottom: virtual-m-rem(480);
+    right: virtual-m-rem(20);
+    width: virtual-m-rem(120);
+    height: virtual-m-rem(120);
+    background-image: url("~assets/themes/jqxs_mobile/Group_1.png");
+  }
 }
 
 .common-page {
@@ -195,5 +204,8 @@
   }
   .btn-verfy {
     width: 7.56rem;
+  }
+  .field.has-addons .control:first-child .input {
+    border-radius: 0 !important;
   }
 }

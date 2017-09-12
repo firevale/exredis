@@ -203,8 +203,8 @@ export default {
         return post('/admin_actions/user/get_user_from_redis', params)
       },
 
-      getUsersByLevel(params) {
-        return post('/admin_actions/user/get_users_by_level', params)
+      searchUser(params) {
+        return post('/admin_actions/user/search_user', params)
       },
 
       addAdminUser(params) {

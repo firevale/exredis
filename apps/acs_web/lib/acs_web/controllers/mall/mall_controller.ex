@@ -202,7 +202,7 @@ defmodule AcsWeb.MallController do
           case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              CachedMallGoods.refreshById(id)
+              CachedMallGoods.refresh(id)
               AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: _errors}} ->
@@ -220,7 +220,7 @@ defmodule AcsWeb.MallController do
             goods = Map.put(goods, "user_id", user_id)
             changed = MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock})
             changed |> Repo.update!
-            CachedMallGoods.refreshById(id)
+            CachedMallGoods.refresh(id)
             AdminController.add_operate_log(user_id, app_id, "update_goods", changed.changes)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
@@ -258,7 +258,7 @@ defmodule AcsWeb.MallController do
         else
           case Repo.delete(goods) do
             {:ok, _} ->
-              CachedMallGoods.delete(goods_id)
+              CachedMallGoods.del(goods_id)
               AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 

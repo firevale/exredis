@@ -1,8 +1,6 @@
 defmodule AcsWeb.ForumController do
   use AcsWeb, :controller
 
-  alias Emservice.NeteaseDun
-
   plug :fetch_app_id
   plug :fetch_session_user_id  
   plug :fetch_session_user

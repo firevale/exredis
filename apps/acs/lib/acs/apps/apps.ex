@@ -11,6 +11,6 @@ defmodule Acs.Apps do
   alias Acs.Apps.AppOrder
 
   def update_app_order!(%AppOrder{} = order, attr) do 
-    AppOrder.changeset(order, attrs) |> Repo.update!
+    AppOrder.changeset(order, attr) |> Repo.update!
   end
 end

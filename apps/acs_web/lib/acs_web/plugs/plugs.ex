@@ -12,7 +12,6 @@ defmodule AcsWeb.Plugs do
   alias   Acs.Forums.Forum
 
   require Gettext
-  require Exmoji.Scanner
   
   require Excache
   require Exredis
@@ -499,23 +498,6 @@ defmodule AcsWeb.Plugs do
                      conn
                    end
         %{conn | before_send: [do_cache | conn.before_send]}
-    end
-  end
-
-  def no_emoji(conn, opt) do
-    case opt[:param_name] do
-      param_name when is_bitstring(param_name) ->
-        case conn.params[param_name] do
-          param_value when is_bitstring(param_value) ->
-            case Exmoji.Scanner.scan(param_value) do
-              [] ->
-                conn
-              _ ->
-                conn |> Phoenix.Controller.json(%{success: false, i18n_message: "error.server.emojiCharsInParam"}) |> halt
-            end
-          _ -> conn
-        end
-      _ -> conn
     end
   end
 

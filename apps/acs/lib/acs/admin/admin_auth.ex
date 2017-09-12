@@ -19,34 +19,28 @@ defmodule Acs.AdminAuth do
   end
 
   def is_admin(user_id) do 
-    Excache.get!("acs.isadminuser.#{user_id}", fallback: fn(redis_key) -> 
-      case Exredis.get(redis_key) do 
-        nil ->
-          query = 
-            from au in AdminUser,
-              select: count(au.id),
-              where: au.user_id == ^user_id,
-              where: au.active == true
-
-          case Repo.one!(query) do
-            0 -> 
-              {:commit, false}
-
-            _ -> 
-              Exredis.setex(redis_key, 3600, "true")
-              Excache.del(redis_key)
-
-              {:commit, true}
-          end
-        _ ->
-          {:commit, true}
+    key = "acs.admin.ids"
+    if Exredis.sismember(key, user_id) == 1 do 
+      true
+    else 
+      if Exredis.scard(key) == 0 do 
+        refresh_admin_ids()
+        Exredis.sismember(key, user_id) == 1
+      else 
+        false
       end
-    end)
+    end
   end
 
-  def refresh_is_admin(user_id) do 
-    Exredis.del("acs.isadminuser.#{user_id}")
-    Excache.del("acs.isadminuser.#{user_id}")
+  def refresh_admin_ids() do 
+    query = 
+      from au in AdminUser, 
+        where: au.active == true,
+        distinct: au.user_id 
+  
+    for user_id <- Repo.all(query) do 
+      Exredis.sadd("acs.admin.ids", user_id)
+    end
   end
 
   def get_admin_level(user_id, app_id \\ nil)  when is_integer(user_id) do

@@ -1,9 +1,9 @@
 defmodule AcsWeb.AppSdkInfoController do
   use AcsWeb, :controller
-  alias Acs.SdkInfoGenerator
+  require Exsdks
 
   def generate_dummy_sdk_info(conn, %{"sdk" => sdk}) do 
-    conn |> json(%{success: true, binding: SdkInfoGenerator.generate_sdk_info(sdk)})
+    conn |> json(%{success: true, binding: Exsdks.generate_sdk_info(sdk)})
   end
 
   def update_app_sdk_info(conn, %{"app_id" => app_id, 

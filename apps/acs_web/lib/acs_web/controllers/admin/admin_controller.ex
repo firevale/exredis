@@ -2,7 +2,7 @@ defmodule AcsWeb.AdminController do
   use AcsWeb, :controller
 
   import  Acs.UploadImagePlugs
-  alias   Acs.SdkInfoGenerator
+  require Exsdks
   alias   Acs.RedisAdminUser
 
   def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
@@ -35,7 +35,11 @@ defmodule AcsWeb.AdminController do
 
     app = Repo.one(query)
     sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
-      binding = SdkInfoGenerator.generate_sdk_info(sdk) |> Map.merge(x.binding |> JSON.encode!() |> JSON.decode!(keys: :atoms))
+      binding = 
+        Exsdks.generate_sdk_info(sdk) 
+          |> Map.merge(x.binding 
+          |> JSON.encode!() 
+          |> JSON.decode!(keys: :atoms))
       Map.put(x, :binding, binding)
     end)
     Map.put(app, :sdk_bindings, sdk_bindings)

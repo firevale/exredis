@@ -118,7 +118,7 @@ defmodule AcsWeb.PageController do
 
     zone_id = params["zone_id"] || "1"
 
-    app_user = StatsRepo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+    app_user = AcsStats.Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
 
     app_order = case Repo.get_by(AppOrder, app_id: app.id, cp_order_id: cp_order_id) do
       nil ->

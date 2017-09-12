@@ -15,7 +15,7 @@ defmodule AcsWeb.SdkPay.BaiduCallbackController do
               "AppID" => String.to_integer(baidu_app_id),
               "ResultCode" => result_code,
               "ResultMessage" => message,
-              "Sign" => Utils.md5_sign("#{baidu_app_id}#{result_code}#{app_secret}"),
+              "Sign" => Crypto.md5_sign("#{baidu_app_id}#{result_code}#{app_secret}"),
               "Content" => ""
             })
           end

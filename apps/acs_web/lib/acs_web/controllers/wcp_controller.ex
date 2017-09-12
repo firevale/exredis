@@ -40,17 +40,17 @@ defmodule AcsWeb.WcpController do
                 app_id: app_id
               }) |> Repo.update
           end
-          RedisAppWcpUser.refresh(wcp_user)
+          CachedAppWcpUser.refresh(wcp_user)
         _ ->
           :do_nothing
       end
     end, [])
 
-    wcp_user = RedisAppWcpUser.find(app_id, msg.fromusername)
+    wcp_user = CachedAppWcpUser.get(app_id, msg.fromusername)
 
     case msg.msgtype do
       "text" ->
-        AppWcpMessage.index(%{from: wcp_user,
+        ESWcpMessage.index(%{from: wcp_user,
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: msg.content,
@@ -59,7 +59,7 @@ defmodule AcsWeb.WcpController do
           app_id: app_id})
 
       "event" ->
-        AppWcpMessage.index(%{from: wcp_user,
+        ESWcpMessage.index(%{from: wcp_user,
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
@@ -76,7 +76,7 @@ defmodule AcsWeb.WcpController do
         conn |> text("success")
 
       %{} = reply ->
-        AppWcpMessage.index(%{to: wcp_user,
+        ESWcpMessage.index(%{to: wcp_user,
           from: %{openid: reply.from, nickname: "系统"},
           msg_type: "text",
           content: reply.content,

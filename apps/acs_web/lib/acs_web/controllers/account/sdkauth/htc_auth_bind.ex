@@ -12,7 +12,7 @@ defmodule AcsWeb.HtcAuthBind do
               "htc_account" => htc_account,
               "htc_account_sign" => htc_account_sign} = params) do
 
-    if Utils.rsa_public_verify2(htc_pub_key, htc_account, htc_account_sign) do
+    if Crypto.rsa_public_verify2(htc_pub_key, htc_account, htc_account_sign) do
       case Accounts.bind_sdk_user(%{sdk: :htc, 
                                      app_id: app.id, 
                                      sdk_user_id: htc_user_id, 

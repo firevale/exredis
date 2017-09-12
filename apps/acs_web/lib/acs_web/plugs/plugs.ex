@@ -7,9 +7,13 @@ defmodule AcsWeb.Plugs do
   alias   Acs.Accounts.User
   alias   Acs.Auth.AccessToken
   alias   Acs.Repo
+  alias   Acs.Auth
   alias   Acs.Admin.AdminUser
   alias   Acs.Forums.ForumManager
   alias   Acs.Forums.Forum
+  alias   Acs.Cache.CachedApp
+  alias   Acs.Cache.CachedUser
+  alias   Acs.Cache.CachedAdminUser
 
   require Gettext
   

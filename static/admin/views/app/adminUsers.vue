@@ -59,64 +59,6 @@
       </div>
     </div>
   </div>
-  <!--<div class="card" v-if="users">
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">
-          <strong>{{ $t('admin.label.appManager')}}</strong>
-        </p>
-        <p class="card-header-icon">
-          <a v-if="level==1" @click="addAdminUser(2)" class="button is-info">{{$t('common.add')}}</a>
-        </p>
-      </header>
-      <div class="card-content">
-        <nav class="level">
-          <div class="level-left">
-            <a v-for="item in users" class="level-item" v-if="item.admin_level==2">
-              <span class="tag is-info is-medium">
-                {{item.user.nickname}}
-                <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
-              </span>
-            </a>
-          </div>
-        </nav>
-      </div>
-    </div>
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">
-          <strong>{{ $t('admin.label.appCustomerService')}}</strong>
-        </p>
-        <p class="card-header-icon">
-          <a @click="addAdminUser(3)" class="button is-info">{{$t('common.add')}}</a>
-        </p>
-      </header>
-      <div class="card-content">
-        <nav class="level">
-          <div class="level-left">
-            <a v-for="item in users" class="level-item" v-if="item.admin_level==3">
-              <span class="tag is-info is-medium">
-                {{item.user.nickname}}
-                <button @click="deleteUsers(item)" class="delete is-small"></button>
-              </span>
-            </a>
-          </div>
-        </nav>
-      </div>
-    </div>
-  </div>
-  <div class="box" v-else>
-    <div class="hero-body has-text-centered">
-      <div class="container">
-        <span class="icon is-large">
-          <i class="fa fa-spinner fa-spin"></i>
-        </span>
-        <h2 class="subtitle" style="margin-top: 20px">
-            {{ $t('admin.titles.loading') }}
-          </h2>
-      </div>
-    </div>
-  </div>-->
 </template>
 <script>
 import Vue from 'vue'
@@ -127,13 +69,13 @@ import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
-import sectionInfoDialog from 'admin/components/dialog/adminUser/sectionInfo'
-const sectionInfoDialogComponent = Vue.extend(sectionInfoDialog)
+import userInfoDialog from 'admin/components/dialog/adminUser/userInfo'
+const userInfoDialogComponent = Vue.extend(userInfoDialog)
 
-const openSectionInfoDialog = (propsData = {
+const openUserInfoDialog = (propsData = {
   visible: true
 }) => {
-  return new sectionInfoDialogComponent({
+  return new userInfoDialogComponent({
     i18n,
     el: document.createElement('div'),
     propsData
@@ -164,24 +106,8 @@ export default {
         this.users = result.users
       }
     },
-    addUser: function(level) {
-      openSectionInfoDialog({
-        section: {
-          age: 0,
-          email: '',
-          mobile: '',
-          password: '',
-          nickname: '',
-          level: level,
-          active: false,
-          device_id: ''
-        },
-        visible: true,
-        callback: section => {},
-      })
-    },
     addAdminUser: function(level) {
-      openSectionInfoDialog({
+      openUserInfoDialog({
         section: {
           level: level
         },

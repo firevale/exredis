@@ -1,6 +1,6 @@
 defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
-  alias   Acs.PaymentHelper
+  alias   AcsWeb.PaymentHelper
   alias   Acs.MeishengSmsSender
   alias   Acs.ChaoxinNotifier
   alias   Acs.RedisMall

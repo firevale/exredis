@@ -87,7 +87,7 @@ defmodule AcsWeb.WechatController do
         paid_channel: "wechat",
         fee: notify_params[:total_fee],
         transaction_currency: notify_params[:fee_type]
-      }) |> Repo.update! |> Acs.PaymentHelper.notify_cp
+      }) |> Repo.update! |> AcsWeb.PaymentHelper.notify_cp
 
       conn |> text(xml_response("SUCCESS", "OK"))
     else

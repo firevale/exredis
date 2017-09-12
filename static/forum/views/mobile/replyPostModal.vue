@@ -12,7 +12,8 @@
             <quill-editor class="editor" v-model.trim="content" placeholder="请填写帖子内容" @ready="setEditor">
             </quill-editor>
           </div>
-          <p class="help is-primary">This username is available</p>
+          <p class="help is-primary">
+            <span class="icon icon-error-tip"></span>This 内容 is available</p>
         </div>
       </section>
       <footer class="modal-card-foot is-centred">

@@ -246,10 +246,16 @@ $modal-card-foot-border-top:none;
   }
 }
 
-//control
-.control {
-  .input.is-primary {
-    border-color: rgba($primary, 0.2) !important;
+//form
+.field {
+  .control {
+    .input.is-primary {
+      border-color: rgba($primary, 0.2) !important;
+    }
+  }
+  .help {
+    display: flex !important;
+    align-items: center;
   }
 }
 

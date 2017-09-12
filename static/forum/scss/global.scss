@@ -77,6 +77,10 @@ input::-webkit-inner-spin-button {
   justify-content: flex-end;
 }
 
+.flex-vcentered {
+  align-items: center;
+}
+
 .has-divider {
   margin-bottom: virtual-m-rem(40);
 }

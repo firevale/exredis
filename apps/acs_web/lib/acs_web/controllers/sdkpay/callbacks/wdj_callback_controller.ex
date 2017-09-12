@@ -7,7 +7,7 @@ defmodule AcsWeb.SdkPay.WandoujiaCallbackController do
 
     case app.sdk_bindings.wdj do
       %{rsa_key: rsa_key} ->
-        if Utils.rsa_public_verify2(rsa_key, content, sign) do  
+        if Crypto.rsa_public_verify2(rsa_key, content, sign) do  
           pay_info = JSON.decode!(content)
           case Repo.get(AppOrder, pay_info["out_trade_no"]) do 
             order = %AppOrder{} ->

@@ -36,7 +36,10 @@ defmodule AcsWeb do
       import Ecto
       import Ecto.Query
 
+      alias Utils.JSON
+      alias Utils.Crypto
       alias Acs.Repo
+      alias Acs.Search
       alias Acs.Apps.App
       alias Acs.Apps.AppNews
       alias Acs.Apps.AppSdkBinding
@@ -47,6 +50,7 @@ defmodule AcsWeb do
       alias Acs.AppWcpResponse
       alias Acs.AppWcpMessage
       alias Acs.AppWcpUser
+      alias Acs.LoginCodes
       alias Acs.LoginCodes.AppLoginCode
 
       alias Acs.Forums.Forum
@@ -60,9 +64,9 @@ defmodule AcsWeb do
       alias Acs.Malls.MallOrderDetail
       alias Acs.Malls.MallOrderLog
 
-      alias Acs.Admin.OpLog
       alias Acs.Wcp.AppWcpConfig
       alias Acs.Wcp.AppWcpMessage
+      alias Acs.Wcp.AppWcpResponse
       alias Acs.Wcp.AppWcpMessageRule
       alias Acs.Wcp.AppWcpUser
 
@@ -73,16 +77,21 @@ defmodule AcsWeb do
       alias Acs.Accounts.User
       alias Acs.Accounts.UserAddress
       alias Acs.Admin.AdminUser
+      alias Acs.Admin.OpLog
+      alias Acs.AdminAuth
 
       alias Acs.Auth
       alias Acs.Auth.AccessToken
       alias Acs.Cache.CachedApp
       alias Acs.Cache.CachedUser
       alias Acs.Cache.CachedAdminUser
+      alias Acs.Cache.CachedAppWcpUser
       alias Acs.Cache.CachedAppWcpConfig
       alias Acs.Cache.CachedAppWcpMessageRule
-      alias Acs.Cache.CachePMallTaskBar
-      alias Acs.Cache.CachePMallGoods
+      alias Acs.Cache.CachedMall
+      alias Acs.Cache.CacheMallGoods
+      alias Acs.Cache.CachedPMallTaskBar
+      alias Acs.Cache.CachedPMallGoods
       alias Acs.Cache.CachedNeteaseDun
       alias Acs.Cache.CachedLoginCode
 
@@ -93,8 +102,12 @@ defmodule AcsWeb do
       alias AcsStats.Devices.AppDevice
       alias AcsStats.Devices.AppDeviceDailyActivity
       alias AcsStats.Users.AppUser
-      alias AcsStats.Users.AppUserDailyActivity 
-      
+      alias AcsStats.Users.AppUserDailyActivity
+
+      alias Acs.Search.ESWcpMessage
+
+      alias AcsWeb.PaymentHelper
+      alias AcsWeb.AdminController
       alias Exwcp.Menu
     end
   end

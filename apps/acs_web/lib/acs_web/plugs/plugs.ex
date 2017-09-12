@@ -7,9 +7,13 @@ defmodule AcsWeb.Plugs do
   alias   Acs.Accounts.User
   alias   Acs.Auth.AccessToken
   alias   Acs.Repo
+  alias   Acs.Auth
   alias   Acs.Admin.AdminUser
   alias   Acs.Forums.ForumManager
   alias   Acs.Forums.Forum
+  alias   Acs.Cache.CachedApp
+  alias   Acs.Cache.CachedUser
+  alias   Acs.Cache.CachedAdminUser
 
   require Gettext
   
@@ -405,7 +409,7 @@ defmodule AcsWeb.Plugs do
  end
 
  defp _get_user_admin_level(user_id, app_id) do
-    CachedAdminUser.get_admin_level(user_id, app_id)
+    AdminAuth.get_admin_level(user_id, app_id)
  end
 
   defp _response_authorization_failed(conn) do

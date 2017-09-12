@@ -13,7 +13,7 @@ defmodule AcsWeb.AdminWcpController do
             # add new
             case AppWcpConfig.changeset(%AppWcpConfig{}, wcpParams) |> Repo.insert do
               {:ok, new_wcp} ->
-                RedisAppWcpConfig.refresh(app_id)
+                CachedAppWcpConfig.refresh(app_id)
                 conn |> json(%{success: true, wcpconfig: new_wcp})
 
               {:error, %{errors: errors}} ->
@@ -40,7 +40,7 @@ defmodule AcsWeb.AdminWcpController do
         case changed |> Repo.update do
           {:ok, new_wcp} ->
             AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_params", changed.changes)
-            RedisAppWcpConfig.refresh(app_id)
+            CachedAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
           {:error, %{errors: errors}} ->
@@ -65,7 +65,7 @@ defmodule AcsWeb.AdminWcpController do
         case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
           {:ok, new_wcp} ->
             AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_menus", %{menu: menu})
-            RedisAppWcpConfig.refresh(app_id)
+            CachedAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
           {:error, %{errors: errors}} ->
@@ -118,7 +118,7 @@ defmodule AcsWeb.AdminWcpController do
         query
       end
 
-    case AppWcpMessage.search(query) do
+    case Search.search_wcp_message(query) do
       {:ok, total, messages} ->
         total_page = round(Float.ceil(total/records_per_page))
         json(conn, %{success: true, messages: messages, total: total_page})
@@ -134,7 +134,7 @@ defmodule AcsWeb.AdminWcpController do
     if String.starts_with?(open_id, "gh_") do
       %{openid: app_id, nickname: "系统" }
     else
-      Acs.RedisAppWcpUser.find(app_id, open_id)
+      CachedAppWcpUser.get(app_id, open_id)
     end
   end
   def import_message_list() do
@@ -153,7 +153,7 @@ defmodule AcsWeb.AdminWcpController do
         Enum.map(messages, fn msg ->
           from = _fetch_wcp_user(msg.app_id, msg.from)
           to = _fetch_wcp_user(msg.app_id, msg.to)
-          AppWcpMessage.index(%{
+          ESWcpMessage.index(%{
             from: from,
             to: to,
             msg_type: msg.msg_type,
@@ -183,7 +183,7 @@ defmodule AcsWeb.AdminWcpController do
       size: 10000,
     }
 
-    case AppWcpMessage.search(query) do
+    case Search.search_wcp_message(query) do
       {:ok, _total, messages} ->
         json(conn, %{success: true, messages: messages})
       _ ->
@@ -193,10 +193,10 @@ defmodule AcsWeb.AdminWcpController do
 
   def reply_user_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn,
                           %{"app_id" => app_id,  "open_id" => open_id, "content" => content}) do
-    admin_user = RedisUser.find(acs_admin_id) |> Map.take([:nickname, :age, :email])
+    admin_user = CachedUser.get(acs_admin_id) |> Map.take([:nickname, :age, :email])
     case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do
       %AppWcpUser{} = wcp_user ->
-        resp = Wcp.Message.Custom.send_text(app_id, open_id, content)
+        resp = Exwcp.Message.Custom.send_text(app_id, open_id, content)
         case resp do
           %{errcode: 0, errmsg: "ok"} ->
             message = %{
@@ -208,7 +208,7 @@ defmodule AcsWeb.AdminWcpController do
               inserted_at: Ecto.DateTime.utc,
               app_id: app_id
              }
-            AppWcpMessage.index(message)
+            ESWcpMessage.index(message)
             json(conn, %{success: true, message: message})
           %{} = err ->
             json(conn, %{success: false, message: err})
@@ -272,7 +272,7 @@ defmodule AcsWeb.AdminWcpController do
             case AppWcpMessageRule.changeset(%AppWcpMessageRule{}, rule) |> Repo.insert do
               {:ok, new_rule} ->
                 AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", rule)
-                RedisAppWcpMessageRule.refresh(app_id)
+                CachedAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
@@ -285,7 +285,7 @@ defmodule AcsWeb.AdminWcpController do
             case changed |> Repo.update do
               {:ok, new_rule} ->
                 AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", changed.changes)
-                RedisAppWcpMessageRule.refresh(app_id)
+                CachedAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
@@ -305,7 +305,7 @@ defmodule AcsWeb.AdminWcpController do
         case Repo.delete(rule) do
           {:ok, _} ->
             AdminController.add_operate_log(acs_admin_id, app_id, "delete_wcp_message_rule", params)
-            RedisAppWcpMessageRule.refresh(rule.app_id)
+            CachedAppWcpMessageRule.refresh(rule.app_id)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -326,7 +326,7 @@ defmodule AcsWeb.AdminWcpController do
   plug :convert_base64_image, [param_name: "file"] when action in [:upload_wcp_image]
   def upload_wcp_image(conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} =
-      Utils.deploy_image_file_return_size(from: image_file_path,
+      DeployUploadedFile.deploy_image_file_return_size(from: image_file_path,
         to: "wcp/#{app_id}/",
         low_quality: true)
     conn |> json(%{success: true, app_id: app_id, link: image_path, width: width, height: height})
@@ -338,7 +338,7 @@ defmodule AcsWeb.AdminWcpController do
   def upload_wcp_file(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename}}) do
     case Repo.get_by(AppWcpConfig, app_id: app_id) do
       %AppWcpConfig{} = config ->
-        case Utils.deploy_wcp_file(from: file_path, filename: filename) do
+        case DeployUploadedFile.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
             AdminController.add_operate_log(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})

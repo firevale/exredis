@@ -11,7 +11,7 @@ defmodule AcsWeb.SdkPay.HtcCallbackController do
         orderText = String.strip(orderText, ?")
         orderSign = String.strip(orderSign, ?")
 
-        if Utils.rsa_public_verify2(pub_key, orderText, orderSign) do 
+        if Crypto.rsa_public_verify2(pub_key, orderText, orderSign) do 
           case JSON.decode(orderText) do 
             {:ok, %{"result_code" => 1, "real_amount" => total_fee, "game_order_id" => order_id, "jolo_order_id" => jolo_order_id}} ->
               case Repo.get(AppOrder, order_id) do 

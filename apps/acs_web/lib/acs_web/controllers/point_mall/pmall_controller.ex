@@ -87,7 +87,7 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
       %PMallGoods{} = goods ->
-        {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         CachePMallGoods.refresh(goods)
         AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
@@ -108,7 +108,7 @@ defmodule AcsWeb.PMallController do
     reformat: "jpg"
   ] when action == :update_goods_content_pic
   def update_goods_content_pic(conn, %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
-    {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "point_goods_pics/#{goods_id}")
+    {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "point_goods_pics/#{goods_id}")
     conn |> json(%{success: true, link: image_path})
   end
 

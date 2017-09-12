@@ -58,7 +58,7 @@ defmodule AcsWeb.ForumController do
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound", i18n_message_object: %{forum_id: forum_id}})
 
       %Forum{} = forum ->
-        {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_icons")
+        {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "forum_icons")
         Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
         CachedForum.refresh(forum_id)
         conn |> json(%{success: true, icon_url: icon_path})
@@ -752,7 +752,7 @@ defmodule AcsWeb.ForumController do
   def upload_post_image(%Plug.Conn{private: %{forum_post: forum_post}} = conn, 
                          %{"file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(from: image_file_path, 
+      DeployUploadedFile.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
         low_quality: true)
     
@@ -767,7 +767,7 @@ defmodule AcsWeb.ForumController do
                                               forum_post: forum_post}} = conn, 
                         _) do 
     {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(from: image_file_path, 
+      DeployUploadedFile.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/", 
         low_quality: true)
     
@@ -885,7 +885,7 @@ defmodule AcsWeb.ForumController do
                                                  forum_comment: forum_comment}} = conn, 
                          %{"file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(from: image_file_path, 
+      DeployUploadedFile.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
         low_quality: true)
     
@@ -902,7 +902,7 @@ defmodule AcsWeb.ForumController do
                                                  forum_comment: forum_comment}} = conn, 
                         _) do 
     {:ok, image_path, width, height} = 
-      Utils.deploy_image_file_return_size(from: image_file_path, 
+      DeployUploadedFile.deploy_image_file_return_size(from: image_file_path, 
         to: "forums/#{forum_post.forum_id}/#{forum_post.id}/#{forum_comment.id}/", 
         low_quality: true)
 

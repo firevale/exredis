@@ -10,7 +10,7 @@ defmodule Acs.UploadImagePlugs do
         case conn.params[param_name] do 
           %{"base64_content" => base64_content} ->
             with image_data <- Base.decode64!(base64_content),
-                 file_name <- Path.join("/tmp", Utils.md5_sign(base64_content)),
+                 file_name <- Path.join("/tmp", Crypto.md5_sign(base64_content)),
                  {:ok, file} <- File.open(file_name, [:write]),
                  :ok <- IO.binwrite(file, image_data),
                  :ok <- File.close(file)

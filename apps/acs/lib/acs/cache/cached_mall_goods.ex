@@ -1,4 +1,4 @@
-defmodule Acs.CachedMallGoods do
+defmodule Acs.Cache.CachedMallGoods do
   require Exredis
   require Excache
 

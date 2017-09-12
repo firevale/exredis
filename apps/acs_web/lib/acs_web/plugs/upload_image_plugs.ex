@@ -1,8 +1,9 @@
 defmodule Acs.UploadImagePlugs do
   import Plug.Conn
-  use    Utils.LogAlias
+  use     Utils.LogAlias
   require Mogrify
   require Utils
+  alias   Utils.Crypto
 
   def convert_base64_image(conn, opt) do 
     case opt[:param_name] do 

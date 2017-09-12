@@ -197,7 +197,7 @@ defmodule AcsWeb.AppleStoreController do
 
       nil ->
         user = conn.private[:acs_session_user]
-        app_user = StatsRepo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+        app_user = AcsStats.Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
 
         order_info = %{
           id: Utils.generate_token(16),

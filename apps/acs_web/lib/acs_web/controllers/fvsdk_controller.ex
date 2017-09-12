@@ -23,9 +23,9 @@ defmodule AcsWeb.FVSdkController do
           [mem] ->
             case CachedDeviceInfo.get(v) do 
               nil ->
-                DeviceInfo.changeset(%DeviceInfo{}, %{id: v, total_mem_size: mem}) |> StatsRepo.insert
+                DeviceInfo.changeset(%DeviceInfo{}, %{id: v, total_mem_size: mem}) |> AcsStats.Repo.insert
               device_info ->
-                DeviceInfo.changeset(device_info, %{total_mem_size: mem}) |> StatsRepo.update
+                DeviceInfo.changeset(device_info, %{total_mem_size: mem}) |> AcsStats.Repo.update
             end
         end
         v
@@ -36,10 +36,10 @@ defmodule AcsWeb.FVSdkController do
         Device.changeset(%Device{}, %{id: device_id, 
           model: device_model, 
           platform: platform, 
-          os: os_ver}) |> StatsRepo.insert(on_conflict: :nothing)  
+          os: os_ver}) |> AcsStats.Repo.insert(on_conflict: :nothing)  
       
       device -> 
-        Device.changeset(device, %{os: os_ver}) |> StatsRepo.update
+        Device.changeset(device, %{os: os_ver}) |> AcsStats.Repo.update
     end
 
     conn
@@ -97,7 +97,7 @@ defmodule AcsWeb.FVSdkController do
     # oops, counter params only exists in android fvsdk
     active_seconds = String.to_integer(params["counter"] || "1") * 300
 
-    app_user = case StatsRepo.get_by(AppUser, 
+    app_user = case AcsStats.Repo.get_by(AppUser, 
                   app_id: app.id,
                   user_id: user_id,
                   zone_id: zone_id) do
@@ -110,41 +110,41 @@ defmodule AcsWeb.FVSdkController do
                       app_id: app.id,
                       platform: platform,
                       user_id: user_id
-                    }) |> StatsRepo.insert!
+                    }) |> AcsStats.Repo.insert!
 
                   %AppUser{} = app_user ->
                     AppUser.changeset(app_user, %{
                       app_user_name: app_user_name,
                       active_seconds: app_user.active_seconds + active_seconds
-                    }) |> StatsRepo.update!
+                    }) |> AcsStats.Repo.update!
                 end
 
-    case StatsRepo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
+    case AcsStats.Repo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
       nil ->
         AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
           date: today,
           app_user_id: app_user.id
-        }) |> StatsRepo.insert!
+        }) |> AcsStats.Repo.insert!
 
       %AppUserDailyActivity{} = auda ->
         AppUserDailyActivity.changeset(auda, %{
           active_seconds: auda.active_seconds + active_seconds
-        }) |> StatsRepo.update!
+        }) |> AcsStats.Repo.update!
     end
 
-    case StatsRepo.get(Device, device_id) do
+    case AcsStats.Repo.get(Device, device_id) do
       nil ->
         Device.changeset(%Device{}, %{
           id: device_id,
           model: device_model,
           platform: platform,
           os: os,
-        }) |> StatsRepo.insert!
+        }) |> AcsStats.Repo.insert!
 
       %Device{} = x -> x
     end
 
-    app_device = case StatsRepo.get_by(AppDevice, app_id: app.id,
+    app_device = case AcsStats.Repo.get_by(AppDevice, app_id: app.id,
                    device_id: device_id,
                    zone_id: zone_id) do
                    nil ->
@@ -154,25 +154,25 @@ defmodule AcsWeb.FVSdkController do
                        zone_id: zone_id,
                        platform: platform,
                        reg_date: today,
-                     }) |> StatsRepo.insert!
+                     }) |> AcsStats.Repo.insert!
 
                    %AppDevice{} = app_device ->
                      AppDevice.changeset(app_device, %{
                        active_seconds: app_device.active_seconds + active_seconds
-                     }) |> StatsRepo.update!
+                     }) |> AcsStats.Repo.update!
                  end
 
-    case StatsRepo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
+    case AcsStats.Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
       nil ->
         AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
           date: today,
           app_device_id: app_device.id
-        }) |> StatsRepo.insert!
+        }) |> AcsStats.Repo.insert!
 
       %AppDeviceDailyActivity{} = adda ->
         AppDeviceDailyActivity.changeset(adda, %{
           active_seconds: adda.active_seconds + active_seconds
-        }) |> StatsRepo.update!
+        }) |> AcsStats.Repo.update!
     end
 
     conn |> json(%{success: true})

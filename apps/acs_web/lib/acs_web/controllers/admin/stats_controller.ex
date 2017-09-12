@@ -178,7 +178,7 @@ defmodule AcsWeb.Admin.StatsController do
             select: map(dp, [:id, :platform, :dau, :danu, :dapu, :danpu, :dad, :dand, :total_fee]),
             where: dp.date == ^date and dp.app_id == ^app_id
 
-    reports = StatsRepo.all(query)
+    reports = AcsStats.Repo.all(query)
     conn |> json(%{success: true, reports: reports, date: date})
   end
 
@@ -196,7 +196,7 @@ defmodule AcsWeb.Admin.StatsController do
             where: dut.report_id == r.id and r.date == ^date and r.app_id == ^app_id,
             preload: [report: r]
 
-    all = StatsRepo.all(query)
+    all = AcsStats.Repo.all(query)
     timing = [_calc_user_timing(all, "all"), _calc_user_timing(all, "android"), _calc_user_timing(all, "ios")]
     conn |> json(%{success: true, timing: timing, date: date})
   end
@@ -216,7 +216,7 @@ defmodule AcsWeb.Admin.StatsController do
         where:  dp.app_id == ^app_id and dp.platform == ^platform and dp.date >= ^start_date and dp.date <= ^end_date,
         order_by: [asc: dp.date],
         preload: [user_retentions: user_retentions]
-    reports = StatsRepo.all(query)
+    reports = AcsStats.Repo.all(query)
     conn |> json(%{success: true, reports: reports})
   end
 
@@ -229,7 +229,7 @@ defmodule AcsWeb.Admin.StatsController do
         where: ad.reg_date >= ^start_date and ad.reg_date <= ^end_date,
         group_by: ad.platform,
         order_by: [asc: count(ad.id)]
-    platform_reports = StatsRepo.all(query_platform)
+    platform_reports = AcsStats.Repo.all(query_platform)
 
     query = 
       from ad in AppDevice,
@@ -255,7 +255,7 @@ defmodule AcsWeb.Admin.StatsController do
         query
       end
 
-    reports = StatsRepo.all(query)
+    reports = AcsStats.Repo.all(query)
     conn |> json(%{success: true, platforms: platform_reports, reports: reports})
   end
 
@@ -286,11 +286,11 @@ defmodule AcsWeb.Admin.StatsController do
       end
    
     query_total = from e in subquery(query_group_by), select: count(e.count)
-    total_page = round(Float.ceil(StatsRepo.one(query_total) / records_per_page))
+    total_page = round(Float.ceil(AcsStats.Repo.one(query_total) / records_per_page))
    
     query_reports =  _query_device_details([platform: platform, stats_type: stats_type, page: page, records_per_page: records_per_page,
          mem_size: mem_size, start_date: start_date, end_date: end_date, order_by: order_bys])
-    reports = StatsRepo.all(query_reports)
+    reports = AcsStats.Repo.all(query_reports)
     
     conn |> json(%{success: true, total: total_page, reports: reports})
   end

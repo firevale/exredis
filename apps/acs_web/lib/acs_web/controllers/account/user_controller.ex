@@ -543,7 +543,7 @@ defmodule AcsWeb.UserController do
                 select: map(app_user, [:zone_id, :app_user_id, :app_user_name, :app_user_level, :active_seconds,
                   :pay_amount, :last_active_at, :inserted_at]),
                 order_by: [asc: app_user.zone_id]
-            app_users = StatsRepo.all(app_users_query)
+            app_users = AcsStats.Repo.all(app_users_query)
             Map.put_new(Map.take(user, [:id, :email, :mobile, :gender, :nickname, :age, 
               :inserted_at]), :app_users, app_users)
           end)
@@ -650,7 +650,7 @@ defmodule AcsWeb.UserController do
   end
 
   def import_data() do
-    max_id = StatsRepo.one!( from user in AppUser, select: max(user.id))
+    max_id = AcsStats.Repo.one!( from user in AppUser, select: max(user.id))
     Enum.map_every(0..max_id, 100, fn current_id ->
       query =
         from app_user in AppUser,
@@ -659,7 +659,7 @@ defmodule AcsWeb.UserController do
         where: app_user.id >= ^current_id,
         limit: 100,
         order_by: [app_user.id]
-      users = StatsRepo.all(query)
+      users = AcsStats.Repo.all(query)
       if users && users != [] do
         Enum.map(users, fn app_user ->
           case CachedUser.get(app_user.user_id) do

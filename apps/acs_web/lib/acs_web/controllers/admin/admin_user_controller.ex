@@ -5,7 +5,7 @@ defmodule AcsWeb.AdminUserController do
   alias Acs.AdminAuth
   alias Acs.Accounts
 
-  def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
+  def search_user(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
     query = from au in AdminUser,
       select: au.user_id,
       where: au.admin_level == 1 or au.app_id == ^app_id

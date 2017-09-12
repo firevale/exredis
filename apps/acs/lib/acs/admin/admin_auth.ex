@@ -54,6 +54,7 @@ defmodule Acs.AdminAuth do
       case Exredis.get(redis_key) do
         nil -> 
           {:commit, refresh(user_id, app_id, false)}
+
         raw ->
           case Integer.parse(raw) do
             {level, ""} -> {:commit, level}
@@ -95,15 +96,15 @@ defmodule Acs.AdminAuth do
     end
   end
 
-  @admin_cache_key      "acs.adminuser.level"
+  @key_base      "acs.adminuser.level"
   defp key(user_id) when is_integer(user_id) do 
-    "#{@admin_cache_key}.#{user_id}" 
+    "#{@key_base}.#{user_id}" 
   end
   defp key(user_id, nil) when is_integer(user_id) do
-    "#{@admin_cache_key}.#{user_id}" 
+    "#{@key_base}.#{user_id}" 
   end
   defp key(user_id, app_id) when is_integer(user_id) do  
-    "#{@admin_cache_key}.#{user_id}.#{app_id}"
+    "#{@key_base}.#{user_id}.#{app_id}"
   end
 
 

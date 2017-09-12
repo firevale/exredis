@@ -20,6 +20,7 @@
       <a class="buttons btn-download"></a>
     </div>
     <a class="buttons btn-back-top" href="#"></a>
+    <a class="buttons btn-new-post" href="#"></a>
   </div>
 </template>
 <script>

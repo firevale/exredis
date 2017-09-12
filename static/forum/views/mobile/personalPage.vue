@@ -23,22 +23,22 @@
         </div>
       </div>
     </div>
-    <slider-nav class="has-divider" :menus="menus" @onSelect="switchMenu" ref="nav"></slider-nav>
+    <slider-nav class="has-divider" :menus="menus" ref="nav"></slider-nav>
     <div class="card has-divider">
       <div class="card-content">
         <div v-for="n in 15" class="article">
           <div class="comp-author-info">
             <div class="item-left">
-              <p class="title is-ellipsis">
-                <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决赛 EDG vs RNG 3:2 胜利？
+              <p class="title is-ellipsis-2">
+                <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决EDGvsRNG 3:2胜利结束了总决赛MVP争夺者发生的根深蒂固人哈哈哈刚刚回国拉锯战家居服可？
               </p>
               <p class="subtitle">
                 为什么猪女会这么打？ 第一个原因
               </p>
             </div>
-            <p class="item-right has-text-bottom">
-              <i class="icon icon-remove" /><small><strong>删除</strong></small>
-            </p>
+            <div class="item-right has-text-bottom">
+              <i class="icon icon-remove" /><strong><small>删除</small></strong>
+            </div>
           </div>
         </div>
       </div>

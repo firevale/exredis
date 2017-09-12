@@ -10,32 +10,30 @@
         </div>
         <div class="field">
           <div class="control">
-            <input class="input is-primary" type="text" v-model.trim="mobile" @input="handleValidation" :placeholder="$t('forum.placeholder.inputMobileNumber')">
+            <input class="input is-primary no-radius" type="text" v-model.trim="mobile" @input="handleValidation" :placeholder="$t('forum.placeholder.inputMobileNumber')">
           </div>
         </div>
         <div class="field has-addons">
           <div class="control is-expanded">
-            <input class="input is-fullwidth is-primary" type="text" v-model.trim="verifyCode" :placeholder="$t('forum.placeholder.inputVerifyCode')">
+            <input class="input is-primary no-radius is-fullwidth" type="text" v-model.trim="verifyCode" :placeholder="$t('forum.placeholder.inputVerifyCode')">
           </div>
           <div class="control">
             <v-touch tag="button" type="button" class="button is-primary btn-verfy" :class="{'is-disabled': $v.mobile.$invalid || cooldownCounter > 0,
                   'is-loading': sendingVerifyCode }" @tap="sendMobileVerifyCode" :disabled="$v.mobile.$invalid || cooldownCounter > 0">
-              <small>{{ btnFetchVerifyCodeTitle }}</small>
+              {{ btnFetchVerifyCodeTitle }}
             </v-touch>
           </div>
         </div>
-        <div class="field" v-show="errorHint">
-          <div class="control">
-            <span class="icon icon-error-tip"></span>
-            <strong>{{ errorHint }}</strong>
-          </div>
-        </div>
+        <p class="help" v-show="errorHint">
+          <span class="icon icon-error-tip"></span>
+          <strong>{{ errorHint }}</strong>
+        </p>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" type="submit" class="button is-primary is-fullwidth has-radius" :disabled="$v.$invalid"
+            <v-touch tag="button" type="submit" class="button is-primary is-small is-fullwidth has-radius" :disabled="$v.$invalid"
               :class="{'is-disabled': $v.$invalid,
                   'is-loading': processing}">
-              <span class="title is-white">{{ $t('forum.account.bind') }}</span>
+              {{ $t('forum.account.bind') }}
             </v-touch>
           </div>
         </div>

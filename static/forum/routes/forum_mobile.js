@@ -66,5 +66,17 @@ export default [{
     path: 'replyMessage',
     name: 'replyMessage',
     component: require('../views/mobile/replyMessage.vue')
+  }, {
+    path: 'login',
+    name: 'login',
+    component: require('../views/mobile/login.vue')
+  }, {
+    path: 'register',
+    name: 'register',
+    component: require('../views/mobile/register.vue')
+  }, {
+    path: 'retrievePassword',
+    name: 'retrievePassword',
+    component: require('../views/mobile/retrievePassword.vue')
   }]
 }, ]

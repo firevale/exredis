@@ -7,7 +7,9 @@
             <i class="icon icon-head-portrait" />
             <div class="item-left">
               <p class="title">
-                昵称：firevale</p>
+                昵称：firevale
+                <span class="tag is-info subtitle">官方版主</span>
+              </p>
               <p class="title">
                 ID：10238988323</p>
               <p class="title">
@@ -28,7 +30,7 @@
         <div class="card-content">
           <div class="box no-radius is-marginless	is-paddingless">
             <router-link v-for="n in 15" class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
-              <p class="title is-ellipsis">
+              <p class="title is-ellipsis-2">
                 <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决赛阿斯顿发 EDG vs RNG 3:2 胜利？
               </p>
               <p class="subtitle article-date">

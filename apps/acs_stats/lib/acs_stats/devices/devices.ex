@@ -72,7 +72,7 @@ defmodule AcsStats.Devices do
     end
   end
 
-  def log_app_device_activity(date, app_id, device_id, date, active_seconds) do 
+  def log_app_device_activity(date, app_id, device_id, active_seconds) do 
     with app_device = %AppDevice{} <- CachedAppDevice.get(app_id, device_id)
     do
       case CachedAppDeviceDailyActivity.get(app_device.id, date) do 

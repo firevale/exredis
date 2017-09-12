@@ -5,6 +5,10 @@ defmodule AcsStats.RealtimeMetrics do
     Exredis.bitcount("acs.rtm.app_users.#{app_id}")
   end
 
+  def get_app_paid_user_number(app_id) do 
+    Exredis.bitcount("acs.rtm.app_paid_users.#{app_id}")
+  end
+
   def get_app_dlu(date, app_id) do 
     Exredis.bitcount(dlu_key(date, app_id))  
   end
@@ -74,6 +78,14 @@ defmodule AcsStats.RealtimeMetrics do
     Exredis.getbit("acs.rtm.app_users.#{app_id}", user_id) == 0
   end
 
+  def add_app_paid_user(app_id, user_id) do 
+    Exredis.setbit("acs.rtm.app_paid_users.#{app_id}", user_id, 1)
+  end
+
+  def is_new_app_paid_user?(app_id, user_id) do 
+    Exredis.getbit("acs.rtm.app_paid_users.#{app_id}", user_id) == 0
+  end
+
   def add_login_user(date, app_id, platform, user_id) do 
     Exredis.setbit(dlu_key(date, app_id), user_id, 1)      
     Exredis.setbit(dlu_key(date, app_id, platform), user_id, 1)      
@@ -126,6 +138,20 @@ defmodule AcsStats.RealtimeMetrics do
   def add_retention_device(date, app_id, platform, app_device_id) do 
     Exredis.setbit(drd_key(date, app_id, platform), app_device_id, 1)      
   end
+
+  def add_paid_user(date, app_id, platform, user_id) do 
+    Exredis.setbit(dapu_key(date, app_id), user_id, 1)      
+    Exredis.setbit(dapu_key(date, app_id, platform), user_id, 1)      
+  end  
+
+  def add_new_paid_user(date, app_id, platform, user_id) do 
+    Exredis.setbit(danpu_key(date, app_id), user_id, 1)      
+    Exredis.setbit(danpu_key(date, app_id, platform), user_id, 1)      
+  end  
+
+  def add_paid_fee(date, app_id, platform, fee) do 
+    Exredis.incrby(dpf_key(date, app_id, platform), fee)      
+  end  
 
   def clear_realtime_metrics(date) do 
     for key <- Exredis.keys("acs.rtm.*.#{date}.*") do 
@@ -182,6 +208,24 @@ defmodule AcsStats.RealtimeMetrics do
 
   defp drd_key(date, app_id, platform) do 
     "acs.rtm.drd.#{date}.#{app_id}.#{platform}"
+  end
+
+  defp dapu_key(date, app_id) do 
+    "acs.rtm.dapu.#{date}.#{app_id}"
+  end
+  defp dapu_key(date, app_id, platform) do 
+    "acs.rtm.dapu.#{date}.#{app_id}.#{platform}"
+  end
+
+  defp danpu_key(date, app_id) do 
+    "acs.rtm.danpu.#{date}.#{app_id}"
+  end
+  defp danpu_key(date, app_id, platform) do 
+    "acs.rtm.danpu.#{date}.#{app_id}.#{platform}"
+  end
+
+  defp dpf_key(date, app_id, platform) do 
+    "acs.rtm.dpf.#{date}.#{app_id}.#{platform}"
   end
 
 end

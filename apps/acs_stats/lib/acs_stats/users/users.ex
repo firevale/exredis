@@ -32,7 +32,7 @@ defmodule AcsStats.Users do
     if RealtimeMetrics.is_yesterday_new_app_user?(date, app_id, user_id) do 
       RealtimeMetrics.add_retention_user(date, app_id, user_id)
     end
-    
+
     if RealtimeMetrics.is_yesterday_new_app_user?(date, app_id, platform, user_id) do 
       RealtimeMetrics.add_retention_user(date, app_id, platform, user_id)
     end
@@ -53,7 +53,7 @@ defmodule AcsStats.Users do
           app_user_level: game_user_level,
           last_active_at: DateTime.utc_now(),
         }) |> Repo.insert()
-        ESAppUser.index(app_user)
+        ESAppUser.index(app_user, user_id)
         CachedAppUser.refresh(app_user)
 
       app_user ->
@@ -63,7 +63,7 @@ defmodule AcsStats.Users do
           app_user_level: game_user_level,
           last_active_at: DateTime.utc_now(),
         }) |> Repo.update()      
-        ESAppUser.index(app_user)
+        ESAppUser.index(app_user, user_id)
         CachedAppUser.refresh(app_user)
     end
   end
@@ -82,6 +82,44 @@ defmodule AcsStats.Users do
         cached ->
           {:ok, model} = AppUserDailyActivity.changeset(cached, %{
             active_seconds: cached.active_seconds + active_seconds
+          }) |> Repo.update()          
+          CachedAppUserDailyActivity.refresh(model)          
+      end
+    else 
+      nil -> 
+        error("app_user for #{app_id}.#{zone_id}.#{user_id} not found")
+    end
+  end
+
+  def log_app_user_payment(date, app_id, zone_id, user_id, platform, fee) do 
+    if RealtimeMetrics.is_new_app_paid_user?(app_id, user_id) do 
+      RealtimeMetrics.add_new_paid_user(date, app_id, platform, user_id)      
+    end
+
+    RealtimeMetrics.add_app_paid_user(app_id, user_id)
+    RealtimeMetrics.add_paid_user(date, app_id, platform, user_id)
+    RealtimeMetrics.add_paid_fee(date, app_id, platform, fee)
+
+    with app_user = %AppUser{} <- CachedAppUser.get(app_id, zone_id, user_id) 
+    do 
+      {:ok, app_user} = AppUser.changeset(app_user, %{
+        pay_amount: app_user.pay_amount + fee,
+        last_active_at: DateTime.utc_now(),
+      }) |> Repo.update()       
+
+      CachedAppUser.refresh(app_user)
+
+      case CachedAppUserDailyActivity.get(app_user.id, date) do
+        nil ->
+          {:ok, model} = AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+            app_user_id: app_user.id,
+            date: date,
+            pay_amount: fee,
+          }) |> Repo.insert()          
+          CachedAppUserDailyActivity.refresh(model)
+        cached ->
+          {:ok, model} = AppUserDailyActivity.changeset(cached, %{
+            pay_amount: cached.pay_amount + fee,
           }) |> Repo.update()          
           CachedAppUserDailyActivity.refresh(model)          
       end

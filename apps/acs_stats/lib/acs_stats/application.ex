@@ -12,7 +12,6 @@ defmodule AcsStats.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    port = Application.get_env(:acs_stats, :tcp_port, 9527)
 
     res = Supervisor.start_link([
       supervisor(AcsStats.Repo, []),

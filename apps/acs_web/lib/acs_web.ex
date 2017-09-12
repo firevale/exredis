@@ -112,6 +112,7 @@ defmodule AcsWeb do
       alias AcsWeb.AdminController
       alias Exwcp.Menu
       alias Exservice.Chaoxin
+      alias Exservice.NeteaseDun
     end
   end
 

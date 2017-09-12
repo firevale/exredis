@@ -1,9 +1,9 @@
 defmodule AcsWeb.VerifyCodeController do
   use AcsWeb, :controller
 
-  alias Acs.CaptchaGenerator
-  alias Acs.SmsService
-  alias Acs.EmailService
+  alias Utils.Captcha
+  alias Exsm.MeishengService
+  alias Exmail.EmailService
 
   plug :detect_account_id 
   plug :check_account_exist 
@@ -15,7 +15,7 @@ defmodule AcsWeb.VerifyCodeController do
 
   def reset_register_captcha(conn, %{"register_account_id" => register_account_id} = _params) do 
     code = gen_hex_code() 
-    image_url = CaptchaGenerator.generate(code)
+    image_url = Captcha.generate(code)
     conn |> put_session(:register_verify_code, code)
          |> put_session(:register_account_id, register_account_id)
          |> json(%{success: true, image_url: image_url})
@@ -52,7 +52,7 @@ defmodule AcsWeb.VerifyCodeController do
     case Exredis.get("vc.mobile.sms.#{mobile}") do 
       nil ->
         code = gen_code()
-        case SmsService.send_verify_code(mobile, code) do 
+        case MeishengService.send_verify_code(mobile, code) do 
           :ok ->
             Exredis.setex("vc.mobile.sms.#{mobile}", 60, code)
             conn |> put_session(String.to_atom("#{type}_account_id"), mobile)

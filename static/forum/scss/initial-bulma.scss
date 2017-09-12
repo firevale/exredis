@@ -194,6 +194,8 @@ $modal-close-right: 5px;
 $modal-card-title-color: $text2;
 $modal-card-head-padding:1.5rem .65rem;
 $modal-card-head-background-color: $white;
+$modal-card-head-border-bottom: none;
+$modal-card-foot-border-top:none;
 .modal {
   .modal-content {
     padding: 2rem;
@@ -241,6 +243,13 @@ $modal-card-head-background-color: $white;
         min-width: 10rem;
       }
     }
+  }
+}
+
+//control
+.control {
+  .input.is-primary {
+    border-color: rgba(179, 24, 46, 0.2) !important;
   }
 }
 

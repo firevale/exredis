@@ -25,8 +25,7 @@ input::-webkit-inner-spin-button {
 
 #app {
   width: 100vw;
-  height: 100vh;
-  // transform: translateZ(0);
+  height: 100vh; // transform: translateZ(0);
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -52,17 +51,6 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-}
-
-input[type="submit"].button,
-button[type="submit"].button,
-.button.is-submit {
-  display: block;
-  min-width: 8rem;
-  border-radius: 0;
-  font-size: 1.25rem;
-  font-weight: 500;
-  margin: 0.5rem auto;
 }
 
 .flex-fixed-size {
@@ -91,87 +79,6 @@ button[type="submit"].button,
 
 .has-divider {
   margin-bottom: virtual-m-rem(40);
-}
-
-.has-bottom-line {
-  position: relative;
-  z-index: 0;
-  &:after {
-    z-index: 11;
-    @include bottom-line(1px, rgba(203, 203, 203, 0.8));
-  }
-}
-
-.has-hairline-border {
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    border: 1px solid $grey;
-    width: 100%;
-    height: 100%;
-  }
-  &.hairline-hide-right {
-    &:after {
-      border-right: none;
-    }
-  }
-  &.hairline-hide-top {
-    &:after {
-      border-top: none;
-    }
-  }
-}
-
-@media only screen and (-o-min-device-pixel-ratio: 5/4),
-only screen and (-webkit-min-device-pixel-ratio: 1.25),
-only screen and (min--moz-device-pixel-ratio: 1.25),
-only screen and (min-device-pixel-ratio: 1.25),
-only screen and (min-resolution: 1.25dppx) {
-  body:not(.ios):not(.android) {
-    .has-bottom-line {
-      &:after {
-        -webkit-transform: translateZ(0) scaleY(.3);
-        transform: translateZ(0) scaleY(.3);
-        -webkit-transform-origin: 0 0;
-        transform-origin: 0 0;
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        width: 200%;
-        height: 200%;
-        transform: translateZ(0) scale(.5);
-        transform-origin: left top;
-      }
-    }
-  }
-  body.ios {
-    .has-bottom-line {
-      &:after {
-        border-width: 0.5px;
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        border-width: 0.5px;
-      }
-    }
-  }
-  body.android {
-    .has-bottom-line {
-      &:after {
-        border-color: rgba(203, 203, 203, 0.6);
-      }
-    }
-    .has-hairline-border {
-      &:after {
-        border-color: rgba(203, 203, 203, 0.6);
-      }
-    }
-  }
 }
 
 .is-clickable {

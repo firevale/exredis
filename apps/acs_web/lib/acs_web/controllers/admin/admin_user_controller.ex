@@ -16,17 +16,17 @@ defmodule AcsWeb.AdminUserController do
   end
 
   def get_current_user_level(%Plug.Conn{private: %{ acs_admin_id: acs_admin_id}} = conn, _) do
-    level = CachedAdminUser.get_admin_level(acs_admin_id, nil) 
+    level = AdminAuth.get_admin_level(acs_admin_id, nil) 
     conn |> json(%{success: true, level: level})
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
                     %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
-    if (CachedAdminUser.get_admin_level(admin_id, nil) == 1) do
+    if (AdminAuth.get_admin_level(admin_id, nil) == 1) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
 
-    if (level == 2 and CachedAdminUser.get_admin_level(acs_admin_id, nil) != 1 ) do
+    if (level == 2 and AdminAuth.get_admin_level(acs_admin_id, nil) != 1 ) do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     else 
       case Acs.Admin.add_admin_user(app_id, admin_id, account_id, level) do 
@@ -63,7 +63,7 @@ defmodule AcsWeb.AdminUserController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.userNotExist"})
       %AdminUser{} = user ->
-        if(user.admin_level == 2 and CachedAdminUser.get_admin_level(acs_admin_id, nil) !=1) do
+        if(user.admin_level == 2 and AdminAuth.get_admin_level(acs_admin_id, nil) !=1) do
             conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         else
           case Repo.delete(user) do

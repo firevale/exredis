@@ -22,7 +22,7 @@ defmodule Acs.Admin do
 
   def log_admin_op(admin_user_id, app_id, operate_type, log) do
     OpLog.changeset(%OpLog{}, %{
-      user_id: user_id, 
+      user_id: admin_user_id, 
       app_id: app_id, 
       operate_type: operate_type, 
       log: log  

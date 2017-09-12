@@ -409,7 +409,7 @@ defmodule AcsWeb.Plugs do
  end
 
  defp _get_user_admin_level(user_id, app_id) do
-    CachedAdminUser.get_admin_level(user_id, app_id)
+    AdminAuth.get_admin_level(user_id, app_id)
  end
 
   defp _response_authorization_failed(conn) do

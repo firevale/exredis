@@ -7,7 +7,7 @@ defmodule AcsWeb.Admin.LoginCodesController do
     end)
   
     AdminController.add_operate_log(acs_admin_id, app_id, "gen_codes", %{"number" => number})
-    AppLoginCode.refresh_stats_info(app_id)
+    LoginCodes.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
   end
@@ -49,7 +49,7 @@ defmodule AcsWeb.Admin.LoginCodesController do
     end
 
     AdminController.add_operate_log(acs_admin_id, app_id, "del_codes", %{"number" => number})
-    AppLoginCode.refresh_stats_info(app_id)
+    LoginCodes.refresh_stats_info(app_id)
 
     conn |> json(%{success: true})
   end
@@ -57,8 +57,8 @@ defmodule AcsWeb.Admin.LoginCodesController do
   def stats_info(conn, %{"app_id" => app_id}) do 
     conn |> json(%{
       success: true,
-      stats: AppLoginCode.stats_info(app_id),
-      daily_chart: AppLoginCode.daily_chart_data(app_id, 30),
+      stats: LoginCodes.stats_info(app_id),
+      daily_chart: LoginCodes.daily_chart_data(app_id, 30),
     })
   end
 
@@ -99,7 +99,7 @@ defmodule AcsWeb.Admin.LoginCodesController do
       codes = Repo.all(query)
 
       AdminController.add_operate_log(admin_user_id, app_id, "assign_codes", %{"number" => number})
-      AppLoginCode.refresh_stats_info(app_id)
+      LoginCodes.refresh_stats_info(app_id)
       conn |> json(%{success: true, codes: codes})
     end
   end

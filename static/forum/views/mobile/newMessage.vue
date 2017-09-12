@@ -13,7 +13,7 @@
             <textarea class="textarea no-radius no-border" placeholder="请填写消息内容"></textarea>
           </p>
         </div>
-        <div class="content comp-author-info align-items">
+        <div class="content comp-author-info align-items-center">
           <span class="item-left">
             <a class="button is-primary is-blackness">发送</a>
           </span>

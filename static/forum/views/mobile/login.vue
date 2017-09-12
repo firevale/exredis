@@ -11,17 +11,15 @@
           <div class="control">
             <input class="input is-primary" type="text" placeholder="请输入密码">
           </div>
-        </div>
-        <div class="field">
-          <div class="control">
+          <p class="help">
             <span class="icon icon-error-tip"></span>
             <strong>用户名或密码不争气</strong>
-          </div>
+          </p>
         </div>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" class="button is-primary is-fullwidth has-radius">
-              <span class="title is-white">登录</span>
+            <v-touch tag="button" class="button is-primary is-small is-fullwidth has-radius">
+              登录
             </v-touch>
           </div>
         </div>

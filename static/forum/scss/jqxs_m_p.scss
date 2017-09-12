@@ -13,10 +13,6 @@
   height: virtual-m-rem(210);
 }
 
-.is-white {
-  color: $light;
-}
-
 .is-olive {
   color: $olive;
 }
@@ -37,7 +33,7 @@
   box-shadow: none;
 }
 
-.align-items {
+.align-items-center {
   align-items: center;
 }
 
@@ -119,6 +115,14 @@
   position: relative;
   .article {
     padding: .55rem .3rem;
+    .is-ellipsis-2 {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      line-height: 1.125rem;
+      max-height: 2.25rem;
+    }
     &:not(:last-child) {
       border-bottom: 1px solid $grey;
     }

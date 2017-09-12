@@ -4,12 +4,12 @@
       <div class="fields">
         <div class="field">
           <div class="control">
-            <input class="input" type="text" placeholder="请输入手机号／邮箱">
+            <input class="input is-primary" type="text" placeholder="请输入手机号／邮箱">
           </div>
         </div>
         <div class="field has-addons">
           <div class="control is-expanded">
-            <input class="input is-fullwidth" type="text" placeholder="请输入验证码">
+            <input class="input is-primary is-fullwidth" type="text" placeholder="请输入验证码">
           </div>
           <div class="control">
             <v-touch tag="button" type="button" class="button is-primary btn-verfy">
@@ -19,19 +19,17 @@
         </div>
         <div class="field">
           <div class="control">
-            <input class="input" type="text" placeholder="请输入新密码">
+            <input class="input is-primary" type="text" placeholder="请输入新密码">
           </div>
-        </div>
-        <div class="field">
-          <div class="control">
+          <p class="help">
             <span class="icon icon-error-tip"></span>
             <strong>手机号错误</strong>
-          </div>
+          </p>
         </div>
         <div class="field">
           <div class="control">
-            <v-touch tag="button" type="submit" class="button is-primary is-fullwidth has-radius">
-              <span class="title is-white">保存</span>
+            <v-touch tag="button" type="submit" class="button is-primary is-small is-fullwidth has-radius">
+              保存
             </v-touch>
           </div>
         </div>

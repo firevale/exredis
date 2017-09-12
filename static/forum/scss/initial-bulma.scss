@@ -249,7 +249,7 @@ $modal-card-foot-border-top:none;
 //control
 .control {
   .input.is-primary {
-    border-color: rgba(179, 24, 46, 0.2) !important;
+    border-color: rgba($primary, 0.2) !important;
   }
 }
 

@@ -1,9 +1,6 @@
 defmodule AcsWeb.CustomerServiceController do
   use AcsWeb, :controller
 
-  alias   Acs.Question
-  require Floki
-
   plug :fetch_app_id
   plug :fetch_session_user_id
   plug :fetch_session_user
@@ -12,7 +9,7 @@ defmodule AcsWeb.CustomerServiceController do
                     %{"title" => _title,
                       "app_id" => app_id} = contact)do
       with  contact <- contact |> Map.put("user_id", user_id) |> Map.put("app_id", app_id),
-            {:ok, contact} <- Question.changeset(%Question{}, contact) |> Repo.insert
+            {:ok, contact} <- AppQuestion.changeset(%AppQuestion{}, contact) |> Repo.insert
       do
            Elasticsearch.index(%{
             index: "customer_service",
@@ -37,10 +34,10 @@ defmodule AcsWeb.CustomerServiceController do
     get_paged_questions(conn, app_id,page, records_per_page)
   end
   def get_paged_questions(conn,app_id, page, records_per_page) do
-    total = Repo.one!(from q in Acs.Question, select: count(q.id),where: q.app_id == ^app_id)
+    total = Repo.one!(from q in AppQuestion, select: count(q.id),where: q.app_id == ^app_id)
     total_page = round(Float.ceil(total / records_per_page))
 
-    query = from question in Acs.Question,
+    query = from question in AppQuestion,
               left_join: user in assoc(question, :user),
               left_join: app in assoc(question, :app),
               limit: ^records_per_page,
@@ -55,7 +52,7 @@ defmodule AcsWeb.CustomerServiceController do
   end
 
   def get_common_issues(conn, %{"app_id" =>app_id}) do
-    query = from question in Acs.Question,
+    query = from question in AppQuestion,
               select: question.title,
               where: question.app_id == ^app_id and question.is_hot== true
 
@@ -64,8 +61,8 @@ defmodule AcsWeb.CustomerServiceController do
   end
 
   def update_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,%{"id" => id, "title" => title,"answer" => answer, "active" => active,"is_hot" => is_hot}) do
-    with %Question{} = question <- Repo.get_by(Question,id: id, app_id: app_id),
-         {:ok, question} <- Question.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |> Repo.update
+    with %AppQuestion{} = question <- Repo.get_by(AppQuestion, id: id, app_id: app_id),
+         {:ok, question} <- AppQuestion.changeset(question,%{title: title, answer: answer,active: active, is_hot: is_hot}) |> Repo.update
     do
          Elasticsearch.update(%{
             index: "customer_service",
@@ -86,7 +83,7 @@ defmodule AcsWeb.CustomerServiceController do
   end
 
   def delete_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,%{"id" => id})  do
-    with %Question{id: ^id} = question <- Repo.get_by(Question, id: id, app_id: app_id),
+    with %AppQuestion{id: ^id} = question <- Repo.get_by(AppQuestion, id: id, app_id: app_id),
          {:ok, _}  <- Repo.delete(question)
     do
         Elasticsearch.delete(%{
@@ -104,10 +101,10 @@ defmodule AcsWeb.CustomerServiceController do
   end
 
   def get_paged_services(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page})do
-    total = Repo.one!(from q in Question, select: count(q.id), where: q.user_id == ^user_id and q.app_id == ^app_id)
+    total = Repo.one!(from q in AppQuestion, select: count(q.id), where: q.user_id == ^user_id and q.app_id == ^app_id)
     total_page = round(Float.ceil(total / records_per_page))
 
-    query = from question in Question,
+    query = from question in AppQuestion,
               left_join: user in assoc(question, :user),
               left_join: app in assoc(question, :app),
               limit: ^records_per_page,
@@ -161,7 +158,7 @@ defmodule AcsWeb.CustomerServiceController do
   end
 
   def get_app_detail(%Plug.Conn{private: %{acs_session_user_id: _user_id}} = conn, %{"app_id" => app_id}) do
-     app = RedisApp.find(app_id) |> Map.take([:id, :cs_phone_number, :baidu_tieba_name, :weibo_name, :website_url, :public_weixin_name, :forum_url])
+     app = CachedApp.get(app_id) |> Map.take([:id, :cs_phone_number, :baidu_tieba_name, :weibo_name, :website_url, :public_weixin_name, :forum_url])
 
      conn |> json(%{success: true, app: app})
   end

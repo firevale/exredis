@@ -1,4 +1,4 @@
-defmodule Acs.CachePMallTaskBar do
+defmodule Acs.Cache.CachePMallTaskBar do
   require Exredis
   require Excache
   import  Ecto.Query

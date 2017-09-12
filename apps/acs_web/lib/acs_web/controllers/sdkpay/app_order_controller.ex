@@ -5,8 +5,8 @@ defmodule AcsWeb.SdkPay.AppOrderController do
   plug :fetch_zone_id
   plug :create_order
 
-  defp create_order(%Plug.Conn{private: %{acs_user: %RedisUser{} = user,
-                                          acs_app: %RedisApp{} = app,
+  defp create_order(%Plug.Conn{private: %{acs_user: %User{} = user,
+                                          acs_app: %App{} = app,
                                           acs_platform: platform,
                                           acs_zone_id: zone_id,
                                           acs_device_id: device_id},

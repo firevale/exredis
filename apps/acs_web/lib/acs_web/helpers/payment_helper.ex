@@ -1,4 +1,4 @@
-defmodule Acs.PaymentHelper do
+defmodule AcsWeb.PaymentHelper do
   require Utils
   require Exredis
 

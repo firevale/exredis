@@ -3,11 +3,12 @@ defmodule AcsWeb.AppAdminChannel do
 
   require Utils
   alias   Acs.AdminUser
+  alias   Acs.Auth
 
   def join("admin.app:" <> _, %{"access_token" => access_token,
                                 "app_id" => app_id} = payload, socket) do
     info "receive app admin channel join request, payload: #{inspect payload}"
-    case RedisAccessToken.find(access_token) do 
+    case Acs.Auth.get_access_token(access_token) do 
       %{user_id: user_id} ->
         query = from au in AdminUser,
           select: count(au.id),

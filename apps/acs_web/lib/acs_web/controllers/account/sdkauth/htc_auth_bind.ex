@@ -4,7 +4,7 @@ defmodule AcsWeb.HtcAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{htc: %{"pub_key" => htc_pub_key}}} = app,
+                acs_app: %App{sdk_bindings: %{htc: %{"pub_key" => htc_pub_key}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"htc_session_id" => htc_session_id,
@@ -13,7 +13,7 @@ defmodule AcsWeb.HtcAuthBind do
               "htc_account_sign" => htc_account_sign} = params) do
 
     if Utils.rsa_public_verify2(htc_pub_key, htc_account, htc_account_sign) do
-      case RedisUser.bind_sdk_user(%{sdk: :htc, 
+      case Accounts.bind_sdk_user(%{sdk: :htc, 
                                      app_id: app.id, 
                                      sdk_user_id: htc_user_id, 
                                      email: nil,
@@ -22,7 +22,7 @@ defmodule AcsWeb.HtcAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -34,7 +34,7 @@ defmodule AcsWeb.HtcAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

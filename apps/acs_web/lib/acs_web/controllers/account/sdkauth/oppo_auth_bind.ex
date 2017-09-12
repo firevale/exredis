@@ -6,7 +6,7 @@ defmodule AcsWeb.OppoAuthBind do
   # for oppo sdk version 1
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{oppo: %{"app_key" => oppo_app_key, "app_secret" => oppo_app_secret}}} = app,
+                acs_app: %App{sdk_bindings: %{oppo: %{"app_key" => oppo_app_key, "app_secret" => oppo_app_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"oppo_access_token" => oppo_access_token,
@@ -14,7 +14,7 @@ defmodule AcsWeb.OppoAuthBind do
 
     case SDKOppo.validate_session(oppo_app_key, oppo_app_secret, oppo_access_token, oppo_token_secret) do
       %{id: oppo_user_id, email: email, nickname: oppo_nickname, avatar_url: oppo_picture_url} ->
-        case RedisUser.bind_sdk_user(%{sdk: :oppo, 
+        case Accounts.bind_sdk_user(%{sdk: :oppo, 
                                        app_id: app.id, 
                                        sdk_user_id: oppo_user_id, 
                                        email: email,
@@ -23,7 +23,7 @@ defmodule AcsWeb.OppoAuthBind do
                                        mobile: nil,
                                        avatar_url: oppo_picture_url}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -35,7 +35,7 @@ defmodule AcsWeb.OppoAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: user.email,
               nick_name:  user.nickname,
@@ -54,7 +54,7 @@ defmodule AcsWeb.OppoAuthBind do
   # for oppo sdk version 2
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{oppo: %{"app_key" => oppo_app_key, "app_secret" => oppo_app_secret}}} = app,
+                acs_app: %App{sdk_bindings: %{oppo: %{"app_key" => oppo_app_key, "app_secret" => oppo_app_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"oppo_access_token" => oppo_access_token,
@@ -62,7 +62,7 @@ defmodule AcsWeb.OppoAuthBind do
 
     case SDKOppo.validate_session2(oppo_app_key, oppo_app_secret, oppo_access_token, oppo_user_id) do
       %{id: _, email: email, nickname: oppo_nickname, avatar_url: oppo_picture_url} ->
-        case RedisUser.bind_sdk_user(%{sdk: :oppo, 
+        case Accounts.bind_sdk_user(%{sdk: :oppo, 
                                        app_id: app.id, 
                                        sdk_user_id: oppo_user_id, 
                                        email: email,
@@ -71,7 +71,7 @@ defmodule AcsWeb.OppoAuthBind do
                                        mobile: nil,
                                        avatar_url: oppo_picture_url}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -83,7 +83,7 @@ defmodule AcsWeb.OppoAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: user.email,
               nick_name:  user.nickname,

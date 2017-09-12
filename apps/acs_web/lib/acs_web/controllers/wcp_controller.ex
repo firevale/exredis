@@ -13,7 +13,7 @@ defmodule AcsWeb.WcpController do
 
     Process.spawn(fn() ->
       openid = msg.fromusername
-      user_info = Wcp.User.info(app_id, openid)
+      user_info =  Exwcp.User.info(app_id, openid)
 
       case Map.get(user_info, :openid) do
         ^openid ->

@@ -4,8 +4,8 @@ defmodule AcsWeb.AppleStoreController do
   require SDKApple
 
   # 兼容旧版本fvsdk
-  def add_order(%Plug.Conn{private: %{acs_session_user: %RedisUser{} = user,
-                                      acs_app: %RedisApp{} = app,
+  def add_order(%Plug.Conn{private: %{acs_session_user: %User{} = user,
+                                      acs_app: %App{} = app,
                                       acs_platform: "ios",
                                       acs_device_id: device_id}} = conn, 
                 %{"receipt" => receipt,
@@ -101,7 +101,7 @@ defmodule AcsWeb.AppleStoreController do
     conn |> json(%{success: false, message: "invalid request params"})
   end 
 
-  def verify_and_deliver(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
+  def verify_and_deliver(%Plug.Conn{private: %{acs_app: %App{} = app,
                                                acs_zone_id: zone_id, 
                                                acs_platform: "ios",
                                                acs_device_id: device_id}} = conn, 

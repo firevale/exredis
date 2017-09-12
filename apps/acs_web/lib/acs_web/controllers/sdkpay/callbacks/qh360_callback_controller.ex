@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.Qh360CallbackController do
   use     AcsWeb, :controller
   require SDKQh360
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                        %{"gateway_flag" => gateway_flag, 
                          "app_ext1" => order_id, 
                          "app_ext2" => cp_order_id,

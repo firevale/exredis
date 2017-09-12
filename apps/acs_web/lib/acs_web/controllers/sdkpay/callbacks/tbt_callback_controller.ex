@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.TbtCallbackController do
   use     AcsWeb, :controller
   require SDKTBT
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"trade_no" => order_id, 
                           "tborder" => trans_no, 
                           "amount" => amount,

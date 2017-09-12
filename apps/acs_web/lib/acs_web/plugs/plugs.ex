@@ -173,11 +173,11 @@ defmodule AcsWeb.Plugs do
   end
   def fetch_session_user(%Plug.Conn{} = conn, _options), do: conn
   defp _fetch_session_user(conn, user_id) do
-    case RedisUser.find(String.to_integer("#{user_id}")) do
+    case CachedUser.get(String.to_integer("#{user_id}")) do
       nil -> conn
       _ = user ->
         if is_nil(user.inserted_at) do
-          user = RedisUser.refresh("#{user_id}" |> String.to_integer)
+          user = CachedUser.refresh("#{user_id}" |> String.to_integer)
           conn |> put_private(:acs_session_user, user)
         else
           conn |> put_private(:acs_session_user, user)

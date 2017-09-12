@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.LenovoCallbackController do
   use     AcsWeb, :controller
   require SDKLenovo
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"transdata" => transdata, "sign" => sign} = params) do 
 
     case app.sdk_bindings.lenovo do

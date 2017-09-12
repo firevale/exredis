@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.PPCallbackController do
   use     AcsWeb, :controller
   require SDKPP
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"billno" => order_id, "order_id" => trans_no, "amount" => amount} = params) do
     case app.sdk_bindings.pp do
       %{"pay_key" => pay_key} ->

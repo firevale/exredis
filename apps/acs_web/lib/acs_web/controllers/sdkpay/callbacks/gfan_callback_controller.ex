@@ -3,7 +3,7 @@ defmodule AcsWeb.SdkPay.GfanCallbackController do
   require SDKGFan
   import  SweetXml
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"notify_data" => notify_data} = params) do
     case app.sdk_bindings.gfan do 
       %{"app_uid" => app_uid} ->

@@ -36,6 +36,7 @@ defmodule AcsWeb do
       import Ecto
       import Ecto.Query
 
+      alias Acs.Repo
       alias Acs.Apps.App
       alias Acs.Apps.AppNews
       alias Acs.Apps.AppSdkBinding
@@ -68,6 +69,7 @@ defmodule AcsWeb do
       alias Acs.PMalls.PointLog
       alias Acs.PMalls.TaskBar
       alias Acs.PMalls.PMallGoods
+      alias Acs.Accounts
       alias Acs.Accounts.User
       alias Acs.Accounts.UserAddress
       alias Acs.Admin.AdminUser
@@ -82,6 +84,7 @@ defmodule AcsWeb do
       alias Acs.Cache.CachePMallTaskBar
       alias Acs.Cache.CachePMallGoods
       alias Acs.Cache.CachedNeteaseDun
+      alias Acs.Cache.CachedLoginCode
 
       alias AcsStats.Cache.CachedDeviceInfo
       alias AcsStats.Cache.CachedDevice

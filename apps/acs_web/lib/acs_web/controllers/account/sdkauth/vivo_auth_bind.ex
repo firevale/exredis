@@ -3,14 +3,14 @@ defmodule AcsWeb.VivoAuthBind do
   require Logger
   require SDKVivo
 
-  def bind(%Plug.Conn{private: %{acs_app: %RedisApp{sdk_bindings: %{vivo: %{}}} = app,
+  def bind(%Plug.Conn{private: %{acs_app: %App{sdk_bindings: %{vivo: %{}}} = app,
                                  acs_device_id: device_id,
                                  acs_platform: platform}} = conn, 
            %{"vivo_access_token" => vivo_access_token,
              "vivo_user_id" => vivo_user_id} = params) do
 
     if SDKVivo.validate_session(vivo_user_id, vivo_access_token) do
-      case RedisUser.bind_sdk_user(%{sdk: :vivo, 
+      case Accounts.bind_sdk_user(%{sdk: :vivo, 
                                      app_id: app.id, 
                                      sdk_user_id: vivo_user_id, 
                                      email: nil,
@@ -19,7 +19,7 @@ defmodule AcsWeb.VivoAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -31,7 +31,7 @@ defmodule AcsWeb.VivoAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

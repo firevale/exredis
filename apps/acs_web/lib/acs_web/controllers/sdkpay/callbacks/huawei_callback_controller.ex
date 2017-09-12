@@ -5,7 +5,7 @@ defmodule AcsWeb.SdkPay.HuaweiCallbackController do
   plug :fetch_app_id 
   plug :fetch_app
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"result" => result, 
                           "requestId" => order_id, 
                           "orderId" => trans_no, 

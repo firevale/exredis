@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.CCPlayCallbackController do
   use     AcsWeb, :controller
   require SDKCCPlay
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"partnerTransactionNo" => order_id,
                           "transactionNo" => trade_no,
                           "orderPrice" => price} = params) do

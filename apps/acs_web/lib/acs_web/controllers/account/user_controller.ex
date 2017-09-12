@@ -91,8 +91,7 @@ defmodule AcsWeb.UserController do
     if CachedUser.get!(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      user = CachedUser.create!(account_id, password)
-      user = CachedUser.save!(user)
+      user = Accounts.create!(account_id, password)
       create_and_response_access_token(conn, user, app_id, device_id, platform)
     end
   end
@@ -119,8 +118,7 @@ defmodule AcsWeb.UserController do
                               _ -> false
                             end
           if is_valid_account do
-            user = CachedUser.create!(account_id, password)
-            user = CachedUser.save!(user)
+            user = Accounts.create!(account_id, password)
             create_and_response_access_token(conn, user, app_id, device_id, platform)
           else
             conn |> json(%{success: false, i18n_message: "error.server.accountIdChanged"})
@@ -135,7 +133,7 @@ defmodule AcsWeb.UserController do
     update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})
   end
   def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do
-    case CachedUser.get(account_id) do
+    case CachedUser.get_user(account_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.accountNotFound"})
 

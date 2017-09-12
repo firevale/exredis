@@ -91,7 +91,7 @@ defmodule AcsWeb do
       alias Acs.Cache.CachedAppWcpConfig
       alias Acs.Cache.CachedAppWcpMessageRule
       alias Acs.Cache.CachedMall
-      alias Acs.Cache.CacheMallGoods
+      alias Acs.Cache.CachedMallGoods
       alias Acs.Cache.CachedPMallTaskBar
       alias Acs.Cache.CachedPMallGoods
       alias Acs.Cache.CachedNeteaseDun

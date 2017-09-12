@@ -7,10 +7,28 @@ defmodule Acs.LoginCodes do
   alias Acs.Repo
 
   alias Acs.LoginCodes.AppLoginCode
+  alias Acs.Cache.CachedLoginCode 
 
   require Exredis
   require Excache
   require Timex
+
+  def get_login_code(app_id, code: code) do 
+    CachedLoginCode.get(app_id, code: code)
+  end
+  def get_login_code(app_id, user_id: user_id) do 
+    CachedLoginCode.get(app_id, user_id: user_id)
+  end
+  def get_login_code(app_id, owner: owner) do 
+    CachedLoginCode.get(app_id, owner: owner)
+  end
+
+  def update_login_code!(%AppLoginCode{} = code, attr) do 
+    new_code = AppLoginCode.changeset(code, attr) |> Repo.update!
+    CachedLoginCode.refresh(new_code)
+    new_code
+  end
+
 
   def stats_info(app_id) do 
     Excache.get!(stats_key(app_id), fallback: fn(redis_key) -> 
@@ -23,7 +41,7 @@ defmodule Acs.LoginCodes do
     end)
   end
 
-  def find_by_openid(app_id, openid) do 
+  def get_by_openid(app_id, openid) do 
     key = "_acs.login_codes.owns.#{app_id}.#{openid}"
     Excache.get!(key, fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do 

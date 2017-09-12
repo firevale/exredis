@@ -383,7 +383,7 @@ defmodule AcsWeb.Plugs do
           nil -> _response_admin_access_failed(conn)
 
           %User{} = user ->
-            if CachedAdminUser.is_admin(user_id) do 
+            if Acs.AdminAuth.is_admin(user_id) do 
               conn |> put_private(:acs_admin_id, user.id)
             else
               _response_admin_access_failed(conn)
@@ -409,11 +409,7 @@ defmodule AcsWeb.Plugs do
  end
 
  defp _get_user_admin_level(user_id, app_id) do
-   if app_id do
     CachedAdminUser.get_admin_level(user_id, app_id)
-   else
-    CachedAdminUser.get_admin_level(user_id)
-   end
  end
 
   defp _response_authorization_failed(conn) do

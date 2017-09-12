@@ -5,7 +5,7 @@
         <h5 class="title is-5">{{ section.level==2? $t('admin.titles.addAppManager'):$t('admin.titles.addAppCustomerService') }}</h5>
       </div>
       <div style="margin-bottom:0.5rem" class="control has-icon has-icon-left">
-        <input type="text" class="input" @keyup.enter="getUsers" :placeholder="$t('admin.titles.searchAdminUsers')"
+        <input type="text" class="input" @keyup.enter="searchUser" :placeholder="$t('admin.titles.searchAdminUsers')"
           v-model.trim="keyword">
         <span class="icon is-small">
           <i v-if="searching" class="fa fa-spinner fa-spin"></i>
@@ -62,13 +62,10 @@ export default {
   },
 
   methods: {
-    getUsers: async function() {
+    searchUser: async function() {
       if (this.keyword != "") {
         this.searching = true
-        let par = new Object()
-        par.level = this.section.level
-        par.keyword = this.keyword
-        let result = await this.$acs.getUsersByLevel(par)
+        let result = await this.$acs.searchUser({keyword: this.keyword})
         if (result.success) {
           this.users = result.users
         }

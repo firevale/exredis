@@ -52,6 +52,7 @@ defmodule AcsWeb.Mixfile do
       {:acs_stats, in_umbrella: true},
       {:exsm, in_umbrella: true},
       {:exsdks, in_umbrella: true},
+      {:exwcp, in_umbrella: true},
     ]
   end
 

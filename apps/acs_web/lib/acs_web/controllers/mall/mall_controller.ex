@@ -1,11 +1,6 @@
 defmodule AcsWeb.MallController do
   use AcsWeb, :controller
 
-  alias   Acs.RedisMall
-  alias   Acs.RedisApp
-  import  Acs.UploadImagePlugs
-  require Floki
-
   plug :fetch_app_id
   plug :fetch_access_token
   plug :fetch_session_user_id
@@ -76,7 +71,7 @@ defmodule AcsWeb.MallController do
       %Mall{} = mall ->
         changed = Mall.changeset(mall, mall_info)
         changed |> Repo.update!
-        RedisApp.update(mall.app_id, mall_info["active"])
+        CachedApp.update(mall.app_id, mall_info["active"])
         AdminController.add_operate_log(acs_admin_id, app_id, "update_mall_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
@@ -163,7 +158,7 @@ defmodule AcsWeb.MallController do
       %MallGoods{} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         MallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
-        RedisMall.refresh(goods)
+        CachedMall.refresh(goods)
         AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
         conn |> json(%{success: true, pic_url: image_path})
 
@@ -207,7 +202,7 @@ defmodule AcsWeb.MallController do
           case MallGoods.changeset(%MallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              RedisMall.refreshById(id)
+              CachedMall.refreshById(id)
               AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: _errors}} ->
@@ -225,7 +220,7 @@ defmodule AcsWeb.MallController do
             goods = Map.put(goods, "user_id", user_id)
             changed = MallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock})
             changed |> Repo.update!
-            RedisMall.refreshById(id)
+            CachedMall.refreshById(id)
             AdminController.add_operate_log(user_id, app_id, "update_goods", changed.changes)
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
@@ -263,7 +258,7 @@ defmodule AcsWeb.MallController do
         else
           case Repo.delete(goods) do
             {:ok, _} ->
-              RedisMall.delete(goods_id)
+              CachedMall.delete(goods_id)
               AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 
@@ -299,7 +294,7 @@ defmodule AcsWeb.MallController do
   end
 
   def get_goods_stock(conn,%{"goods_id" => goods_id})do
-    goods = RedisMall.find(goods_id)
+    goods = CachedMall.get(goods_id)
     conn |> json(%{success: true, stock: goods.stock})
   end
   def get_goods_stock(conn, _) do
@@ -315,7 +310,7 @@ defmodule AcsWeb.MallController do
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = RedisMall.find(goods_id)
+    goods = CachedMall.get(goods_id)
     add_goods_click(goods_id,1)
     conn |> json(%{success: true, goods: goods})
   end
@@ -325,7 +320,7 @@ defmodule AcsWeb.MallController do
   defp add_goods_click(goods_id, click) do
     goods = Repo.get(MallGoods, goods_id)
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
-    RedisMall.refresh(goods)
+    CachedMall.refresh(goods)
   end
 
   def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do

@@ -1,12 +1,6 @@
 defmodule AcsWeb.ForumController do
   use AcsWeb, :controller
 
-  alias   Acs.RedisForum
-  alias   Acs.RedisSetting
-  require Floki
-  import  Acs.UploadImagePlugs
-  alias   Acs.RedisNeteaseDun 
-
   plug :fetch_app_id
   plug :fetch_session_user_id  
   plug :fetch_session_user
@@ -67,7 +61,7 @@ defmodule AcsWeb.ForumController do
       %Forum{} = forum ->
         {:ok, icon_path} = Utils.deploy_image_file(from: image_file_path, to: "forum_icons")
         Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
-        RedisForum.refresh(forum_id)
+        CachedForum.refresh(forum_id)
         conn |> json(%{success: true, icon_url: icon_path})
 
       _ ->
@@ -84,8 +78,8 @@ defmodule AcsWeb.ForumController do
       %Forum{} = forum ->
         changed = Forum.changeset(forum, forum_info)
         changed |> Repo.update!
-        RedisForum.refresh(forum_id)
-        RedisApp.refreshForumActive(forum.app_id,forum_info["active"])
+        CachedForum.refresh(forum_id)
+        CachedApp.refreshForumActive(forum.app_id,forum_info["active"])
         AdminController.add_operate_log(acs_admin_id, app_id, "update_forum_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
@@ -109,7 +103,7 @@ defmodule AcsWeb.ForumController do
       nil ->
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
-            RedisForum.refresh(new_section.forum_id)
+            CachedForum.refresh(new_section.forum_id)
             AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", section)
             conn |> json(%{success: true, section: new_section })
 
@@ -121,7 +115,7 @@ defmodule AcsWeb.ForumController do
         changed = ForumSection.changeset(old_section, section)
         case changed |> Repo.update do
           {:ok, new_section} ->
-            RedisForum.refresh(new_section.forum_id)
+            CachedForum.refresh(new_section.forum_id)
             AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", changed.changes)
             conn |> json(%{success: true, section: new_section })
 
@@ -194,7 +188,7 @@ defmodule AcsWeb.ForumController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
       %Forum{} = forum ->
-        case RedisSetting.find("keyword")  do
+        case CachedSetting.get("keyword")  do
           nil -> 
             conn |> json(%{success: true, forum: forum, keyword: ""})
           keyword ->
@@ -271,7 +265,7 @@ defmodule AcsWeb.ForumController do
     else
       query
     end
-    posts = Repo.all(query) |> RedisForum.filterHotList
+    posts = Repo.all(query) |> CachedForum.filterHotList
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
@@ -299,7 +293,7 @@ defmodule AcsWeb.ForumController do
               preload: [user: u, section: s, forum: f],
               order_by: [{:desc, p.is_top}, {:desc, p.inserted_at}]
 
-    posts = Repo.all(query) |> RedisForum.filterHotList
+    posts = Repo.all(query) |> CachedForum.filterHotList
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
@@ -375,7 +369,7 @@ defmodule AcsWeb.ForumController do
         Map.put(post, :is_favorite, false)
     end
 
-    Map.put(post, :is_hot, RedisForum.checkIsHot(post_id))
+    Map.put(post, :is_hot, CachedForum.checkIsHot(post_id))
 
     add_post_click(post_id, 1)
 
@@ -574,7 +568,7 @@ defmodule AcsWeb.ForumController do
         last_reply_at: utc_now}) |> Repo.update()
 
       # check is hot
-      hot_hours = RedisSetting.find("forum_post_hot_hours")
+      hot_hours = CachedSetting.get("forum_post_hot_hours")
       if hot_hours != nil do
         hot_hours = String.to_integer(hot_hours)
         if hot_hours > 0 do
@@ -583,7 +577,7 @@ defmodule AcsWeb.ForumController do
                   select: count(1), 
                   where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
           total = Repo.one!(query)
-          RedisForum.checkIsHot(forum_post.id, total)
+          CachedForum.checkIsHot(forum_post.id, total)
         end
       end
 
@@ -668,7 +662,7 @@ defmodule AcsWeb.ForumController do
 
           user = case Process.get("user_#{user_id}") do 
                   nil -> 
-                    user_db = RedisUser.find(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
+                    user_db = CachedUser.get(user_id) |> Map.take([:id, :nickname, :avatar_url, :inserted_at])
                     Process.put("user_#{user_id}", user_db)
                     user_db
                   user_cache ->
@@ -677,7 +671,7 @@ defmodule AcsWeb.ForumController do
                   
           forum = case Process.get("forum_#{forum_id}") do
                     nil ->
-                      forum_new = RedisForum.find(forum_id)
+                      forum_new = CachedForum.get(forum_id)
                       Process.put("forum_#{forum_id}", forum_new)
                       forum_new 
                     forum_cache ->
@@ -722,7 +716,7 @@ defmodule AcsWeb.ForumController do
            "section_id" => section_id} = post <- conn.params,
           forum_id <- String.to_integer("#{forum_id}"),
           section_id <- String.to_integer("#{section_id}"),
-          %{sections: sections} <- RedisForum.find(forum_id),
+          %{sections: sections} <- CachedForum.get(forum_id),
           %{id: _} <- sections[section_id]
     do 
       case post["post_id"] do 
@@ -868,14 +862,14 @@ defmodule AcsWeb.ForumController do
 
     images = "[{'name': '#{image_path}', 'type': 1, 'data': '#{image_path}'}]"
 
-    case RedisNeteaseDun.find(image_path) do
+    case CachedNeteaseDun.get(image_path) do
       :exist -> 
         %{success: false, i18n_message: "forum.newPost.imageFilterFail"}
       
       :null ->
         case SDKNeteaseDun.check_img(images) do 
           {:error, label, info} ->
-            RedisNeteaseDun.refresh(image_path)
+            CachedNeteaseDun.refresh(image_path)
 
             if label do
               %{success: false, i18n_message: "forum.newPost.imageFilterFail"}

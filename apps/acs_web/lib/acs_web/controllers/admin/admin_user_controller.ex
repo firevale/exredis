@@ -1,8 +1,5 @@
 defmodule AcsWeb.AdminUserController do
   use AcsWeb, :controller
-  alias Acs.Admin.AdminUser
-  alias Acs.Cache.CachedUser
-  alias Acs.Cache.CachedAdminUser
 
   def get_users_by_level(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"level" => _level, "keyword" => keyword}) do
     queryAdminUser = from au in AdminUser,

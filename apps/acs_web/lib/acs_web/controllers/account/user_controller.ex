@@ -7,7 +7,6 @@ defmodule AcsWeb.UserController do
   plug :fetch_user_id
   plug :fetch_session_user_id
   plug :fetch_session_user
-  plug :no_emoji, [param_name: "nickname"] when action == :update_nickname
 
   def is_account_exists(conn, %{"account_id" => ""}) do
     conn |> json(%{success: true, exists: false})

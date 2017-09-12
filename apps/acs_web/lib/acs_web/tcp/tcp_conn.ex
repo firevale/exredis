@@ -35,7 +35,7 @@ defmodule AcsWeb.Tcp.TcpConn do
   def init(_) do
     d "stats tcp connection process start...."
     {:ok, timer} = :timer.send_after(10000, :heartbeart)
-    node = System.get_env("NODE")
+    node = System.get_env("NODE") || "acs"
     {:ok, %{socket: nil, node: node, timer: timer, active: false}}
   end
 

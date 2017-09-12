@@ -15,7 +15,6 @@ defmodule Acs.PaymentHelper do
   require Acs.Search.ESOrder
   require AcsStats
 
-
   @location Application.get_env(:acs, :location, "cn")
 
   def notify_cp(order = %AppOrder{}) do
@@ -66,7 +65,7 @@ defmodule Acs.PaymentHelper do
         sign = Crypto.md5_sign("#{sign_str}#{app.secret}")
         params = Map.merge(order_map, %{sign: sign})
 
-        callback_url = case CachedAppSdkPaymentCallback.get(app_id, order.platform, order.sdk) do
+        callback_url = case CachedAppSdkPaymentCallback.get(order.app_id, order.platform, order.sdk) do
                          ("http" <> _) = v -> v
                          _ -> app.payment_callback
                        end

@@ -94,7 +94,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
         post_params = Map.put(post_params, "signature", sign)
 
         try do
-          response = Httpc.post_msg("https://pay.vivo.com.cn/vcoin/trade", post_params)
+          response = Httpc.post_form("https://pay.vivo.com.cn/vcoin/trade", post_params)
           if Httpc.success?(response) do
             resp_string = String.replace(response.body, "'", "\"")
             case JSON.decode(resp_string) do

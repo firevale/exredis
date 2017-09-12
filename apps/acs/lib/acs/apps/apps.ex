@@ -6,7 +6,11 @@ defmodule Acs.Apps do
   import Ecto.Query, warn: false
   alias Acs.Repo
 
+
   alias Acs.Apps.App
+  alias Acs.Apps.AppOrder
 
-
+  def update_app_order!(%AppOrder{} = order, attr) do 
+    AppOrder.changeset(order, attrs) |> Repo.update!
+  end
 end

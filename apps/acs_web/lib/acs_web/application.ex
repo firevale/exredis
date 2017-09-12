@@ -4,6 +4,8 @@ defmodule AcsWeb.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    port = Application.get_env(:acs_web, :tcp_port, 9527)
+    node = System.get_env("NODE")
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
@@ -20,7 +22,10 @@ defmodule AcsWeb.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: AcsWeb.Supervisor]
-    Supervisor.start_link(children, opts)
+  
+    res = Supervisor.start_link(children, opts)
+    AcsStats.remove_online_node(node)
+    res
   end
 
   # Tell Phoenix to update the endpoint configuration

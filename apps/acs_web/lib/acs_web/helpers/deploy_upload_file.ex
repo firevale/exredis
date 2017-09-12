@@ -1,7 +1,5 @@
 defmodule DeployUploadedFile do 
 
-  alias Exservice.Tinypng
-
   def cp_file_to_md5_name(src, dest, ext) do 
     if File.exists?(src) do 
       case File.mkdir_p!(dest) do 
@@ -10,9 +8,7 @@ defmodule DeployUploadedFile do
           [file_md5 | _] = String.split(md5sum_result)
           file_name = "#{file_md5}.#{ext}"
           case File.cp(src, Path.join(dest, file_name)) do 
-            :ok ->
-              # Tinypng.tinify(Path.join(dest, file_name))
-              {:ok, file_name}
+            :ok -> {:ok, file_name}
             {:error, reason} -> {:error, reason} 
           end
         {:error, reason} -> {:error, reason} 

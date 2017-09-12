@@ -32,18 +32,18 @@ defmodule Acs.Cache.CachedAdminSetting do
       nil -> nil
 
       %Setting{value: value} ->
-        Exredis.setex(key(name), 7200, value)
+        Exredis.set(key(name), value)
         Excache.del(key(name))
         value
     end
   end
 
   def del(name) do
-    with Exredis.del(key(name)),
-         Excache.del(key(name)),
-         %Setting{} = setting <- Repo.get_by(Setting, name: name),
+    with %Setting{} = setting <- Repo.get_by(Setting, name: name),
          {:ok, _} <- Repo.delete(setting)
     do
+      Exredis.del(key(name))
+      Excache.del(key(name))
       {:ok, "ok"}
     else
       nil -> {:ok, "setting not found"}

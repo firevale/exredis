@@ -2,22 +2,7 @@ defmodule AcsWeb.AppChannel do
   use AcsWeb, :channel
 
   require Utils
-  import  AcsStats.Tcp.StatsTcpConn, only: [
-    dlu_key: 2, 
-    dlu_key: 3, 
-    dld_key: 3, 
-    dau_key: 2, 
-    dau_key: 3, 
-    dad_key: 3, 
-    incr_online_counter: 4, 
-    decr_online_counter: 4,
-   ]
-
-  alias   AcsStats.Cache.CachedDevice
-  alias   AcsStats.Cache.CachedAppDevice
-  alias   AcsStats.Cache.CachedAppUserDailyActivity
-  alias   AcsStats.Cache.CachedAppDeviceDailyActivity
-  alias   AcsStats.Devices.Device
+  require AcsStats
 
   @heartbeart_duration 20000
 
@@ -46,7 +31,8 @@ defmodule AcsWeb.AppChannel do
       Logger.metadata(user_id: user_id)
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
-      node = System.get_env("ACS_NODE_NAME")
+
+      node = System.get_env("NODE") || "acs"
 
       timer = case Map.get(payload, "version") do 
         x when x in [2, "2"] -> 
@@ -57,9 +43,7 @@ defmodule AcsWeb.AppChannel do
       end
 
       today = Timex.local |> Timex.to_date
-      Exredis.sadd(dlu_key(today, app_id), user_id)
-      Exredis.sadd(dlu_key(today, app_id, platform), user_id)
-      Exredis.sadd(dld_key(today, app_id, platform), device_id)
+      AcsStats.log_app_login_user(today, app_id, user_id, platform)
 
       {:ok, socket |> assign(:user_id, user_id)
                    |> assign(:app_id, app_id)
@@ -89,8 +73,8 @@ defmodule AcsWeb.AppChannel do
                           "platform" => platform,
                           "sdk" => sdk,
                           "app_user_id" => app_user_id,
-                          "app_user_name" => _app_user_name,
-                          "app_user_level" => _app_user_level,
+                          "app_user_name" => app_user_name,
+                          "app_user_level" => app_user_level,
                           "zone_id" => zone_id,
                           "zone_name" => _zone_name} = payload, socket) do
 
@@ -100,19 +84,15 @@ defmodule AcsWeb.AppChannel do
       Logger.metadata(user_id: user_id)
       Logger.metadata(app_id: app_id)
       Logger.metadata(device_id: device_id)
-      node = System.get_env("ACS_NODE_NAME")
 
-      today = Timex.local |> Timex.to_date
+      node = System.get_env("NODE") || "acs"
 
-      Exredis.sadd(dlu_key(today, app_id), user_id)
-      Exredis.sadd(dau_key(today, app_id), user_id)
-      Exredis.sadd(dlu_key(today, app_id, platform), user_id)
-      Exredis.sadd(dau_key(today, app_id, platform), user_id)
-      Exredis.sadd(dld_key(today, app_id, platform), device_id)
-      Exredis.sadd(dad_key(today, app_id, platform), device_id)
-      incr_online_counter(node, app_id, platform, user_id)
+      today = Timex.local() |> Timex.to_date()
 
-      init_stat_data(payload, today)
+      AcsStats.log_app_login_user(today, app_id, user_id, platform)
+      AcsStats.add_online_user(node, app_id, platform, user_id)
+      AcsStats.log_app_user(today, app_id, zone_id, user_id, platform, sdk, app_user_id, app_user_name, app_user_level)
+      AcsStats.log_app_device(today, app_id, device_id, platform, sdk)
 
       {:ok, socket |> assign(:user_id, user_id)
                    |> assign(:app_id, app_id)
@@ -156,43 +136,24 @@ defmodule AcsWeb.AppChannel do
     info "receive reset channel request with payload: #{inspect payload}"
     Logger.metadata(user_id: user_id)
 
-    now = Timex.local()
-    today = Timex.to_date(now)
+    today = Timex.local() |> Timex.to_date()
 
-    Exredis.sadd(dlu_key(today, app_id), user_id)
-    Exredis.sadd(dlu_key(today, app_id, platform), user_id)
+    AcsStats.log_app_login_user(today, app_id, user_id, platform)
 
-    if app_user_id != "" and last_app_user_id != "" do                                     
-      if user_id != last_user_id do 
-        # add user stats
-        Exredis.sadd(dau_key(today, app_id), user_id)
-        Exredis.sadd(dau_key(today, app_id, platform), user_id)
-
-        decr_online_counter(node, app_id, platform, last_user_id)
-        incr_online_counter(node, app_id, platform, user_id)
-      end
-
-      do_stat(socket)
-      init_stat_data(payload, today)
-      {:noreply, socket 
-        |> assign(:user_id, user_id)
-        |> assign(:active, true)
-        |> assign(:join_at, Utils.unix_timestamp)
-        |> assign(:app_user_id, app_user_id)
-        |> assign(:today, today)
-        |> assign(:zone_id, "#{zone_id}") 
-      }
-    else
-      if last_app_user_id != "" do 
-        do_stat(socket)
-      end
-
-      {:noreply, socket 
-        |> assign(:user_id, user_id)
-        |> assign(:active, false)
-        |> assign(:today, today)
-      }      
+    if user_id != last_user_id do 
+      AcsStats.remove_online_user(node, app_id, platform, user_id)
     end
+
+    log_stats_activities(socket)
+
+    {:noreply, socket 
+      |> assign(:user_id, user_id)
+      |> assign(:active, true)
+      |> assign(:join_at, Utils.unix_timestamp())
+      |> assign(:app_user_id, app_user_id)
+      |> assign(:today, today)
+      |> assign(:zone_id, "#{zone_id}") 
+    }
   end
   def handle_in("reset", payload, socket) do
     info "receive unknown reset, payload: #{inspect payload}, assigns: #{inspect socket.assigns}"
@@ -207,43 +168,27 @@ defmodule AcsWeb.AppChannel do
                                     "app_user_name" => app_user_name,
                                     "app_user_level" => app_user_level,
                                     "zone_id" => zone_id,
-                                    "zone_name" => zone_name
                                     } = payload, 
                                     %{assigns: %{app_id: app_id, 
                                                  user_id: user_id,
                                                  device_id: device_id, 
                                                  device_model: device_model,
                                                  os_ver: os_ver,
-                                                 today: _today,
                                                  node: node,
-                                                 platform: platform}} =  socket) do
+                                                 platform: platform,
+                                                 sdk: sdk}} =  socket) do
     info "receive update game data request with payload: #{inspect payload}"
     now = Timex.local()
     today = Timex.to_date(now)
-    Exredis.sadd(dlu_key(today, app_id), user_id)
-    Exredis.sadd(dau_key(today, app_id), user_id)
-    Exredis.sadd(dlu_key(today, app_id, platform), user_id)
-    Exredis.sadd(dau_key(today, app_id, platform), user_id)
-    Exredis.sadd(dld_key(today, app_id, platform), device_id)
-    Exredis.sadd(dad_key(today, app_id, platform), device_id)
-    incr_online_counter(node, app_id, platform, user_id)
 
-    init_stat_data(%{"app_user_id" => app_user_id,
-                     "app_user_name" => app_user_name,
-                     "app_user_level" => app_user_level,
-                     "zone_id" => zone_id,
-                     "zone_name" => zone_name,
-                     "app_id" => app_id,
-                     "user_id" => user_id,
-                     "device_id" => device_id,
-                     "device_model" => device_model,
-                     "os_ver" => os_ver,
-                     "platform" => platform,
-                     }, today)
+    AcsStats.add_online_user(node, app_id, platform, user_id)
+    AcsStats.log_app_user(today, app_id, zone_id, user_id, platform, sdk, app_user_id, app_user_name, app_user_level)
+    AcsStats.log_app_device(today, app_id, platform, sdk)
 
     {:noreply, 
       socket 
         |> assign(:zone_id, zone_id)
+        |> assign(:today, today)
         |> assign(:join_at, Timex.to_unix(now))
         |> assign(:active, true)
         |> assign(:app_user_id, app_user_id)
@@ -253,8 +198,6 @@ defmodule AcsWeb.AppChannel do
     info "receive unknown update game data, payload: #{inspect payload}, assigns: #{inspect socket.assigns}"
     {:noreply, socket} 
   end
-  
-
 
   def handle_in("pause", _payload, %{assigns: %{
     node: node,
@@ -262,9 +205,9 @@ defmodule AcsWeb.AppChannel do
     app_id: app_id, 
     platform: platform}} = socket) do
     info "channel paused, assigns: #{inspect socket.assigns}"
-    decr_online_counter(node, app_id, platform, user_id)
+    AcsStats.remove_online_user(node, app_id, platform, user_id)
     if socket.assigns[:active] do 
-      do_stat(socket) 
+      log_stats_activities(socket) 
     end
     {:noreply, socket |> assign(:active, false) }
   end
@@ -279,7 +222,7 @@ defmodule AcsWeb.AppChannel do
     app_id: app_id, 
     platform: platform}} = socket) do
     info "channel resume, assigns: #{inspect socket.assigns}"
-    incr_online_counter(node, app_id, platform, user_id)
+    AcsStats.add_online_user(node, app_id, platform, user_id)
     {:noreply, socket |> assign(:join_at, Utils.unix_timestamp)
                       |> assign(:active, true)
     }
@@ -323,8 +266,8 @@ defmodule AcsWeb.AppChannel do
     app_id: app_id,
     platform: platform}} = socket) do
     info "active channel terminate with reason: #{inspect socket.assigns}"
-    decr_online_counter(node, app_id, platform, user_id)
-    do_stat(socket)
+    AcsStats.remove_online_user(node, app_id, platform, user_id)
+    log_stats_activities(socket)
     case Map.get(socket.assigns, :hb_interval) do 
       nil -> :do_nothing
       timer -> :timer.cancel(timer)
@@ -338,7 +281,7 @@ defmodule AcsWeb.AppChannel do
     app_id: app_id,
     platform: platform}} = socket) do
     info "inactive channel terminate with reason: #{inspect socket.assigns}"
-    decr_online_counter(node, app_id, platform, user_id)
+    AcsStats.remove_online_user(node, app_id, platform, user_id)
     case Map.get(socket.assigns, :hb_interval) do 
       nil -> :do_nothing
       timer -> :timer.cancel(timer)
@@ -354,100 +297,25 @@ defmodule AcsWeb.AppChannel do
     :ok
   end
   
-  defp init_stat_data(%{"user_id" => user_id,
-                        "app_id" => app_id,
-                        "device_id" => device_id,
-                        "device_model" => device_model,
-                        "os_ver" => os,
-                        "platform" => platform,
-                        "app_user_id" => app_user_id,
-                        "app_user_name" => app_user_name,
-                        "app_user_level" => app_user_level,
-                        "zone_id" => zone_id}, today) do
-    zone_id = "#{zone_id}"
-    utc_now = DateTime.utc_now()
-    app_user = CachedAppUser.get(app_id, zone_id, user_id, platform)
-
-    app_user = case StatsRepo.update(AppUser.changeset(app_user, %{
-      app_user_name: app_user_name,
-      app_user_id: app_user_id,
-      last_active_at: utc_now,
-      app_user_level: app_user_level  
-    })) do 
-      {:ok, new_app_user} ->
-        key = "acs.app_user_cache.#{app_id}.#{zone_id}.#{user_id}"
-        Excache.set(key, new_app_user)
-        Exredis.setex(key, 3600*24, AppUser.to_redis(new_app_user))
-        new_app_user
-      
-      _ ->
-        app_user
-    end
-
-    CachedAppUserDailyActivity.get(app_user.id, today)
-
-    if is_nil(CachedDevice.get(device_id)) do
-      # client may join channel twice at the same time, ignore the second one
-      Device.changeset(%Device{}, %{
-        id: device_id,
-        model: device_model,
-        platform: platform,
-        os: os}) |> StatsRepo.insert(on_conflict: :nothing)
-    end
-
-    app_device = CachedAppDevice.get(app_id, zone_id, device_id, platform)
-    CachedAppDeviceDailyActivity.get(app_device.id, today)
-  end
-
-  defp do_stat(%{assigns: %{app_id: app_id,
-                            platform: platform,
-                            sdk: sdk,
-                            zone_id: zone_id,
-                            user_id: user_id,
-                            device_id: device_id,
-                            today: today,
-                            join_at: join_at}}) do
+  defp log_stats_activities(%{assigns: %{
+    app_id: app_id,
+    zone_id: zone_id,
+    user_id: user_id,
+    device_id: device_id,
+    active: true,
+    today: today,
+    platform: platform,
+    sdk: sdk,
+    join_at: join_at}}) do
     active_seconds = Utils.unix_timestamp - join_at
     info "[STAT] #{today}, #{app_id}, #{zone_id}, #{platform}, #{sdk}, #{user_id}, #{device_id}, #{active_seconds}"
 
     if active_seconds > 30 do
-      utc_now = DateTime.utc_now()
-
-      app_user = CachedAppUser.get(app_id, zone_id, user_id, platform)
-      app_device = CachedAppDevice.get(app_id, zone_id, device_id, platform)
-      app_user_daily_activity = CachedAppUserDailyActivity.get(app_user.id, today)
-      app_device_daily_activity = CachedAppDeviceDailyActivity.get(app_device.id, today)
-
-      new_app_user = AppUser.changeset(app_user, %{
-        active_seconds: app_user.active_seconds + active_seconds,
-        last_active_at: utc_now,
-      }) |> StatsRepo.update!
-
-      CachedAppUser.refresh(new_app_user)
-
-      new_app_device = AppDevice.changeset(app_device, %{
-        active_seconds: app_device.active_seconds + active_seconds,
-        last_active_at: utc_now,
-      }) |> StatsRepo.update!
-
-      CachedAppDevice.refresh(new_app_device)
-
-      new_app_user_daily_activity = AppUserDailyActivity.changeset(app_user_daily_activity, %{
-        active_seconds: app_user_daily_activity.active_seconds + active_seconds,
-        last_active_at: utc_now,
-      }) |> StatsRepo.update!
-
-      CachedAppUserDailyActivity.refresh(new_app_user_daily_activity)
-
-      new_app_device_daily_activity = AppDeviceDailyActivity.changeset(app_device_daily_activity, %{
-        active_seconds: app_device_daily_activity.active_seconds + active_seconds,
-        last_active_at: utc_now,
-      }) |> StatsRepo.update!
-
-      CachedAppDeviceDailyActivity.refresh(new_app_device_daily_activity)
+      AcsStats.log_app_user_activity(today, app_id, zone_id, user_id, active_seconds)
+      AcsStats.log_app_device_activity(today, app_id, device_id, active_seconds)
     end
   end
-  defp do_stat(_socket), do: :ok
+  defp log_stats_activities(_socket), do: :ok
 
   # Add authorization logic here as required.
   defp authorized?(%{"user_id" => ""}) do 

@@ -4,389 +4,97 @@ defmodule AcsStats.Devices do
   """
 
   import Ecto.Query, warn: false
+  require Timex
+  use Utils.LogAlias
+
   alias AcsStats.Repo
 
+  alias AcsStats.Devices.Device
+  alias AcsStats.Devices.DeviceInfo
   alias AcsStats.Devices.AppDevice
-
-  @doc """
-  Returns the list of app_devices.
-
-  ## Examples
-
-      iex> list_app_devices()
-      [%AppDevice{}, ...]
-
-  """
-  def list_app_devices do
-    Repo.all(AppDevice)
-  end
-
-  @doc """
-  Gets a single app_device.
-
-  Raises `Ecto.NoResultsError` if the App device does not exist.
-
-  ## Examples
-
-      iex> get_app_device!(123)
-      %AppDevice{}
-
-      iex> get_app_device!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_app_device!(id), do: Repo.get!(AppDevice, id)
-
-  @doc """
-  Creates a app_device.
-
-  ## Examples
-
-      iex> create_app_device(%{field: value})
-      {:ok, %AppDevice{}}
-
-      iex> create_app_device(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_app_device(attrs \\ %{}) do
-    %AppDevice{}
-    |> AppDevice.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a app_device.
-
-  ## Examples
-
-      iex> update_app_device(app_device, %{field: new_value})
-      {:ok, %AppDevice{}}
-
-      iex> update_app_device(app_device, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_app_device(%AppDevice{} = app_device, attrs) do
-    app_device
-    |> AppDevice.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a AppDevice.
-
-  ## Examples
-
-      iex> delete_app_device(app_device)
-      {:ok, %AppDevice{}}
-
-      iex> delete_app_device(app_device)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_app_device(%AppDevice{} = app_device) do
-    Repo.delete(app_device)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking app_device changes.
-
-  ## Examples
-
-      iex> change_app_device(app_device)
-      %Ecto.Changeset{source: %AppDevice{}}
-
-  """
-  def change_app_device(%AppDevice{} = app_device) do
-    AppDevice.changeset(app_device, %{})
-  end
-
   alias AcsStats.Devices.AppDeviceDailyActivity
 
-  @doc """
-  Returns the list of app_device_daily_activities.
+  alias AcsStats.Cache.CachedDevice
+  alias AcsStats.Cache.CachedDeviceInfo 
+  alias AcsStats.Cache.CachedAppDevice
+  alias AcsStats.Cache.CachedAppDeviceDailyActivity
 
-  ## Examples
+  alias AcsStats.RealtimeMetrics
 
-      iex> list_app_device_daily_activities()
-      [%AppDeviceDailyActivity{}, ...]
+  def log_device_info(device_id, platform, device_model, os_ver, device_memory_size) do 
+    device_info = CachedDeviceInfo.get(device_model) || %DeviceInfo{}
+    case DeviceInfo.changeset(device_info, %{id: device_model, total_mem_size: device_memory_size}) do 
+      %{changes: %{}} -> 
+        :not_changed
+      cs ->
+        {:ok, device_info} = Repo.insert_or_update(cs)
+        CachedDeviceInfo.refresh(device_info)
+    end
 
-  """
-  def list_app_device_daily_activities do
-    Repo.all(AppDeviceDailyActivity)
+    device = CachedDevice.get(device_id) || %Device{}    
+
+    case Device.changeset(device, %{id: device_id, model: device_model, platform: platform, os: os_ver}) do 
+      %{changes: %{}} -> 
+        :not_changed
+      cs ->
+        {:ok, device} = Repo.insert_or_update(cs)
+        CachedDevice.refresh(device)
+    end
   end
 
-  @doc """
-  Gets a single app_device_daily_activity.
+  def log_app_device(date, app_id, device_id, platform, sdk) do 
+    case CachedAppDevice.get(app_id, device_id) do 
+      nil -> 
+        {:ok, app_device} = AppDevice.changeset(%AppDevice{}, %{
+          app_id: app_id,
+          device_id: device_id,
+          platform: platform,
+          sdk: sdk,
+          reg_date: Timex.local() |> Timex.to_date(),
+          last_active_at: DateTime.utc_now(),
+        }) |> Repo.insert()
 
-  Raises `Ecto.NoResultsError` if the App device daily activity does not exist.
+        RealtimeMetrics.add_new_active_device(date, app_id, platform, app_device.id) 
+        RealtimeMetrics.add_active_device(date, app_id, platform, app_device.id) 
+        CachedAppDevice.refresh(app_device)
 
-  ## Examples
+      app_device ->
+        {:ok, app_device} = AppDevice.changeset(app_device, %{
+          last_active_at: DateTime.utc_now(),
+        }) |> Repo.update()
 
-      iex> get_app_device_daily_activity!(123)
-      %AppDeviceDailyActivity{}
+        if RealtimeMetrics.is_yesterday_new_app_device?(date, app_id, platform, app_device.id) do 
+          RealtimeMetrics.add_retention_device(date, app_id, platform, app_device.id)
+        end
 
-      iex> get_app_device_daily_activity!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_app_device_daily_activity!(id), do: Repo.get!(AppDeviceDailyActivity, id)
-
-  @doc """
-  Creates a app_device_daily_activity.
-
-  ## Examples
-
-      iex> create_app_device_daily_activity(%{field: value})
-      {:ok, %AppDeviceDailyActivity{}}
-
-      iex> create_app_device_daily_activity(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_app_device_daily_activity(attrs \\ %{}) do
-    %AppDeviceDailyActivity{}
-    |> AppDeviceDailyActivity.changeset(attrs)
-    |> Repo.insert()
+        RealtimeMetrics.add_active_device(date, app_id, platform, app_device.id) 
+        CachedAppDevice.refresh(app_device)
+    end
   end
 
-  @doc """
-  Updates a app_device_daily_activity.
+  def log_app_device_activity(date, app_id, device_id, active_seconds) do 
+    with app_device = %AppDevice{} <- CachedAppDevice.get(app_id, device_id)
+    do
+      case CachedAppDeviceDailyActivity.get(app_device.id, date) do 
+        nil ->
+          {:ok, model} = AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
+            app_device_id: app_device.id,
+            date: date,
+            active_seconds: active_seconds
+          }) |> Repo.insert()
+          CachedAppDeviceDailyActivity.refresh(model)
 
-  ## Examples
-
-      iex> update_app_device_daily_activity(app_device_daily_activity, %{field: new_value})
-      {:ok, %AppDeviceDailyActivity{}}
-
-      iex> update_app_device_daily_activity(app_device_daily_activity, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_app_device_daily_activity(%AppDeviceDailyActivity{} = app_device_daily_activity, attrs) do
-    app_device_daily_activity
-    |> AppDeviceDailyActivity.changeset(attrs)
-    |> Repo.update()
+        cached ->
+          {:ok, model} = AppDeviceDailyActivity.changeset(cached, %{
+            active_seconds: cached.active_seconds + active_seconds
+          }) |> Repo.update()          
+          CachedAppDeviceDailyActivity.refresh(model)
+      end
+    else 
+      nil ->
+        error("app_device for #{app_id}.#{device_id} not found")
+    end
   end
 
-  @doc """
-  Deletes a AppDeviceDailyActivity.
 
-  ## Examples
-
-      iex> delete_app_device_daily_activity(app_device_daily_activity)
-      {:ok, %AppDeviceDailyActivity{}}
-
-      iex> delete_app_device_daily_activity(app_device_daily_activity)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_app_device_daily_activity(%AppDeviceDailyActivity{} = app_device_daily_activity) do
-    Repo.delete(app_device_daily_activity)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking app_device_daily_activity changes.
-
-  ## Examples
-
-      iex> change_app_device_daily_activity(app_device_daily_activity)
-      %Ecto.Changeset{source: %AppDeviceDailyActivity{}}
-
-  """
-  def change_app_device_daily_activity(%AppDeviceDailyActivity{} = app_device_daily_activity) do
-    AppDeviceDailyActivity.changeset(app_device_daily_activity, %{})
-  end
-
-  alias AcsStats.Devices.DeviceInfo
-
-  @doc """
-  Returns the list of device_infos.
-
-  ## Examples
-
-      iex> list_device_infos()
-      [%DeviceInfo{}, ...]
-
-  """
-  def list_device_infos do
-    Repo.all(DeviceInfo)
-  end
-
-  @doc """
-  Gets a single device_info.
-
-  Raises `Ecto.NoResultsError` if the Device info does not exist.
-
-  ## Examples
-
-      iex> get_device_info!(123)
-      %DeviceInfo{}
-
-      iex> get_device_info!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_device_info!(id), do: Repo.get!(DeviceInfo, id)
-
-  @doc """
-  Creates a device_info.
-
-  ## Examples
-
-      iex> create_device_info(%{field: value})
-      {:ok, %DeviceInfo{}}
-
-      iex> create_device_info(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_device_info(attrs \\ %{}) do
-    %DeviceInfo{}
-    |> DeviceInfo.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a device_info.
-
-  ## Examples
-
-      iex> update_device_info(device_info, %{field: new_value})
-      {:ok, %DeviceInfo{}}
-
-      iex> update_device_info(device_info, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_device_info(%DeviceInfo{} = device_info, attrs) do
-    device_info
-    |> DeviceInfo.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a DeviceInfo.
-
-  ## Examples
-
-      iex> delete_device_info(device_info)
-      {:ok, %DeviceInfo{}}
-
-      iex> delete_device_info(device_info)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_device_info(%DeviceInfo{} = device_info) do
-    Repo.delete(device_info)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking device_info changes.
-
-  ## Examples
-
-      iex> change_device_info(device_info)
-      %Ecto.Changeset{source: %DeviceInfo{}}
-
-  """
-  def change_device_info(%DeviceInfo{} = device_info) do
-    DeviceInfo.changeset(device_info, %{})
-  end
-
-  alias AcsStats.Devices.Device
-
-  @doc """
-  Returns the list of devices.
-
-  ## Examples
-
-      iex> list_devices()
-      [%Device{}, ...]
-
-  """
-  def list_devices do
-    Repo.all(Device)
-  end
-
-  @doc """
-  Gets a single device.
-
-  Raises `Ecto.NoResultsError` if the Device does not exist.
-
-  ## Examples
-
-      iex> get_device!(123)
-      %Device{}
-
-      iex> get_device!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_device!(id), do: Repo.get!(Device, id)
-
-  @doc """
-  Creates a device.
-
-  ## Examples
-
-      iex> create_device(%{field: value})
-      {:ok, %Device{}}
-
-      iex> create_device(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_device(attrs \\ %{}) do
-    %Device{}
-    |> Device.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a device.
-
-  ## Examples
-
-      iex> update_device(device, %{field: new_value})
-      {:ok, %Device{}}
-
-      iex> update_device(device, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_device(%Device{} = device, attrs) do
-    device
-    |> Device.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a Device.
-
-  ## Examples
-
-      iex> delete_device(device)
-      {:ok, %Device{}}
-
-      iex> delete_device(device)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_device(%Device{} = device) do
-    Repo.delete(device)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking device changes.
-
-  ## Examples
-
-      iex> change_device(device)
-      %Ecto.Changeset{source: %Device{}}
-
-  """
-  def change_device(%Device{} = device) do
-    Device.changeset(device, %{})
-  end
 end

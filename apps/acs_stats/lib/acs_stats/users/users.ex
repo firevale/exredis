@@ -5,196 +5,127 @@ defmodule AcsStats.Users do
 
   import Ecto.Query, warn: false
   alias AcsStats.Repo
+  use Utils.LogAlias
 
+  alias AcsStats.Cache.CachedAppUser
+  alias Acs.Search.ESAppUser
   alias AcsStats.Users.AppUser
 
-  @doc """
-  Returns the list of app_users.
-
-  ## Examples
-
-      iex> list_app_users()
-      [%AppUser{}, ...]
-
-  """
-  def list_app_users do
-    Repo.all(AppUser)
-  end
-
-  @doc """
-  Gets a single app_user.
-
-  Raises `Ecto.NoResultsError` if the App user does not exist.
-
-  ## Examples
-
-      iex> get_app_user!(123)
-      %AppUser{}
-
-      iex> get_app_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_app_user!(id), do: Repo.get!(AppUser, id)
-
-  @doc """
-  Creates a app_user.
-
-  ## Examples
-
-      iex> create_app_user(%{field: value})
-      {:ok, %AppUser{}}
-
-      iex> create_app_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_app_user(attrs \\ %{}) do
-    %AppUser{}
-    |> AppUser.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a app_user.
-
-  ## Examples
-
-      iex> update_app_user(app_user, %{field: new_value})
-      {:ok, %AppUser{}}
-
-      iex> update_app_user(app_user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_app_user(%AppUser{} = app_user, attrs) do
-    app_user
-    |> AppUser.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a AppUser.
-
-  ## Examples
-
-      iex> delete_app_user(app_user)
-      {:ok, %AppUser{}}
-
-      iex> delete_app_user(app_user)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_app_user(%AppUser{} = app_user) do
-    Repo.delete(app_user)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking app_user changes.
-
-  ## Examples
-
-      iex> change_app_user(app_user)
-      %Ecto.Changeset{source: %AppUser{}}
-
-  """
-  def change_app_user(%AppUser{} = app_user) do
-    AppUser.changeset(app_user, %{})
-  end
-
   alias AcsStats.Users.AppUserDailyActivity
+  alias AcsStats.Cache.CachedAppUserDailyActivity 
 
-  @doc """
-  Returns the list of app_user_daily_activities.
+  alias AcsStats.RealtimeMetrics
 
-  ## Examples
-
-      iex> list_app_user_daily_activities()
-      [%AppUserDailyActivity{}, ...]
-
-  """
-  def list_app_user_daily_activities do
-    Repo.all(AppUserDailyActivity)
+  def log_app_login_user(date, app_id, user_id, platform) do 
+    if RealtimeMetrics.is_new_app_user?(app_id, user_id) do 
+      RealtimeMetrics.add_new_login_user(date, app_id, platform, user_id) 
+    end
+    RealtimeMetrics.add_login_user(date, app_id, platform, user_id) 
   end
 
-  @doc """
-  Gets a single app_user_daily_activity.
+  def log_app_user(date, app_id, zone_id, user_id, platform, sdk, game_user_id, game_user_name, game_user_level) do 
+    if RealtimeMetrics.is_new_app_user?(app_id, user_id) do 
+      RealtimeMetrics.add_new_active_user(date, app_id, platform, user_id) 
+      RealtimeMetrics.add_app_user(app_id, user_id)
+    end
 
-  Raises `Ecto.NoResultsError` if the App user daily activity does not exist.
+    if RealtimeMetrics.is_yesterday_new_app_user?(date, app_id, user_id) do 
+      RealtimeMetrics.add_retention_user(date, app_id, user_id)
+    end
 
-  ## Examples
+    if RealtimeMetrics.is_yesterday_new_app_user?(date, app_id, platform, user_id) do 
+      RealtimeMetrics.add_retention_user(date, app_id, platform, user_id)
+    end
 
-      iex> get_app_user_daily_activity!(123)
-      %AppUserDailyActivity{}
+    RealtimeMetrics.add_active_user(date, app_id, platform, user_id) 
 
-      iex> get_app_user_daily_activity!(456)
-      ** (Ecto.NoResultsError)
+    case CachedAppUser.get(app_id, zone_id, user_id) do 
+      nil ->
+        {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
+          app_id: app_id,
+          zone_id: zone_id,
+          user_id: user_id,
+          platform: platform,
+          sdk: sdk,
+          reg_date: date,
+          app_user_id: game_user_id,
+          app_user_name: game_user_name,
+          app_user_level: game_user_level,
+          last_active_at: DateTime.utc_now(),
+        }) |> Repo.insert()
+        ESAppUser.index(app_user, user_id)
+        CachedAppUser.refresh(app_user)
 
-  """
-  def get_app_user_daily_activity!(id), do: Repo.get!(AppUserDailyActivity, id)
-
-  @doc """
-  Creates a app_user_daily_activity.
-
-  ## Examples
-
-      iex> create_app_user_daily_activity(%{field: value})
-      {:ok, %AppUserDailyActivity{}}
-
-      iex> create_app_user_daily_activity(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_app_user_daily_activity(attrs \\ %{}) do
-    %AppUserDailyActivity{}
-    |> AppUserDailyActivity.changeset(attrs)
-    |> Repo.insert()
+      app_user ->
+        {:ok, app_user} = AppUser.changeset(app_user, %{
+          app_user_id: game_user_id,
+          app_user_name: game_user_name,
+          app_user_level: game_user_level,
+          last_active_at: DateTime.utc_now(),
+        }) |> Repo.update()      
+        ESAppUser.index(app_user, user_id)
+        CachedAppUser.refresh(app_user)
+    end
   end
 
-  @doc """
-  Updates a app_user_daily_activity.
-
-  ## Examples
-
-      iex> update_app_user_daily_activity(app_user_daily_activity, %{field: new_value})
-      {:ok, %AppUserDailyActivity{}}
-
-      iex> update_app_user_daily_activity(app_user_daily_activity, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_app_user_daily_activity(%AppUserDailyActivity{} = app_user_daily_activity, attrs) do
-    app_user_daily_activity
-    |> AppUserDailyActivity.changeset(attrs)
-    |> Repo.update()
+  def log_app_user_activity(date, app_id, zone_id, user_id, active_seconds) do 
+    with app_user = %AppUser{} <- CachedAppUser.get(app_id, zone_id, user_id) 
+    do 
+      case CachedAppUserDailyActivity.get(app_user.id, date) do
+        nil ->
+          {:ok, model} = AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+            app_user_id: app_user.id,
+            date: date,
+            active_seconds: active_seconds
+          }) |> Repo.insert()          
+          CachedAppUserDailyActivity.refresh(model)
+        cached ->
+          {:ok, model} = AppUserDailyActivity.changeset(cached, %{
+            active_seconds: cached.active_seconds + active_seconds
+          }) |> Repo.update()          
+          CachedAppUserDailyActivity.refresh(model)          
+      end
+    else 
+      nil -> 
+        error("app_user for #{app_id}.#{zone_id}.#{user_id} not found")
+    end
   end
 
-  @doc """
-  Deletes a AppUserDailyActivity.
+  def log_app_user_payment(date, app_id, zone_id, user_id, platform, fee) do 
+    if RealtimeMetrics.is_new_app_paid_user?(app_id, user_id) do 
+      RealtimeMetrics.add_new_paid_user(date, app_id, platform, user_id)      
+    end
 
-  ## Examples
+    RealtimeMetrics.add_app_paid_user(app_id, user_id)
+    RealtimeMetrics.add_paid_user(date, app_id, platform, user_id)
+    RealtimeMetrics.add_paid_fee(date, app_id, platform, fee)
 
-      iex> delete_app_user_daily_activity(app_user_daily_activity)
-      {:ok, %AppUserDailyActivity{}}
+    with app_user = %AppUser{} <- CachedAppUser.get(app_id, zone_id, user_id) 
+    do 
+      {:ok, app_user} = AppUser.changeset(app_user, %{
+        pay_amount: app_user.pay_amount + fee,
+        last_active_at: DateTime.utc_now(),
+      }) |> Repo.update()       
 
-      iex> delete_app_user_daily_activity(app_user_daily_activity)
-      {:error, %Ecto.Changeset{}}
+      CachedAppUser.refresh(app_user)
 
-  """
-  def delete_app_user_daily_activity(%AppUserDailyActivity{} = app_user_daily_activity) do
-    Repo.delete(app_user_daily_activity)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking app_user_daily_activity changes.
-
-  ## Examples
-
-      iex> change_app_user_daily_activity(app_user_daily_activity)
-      %Ecto.Changeset{source: %AppUserDailyActivity{}}
-
-  """
-  def change_app_user_daily_activity(%AppUserDailyActivity{} = app_user_daily_activity) do
-    AppUserDailyActivity.changeset(app_user_daily_activity, %{})
+      case CachedAppUserDailyActivity.get(app_user.id, date) do
+        nil ->
+          {:ok, model} = AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
+            app_user_id: app_user.id,
+            date: date,
+            pay_amount: fee,
+          }) |> Repo.insert()          
+          CachedAppUserDailyActivity.refresh(model)
+        cached ->
+          {:ok, model} = AppUserDailyActivity.changeset(cached, %{
+            pay_amount: cached.pay_amount + fee,
+          }) |> Repo.update()          
+          CachedAppUserDailyActivity.refresh(model)          
+      end
+    else 
+      nil -> 
+        error("app_user for #{app_id}.#{zone_id}.#{user_id} not found")
+    end
   end
 end

@@ -7,17 +7,6 @@ defmodule Acs.AdminAuth do
 
   alias Acs.Admin.AdminUser
 
-  def list_admin_app_ids(user_id) when is_integer(user_id) do
-    query = 
-      from au in AdminUser,
-        where: au.user_id == ^user_id,
-        where: au.active == true,
-        where: au.admin_level >= 1,
-        select: au.app_id
-
-    Repo.all(query)
-  end
-
   def is_admin(user_id) do 
     key = "acs.admin.ids"
     if Exredis.sismember(key, user_id) == 1 do 
@@ -47,7 +36,7 @@ defmodule Acs.AdminAuth do
     Excache.get!(key(user_id, app_id), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do
         nil -> 
-          {:commit, refresh(user_id, app_id, false)}
+          {:commit, refresh_admin_level(user_id, app_id)}
 
         raw ->
           case Integer.parse(raw) do
@@ -58,12 +47,8 @@ defmodule Acs.AdminAuth do
     end)
   end
 
-  def refresh(user_id, app_id \\ nil, force_update \\ true)  do
+  def refresh_admin_level(user_id, app_id)  do
     redis_key = key(user_id, app_id)
-
-    if force_update do 
-      Excache.del(redis_key)
-    end
 
     query = 
       from admin in AdminUser,
@@ -80,20 +65,22 @@ defmodule Acs.AdminAuth do
     case Repo.one(query) do
       nil -> nil
         Exredis.set(redis_key, 0)
+        Excache.del(redis_key)
         0
+
       level when is_integer(level) ->
         Exredis.set(redis_key, level)
+        Excache.del(redis_key)
         level
+
       %AdminUser{} = admin_user ->
         Exredis.set(redis_key, admin_user.admin_level)
+        Excache.del(redis_key)
         admin_user.admin_level
     end
   end
 
-  @key_base      "acs.adminuser.level"
-  defp key(user_id) when is_integer(user_id) do 
-    "#{@key_base}.#{user_id}" 
-  end
+  @key_base  "acs.admin.level"
   defp key(user_id, nil) when is_integer(user_id) do
     "#{@key_base}.#{user_id}" 
   end

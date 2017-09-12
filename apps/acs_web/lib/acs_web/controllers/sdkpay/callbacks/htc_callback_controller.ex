@@ -1,7 +1,7 @@
 defmodule AcsWeb.SdkPay.HtcCallbackController do
   use    AcsWeb, :controller
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, params) do
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, params) do
     case app.sdk_bindings.htc do
       %{"pub_key" => pub_key} ->
         {:ok, body, conn} = Plug.Conn.read_body(conn, length: 1_000_000)

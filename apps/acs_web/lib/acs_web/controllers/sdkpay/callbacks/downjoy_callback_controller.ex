@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.DownjoyCallbackController do
   use     AcsWeb, :controller
   require SDKDownjoy
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"ext" => order_id, "order" => trans_no, "money" => amount} = params) do
     case app.sdk_bindings.downjoy do 
       %{"app_secret" => app_secret}->

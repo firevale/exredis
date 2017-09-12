@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.KYCallbackController do
   use     AcsWeb, :controller
   require SDKKY
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"dealseq" => order_id, "orderid" => trans_no} = params) do
     case app.sdk_bindings.ky do
       %{"rsa_key" => rsa_key} ->

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.XiaomiCallbackController do
   use     AcsWeb, :controller
   require SDKXiaomi
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"cpOrderId" => order_id, 
                           "orderId" => trans_no, 
                           "payFee" => amount} = params) do

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.IIAppleCallbackController do
   use     AcsWeb, :controller
   require SDKIIApple
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"transaction" => trans_no, 
                           "gameExtend" => order_id, 
                           "amount" => amount, 

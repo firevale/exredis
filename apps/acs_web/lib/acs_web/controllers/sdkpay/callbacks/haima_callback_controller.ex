@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.HaimaCallbackController do
   use     AcsWeb, :controller
   require SDKHaima
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"out_trade_no" => order_id, 
                           "trade_status" => trade_status, 
                           "total_fee" => total_fee} = params) do

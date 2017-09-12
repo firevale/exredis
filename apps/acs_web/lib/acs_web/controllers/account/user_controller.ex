@@ -269,12 +269,12 @@ defmodule AcsWeb.UserController do
                        message: "access token not found"})
 
       %AccessToken{app_id: ^app_id, device_id: ^device_id, user_id: user_id} = token ->
-        case RedisUser.find(user_id) do
+        case CachedUser.get(user_id) do
           nil ->
             conn |> json(%{success: false,
                            message: "token user not exists!"})
-          %RedisUser{} = user ->
-            RedisAccessToken.delete(token)
+          %User{} = user ->
+            Auth.del_access_token(token)
             create_and_response_access_token(conn, user, app_id, device_id, platform, !is_nil(user.device_id))
         end
 
@@ -285,10 +285,10 @@ defmodule AcsWeb.UserController do
     end
   end
 
-  defp create_and_response_access_token(%Plug.Conn{} = conn, %RedisUser{} = user, app_id, device_id, platform, is_anonymous \\ false) do
+  defp create_and_response_access_token(%Plug.Conn{} = conn, %User{} = user, app_id, device_id, platform, is_anonymous \\ false) do
     access_token = case conn.private[:acs_app] do
                     nil ->
-                      RedisAccessToken.create(%{
+                      Auth.create_access_token(%{
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
@@ -298,8 +298,8 @@ defmodule AcsWeb.UserController do
                         binding: %{}
                       })
 
-                    %RedisApp{} = app ->
-                      token = RedisAccessToken.create(%{
+                    %App{} = app ->
+                      token = Auth.create_access_token(%{
                         app_id: app_id,
                         user_id: user.id,
                         device_id: device_id,
@@ -310,7 +310,7 @@ defmodule AcsWeb.UserController do
                       })
 
                       if app.restrict_login do
-                        case RedisLoginCode.find(app.id, user.id) do
+                        case CachedLoginCode.get(app.id, user.id) do
                           nil -> token
                           %{code: code} ->
                             %{token | login_code: code}
@@ -336,7 +336,7 @@ defmodule AcsWeb.UserController do
       conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: to_string(user.id),
               user_email: user.email || "",
               user_mobile: user.mobile || "",
@@ -360,9 +360,9 @@ defmodule AcsWeb.UserController do
         conn |> json(%{success: true})
 
       access_token_id ->
-        case RedisAccessToken.find(access_token_id) do
-          %RedisAccessToken{} = token ->
-            RedisAccessToken.delete(token)
+        case Auth.get_access_token(access_token_id) do
+          %AccessToken{} = token ->
+            Auth.del_access_token(token)
             conn |> delete_session(:access_token)
                  |> json(%{success: true})
           _ ->
@@ -378,7 +378,7 @@ defmodule AcsWeb.UserController do
                      "sign" => sign
                      }) do
 
-    case RedisAccessToken.find(token_id) do
+    case Auth.get_access_token(token_id) do
       nil ->
         conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
 
@@ -407,12 +407,12 @@ defmodule AcsWeb.UserController do
   end
 
   def get_token_user(conn, %{"access_token" => token_id}) do
-    case RedisAccessToken.find(token_id) do
+    case Auth.get_access_token(token_id) do
       nil ->
         conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
 
       token ->
-        case RedisUser.find(token.user_id) do
+        case CachedUser.get(token.user_id) do
           nil ->
             conn |> json(%{success: false, message: "user not found"})
 
@@ -447,7 +447,7 @@ defmodule AcsWeb.UserController do
 
   defp _update_avatar(conn, user, image_file_path) do
     {:ok, avatar_path} = Utils.deploy_image_file(from: image_file_path, to: "user_avatars")
-    new_user = RedisUser.save(%{user | avatar_url: avatar_path})
+    new_user = CachedUser.save(%{user | avatar_url: avatar_path})
     conn |> json(%{success: true, user: %{
       id: new_user.id,
       nickname: new_user.nickname,
@@ -472,7 +472,7 @@ defmodule AcsWeb.UserController do
 
     {:ok, total, ids} =  User.search(query)
     total_page = round(Float.ceil(total/records_per_page))
-    users = Acs.Users.get_users_by_ids(app_id, ids)
+    users = get_users_by_ids(app_id, ids)
 
     conn |> json(%{success: true, total: total_page, users: users})
   end
@@ -517,21 +517,47 @@ defmodule AcsWeb.UserController do
 
       {:ok, total, ids} =  User.search(query)
       total_page = round(Float.ceil(total/records_per_page))
-      users = Acs.Users.get_users_by_ids(app_id, ids)
+      users = get_users_by_ids(app_id, ids)
 
       conn |> json(%{success: true, total: total_page, users: users})
   end
 
   def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id}) when is_integer(id) do
-    user = Acs.Users.get_users_by_ids(app_id, id)
+    user = get_users_by_ids(app_id, id)
     
     conn |> json(%{success: true, user: user})
+  end
+
+  defp get_users_by_ids(app_id, id) when is_integer(id) do
+    get_users_by_ids(app_id, [id])
+  end
+  defp get_users_by_ids(app_id, ids \\ []) when is_list(ids) do
+    case ids do
+      [] -> 
+        []
+      ids_list ->
+        users = Enum.map(ids, fn id -> RedisUser.find(id) end)
+        |> Enum.filter(&(&1 != nil))
+        |> Enum.map(fn user ->
+            app_users_query =
+              from app_user in AppUser,
+                where: app_user.app_id == ^app_id and app_user.user_id == ^user.id,
+                select: map(app_user, [:zone_id, :app_user_id, :app_user_name, :app_user_level, :active_seconds,
+                  :pay_amount, :last_active_at, :inserted_at]),
+                order_by: [asc: app_user.zone_id]
+            app_users = StatsRepo.all(app_users_query)
+            Map.put_new(Map.take(user, [:id, :email, :mobile, :gender, :nickname, :age, 
+              :inserted_at]), :app_users, app_users)
+          end)
+      _ ->
+        []
+    end
   end
 
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do
     code = String.upcase(code)
 
-    case RedisLoginCode.find(app_id, code) do
+    case CachedLoginCode.get(app_id, code) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
 
@@ -544,7 +570,7 @@ defmodule AcsWeb.UserController do
             conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
 
           token_id ->
-            case RedisAccessToken.find(token_id) do
+            case Auth.get_access_token(token_id) do
               nil ->
                 conn |> json(%{success: false, i18n_message: "error.server.notLogin"})
 
@@ -554,17 +580,17 @@ defmodule AcsWeb.UserController do
                     now = DateTime.utc_now()
                     login_code = Repo.get_by(AppLoginCode, app_id: app_id, code: code)
                     AppLoginCode.changeset(login_code, %{user_id: user_id, used_at: now}) |> Repo.update!
-                    RedisLoginCode.refresh(app_id, code)
-                    RedisLoginCode.refresh(app_id, user_id)
+                    CachedLoginCode.refresh(app_id, code)
+                    CachedLoginCode.refresh(app_id, user_id)
                     access_token = %{access_token | login_code: code}
-                    RedisAccessToken.save(access_token)
+                    AccessToken.save(access_token)
                     response_access_token(conn, access_token)
 
                   ^user_id ->
-                    RedisLoginCode.refresh(app_id, code)
-                    RedisLoginCode.refresh(app_id, user_id)
+                    CachedLoginCode.refresh(app_id, code)
+                    CachedLoginCode.refresh(app_id, user_id)
                     access_token = %{access_token | login_code: code}
-                    RedisAccessToken.save(access_token)
+                    AccessToken.save(access_token)
                     response_access_token(conn, access_token)
 
                   _ ->
@@ -588,11 +614,11 @@ defmodule AcsWeb.UserController do
   end
 
   defp response_access_token(conn, access_token) do
-    user = RedisUser.find(access_token.user_id)
+    user = CachedUser.get(access_token.user_id)
     conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: to_string(user.id),
             user_email: user.email || "",
             user_mobile: user.mobile || "",
@@ -626,10 +652,10 @@ defmodule AcsWeb.UserController do
   end
 
   def import_data() do
-    max_id = StatsRepo.one!( from user in Acs.Stats.AppUser, select: max(user.id))
+    max_id = StatsRepo.one!( from user in AppUser, select: max(user.id))
     Enum.map_every(0..max_id, 100, fn current_id ->
       query =
-        from app_user in Acs.Stats.AppUser,
+        from app_user in AppUser,
         select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at,
         :reg_date, :last_active_at, :last_paid_at, :first_paid_at, :platform, :updated_at]),
         where: app_user.id >= ^current_id,
@@ -638,8 +664,8 @@ defmodule AcsWeb.UserController do
       users = StatsRepo.all(query)
       if users && users != [] do
         Enum.map(users, fn app_user ->
-          case RedisUser.find(app_user.user_id) do
-            %RedisUser{} = user ->
+          case CachedUser.get(app_user.user_id) do
+            %User{} = user ->
               Elasticsearch.index(%{index: "acs",
                 type: "user",
                 params: nil,

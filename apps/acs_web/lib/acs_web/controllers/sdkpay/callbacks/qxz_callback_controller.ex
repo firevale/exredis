@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.QxzCallbackController do
   use     AcsWeb, :controller
   require SDKQxz
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"transdata" => transdata, "sign" => signature} = params) do
 
     case app.sdk_bindings.qxz do

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.YoukuCallbackController do
   use     AcsWeb, :controller
   require SDKYouku
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"apporderID" => order_id, "price" => amount} = params) do
 
     case app.sdk_bindings.youku do

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.MumayiCallbackController do
   use     AcsWeb, :controller
   require SDKMumayi
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"productPrice" => price,
                            "productDesc" => order_id,
                            "orderID" => trade_no} = params) do

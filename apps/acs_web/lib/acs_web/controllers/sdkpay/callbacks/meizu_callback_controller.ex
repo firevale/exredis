@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.MeizuCallbackController do
   use     AcsWeb, :controller
   require SDKMeizu
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"cp_order_id" => order_id, 
                           "order_id" => trans_no, 
                           "total_price" => amount} = params) do

@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.I4CallbackController do
   use     AcsWeb, :controller
   require SDKI4
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"billno" => order_id, 
                           "order_id" => trans_no, 
                           "amount" => amount} = params) do

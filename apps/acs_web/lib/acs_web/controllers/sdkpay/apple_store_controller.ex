@@ -50,7 +50,7 @@ defmodule AcsWeb.AppleStoreController do
 
               _ ->
                 error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
-                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
+                Chaoxin.send_text_msg("[#{app.name}] 收到用户#{inspect user}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
@@ -63,7 +63,7 @@ defmodule AcsWeb.AppleStoreController do
         end
       _ -> 
         error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
+        Chaoxin.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
   end
@@ -146,13 +146,13 @@ defmodule AcsWeb.AppleStoreController do
 
               _ ->
                 error "receive cheat receipt, apple response: #{inspect what, pretty: true}"
-                ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
+                Chaoxin.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect what}, 购买商品: #{goods_name}", app)
                 conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
             end
 
           {:ok, x} -> 
             error "receive cheat receipt, apple response: #{inspect x, pretty: true}"
-            ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
+            Chaoxin.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条:#{inspect x}, 购买商品: #{goods_name}", app)
             conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
           
           {:error, reason} ->
@@ -161,7 +161,7 @@ defmodule AcsWeb.AppleStoreController do
 
       _ -> 
         error "product id for goods: #{goods_id}, sdk: applestore is not configured!"
-        ChaoxinNotifier.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
+        Chaoxin.send_text_msg("[#{app.name}] 商品[#{goods_id}] 没有配置apple store product id", app)
         # set reason to network force client don't finish transaction 
         conn |> json(%{success: false, reason: "network", message: "product id not configured for goods: #{goods_id}, sdk: applestore"})
     end
@@ -192,7 +192,7 @@ defmodule AcsWeb.AppleStoreController do
 
       %AppOrder{} = order ->
         error "receive cheat receipt, use #{transaction_id} for cp_order: #{cp_order_id} & #{order.cp_order_id}"
-        ChaoxinNotifier.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条, 购买商品: #{goods_name}", app)
+        Chaoxin.send_text_msg("[#{app.name}] 收到用户#{inspect conn.private[:acs_session_user]}的作弊收条, 购买商品: #{goods_name}", app)
         conn |> json(%{success: false, reason: "cheat", message: "cheat receipt"})
 
       nil ->

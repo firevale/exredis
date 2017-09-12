@@ -6,14 +6,15 @@ defmodule AcsWeb.AdminController do
   alias   Acs.RedisAdminUser
 
   def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
-    admin_level = RedisAdminUser.get_admin_level(user_id)
+    admin_level = Acs.AdminAuth.get_admin_level(user_id)
+
     query =  from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
             select: map(app, [:id, :name, :icon])
     query =
       if admin_level > 1  do
-        appids = RedisAdminUser.get_admin_appids(user_id)
+        appids = Acs.Admin.list_admin_app_ids(user_id)
         where(query, [app], app.id in (^appids))
       else
         query

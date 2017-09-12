@@ -9,7 +9,7 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
   end
 
   ##################################################################### IF1 CALLBACK  #####################################################################
-  def if1_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def if1_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                    %{"cp_order_id" => order_id, 
                      "correlator" => correlator,
                      "order_time" => _order_time} = params) do
@@ -64,7 +64,7 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
     if1_callback(conn, params)
   end
 
-  def if2_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def if2_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                    %{"cp_order_id" => order_id, 
                      "correlator" => correlator, 
                      "result_code" => "00",

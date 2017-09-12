@@ -5,7 +5,7 @@ defmodule AcsWeb.IYouxiAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{iyouxi: %{"client_id" => iyouxi_client_id, 
+                acs_app: %App{sdk_bindings: %{iyouxi: %{"client_id" => iyouxi_client_id, 
                                                              "client_secret" => iyouxi_client_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
@@ -14,7 +14,7 @@ defmodule AcsWeb.IYouxiAuthBind do
 
     case SDKIYouxi.validate_session(iyouxi_client_id, iyouxi_client_secret, iyouxi_auth_code, iyouxi_sdk_version) do
       {iyouxi_user_id, iyouxi_access_token, iyouxi_refresh_token} ->
-        case RedisUser.bind_sdk_user(%{sdk: :iyouxi, 
+        case Accounts.bind_sdk_user(%{sdk: :iyouxi, 
                                        app_id: app.id, 
                                        sdk_user_id: iyouxi_user_id, 
                                        email: nil,
@@ -24,7 +24,7 @@ defmodule AcsWeb.IYouxiAuthBind do
                                        avatar_url: nil}) do 
 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -38,7 +38,7 @@ defmodule AcsWeb.IYouxiAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: nil,
               nick_name:  user.nickname,

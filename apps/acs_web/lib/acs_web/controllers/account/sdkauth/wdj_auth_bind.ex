@@ -3,14 +3,14 @@ defmodule AcsWeb.WandoujiaAuthBind do
   require Logger
   require SDKWandoujia
 
-  def bind(%Plug.Conn{private: %{acs_app: %RedisApp{sdk_bindings: %{wdj: %{"app_id" => wdj_app_id}}} = app,
+  def bind(%Plug.Conn{private: %{acs_app: %App{sdk_bindings: %{wdj: %{"app_id" => wdj_app_id}}} = app,
                                  acs_device_id: device_id,
                                  acs_platform: platform}} = conn, 
            %{"wdj_access_token" => wdj_access_token,
              "wdj_user_id" => wdj_user_id} = _params) do
 
     if SDKWandoujia.validate_session(wdj_app_id, wdj_user_id, wdj_access_token) do
-      case RedisUser.bind_sdk_user(%{sdk: :wdj, 
+      case Accounts.bind_sdk_user(%{sdk: :wdj, 
                                      app_id: app.id, 
                                      sdk_user_id: wdj_user_id, 
                                      email: nil,
@@ -19,7 +19,7 @@ defmodule AcsWeb.WandoujiaAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -31,7 +31,7 @@ defmodule AcsWeb.WandoujiaAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

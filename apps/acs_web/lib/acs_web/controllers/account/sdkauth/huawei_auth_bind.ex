@@ -5,14 +5,14 @@ defmodule AcsWeb.HuaweiAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{huawei: %{}}} = app,
+                acs_app: %App{sdk_bindings: %{huawei: %{}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"hw_access_token" => huawei_access_token} = _params) do
 
     case SDKHuawei.validate_session(huawei_access_token) do
       %{success: true, user_id: huawei_user_id, nick_name: huawei_nick_name} ->
-        case RedisUser.bind_sdk_user(%{sdk: :huawei, 
+        case Accounts.bind_sdk_user(%{sdk: :huawei, 
                                        app_id: app.id, 
                                        sdk_user_id: huawei_user_id, 
                                        email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.HuaweiAuthBind do
                                        mobile: nil,
                                        avatar_url: nil}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.HuaweiAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: user.email,
               nick_name:  user.nickname,

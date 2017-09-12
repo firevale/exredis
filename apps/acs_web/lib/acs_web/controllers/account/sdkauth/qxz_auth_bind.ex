@@ -3,12 +3,12 @@ defmodule AcsWeb.QxzAuthBind do
   require Logger
   require SDKQxz
 
-  def bind(%Plug.Conn{private: %{acs_app: %RedisApp{sdk_bindings: %{qxz: %{"app_id" => qxz_app_id, "app_key" => qxz_app_key}}} = app,
+  def bind(%Plug.Conn{private: %{acs_app: %App{sdk_bindings: %{qxz: %{"app_id" => qxz_app_id, "app_key" => qxz_app_key}}} = app,
                                  acs_device_id: device_id,
                                  acs_platform: platform}} = conn, 
            %{"qxz_user_id" => qxz_user_id} = _params) do
     if SDKQxz.validate_session(qxz_app_id, qxz_app_key, qxz_user_id) do
-      case RedisUser.bind_sdk_user(%{sdk: :qxz, 
+      case Accounts.bind_sdk_user(%{sdk: :qxz, 
                                      app_id: app.id, 
                                      sdk_user_id: qxz_user_id, 
                                      email: nil,
@@ -17,7 +17,7 @@ defmodule AcsWeb.QxzAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -29,7 +29,7 @@ defmodule AcsWeb.QxzAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

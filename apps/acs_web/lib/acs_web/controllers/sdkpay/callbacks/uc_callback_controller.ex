@@ -5,7 +5,7 @@ defmodule AcsWeb.SdkPay.UCCallbackController do
   @success "SUCCESS"
   @failure "FAILURE"
   
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"data" => %{"orderStatus" => order_status, 
                                       "callbackInfo" => order_id,
                                       "trans_no" => trans_no,

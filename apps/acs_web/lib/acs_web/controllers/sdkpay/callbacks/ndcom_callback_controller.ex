@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.NdcomCallbackController do
   use     AcsWeb, :controller
   require SDKNdcom
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"PayStatus" => pay_status, 
                           "CooOrderSerial" => order_id,
                           "Note" => cp_order_id,

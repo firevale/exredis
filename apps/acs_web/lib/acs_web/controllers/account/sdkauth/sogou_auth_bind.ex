@@ -5,14 +5,14 @@ defmodule AcsWeb.SogouAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{sogou: %{"app_id" => sogou_app_id, "app_secret" => sogou_app_secret}}} = app,
+                acs_app: %App{sdk_bindings: %{sogou: %{"app_id" => sogou_app_id, "app_secret" => sogou_app_secret}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"sogou_access_token" => sogou_access_token,
               "sogou_user_id" => sogou_user_id} = params) do
 
     if SDKSogou.validate_session(sogou_app_id, sogou_access_token, sogou_user_id, sogou_app_secret) do
-      case RedisUser.bind_sdk_user(%{sdk: :sogou, 
+      case Accounts.bind_sdk_user(%{sdk: :sogou, 
                                      app_id: app.id, 
                                      sdk_user_id: sogou_user_id, 
                                      email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.SogouAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.SogouAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

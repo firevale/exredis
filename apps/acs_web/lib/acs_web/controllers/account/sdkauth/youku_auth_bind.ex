@@ -5,14 +5,14 @@ defmodule AcsWeb.YoukuAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{youku: %{"app_key" => youku_app_key, "pay_key" => youku_pay_key}}} = app,
+                acs_app: %App{sdk_bindings: %{youku: %{"app_key" => youku_app_key, "pay_key" => youku_pay_key}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"youku_session_id" => youku_session_id} = params) do
 
     case SDKYouku.validate_session(youku_app_key, youku_pay_key, youku_session_id) do
       {:ok, youku_user_id} ->
-        case RedisUser.bind_sdk_user(%{sdk: :youku, 
+        case Accounts.bind_sdk_user(%{sdk: :youku, 
                                       app_id: app.id, 
                                       sdk_user_id: youku_user_id, 
                                       email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.YoukuAuthBind do
                                       mobile: nil,
                                       avatar_url: nil}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.YoukuAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: user.email,
               nick_name:  user.nickname,

@@ -3,14 +3,14 @@ defmodule AcsWeb.UCAuthBind do
   require Logger
   require SDKUC
 
-  def bind(%Plug.Conn{private: %{acs_app: %RedisApp{sdk_bindings: %{uc: %{"app_id" => uc_app_id, "app_key" => uc_app_key}}} = app,
+  def bind(%Plug.Conn{private: %{acs_app: %App{sdk_bindings: %{uc: %{"app_id" => uc_app_id, "app_key" => uc_app_key}}} = app,
                                  acs_device_id: device_id,
                                  acs_platform: platform}} = conn, 
            %{"uc_access_token" => uc_access_token} = params) do
 
     case SDKUC.validate_session(uc_app_id, uc_app_key, uc_access_token, params["debug_mode"]) do
       %{id: uc_user_id, nickname: uc_nickname} ->
-        case RedisUser.bind_sdk_user(%{sdk: :uc, 
+        case Accounts.bind_sdk_user(%{sdk: :uc, 
                                        app_id: app.id, 
                                        sdk_user_id: uc_user_id, 
                                        email: nil,
@@ -19,7 +19,7 @@ defmodule AcsWeb.UCAuthBind do
                                        mobile: nil,
                                        avatar_url: nil}) do 
           {:ok, user} -> 
-            access_token = RedisAccessToken.create(%{
+            access_token = Auth.create_access_token(%{
               app_id: app.id,
               user_id: user.id,
               device_id: device_id,
@@ -31,7 +31,7 @@ defmodule AcsWeb.UCAuthBind do
             conn |> json(%{
               success: true,
               access_token: access_token.id,
-              expires_at: RedisAccessToken.expired_at(access_token),
+              expires_at: AccessToken.expired_at(access_token),
               user_id: "#{user.id}",
               user_email: user.email,
               nick_name:  user.nickname,

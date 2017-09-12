@@ -3,7 +3,7 @@ defmodule AcsWeb.GgplayController do
 
   plug :fetch_user
 
-  def verify_and_deliver(%Plug.Conn{private: %{acs_app: %RedisApp{} = app,
+  def verify_and_deliver(%Plug.Conn{private: %{acs_app: %App{} = app,
                                                acs_platform: "android"}} = conn, 
                         %{"order_id" => order_id, 
                           "signed_data" => signed_data,

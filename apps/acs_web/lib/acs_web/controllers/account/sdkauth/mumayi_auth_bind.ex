@@ -5,14 +5,14 @@ defmodule AcsWeb.MumayiAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %RedisApp{sdk_bindings: %{mumayi: %{}}} = app,
+                acs_app: %App{sdk_bindings: %{mumayi: %{}}} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"mmy_access_token" => mumayi_access_token,
               "mmy_user_id" => mumayi_user_id} = params) do
 
     if SDKMumayi.validate_session(mumayi_access_token, mumayi_user_id) do
-      case RedisUser.bind_sdk_user(%{sdk: :mumayi, 
+      case Accounts.bind_sdk_user(%{sdk: :mumayi, 
                                      app_id: app.id, 
                                      sdk_user_id: mumayi_user_id, 
                                      email: nil,
@@ -21,7 +21,7 @@ defmodule AcsWeb.MumayiAuthBind do
                                      mobile: nil,
                                      avatar_url: nil}) do 
         {:ok, user} -> 
-          access_token = RedisAccessToken.create(%{
+          access_token = Auth.create_access_token(%{
             app_id: app.id,
             user_id: user.id,
             device_id: device_id,
@@ -33,7 +33,7 @@ defmodule AcsWeb.MumayiAuthBind do
           conn |> json(%{
             success: true,
             access_token: access_token.id,
-            expires_at: RedisAccessToken.expired_at(access_token),
+            expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
             user_email: user.email,
             nick_name:  user.nickname,

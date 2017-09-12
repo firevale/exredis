@@ -2,7 +2,7 @@ defmodule AcsWeb.SdkPay.SogouCallbackController do
   use     AcsWeb, :controller
   require SDKSogou
 
-  def purchase_callback(%Plug.Conn{private: %{acs_app: %RedisApp{} = app}} = conn, 
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"appdata" => order_id, 
                            "oid" => trans_no, 
                            "realAmount" => amount} = params) do

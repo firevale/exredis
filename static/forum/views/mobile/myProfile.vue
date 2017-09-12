@@ -74,7 +74,7 @@ import {
   mapActions
 } from 'vuex'
 
-import modalDialog from '../../components/modal'
+import modalDialog from '../../components/modalDialog'
 import * as utils from 'common/js/utils'
 import * as acs from 'common/js/acs'
 import nativeApi from 'common/js/nativeApi'

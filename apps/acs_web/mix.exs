@@ -45,7 +45,6 @@ defmodule AcsWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.4"},
-      {:exmoji, "~> 0.2"},
       {:mogrify, "~> 0.5"},
 
       {:acs, in_umbrella: true},

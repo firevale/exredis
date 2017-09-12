@@ -21,10 +21,10 @@ defmodule Acs.Wcp.AppWcpResponse do
     case CachedApp.get(app_id) do 
       nil -> nil
       %{wcp_download_enabled: wcp_download_enabled} ->
-        if WcpTFDownloadResponse.is_waiting_email(app_id, msg.fromusername) do 
+        if AppWcpTFDownloadResponse.is_waiting_email(app_id, msg.fromusername) do 
             %{from: msg.tousername, 
               to: msg.fromusername, 
-              content: WcpTFDownloadResponse.build_email_reply(app_id, msg.fromusername, msg.content)}
+              content: AppWcpTFDownloadResponse.build_email_reply(app_id, msg.fromusername, msg.content)}
         else 
           case CachedAppWcpMessageRule.get_all(app_id) do 
             nil ->
@@ -63,7 +63,7 @@ defmodule Acs.Wcp.AppWcpResponse do
                   end
 
                 ":tf_download" ->
-                  case WcpTFDownloadResponse.build_reply_content(app_id, msg.fromusername) do 
+                  case AppWcpTFDownloadResponse.build_reply_content(app_id, msg.fromusername) do 
                     nil -> nil
                     content -> 
                       %{from: msg.tousername, 
@@ -157,7 +157,7 @@ defmodule Acs.Wcp.AppWcpResponse do
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "CLICK", eventkey: "tf_download"} = msg, _cfg) do 
-    case WcpTFDownloadResponse.build_reply_content(app_id, msg.fromusername) do 
+    case AppWcpTFDownloadResponse.build_reply_content(app_id, msg.fromusername) do 
       nil -> nil
       content -> 
         %{from: msg.tousername, 

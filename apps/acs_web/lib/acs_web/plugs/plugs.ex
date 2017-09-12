@@ -8,6 +8,7 @@ defmodule AcsWeb.Plugs do
   alias   Acs.Auth.AccessToken
   alias   Acs.Repo
   alias   Acs.Auth
+  alias   Acs.AdminAuth
   alias   Acs.Admin.AdminUser
   alias   Acs.Forums.ForumManager
   alias   Acs.Forums.Forum

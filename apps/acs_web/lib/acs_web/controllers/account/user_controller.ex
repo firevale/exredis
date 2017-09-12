@@ -1,8 +1,6 @@
 defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
-  alias Emservice.NeteaseDun
-
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_user_id

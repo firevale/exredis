@@ -1,11 +1,6 @@
 defmodule AcsWeb.PMallController do
   use AcsWeb, :controller
 
-  alias   Acs.RedisPMall
-  alias   Acs.RedisApp
-  import  Acs.UploadImagePlugs
-  require Floki
-
   plug :fetch_app_id
   plug :fetch_access_token
   plug :fetch_session_user_id
@@ -94,7 +89,7 @@ defmodule AcsWeb.PMallController do
       %PMallGoods{} = goods ->
         {:ok, image_path} = Utils.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
-        RedisPMall.refresh(goods)
+        CachePMallGoods.refresh(goods)
         AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
 
         conn |> json(%{success: true, pic_url: image_path})
@@ -142,7 +137,7 @@ defmodule AcsWeb.PMallController do
           case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              RedisPMall.refreshById(id)
+              CachePMallGoods.refreshById(id)
               AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
 
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
@@ -162,7 +157,7 @@ defmodule AcsWeb.PMallController do
 
             changed = PMallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock})
             changed |> Repo.update!
-            RedisPMall.refreshById(id)
+            CachePMallGoods.refreshById(id)
             AdminController.add_operate_log(user_id, app_id, "update_goods", changed.changes)
 
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
@@ -202,7 +197,7 @@ defmodule AcsWeb.PMallController do
         else
           case Repo.delete(goods) do
             {:ok, _} ->
-              RedisPMall.delete(goods_id)
+              CachePMallGoods.delete(goods_id)
               AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
 
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
@@ -228,7 +223,7 @@ defmodule AcsWeb.PMallController do
   defp add_goods_click(goods_id, click) do
     goods = Repo.get(PMallGoods, goods_id)
     PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
-    RedisPMall.refresh(goods)
+    CachePMallGoods.refresh(goods)
   end
 
 

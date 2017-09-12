@@ -1,6 +1,5 @@
 defmodule AcsWeb.UserController do
   use AcsWeb, :controller
-  import Acs.UploadImagePlugs
 
   plug :fetch_app_id
   plug :fetch_app
@@ -12,10 +11,10 @@ defmodule AcsWeb.UserController do
     conn |> json(%{success: true, exists: false})
   end
   def is_account_exists(conn, %{"account_id" => account_id}) do
-    conn |> json(%{success: true, exists: RedisUser.exists?(account_id)})
+    conn |> json(%{success: true, exists: CachedUser.get!(account_id)})
   end
   def is_account_exists(conn, %{"key" => account_id}) do
-    conn |> json(%{success: true, exists: RedisUser.exists?(account_id)})
+    conn |> json(%{success: true, exists: CachedUser.get!(account_id)})
   end
 
   def create_token(conn, %{"account_id" => "", "password" => _password}) do
@@ -33,11 +32,11 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password}) do
-    case RedisUser.find(account_id) do
+    case CachedUser.get(account_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.accountNotExist"})
 
-      %RedisUser{} ->
+      %User{} ->
         now = Utils.unix_timestamp
         last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
 
@@ -48,7 +47,7 @@ defmodule AcsWeb.UserController do
                           end
 
         if failed_attempts < 10 do
-          case RedisUser.authenticate(account_id, password) do
+          case Auth.authenticate(account_id, password) do
             {:ok, user} ->
               create_and_response_access_token(conn, user, app_id, device_id, platform)
             _ ->
@@ -72,14 +71,14 @@ defmodule AcsWeb.UserController do
                                            acs_device_id: device_id,
                                            acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password}) do
-    if RedisUser.exists?(account_id) do
+    if CachedUser.get!(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      case RedisUser.bind_anonymous_user(account_id, password, device_id) do
+      case CachedUser.bind_anonymous_user(account_id, password, device_id) do
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.anonymousUserNotFound"})
 
-        %RedisUser{} = user ->
+        %User{} = user ->
           create_and_response_access_token(conn, user, app_id, device_id, platform)
       end
     end
@@ -89,11 +88,11 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password}) do
-    if RedisUser.exists?(account_id) do
+    if CachedUser.get!(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      user = RedisUser.create!(account_id, password)
-      user = RedisUser.save!(user)
+      user = CachedUser.create!(account_id, password)
+      user = CachedUser.save!(user)
       create_and_response_access_token(conn, user, app_id, device_id, platform)
     end
   end
@@ -109,7 +108,7 @@ defmodule AcsWeb.UserController do
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do
-    if RedisUser.exists?(account_id) do
+    if CachedUser.get!(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
       case get_session(conn, :register_verify_code) do
@@ -120,8 +119,8 @@ defmodule AcsWeb.UserController do
                               _ -> false
                             end
           if is_valid_account do
-            user = RedisUser.create!(account_id, password)
-            user = RedisUser.save!(user)
+            user = CachedUser.create!(account_id, password)
+            user = CachedUser.save!(user)
             create_and_response_access_token(conn, user, app_id, device_id, platform)
           else
             conn |> json(%{success: false, i18n_message: "error.server.accountIdChanged"})
@@ -136,17 +135,17 @@ defmodule AcsWeb.UserController do
     update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})
   end
   def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do
-    case RedisUser.find(account_id) do
+    case CachedUser.get(account_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.accountNotFound"})
 
-      %RedisUser{} = user ->
+      %User{} = user ->
         case get_session(conn, :retrieve_password_account_id) do
           ^account_id ->
             case get_session(conn, :retrieve_password_verify_code) do
               ^verify_code ->
                 user = %{user | encrypted_password: Utils.hash_password(password)}
-                RedisUser.save!(user)
+                CachedUser.save!(user)
                 conn |> delete_session(:retrieve_password_verify_code)
                      |> delete_session(:retrieve_password_account_id)
                      |> json(%{success: true})
@@ -163,7 +162,7 @@ defmodule AcsWeb.UserController do
                     %{"mobile" => mobile, "verify_code" => verify_code}) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
-        case RedisUser.find(mobile) do
+        case CachedUser.get(mobile) do
           nil -> _update_mobile(conn, user, mobile)
           %{id: ^user_id} -> _update_mobile(conn, user, mobile)
           _ -> conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
@@ -182,7 +181,7 @@ defmodule AcsWeb.UserController do
     else
       user
     end
-    RedisUser.save!(user)
+    CachedUser.save!(user)
     conn |> delete_session(:bind_mobile_verify_code)
          |> delete_session(:bind_mobile_account_id)
          |> json(%{success: true})
@@ -192,7 +191,7 @@ defmodule AcsWeb.UserController do
                    %{"email" => email, "verify_code" => verify_code}) do
     case get_session(conn, :bind_email_verify_code) do
       ^verify_code ->
-        case RedisUser.find(email) do
+        case CachedUser.get(email) do
           nil -> _update_email(conn, user, email)
           %{id: ^user_id} -> _update_email(conn, user, email)
           _ -> conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
@@ -211,7 +210,7 @@ defmodule AcsWeb.UserController do
     else
       user
     end
-    RedisUser.save!(user)
+    CachedUser.save!(user)
     conn |> delete_session(:bind_email_verify_code)
          |> delete_session(:bind_email_account_id)
          |> json(%{success: true})
@@ -231,7 +230,7 @@ defmodule AcsWeb.UserController do
       case Repo.one!(query) do
         0 ->
           user = %{user | nickname: nickname}
-          RedisUser.save!(user)
+          CachedUser.save!(user)
           conn |> json(%{success: true})
         _ ->
           conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})
@@ -245,7 +244,7 @@ defmodule AcsWeb.UserController do
   def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn,
                            %{"resident_id" => resident_id, "resident_name" => resident_name}) do
     user = %{user | resident_id: resident_id, resident_name: resident_name}
-    RedisUser.save!(user)
+    CachedUser.save!(user)
     conn |> json(%{success: true})
   end
   def update_resident_info(conn, _) do
@@ -255,7 +254,7 @@ defmodule AcsWeb.UserController do
   def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id,
                                                    acs_device_id: device_id,
                                                    acs_platform: platform}} = conn, _) do
-    user = RedisUser.fetch_anonymous_user(device_id)
+    user = CachedUser.fetch_anonymous_user(device_id)
     create_and_response_access_token(conn, user, app_id, device_id, platform, true)
   end
 
@@ -263,13 +262,13 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"access_token" => access_token_id}) do
-    case RedisAccessToken.find(access_token_id) do
+    case AccessToken.get(access_token_id) do
       nil ->
         error "access token not found for #{access_token_id}"
         conn |> json(%{success: false,
                        message: "access token not found"})
 
-      %RedisAccessToken{app_id: ^app_id, device_id: ^device_id, user_id: user_id} = token ->
+      %AccessToken{app_id: ^app_id, device_id: ^device_id, user_id: user_id} = token ->
         case RedisUser.find(user_id) do
           nil ->
             conn |> json(%{success: false,

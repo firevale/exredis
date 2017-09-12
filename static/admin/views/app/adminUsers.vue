@@ -159,7 +159,7 @@ export default {
       }
     },
     getAdminUser: async function() {
-      let result = await this.$acs.getAdminUserByApp()
+      let result = await this.$acs.listAppAdminUsers()
       if (result.success) {
         this.users = result.users
       }

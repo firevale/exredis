@@ -191,8 +191,8 @@ export default {
         return post('/admin_actions/user/add_user', params)
       },
 
-      getAdminUserByApp(params) {
-        return post('/admin_actions/user/get_admin_user_by_app', params)
+      listAppAdminUsers(params) {
+        return post('/admin_actions/user/list_app_admin_users', params)
       },
 
       deleteAdminUser(params) {

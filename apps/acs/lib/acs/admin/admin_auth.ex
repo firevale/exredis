@@ -7,7 +7,7 @@ defmodule Acs.AdminAuth do
 
   alias Acs.Admin.AdminUser
 
-  def get_admin_appids(user_id) when is_integer(user_id) do
+  def list_admin_app_ids(user_id) when is_integer(user_id) do
     query = 
       from au in AdminUser,
         where: au.user_id == ^user_id,

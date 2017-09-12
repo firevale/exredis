@@ -93,7 +93,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/search_users", UserController, :search_users
       post  "/get_user_by_id", UserController, :get_user_by_id
 
-      post  "/get_admin_user_by_app", AdminUserController, :get_admin_user_by_app
+      post  "/list_app_admin_users", AdminUserController, :list_app_admin_users
       post  "/delete_admin_user", AdminUserController, :delete_admin_user
       post  "/get_user_from_redis", AdminUserController, :get_user_from_redis
       post  "/get_users_by_level", AdminUserController, :get_users_by_level

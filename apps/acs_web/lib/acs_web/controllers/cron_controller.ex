@@ -1,12 +1,8 @@
 defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
-  alias   AcsWeb.PaymentHelper
-  alias   Acs.MeishengSmsSender
-  alias   Acs.ChaoxinNotifier
-  alias   Acs.RedisMall
+
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
-  alias   Acs.Stats.DailyReportGenerator
   alias   Utils.Tinypng
   use     Timex
 
@@ -55,7 +51,7 @@ defmodule AcsWeb.CronController do
   def report_sms_amount(conn, _params) do 
     {:ok, amount} = MeishengSmsSender.get_amount()
     {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-    ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
   end
 
@@ -104,14 +100,14 @@ defmodule AcsWeb.CronController do
         if count <= 0 do 
           case Exredis.get("_monitor.check_admin_users") do 
             nil -> 
-              ChaoxinNotifier.send_text_msg("#{now}, admin_users 表被清空")          
+              Chaoxin.send_text_msg("#{now}, admin_users 表被清空")          
               Exredis.set("_monitor.check_admin_users", now)
             _ ->
               :ok
           end
         end
       _ ->
-        ChaoxinNotifier.send_text_msg("#{now}, 获取admin_users大小失败")          
+        Chaoxin.send_text_msg("#{now}, 获取admin_users大小失败")          
     end
 
     conn |> json(%{success: true, message: "done"})

@@ -441,13 +441,13 @@ defmodule AcsWeb.ForumController do
 
   # delete_comment
   def delete_comment(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                           acs_is_forum_admin: is_admin}} = conn,
+                                           acs_is_forum_admin: is_forum_admin}} = conn,
                      %{"comment_id" => comment_id}) do
     case Repo.get(ForumComment, comment_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.commentNotFound"})
       %ForumComment{} = comment ->
-        if(!is_admin and comment.user_id != user_id) do
+        if !is_forum_admin and comment.user_id != user_id do
           conn |> json(%{success: false, i18n_message: "error.server.illegal"})
         else
           with post_id = comment.post_id,
@@ -522,23 +522,22 @@ defmodule AcsWeb.ForumController do
 
   # toggle post status
   def toggle_post_status(%Plug.Conn{private: %{acs_session_user_id: user_id,
-                                               acs_is_forum_admin: is_admin}} = conn,
+                                               acs_is_forum_admin: is_forum_admin}} = conn,
                          %{"post_id" => post_id} = params) do
-    case is_admin do
-      true ->
-        with params = Map.put(params, "editer_id", user_id),
-             %ForumPost{} = post <- Repo.get(ForumPost, post_id),
-             {:ok, _} <- ForumPost.changeset(post, params) |> Repo.update()
-        do
-          conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
-        else
-          {:error, %{errors: _errors}} ->
-            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
-          _ ->
-            conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-        end
-      false ->
-        conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+    if is_forum_admin do
+      with params = Map.put(params, "editer_id", user_id),
+            %ForumPost{} = post <- Repo.get(ForumPost, post_id),
+            {:ok, _} <- ForumPost.changeset(post, params) |> Repo.update()
+      do
+        conn |> json(%{success: true, i18n_message: "forum.detail.operateSuccess"})
+      else
+        {:error, %{errors: _errors}} ->
+          conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+        _ ->
+          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+      end
+    else 
+      conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     end
   end
   def toggle_post_status(conn, _) do

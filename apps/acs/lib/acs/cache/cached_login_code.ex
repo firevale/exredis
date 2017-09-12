@@ -3,22 +3,21 @@ defmodule Acs.Cache.CachedLoginCode do
   require Excache
 
   alias   Acs.Repo
+  import  Ecto.Query
   alias   Acs.LoginCodes.AppLoginCode
 
-  @app_user_cache_key "acs._login_codes.app_user"
-  @code_cache_key "acs._login_codes.code"
+  @key_base "acs.login_codes"
 
   # key_field can be user_id(integer) or code(bitstring)
-  def get(nil, _), do: nil
-  def get(_, nil), do: nil
-  
-  def get(app_id, key_field) do 
-    Excache.get!(key(app_id, key_field), fallback: fn(redis_key) ->    
+  def get(app_id, [{k, v}]) do 
+    Excache.get!(key(app_id, [{k, v}]), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case refresh(app_id, key_field) do 
-            nil -> {:ignore, nil}
-            app_login_code -> {:commit, app_login_code}
+          case refresh(app_id, [{k, v}]) do 
+            nil -> 
+              {:ignore, nil}
+            app_login_code -> 
+              {:commit, app_login_code}
           end
         raw ->
           {:commit, raw |> AppLoginCode.from_redis()}
@@ -26,19 +25,23 @@ defmodule Acs.Cache.CachedLoginCode do
     end)
   end
 
-  def refresh(app_id, key_field) do
-    redis_key = key(app_id, key_field)
+  def refresh(app_id, [{k, v}]) do
+    query = from c in AppLoginCode,
+              select: c,
+              where: c.app_id == ^app_id
 
-    db_model = if is_integer(key_field) do 
-      Repo.get_by(AppLoginCode, app_id: app_id, user_id: key_field)
-    else 
-      Repo.get_by(AppLoginCode, app_id: app_id, code: key_field)
+    query = case k do 
+      :code ->
+        query |> where([c], c.code == ^v) 
+      :owner ->
+        query |> where([c], c.owner == ^v) 
+      :user_id ->
+        query |> where([c], c.user_id == ^v) 
     end
-
-    case db_model do 
+    
+    case Repo.one(query) do 
       %AppLoginCode{} = app_login_code ->
-        Exredis.set(redis_key, app_login_code |> AppLoginCode.to_redis())
-        Excache.del(redis_key)
+        refresh(app_login_code)
         app_login_code
       
       _ -> 
@@ -46,12 +49,29 @@ defmodule Acs.Cache.CachedLoginCode do
     end
   end
 
-  defp key(app_id, user_id) when is_integer(user_id) do 
-    "#{@app_user_cache_key}.#{app_id}.#{user_id}"
+  def refresh(%AppLoginCode{app_id: app_id} = app_login_code) do 
+    Exredis.set(key(app_id, code: app_login_code.code), AppLoginCode.to_redis(app_login_code))
+    Excache.del(key(app_id, code: app_login_code.code))
+
+    if app_login_code.user_id do 
+      Exredis.set(key(app_id, user_id: app_login_code.user_id), AppLoginCode.to_redis(app_login_code))
+      Excache.del(key(app_id, user_id: app_login_code.user_id))
+    end
+
+    if app_login_code.owner do 
+      Exredis.set(key(app_id, owner: app_login_code.owner), AppLoginCode.to_redis(app_login_code))
+      Excache.del(key(app_id, owner: app_login_code.owner))
+    end
   end
 
-  defp key(app_id, code) when is_bitstring(code) do 
-    "#{@code_cache_key}.#{app_id}.#{code}"
+  defp key(app_id, code: code) do 
+    "#{@key_base}.#{app_id}.code.#{code}"
+  end
+  defp key(app_id, user_id: user_id) do 
+    "#{@key_base}.#{app_id}.user_id.#{user_id}"
+  end
+  defp key(app_id, owner: owner) do 
+    "#{@key_base}.#{app_id}.owner.#{owner}"
   end
 
 end

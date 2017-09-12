@@ -2,6 +2,9 @@ defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
   alias Emservice.NeteaseDun
+  alias Acs.Accounts
+  alias Acs.LoginCodes
+  alias Utils.Password
 
   plug :fetch_app_id
   plug :fetch_app
@@ -13,10 +16,10 @@ defmodule AcsWeb.UserController do
     conn |> json(%{success: true, exists: false})
   end
   def is_account_exists(conn, %{"account_id" => account_id}) do
-    conn |> json(%{success: true, exists: CachedUser.get!(account_id)})
+    conn |> json(%{success: true, exists: Accounts.exists?(account_id)})
   end
   def is_account_exists(conn, %{"key" => account_id}) do
-    conn |> json(%{success: true, exists: CachedUser.get!(account_id)})
+    conn |> json(%{success: true, exists: Accounts.exists?(account_id)})
   end
 
   def create_token(conn, %{"account_id" => "", "password" => _password}) do
@@ -34,12 +37,12 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password}) do
-    case CachedUser.get(account_id) do
+    case Accounts.get_user(account_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.accountNotExist"})
 
       %User{} ->
-        now = Utils.unix_timestamp
+        now = Utils.unix_timestamp()
         last_failed_timestamp = get_session(conn, :last_failed_timestamp) || 0
 
         failed_attempts = if now - last_failed_timestamp > 300 do
@@ -73,10 +76,10 @@ defmodule AcsWeb.UserController do
                                            acs_device_id: device_id,
                                            acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password}) do
-    if CachedUser.get!(account_id) do
+    if Accounts.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      case CachedUser.bind_anonymous_user(account_id, password, device_id) do
+      case Accounts.bind_anonymous_user(device_id, account_id, password) do
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.anonymousUserNotFound"})
 
@@ -90,10 +93,10 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"email" => account_id, "password" => password}) do
-    if CachedUser.get!(account_id) do
+    if Accounts.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
-      user = Accounts.create!(account_id, password)
+      user = Accounts.create_user!(account_id, password)
       create_and_response_access_token(conn, user, app_id, device_id, platform)
     end
   end
@@ -109,7 +112,7 @@ defmodule AcsWeb.UserController do
                                         acs_device_id: device_id,
                                         acs_platform: platform}} = conn,
                    %{"account_id" => account_id, "password" => password, "verify_code" => verify_code}) do
-    if CachedUser.get!(account_id) do
+    if Accounts.exists?(account_id) do
       conn |> json(%{success: false, i18n_message: "error.server.accountInUse"})
     else
       case get_session(conn, :register_verify_code) do
@@ -120,7 +123,7 @@ defmodule AcsWeb.UserController do
                               _ -> false
                             end
           if is_valid_account do
-            user = Accounts.create!(account_id, password)
+            user = Accounts.create_user!(account_id, password)
             create_and_response_access_token(conn, user, app_id, device_id, platform)
           else
             conn |> json(%{success: false, i18n_message: "error.server.accountIdChanged"})
@@ -135,7 +138,7 @@ defmodule AcsWeb.UserController do
     update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password})
   end
   def update_password(conn, %{"account_id" => account_id, "verify_code" => verify_code, "password" => password}) do
-    case CachedUser.get_user(account_id) do
+    case Accounts.get_user(account_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.accountNotFound"})
 
@@ -144,8 +147,9 @@ defmodule AcsWeb.UserController do
           ^account_id ->
             case get_session(conn, :retrieve_password_verify_code) do
               ^verify_code ->
-                user = %{user | encrypted_password: Utils.hash_password(password)}
-                CachedUser.save!(user)
+                Accounts.update_user!(user, %{
+                  encrypted_password: Password.hash(password)
+                })
                 conn |> delete_session(:retrieve_password_verify_code)
                      |> delete_session(:retrieve_password_account_id)
                      |> json(%{success: true})
@@ -162,10 +166,13 @@ defmodule AcsWeb.UserController do
                     %{"mobile" => mobile, "verify_code" => verify_code}) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
-        case CachedUser.get(mobile) do
-          nil -> _update_mobile(conn, user, mobile)
-          %{id: ^user_id} -> _update_mobile(conn, user, mobile)
-          _ -> conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
+        case Accounts.get_user(mobile) do
+          nil -> 
+            _update_mobile(conn, user, mobile)
+          %{id: ^user_id} -> 
+            _update_mobile(conn, user, mobile)
+          _ -> 
+            conn |> json(%{success: false, i18n_message: "error.server.mobileInUse"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -175,13 +182,16 @@ defmodule AcsWeb.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp _update_mobile(conn, user, mobile) do
-    user = %{user | mobile: mobile, device_id: nil}
-    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
-      %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
+    attr = %{
+      mobile: mobile,
+      device_id: nil,
+    }
+    attr = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
+      Map.put(attr, :encrypted_password, Password.hash(conn.params["password"]))
     else
       user
     end
-    CachedUser.save!(user)
+    Accounts.update_user!(user, attr)
     conn |> delete_session(:bind_mobile_verify_code)
          |> delete_session(:bind_mobile_account_id)
          |> json(%{success: true})
@@ -191,10 +201,13 @@ defmodule AcsWeb.UserController do
                    %{"email" => email, "verify_code" => verify_code}) do
     case get_session(conn, :bind_email_verify_code) do
       ^verify_code ->
-        case CachedUser.get(email) do
-          nil -> _update_email(conn, user, email)
-          %{id: ^user_id} -> _update_email(conn, user, email)
-          _ -> conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
+        case Accounts.get_user(email) do
+          nil -> 
+            _update_email(conn, user, email)
+          %{id: ^user_id} -> 
+            _update_email(conn, user, email)
+          _ -> 
+            conn |> json(%{success: false, i18n_message: "error.server.emailInUse"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -204,13 +217,16 @@ defmodule AcsWeb.UserController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   defp _update_email(conn, user, email) do
-    user = %{user | email: email, device_id: nil}
-    user = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
-      %{user | encrypted_password: Utils.hash_password(conn.params["password"])}
+    attr = %{
+      email: email,
+      device_id: nil,
+    }
+    attr = if is_bitstring(conn.params["password"]) and String.length(conn.params["password"]) >= 6 do
+      Map.put(attr, :encrypted_password, Password.hash(conn.params["password"]))
     else
       user
     end
-    CachedUser.save!(user)
+    Accounts.update_user!(user, attr)
     conn |> delete_session(:bind_email_verify_code)
          |> delete_session(:bind_email_account_id)
          |> json(%{success: true})
@@ -218,22 +234,15 @@ defmodule AcsWeb.UserController do
 
   def update_nickname(%Plug.Conn{private: %{acs_session_user: %{id: user_id} = user}} = conn,
                       %{"nickname" => nickname}) do
-
-    check_out = check_userid(nickname)
-    if(check_out && !check_out.success) do
+    check_out = check_nickname(nickname)
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
-      query = from u in Acs.User,
-              select: count(1),
-              where: u.nickname == ^nickname and u.id != ^user_id
-
-      case Repo.one!(query) do
-        0 ->
-          user = %{user | nickname: nickname}
-          CachedUser.save!(user)
-          conn |> json(%{success: true})
-        _ ->
-          conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})
+      if Accounts.is_nickname_exists?(nickname, user_id) do
+        conn |> json(%{success: false, i18n_message: "error.server.nicknameInUse"})  
+      else 
+        Accounts.update_user!(user, %{nickname: nickname})
+        conn |> json(%{success: true})
       end
     end
   end
@@ -243,8 +252,7 @@ defmodule AcsWeb.UserController do
 
   def update_resident_info(%Plug.Conn{private: %{acs_session_user: %{id: _user_id} = user}} = conn,
                            %{"resident_id" => resident_id, "resident_name" => resident_name}) do
-    user = %{user | resident_id: resident_id, resident_name: resident_name}
-    CachedUser.save!(user)
+    Accounts.update_user!(user, %{resident_id: resident_id, resident_name: resident_name})
     conn |> json(%{success: true})
   end
   def update_resident_info(conn, _) do
@@ -254,7 +262,7 @@ defmodule AcsWeb.UserController do
   def create_anonymous_token(%Plug.Conn{private: %{acs_app_id: app_id,
                                                    acs_device_id: device_id,
                                                    acs_platform: platform}} = conn, _) do
-    user = CachedUser.fetch_anonymous_user(device_id)
+    user = Accounts.fetch_anonymous_user(device_id)
     create_and_response_access_token(conn, user, app_id, device_id, platform, true)
   end
 
@@ -262,14 +270,14 @@ defmodule AcsWeb.UserController do
                                          acs_device_id: device_id,
                                          acs_platform: platform}} = conn,
                    %{"access_token" => access_token_id}) do
-    case AccessToken.get(access_token_id) do
+    case Auth.get_access_token(access_token_id) do
       nil ->
         error "access token not found for #{access_token_id}"
         conn |> json(%{success: false,
                        message: "access token not found"})
 
       %AccessToken{app_id: ^app_id, device_id: ^device_id, user_id: user_id} = token ->
-        case CachedUser.get(user_id) do
+        case Accounts.get_user(user_id) do
           nil ->
             conn |> json(%{success: false,
                            message: "token user not exists!"})
@@ -277,11 +285,6 @@ defmodule AcsWeb.UserController do
             Auth.del_access_token(token)
             create_and_response_access_token(conn, user, app_id, device_id, platform, !is_nil(user.device_id))
         end
-
-      what ->
-        error "invalid access token found for #{access_token_id}, #{inspect what, pretty: true}"
-        conn |> json(%{success: false,
-                       message: "invalid access token id"})
     end
   end
 
@@ -412,7 +415,7 @@ defmodule AcsWeb.UserController do
         conn |> json(%{success: false, message: "access token [#{token_id}] not found"})
 
       token ->
-        case CachedUser.get(token.user_id) do
+        case Accounts.get_user(token.user_id) do
           nil ->
             conn |> json(%{success: false, message: "user not found"})
 
@@ -446,8 +449,8 @@ defmodule AcsWeb.UserController do
   end
 
   defp _update_avatar(conn, user, image_file_path) do
-    {:ok, avatar_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "user_avatars")
-    new_user = CachedUser.save(%{user | avatar_url: avatar_path})
+    {:ok, avatar_url} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "user_avatars")
+    new_user = Accounts.update_user!(user, %{avatar_url: avatar_url})
     conn |> json(%{success: true, user: %{
       id: new_user.id,
       nickname: new_user.nickname,
@@ -524,7 +527,6 @@ defmodule AcsWeb.UserController do
 
   def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id}) when is_integer(id) do
     user = get_users_by_ids(app_id, id)
-    
     conn |> json(%{success: true, user: user})
   end
 
@@ -536,7 +538,7 @@ defmodule AcsWeb.UserController do
       [] -> 
         []
       ids_list ->
-        users = Enum.map(ids, fn id -> RedisUser.find(id) end)
+        users = Enum.map(ids, fn id -> Accounts.get_user(id) end)
         |> Enum.filter(&(&1 != nil))
         |> Enum.map(fn user ->
             app_users_query =
@@ -557,7 +559,7 @@ defmodule AcsWeb.UserController do
   def bind_login_code(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"login_code" => code}) do
     code = String.upcase(code)
 
-    case CachedLoginCode.get(app_id, code) do
+    case LoginCodes.get_login_code(app_id, code: code) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.loginCodeNotExist"})
 
@@ -577,18 +579,14 @@ defmodule AcsWeb.UserController do
               %{app_id: ^app_id, id: ^token_id, user_id: user_id} = access_token ->
                 case login_code.user_id do
                   nil ->
-                    now = DateTime.utc_now()
-                    login_code = Repo.get_by(AppLoginCode, app_id: app_id, code: code)
-                    AppLoginCode.changeset(login_code, %{user_id: user_id, used_at: now}) |> Repo.update!
-                    CachedLoginCode.refresh(app_id, code)
-                    CachedLoginCode.refresh(app_id, user_id)
+                    LoginCodes.update_login_code!(login_code, %{
+                      user_id: user_id
+                    })
                     access_token = %{access_token | login_code: code}
                     AccessToken.save(access_token)
                     response_access_token(conn, access_token)
 
                   ^user_id ->
-                    CachedLoginCode.refresh(app_id, code)
-                    CachedLoginCode.refresh(app_id, user_id)
                     access_token = %{access_token | login_code: code}
                     AccessToken.save(access_token)
                     response_access_token(conn, access_token)
@@ -614,7 +612,7 @@ defmodule AcsWeb.UserController do
   end
 
   defp response_access_token(conn, access_token) do
-    user = CachedUser.get(access_token.user_id)
+    user = Accounts.get_user(access_token.user_id)
     conn |> json(%{
             success: true,
             access_token: access_token.id,
@@ -636,9 +634,9 @@ defmodule AcsWeb.UserController do
   end
 
   # check text by netease dun
-  defp check_userid(userid) do
+  defp check_nickname(userid) do
     # %{success: true}
-    case NeteaseDun.check_userid(userid) do
+    case NeteaseDun.check_nickname(userid) do
       {:error, label, info} ->
         if label do
           %{success: false, i18n_message: "account.error.userIdCheckFail"}
@@ -649,55 +647,5 @@ defmodule AcsWeb.UserController do
       _ ->
         %{success: true}
     end
-  end
-
-  def import_data() do
-    max_id = AcsStats.Repo.one!( from user in AppUser, select: max(user.id))
-    Enum.map_every(0..max_id, 100, fn current_id ->
-      query =
-        from app_user in AppUser,
-        select: map(app_user, [:id, :app_id, :user_id, :app_user_id, :app_user_name, :app_user_level, :zone_id, :pay_amount, :inserted_at,
-        :reg_date, :last_active_at, :last_paid_at, :first_paid_at, :platform, :updated_at]),
-        where: app_user.id >= ^current_id,
-        limit: 100,
-        order_by: [app_user.id]
-      users = AcsStats.Repo.all(query)
-      if users && users != [] do
-        Enum.map(users, fn app_user ->
-          case CachedUser.get(app_user.user_id) do
-            %User{} = user ->
-              Elasticsearch.index(%{index: "acs",
-                type: "user",
-                params: nil,
-                id: user.id,
-                doc: user})
-
-              Elasticsearch.index(%{index: "acs",
-                type: "app_users",
-                params: %{parent: user.id},
-                id: app_user.id,
-                doc: %{
-                  id: app_user.id,
-                  app_id: app_user.app_id,
-                  # app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5",
-                  zone_id: app_user.zone_id,
-                  game_user_id: app_user.app_user_id,
-                  game_user_name: app_user.app_user_name,
-                  game_user_level: app_user.app_user_level,
-                  pay_amount:  app_user.pay_amount,
-                  inserted_at: app_user.inserted_at,
-                  reg_date: app_user.reg_date,
-                  last_active_at: app_user.last_active_at,
-                  last_paid_at: app_user.last_paid_at,
-                  first_paid_at: app_user.first_paid_at,
-                  platform: app_user.platform,
-                  updated_at: app_user.updated_at
-                }})
-           _ ->
-            :nothing
-           end
-        end)
-       end
-    end)
   end
 end

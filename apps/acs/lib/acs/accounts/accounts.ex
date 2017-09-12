@@ -12,7 +12,15 @@ defmodule Acs.Accounts do
   alias Utils.Password
 
   def create_user!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 
-    User.changeset(%User{}, gen_user_attr!(account_id, password)) |> Repo.insert!
+    user = User.changeset(%User{}, gen_user_attr!(account_id, password)) |> Repo.insert!
+    CachedUser.refresh(user)
+    user
+  end
+
+  def update_user!(%User{} = user, attr) do 
+    user = User.changeset(user, attr) |> Repo.update!
+    CachedUser.refresh(user)
+    user    
   end
 
   def get_user(user_id) when is_integer(user_id) do 
@@ -78,6 +86,13 @@ defmodule Acs.Accounts do
       %User{} = user ->
         user 
     end
+  end
+
+  def is_nickname_exists?(nickname, user_id) do 
+    query = from u in User,
+      select: count(1),
+      where: u.nickname == ^nickname and u.id != ^user_id
+    Repo.one!(query) > 0
   end
 
   defp gen_user_attr!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 

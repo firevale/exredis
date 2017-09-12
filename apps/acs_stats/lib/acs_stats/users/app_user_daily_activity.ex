@@ -1,6 +1,7 @@
 defmodule AcsStats.Users.AppUserDailyActivity do
   use Ecto.Schema
   import Ecto.Changeset
+  
   alias AcsStats.Users.AppUserDailyActivity
 
 

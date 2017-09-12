@@ -3,27 +3,17 @@ defmodule Acs.PaymentHelper do
   require Exredis
 
   alias   Utils.Httpc
-  alias   Acs.Repo
-  alias   Acs.StatsRepo
-
-  import  Ecto.Query
+  alias   Utils.Crypto
 
   alias   Acs.Apps.AppOrder
-  alias   AcsStats.Users.AppUser
-  alias   AcsStats.Devices.AppDevice
-  alias   AcsStats.Users.AppUserDailyActivity
-  alias   AcsStats.Devices.AppDeviceDailyActivity
-
-  alias   AcsStats.Cache.CachedAppUser
-  alias   AcsStats.Cache.CachedAppDevice
-  alias   AcsStats.Cache.CachedAppUserDailyActivity
-  alias   AcsStats.Cache.CachedAppDeviceDailyActivity
-  alias   Acs.Cache.CachedApp
+  alias   Acs.Cache.CachedAppSdkPaymentCallback
+  alias   Emservice.Chaoxin
 
   use     Utils.LogAlias
   use     Timex
 
-  require Elasticsearch
+  require Acs.Search.ESOrder
+  require AcsStats
 
   @location Application.get_env(:acs, :location, "cn")
 
@@ -35,7 +25,12 @@ defmodule Acs.PaymentHelper do
 
       app ->
         try do 
-          update_stats_info(order)
+          AcsStats.log_app_user_payment(Timex.local() |> Timex.to_date(), 
+            order.app_id,
+            order.zone_id,
+            order.user_id, 
+            order.platform,
+            String.to_integer(order.fee))
         catch
           _, _ ->
             error "update stats info of order failed: #{inspect order}"
@@ -67,18 +62,17 @@ defmodule Acs.PaymentHelper do
         sign_str = order_map |> Enum.sort
                              |> Enum.map_join("&", fn({key, value}) -> "#{key}=#{value}" end)
 
-        sign = Utils.md5_sign("#{sign_str}#{app.secret}")
+        sign = Crypto.md5_sign("#{sign_str}#{app.secret}")
         params = Map.merge(order_map, %{sign: sign})
 
-        callback_url = case app.sdk_payment_callbacks["#{order.platform}-#{order.sdk}"] do
-                         nil -> app.payment_callback
+        callback_url = case CachedAppSdkPaymentCallback.get(order.app_id, order.platform, order.sdk) do
                          ("http" <> _) = v -> v
                          _ -> app.payment_callback
                        end
 
         try do
           # wait 3 minutes for http response
-          response = Httpc.post_msg(callback_url, params, 120_000)
+          response = Httpc.post_form(callback_url, params, 180_000)
 
           if Httpc.success?(response) do
             if Regex.match?(~r/ok/iu, response.body) do
@@ -126,146 +120,26 @@ defmodule Acs.PaymentHelper do
   end
 
   defp save_order_success(order = %AppOrder{}) do
-    AppOrder.changeset(order, %{status: AppOrder.Status.delivered,
-                                cp_result: "ok",
-                                deliver_at: DateTime.utc_now()}) |> Repo.update!
-    # save to elasticsearch
-    Elasticsearch.index(%{
-      index: "acs",
-      type: "orders",
-      doc: %{
-        app_id: order.app_id,
-        user_id: order.user_id,
-        app_user_id: order.app_user_id,
-        sdk_user_id: order.sdk_user_id,
-        goods_id: order.goods_id,
-        device_id: order.device_id,
-        cp_order_id: order.cp_order_id,
-        transaction_id: order.transaction_id,
-        inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-      },
-      params: nil,
-      id: order.id
-    })
+    order = Acs.Apps.update_app_order!(order, %{
+      status: AppOrder.Status.delivered(),
+      cp_result: "ok",
+      deliver_at: DateTime.utc_now()})
+    Acs.Search.ESOrder.index(order)
   end
 
   defp save_order_failed(order = %AppOrder{}, result) do
-    AppOrder.changeset(order, %{cp_result: result,
-                                try_deliver_counter: order.try_deliver_counter + 1,
-                                try_deliver_at: DateTime.utc_now()}) |> Repo.update!
-    # save to elasticsearch
-    Elasticsearch.index(%{
-      index: "acs",
-      type: "orders",
-      doc: %{
-        app_id: order.app_id,
-        user_id: order.user_id,
-        app_user_id: order.app_user_id,
-        sdk_user_id: order.sdk_user_id,
-        goods_id: order.goods_id,
-        device_id: order.device_id,
-        cp_order_id: order.cp_order_id,
-        transaction_id: order.transaction_id,
-        inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-      },
-      params: nil,
-      id: order.id
-    })
+    order = Acs.Apps.update_app_order!(order, %{
+      cp_result: result,
+      try_deliver_counter: order.try_deliver_counter + 1,
+      try_deliver_at: DateTime.utc_now()}) 
+    Acs.Search.ESOrder.index(order)
   end
 
   defp chaoxin_notify(%{chaoxin_group_id: nil}, %{try_deliver_counter: 10}, msg) do
-    ChaoxinNotifier.send_text_msg(msg)
+    Chaoxin.send_text_msg(msg)
   end
   defp chaoxin_notify(%{chaoxin_group_id: chaoxin_group_id}, %{try_deliver_counter: 10}, msg) do
-    ChaoxinNotifier.send_text_msg(msg, chaoxin_group_id)
+    Chaoxin.send_text_msg(msg, chaoxin_group_id)
   end
   defp chaoxin_notify(_, _, _), do: :ok
-
-  defp update_stats_info(%AppOrder{
-    try_deliver_counter: 0, 
-    app_id: app_id,
-    device_id: device_id,
-    user_id: user_id,
-    zone_id: zone_id,
-    platform: platform,
-    fee: fee,
-    app_user_id: app_user_id}) when is_integer(fee) and is_integer(app_user_id) do 
-
-    now = DateTime.utc_now()
-    today = Timex.local() |> Timex.to_date()
-
-    Exredis.sadd("acs.dapu.#{today}.#{app_id}", user_id)
-    Exredis.sadd("acs.dapu.#{today}.#{app_id}.#{platform}", user_id)
-    Exredis.incrby("acs.totalfee.#{today}.#{app_id}.#{platform}", fee)
-
-    query = from order in AppOrder, 
-      select: count(1),
-      where: order.app_id == ^app_id,
-      where: order.user_id == ^user_id,
-      where: order.status == 0 or order.status == 2
-    
-    case Repo.one!(query) do 
-      x when x <= 1 -> 
-        Exredis.sadd("acs.danpu.#{today}.#{app_id}", user_id)
-        Exredis.sadd("acs.danpu.#{today}.#{app_id}.#{platform}", user_id)
-      _ -> 
-        :ok
-    end
-    
-    # update app user payment info
-    case CachedAppUser.get(app_id, zone_id, user_id, platform) do 
-      %AppUser{id: ^app_user_id, app_id: ^app_id} = app_user ->
-        info "payment success, update app user #{app_user_id} of app: #{app_id}, fee: #{fee}"
-        new_app_user = AppUser.changeset(app_user, %{
-          pay_amount: app_user.pay_amount + fee,
-          first_paid_at: app_user.first_paid_at || now,
-          last_paid_at: now,
-          last_active_at: now,
-          }) |> StatsRepo.update!
-
-        CachedAppUser.refresh(new_app_user)
-
-        case CachedAppUserDailyActivity.get(app_user.id, today) do 
-          %AppUserDailyActivity{app_user_id: ^app_user_id, date: ^today} = auda ->
-            new_auda = AppUserDailyActivity.changeset(auda, %{pay_amount: auda.pay_amount + fee}) |> StatsRepo.update!
-            CachedAppUserDailyActivity.refresh(new_auda)
-          _ ->
-            error "can not get app user daily activity by app_user_id: #{app_user_id}, date: #{today}"
-        end
-
-        :ok
-      _ -> 
-        error "can not get app user by id: #{app_user_id}"
-        :ok
-    end
-
-    # update app device payment info
-    case CachedAppDevice.get(app_id, zone_id, device_id, platform) do 
-      %AppDevice{id: app_device_id, app_id: ^app_id, zone_id: ^zone_id, device_id: ^device_id} = app_device ->
-        info "payment success, update app device #{device_id} of app: #{app_id}, fee: #{fee}"
-        new_app_device = AppDevice.changeset(app_device, %{
-          pay_amount: app_device.pay_amount + fee,
-          first_paid_at: app_device.first_paid_at || now,
-          last_paid_at: now,
-          last_active_at: now,
-          }) |> StatsRepo.update!
-
-        CachedAppDevice.refresh(new_app_device)
-
-        case CachedAppDeviceDailyActivity.get(app_device.id, today) do 
-          %AppDeviceDailyActivity{app_device_id: ^app_device_id, date: ^today} = adda ->
-            new_adda = AppDeviceDailyActivity.changeset(adda, %{pay_amount: adda.pay_amount + fee}) |> StatsRepo.update!
-            CachedAppDeviceDailyActivity.refresh(new_adda)
-          _ ->
-            error "can not get app device daily activity by app_user_id: #{app_device_id}, date: #{today}"
-        end
-
-        :ok
-      _ -> 
-        error "can not get app device by app_id: #{app_id}, zone_id: #{zone_id}, device_id: #{device_id}"
-        :ok
-    end
-  end
-  defp update_stats_info(_), do: :ok
-
 end

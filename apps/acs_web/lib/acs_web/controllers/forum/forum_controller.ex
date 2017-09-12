@@ -13,7 +13,6 @@ defmodule AcsWeb.ForumController do
   plug :check_forum_manager when action in [:delete_comment, :toggle_post_status, :get_paged_ban_post]
   plug :cache_page, [cache_seconds: 10] when action in [:get_paged_post, :get_post_comments, :get_post_detail]
   plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
-  plug :no_emoji, [param_name: "title"] when action == :add_post
   plug :fetch_post when action in [:add_post, :upload_post_image]
   plug :fetch_comment when action in [:add_comment, :upload_comment_image]
   plug :check_txt when action in [:add_post, :add_comment]

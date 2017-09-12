@@ -68,7 +68,7 @@ defmodule AcsWeb.AdminUserController do
         else
           case Repo.delete(user) do
             {:ok, _} ->
-              CachedAdminUser.refresh(user.id, user.app_id)
+              AdminAuth.refresh(user.id, user.app_id)
               AdminController.add_operate_log(acs_admin_id, app_id, "delete_admin_user", params)
               conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
             {:error, %{errors: errors}} ->

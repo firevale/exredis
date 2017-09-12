@@ -68,6 +68,7 @@ defmodule AcsWeb do
       alias Acs.Wcp.AppWcpMessage
       alias Acs.Wcp.AppWcpResponse
       alias Acs.Wcp.AppWcpMessageRule
+      alias Acs.Wcp.AppWcpTFDownloadResponse
       alias Acs.Wcp.AppWcpUser
 
       alias Acs.PMalls.PointLog

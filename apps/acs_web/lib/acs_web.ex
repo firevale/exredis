@@ -31,6 +31,7 @@ defmodule AcsWeb do
 
       require Exredis
       require Utils
+      require Floki
 
       import Ecto
       import Ecto.Query
@@ -40,25 +41,47 @@ defmodule AcsWeb do
       alias Acs.Apps.AppSdkBinding
       alias Acs.Apps.AppGoods
       alias Acs.Apps.AppGoodsProductId
+      alias Acs.Apps.AppOrder
+      alias Acs.Apps.AppQuestion
+      alias Acs.AppWcpResponse
+      alias Acs.AppWcpMessage
+      alias Acs.AppWcpUser
       alias Acs.LoginCodes.AppLoginCode
 
       alias Acs.Forums.Forum
       alias Acs.Forums.ForumSection
+      alias Acs.Forums.ForumPost
+      alias Acs.Forums.ForumComment
+      alias Acs.Forums.UserFavoritePost
       alias Acs.Malls.Mall
+      alias Acs.Malls.MallOrder
+      alias Acs.Malls.MallGoods
+      alias Acs.Malls.MallOrderDetail
+      alias Acs.Malls.MallOrderLog
 
       alias Acs.Admin.OpLog
+      alias Acs.Wcp.AppWcpConfig
+      alias Acs.Wcp.AppWcpMessage
+      alias Acs.Wcp.AppWcpMessageRule
+      alias Acs.Wcp.AppWcpUser
+
+      alias Acs.PMalls.PointLog
+      alias Acs.PMalls.TaskBar
+      alias Acs.PMalls.PMallGoods
+      alias Acs.Accounts.User
+      alias Acs.Accounts.UserAddress
+      alias Acs.Admin.AdminUser
 
       alias Acs.Auth
       alias Acs.Auth.AccessToken
       alias Acs.Cache.CachedApp
       alias Acs.Cache.CachedUser
+      alias Acs.Cache.CachedAdminUser
       alias Acs.Cache.CachedAppWcpConfig
       alias Acs.Cache.CachedAppWcpMessageRule
-
-      alias Acs.Wcp.AppWcpConfig
-      alias Acs.Wcp.AppWcpMessage
-      alias Acs.Wcp.AppWcpMessageRule
-      alias Acs.Wcp.AppWcpUser
+      alias Acs.Cache.CachePMallTaskBar
+      alias Acs.Cache.CachePMallGoods
+      alias Acs.Cache.CachedNeteaseDun
 
       alias AcsStats.Cache.CachedDeviceInfo
       alias AcsStats.Cache.CachedDevice

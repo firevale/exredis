@@ -1,16 +1,8 @@
 defmodule AcsWeb.WcpController do
   use AcsWeb, :controller
 
-  plug Wcp.Plugs.CheckUrlSignature
-  plug Wcp.Plugs.CheckMsgSignature when action in [:on_receive_message]
-
-  alias Acs.AppWcpResponse
-  alias Acs.AppWcpMessage
-  alias Acs.AppWcpUser
-  alias Acs.RedisAppWcpUser
-
-  require Wcp.User
-  require Utils
+  plug Exwcp.Plugs.CheckUrlSignature
+  plug Exwcp.Plugs.CheckMsgSignature when action in [:on_receive_message]
 
   def index(conn, %{"echostr" => echostr}) do
     conn |> text(echostr)

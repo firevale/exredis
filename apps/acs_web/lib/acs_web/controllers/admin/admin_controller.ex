@@ -87,13 +87,13 @@ defmodule AcsWeb.AdminController do
     _update_app_mall(app.has_mall, app.id, app.name)
     case _update_app_forum(app.has_forum, app.id, forum_name, app.forum_url) do
       {:ok, forum} ->
-        RedisApp.refresh(app.id)
+        CachedApp.refresh(app.id)
         conn |> json(%{success: true, 
           forum: forum |> Repo.preload(:sections), 
           app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
 
       nil ->
-        RedisApp.refresh(app.id)
+        CachedApp.refresh(app.id)
         conn |> json(%{success: true, app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
 
       {:error, %{errors: errors}}->
@@ -106,8 +106,8 @@ defmodule AcsWeb.AdminController do
       %Forum{} = forum ->
         case Forum.changeset(forum, %{title: app_title, active: has_forum}) |> Repo.update do
           {:ok, new_forum} -> 
-            RedisApp.refresh(app_id)
-            RedisForum.refresh(new_forum.id)
+            CachedApp.refresh(app_id)
+            CachedForum.refresh(new_forum.id)
             {:ok, new_forum}
 
           {:error, %{errors: errors}} ->
@@ -128,8 +128,8 @@ defmodule AcsWeb.AdminController do
                       where: f.app_id == ^app_id,
                       preload: [:sections]
               result = Repo.one(query)
-              RedisForum.refresh(forum.id)
-              RedisApp.refresh(app_id)
+              CachedForum.refresh(forum.id)
+              CachedApp.refresh(app_id)
               {:ok, result}
 
             {:error, %{errors: errors}} ->
@@ -177,7 +177,7 @@ defmodule AcsWeb.AdminController do
         nil ->
           case AppGoods.changeset(%AppGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
-              RedisApp.refresh(new_goods.app_id)
+              CachedApp.refresh(new_goods.app_id)
               conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
 
             {:error, %{errors: errors}} ->
@@ -187,7 +187,7 @@ defmodule AcsWeb.AdminController do
         %AppGoods{} = old_goods ->
           case AppGoods.changeset(old_goods, goods) |> Repo.update do
             {:ok, new_goods} ->
-              RedisApp.refresh(new_goods.app_id)
+              CachedApp.refresh(new_goods.app_id)
               conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
 
             {:error, %{errors: errors}} ->
@@ -211,7 +211,7 @@ defmodule AcsWeb.AdminController do
       %App{} = app ->
         {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "app_icons")
         App.changeset(app, %{icon: icon_path}) |> Repo.update!
-        RedisApp.refresh(app_id)
+        CachedApp.refresh(app_id)
         add_operate_log(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
         conn |> json(%{success: true, icon_url: icon_path})
 
@@ -236,7 +236,7 @@ defmodule AcsWeb.AdminController do
       %AppGoods{app_id: ^app_id, icon: _icon_url} = goods ->
         {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icons")
         AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
-        RedisApp.refresh(app_id)
+        CachedApp.refresh(app_id)
         add_operate_log(acs_admin_id, app_id, "update_goods_icon", %{icon: image_path})
         conn |> json(%{success: true, icon_url: image_path})
       _ ->
@@ -261,7 +261,7 @@ defmodule AcsWeb.AdminController do
       %AppGoods{app_id: ^app_id} = goods ->
         case Repo.delete(goods) do
           {:ok, _} ->
-            RedisApp.refresh(app_id)
+            CachedApp.refresh(app_id)
             add_operate_log(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
             conn |> json(%{success: true})
 
@@ -284,7 +284,7 @@ defmodule AcsWeb.AdminController do
       nil ->
         case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do
           {:ok, new_product_id_info} ->
-             RedisApp.refresh(app_id)
+             CachedApp.refresh(app_id)
              add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
@@ -296,7 +296,7 @@ defmodule AcsWeb.AdminController do
         changed = AppGoodsProductId.changeset(product_id_record, product_id_info)
         case changed |> Repo.update do
           {:ok, new_product_id_info} ->
-             RedisApp.refresh(app_id)
+             CachedApp.refresh(app_id)
              add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", changed.changes)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 

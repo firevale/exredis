@@ -38,6 +38,7 @@ defmodule AcsWeb do
 
       alias Utils.JSON
       alias Utils.Crypto
+      alias Utils.Httpc
       alias Acs.Repo
       alias Acs.Search
       alias Acs.Apps.App
@@ -110,6 +111,7 @@ defmodule AcsWeb do
       alias AcsWeb.PaymentHelper
       alias AcsWeb.AdminController
       alias Exwcp.Menu
+      alias Exservice.Chaoxin
     end
   end
 

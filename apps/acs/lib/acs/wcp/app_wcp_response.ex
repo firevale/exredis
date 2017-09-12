@@ -4,6 +4,7 @@ defmodule Acs.Wcp.AppWcpResponse do
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Cache.CachedAppWcpMessageRule
+  alias Acs.Wcp.AppWcpTFDownloadResponse
 
   def build_reply(app_id, %{msgtype: "event"} = msg) do 
     case CachedApp.get(app_id) do 

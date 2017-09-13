@@ -13,6 +13,12 @@ defmodule Acs.LoginCodes do
   require Excache
   require Timex
 
+  defmodule Scripts do
+    import Exredis.Script
+
+    defredis_script :rand_code, file_path: "lua/rand_code.lua"
+  end
+
   def get_login_code(app_id, code: code) do 
     CachedLoginCode.get(app_id, code: code)
   end
@@ -60,6 +66,21 @@ defmodule Acs.LoginCodes do
     removed = Exredis.spop("_acs.login_codes.available.#{app_id}", remove_number)
     Exredis.srem("_acs.login_codes.all.#{app_id}", removed)
     remove_number
+  end
+
+  def assign_code(app_id, openid: openid) do
+    case Scripts.rand_code([app_id], [openid]) do 
+      "undefined" ->
+        nil
+      code ->
+        AppLoginCode.changeset(%AppLoginCode{}, %{
+          code: code,
+          owner: "openid.#{openid}",
+          assigned_at: DateTime.utc_now(),
+          app_id: app_id
+        }) |> Repo.insert!
+        code
+    end
   end
 
   def assign_admin_codes(admin_user_id, app_id, number) do 

@@ -1,5 +1,7 @@
 defmodule AcsWeb.Admin.WcpController do
   use AcsWeb, :controller
+  
+  alias Acs.Admin
 
   # add_wcp_empty_params
   def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
@@ -39,7 +41,7 @@ defmodule AcsWeb.Admin.WcpController do
         changed = AppWcpConfig.changeset(config, wcpParams)
         case changed |> Repo.update do
           {:ok, new_wcp} ->
-            AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_params", changed.changes)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_params", changed.changes)
             CachedAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
@@ -64,7 +66,7 @@ defmodule AcsWeb.Admin.WcpController do
       %AppWcpConfig{} = config ->
         case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
           {:ok, new_wcp} ->
-            AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_menus", %{menu: menu})
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_menus", %{menu: menu})
             CachedAppWcpConfig.refresh(app_id)
             conn |> json(%{success: true, wcpconfig: new_wcp})
 
@@ -224,7 +226,7 @@ defmodule AcsWeb.Admin.WcpController do
       %AppWcpMessage{} = message ->
         case Repo.delete(message) do
           {:ok, _} ->
-            AdminController.add_operate_log(acs_admin_id, app_id, "delete_wcp_message", params)
+            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message", params)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -271,7 +273,7 @@ defmodule AcsWeb.Admin.WcpController do
             # add new
             case AppWcpMessageRule.changeset(%AppWcpMessageRule{}, rule) |> Repo.insert do
               {:ok, new_rule} ->
-                AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", rule)
+                Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_message_rule", rule)
                 CachedAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
@@ -284,7 +286,7 @@ defmodule AcsWeb.Admin.WcpController do
             changed = AppWcpMessageRule.changeset(msgrule, rule)
             case changed |> Repo.update do
               {:ok, new_rule} ->
-                AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_message_rule", changed.changes)
+                Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_message_rule", changed.changes)
                 CachedAppWcpMessageRule.refresh(app_id)
                 conn |> json(%{success: true, rule: new_rule})
 
@@ -304,7 +306,7 @@ defmodule AcsWeb.Admin.WcpController do
       %AppWcpMessageRule{} = rule ->
         case Repo.delete(rule) do
           {:ok, _} ->
-            AdminController.add_operate_log(acs_admin_id, app_id, "delete_wcp_message_rule", params)
+            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message_rule", params)
             CachedAppWcpMessageRule.refresh(rule.app_id)
             conn |> json(%{success: true})
 
@@ -341,7 +343,7 @@ defmodule AcsWeb.Admin.WcpController do
         case DeployUploadedFile.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
             AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
-            AdminController.add_operate_log(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
+            Admin.log_admin_operation(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
             conn |> json(%{success: true, filename: filename})
 
           {:error, errinfo} ->
@@ -375,7 +377,7 @@ defmodule AcsWeb.Admin.WcpController do
         result = Menu.create(app_id, menu)
         if(result.errcode == 0) do
           AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update!
-          AdminController.add_operate_log(acs_admin_id, app_id, "update_wcp_menu", %{menu: menu})
+          Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_menu", %{menu: menu})
           conn |> json(%{success: true, result: result})
         else
           conn |> json(%{success: false, message: result.errmsg})

@@ -8,7 +8,7 @@ defmodule AcsWeb.CronController do
   alias   Phoenix.PubSub
   alias   Acs.Stats.DailyReportGenerator
   alias   AcsWeb.LazyTinypng
-  alias   Emservice.Tinypng
+  alias   Exservice.Tinypng
   use     Timex
 
   require Exredis

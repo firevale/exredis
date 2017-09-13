@@ -1,5 +1,6 @@
 defmodule AcsWeb.GamesController do
   use AcsWeb, :controller
+  alias Acs.Admin
 
   import  Acs.UploadImagePlugs
 
@@ -129,7 +130,7 @@ defmodule AcsWeb.GamesController do
         case AppNews.changeset(%AppNews{}, news) |> Repo.insert do
           {:ok, new_news} ->
             news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
-            AdminController.add_operate_log(user_id, app_id, "update_news", news)
+            Admin.log_admin_operation(user_id, app_id, "update_news", news)
             conn |> json(%{success: true, news: news, i18n_message: "admin.news.addSuccess"})
           {:error, %{errors: _errors}} ->
             conn |> json(%{success: false, message: "admin.error.networkError"})
@@ -140,7 +141,7 @@ defmodule AcsWeb.GamesController do
         changed = AppNews.changeset(ns, %{title: title, content: content, is_top: is_top})
         changed |> Repo.update!
         news = news |> Map.put("id", ns.id) |> Map.put("created_at", ns.inserted_at)
-        AdminController.add_operate_log(user_id, app_id, "update_news", changed.changes)
+        Admin.log_admin_operation(user_id, app_id, "update_news", changed.changes)
         conn |> json(%{success: true, news: news, i18n_message: "admin.news.updateSuccess"})
     end
 
@@ -157,7 +158,7 @@ defmodule AcsWeb.GamesController do
         conn |> json(%{success: false, i18n_message: "error.server.newsNotFound"})
       %AppNews{} = news ->
         AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
-        AdminController.add_operate_log(user_id, app_id, "toggle_news_status", %{"news_id" => news_id, "active" => !news.active})
+        Admin.log_admin_operation(user_id, app_id, "toggle_news_status", %{"news_id" => news_id, "active" => !news.active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end

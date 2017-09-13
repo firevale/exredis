@@ -97,7 +97,7 @@ export default {
       return users
     },
     getUser: async function() {
-      let result = await this.$acs.getUserById(this.id)
+      let result = await this.$acs.getUserInfo(this.id)
       if (result.success) {
         this.user = result.user
         this.appUsers = this.user[0].app_users

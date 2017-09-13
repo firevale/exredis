@@ -219,8 +219,8 @@ export default {
         return post('/admin_actions/user/search_users', params)
       },
 
-      getUserById(id) {
-        return post('/admin_actions/user/get_user_by_id', { id })
+      getUserInfo(id) {
+        return post('/admin_actions/user/get_user_info', { id })
       },
 
       generateLoginCodes(params, successMessage) {

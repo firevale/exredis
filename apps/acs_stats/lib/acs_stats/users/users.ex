@@ -128,4 +128,22 @@ defmodule AcsStats.Users do
         error("app_user for #{app_id}.#{zone_id}.#{user_id} not found")
     end
   end
+
+  def list_app_users(app_id, user_id) do 
+    query =
+      from app_user in AppUser,
+        where: app_user.app_id == ^app_id, 
+        where: app_user.user_id == ^user_id,
+        select: map(app_user, [
+          :zone_id, 
+          :app_user_id, 
+          :app_user_name, 
+          :app_user_level, 
+          :active_seconds, 
+          :pay_amount, 
+          :last_active_at, 
+          :inserted_at]),
+        order_by: [asc: app_user.zone_id]
+    AcsStats.Repo.all(query)
+  end
 end

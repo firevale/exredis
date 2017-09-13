@@ -11,14 +11,8 @@ defmodule AcsWeb.CustomerServiceController do
       with  contact <- contact |> Map.put("user_id", user_id) |> Map.put("app_id", app_id),
             {:ok, contact} <- AppQuestion.changeset(%AppQuestion{}, contact) |> Repo.insert
       do
-           Elasticsearch.index(%{
-            index: "customer_service",
-            type: "questions",
-            doc: contact,
-            params: nil,
-            id: contact.id
-          })
-       conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
+        Acs.Search.ESQuestion.index(contact)
+        conn |>json(%{success: true, i18n_message: "customer.writeContact.addSuccess"})
       else
         nil ->
           conn |> json(%{success: false, i18n_message: "error.server.illegal"})
@@ -81,21 +75,8 @@ defmodule AcsWeb.CustomerServiceController do
                      "keyword" => keyword,
                      "page" => page,
                      "records_per_page" => records_per_page}) do
-    query = %{
-      query: %{
-        bool: %{
-          must: %{multi_match: %{
-          query: keyword,
-          fields: [:title],
-        }},
-          filter: %{ term: %{active: true} }
-        }
-      },
-      from: ((page - 1) * records_per_page),
-      size: if records_per_page>30 do 30 else records_per_page end
-    }
 
-    case Elasticsearch.search(%{index: "customer_service", type: "questions", query: query, params: %{timeout: "1m"}}) do
+    case Search.search_question(keyword, page, records_per_page) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         questions = Enum.map(hits, fn(%{
           _id: _id,

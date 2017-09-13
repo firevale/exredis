@@ -185,7 +185,7 @@ defmodule AcsWeb.WechatController do
   end
 
   defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do
-    case RedisApp.find(app_id) do
+    case CachedApp.get(app_id) do
       nil -> {:error, "app not found"}
       %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
       _ -> {:error, "wechat configuration not found"}
@@ -193,7 +193,7 @@ defmodule AcsWeb.WechatController do
   end
 
   defp get_mall_wechat_sign_key(%MallOrder{app_id: app_id}) do
-    case RedisApp.find(app_id) do
+    case CachedApp.get(app_id) do
       nil -> {:error, "app not found"}
       %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
       _ -> {:error, "wechat configuration not found"}

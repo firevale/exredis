@@ -71,7 +71,7 @@ defmodule AcsWeb.MallController do
       %Mall{} = mall ->
         changed = Mall.changeset(mall, mall_info)
         changed |> Repo.update!
-        CachedApp.update(mall.app_id, mall_info["active"])
+        CachedApp.refresh(mall.app_id)
         AdminController.add_operate_log(acs_admin_id, app_id, "update_mall_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end

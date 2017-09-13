@@ -1,14 +1,8 @@
 defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
-<<<<<<< HEAD
-  alias Emservice.NeteaseDun
-  alias Acs.Accounts
-  alias Acs.LoginCodes
   alias Utils.Password
 
-=======
->>>>>>> a7a1928d5f35f395a13f2e52c036e2908c4f18be
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_user_id
@@ -476,7 +470,7 @@ defmodule AcsWeb.UserController do
       sort: %{ inserted_at: %{ order: :desc} }
     }
 
-    {:ok, total, ids} =  User.search(query)
+    {:ok, total, ids} = Search.search_user(query)
     total_page = round(Float.ceil(total/records_per_page))
     users = get_users_by_ids(app_id, ids)
 
@@ -521,7 +515,7 @@ defmodule AcsWeb.UserController do
         size: records_per_page,
       }
 
-      {:ok, total, ids} =  User.search(query)
+      {:ok, total, ids} =  Search.search_user(query)
       total_page = round(Float.ceil(total/records_per_page))
       users = get_users_by_ids(app_id, ids)
 
@@ -639,7 +633,7 @@ defmodule AcsWeb.UserController do
   # check text by netease dun
   defp check_nickname(userid) do
     # %{success: true}
-    case NeteaseDun.check_nickname(userid) do
+    case NeteaseDun.check_userid(userid) do
       {:error, label, info} ->
         if label do
           %{success: false, i18n_message: "account.error.userIdCheckFail"}

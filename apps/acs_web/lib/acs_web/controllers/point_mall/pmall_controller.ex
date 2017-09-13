@@ -1,5 +1,6 @@
 defmodule AcsWeb.PMallController do
   use AcsWeb, :controller
+  alias Acs.Admin
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -90,7 +91,7 @@ defmodule AcsWeb.PMallController do
         {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
         CachedPMallGoods.refresh(goods)
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_goods_pic", %{pic: image_path})
 
         conn |> json(%{success: true, pic_url: image_path})
 
@@ -138,7 +139,7 @@ defmodule AcsWeb.PMallController do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               CachedPMallGoods.refresh(id)
-              AdminController.add_operate_log(user_id, app_id, "update_goods", goods)
+              Admin.log_admin_operation(user_id, app_id, "update_goods", goods)
 
               conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
             {:error, %{errors: _errors}} ->
@@ -158,7 +159,7 @@ defmodule AcsWeb.PMallController do
             changed = PMallGoods.changeset(mg, %{name: name, description: description, pic: pic, price: price, postage: postage, stock: stock})
             changed |> Repo.update!
             CachedPMallGoods.refresh(id)
-            AdminController.add_operate_log(user_id, app_id, "update_goods", changed.changes)
+            Admin.log_admin_operation(user_id, app_id, "update_goods", changed.changes)
 
             conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
         end
@@ -176,7 +177,7 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       %PMallGoods{} = goods ->
         PMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
-        AdminController.add_operate_log(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => !goods.active})
+        Admin.log_admin_operation(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => !goods.active})
 
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
@@ -198,7 +199,7 @@ defmodule AcsWeb.PMallController do
           case Repo.delete(goods) do
             {:ok, _} ->
               CachedPMallGoods.del(goods_id)
-              AdminController.add_operate_log(user_id, app_id, "delete_goods", params)
+              Admin.log_admin_operation(user_id, app_id, "delete_goods", params)
 
               conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
 

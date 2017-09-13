@@ -15,8 +15,9 @@ defmodule AcsWeb.MallOrderController do
   def fetch_order_list(conn, _params),
     do: fetch_order_list(conn, "", "", 1, 100)
   defp fetch_order_list(conn, app_id, keyword, page, records_per_page) do
+
     {:ok, searchTotal, ids} = 
-      Acs.Search.search_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
+      Acs.Search.search_mall_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
 
     queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)

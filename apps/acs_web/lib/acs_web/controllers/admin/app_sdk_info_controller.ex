@@ -1,6 +1,7 @@
 defmodule AcsWeb.Admin.AppSdkInfoController do
   use AcsWeb, :controller
   require Exsdks
+  alias Acs.Admin
 
   def generate_dummy_sdk_info(conn, %{"sdk" => sdk}) do 
     conn |> json(%{success: true, binding: Exsdks.generate_sdk_info(sdk)})
@@ -179,10 +180,10 @@ defmodule AcsWeb.Admin.AppSdkInfoController do
     binding = case Repo.get_by(AppSdkBinding, app_id: app_id, sdk: sdk) do 
       nil ->
         AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: app_id, sdk: sdk, binding: binding}) |> Repo.insert!
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", %{app_id: app_id, sdk: sdk, binding: binding})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{app_id: app_id, sdk: sdk, binding: binding})
       sdk_binding ->
         AppSdkBinding.changeset(sdk_binding, %{binding: binding}) |> Repo.update!
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_app_sdk_info", %{binding: binding})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{binding: binding})
     end
 
     CachedApp.refresh(app_id)

@@ -1,6 +1,8 @@
 defmodule AcsWeb.ForumController do
   use AcsWeb, :controller
 
+  alias Acs.Admin
+
   plug :fetch_app_id
   plug :fetch_session_user_id  
   plug :fetch_session_user
@@ -79,7 +81,7 @@ defmodule AcsWeb.ForumController do
         changed |> Repo.update!
         CachedForum.refresh(forum_id)
         CachedApp.refreshForumActive(forum.app_id,forum_info["active"])
-        AdminController.add_operate_log(acs_admin_id, app_id, "update_forum_info", changed.changes)
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_forum_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -103,7 +105,7 @@ defmodule AcsWeb.ForumController do
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
             CachedForum.refresh(new_section.forum_id)
-            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", section)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", section)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->
@@ -115,7 +117,7 @@ defmodule AcsWeb.ForumController do
         case changed |> Repo.update do
           {:ok, new_section} ->
             CachedForum.refresh(new_section.forum_id)
-            AdminController.add_operate_log(acs_admin_id, app_id, "update_section_info", changed.changes)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", changed.changes)
             conn |> json(%{success: true, section: new_section })
 
           {:error, %{errors: errors}} ->

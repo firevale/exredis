@@ -88,18 +88,21 @@ defmodule AcsWeb do
       alias Acs.Cache.CachedApp
       alias Acs.Cache.CachedUser
       alias Acs.Cache.CachedAdminUser
+      alias Acs.Cache.CachedAdminSetting
       alias Acs.Cache.CachedAppWcpUser
       alias Acs.Cache.CachedAppWcpConfig
       alias Acs.Cache.CachedAppWcpMessageRule
-      alias Acs.Cache.CachedMall
       alias Acs.Cache.CachedMallGoods
       alias Acs.Cache.CachedPMallTaskBar
       alias Acs.Cache.CachedPMallGoods
       alias Acs.Cache.CachedForum
+      alias Acs.Cache.CachedForumHotPost
       alias Acs.Cache.CachedNeteaseDun
       alias Acs.Cache.CachedLoginCode
 
       alias AcsStats.Reports
+      alias AcsStats.Reports.DailyReport
+      alias AcsStats.Reports.DailyUserTiming
       alias AcsStats.Cache.CachedDeviceInfo
       alias AcsStats.Cache.CachedDevice
       alias AcsStats.Devices.Device
@@ -166,6 +169,7 @@ defmodule AcsWeb do
       import Ecto.Query
 
       alias  Acs.Repo
+      alias  Acs.Auth
     end
   end
 

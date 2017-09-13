@@ -1,5 +1,4 @@
 defmodule Acs.Wcp.AppWcpTFDownloadResponse do
-  import  Ecto.Query
   use     Utils.LogAlias
   require Exredis
   require Excache
@@ -10,6 +9,8 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Wcp.AppWcpConfig
   alias Acs.Wcp.AppWcpUser
+  alias Acs.LoginCodes
+  alias Exservice.TestFlight
 
   def build_reply_content(app_id, from) do 
     case CachedApp.get(app_id) do 
@@ -17,7 +18,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
         case CachedAppWcpConfig.get(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.wcp_download_enabled do 
-              case AppLoginCode.find_by_openid(app_id, from) do 
+              case LoginCodes.get_by_openid(app_id, from) do 
                 nil ->
                   cfg.tf_download_no_login_code_template
                 code ->
@@ -40,7 +41,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
   def build_email_reply(app_id, open_id, email) do 
     email = String.downcase(email)
     case CachedApp.get(app_id) do 
-      %{} = app ->
+      %{} ->
         case CachedAppWcpConfig.get(app_id) do 
           %AppWcpConfig{} = cfg ->
             if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, email) do 
@@ -81,8 +82,8 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
                 error "invite tf tester error:  can't find app wcp user, app_id: #{app_id}, open_id: #{open_id}"
                 :ok 
               %AppWcpUser{openid: ^open_id, tf_email: nil, nickname: nickname} = wcp_user ->
-                case TestFlight.invite(app_id, email, nickname) do 
-                  {:ok, status, num_testers} ->
+                case TestFlight.add_tester!(app_id, email, nickname) do 
+                  {:ok, _status, num_testers} ->
                     if num_testers >= 9900 do 
                       Excache.del(:default, "_acs.itc_active_app.#{app_id}")
                     end
@@ -103,9 +104,9 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
                 end
                 
               %AppWcpUser{openid: ^open_id, tf_email: old_email, nickname: nickname} = wcp_user ->
-                TestFlight.remove(app_id, old_email)
+                TestFlight.del_tester!(app_id, old_email)
                 CachedAppWcpUser.clear_cache(app_id, open_id, old_email)
-                case TestFlight.invite(app_id, email, nickname) do 
+                case TestFlight.add_tester!(app_id, email, nickname) do 
                   {:ok, status, num_testers} ->
                     info "tester #{email} for #{nickname} added, status: #{status}"
                     if num_testers >= 9900 do 

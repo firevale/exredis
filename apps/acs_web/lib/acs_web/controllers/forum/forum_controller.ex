@@ -80,7 +80,7 @@ defmodule AcsWeb.ForumController do
         changed = Forum.changeset(forum, forum_info)
         changed |> Repo.update!
         CachedForum.refresh(forum_id)
-        CachedApp.refreshForumActive(forum.app_id,forum_info["active"])
+        CachedApp.refresh(forum.app_id)
         Admin.log_admin_operation(acs_admin_id, app_id, "update_forum_info", changed.changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
@@ -189,7 +189,7 @@ defmodule AcsWeb.ForumController do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
       %Forum{} = forum ->
-        case CachedSetting.get("keyword")  do
+        case CachedAdminSetting.get("keyword")  do
           nil -> 
             conn |> json(%{success: true, forum: forum, keyword: ""})
           keyword ->
@@ -266,7 +266,7 @@ defmodule AcsWeb.ForumController do
     else
       query
     end
-    posts = Repo.all(query) |> CachedForum.filterHotList
+    posts = Repo.all(query) |> CachedForumHotPost.filter_hot_posts
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
@@ -294,7 +294,7 @@ defmodule AcsWeb.ForumController do
               preload: [user: u, section: s, forum: f],
               order_by: [{:desc, p.is_top}, {:desc, p.inserted_at}]
 
-    posts = Repo.all(query) |> CachedForum.filterHotList
+    posts = Repo.all(query) |> CachedForumHotPost.filter_hot_posts
     
     conn |> json(%{success: true, posts: posts, total: total_page, records: total})
   end
@@ -370,7 +370,7 @@ defmodule AcsWeb.ForumController do
         Map.put(post, :is_favorite, false)
     end
 
-    Map.put(post, :is_hot, CachedForum.checkIsHot(post_id))
+    Map.put(post, :is_hot, CachedForumHotPost.is_hot?(post_id))
 
     add_post_click(post_id, 1)
 
@@ -568,7 +568,7 @@ defmodule AcsWeb.ForumController do
         last_reply_at: utc_now}) |> Repo.update()
 
       # check is hot
-      hot_hours = CachedSetting.get("forum_post_hot_hours")
+      hot_hours = CachedAdminSetting.get("forum_post_hot_hours")
       if hot_hours != nil do
         hot_hours = String.to_integer(hot_hours)
         if hot_hours > 0 do
@@ -577,7 +577,7 @@ defmodule AcsWeb.ForumController do
                   select: count(1), 
                   where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
           total = Repo.one!(query)
-          CachedForum.checkIsHot(forum_post.id, total)
+          CachedForumHotPost.check(forum_post.id, total)
         end
       end
 

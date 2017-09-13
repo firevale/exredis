@@ -1,14 +1,11 @@
 defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
-<<<<<<< HEAD
   alias Emservice.NeteaseDun
   alias Acs.Accounts
   alias Acs.LoginCodes
   alias Utils.Password
 
-=======
->>>>>>> a7a1928d5f35f395a13f2e52c036e2908c4f18be
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_user_id

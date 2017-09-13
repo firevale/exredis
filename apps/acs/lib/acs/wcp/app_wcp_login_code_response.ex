@@ -20,7 +20,7 @@ defmodule Acs.Wcp.AppWcpLoginCodeResponse do
         case CachedAppWcpConfig.get(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.can_assign_code do 
-              case LoginCodes.get_by_openid(app_id, from) do 
+              case LoginCodes.get_login_code(app_id, from) do 
                 x when x in [nil, "undefined"] ->
                   case Scripts.rand_code([app_id], [from]) do 
                     "undefined" ->

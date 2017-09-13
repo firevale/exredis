@@ -173,4 +173,40 @@ defmodule AcsWeb.MallOrderController do
     end
   end
 
+  def cancel_mall_order() do
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 0 and
+                order.inserted_at <= ago(20, "minute")
+
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
+        rollback_goods_stock(order.id)
+    end)
+  end
+
+  defp rollback_goods_stock(order_id) do
+    query = from od in MallOrderDetail,
+                  select: od,
+                  where: od.mall_order_id == ^order_id
+    Repo.all(query) |> Enum.each(fn(detail) ->
+      goods = CachedMallGoods.get(detail.mall_goods_id) 
+      MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+      CachedMallGoods.refresh(goods)
+    end)
+  end
+
+  def finish_mall_order() do
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 1 and
+                order.inserted_at <= ago(15, "day")
+
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: 4, confirm_at: now, memo: "auto finish over 15 days"}) |> Repo.update()
+    end)
+  end
+  
 end

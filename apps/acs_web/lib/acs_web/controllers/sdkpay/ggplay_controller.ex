@@ -58,7 +58,7 @@ defmodule AcsWeb.GgplayController do
       nil -> 
         false
       _ ->
-        Utils.rsa_public_verify3(key, signed_data, sig)
+        Crypto.rsa_public_verify3(key, signed_data, sig)
     end
   end
  

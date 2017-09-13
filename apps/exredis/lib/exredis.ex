@@ -268,7 +268,7 @@ defmodule Exredis do
 
 end
 
-defmodule Exedis.Script do
+defmodule Exredis.Script do
   alias Exredis.Helper
 
   defmacro defredis_script(name, file_path: file_path) do

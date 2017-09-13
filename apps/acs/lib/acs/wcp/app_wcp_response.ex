@@ -5,6 +5,7 @@ defmodule Acs.Wcp.AppWcpResponse do
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Cache.CachedAppWcpMessageRule
   alias Acs.Wcp.AppWcpTFDownloadResponse
+  alias Acs.Wcp.AppWcpLoginCodeResponse
 
   def build_reply(app_id, %{msgtype: "event"} = msg) do 
     case CachedApp.get(app_id) do 
@@ -37,7 +38,7 @@ defmodule Acs.Wcp.AppWcpResponse do
                   _build_default_text_reply(app_id, msg)
                 
                 ":login_code" -> 
-                  case WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername) do 
+                  case AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername) do 
                     nil -> nil
                     content -> 
                       %{from: msg.tousername, 
@@ -103,7 +104,7 @@ defmodule Acs.Wcp.AppWcpResponse do
     %{subscribed_response: ":login_code"}) do 
     %{from: msg.tousername, 
       to: msg.fromusername, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
+      content: AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "subscribe"} = msg, 
@@ -120,7 +121,7 @@ defmodule Acs.Wcp.AppWcpResponse do
     %{scan_response: ":login_code"}) do 
     %{from: msg.tousername, 
       to: msg.fromusername, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
+      content: AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "SCAN"} = msg, 
@@ -134,7 +135,7 @@ defmodule Acs.Wcp.AppWcpResponse do
     %{msgtype: "event", event: "CLICK", eventkey: "assign_login_code"} = msg, _cfg) do 
     %{from: msg.tousername, 
       to: msg.fromusername, 
-      content: WcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
+      content: AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
   defp _build_event_reply(app_id, 
     %{msgtype: "event", event: "CLICK", eventkey: "ios_download"} = msg, _cfg) do 

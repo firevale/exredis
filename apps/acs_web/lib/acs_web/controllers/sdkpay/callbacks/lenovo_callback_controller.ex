@@ -7,7 +7,7 @@ defmodule AcsWeb.SdkPay.LenovoCallbackController do
 
     case app.sdk_bindings.lenovo do
       %{"app_key" => app_key} ->
-        if Utils.rsa_private_verify2(app_key |> to_string, transdata, sign, :sha) do 
+        if Crypto.rsa_private_verify2(app_key |> to_string, transdata, sign, :sha) do 
           pay_info = JSON.decode!(transdata)
 
           case Repo.get(AppOrder, pay_info["exorderno"]) do 

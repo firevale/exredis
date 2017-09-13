@@ -110,7 +110,7 @@ defmodule AcsWeb do
       alias Acs.Search.ESWcpMessage
 
       alias AcsWeb.PaymentHelper
-      alias AcsWeb.AdminController
+      alias AcsWeb.Admin.AdminController
       alias Exwcp.Menu
       alias Exservice.Chaoxin
       alias Exservice.NeteaseDun

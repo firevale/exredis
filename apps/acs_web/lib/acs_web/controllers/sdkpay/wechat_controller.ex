@@ -73,7 +73,7 @@ defmodule AcsWeb.WechatController do
   # notify
   def notify(conn, _params) do
     with {:ok, body, _} <- read_body(conn),
-         notify_params <- XmlUtils.convert(body),
+         notify_params <- Xml.convert(body),
          "SUCCESS" <- notify_params[:return_code],
          %AppOrder{} = order <- Repo.get(AppOrder, notify_params[:out_trade_no]),
          {:ok, sign_key} <- get_wechat_sign_key(order),
@@ -102,7 +102,7 @@ defmodule AcsWeb.WechatController do
   # mallnotify
   def mallnotify(conn, _params) do
     with {:ok, body, _} <- read_body(conn),
-         notify_params <- XmlUtils.convert(body),
+         notify_params <- Xml.convert(body),
          "SUCCESS" <- notify_params[:return_code],
          %MallOrder{} = order <- Repo.get(MallOrder, notify_params[:out_trade_no]),
          {:ok, sign_key} <- get_mall_wechat_sign_key(order),

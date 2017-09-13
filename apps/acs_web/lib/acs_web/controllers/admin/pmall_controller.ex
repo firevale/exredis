@@ -1,7 +1,6 @@
 defmodule AcsWeb.Admin.PMallController do
   use AcsWeb, :controller
-
-  alias Acs.PMalls
+  
   alias Acs.Admin
 
   plug :check_is_admin 

@@ -10,33 +10,40 @@ defmodule AcsWeb.CronController do
   require Exredis
 
   # by minute
-  def minute_schedule(conn, _params) do
-    tinify_schedule()
-    save_online_counter()
+  def minutely_schedule(conn, _params) do
+    Process.spawn(fn -> notify_cp() end, [])
+    Process.spawn(fn -> tinify_images() end, [])
+    Process.spawn(fn -> save_online_counter() end, [])
 
-    conn |> json(%{success: true, message: "minute_schedule done"})
+    conn |> json(%{success: true, message: "minutely_schedule done"})
   end
 
   # by hour
-  def hour_schedule(conn, _params) do
-    notify_cp()
-    cancel_mall_order()
-    save_hourly_online_counter()
+  def hourly_schedule(conn, _params) do
+    Process.spawn(fn -> cancel_mall_order() end, [])
+    Process.spawn(fn -> save_hourly_online_counter() end, [])
 
-    conn |> json(%{success: true, message: "hour_schedule done"})
+    conn |> json(%{success: true, message: "hourly_schedule done"})
   end
   
   # by day
-  def day_schedule(conn, _params) do
-    finish_mall_order()
-    daily_refresh()
-    daily_report()
+  def daily_schedule(conn, _params) do
+    Process.spawn(fn -> finish_mall_order() end, [])
+    Process.spawn(fn -> clear_realtime_metrics() end, [])
+    Process.spawn(fn -> generate_daily_report() end, [])
 
-    conn |> json(%{success: true, message: "day_schedule done"})
+    conn |> json(%{success: true, message: "daily_schedule done"})
+  end
+
+  def report_sms_amount(conn, _params) do 
+    {:ok, amount} = MeishengService.get_amount()
+    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
+    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    conn |> text("ok")
   end
 
   # minute
-  defp tinify_schedule() do
+  defp tinify_images() do
     if LazyTinypng.count() > 0 do
       Enum.each(LazyTinypng.list_files(), fn(image_path) -> 
         try do 
@@ -299,24 +306,19 @@ defmodule AcsWeb.CronController do
   end
 
   # day
-  defp daily_refresh() do 
+  defp clear_realtime_metrics() do 
     date = Timex.local |> Timex.shift(days: -15) |> Timex.to_date
     AcsStats.clear_realtime_metrics(date)
   end
 
   # day
-  defp daily_report() do 
+  defp generate_daily_report() do 
     {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
       Reports.generate(app_id, date)
     end)
   end
 
-  def report_sms_amount(conn, _params) do 
-    {:ok, amount} = MeishengService.get_amount()
-    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
-    conn |> text("ok")
-  end
+
 
 end

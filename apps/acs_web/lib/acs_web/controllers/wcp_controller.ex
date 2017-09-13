@@ -1,6 +1,9 @@
 defmodule AcsWeb.WcpController do
   use AcsWeb, :controller
 
+  alias Acs.Wcp
+  alias Acs.Wcp.AppWcpConfig
+
   plug Exwcp.Plugs.CheckUrlSignature
   plug Exwcp.Plugs.CheckMsgSignature when action in [:on_receive_message]
 
@@ -12,35 +15,39 @@ defmodule AcsWeb.WcpController do
     msg = conn.assigns[:msg]
 
     Process.spawn(fn() ->
-      openid = msg.fromusername
-      user_info =  Exwcp.User.info(app_id, openid)
+      case Acs.Wcp.get_app_wcp_config(app_id) do 
+        %AppWcpConfig{} = config ->
+          openid = msg.fromusername
+          user_info =  Exwcp.User.info(config, openid)
 
-      case Map.get(user_info, :openid) do
-        ^openid ->
-          {:ok, wcp_user} = case Repo.get_by(AppWcpUser, app_id: app_id, openid: user_info.openid) do
-            nil ->
-              AppWcpUser.changeset(%AppWcpUser{}, %{
-                openid: user_info.openid,
-                nickname: user_info.nickname,
-                sex: user_info.sex,
-                avatar_url: user_info.headimgurl,
-                city: user_info.city,
-                country: user_info.country,
-                app_id: app_id
-              }) |> Repo.insert
+          case Map.get(user_info, :openid) do
+            ^openid ->
+              case Wcp.get_app_wcp_user(app_id, openid) do
+                nil ->
+                  Wcp.create_app_wcp_user!(%{
+                    openid: user_info.openid,
+                    nickname: user_info.nickname,
+                    sex: user_info.sex,
+                    avatar_url: user_info.headimgurl,
+                    city: user_info.city,
+                    country: user_info.country,
+                    app_id: app_id
+                  }) 
 
-            wcp_user ->
-              AppWcpUser.changeset(wcp_user, %{
-                openid: user_info.openid,
-                nickname: user_info.nickname,
-                sex: user_info.sex,
-                avatar_url: user_info.headimgurl,
-                city: user_info.city,
-                country: user_info.country,
-                app_id: app_id
-              }) |> Repo.update
+                wcp_user ->
+                  Wcp.update_app_wcp_user!(wcp_user, %{
+                    openid: user_info.openid,
+                    nickname: user_info.nickname,
+                    sex: user_info.sex,
+                    avatar_url: user_info.headimgurl,
+                    city: user_info.city,
+                    country: user_info.country,
+                    app_id: app_id
+                  }) 
+              end
+            _ ->
+              :do_nothing
           end
-          CachedAppWcpUser.refresh(wcp_user)
         _ ->
           :do_nothing
       end

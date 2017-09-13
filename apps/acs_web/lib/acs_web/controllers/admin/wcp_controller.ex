@@ -198,7 +198,7 @@ defmodule AcsWeb.Admin.WcpController do
         case DeployUploadedFile.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
             case Wcp.update_app_wcp_config(config, %{verify_File: filename}) do 
-              {:ok, config, _changeset} -> 
+              {:ok, _config, _changeset} -> 
                 Admin.log_admin_operation(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
                 conn |> json(%{success: true, filename: filename})
               

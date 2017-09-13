@@ -336,7 +336,7 @@ defmodule AcsWeb.Admin.AdminController do
   end
 
   def get_operate_log(conn, %{"app_id" => app_id, "user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
-    totalQuery = from ol in OperateLog, where: ol.app_id == ^app_id, select: count(ol.id)
+    totalQuery = from ol in OpLog, where: ol.app_id == ^app_id, select: count(ol.id)
     totalQuery = case String.length(user_id) do
       0 -> totalQuery
       _ -> where(totalQuery, [ol], ol.user_id == ^user_id)
@@ -344,7 +344,7 @@ defmodule AcsWeb.Admin.AdminController do
     total = Repo.one!(totalQuery)
     total_page = round(Float.ceil(total / records_per_page))
 
-    query = from ol in OperateLog,
+    query = from ol in OpLog,
               join: u in assoc(ol, :user),
               select: map(ol, [:id, :operate_type, :log, :inserted_at, user: [:id, :email]]),
               limit: ^records_per_page,

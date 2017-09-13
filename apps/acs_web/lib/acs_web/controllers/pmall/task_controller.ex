@@ -13,11 +13,11 @@ defmodule AcsWeb.TaskController do
   end
 
   # update_task
-  def update_task(%Plug.Conn{private: %{acs_admin_id: _admin_id, acs_app_id: app_id}} = conn, %{
+  def update_task(%Plug.Conn{private: %{acs_admin_id: _admin_id, acs_app_id: _app_id}} = conn, %{
                             "id" => id,
                             "name" => name,
                             "sub_name" => sub_name,
-                            "point" => point, 
+                            "point" => _point, 
                             "path" => path,
                             "active" => active,
                             "sort" => sort
@@ -68,7 +68,7 @@ defmodule AcsWeb.TaskController do
     reformat: "jpg"] when action == :upload_task_pic
   def upload_task_pic(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, 
                               %{"task_id" => task_id, 
-                              "file" => %{path: image_file_path}} = params) do
+                              "file" => %{path: image_file_path}}) do
     case Repo.get(TaskBar, task_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})

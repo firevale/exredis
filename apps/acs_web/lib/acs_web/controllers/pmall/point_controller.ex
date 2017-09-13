@@ -27,7 +27,7 @@ defmodule AcsWeb.PointController do
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 
-  def admin_add_point(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"point" => point, "memo" => memo} = log) do
+  def admin_add_point(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"point" => _point, "memo" => _memo} = log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
     add_point(conn, log)
   end
@@ -41,9 +41,5 @@ defmodule AcsWeb.PointController do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
     end
-  end
-  
-  defp check_user_point(user_id) do
-    
   end
 end

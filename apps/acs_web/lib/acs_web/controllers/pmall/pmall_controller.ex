@@ -123,9 +123,9 @@ defmodule AcsWeb.PMallController do
                 "price" => price,
                 "postage" => postage,
                 "stock" => stock,
-                "is_virtual" => is_virtual,
-                "begin_time" => begin_time,
-                "end_time" => end_time,
+                "is_virtual" => _is_virtual,
+                "begin_time" => _begin_time,
+                "end_time" => _end_time,
                 "is_new" => is_new} = goods) do
     case is_new do
       true ->

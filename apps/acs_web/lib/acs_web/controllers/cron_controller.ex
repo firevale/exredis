@@ -70,9 +70,9 @@ defmodule AcsWeb.CronController do
                   select: od,
                   where: od.mall_order_id == ^order_id
     Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = CachedMall.get(detail.mall_goods_id) 
+      goods = CachedMallGoods.get(detail.mall_goods_id) 
       MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-      CachedMall.refresh(goods)
+      CachedMallGoods.refresh(goods)
     end)
   end
 

@@ -32,7 +32,7 @@ export default {
   },
 
   created: async function() {
-    let result = await this.$acs.fetchMyLoginCodes({
+    let result = await this.$acs.listMyLoginCodes({
       app_id: this.$route.params.appId,
     })
 

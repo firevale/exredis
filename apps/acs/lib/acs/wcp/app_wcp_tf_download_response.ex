@@ -18,7 +18,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
         case CachedAppWcpConfig.get(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.wcp_download_enabled do 
-              case LoginCodes.get_by_openid(app_id, from) do 
+              case LoginCodes.get_login_code(app_id, from) do 
                 nil ->
                   cfg.tf_download_no_login_code_template
                 code ->

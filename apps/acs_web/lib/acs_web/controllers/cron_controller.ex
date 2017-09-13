@@ -3,7 +3,7 @@ defmodule AcsWeb.CronController do
 
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
-  alias   Utils.Tinypng
+  alias   Exservice.Tinypng
   use     Timex
 
   require Exredis
@@ -459,7 +459,7 @@ defmodule AcsWeb.CronController do
   def daily_report(conn, _params) do 
     {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      DailyReportGenerator.generate(app_id, date)
+      AcsStats.Reports.generate(app_id, date)
     end)
 
     conn |> json(%{success: true, message: "daily_report done"})

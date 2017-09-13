@@ -39,6 +39,7 @@ defmodule AcsWeb do
       alias Utils.JSON
       alias Utils.Crypto
       alias Utils.Httpc
+      alias Utils.Xml
       alias Acs.Repo
       alias Acs.Search
       alias Acs.Apps.App
@@ -161,6 +162,8 @@ defmodule AcsWeb do
 
       import Ecto
       import Ecto.Query
+
+      alias  Acs.Repo
     end
   end
 

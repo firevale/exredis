@@ -95,9 +95,11 @@ defmodule AcsWeb do
       alias Acs.Cache.CachedMallGoods
       alias Acs.Cache.CachedPMallTaskBar
       alias Acs.Cache.CachedPMallGoods
+      alias Acs.Cache.CachedForum
       alias Acs.Cache.CachedNeteaseDun
       alias Acs.Cache.CachedLoginCode
 
+      alias AcsStats.Reports
       alias AcsStats.Cache.CachedDeviceInfo
       alias AcsStats.Cache.CachedDevice
       alias AcsStats.Devices.Device

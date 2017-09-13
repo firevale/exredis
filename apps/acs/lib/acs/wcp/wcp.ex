@@ -7,6 +7,7 @@ defmodule Acs.Wcp do
   alias Acs.Repo
 
   alias Acs.Wcp.AppWcpConfig
+  alias Acs.Wcp.AppWcpUser
   alias Acs.Wcp.AppWcpMessageRule
 
   alias Acs.Cache.CachedAppWcpConfig 
@@ -45,6 +46,15 @@ defmodule Acs.Wcp do
     else
       CachedAppWcpUser.get(app_id, openid)
     end
+  end
+
+  def create_app_wcp_user!(attr) do 
+    AppWcpUser.changeset(%AppWcpUser{}, attr) |> Repo.insert!  
+  end
+
+  def update_app_wcp_user!(%AppWcpUser{} = wcp_user, attr) do 
+    new_wcp_user = AppWcpUser.changeset(wcp_user, attr) |> Repo.update!  
+    CachedAppWcpUser.refresh(new_wcp_user)
   end
 
   def list_wcp_message_rules(app_id, page, records_per_page) do 

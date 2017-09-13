@@ -100,15 +100,10 @@ defmodule AcsWeb.Router do
   end # end scope ap
 
   scope "/cron", AcsWeb do
-    get "/notify_cp", CronController, :notify_cp
+    get "/minutely_schedule", CronController, :minutely_schedule
+    get "/hourly_schedule", CronController, :hourly_schedule
+    get "/daily_schedule", CronController, :daily_schedule
     get "/report_sms_amount", CronController, :report_sms_amount
-    get "/cancel_mall_order", CronController, :cancel_mall_order
-    get "/finish_mall_order", CronController, :finish_mall_order
-    get "/save_online_counter", CronController, :save_online_counter
-    get "/save_hourly_online_counter", CronController, :save_hourly_online_counter
-    get "/daily_refresh", CronController, :daily_refresh
-    get "/daily_report", CronController, :daily_report
-    get "/tinify_schedule", CronController, :tinify_schedule
   end
 
   scope "/admin_actions", AcsWeb do

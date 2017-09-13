@@ -156,7 +156,7 @@ export default {
     handleSubmit: async function() {
       if (!this.$v.$invalid && !this.processing) {
         this.processing = true
-        let result = await this.$acs.updateWcpRules(this.rule)
+        let result = await this.$acs.updateWcpMessageRule(this.rule)
 
         if (result.success) {
           Toast.show(this.$t('admin.wcp.operateSuccess'))

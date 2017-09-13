@@ -40,7 +40,7 @@
                   </a>
                 </td>
                 <td class="is-icon">
-                  <a @click.prevent="deleteRule(rule, index)">
+                  <a @click.prevent="deleteWcpMessageRule(rule, index)">
                     <i class="fa fa-trash-o"></i>
                   </a>
                 </td>
@@ -85,13 +85,13 @@ export default {
   },
 
   mounted: function() {
-    this.getRuleList(this.page, this.recordsPerPage)
+    this.listWcpMessageRules(this.page, this.recordsPerPage)
     this.loading = true
   },
 
   methods: {
-    getRuleList: async function(page, recordsPerPage) {
-      let result = await this.$acs.getRuleList(this.$route.params.appId, page, recordsPerPage)
+    listWcpMessageRules: async function(page, recordsPerPage) {
+      let result = await this.$acs.listWcpMessageRules(this.$route.params.appId, page, recordsPerPage)
 
       if (result.success) {
         this.total = result.total
@@ -101,7 +101,7 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getRuleList(page, this.recordsPerPage)
+      this.listWcpMessageRules(page, this.recordsPerPage)
     },
 
     editRule: function(rule, index) {
@@ -113,7 +113,7 @@ export default {
       })
     },
 
-    deleteRule: function(rule, index) {
+    deleteWcpMessageRule: function(rule, index) {
       showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
@@ -126,7 +126,7 @@ export default {
     },
 
     _deleteRule: async function(rule, index) {
-      let result = await this.$acs.deleteRule(rule.id, this.$t('admin.operateSuccess'))
+      let result = await this.$acs.deleteWcpMessageRule(rule.id, this.$t('admin.operateSuccess'))
 
       if (result.success) {
         this.rules.splice(index, 1)

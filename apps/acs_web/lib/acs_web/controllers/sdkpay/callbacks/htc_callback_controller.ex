@@ -8,8 +8,8 @@ defmodule AcsWeb.SdkPay.HtcCallbackController do
 
         body_params = %{"order" => orderText, "sign" => orderSign, "sign_type" => "\"RSA\""} = URI.decode_query(body)
 
-        orderText = String.strip(orderText, ?")
-        orderSign = String.strip(orderSign, ?")
+        orderText = String.trim(orderText, ?")
+        orderSign = String.trim(orderSign, ?")
 
         if Crypto.rsa_public_verify2(pub_key, orderText, orderSign) do 
           case JSON.decode(orderText) do 

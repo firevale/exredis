@@ -371,7 +371,7 @@ export default {
     },
 
     toggleStatus: async function() {
-      let result = await this.$acs.togglePointGoodsStatus({
+      let result = await this.$acs.togglePMallGoodsStatus({
         goods_id: this.goods.id
       }, this.$t('admin.operateSuccess'))
       if (result.success) {
@@ -407,7 +407,7 @@ export default {
 
     handleSubmit: async function() {
       this.saving = true
-      let result = await this.$acs.updatePointGoods({
+      let result = await this.$acs.updatePMallGoods({
         id: this.goods.id,
         app_id: this.goods.app_id,
         name: this.goods.name,

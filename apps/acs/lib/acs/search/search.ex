@@ -45,9 +45,9 @@ defmodule Acs.Search do
 
         {:ok, total, Repo.all(query)}
 
-      error ->
-        error "search orders failed: #{inspect error, pretty: true}"
-        {:error, error}
+      e ->
+        error "search orders failed: #{inspect e, pretty: true}"
+        e
     end    
   end
 
@@ -107,7 +107,7 @@ defmodule Acs.Search do
     _search_user(query)
   end
 
-  def _search_user(query) do
+  defp _search_user(query) do
     case Elasticsearch.search(%{index: "acs", type: "user", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         ids = Enum.map(hits, &(&1._id))
@@ -120,19 +120,85 @@ defmodule Acs.Search do
     end
   end
 
-  def search_wcp_message(query) do
+  def search_wcp_message(keyword: keyword, app_id: app_id, sorts: sorts, page: page, records_per_page: records_per_page) do
+    build_sort =
+      fn (key, exp) ->
+        order_by = Map.get(sorts, key)
+        Map.put_new(exp, key, %{order: order_by})
+      end
+
+    sort = Enum.reduce(Map.keys(sorts), %{}, build_sort)
+
+    query = %{
+      query: %{
+        bool: %{
+          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.id"}}],
+          should: [],
+          minimum_should_match: 0,
+          boost: 1.0,
+        },
+      },
+      sort: sort,
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    query =
+      if String.length(keyword) > 0 do
+        query1 = update_in(query.query.bool.minimum_should_match, fn _v -> 1 end)
+        update_in(query1.query.bool.should, fn should ->
+          condition =
+            [
+              %{match: %{content: keyword}},
+              %{term: %{"from.openid": keyword}},
+              %{match: %{"from.nickname": keyword}},
+              %{match: %{"to.nickname": keyword}},
+              %{term: %{"to.openid": keyword}}
+            ]
+          should ++ condition
+        end)
+      else
+        query
+      end
+
     case Elasticsearch.search(%{index: "wcp", type: "messages", query: query, params: %{timeout: "1m"}}) do
-       {:ok, %{hits: %{hits: hits, total: total}}} ->
-         messages = 
-           Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
-         {:ok, total, messages}
-       error ->
-         error "search failed: #{inspect error, pretty: true}"
-         throw(error)
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        messages = Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
+        {:ok, total, messages}
+      e ->
+         error("search failed: #{inspect e, pretty: true}")
+         e
     end
   end
 
- def search_forum(keyword, page, records_per_page) do
+  def search_user_wcp_message(app_id: app_id, openid: openid) do 
+    query = %{
+      query: %{
+        bool: %{
+          must: %{term: %{app_id: app_id}},
+          should: [
+            %{term: %{"from.openid": openid}},
+            %{term: %{"to.openid": openid}}
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      sort: %{inserted_at: %{order: :asc}},
+      size: 100,
+    }
+    case Elasticsearch.search(%{index: "wcp", type: "messages", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        messages = Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
+        {:ok, total, messages}
+
+      e ->
+         error("search failed: #{inspect e, pretty: true}")
+         e
+    end
+  end
+
+  def search_forum(keyword, page, records_per_page) do
     query = %{
       query: %{
         bool: %{

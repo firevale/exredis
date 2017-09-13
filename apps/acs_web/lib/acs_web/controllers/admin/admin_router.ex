@@ -129,13 +129,12 @@ defmodule AcsWeb.AdminRouter do
 
       post  "/create_app_wcp_config", WcpController, :create_app_wcp_config
       post  "/update_app_wcp_config", WcpController, :update_app_wcp_config 
-      post  "/get_message_list", WcpController, :get_message_list
-      post  "/get_user_message_list", WcpController, :get_user_message_list
-      post  "/reply_user_message", WcpController, :reply_user_message
-      post  "/delete_wcp_message", WcpController, :delete_wcp_message  
+      post  "/list_wcp_user_messages", WcpController, :list_wcp_user_messages
+      post  "/list_user_wcp_messages", WcpController, :list_user_wcp_messages
+      post  "/reply_user_wcp_message", WcpController, :reply_user_wcp_message
       post  "/update_wcp_message_rule", WcpController, :update_wcp_message_rule
       post  "/delete_wcp_message_rule", WcpController, :delete_wcp_message_rule 
-      post  "/get_rule_list", WcpController, :get_rule_list
+      post  "/list_wcp_message_rules", WcpController, :list_wcp_message_rules
       post  "/upload_wcp_image", WcpController, :upload_wcp_image
       post  "/upload_wcp_file", WcpController, :upload_wcp_file
       post  "/get_wcp_menu", WcpController, :get_wcp_menu

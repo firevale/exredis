@@ -83,7 +83,7 @@ export default {
   },
 
   mounted: function() {
-    this.getMessageList()
+    this.listWcpUserMessages()
   },
 
   methods: {
@@ -93,7 +93,7 @@ export default {
     rowClick: function(row, event) {
       this.$refs.talk.open(row)
     },
-    getMessageList: async function() {
+    listWcpUserMessages: async function() {
       this.loading = true
       var data = {
         app_id: this.$route.params.appId,
@@ -103,7 +103,7 @@ export default {
         sorts: this.sorts
       }
 
-      let result = await this.$acs.getMessageList(data)
+      let result = await this.$acs.listWcpUserMessages(data)
       if (result.success) {
         this.total = result.total
         this.messages = result.messages
@@ -112,13 +112,13 @@ export default {
     },
 
     onPageChange: function() {
-      this.getMessageList(this.page, this.recordsPerPage)
+      this.listWcpUserMessages(this.page, this.recordsPerPage)
     },
 
     onSearchBoxSubmit: async function() {
       this.messages = []
       this.page = 1
-      await this.getMessageList()
+      await this.listWcpUserMessages()
     },
     sortChange: function(column) {
       var field = column.prop
@@ -132,7 +132,7 @@ export default {
       }
 
       this.page = 1
-      this.getMessageList()
+      this.listWcpUserMessages()
     },
 
   },

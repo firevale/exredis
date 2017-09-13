@@ -1,6 +1,6 @@
 defmodule AcsWeb.Admin.UserController do
   use AcsWeb, :controller
-  
+
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
     "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
       {:ok, total, users} = Acs.Search.search_user(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
@@ -9,7 +9,7 @@ defmodule AcsWeb.Admin.UserController do
   end
 
   def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => user_id}) when is_integer(user_id) do
-    user = get_users_by_ids(app_id, id)
+    user = get_users_by_ids(app_id, user_id)
     conn |> json(%{success: true, user: user})
   end
 

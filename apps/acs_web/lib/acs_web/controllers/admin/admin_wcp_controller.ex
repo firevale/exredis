@@ -1,4 +1,4 @@
-defmodule AcsWeb.AdminWcpController do
+defmodule AcsWeb.Admin.AdminWcpController do
   use AcsWeb, :controller
 
   # add_wcp_empty_params

@@ -1,4 +1,4 @@
-defmodule AcsWeb.AdminUserController do
+defmodule AcsWeb.Admin.AdminUserController do
   use AcsWeb, :controller
 
   alias Acs.Admin

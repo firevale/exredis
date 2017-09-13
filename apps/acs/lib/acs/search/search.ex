@@ -51,14 +51,73 @@ defmodule Acs.Search do
     end    
   end
 
-  def search_user(query) do
+  def search_user(keyword: "", app_id: app_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        has_child: %{
+          child_type: "app_users",
+          query:  %{term: %{app_id: app_id}}
+        }
+      },
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+      sort: %{ inserted_at: %{ order: :desc} }
+    }
+    _search_user(query)
+  end
+
+  def search_user(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
+    "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+      query = %{
+      query: %{
+        bool: %{
+          must: %{
+            has_child: %{
+              child_type: "app_users",
+              query: %{
+                bool: %{
+                  must: %{term: %{app_id: app_id}}
+                }
+              },
+          }},
+          should: [
+            %{term: %{id: keyword}},
+            %{term: %{email: keyword}},
+            %{term: %{mobile: keyword}},
+            %{match: %{nickname: keyword}},
+            %{has_child: %{
+              child_type: "app_users",
+              query: %{
+                bool: %{
+                  should: [
+                    %{match: %{game_user_name: keyword}},
+                    %{term: %{game_user_id: keyword}}
+                  ],
+                  minimum_should_match: 1
+              }}
+            }}
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_user(query)
+  end
+
+  def _search_user(query) do
     case Elasticsearch.search(%{index: "acs", type: "user", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         ids = Enum.map(hits, &(&1._id))
+        # TODO: return user info directly from elasticsearch
+        #       don't call get_users_by_ids anymore
         {:ok, total, ids }
+
       error ->
-        # error "search failed: #{inspect error, pretty: true}"
-        throw(error)
+        raise "search failed: #{inspect error}"
     end
   end
 

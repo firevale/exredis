@@ -1,4 +1,4 @@
-defmodule AcsWeb.AppSdkInfoController do
+defmodule AcsWeb.Admin.AppSdkInfoController do
   use AcsWeb, :controller
   require Exsdks
 

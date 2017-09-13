@@ -1,4 +1,4 @@
-defmodule Emservice.TestFlight do 
+defmodule Exservice.TestFlight do 
   use     Utils.LogAlias
   require Poison
   alias   HTTPoison

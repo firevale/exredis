@@ -35,21 +35,9 @@ export default [{
     name: 'myProfile',
     component: require('../views/mobile/myProfile.vue')
   }, {
-    path: 'editMobile',
-    name: 'editMobile',
-    component: require('../views/mobile/editMobile.vue')
-  }, {
-    path: 'editEmail',
-    name: 'editEmail',
-    component: require('../views/mobile/editEmail.vue')
-  }, {
-    path: 'editResident',
-    name: 'editResident',
-    component: require('../views/mobile/editResident.vue')
-  }, {
-    path: 'otherPage',
-    name: 'otherPage',
-    component: require('../views/mobile/otherPage.vue')
+    path: 'profile',
+    name: 'profile',
+    component: require('../views/mobile/profile.vue')
   }, {
     path: 'myMessage',
     name: 'myMessage',
@@ -67,16 +55,28 @@ export default [{
     name: 'messageDetail',
     component: require('../views/mobile/messageDetail.vue')
   }, {
+    path: 'editMobile',
+    name: 'editMobile',
+    component: require('../views/mobile/account/editMobile.vue')
+  }, {
+    path: 'editEmail',
+    name: 'editEmail',
+    component: require('../views/mobile/account/editEmail.vue')
+  }, {
+    path: 'editResident',
+    name: 'editResident',
+    component: require('../views/mobile/account/editResident.vue')
+  }, {
     path: 'login',
     name: 'login',
-    component: require('../views/mobile/login.vue')
+    component: require('../views/mobile/account/login.vue')
   }, {
     path: 'register',
     name: 'register',
-    component: require('../views/mobile/register.vue')
+    component: require('../views/mobile/account/register.vue')
   }, {
     path: 'retrievePassword',
     name: 'retrievePassword',
-    component: require('../views/mobile/retrievePassword.vue')
+    component: require('../views/mobile/account/retrievePassword.vue')
   }]
 }, ]

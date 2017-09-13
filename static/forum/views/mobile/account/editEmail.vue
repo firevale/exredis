@@ -54,9 +54,9 @@ import {
 import {
   email,
   verifyCode
-} from '../../components/validators'
+} from '../../../components/validators'
 
-import formMixin from '../../components/formMixin'
+import formMixin from '../../../components/formMixin'
 import * as utils from 'common/js/utils'
 import Toast from 'common/components/toast'
 

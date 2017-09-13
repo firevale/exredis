@@ -4,32 +4,32 @@
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>
-          <p class="title">{{ briefStats ? briefStats.dau.ios + briefStats.dau.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.dau.ios : 0  }}, android: {{ briefStats ? briefStats.dau.android : 0 }}]</sub>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.dau.ios + realtimeMetrics.dau.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.dau.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.dau.android : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.danu') }}</p>
-          <p class="title">{{ briefStats ? briefStats.danu.ios + briefStats.danu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.danu.ios : 0  }}, android: {{ briefStats ? briefStats.danu.android : 0 }}]</sub>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.danu.ios + realtimeMetrics.danu.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.danu.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.danu.android : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.totalFee') }}</p>
-          <p class="title">{{ briefStats ? (briefStats.fee.ios + briefStats.fee.android) / 100 : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.fee.ios / 100 : 0  }}, android: {{ briefStats ? briefStats.fee.android / 100 : 0 }}]</sub>
+          <p class="title">{{ realtimeMetrics ? (realtimeMetrics.fee.ios + realtimeMetrics.fee.android) / 100 : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.fee.ios / 100 : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.fee.android / 100 : 0 }}]</sub>
           </p>
         </div>
       </div>
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.paidUserNumber') }}</p>
-          <p class="title">{{ briefStats ? briefStats.dapu.ios + briefStats.dapu.android : 0 }}
-            <sub>[ios: {{ briefStats ? briefStats.dapu.ios : 0  }}, android: {{ briefStats ? briefStats.dapu.android : 0 }}]</sub>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.dapu.ios + realtimeMetrics.dapu.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.dapu.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.dapu.android : 0 }}]</sub>
           </p>
         </div>
       </div>
@@ -63,18 +63,18 @@ export default {
 
   computed: {
     ...mapGetters([
-      'app', 'latestOnlineData', 'briefStats'
+      'app', 'latestOnlineData', 'realtimeMetrics'
     ]),
   },
 
   mounted: function() {
-    this.getBriefStats()
+    this.getRealtimeMetrics()
     this.getOnlineChart()
   },
 
   methods: {
     ...mapActions([
-      'setAppBriefStats'
+      'setRealtimeMetrics'
     ]),
 
     getOnlineChart: async function() {
@@ -85,11 +85,11 @@ export default {
       }
     },
 
-    getBriefStats: async function() {
-      let result = await this.$acs.getBriefStats(this.$route.params.appId)
+    getRealtimeMetrics: async function() {
+      let result = await this.$acs.getRealtimeMetrics(this.$route.params.appId)
 
       if (result.success) {
-        this.setAppBriefStats(result.stats)
+        this.setRealtimeMetrics(result.metrics)
       }
     }
   },

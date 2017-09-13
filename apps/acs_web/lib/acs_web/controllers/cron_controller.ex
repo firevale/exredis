@@ -1,12 +1,9 @@
 defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
-  alias   AcsWeb.PaymentHelper
+
   alias   Exsm.MeishengService
-  alias   Exservice.Chaoxin
-  alias   Acs.RedisMall
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
-  alias   Acs.Stats.DailyReportGenerator
   alias   AcsWeb.LazyTinypng
   alias   Exservice.Tinypng
   use     Timex
@@ -78,9 +75,9 @@ defmodule AcsWeb.CronController do
                   select: od,
                   where: od.mall_order_id == ^order_id
     Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = RedisMall.find(detail.mall_goods_id) 
+      goods = CachedMall.get(detail.mall_goods_id) 
       MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-      RedisMall.refresh(goods)
+      CachedMall.refresh(goods)
     end)
   end
 
@@ -332,7 +329,7 @@ defmodule AcsWeb.CronController do
   def daily_report(conn, _params) do 
     {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      DailyReportGenerator.generate(app_id, date)
+      Reports.generate(app_id, date)
     end)
 
     conn |> json(%{success: true, message: "daily_report done"})

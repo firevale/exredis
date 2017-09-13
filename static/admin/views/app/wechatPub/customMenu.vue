@@ -146,7 +146,7 @@ export default {
     })
   },
   mounted: async function() {
-    this.addWcpEmptyParams()
+    this.createAppWcpConfig()
   },
 
   computed: {
@@ -206,17 +206,17 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateWcpParams',
+      'updateAppWcpConfig',
     ]),
 
     setCurrentButton: function(button) {
       this.selectedButton = button
     },
 
-    addWcpEmptyParams: async function() {
+    createAppWcpConfig: async function() {
       this.loading = true
       let app_id = this.$route.params.appId
-      let result = await this.$acs.addWcpEmptyParams({
+      let result = await this.$acs.createAppWcpConfig({
         app_id: app_id,
         menu: ''
       })
@@ -224,7 +224,7 @@ export default {
       if (result.success) {
         let config = result.wcpconfig
         config.menu = this.fixFullMenu(config.menu)
-        this.updateWcpParams(config)
+        this.updateAppWcpConfig(config)
       }
 
       this.loading = false

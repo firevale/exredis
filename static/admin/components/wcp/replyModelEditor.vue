@@ -52,15 +52,15 @@ export default {
 
   methods: {
     ...mapActions([
-      'updateWcpParams',
+      'updateAppWcpConfig',
     ]),
 
     handleSubmit: async function() {
       this.processing = true
-      let result = await this.$acs.updateWcpParams(this.wcpParams, this.$t(
+      let result = await this.$acs.updateAppWcpConfig(this.wcpParams, this.$t(
         'admin.notification.message.wcpParamsUpdated'))
       if (result.success) {
-        this.updateWcpParams(result.wcpconfig)
+        this.updateAppWcpConfig(result.wcpconfig)
       }
       this.processing = false
     },

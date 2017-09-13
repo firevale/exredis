@@ -103,7 +103,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'updateWcpParams',
+      'updateAppWcpConfig',
     ]),
 
     toastClipboardSuccess: function() {
@@ -132,7 +132,7 @@ export default {
         callback: response => {
           if (response.success) {
             wcpParams.verify_File = response.filename
-            this.updateWcpParams(wcpParams)
+            this.updateAppWcpConfig(wcpParams)
           } else {
             processAjaxError(response)
           }
@@ -142,10 +142,10 @@ export default {
 
     handleSubmit: async function() {
       this.processing = true
-      let result = await this.$acs.updateWcpParams(this.wcpParams, this.$t(
+      let result = await this.$acs.updateAppWcpConfig(this.wcpParams, this.$t(
         'admin.notification.message.wcpParamsUpdated'))
       if (result.success) {
-        this.updateWcpParams(result.wcpconfig)
+        this.updateAppWcpConfig(result.wcpconfig)
       }
       this.processing = false
     },

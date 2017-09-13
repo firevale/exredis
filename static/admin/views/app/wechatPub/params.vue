@@ -33,7 +33,7 @@ import downloadReplyEditor from 'admin/components/wcp/downloadReplyEditor'
 
 export default {
   mounted: async function() {
-    this.addWcpEmptyParams()
+    this.createAppWcpConfig()
   },
 
   components: {
@@ -47,7 +47,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'updateWcpParams',
+      'updateAppWcpConfig',
     ]),
 
     showPopup: function(e) {
@@ -56,16 +56,15 @@ export default {
       this.popup.y = rect.top
     },
 
-    addWcpEmptyParams: async function() {
+    createAppWcpConfig: async function() {
       this.loading = true
       let app_id = this.$route.params.appId
-      let result = await this.$acs.addWcpEmptyParams({
+      let result = await this.$acs.createAppWcpConfig({
         app_id: app_id,
-        menu: ''
       })
 
       if (result.success) {
-        this.updateWcpParams(result.wcpconfig)
+        this.updateAppWcpConfig(result.wcpconfig)
       }
 
       this.loading = false

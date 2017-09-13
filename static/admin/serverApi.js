@@ -251,10 +251,6 @@ export default {
         return post('/admin_actions/wcp/update_app_wcp_config', params, successMessage)
       },
 
-      updateWcpRules(params) {
-        return post('/admin_actions/wcp/update_wcp_message_rule', params)
-      },
-
       getWcpMenu(params) {
         return post('/admin_actions/wcp/get_wcp_menu', params)
       },
@@ -263,33 +259,35 @@ export default {
         return post('/admin_actions/wcp/update_wcp_menu', params)
       },
 
-      deleteRule(rule_id, successMessage) {
+      updateWcpMessageRule(params) {
+        return post('/admin_actions/wcp/update_wcp_message_rule', params)
+      },
+
+      deleteWcpMessageRule(rule_id, successMessage) {
         return post('/admin_actions/wcp/delete_wcp_message_rule', { rule_id }, successMessage)
       },
 
-      deleteMessage(message_id, successMessage) {
-        return post('/admin_actions/wcp/delete_wcp_message', { message_id }, successMessage)
-      },
-
-      getRuleList(app_id, page, records_per_page) {
-        return post('/admin_actions/wcp/get_rule_list', {
+      listWcpMessageRules(app_id, page, records_per_page) {
+        return post('/admin_actions/wcp/list_wcp_message_rules', {
           app_id,
           page,
           records_per_page
         })
       },
 
-      getMessageList(data) {
-        return post('/admin_actions/wcp/get_message_list', data)
+      listWcpUserMessages(data) {
+        return post('/admin_actions/wcp/list_wcp_user_messages', data)
       },
-      getUserMessageList(app_id, open_id) {
-        return post('/admin_actions/wcp/get_user_message_list', {
+
+      listUserWcpMessages(app_id, open_id) {
+        return post('/admin_actions/wcp/list_user_wcp_messages', {
           app_id,
           open_id
         })
       },
-      replyUserMessage(app_id, open_id, content) {
-        return post('/admin_actions/wcp/reply_user_message', {
+
+      replyUserWcpMessage(app_id, open_id, content) {
+        return post('/admin_actions/wcp/reply_user_wcp_message', {
           app_id,
           open_id,
           content
@@ -349,11 +347,11 @@ export default {
         return post('/admin_actions/pmall/fetch_goods', params)
       },
 
-      updatePointGoods(params) {
+      updatePMallGoods(params) {
         return post('/admin_actions/pmall/update_goods', params)
       },
 
-      togglePointGoodsStatus(params) {
+      togglePMallGoodsStatus(params) {
         return post('/admin_actions/pmall/toggle_goods_status', params)
       },
 

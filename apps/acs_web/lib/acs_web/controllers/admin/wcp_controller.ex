@@ -4,12 +4,13 @@ defmodule AcsWeb.Admin.WcpController do
   alias Acs.Admin
   alias Acs.Wcp
   alias Acs.Apps
+  alias Acs.Accounts
 
   alias Acs.Apps.App
   alias Acs.Wcp.AppWcpConfig
 
   # create_app_wcp_config
-  def create_app_wcp_config(conn, %{"app_id" => app_id} = wcpParams) do
+  def create_app_wcp_config(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id} = wcpParams) do
     case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
@@ -56,48 +57,9 @@ defmodule AcsWeb.Admin.WcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # get_message_list
-  def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
-    build_sort =
-      fn (key, exp) ->
-        order_by = Map.get(sorts, key)
-        Map.put_new(exp, key, %{order: order_by})
-      end
-    sort = Enum.reduce(Map.keys(sorts), Map.new, build_sort)
-
-    query = %{
-      query: %{
-        bool: %{
-          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.id"}}],
-          should: [],
-          minimum_should_match: 0,
-          boost: 1.0,
-        },
-      },
-      sort: sort,
-      from: (page - 1) * records_per_page,
-      size: records_per_page,
-    }
-
-    query =
-      if String.length(keyword) > 0 do
-        query1 = update_in(query.query.bool.minimum_should_match, fn _v -> 1 end)
-        update_in(query1.query.bool.should, fn should ->
-          condition =
-            [
-              %{match: %{content: keyword}},
-              %{term: %{"from.openid": keyword}},
-              %{match: %{"from.nickname": keyword}},
-              %{match: %{"to.nickname": keyword}},
-              %{term: %{"to.openid": keyword}}
-            ]
-          should ++ condition
-        end)
-      else
-        query
-      end
-
-    case Search.search_wcp_message(query) do
+  # list_wcp_user_messages
+  def list_wcp_user_messages(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
+    case Search.search_wcp_message(keyword: keyword, app_id: app_id, sorts: sorts, page: page, records_per_page: records_per_page) do
       {:ok, total, messages} ->
         total_page = round(Float.ceil(total/records_per_page))
         json(conn, %{success: true, messages: messages, total: total_page})
@@ -105,57 +67,12 @@ defmodule AcsWeb.Admin.WcpController do
         json(conn, %{success: false})
     end
   end
-  def get_message_list(conn, _params) do
+  def list_wcp_user_messages(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def import_message_list() do
-    max_id = Repo.one!( from msg in AppWcpMessage, select: max(msg.id))
-    Enum.map_every(0..max_id, 100, fn current_id ->
-      query = 
-        from msg in AppWcpMessage,
-          select: %{app_id: msg.app_id, from: msg.from, to: msg.to, inserted_at: msg.inserted_at, msg_type: msg.msg_type, content: msg.content},
-          limit: 100,
-          where: msg.id >= ^current_id,
-          order_by: [msg.id]
-
-       messages = Repo.all(query)
-       d "正在导入 ID:#{current_id}"
-       if messages && messages != [] do
-        Enum.map(messages, fn msg ->
-          from = Wcp.get_app_wcp_user(msg.app_id, msg.from)
-          to = Wcp.get_app_wcp_user(msg.app_id, msg.to)
-          ESWcpMessage.index(%{
-            from: from,
-            to: to,
-            msg_type: msg.msg_type,
-            content: msg.content,
-            inserted_at: msg.inserted_at,
-            app_id: msg.app_id})
-        end)
-       end
-    end)
-  end
-
-
-  def get_user_message_list(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
-    query = %{
-      query: %{
-        bool: %{
-          must: %{term: %{app_id: app_id}},
-          should: [
-            %{term: %{"from.openid": open_id}},
-            %{term: %{"to.openid": open_id}}
-          ],
-          minimum_should_match: 1,
-          boost: 1.0,
-        },
-      },
-      sort: %{inserted_at: %{order: :asc}},
-      size: 10000,
-    }
-
-    case Search.search_wcp_message(query) do
+  def list_user_wcp_messages(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
+    case Search.search_user_wcp_message(app_id: app_id, openid: open_id) do
       {:ok, _total, messages} ->
         json(conn, %{success: true, messages: messages})
       _ ->
@@ -163,101 +80,70 @@ defmodule AcsWeb.Admin.WcpController do
     end
   end
 
-  def reply_user_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn,
+  def reply_user_wcp_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn,
                           %{"app_id" => app_id,  "open_id" => open_id, "content" => content}) do
-    admin_user = CachedUser.get(acs_admin_id) |> Map.take([:nickname, :age, :email])
-    case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do
-      %AppWcpUser{} = wcp_user ->
-        resp = Exwcp.Message.Custom.send_text(app_id, open_id, content)
-        case resp do
-          %{errcode: 0, errmsg: "ok"} ->
-            message = %{
-              admin_user: admin_user,
-              from: %{openid: "#", nickname: "系统"},
-              to: wcp_user,
-              msg_type: "text",
-              content: content,
-              inserted_at: Ecto.DateTime.utc,
-              app_id: app_id
-             }
-            ESWcpMessage.index(message)
-            json(conn, %{success: true, message: message})
-          %{} = err ->
-            json(conn, %{success: false, message: err})
-        end
+
+    admin_user = Accounts.get_user(acs_admin_id) |> Map.take([:nickname, :age, :email])
+    
+    with config = %AppWcpConfig{} <- Wcp.get_app_wcp_config(app_id),
+         wcp_user = %AppWcpUser{} <- Wcp.get_app_wcp_user(app_id, open_id)
+    do
+      case Exwcp.Message.Custom.send_text(config, open_id, content) do
+        %{errcode: 0, errmsg: "ok"} ->
+          message = %{
+            admin_user: admin_user,
+            from: %{openid: "gh_#{acs_admin_id}", nickname: admin_user.email},
+            to: wcp_user,
+            msg_type: "text",
+            content: content,
+            inserted_at: Ecto.DateTime.utc,
+            app_id: app_id
+           }
+          ESWcpMessage.index(message)
+          conn |> json(%{success: true, message: message})
+        %{} = err ->
+          conn |> json(%{success: false, message: err})
+      end
+    else 
       _ ->
-        json(conn, %{success: false, message: "wcp_user不存在"})
+        conn |> json(%{success: false, message: "wcp_user不存在"})
     end
   end
 
-  # delete_wcp_message
-  def delete_wcp_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"message_id" => message_id} = params) do
-    case Repo.get(AppWcpMessage, message_id) do
-      %AppWcpMessage{} = message ->
-        case Repo.delete(message) do
-          {:ok, _} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message", params)
-            conn |> json(%{success: true})
-
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: translate_errors(errors)})
-        end
-      _ ->
-        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-    end
-  end
-  def delete_wcp_message(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-  end
-
-  # get_rule_list
-  def get_rule_list(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
-    total = Repo.one!(from msg in AppWcpMessageRule, where: msg.app_id == ^app_id, select: count(msg.id))
+  # list_wcp_message_rules
+  def list_wcp_message_rules(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
+    {:ok, total, rules} = Wcp.list_wcp_message_rules(app_id, page, records_per_page)
     total_page = round(Float.ceil(total / records_per_page))
-
-    query = from msg in AppWcpMessageRule,
-              select: msg,
-              limit: ^records_per_page,
-              where: msg.app_id == ^app_id,
-              offset: ^((page - 1) * records_per_page),
-              order_by: [desc: msg.inserted_at]
-
-    rules = Repo.all(query)
-
     conn |> json(%{success: true, rules: rules, total: total_page})
   end
-  def get_rule_list(conn, _params) do
+  def list_wcp_message_rules(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update_wcp_message_rule
-  def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "keywords" => keywords, "response" => _response} = rule) do
+  def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, 
+    %{"id" => rule_id, "app_id" => app_id, "keywords" => keywords, "response" => _response} = rule) do
     d "rule: #{inspect rule, pretty: true}"
-    case Repo.get(App, app_id) do
+    case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} ->
-        case Repo.get_by(AppWcpMessageRule, %{app_id: app_id, keywords: keywords}) do
+        case Wcp.get_wcp_message_rule(rule_id) do
           nil ->
-            # add new
-            case AppWcpMessageRule.changeset(%AppWcpMessageRule{}, rule) |> Repo.insert do
-              {:ok, new_rule} ->
-                Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_message_rule", rule)
-                CachedAppWcpMessageRule.refresh(app_id)
-                conn |> json(%{success: true, rule: new_rule})
+            case Wcp.create_wcp_message_rule(rule) do 
+              {:ok, rule, changeset} -> 
+                Admin.log_admin_operation(acs_admin_id, app_id, "add_wcp_message_rule", rule)
+                conn |> json(%{success: true, rule: rule})
 
               {:error, %{errors: errors}} ->
                 conn |> json(%{success: false, message: translate_errors(errors)})
             end
 
           %AppWcpMessageRule{} = msgrule ->
-            # update
-            changed = AppWcpMessageRule.changeset(msgrule, rule)
-            case changed |> Repo.update do
-              {:ok, new_rule} ->
-                Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_message_rule", changed.changes)
-                CachedAppWcpMessageRule.refresh(app_id)
+            case Wcp.update_wcp_message_rule(msgrule, rule) do 
+              {:ok, new_rule, changeset} ->
+                Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_message_rule", changeset.changes)
                 conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
@@ -272,12 +158,11 @@ defmodule AcsWeb.Admin.WcpController do
 
   # delete_wcp_message_rule
   def delete_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"rule_id" => rule_id} = params) do
-    case Repo.get(AppWcpMessageRule, rule_id) do
+    case Wcp.get_wcp_message_rule(rule_id) do
       %AppWcpMessageRule{} = rule ->
-        case Repo.delete(rule) do
+        case Wcp.delete_wcp_message_rule(rule) do
           {:ok, _} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message_rule", params)
-            CachedAppWcpMessageRule.refresh(rule.app_id)
+            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message_rule", rule)
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -308,13 +193,18 @@ defmodule AcsWeb.Admin.WcpController do
   end
 
   def upload_wcp_file(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: file_path, filename: filename}}) do
-    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+    case Wcp.get_app_wcp_config(app_id) do
       %AppWcpConfig{} = config ->
         case DeployUploadedFile.deploy_wcp_file(from: file_path, filename: filename) do
           {:ok, filename} ->
-            AppWcpConfig.changeset(config, %{verify_File: filename}) |> Repo.update!
-            Admin.log_admin_operation(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
-            conn |> json(%{success: true, filename: filename})
+            case Wcp.update_app_wcp_config(config, %{verify_File: filename}) do 
+              {:ok, config, _changeset} -> 
+                Admin.log_admin_operation(acs_admin_id, app_id, "upload_wcp_file", %{verify_File: filename})
+                conn |> json(%{success: true, filename: filename})
+              
+              {:error, %{errors: errors}} ->
+                conn |> json(%{success: false, message: translate_errors(errors)})
+            end
 
           {:error, errinfo} ->
             conn |> json(%{success: false, errinfo: errinfo})
@@ -326,11 +216,11 @@ defmodule AcsWeb.Admin.WcpController do
   end
 
   def get_wcp_menu(conn, %{"app_id" => app_id}) do
-    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+    case Wcp.get_app_wcp_config(app_id) do
       %AppWcpConfig{} = config ->
-        result = Menu.get(app_id)
-        if(result.menu) do
-          AppWcpConfig.changeset(config, %{menu: result.menu}) |> Repo.update!
+        result = Exwcp.Menu.get(config)
+        if result.menu do
+          Wcp.update_app_wcp_config(config, %{menu: result.menu})
           conn |> json(%{success: true, menu: result.menu})
         else
           conn |> json(%{success: false, message: result})
@@ -342,11 +232,12 @@ defmodule AcsWeb.Admin.WcpController do
   end
 
   def update_wcp_menu(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "menu" => menu}) do
-    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+    case Wcp.get_app_wcp_config(app_id)  do
       %AppWcpConfig{} = config ->
-        result = Menu.create(app_id, menu)
-        if(result.errcode == 0) do
-          AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update!
+        result = Exwcp.Menu.create(config, menu)
+
+        if result.errcode == 0 do
+          Wcp.update_app_wcp_config(config, %{menu: menu})
           Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_menu", %{menu: menu})
           conn |> json(%{success: true, result: result})
         else

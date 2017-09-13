@@ -63,7 +63,7 @@ export default {
     async reply() {
       var appId = this.$route.params.appId
       var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
-      var result = await this.$acs.replyUserMessage(appId, openId, this.content)
+      var result = await this.$acs.replyUserWcpMessage(appId, openId, this.content)
       if (result.success) {
         this.messages.push(result.message)
         this.content = ''
@@ -73,7 +73,7 @@ export default {
       this.messages = []
       var appId = this.$route.params.appId
       var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
-      var result = await this.$acs.getUserMessageList(appId, openId)
+      var result = await this.$acs.listUserWcpMessages(appId, openId)
       if (result.success) {
         this.messages = result.messages
       }

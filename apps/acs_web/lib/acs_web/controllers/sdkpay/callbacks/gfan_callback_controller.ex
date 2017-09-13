@@ -14,7 +14,7 @@ defmodule AcsWeb.SdkPay.GfanCallbackController do
                       cost: ~x"./cost/text()[1]",
                       appkey: ~x"./appkey/text()[1]", 
                       create_time:  ~x"./create_time/text()[1]")
-            |> Enum.into(%{}, fn({k, v}) -> {k, (v |> to_string |> String.strip)} end)
+            |> Enum.into(%{}, fn({k, v}) -> {k, (v |> to_string |> String.trim)} end)
 
           order_id = xmlresult.order_id
 

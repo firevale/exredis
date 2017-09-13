@@ -1,5 +1,7 @@
 defmodule AcsWeb.Admin.MallController do
   use AcsWeb, :controller
+  
+  alias Acs.Malls
 
   # update_mall_icon
   plug :check_upload_image, [
@@ -170,7 +172,7 @@ defmodule AcsWeb.Admin.MallController do
   def update_order_paid(conn, %{"order_id" => "", "transaction_id" => ""}),
     do: json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
   def update_order_paid(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
-    order = fetch_order_info(order_id)
+    order = Malls.get_order_info(order_id)
     payed_status = 1
     admin_user = CachedUser.get(admin_user_id)
 
@@ -198,14 +200,14 @@ defmodule AcsWeb.Admin.MallController do
           json(conn, %{success: false, i18n_message: i18n_message})
         _ ->
           Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
-          order = fetch_order_info(order_id)
+          order = Malls.get_order_info(order_id)
           json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
       end
     end
   end
 
   def refund_order(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
-    order = fetch_order_info(order_id)
+    order = Malls.get_order_info(order_id)
     refund_free = refund_money * 100
     admin_user = CachedUser.get(admin_user_id)
     cond do
@@ -224,13 +226,13 @@ defmodule AcsWeb.Admin.MallController do
             end)
 
             from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])
-            MallOrderLog.changeset(%MallOrderLog{},%{mall_order_id: order_id,  status: order.status, changed_status: cancel_status, admin_user: admin_user.email, content: %{refund_money: refund_free} }) |> Repo.insert
+            MallOrderLog.changeset(%MallOrderLog{},%{mall_order_id: order_id, status: order.status, changed_status: cancel_status, admin_user: admin_user.email, content: %{refund_money: refund_free} }) |> Repo.insert
          end)
         case result do
           {:error, i18n_message} ->
             json(conn, %{success: false, i18n_message: i18n_message})
           _ ->
-            order = fetch_order_info(order_id)
+            order = Malls.get_order_info(order_id)
             json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
         end
     end

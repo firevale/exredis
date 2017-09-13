@@ -10,6 +10,12 @@ defmodule Acs.Apps do
   alias Acs.Apps.App
   alias Acs.Apps.AppOrder
 
+  alias Acs.Cache.CachedApp
+
+  def get_app(app_id) do 
+    CachedApp.get(app_id)
+  end
+
   def update_app_order!(%AppOrder{} = order, attr) do 
     AppOrder.changeset(order, attr) |> Repo.update!
   end

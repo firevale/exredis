@@ -127,9 +127,8 @@ defmodule AcsWeb.AdminRouter do
     scope "/wcp" do 
       pipe_through :admin_customer_service
 
-      post  "/add_wcp_empty_params", WcpController, :add_wcp_empty_params
-      post  "/update_wcp_params", WcpController, :update_wcp_params 
-      post  "/update_wcp_menus", WcpController, :update_wcp_menus 
+      post  "/create_app_wcp_config", WcpController, :create_app_wcp_config
+      post  "/update_app_wcp_config", WcpController, :update_app_wcp_config 
       post  "/get_message_list", WcpController, :get_message_list
       post  "/get_user_message_list", WcpController, :get_user_message_list
       post  "/reply_user_message", WcpController, :reply_user_message

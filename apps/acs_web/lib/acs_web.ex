@@ -90,7 +90,6 @@ defmodule AcsWeb do
       alias Acs.Cache.CachedAdminUser
       alias Acs.Cache.CachedAdminSetting
       alias Acs.Cache.CachedAppWcpUser
-      alias Acs.Cache.CachedAppWcpConfig
       alias Acs.Cache.CachedAppWcpMessageRule
       alias Acs.Cache.CachedMallGoods
       alias Acs.Cache.CachedPMallTaskBar

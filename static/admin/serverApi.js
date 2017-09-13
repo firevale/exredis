@@ -243,12 +243,12 @@ export default {
         return post('/admin_actions/login_codes/list_my_codes', params)
       },
 
-      addWcpEmptyParams(params) {
-        return post('/admin_actions/wcp/add_wcp_empty_params', params)
+      createAppWcpConfig(params) {
+        return post('/admin_actions/wcp/create_app_wcp_config', params)
       },
 
-      updateWcpParams(params, successMessage) {
-        return post('/admin_actions/wcp/update_wcp_params', params, successMessage)
+      updateAppWcpConfig(params, successMessage) {
+        return post('/admin_actions/wcp/update_app_wcp_config', params, successMessage)
       },
 
       updateWcpRules(params) {

@@ -74,7 +74,7 @@ export const updateMyLoginCodes = ({
   commit(types.SET_MY_LOGIN_CODES, codes)
 }
 
-export const updateWcpParams = ({
+export const updateAppWcpConfig = ({
   commit
 }, params) => {
   commit(types.UPDATE_WCP_PARAMS, params)

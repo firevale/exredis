@@ -1,49 +1,48 @@
 defmodule AcsWeb.Admin.WcpController do
   use AcsWeb, :controller
-  
-  alias Acs.Admin
 
-  # add_wcp_empty_params
-  def add_wcp_empty_params(conn, %{"app_id" => app_id} = wcpParams) do
-    case Repo.get(App, app_id) do
+  alias Acs.Admin
+  alias Acs.Wcp
+  alias Acs.Apps
+
+  alias Acs.Apps.App
+  alias Acs.Wcp.AppWcpConfig
+
+  # create_app_wcp_config
+  def create_app_wcp_config(conn, %{"app_id" => app_id} = wcpParams) do
+    case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} ->
-        case Repo.get_by(AppWcpConfig, app_id: app_id) do
+        case Wcp.get_app_wcp_config(app_id) do
           nil ->
-            # add new
-            case AppWcpConfig.changeset(%AppWcpConfig{}, wcpParams) |> Repo.insert do
-              {:ok, new_wcp} ->
-                CachedAppWcpConfig.refresh(app_id)
-                conn |> json(%{success: true, wcpconfig: new_wcp})
+            case Wcp.create_app_wcp_config(wcpParams) do 
+              {:ok, wcp_config, changeset} ->
+                Admin.log_admin_operation(acs_admin_id, app_id, "create_app_wcp_config", changeset.changes)
+                conn |> json(%{success: true, wcpconfig: wcp_config})
 
               {:error, %{errors: errors}} ->
                 conn |> json(%{success: false, message: translate_errors(errors)})
             end
 
           %AppWcpConfig{} = config ->
-            # do nothing
             conn |> json(%{success: true, wcpconfig: config})
         end
-
     end
   end
-  def add_wcp_empty_params(conn, _params) do
+  def create_app_wcp_config(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # update_wcp_params
-  def update_wcp_params(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id} = wcpParams) do
-    case Repo.get_by(AppWcpConfig, app_id: app_id) do
+  # update_app_wcp_config
+  def update_app_wcp_config(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id} = wcpParams) do
+    case Wcp.get_app_wcp_config(app_id) do
       %AppWcpConfig{} = config ->
-        # update
-        changed = AppWcpConfig.changeset(config, wcpParams)
-        case changed |> Repo.update do
-          {:ok, new_wcp} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_params", changed.changes)
-            CachedAppWcpConfig.refresh(app_id)
-            conn |> json(%{success: true, wcpconfig: new_wcp})
+        case Wcp.update_app_wcp_config(config, wcpParams) do 
+          {:ok, wcp_config, changeset} -> 
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_wcp_config", changeset.changes)
+            conn |> json(%{success: true, wcpconfig: wcp_config})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
@@ -53,29 +52,7 @@ defmodule AcsWeb.Admin.WcpController do
         conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
     end
   end
-  def update_wcp_params(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-  end
-
-  # update_wcp_menus
-  def update_wcp_menus(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "menu" => menu}) do
-    case Repo.get_by(AppWcpConfig, app_id: app_id) do
-      nil ->
-        conn |> json(%{success: false, i18n_message: "error.server.configNotFound"})
-
-      %AppWcpConfig{} = config ->
-        case AppWcpConfig.changeset(config, %{menu: menu}) |> Repo.update do
-          {:ok, new_wcp} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_wcp_menus", %{menu: menu})
-            CachedAppWcpConfig.refresh(app_id)
-            conn |> json(%{success: true, wcpconfig: new_wcp})
-
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, message: translate_errors(errors)})
-        end
-    end
-  end
-  def update_wcp_menus(conn, _params) do
+  def update_app_wcp_config(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -83,7 +60,7 @@ defmodule AcsWeb.Admin.WcpController do
   def get_message_list(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
     build_sort =
       fn (key, exp) ->
-        order_by = Map.get(sorts,key)
+        order_by = Map.get(sorts, key)
         Map.put_new(exp, key, %{order: order_by})
       end
     sort = Enum.reduce(Map.keys(sorts), Map.new, build_sort)
@@ -103,7 +80,7 @@ defmodule AcsWeb.Admin.WcpController do
     }
 
     query =
-      if String.length(keyword)>0 do
+      if String.length(keyword) > 0 do
         query1 = update_in(query.query.bool.minimum_should_match, fn _v -> 1 end)
         update_in(query1.query.bool.should, fn should ->
           condition =
@@ -132,13 +109,6 @@ defmodule AcsWeb.Admin.WcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  defp _fetch_wcp_user(app_id, open_id) do
-    if String.starts_with?(open_id, "gh_") do
-      %{openid: app_id, nickname: "系统" }
-    else
-      CachedAppWcpUser.get(app_id, open_id)
-    end
-  end
   def import_message_list() do
     max_id = Repo.one!( from msg in AppWcpMessage, select: max(msg.id))
     Enum.map_every(0..max_id, 100, fn current_id ->
@@ -153,8 +123,8 @@ defmodule AcsWeb.Admin.WcpController do
        d "正在导入 ID:#{current_id}"
        if messages && messages != [] do
         Enum.map(messages, fn msg ->
-          from = _fetch_wcp_user(msg.app_id, msg.from)
-          to = _fetch_wcp_user(msg.app_id, msg.to)
+          from = Wcp.get_app_wcp_user(msg.app_id, msg.from)
+          to = Wcp.get_app_wcp_user(msg.app_id, msg.to)
           ESWcpMessage.index(%{
             from: from,
             to: to,

@@ -8,6 +8,7 @@ defmodule AcsWeb.PaymentHelper do
   alias   Acs.Apps.AppOrder
   alias   Acs.Cache.CachedAppSdkPaymentCallback
   alias   Exservice.Chaoxin
+  alias   Acs.Cache.CachedApp
 
   use     Utils.LogAlias
   use     Timex

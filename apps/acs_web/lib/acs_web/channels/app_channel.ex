@@ -132,7 +132,7 @@ defmodule AcsWeb.AppChannel do
                           %{assigns: %{node: node,
                                        app_id: app_id, 
                                        user_id: last_user_id, 
-                                       app_user_id: last_app_user_id,
+                                       app_user_id: _last_app_user_id,
                                        platform: platform}} =  socket) do
     info "receive reset channel request with payload: #{inspect payload}"
     Logger.metadata(user_id: user_id)
@@ -173,8 +173,8 @@ defmodule AcsWeb.AppChannel do
                                     %{assigns: %{app_id: app_id, 
                                                  user_id: user_id,
                                                  device_id: device_id, 
-                                                 device_model: device_model,
-                                                 os_ver: os_ver,
+                                                 device_model: _device_model,
+                                                 os_ver: _os_ver,
                                                  node: node,
                                                  platform: platform,
                                                  sdk: sdk}} =  socket) do

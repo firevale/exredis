@@ -85,7 +85,7 @@ defmodule AcsWeb.PageController do
   end
 
   def show_forum_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
-    theme_file = String.starts_with?(conn.request_path, "/m") && "/css/themes/jqxs_mobile.css" || "/css/themes/jqxs.css"
+    _theme_file = String.starts_with?(conn.request_path, "/m") && "/css/themes/jqxs_mobile.css" || "/css/themes/jqxs.css"
     conn |> put_layout(:forum)
          |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, link_files: [] )
   end

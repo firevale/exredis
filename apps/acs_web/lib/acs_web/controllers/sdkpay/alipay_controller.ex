@@ -41,7 +41,7 @@ defmodule AcsWeb.AlipayController do
          %AppOrder{} = order <- Repo.get(AppOrder, notify_data[:out_trade_no]),
          true <- is_trade_success(notify_data[:trade_status])
     do
-      total_fee = String.to_float(notify_data[:total_fee]) * 100 |> Float.to_string(decimals: 0)
+      total_fee = String.to_float(notify_data[:total_fee]) * 100 |> :erlang.float_to_binary(decimals: 0)
       AppOrder.changeset(order, %{
         status: AppOrder.Status.paid(),
         paid_at: DateTime.utc_now(),
@@ -72,7 +72,7 @@ defmodule AcsWeb.AlipayController do
          %MallOrder{} = order <- Repo.get(MallOrder, notify_data[:out_trade_no]),
          true <- is_trade_success(notify_data[:trade_status])
     do
-      total_fee = String.to_float(notify_data[:total_fee]) * 100 |> Float.to_string(decimals: 0)
+      total_fee = String.to_float(notify_data[:total_fee]) * 100 |> :erlang.float_to_binary(decimals: 0)
 
       MallOrder.changeset(order, %{
         status: MallOrder.Status.paid(),

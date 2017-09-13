@@ -4,11 +4,11 @@ defmodule AcsWeb.LazyTinypng do
   @redis_cache_key "acsweb.tinypng_files"
 
   def add_to_list(image_file_path) do 
-    Exredis.sadd(@redis_cache_key, image_path)
+    Exredis.sadd(@redis_cache_key, image_file_path)
   end
 
   def remove_from_list(image_file_path) do 
-    Exredis.srem(@redis_cache_key, image_path)
+    Exredis.srem(@redis_cache_key, image_file_path)
   end
 
   def list_files() do 

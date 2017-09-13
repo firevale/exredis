@@ -20,6 +20,8 @@ defmodule AcsStats do
   defdelegate log_app_user(date, app_id, zone_id, user_id, platform, sdk, game_user_id, game_user_name, game_user_level), to: AcsStats.Users
   defdelegate log_app_user_activity(date, app_id, zone_id, user_id, active_seconds), to: AcsStats.Users
   defdelegate log_app_user_payment(date, app_id, zone_id, user_id, platform, fee), to: AcsStats.Users
+  
+  defdelegate list_app_users(app_id, user_id), to: AcsStats.Users
 
 
   ### devices

@@ -337,31 +337,32 @@ export default {
       },
 
       getPointLogs(params) {
-        return post('/admin_actions/point/get_point_logs', params)
+        return post('/admin_actions/pmall/get_point_logs', params)
       },
 
       addPoint(params, successMessage) {
-        return post('/admin_actions/point/admin_add_point', params, successMessage)
+        return post('/admin_actions/pmall/admin_add_point', params, successMessage)
       },
 
-      fetchPointGoods(params) {
-        return post('/admin_actions/point_mall/fetch_goods', params)
+      fetchPMallGoods(params) {
+        // TODO: 从前端读, 不要从admin_actions获取
+        return post('/admin_actions/pmall/fetch_goods', params)
       },
 
       updatePointGoods(params) {
-        return post('/admin_actions/point_mall/update_goods', params)
+        return post('/admin_actions/pmall/update_goods', params)
       },
 
       togglePointGoodsStatus(params) {
-        return post('/admin_actions/point_mall/toggle_goods_status', params)
+        return post('/admin_actions/pmall/toggle_goods_status', params)
       },
 
       deletePointGoods(params) {
-        return post('/admin_actions/point_mall/delete_goods', params)
+        return post('/admin_actions/pmall/delete_goods', params)
       },
 
       getPointGoodsDetail(params) {
-        return post('/admin_actions/point_mall/get_goods_detail', params)
+        return post('/admin_actions/pmall/get_goods_detail', params)
       },
     }
   }

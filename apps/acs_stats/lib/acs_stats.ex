@@ -22,6 +22,7 @@ defmodule AcsStats do
   defdelegate log_app_user_payment(date, app_id, zone_id, user_id, platform, fee), to: AcsStats.Users
   
   defdelegate list_app_users(app_id, user_id), to: AcsStats.Users
+  defdelegate get_app_user(app_id, user_id, zone_id), to: AcsStats.Users
 
 
   ### devices

@@ -110,13 +110,13 @@ export default {
     ]),
   },
   mounted: async function() {
-    this.fetchPointGoods(this.page, this.recordsPerPage)
+    this.fetchPMallGoods(this.page, this.recordsPerPage)
   },
 
   watch: {
     app(newVal) {
       this.appId = newVal.id
-      this.fetchPointGoods(this.page, this.recordsPerPage)
+      this.fetchPMallGoods(this.page, this.recordsPerPage)
     }
   },
 
@@ -126,14 +126,14 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.fetchPointGoods(page, this.recordsPerPage)
+      this.fetchPMallGoods(page, this.recordsPerPage)
     },
 
     onSearchBoxSubmit: function() {
       if (this.keyword) {
         this.searchGoods(1)
       } else {
-        this.fetchPointGoods(1, this.recordsPerPage)
+        this.fetchPMallGoods(1, this.recordsPerPage)
       }
     },
 
@@ -174,9 +174,9 @@ export default {
       }
     },
 
-    fetchPointGoods: async function(page, recordsPerPage) {
+    fetchPMallGoods: async function(page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.fetchPointGoods({
+      let result = await this.$acs.fetchPMallGoods({
         keyword: "",
         page: page,
         records_per_page: recordsPerPage
@@ -193,7 +193,7 @@ export default {
 
     searchGoods: async function(page) {
       this.searching = true
-      let result = await this.$acs.fetchPointGoods({
+      let result = await this.$acs.fetchPMallGoods({
         keyword: this.keyword,
         page: page,
         records_per_page: this.recordsPerPage

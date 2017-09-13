@@ -483,6 +483,6 @@ defmodule AcsWeb.CronController do
       end) 
     end
 
-    conn |> json(%{success: true, message: "tinify_schedule done(#{icount})"})
+    conn |> json(%{success: true, message: "tinify_schedule done(#{LazyTinypng.count()})"})
   end
 end

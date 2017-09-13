@@ -108,7 +108,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/gen_codes", LoginCodesController, :gen_codes 
       post  "/del_codes", LoginCodesController, :del_codes 
       post  "/assign_codes", LoginCodesController, :assign_codes 
-      post  "/fetch_my_codes", LoginCodesController, :fetch_my_codes 
+      post  "/list_my_codes", LoginCodesController, :list_my_codes 
     end
 
     scope "/stats" do 
@@ -145,7 +145,7 @@ defmodule AcsWeb.AdminRouter do
 
     scope "/pmall" do
       pipe_through :admin_app
-      
+
       post  "/fetch_goods", PMallController, :fetch_goods
       post  "/update_goods", PMallController, :update_goods
       post  "/toggle_goods_status", PMallController, :toggle_goods_status

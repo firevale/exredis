@@ -22,6 +22,9 @@ defmodule Acs.LoginCodes do
   def get_login_code(app_id, owner: owner) do 
     CachedLoginCode.get(app_id, owner: owner)
   end
+  def get_login_code(app_id, openid: openid) do 
+    CachedLoginCode.get(app_id, owner: "openid.#{openid}")
+  end
 
   def update_login_code!(%AppLoginCode{} = code, attr) do 
     new_code = AppLoginCode.changeset(code, attr) |> Repo.update!
@@ -29,6 +32,97 @@ defmodule Acs.LoginCodes do
     new_code
   end
 
+  def gen_codes(app_id, number) do 
+    1..number |> Enum.reduce(3, fn(_n, code_length) -> 
+      gen_uniq_code(app_id, code_length)
+    end)
+  end
+
+  defp gen_uniq_code(app_id, code_length, n \\ 1) do 
+    code = Utils.generate_token(code_length)
+
+    case Exredis.sadd("_acs.login_codes.all.#{app_id}", code) do 
+      1 -> 
+        Exredis.sadd("_acs.login_codes.available.#{app_id}", code)
+        code_length
+      0 ->
+        if n <= 10 do 
+          gen_uniq_code(app_id, code_length, n + 1)
+        else
+          gen_uniq_code(app_id, code_length + 1, 1)
+        end
+    end
+  end
+
+  def del_codes(app_id, number) do 
+    available_number = Exredis.scard("_acs.login_codes.available.#{app_id}")
+    remove_number = min(available_number, number)
+    removed = Exredis.spop("_acs.login_codes.available.#{app_id}", remove_number)
+    Exredis.srem("_acs.login_codes.all.#{app_id}", removed)
+    remove_number
+  end
+
+  def assign_admin_codes(admin_user_id, app_id, number) do 
+    owner = "admin.#{admin_user_id}"
+    
+    query = from c in AppLoginCode,
+      select: count(1),
+      where: c.app_id == ^app_id and c.owner == ^owner
+    
+    assigned = Repo.one(query)
+
+    if number + assigned > 500 do 
+      {:error, :assigned_limit} 
+    else 
+      now = DateTime.utc_now
+
+      available_number = Exredis.scard("_acs.login_codes.available.#{app_id}")
+      number = min(number, available_number)
+      codes = Exredis.spop("_acs.login_codes.available.#{app_id}", number)
+      Exredis.sadd("_acs.login_codes.assigned.#{app_id}", codes)
+
+      Repo.transaction(fn -> 
+        codes |> Enum.each(fn(code) -> 
+          AppLoginCode.changeset(%AppLoginCode{}, %{
+            code: code,
+            owner: owner,
+            assigned_at: now,
+            app_id: app_id
+          }) |> Repo.insert!
+        end)
+      end)
+
+      query = from c in AppLoginCode,
+        select: c,
+        where: c.app_id == ^app_id and c.owner == ^owner
+
+      codes = Repo.all(query)
+
+      Exredis.set("_acs.admin_login_codes.#{app_id}.#{admin_user_id}", codes |> :erlang.term_to_binary() |> Base.encode64())
+      Excache.del("_acs.admin_login_codes.#{app_id}.#{admin_user_id}")
+
+      {:ok, codes}
+    end
+  end
+
+  def list_admin_codes(app_id, admin_user_id) do 
+    Excache.get!("_acs.admin_login_codes.#{app_id}.#{admin_user_id}", fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do 
+        nil -> 
+          query = 
+            from c in AppLoginCode,
+              select: c,
+              where: c.app_id == ^app_id and c.owner == ^"admin.#{admin_user_id}" 
+
+          codes = Repo.all(query)
+          Exredis.set(redis_key, codes |> :erlang.term_to_binary() |> Base.encode64())
+          {:commit, codes}
+    
+        raw -> 
+          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
+      end
+    end)    
+  end
 
   def stats_info(app_id) do 
     Excache.get!(stats_key(app_id), fallback: fn(redis_key) -> 
@@ -37,31 +131,6 @@ defmodule Acs.LoginCodes do
           {:commit, refresh_stats_info(app_id)}
         raw -> 
           {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
-      end
-    end)
-  end
-
-  def get_by_openid(app_id, openid) do 
-    key = "_acs.login_codes.owns.#{app_id}.#{openid}"
-    Excache.get!(key, fallback: fn(redis_key) -> 
-      case Exredis.get(redis_key) do 
-        nil -> 
-          owner = "openid.#{openid}"
-          query = from c in AppLoginCode,
-                    select: c,
-                    where: c.owner == ^owner
-
-          case Repo.one(query) do 
-            %AppLoginCode{code: code, owner: ^owner} ->
-              Exredis.set(redis_key, code)
-              {:commit, code}
-            
-            _ -> 
-              {:ignore, nil}
-          end
-        
-        code -> 
-          {:commit, code}
       end
     end)
   end
@@ -94,7 +163,7 @@ defmodule Acs.LoginCodes do
       used: used
     }
 
-    Exredis.set(stats_key(app_id), info |> :erlang.term_to_binary |> Base.encode64)
+    Exredis.set(stats_key(app_id), info |> :erlang.term_to_binary() |> Base.encode64())
 
     info
   end

@@ -239,8 +239,8 @@ export default {
         return post('/admin_actions/login_codes/assign_codes', params, successMessage)
       },
 
-      fetchMyLoginCodes(params) {
-        return post('/admin_actions/login_codes/fetch_my_codes', params)
+      listMyLoginCodes(params) {
+        return post('/admin_actions/login_codes/list_my_codes', params)
       },
 
       addWcpEmptyParams(params) {

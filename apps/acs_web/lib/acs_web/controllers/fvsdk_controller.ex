@@ -5,46 +5,21 @@ defmodule AcsWeb.FVSdkController do
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version
-  plug :record_device_info when action == :get_app_info
+  plug :log_device_info when action == :get_app_info
 
-  defp record_device_info(%Plug.Conn{private: %{
+  defp log_device_info(%Plug.Conn{private: %{
     acs_device_id: device_id, 
     acs_platform: platform}} = conn, _options) do
-    os_ver = case get_req_header(conn, "acs-os-ver") do 
-      [] -> nil
-      [v | _] -> v
-    end
-
-    device_model = case get_req_header(conn, "acs-device-model") do 
-      [] -> nil
-      [v | _] -> 
-        case get_req_header(conn, "acs-device-memory") do 
-          [] -> :ok
-          [mem] ->
-            case CachedDeviceInfo.get(v) do 
-              nil ->
-                DeviceInfo.changeset(%DeviceInfo{}, %{id: v, total_mem_size: mem}) |> AcsStats.Repo.insert
-              device_info ->
-                DeviceInfo.changeset(device_info, %{total_mem_size: mem}) |> AcsStats.Repo.update
-            end
-        end
-        v
-    end
-
-    case CachedDevice.get(device_id) do 
-      nil -> 
-        Device.changeset(%Device{}, %{id: device_id, 
-          model: device_model, 
-          platform: platform, 
-          os: os_ver}) |> AcsStats.Repo.insert(on_conflict: :nothing)  
-      
-      device -> 
-        Device.changeset(device, %{os: os_ver}) |> AcsStats.Repo.update
+    with [os_ver | _] <- get_req_header(conn, "acs-os-ver"),
+         [device_model | _] <- get_req_header(conn, "acs-device-model"),
+         [device_memory_size | _] <- get_req_header(conn, "acs-device-memory")
+    do
+      AcsStats.log_device_info(device_id, platform, device_model, os_ver, device_memory_size)
     end
 
     conn
   end
-  defp record_device_info(conn, _options), do: conn
+  defp log_device_info(conn, _options), do: conn
 
   def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app,
                                          acs_platform: "ios",
@@ -73,108 +48,23 @@ defmodule AcsWeb.FVSdkController do
     conn |> json(%{success: false, message: "bad request params"})
   end
 
+  # default payment callback,
   def default_callback(conn, _params) do
-    case :rand.uniform(10) do
-      1 -> conn |> text("ok")
-      _ -> conn |> text("failed")
-    end
+    conn |> text("ok")
   end
 
   # 兼容旧版fvsdk, 客户端每5分钟汇报一次
-  def report_activity(%Plug.Conn{private: %{acs_app: %App{} = app,
-                                            acs_device_id: device_id,
-                                            acs_platform: platform}} = conn,
-                     %{"user_id" => user_id,
-                       "device_model" => device_model,
-                       "app_user_id" => app_user_id,
-                       "app_user_name" => app_user_name,
-                       "osver" => os,
+  def report_activity(%Plug.Conn{private: %{acs_app: %App{} = _app,
+                                            acs_device_id: _device_id,
+                                            acs_platform: _platform}} = conn,
+                     %{"user_id" => _user_id,
+                       "device_model" => _device_model,
+                       "app_user_id" => _app_user_id,
+                       "app_user_name" => _app_user_name,
+                       "osver" => _os,
                        "channel" => _sdk,
-                       "zone_id" => zone_id} = params) do
-
-    today = Timex.local() |> Timex.to_date()
-
-    # oops, counter params only exists in android fvsdk
-    active_seconds = String.to_integer(params["counter"] || "1") * 300
-
-    app_user = case AcsStats.Repo.get_by(AppUser, 
-                  app_id: app.id,
-                  user_id: user_id,
-                  zone_id: zone_id) do
-                  nil ->
-                    AppUser.changeset(%AppUser{}, %{
-                      app_user_id: app_user_id,
-                      app_user_name: app_user_name,
-                      zone_id: zone_id,
-                      reg_date: today,
-                      app_id: app.id,
-                      platform: platform,
-                      user_id: user_id
-                    }) |> AcsStats.Repo.insert!
-
-                  %AppUser{} = app_user ->
-                    AppUser.changeset(app_user, %{
-                      app_user_name: app_user_name,
-                      active_seconds: app_user.active_seconds + active_seconds
-                    }) |> AcsStats.Repo.update!
-                end
-
-    case AcsStats.Repo.get_by(AppUserDailyActivity, app_user_id: app_user.id, date: today) do
-      nil ->
-        AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
-          date: today,
-          app_user_id: app_user.id
-        }) |> AcsStats.Repo.insert!
-
-      %AppUserDailyActivity{} = auda ->
-        AppUserDailyActivity.changeset(auda, %{
-          active_seconds: auda.active_seconds + active_seconds
-        }) |> AcsStats.Repo.update!
-    end
-
-    case AcsStats.Repo.get(Device, device_id) do
-      nil ->
-        Device.changeset(%Device{}, %{
-          id: device_id,
-          model: device_model,
-          platform: platform,
-          os: os,
-        }) |> AcsStats.Repo.insert!
-
-      %Device{} = x -> x
-    end
-
-    app_device = case AcsStats.Repo.get_by(AppDevice, app_id: app.id,
-                   device_id: device_id,
-                   zone_id: zone_id) do
-                   nil ->
-                     AppDevice.changeset(%AppDevice{}, %{
-                       app_id: app.id,
-                       device_id: device_id,
-                       zone_id: zone_id,
-                       platform: platform,
-                       reg_date: today,
-                     }) |> AcsStats.Repo.insert!
-
-                   %AppDevice{} = app_device ->
-                     AppDevice.changeset(app_device, %{
-                       active_seconds: app_device.active_seconds + active_seconds
-                     }) |> AcsStats.Repo.update!
-                 end
-
-    case AcsStats.Repo.get_by(AppDeviceDailyActivity, app_device_id: app_device.id, date: today) do
-      nil ->
-        AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{
-          date: today,
-          app_device_id: app_device.id
-        }) |> AcsStats.Repo.insert!
-
-      %AppDeviceDailyActivity{} = adda ->
-        AppDeviceDailyActivity.changeset(adda, %{
-          active_seconds: adda.active_seconds + active_seconds
-        }) |> AcsStats.Repo.update!
-    end
-
+                       "zone_id" => _zone_id} = params) do
+    # not supported 
     conn |> json(%{success: true})
   end
   def report_activity(conn, _params) do

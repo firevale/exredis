@@ -10,7 +10,7 @@ const state = {
   channel: undefined,
   orders: [],
   latestOnlineData: undefined,
-  briefStats: undefined,
+  realtimeMetrics: undefined,
 }
 
 const socket = new Socket('/app_admin_sock')
@@ -29,8 +29,8 @@ const mutations = {
     state.myLoginCodes = codes
   },
 
-  [types.SET_APP_BRIEF_STATS](state, briefStats) {
-    state.briefStats = briefStats
+  [types.SET_APP_BRIEF_STATS](state, realtimeMetrics) {
+    state.realtimeMetrics = realtimeMetrics
   },
 
   [types.JOIN_APP_CHANNEL](state, params) {
@@ -40,7 +40,7 @@ const mutations = {
     }
     
     state.latestOnlineData = undefined
-    state.briefStats = undefined
+    state.realtimeMetrics = undefined
 
     state.channel = socket.channel(`admin.app:${params.appId}`, {
       access_token: params.accessToken,
@@ -52,7 +52,7 @@ const mutations = {
         console.log('app admin channel joined')
         state.channel.on('new_online_data', payload => {
           state.latestOnlineData = payload.online
-          state.briefStats = payload.brief_stats
+          state.realtimeMetrics = payload.realtime_metrics
         })
       })
       .receive('error', reasons => console.log('can NOT join app admin channel', reasons))

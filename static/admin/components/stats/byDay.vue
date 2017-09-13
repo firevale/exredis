@@ -112,8 +112,8 @@ export default {
 
   mounted: function() {
     this.date = new Date().DateAdd('d', this.days).Format("yyyy-MM-dd")
-    this.getStatsByDay()
-    this.getUserTimingByDay()
+    this.getStatsByDate()
+    this.getUserTimingByDate()
   },
 
   methods: {
@@ -144,8 +144,8 @@ export default {
       this.$refs.chart.updateChart(barData)
     },
 
-    getStatsByDay: async function() {
-      let result = await this.$acs.getStatsByDay({
+    getStatsByDate: async function() {
+      let result = await this.$acs.getStatsByDate({
         date: this.date
       })
 
@@ -155,8 +155,8 @@ export default {
       }
     },
 
-    getUserTimingByDay: async function() {
-      let result = await this.$acs.getUserTimingByDay({
+    getUserTimingByDate: async function() {
+      let result = await this.$acs.getUserTimingByDate({
         date: this.date
       })
 

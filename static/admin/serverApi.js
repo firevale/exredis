@@ -295,31 +295,35 @@ export default {
           content
         })
       },
+
       getOnlineChart(app_id) {
         return post('/admin_actions/stats/onlines', {
           app_id
         })
       },
 
-      getBriefStats(app_id) {
-        return post('/admin_actions/stats/brief_stats', {
+      getRealtimeMetrics(app_id) {
+        return post('/admin_actions/stats/realtime_metrics', {
           app_id
         })
       },
 
-      getStatsByDay(params) {
-        return post('/admin_actions/stats/get_stats_by_day', params)
+      getStatsByDate(params) {
+        return post('/admin_actions/stats/get_stats_by_date', params)
       },
 
-      getUserTimingByDay(params) {
-        return post('/admin_actions/stats/get_user_timing_by_day', params)
+      getUserTimingByDate(params) {
+        return post('/admin_actions/stats/get_user_timing_by_date', params)
       },
+
       getRetentionStats(params) {
         return post('/admin_actions/stats/get_stats_retention', params)
       },
+
       getStatsDevice(params) {
         return post('/admin_actions/stats/get_stats_device', params)
       },
+
       getStatsDeviceDetails(params) {
         return post('/admin_actions/stats/get_stats_device_details', params)
       },

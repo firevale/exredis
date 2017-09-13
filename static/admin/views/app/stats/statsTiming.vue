@@ -172,7 +172,7 @@ export default {
       this.update_chart()
     },
     fetchData: async function() {
-      let result = await this.$acs.getUserTimingByDay({
+      let result = await this.$acs.getUserTimingByDate({
         date: this.date instanceof Date ? this.date.Format("yyyy-MM-dd") : this.date
       })
       if (result.success) {

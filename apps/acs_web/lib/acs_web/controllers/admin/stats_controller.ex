@@ -1,6 +1,7 @@
 defmodule AcsWeb.Admin.StatsController do
   use AcsWeb, :controller
   use Timex
+  require AcsStats
 
   def onlines(conn, %{"app_id" => app_id}) do 
     chart = Excache.get!("onlines_chart.#{app_id}", fallback: fn(key) -> 
@@ -28,115 +29,12 @@ defmodule AcsWeb.Admin.StatsController do
     conn |> json(%{ success: true, chart: chart})
   end
 
-  def brief_stats(conn, %{"app_id" => app_id}) do 
-    now = Timex.local()
-    today = Timex.to_date(now)
-    yesterday = now |> Timex.shift(days: -1) |> Timex.to_date()
-
-    yesterday_danu = Exredis.scard("acs.danu.#{yesterday}.#{app_id}") 
-    u_retention = if yesterday_danu > 0 do 
-      Exredis.scard("acs.da2nu.#{today}.#{app_id}") / yesterday_danu * 100
-    else 
-      -1
-    end
-
-    yesterday_danu_ios = Exredis.scard("acs.danu.#{yesterday}.#{app_id}.ios") 
-    u_retention_ios = if yesterday_danu_ios > 0 do 
-      Exredis.scard("acs.da2nu.#{today}.#{app_id}.ios") / yesterday_danu_ios * 100
-    else 
-      -1
-    end
-
-    yesterday_danu_android = Exredis.scard("acs.danu.#{yesterday}.#{app_id}.android") 
-    u_retention_android = if yesterday_danu_android > 0 do 
-      Exredis.scard("acs.da2nu.#{today}.#{app_id}.android") / yesterday_danu_android * 100
-    else 
-      -1
-    end
-  
-    da2nd_ios = Exredis.scard("acs.da2nd.#{today}.#{app_id}.ios") 
-    da2nd_android = Exredis.scard("acs.da2nd.#{today}.#{app_id}.android") 
-
-    yesterday_dand = Exredis.scard("acs.dand.#{yesterday}.#{app_id}") 
-    d_retention = if yesterday_dand > 0 do 
-      (da2nd_ios + da2nd_android) / yesterday_dand * 100
-    else 
-      -1
-    end
-
-    yesterday_dand_ios = Exredis.scard("acs.dand.#{yesterday}.#{app_id}.ios") 
-    d_retention_ios = if yesterday_dand_ios > 0 do 
-      da2nd_ios / yesterday_dand_ios * 100
-    else 
-      -1
-    end
-
-    yesterday_dand_android = Exredis.scard("acs.dand.#{yesterday}.#{app_id}.android") 
-    d_retention_android = if yesterday_dand_android > 0 do 
-      da2nd_android / yesterday_dand_android * 100
-    else 
-      -1
-    end
+  def realtime_metrics(conn, %{"app_id" => app_id}) do 
+    today = Timex.local() |> Timex.to_date()
 
     conn |> json(%{
       success: true,
-      stats: %{
-        dlu: %{
-          total: Exredis.scard("acs.dlu.#{today}.#{app_id}"),  
-          ios: Exredis.scard("acs.dlu.#{today}.#{app_id}.ios"), 
-          android: Exredis.scard("acs.dlu.#{today}.#{app_id}.android"),
-        },
-        dld: %{
-          total: Exredis.scard("acs.dld.#{today}.#{app_id}.ios") + Exredis.scard("acs.dld.#{today}.#{app_id}.android"),
-          ios: Exredis.scard("acs.dld.#{today}.#{app_id}.ios"),
-          android: Exredis.scard("acs.dld.#{today}.#{app_id}.android"),
-        },
-        dau: %{
-          total: Exredis.scard("acs.dau.#{today}.#{app_id}"),  
-          ios: Exredis.scard("acs.dau.#{today}.#{app_id}.ios"), 
-          android: Exredis.scard("acs.dau.#{today}.#{app_id}.android"),
-        },
-        dad: %{
-          total: Exredis.scard("acs.dad.#{today}.#{app_id}.ios") + Exredis.scard("acs.dad.#{today}.#{app_id}.android"),
-          ios: Exredis.scard("acs.dad.#{today}.#{app_id}.ios"),
-          android: Exredis.scard("acs.dad.#{today}.#{app_id}.android"),
-        },
-        danu: %{
-          total: Exredis.scard("acs.danu.#{today}.#{app_id}"),  
-          ios: Exredis.scard("acs.danu.#{today}.#{app_id}.ios"), 
-          android: Exredis.scard("acs.danu.#{today}.#{app_id}.android"),
-        },
-        dand: %{
-          total: Exredis.scard("acs.dand.#{today}.#{app_id}.ios") + Exredis.scard("acs.dand.#{today}.#{app_id}.android"),
-          ios: Exredis.scard("acs.dand.#{today}.#{app_id}.ios"),
-          android: Exredis.scard("acs.dand.#{today}.#{app_id}.android"),
-        },
-        dapu: %{
-          total: Exredis.scard("acs.dapu.#{today}.#{app_id}"),  
-          ios: Exredis.scard("acs.dapu.#{today}.#{app_id}.ios"), 
-          android: Exredis.scard("acs.dapu.#{today}.#{app_id}.android"),
-        },
-        u2_retention: %{
-          total: u_retention,
-          ios: u_retention_ios,
-          android: u_retention_android,
-        },
-        d2_retention: %{
-          total: d_retention,
-          ios: d_retention_ios,
-          android: d_retention_android,
-        },
-        fee: %{
-          ios: case Exredis.get("acs.totalfee.#{today}.#{app_id}.ios") do 
-                nil -> 0
-                x -> String.to_integer(x)
-               end,
-          android: case Exredis.get("acs.totalfee.#{today}.#{app_id}.android") do 
-                     nil -> 0
-                     x when is_bitstring(x) -> String.to_integer(x)
-                   end,
-        }
-      }
+      metrics: AcsStats.get_realtime_metrics(today, app_id) 
     })  
   end
 
@@ -166,7 +64,7 @@ defmodule AcsWeb.Admin.StatsController do
     conn |> json(%{ success: true, chart: chart})
   end
 
-  def get_stats_by_day(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+  def get_stats_by_date(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     {:ok, yesterday} = (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")) 
     date = case params["date"] do
       nil -> yesterday
@@ -182,7 +80,7 @@ defmodule AcsWeb.Admin.StatsController do
     conn |> json(%{success: true, reports: reports, date: date})
   end
 
-  def get_user_timing_by_day(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+  def get_user_timing_by_date(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     {:ok, yesterday} = (Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")) 
     date = case params["date"] do
       nil -> yesterday

@@ -6,6 +6,7 @@ defmodule AcsStats do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
+  alias AcsStats.RealtimeMetrics
 
   ### onlines
   defdelegate add_online_user(node, app_id, platform, user_id), to: AcsStats.Onlines
@@ -32,30 +33,63 @@ defmodule AcsStats do
   defdelegate clear_realtime_metrics(date), to: AcsStats.RealtimeMetrics
 
   def get_realtime_metrics(date, app_id) do 
-
+    %{
+      dlu: %{
+        total: RealtimeMetrics.get_app_dlu(date, app_id), 
+        ios: RealtimeMetrics.get_app_dlu(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dlu(date, app_id, :android), 
+      },
+      dau: %{
+        total: RealtimeMetrics.get_app_dau(date, app_id), 
+        ios: RealtimeMetrics.get_app_dau(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dau(date, app_id, :android), 
+      },
+      danu: %{
+        total: RealtimeMetrics.get_app_danu(date, app_id), 
+        ios: RealtimeMetrics.get_app_danu(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_danu(date, app_id, :android), 
+      },
+      dapu: %{
+        total: RealtimeMetrics.get_app_dapu(date, app_id), 
+        ios: RealtimeMetrics.get_app_dapu(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dapu(date, app_id, :android), 
+      },
+      danpu: %{
+        total: RealtimeMetrics.get_app_danpu(date, app_id), 
+        ios: RealtimeMetrics.get_app_danpu(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_danpu(date, app_id, :android), 
+      },
+      yesterday_danu: %{
+        total: RealtimeMetrics.get_app_yesterday_danu(date, app_id),
+        ios: RealtimeMetrics.get_app_yesterday_danu(date, app_id, :ios),
+        android: RealtimeMetrics.get_app_yesterday_danu(date, app_id, :android),
+      },
+      dru: %{
+        total: RealtimeMetrics.get_app_dru(date, app_id), 
+        ios: RealtimeMetrics.get_app_dru(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dru(date, app_id, :android), 
+      },
+      dad: %{
+        ios: RealtimeMetrics.get_app_dad(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dad(date, app_id, :android), 
+      },
+      dand: %{
+        ios: RealtimeMetrics.get_app_dand(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_dand(date, app_id, :android), 
+      },
+      yesterday_dand: %{
+        ios: RealtimeMetrics.get_app_yesterday_dand(date, app_id, :ios),
+        android: RealtimeMetrics.get_app_yesterday_dand(date, app_id, :android),
+      },
+      drd: %{
+        ios: RealtimeMetrics.get_app_drd(date, app_id, :ios), 
+        android: RealtimeMetrics.get_app_drd(date, app_id, :android), 
+      },
+      fee: %{
+        ios: RealtimeMetrics.get_app_dpf(date, app_id, :ios),
+        android: RealtimeMetrics.get_app_dpf(date, app_id, :android),
+      }
+    }
   end
-
-  # import AcsStats.RealtimeMetrics, only: [
-  #   get_app_user_number: 1,
-  #   get_app_dlu: 2,
-  #   get_app_dlu: 3,
-  #   get_app_dlnu: 2,
-  #   get_app_dlnu: 3,
-  #   get_app_dau: 2,
-  #   get_app_dau: 3,
-  #   get_app_danu: 2,
-  #   get_app_danu: 3,
-  #   get_app_yesterday_danu: 2,
-  #   get_app_yesterday_danu: 3,
-  #   get_app_dru: 2,
-  #   get_app_dru: 3,
-
-  #   get_app_dad: 3,
-  #   get_app_dand: 3,
-  #   get_app_yesterday_dand: 3,
-  #   get_app_drd: 3,
-
-  #   clear_realtime_metrics: 1,
-  #  ]
 
 end

@@ -1,9 +1,14 @@
 defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
-
+  alias   AcsWeb.PaymentHelper
+  alias   Acs.MeishengSmsSender
+  alias   Acs.ChaoxinNotifier
+  alias   Acs.RedisMall
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
-  alias   Utils.Tinypng
+  alias   Acs.Stats.DailyReportGenerator
+  alias   AcsWeb.LazyTinypng
+  alias   Emservice.Tinypng
   use     Timex
 
   require Exredis
@@ -49,9 +54,9 @@ defmodule AcsWeb.CronController do
   end
 
   def report_sms_amount(conn, _params) do 
-    {:ok, amount} = MeishengService.get_amount()
+    {:ok, amount} = MeishengSmsSender.get_amount()
     {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
   end
 
@@ -73,9 +78,9 @@ defmodule AcsWeb.CronController do
                   select: od,
                   where: od.mall_order_id == ^order_id
     Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = CachedMallGoods.find(detail.mall_goods_id) 
+      goods = RedisMall.find(detail.mall_goods_id) 
       MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-      CachedMallGoods.refresh(goods)
+      RedisMall.refresh(goods)
     end)
   end
 
@@ -100,14 +105,14 @@ defmodule AcsWeb.CronController do
         if count <= 0 do 
           case Exredis.get("_monitor.check_admin_users") do 
             nil -> 
-              Chaoxin.send_text_msg("#{now}, admin_users 表被清空")          
+              ChaoxinNotifier.send_text_msg("#{now}, admin_users 表被清空")          
               Exredis.set("_monitor.check_admin_users", now)
             _ ->
               :ok
           end
         end
       _ ->
-        Chaoxin.send_text_msg("#{now}, 获取admin_users大小失败")          
+        ChaoxinNotifier.send_text_msg("#{now}, 获取admin_users大小失败")          
     end
 
     conn |> json(%{success: true, message: "done"})
@@ -466,19 +471,18 @@ defmodule AcsWeb.CronController do
   end
 
   def tinify_schedule(conn, _params) do
-    redis_cache_key = "fvac.tiny_list"
-    icount = Exredis.scard(redis_cache_key)
-    if icount > 0 do
-      Enum.each(Exredis.smembers(redis_cache_key), fn(image_path) -> 
+    if LazyTinypng.count() > 0 do
+      Enum.each(LazyTinypng.list_files(), fn(image_path) -> 
         try do 
           :ok = Tinypng.tinify(image_path)
-          Exredis.srem(redis_cache_key, image_path)
+          LazyTinypng.remove_from_list(image_path)
         catch
           :error, _e ->
             nil
         end
       end) 
     end
+
     conn |> json(%{success: true, message: "tinify_schedule done(#{icount})"})
   end
 end

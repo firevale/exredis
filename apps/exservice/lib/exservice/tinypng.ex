@@ -1,7 +1,7 @@
 defmodule Exservice.Tinypng do
   require HTTPoison
-  use   Utils.LogAlias
-  alias Utils.JSON
+  use     Utils.LogAlias
+  alias   Utils.JSON
 
   @api_key  Application.get_env(:exservice, Tinypng, "")
 

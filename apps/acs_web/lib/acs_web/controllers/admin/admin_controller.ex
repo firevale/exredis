@@ -15,7 +15,7 @@ defmodule AcsWeb.Admin.AdminController do
     query =
       if admin_level > 1  do
         appids = Acs.Admin.list_admin_app_ids(user_id)
-        where(query, [app], app.id in (^appids))
+        where(query, [app], app.id in ^appids)
       else
         query
       end
@@ -326,43 +326,11 @@ defmodule AcsWeb.Admin.AdminController do
                             "keyword" => keyword,
                             "page" => page,
                             "records_per_page" => records_per_page}) do
-    query = %{
-      query: %{
-        bool: %{
-          must: [
-            %{term: %{app_id: app_id}}
-          ],
-          should: [
-            %{term: %{user_id: keyword}},
-            %{term: %{goods_id: keyword}},
-            %{term: %{device_id: keyword}},
-            %{term: %{app_user_id: keyword}},
-            %{term: %{sdk_user_id: keyword}},
-            %{match: %{cp_order_id: keyword}},
-            %{match: %{transaction_id: keyword}},
-          ],
-          minimum_should_match: 1,
-          boost: 1.0,
-        },
-      },
-      sort: %{inserted_at: %{order: :desc}},
-      from: (page - 1) * records_per_page,
-      size: records_per_page,
-    }
-
-    case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do
-      {:ok, %{hits: %{hits: hits, total: total}}} ->
-        ids = Enum.map(hits, &(&1._id))
-        query = from order in AppOrder,
-                  select: order,
-                  where: order.id in ^ids,
-                  order_by: [desc: order.inserted_at]
-
-        orders = Repo.all(query)
+    case Acs.Search.search_app_order(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
+      {:ok, total, orders}  ->
         conn |> json(%{success: true, orders: orders, total: round(Float.ceil(total / records_per_page))})
 
-      error ->
-        error "search orders failed: #{inspect error, pretty: true}"
+      {:error, _} ->
         conn |> json(%{success: false})
     end
   end

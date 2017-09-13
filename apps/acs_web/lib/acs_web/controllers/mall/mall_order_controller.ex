@@ -6,15 +6,15 @@ defmodule AcsWeb.MallOrderController do
   plug :fetch_session_user_id
   plug :fetch_session_user
   plug :fetch_device_id
-  plug :check_is_admin when action in [:delete_goods, :update_order_payed, :refund_order]
 
   # fetch_malls
   def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
-    do: fetch_order_list(conn,app_id, keyword, page, records_per_page)
+    do: fetch_order_list(conn, app_id, keyword, page, records_per_page)
   def fetch_order_list(conn, _params),
-    do: fetch_order_list(conn,'','', 1, 100)
-  defp fetch_order_list(conn, app_id, keyword,  page, records_per_page) do
-    {:ok,searchTotal,ids} = search_orders(app_id, keyword,page,records_per_page)
+    do: fetch_order_list(conn, "", "", 1, 100)
+  defp fetch_order_list(conn, app_id, keyword, page, records_per_page) do
+    {:ok, searchTotal, ids} = 
+      Acs.Search.search_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
 
     queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
@@ -45,52 +45,6 @@ defmodule AcsWeb.MallOrderController do
 
       orders = Repo.all(query)
       json(conn, %{success: true, orders: orders, total: total_page})
-    end
-  end
-
-  defp search_orders(app_id,keyword,page,records_per_page) do
-    if String.length(keyword)>0 do
-      query = %{
-        query: %{
-          bool: %{
-            must: %{term: %{app_id: app_id}},
-            should: [
-              %{term: %{id: keyword}},
-              %{match: %{goods_name: keyword}},
-              %{term: %{app_id: keyword}},
-              %{term: %{user_ip: keyword}},
-              %{match: %{memo: keyword}},
-              %{match: %{"address.name": keyword}},
-              %{term: %{"address.mobile": keyword}},
-              %{term: %{transaction_id: keyword}}
-            ],
-            minimum_should_match: 1,
-            boost: 1.0,
-          },
-        },
-        sort: %{inserted_at: %{order: :desc}},
-        from: (page - 1) * records_per_page,
-        size: records_per_page,
-      }
-
-      query = 
-        case Integer.parse(keyword) do
-          {int_keyword,""} ->
-              update_in(query.query.bool.should,&(&1++[ %{term: %{user_id: int_keyword}}]))
-            _ ->
-              query
-        end
-
-      case Elasticsearch.search(%{index: "mall", type: "orders", query: query, params: %{timeout: "1m"}}) do
-        {:ok, %{hits: %{hits: hits, total: total}}} ->
-          ids = Enum.map(hits, &(&1._id))
-          {:ok, total, ids }
-        error ->
-          error "search orders failed: #{inspect error, pretty: true}"
-          throw(error)
-      end
-    else
-      {:ok, 0, {}}
     end
   end
 
@@ -228,75 +182,6 @@ defmodule AcsWeb.MallOrderController do
         from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: finish_status])
         new_order = Map.put(order, :status, finish_status)
         json(conn, %{success: true, order: new_order, i18n_message: "mall.order.messages.recievedSuccess"})
-    end
-  end
-
-  def update_order_payed(conn, %{"order_id" => "", "transaction_id" => ""}),
-    do: json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
-  def update_order_payed(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
-    order = fetch_order_info(order_id)
-    payed_status = 1
-    admin_user = CachedUser.get(admin_user_id)
-
-    if order.status !=0 and order.status != -1 do
-      json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
-    else
-      result = 
-        Repo.transaction(fn ->
-          Enum.each(order.details, fn(detail) ->
-            goods = Repo.get(MallGoods, detail.mall_goods_id)
-            if detail.amount>goods.stock do
-              Repo.rollback("admin.mall.order.messages.stockOut")
-            else
-              MallGoods.changeset(goods, %{stock: goods.stock - detail.amount, sold: goods.sold + detail.amount}) |> Repo.update()
-              CachedMallGoods.refresh(goods)
-            end
-          end)
-
-          from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: payed_status ,transaction_id: transaction_id])
-          MallOrderLog.changeset(%MallOrderLog{},%{ mall_order_id: order_id,  status: order.status, changed_status: payed_status, admin_user: admin_user.email, content: %{ transaction_id: transaction_id} }) |> Repo.insert
-        end)
-
-      case result do
-        {:error, i18n_message} ->
-          json(conn, %{success: false, i18n_message: i18n_message})
-        _ ->
-          Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
-          order = fetch_order_info(order_id)
-          json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
-      end
-    end
-  end
-
-  def refund_order(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "refund_money" => refund_money}) do
-    order = fetch_order_info(order_id)
-    refund_free = refund_money * 100
-    admin_user = CachedUser.get(admin_user_id)
-    cond do
-      refund_free > order.final_price ->
-        json(conn, %{success: false, i18n_message: "admin.mall.order.messages.refundMoneyOut"})
-      order.status !=2 ->
-        json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyRecieving"})
-      true ->
-        cancel_status = -1
-        result = 
-          Repo.transaction(fn ->
-            Enum.each(order.details, fn(detail) ->
-              goods = Repo.get(MallGoods, detail.mall_goods_id)
-              MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-              CachedMallGoods.refresh(goods)
-            end)
-
-            from(od in MallOrder, where: od.id == ^order.id) |> Repo.update_all(set: [status: cancel_status])
-            MallOrderLog.changeset(%MallOrderLog{},%{mall_order_id: order_id,  status: order.status, changed_status: cancel_status, admin_user: admin_user.email, content: %{refund_money: refund_free} }) |> Repo.insert
-         end)
-        case result do
-          {:error, i18n_message} ->
-            json(conn, %{success: false, i18n_message: i18n_message})
-          _ ->
-            order = fetch_order_info(order_id)
-            json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
-        end
     end
   end
 

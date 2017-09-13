@@ -180,7 +180,7 @@ export default {
       },
 
       updateOrderPayed(params) {
-        return post('/admin_actions/mall/update_order_payed', params)
+        return post('/admin_actions/mall/update_order_paid', params)
       },
 
       refundOrder(params) {

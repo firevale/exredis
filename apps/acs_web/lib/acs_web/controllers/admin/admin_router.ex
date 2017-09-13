@@ -37,6 +37,7 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_app
       post "/update_app_sdk_info", AppSdkInfoController, :update_app_sdk_info
       post "/generate_dummy_sdk_info", AppSdkInfoController, :generate_dummy_sdk_info
+
       post "/update_app_icon", AdminController, :update_app_icon
       post "/update_app_info", AdminController, :update_app_info
       post "/update_goods_icon", AdminController, :update_goods_icon
@@ -53,17 +54,16 @@ defmodule AcsWeb.AdminRouter do
 
     scope "/mall" do
       pipe_through :admin_app
+
       post  "/update_mall_icon", MallController, :update_mall_icon
       post  "/update_mall_info", MallController, :update_mall_info
-
       post  "/update_goods_pic", MallController, :update_goods_pic
       post  "/update_goods_content_pic", MallController, :update_goods_content_pic
       post  "/update_goods", MallController, :update_goods
       post  "/delete_goods", MallController, :delete_goods
       post  "/toggle_goods_status", MallController, :toggle_goods_status
-
-      post "/refund_order", MallOrderController, :refund_order
-      post "/update_order_payed", MallOrderController, :update_order_payed
+      post  "/refund_order", MallController, :refund_order
+      post  "/update_order_paid", MallController, :update_order_paid
     end
 
     scope "/forum" do
@@ -104,43 +104,43 @@ defmodule AcsWeb.AdminRouter do
     scope "/login_codes" do 
       pipe_through :admin_app
 
-      post  "/stats_info", Admin.LoginCodesController, :stats_info
-      post  "/gen_codes", Admin.LoginCodesController, :gen_codes 
-      post  "/del_codes", Admin.LoginCodesController, :del_codes 
-      post  "/assign_codes", Admin.LoginCodesController, :assign_codes 
-      post  "/fetch_my_codes", Admin.LoginCodesController, :fetch_my_codes 
+      post  "/stats_info", LoginCodesController, :stats_info
+      post  "/gen_codes", LoginCodesController, :gen_codes 
+      post  "/del_codes", LoginCodesController, :del_codes 
+      post  "/assign_codes", LoginCodesController, :assign_codes 
+      post  "/fetch_my_codes", LoginCodesController, :fetch_my_codes 
     end
 
     scope "/stats" do 
       pipe_through :admin_customer_service
 
-      post  "/onlines", Admin.StatsController, :onlines
-      post  "/brief_stats", Admin.StatsController, :brief_stats
-      post  "/historic_onlines", Admin.StatsController, :historic_onlines
-      post  "/get_stats_by_day", Admin.StatsController, :get_stats_by_day
-      post  "/get_user_timing_by_day", Admin.StatsController, :get_user_timing_by_day
-      post  "/get_stats_retention", Admin.StatsController, :get_stats_retention
-      post  "/get_stats_device", Admin.StatsController, :get_stats_device
-      post  "/get_stats_device_details", Admin.StatsController, :get_stats_device_details
+      post  "/onlines", StatsController, :onlines
+      post  "/brief_stats", StatsController, :brief_stats
+      post  "/historic_onlines", StatsController, :historic_onlines
+      post  "/get_stats_by_day", StatsController, :get_stats_by_day
+      post  "/get_user_timing_by_day", StatsController, :get_user_timing_by_day
+      post  "/get_stats_retention", StatsController, :get_stats_retention
+      post  "/get_stats_device", StatsController, :get_stats_device
+      post  "/get_stats_device_details", StatsController, :get_stats_device_details
     end
 
     scope "/wcp" do 
       pipe_through :admin_customer_service
 
-      post  "/add_wcp_empty_params", AdminWcpController, :add_wcp_empty_params
-      post  "/update_wcp_params", AdminWcpController, :update_wcp_params 
-      post  "/update_wcp_menus", AdminWcpController, :update_wcp_menus 
-      post  "/get_message_list", AdminWcpController, :get_message_list
-      post  "/get_user_message_list", AdminWcpController, :get_user_message_list
-      post  "/reply_user_message", AdminWcpController, :reply_user_message
-      post  "/delete_wcp_message", AdminWcpController, :delete_wcp_message  
-      post  "/update_wcp_message_rule", AdminWcpController, :update_wcp_message_rule
-      post  "/delete_wcp_message_rule", AdminWcpController, :delete_wcp_message_rule 
-      post  "/get_rule_list", AdminWcpController, :get_rule_list
-      post  "/upload_wcp_image", AdminWcpController, :upload_wcp_image
-      post  "/upload_wcp_file", AdminWcpController, :upload_wcp_file
-      post  "/get_wcp_menu", AdminWcpController, :get_wcp_menu
-      post  "/update_wcp_menu", AdminWcpController, :update_wcp_menu
+      post  "/add_wcp_empty_params", WcpController, :add_wcp_empty_params
+      post  "/update_wcp_params", WcpController, :update_wcp_params 
+      post  "/update_wcp_menus", WcpController, :update_wcp_menus 
+      post  "/get_message_list", WcpController, :get_message_list
+      post  "/get_user_message_list", WcpController, :get_user_message_list
+      post  "/reply_user_message", WcpController, :reply_user_message
+      post  "/delete_wcp_message", WcpController, :delete_wcp_message  
+      post  "/update_wcp_message_rule", WcpController, :update_wcp_message_rule
+      post  "/delete_wcp_message_rule", WcpController, :delete_wcp_message_rule 
+      post  "/get_rule_list", WcpController, :get_rule_list
+      post  "/upload_wcp_image", WcpController, :upload_wcp_image
+      post  "/upload_wcp_file", WcpController, :upload_wcp_file
+      post  "/get_wcp_menu", WcpController, :get_wcp_menu
+      post  "/update_wcp_menu", WcpController, :update_wcp_menu
     end
 
     scope "/point" do

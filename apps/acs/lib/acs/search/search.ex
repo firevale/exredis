@@ -9,7 +9,7 @@ defmodule Acs.Search do
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedForum
   
-  def search_app_order(app_id, keyword, page, records_per_page) do 
+  def search_app_order(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
     query = %{
       query: %{
         bool: %{
@@ -35,7 +35,7 @@ defmodule Acs.Search do
     }
 
     case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do
-      {:ok, %{hits: %{hits: hits, total: _total}}} ->
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
         ids = Enum.map(hits, &(&1._id))
 
         query = from order in AppOrder,
@@ -43,11 +43,11 @@ defmodule Acs.Search do
                   where: order.id in ^ids,
                   order_by: [desc: order.inserted_at]
 
-        Repo.all(query)
+        {:ok, total, Repo.all(query)}
 
       error ->
         error "search orders failed: #{inspect error, pretty: true}"
-        []
+        {:error, error}
     end    
   end
 
@@ -207,8 +207,8 @@ defmodule Acs.Search do
     end
   end
 
-  def search_mall_orders(app_id,keyword,page,records_per_page) do
-    if String.length(keyword)>0 do
+  def search_mall_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do
+    if String.length(keyword) > 0 do
       query = %{
         query: %{
           bool: %{
@@ -234,10 +234,10 @@ defmodule Acs.Search do
 
       query = 
         case Integer.parse(keyword) do
-          {int_keyword,""} ->
-              update_in(query.query.bool.should,&(&1++[ %{term: %{user_id: int_keyword}}]))
-            _ ->
-              query
+          {int_keyword, ""} ->
+            update_in(query.query.bool.should, &(&1++[ %{term: %{user_id: int_keyword}}]))
+          _ ->
+            query
         end
 
       case Elasticsearch.search(%{index: "mall", type: "orders", query: query, params: %{timeout: "1m"}}) do
@@ -245,11 +245,11 @@ defmodule Acs.Search do
           ids = Enum.map(hits, &(&1._id))
           {:ok, total, ids }
         error ->
-          error "search orders failed: #{inspect error, pretty: true}"
-          throw(error)
+          error "search orders failed: #{inspect error}"
+          {:error, error}
       end
     else
-      {:ok, 0, {}}
+      {:ok, 0, []}
     end
   end
 

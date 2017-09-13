@@ -1,12 +1,12 @@
 defmodule Acs.Wcp.AppWcpLoginCodeResponse do
-  import  Ecto.Query
-  use     Utils.LogAlias
+  use   Utils.LogAlias
 
   alias Acs.Repo
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Wcp.AppWcpConfig
   alias Acs.LoginCodes.AppLoginCode
+  alias Acs.LoginCodes
 
   defmodule Scripts do
     import Exredis.Script
@@ -20,7 +20,7 @@ defmodule Acs.Wcp.AppWcpLoginCodeResponse do
         case CachedAppWcpConfig.get(app_id) do 
           %AppWcpConfig{} = cfg ->
             if app.can_assign_code do 
-              case AppLoginCode.find_by_openid(app_id, from) do 
+              case LoginCodes.get_by_openid(app_id, from) do 
                 x when x in [nil, "undefined"] ->
                   case Scripts.rand_code([app_id], [from]) do 
                     "undefined" ->
@@ -34,7 +34,7 @@ defmodule Acs.Wcp.AppWcpLoginCodeResponse do
                         app_id: app_id
                       }) |> Repo.insert!
 
-                      AppLoginCode.clear_stats_cache(app_id)
+                      LoginCodes.clear_stats_cache(app_id)
                       _build_content(cfg.new_code_template, code) 
                   end
 

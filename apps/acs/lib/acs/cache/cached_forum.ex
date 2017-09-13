@@ -3,7 +3,6 @@ defmodule Acs.Cache.CachedForum do
   use     Utils.LogAlias
 
   alias   Acs.Repo
-
   alias   Acs.Forums.Forum
 
   @key_base   "acs.forum"

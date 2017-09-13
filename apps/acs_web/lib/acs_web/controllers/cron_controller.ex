@@ -471,7 +471,7 @@ defmodule AcsWeb.CronController do
     if icount > 0 do
       Enum.each(Exredis.smembers(redis_cache_key), fn(image_path) -> 
         try do 
-          :ok = Tinypng.tinify_bg(image_path)
+          :ok = Tinypng.tinify(image_path)
           Exredis.srem(redis_cache_key, image_path)
         catch
           :error, _e ->

@@ -7,7 +7,6 @@ defmodule Acs.Search.ESUser do
         index: "acs",
         type: "user",
         doc: user,
-        params: nil,
         id: user.id
       })
     end

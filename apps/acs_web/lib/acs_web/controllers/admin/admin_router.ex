@@ -13,7 +13,7 @@ defmodule AcsWeb.AdminRouter do
     plug :check_admin_authorization, [admin_level: 3]
   end
 
-  scope "/", AcsWeb do
+  scope "/", AcsWeb.Admin do
     pipe_through :admin
 
     post "/fetch_apps", AdminController, :fetch_apps

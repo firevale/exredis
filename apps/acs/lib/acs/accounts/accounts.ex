@@ -10,16 +10,19 @@ defmodule Acs.Accounts do
   alias Acs.Accounts.UserSdkBinding
   alias Acs.Cache.CachedUser
   alias Utils.Password
+  alias Acs.Search.ESUser
 
   def create_user!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 
     user = User.changeset(%User{}, gen_user_attr!(account_id, password)) |> Repo.insert!
     CachedUser.refresh(user)
+    ESUser.index(user)
     user
   end
 
   def update_user!(%User{} = user, attr) do 
     user = User.changeset(user, attr) |> Repo.update!
     CachedUser.refresh(user)
+    ESUser.index(user)
     user    
   end
 

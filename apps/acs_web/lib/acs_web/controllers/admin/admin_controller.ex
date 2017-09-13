@@ -1,4 +1,4 @@
-defmodule AcsWeb.AdminController do
+defmodule AcsWeb.Admin.AdminController do
   use AcsWeb, :controller
 
   require Exsdks

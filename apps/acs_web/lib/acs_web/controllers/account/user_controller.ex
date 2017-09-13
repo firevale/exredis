@@ -460,72 +460,13 @@ defmodule AcsWeb.UserController do
   end
 
   def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
-    "keyword" => "", "page" => page, "records_per_page" => records_per_page}) do
-    query = %{
-      query: %{
-        has_child: %{
-          child_type: "app_users",
-          query:  %{term: %{app_id: app_id}}
-        }
-      },
-      from: (page - 1) * records_per_page,
-      size: records_per_page,
-      sort: %{ inserted_at: %{ order: :desc} }
-    }
-
-    {:ok, total, ids} =  User.search(query)
-    total_page = round(Float.ceil(total/records_per_page))
-    users = get_users_by_ids(app_id, ids)
-
-    conn |> json(%{success: true, total: total_page, users: users})
-  end
-  def search_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
     "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
-      query = %{
-        query: %{
-          bool: %{
-            must: %{
-              has_child: %{
-                child_type: "app_users",
-                query: %{
-                  bool: %{
-                    must: %{term: %{app_id: app_id}}
-                  }
-                },
-            }},
-            should: [
-              %{term: %{id: keyword}},
-              %{term: %{email: keyword}},
-              %{term: %{mobile: keyword}},
-              %{match: %{nickname: keyword}},
-              %{has_child: %{
-                child_type: "app_users",
-                query: %{
-                  bool: %{
-                    should: [
-                      %{match: %{game_user_name: keyword}},
-                      %{term: %{game_user_id: keyword}}
-                    ],
-                    minimum_should_match: 1
-                }}
-              }}
-            ],
-            minimum_should_match: 1,
-            boost: 1.0,
-          },
-        },
-        from: (page - 1) * records_per_page,
-        size: records_per_page,
-      }
-
-      {:ok, total, ids} =  User.search(query)
+      {:ok, total, users} = Acs.Search.search_user(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
       total_page = round(Float.ceil(total/records_per_page))
-      users = get_users_by_ids(app_id, ids)
-
       conn |> json(%{success: true, total: total_page, users: users})
   end
 
-  def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id}) when is_integer(id) do
+  def get_user_by_id(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => user_id}) when is_integer(user_id) do
     user = get_users_by_ids(app_id, id)
     conn |> json(%{success: true, user: user})
   end

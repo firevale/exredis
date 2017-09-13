@@ -8,10 +8,14 @@ defmodule DeployUploadedFile do
           [file_md5 | _] = String.split(md5sum_result)
           file_name = "#{file_md5}.#{ext}"
           case File.cp(src, Path.join(dest, file_name)) do 
-            :ok -> {:ok, file_name}
-            {:error, reason} -> {:error, reason} 
+            :ok -> 
+              AcsWeb.LazyTinypng.add_to_list(Path.join(dest, file_name))
+              {:ok, file_name}
+            {:error, reason} -> 
+              {:error, reason} 
           end
-        {:error, reason} -> {:error, reason} 
+        {:error, reason} -> 
+          {:error, reason} 
       end
     else 
       {:error, "file #{src} not exists"}

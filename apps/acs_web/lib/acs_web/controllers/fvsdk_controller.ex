@@ -63,7 +63,7 @@ defmodule AcsWeb.FVSdkController do
                        "app_user_name" => _app_user_name,
                        "osver" => _os,
                        "channel" => _sdk,
-                       "zone_id" => _zone_id} = params) do
+                       "zone_id" => _zone_id}) do
     # not supported 
     conn |> json(%{success: true})
   end

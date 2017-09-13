@@ -67,8 +67,7 @@ defmodule Acs.Search do
   end
 
   def search_user(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
-    "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
-      query = %{
+    query = %{
       query: %{
         bool: %{
           must: %{

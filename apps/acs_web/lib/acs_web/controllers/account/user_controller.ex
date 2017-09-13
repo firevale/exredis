@@ -1,9 +1,6 @@
 defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
-  alias Emservice.NeteaseDun
-  alias Acs.Accounts
-  alias Acs.LoginCodes
   alias Utils.Password
 
   plug :fetch_app_id
@@ -577,7 +574,7 @@ defmodule AcsWeb.UserController do
   # check text by netease dun
   defp check_nickname(userid) do
     # %{success: true}
-    case NeteaseDun.check_nickname(userid) do
+    case NeteaseDun.check_userid(userid) do
       {:error, label, info} ->
         if label do
           %{success: false, i18n_message: "account.error.userIdCheckFail"}

@@ -53,6 +53,20 @@ defmodule AcsStats.RealtimeMetrics do
     Exredis.bitcount(dru_key(date, app_id, platform))
   end
 
+  def get_app_dapu(date, app_id) do 
+    Exredis.bitcount(dapu_key(date, app_id))  
+  end
+  def get_app_dapu(date, app_id, platform) do 
+    Exredis.bitcount(dapu_key(date, app_id, platform))
+  end
+
+  def get_app_danpu(date, app_id) do 
+    Exredis.bitcount(danpu_key(date, app_id))  
+  end
+  def get_app_danpu(date, app_id, platform) do 
+    Exredis.bitcount(danpu_key(date, app_id, platform))
+  end
+
   def get_app_dad(date, app_id, platform) do 
     Exredis.bitcount(dad_key(date, app_id, platform))
   end
@@ -68,6 +82,13 @@ defmodule AcsStats.RealtimeMetrics do
 
   def get_app_drd(date, app_id, platform) do 
     Exredis.bitcount(drd_key(date, app_id, platform))
+  end
+
+  def get_app_dpf(date, app_id, platform) do 
+    case Exredis.get(dpf_key(date, app_id, platform)) do 
+      nil -> 0
+      v ->  String.to_integer(v)
+    end
   end
 
   def add_app_user(app_id, user_id) do 

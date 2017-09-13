@@ -12,13 +12,8 @@ defmodule AcsWeb.CronController do
 
   def notify_cp(conn, _params) do
     now = DateTime.utc_now()
-    query = from order in AppOrder,
-              select: order,
-              where: order.status == 2 and
-                     order.try_deliver_counter < 100 and
-                     order.inserted_at > ago(2, "week")
 
-    Repo.all(query) |> Enum.each(fn(order) ->
+    Acs.Apps.list_undelivered_app_orders() |> Enum.each(fn(order) ->
       elapsed = case order.try_deliver_at do
         nil -> Timex.diff(now, order.paid_at, :seconds)
         %DateTime{} -> Timex.diff(now, order.try_deliver_at, :seconds)
@@ -45,7 +40,7 @@ defmodule AcsWeb.CronController do
   end
 
   defp async_notify_cp(order) do
-    Task.Supervisor.async(Acs.TaskSupervisor, fn ->
+    Task.Supervisor.async(AcsWeb.TaskSupervisor, fn ->
       PaymentHelper.notify_cp(order)
     end)
   end

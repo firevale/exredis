@@ -69,7 +69,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
   end
 
   defp _invite_user(app_id, open_id, email) do 
-    Task.Supervisor.async(Acs.TaskSupervisor, fn ->
+    Task.Supervisor.async(AcsWeb.TaskSupervisor, fn ->
       case CachedAppWcpConfig.get(app_id) do 
         %AppWcpConfig{} = cfg ->
           if TestFlight.is_tester?(app_id, email) do 

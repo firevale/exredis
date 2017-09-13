@@ -22,13 +22,13 @@
         </div>
       </div>
       <div class="card">
-        <header class="card-header no-box-shadow">
+        <header class="card-header is-shadowless">
           <p class="card-header-title">
             发过的帖子
           </p>
         </header>
         <div class="card-content">
-          <div class="box no-radius is-marginless	is-paddingless">
+          <div class="box is-radiusless is-marginless	is-paddingless">
             <router-link v-for="n in 15" class="article" :to="{name: 'detail', params:{ postId: 1}}" tag="div">
               <p class="title is-ellipsis-2">
                 <strong>[综合讨论]</strong> 如何评价 LPL 夏季总决赛阿斯顿发 EDG vs RNG 3:2 胜利？

@@ -3,7 +3,7 @@
     <div class="card has-text-centered">
       <div class="card-content">
         <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>
-        <p class="title" style="display:flex; align-items: center; justify-content: center;">昵称：
+        <p class="title flex flex-center flex-vcentered">昵称：
           <label v-if="!editName"> {{ userInfo.nickname }}</label>
           <span class="title" v-if="!editName">
             &nbsp;&nbsp;<a class="icon icon-edit" @click="editNickName"></a>

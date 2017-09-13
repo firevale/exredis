@@ -10,7 +10,7 @@
             <i class="icon icon-message-pic" /><i class="icon icon-message-emoji" />
           </span>
           <p class="title">
-            <textarea class="textarea no-radius no-border" placeholder="请填写消息内容"></textarea>
+            <textarea class="textarea is-radiusless is-borderless" placeholder="请填写消息内容"></textarea>
           </p>
         </div>
         <div class="content comp-author-info align-items">

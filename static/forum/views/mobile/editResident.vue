@@ -4,12 +4,12 @@
       <div class="fields">
         <div class="field">
           <div class="control">
-            <input class="input is-primary no-radius" type="text" v-model.trim="residentName" @input="handleValidation" :placeholder="$t('forum.placeholder.inputResidentName')">
+            <input class="input is-primary is-radiusless" type="text" v-model.trim="residentName" @input="handleValidation" :placeholder="$t('forum.placeholder.inputResidentName')">
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <input class="input is-primary no-radius" type="text" v-model.trim="residentId" :placeholder="$t('forum.placeholder.inputResidentId')">
+            <input class="input is-primary is-radiusless" type="text" v-model.trim="residentId" :placeholder="$t('forum.placeholder.inputResidentId')">
           </div>
         </div>
         <p class="help" v-show="errorHint">

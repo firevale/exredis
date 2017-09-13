@@ -4,12 +4,12 @@
       <div class="fields">
         <div class="field">
           <div class="control">
-            <input class="input is-primary no-radius" type="text" placeholder="请输入手机号／邮箱">
+            <input class="input is-primary is-radiusless" type="text" placeholder="请输入手机号／邮箱">
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <input class="input is-primary no-radius" type="text" placeholder="请输入密码">
+            <input class="input is-primary is-radiusless" type="text" placeholder="请输入密码">
           </div>
           <p class="help">
             <span class="icon icon-error-tip"></span>

@@ -46,6 +46,7 @@ defmodule AcsWeb.Mixfile do
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.4"},
       {:mogrify, "~> 0.5"},
+      {:des_ecb3, github: "xbinxu/des_ecb3"},
 
       {:acs, in_umbrella: true},
       {:acs_stats, in_umbrella: true},

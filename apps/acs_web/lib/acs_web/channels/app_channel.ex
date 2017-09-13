@@ -3,6 +3,7 @@ defmodule AcsWeb.AppChannel do
 
   require Utils
   require AcsStats
+  alias   Acs.Auth
 
   @heartbeart_duration 20000
 
@@ -49,7 +50,7 @@ defmodule AcsWeb.AppChannel do
                    |> assign(:app_id, app_id)
                    |> assign(:device_id, device_id)
                    |> assign(:device_model, device_model)
-                   |> assign(:join_at, Utils.unix_timestamp)
+                   |> assign(:join_at, Utils.unix_timestamp())
                    |> assign(:platform, platform)
                    |> assign(:os_ver, os_ver)
                    |> assign(:sdk, sdk)
@@ -98,7 +99,7 @@ defmodule AcsWeb.AppChannel do
                    |> assign(:app_id, app_id)
                    |> assign(:device_id, device_id)
                    |> assign(:device_model, device_model)
-                   |> assign(:join_at, Utils.unix_timestamp)
+                   |> assign(:join_at, Utils.unix_timestamp())
                    |> assign(:platform, platform)
                    |> assign(:os_ver, os_ver)
                    |> assign(:app_user_id, app_user_id)

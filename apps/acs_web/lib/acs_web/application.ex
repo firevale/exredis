@@ -10,6 +10,8 @@ defmodule AcsWeb.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(AcsWeb.Endpoint, []),
+
+      supervisor(Task.Supervisor, [[name: AcsWeb.TaskSupervisor]]),
       # Start your own worker by calling: AcsWeb.Worker.start_link(arg1, arg2, arg3)
       # worker(AcsWeb.Worker, [arg1, arg2, arg3]),
       worker(TcpServer, [port, [:binary, 

@@ -13,4 +13,14 @@ defmodule Acs.Apps do
   def update_app_order!(%AppOrder{} = order, attr) do 
     AppOrder.changeset(order, attr) |> Repo.update!
   end
+
+  def list_undelivered_app_orders() do 
+    query = from order in AppOrder,
+      select: order,
+      where: order.status == 2 and
+            order.try_deliver_counter < 100 and
+            order.inserted_at > ago(2, "week")
+
+    Repo.all(query) 
+  end
 end

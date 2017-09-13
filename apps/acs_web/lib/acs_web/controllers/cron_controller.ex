@@ -2,7 +2,6 @@ defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
 
   alias   Exsm.MeishengService
-  alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
   alias   AcsWeb.LazyTinypng
   alias   Exservice.Tinypng
@@ -10,7 +9,148 @@ defmodule AcsWeb.CronController do
 
   require Exredis
 
-  def notify_cp(conn, _params) do
+  # by minute
+  def minute_schedule(conn, _params) do
+    tinify_schedule()
+    save_online_counter()
+
+    conn |> json(%{success: true, message: "minute_schedule done"})
+  end
+
+  # by hour
+  def hour_schedule(conn, _params) do
+    notify_cp()
+    cancel_mall_order()
+    save_hourly_online_counter()
+
+    conn |> json(%{success: true, message: "hour_schedule done"})
+  end
+  
+  # by day
+  def day_schedule(conn, _params) do
+    finish_mall_order()
+    daily_refresh()
+    daily_report()
+
+    conn |> json(%{success: true, message: "day_schedule done"})
+  end
+
+  # minute
+  defp tinify_schedule() do
+    if LazyTinypng.count() > 0 do
+      Enum.each(LazyTinypng.list_files(), fn(image_path) -> 
+        try do 
+          :ok = Tinypng.tinify(image_path)
+          LazyTinypng.remove_from_list(image_path)
+        catch
+          :error, _e ->
+            nil
+        end
+      end) 
+    end
+  end
+
+  # minute
+  @n_mins 180 
+  defp save_online_counter() do 
+    now = %{Timex.local | second: 0, microsecond: {0, 0}} 
+    label = Timex.format!(now, "{h24}:{0m}")
+    ts = Timex.to_unix(now)
+    today = Timex.to_date(now)
+    #yesterday = now |> Timex.shift(days: -1) |> Timex.to_date
+
+    Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
+      n_all = Enum.reduce(Exredis.keys("acs.online_counter.#{app_id}.*"), 0, fn(key, n) ->
+        n + Exredis.hlen(key)
+      end)  
+
+      n_ios = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
+        n + Exredis.hlen(key)
+      end)   
+
+      n_android = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
+        n + Exredis.hlen(key)
+      end)   
+
+      Exredis.lpush("_onlines.#{app_id}", "#{ts}.#{n_all}") 
+      Exredis.ltrim("_onlines.#{app_id}", 0, @n_mins) 
+      Exredis.lpush("_ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
+      Exredis.ltrim("_ponlines.#{app_id}.ios", 0, @n_mins) 
+      Exredis.lpush("_ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
+      Exredis.ltrim("_ponlines.#{app_id}.android", 0, @n_mins) 
+
+      cache_key = "onlines_chart.#{app_id}" 
+
+      %{
+        labels: labels,
+        datasets: [
+          %{ data: all }, %{data: ios}, %{data: android}
+        ]
+      } = 
+        case Exredis.get(cache_key) do 
+          nil ->
+            %{
+              labels: [],
+              datasets: [
+                %{
+                  label: "同时在线",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(IOS)",
+                  data: [],
+                },
+                %{
+                  label: "同时在线(ANDROID)",
+                  data: [],
+                }
+              ]
+            }
+          raw ->
+            raw |> Base.decode64! |> :erlang.binary_to_term
+        end
+
+      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_mins)
+      {all, _} = Enum.split([n_all | Enum.reverse(all)], @n_mins)
+      {ios, _} = Enum.split([n_ios | Enum.reverse(ios)], @n_mins)
+      {android, _} = Enum.split([n_android | Enum.reverse(android)], @n_mins)
+      
+      chart =
+        %{
+          labels: Enum.reverse(labels),
+          datasets: [
+            %{
+              label: "同时在线",
+              data: Enum.reverse(all),
+            },
+            %{
+              label: "同时在线(IOS)",
+              data: Enum.reverse(ios),
+            },
+            %{
+              label: "同时在线(ANDROID)",
+              data: Enum.reverse(android),
+            }
+          ]          
+        }
+
+      Exredis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
+      Excache.del(cache_key)
+
+      PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
+        event: "new_online_data", 
+        payload: %{
+          online: %{
+            label: label,
+            data: [ n_all, n_ios, n_android ],
+          },
+          metrics: AcsStats.get_realtime_metrics(app_id, today)
+      }})
+    end)
+  end
+
+  # hour
+  defp notify_cp() do
     now = DateTime.utc_now()
 
     Acs.Apps.list_undelivered_app_orders() |> Enum.each(fn(order) ->
@@ -36,7 +176,6 @@ defmodule AcsWeb.CronController do
         end
       end
     end)
-    conn |> json(%{success: true, message: "done"})
   end
 
   defp async_notify_cp(order) do
@@ -45,52 +184,14 @@ defmodule AcsWeb.CronController do
     end)
   end
 
-  def report_sms_amount(conn, _params) do 
-    {:ok, amount} = MeishengService.get_amount()
-    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
-    conn |> text("ok")
+  # hour
+  defp cancel_mall_order() do 
+    AcsWeb.MallOrderController.cancel_mall_order()
   end
 
-  def cancel_mall_order(conn, _params) do 
-    now = DateTime.utc_now()
-    query = from order in MallOrder,
-              select: order,
-              where: order.status == 0 and
-                order.inserted_at <= ago(20, "minute")
-
-      Repo.all(query) |> Enum.each(fn(order) ->
-        MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
-        rollback_goods_stock(order.id)
-    end)
-    conn |> json(%{success: true, message: "done"})
-  end
-  defp rollback_goods_stock(order_id) do
-    query = from od in MallOrderDetail,
-                  select: od,
-                  where: od.mall_order_id == ^order_id
-    Repo.all(query) |> Enum.each(fn(detail) ->
-      goods = CachedMallGoods.get(detail.mall_goods_id) 
-      MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
-      CachedMallGoods.refresh(goods)
-    end)
-  end
-
-  def finish_mall_order(conn, _params) do 
-    now = DateTime.utc_now()
-    query = from order in MallOrder,
-              select: order,
-              where: order.status == 1 and
-                order.inserted_at <= ago(15, "day")
-
-      Repo.all(query) |> Enum.each(fn(order) ->
-        MallOrder.changeset(order, %{status: 4, confirm_at: now, memo: "auto finish over 15 days"}) |> Repo.update()
-    end)
-    conn |> json(%{success: true, message: "done"})
-  end
-
+  # hour
   @n_hours 7*24
-  def save_hourly_online_counter(conn, _params) do 
+  defp save_hourly_online_counter() do 
     now = %{Timex.local | minute: 0, second: 0, microsecond: {0, 0}}
     begining = now |> Timex.shift(hours: -1) |> Timex.to_unix  
     ending = now |> Timex.to_unix
@@ -190,138 +291,32 @@ defmodule AcsWeb.CronController do
           data: [ max, ios_max, android_max ]
       }})
     end)
-
-    conn |> json(%{success: true, message: "done"})
   end
 
-  @n_mins 180 
-  def save_online_counter(conn, _params) do 
-    now = %{Timex.local | second: 0, microsecond: {0, 0}} 
-    label = Timex.format!(now, "{h24}:{0m}")
-    ts = Timex.to_unix(now)
-    today = Timex.to_date(now)
-    yesterday = now |> Timex.shift(days: -1) |> Timex.to_date
-
-    Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      n_all = Enum.reduce(Exredis.keys("acs.online_counter.#{app_id}.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)  
-
-      n_ios = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)   
-
-      n_android = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)   
-
-      Exredis.lpush("_onlines.#{app_id}", "#{ts}.#{n_all}") 
-      Exredis.ltrim("_onlines.#{app_id}", 0, @n_mins) 
-      Exredis.lpush("_ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
-      Exredis.ltrim("_ponlines.#{app_id}.ios", 0, @n_mins) 
-      Exredis.lpush("_ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
-      Exredis.ltrim("_ponlines.#{app_id}.android", 0, @n_mins) 
-
-      cache_key = "onlines_chart.#{app_id}" 
-
-      %{
-        labels: labels,
-        datasets: [
-          %{ data: all }, %{data: ios}, %{data: android}
-        ]
-      } = 
-        case Exredis.get(cache_key) do 
-          nil ->
-            %{
-              labels: [],
-              datasets: [
-                %{
-                  label: "同时在线",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(IOS)",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(ANDROID)",
-                  data: [],
-                }
-              ]
-            }
-          raw ->
-            raw |> Base.decode64! |> :erlang.binary_to_term
-        end
-
-      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_mins)
-      {all, _} = Enum.split([n_all | Enum.reverse(all)], @n_mins)
-      {ios, _} = Enum.split([n_ios | Enum.reverse(ios)], @n_mins)
-      {android, _} = Enum.split([n_android | Enum.reverse(android)], @n_mins)
-      
-      chart =
-        %{
-          labels: Enum.reverse(labels),
-          datasets: [
-            %{
-              label: "同时在线",
-              data: Enum.reverse(all),
-            },
-            %{
-              label: "同时在线(IOS)",
-              data: Enum.reverse(ios),
-            },
-            %{
-              label: "同时在线(ANDROID)",
-              data: Enum.reverse(android),
-            }
-          ]          
-        }
-
-      Exredis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
-      Excache.del(cache_key)
-
-      PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
-        event: "new_online_data", 
-        payload: %{
-          online: %{
-            label: label,
-            data: [ n_all, n_ios, n_android ],
-          },
-          metrics: AcsStats.get_realtime_metrics(app_id, today)
-      }})
-    end)
-
-    conn |> json(%{success: true, message: "done"})
+  # day
+  defp finish_mall_order() do 
+    AcsWeb.MallOrderController.finish_mall_order()
   end
 
-  def daily_refresh(conn, _params) do 
+  # day
+  defp daily_refresh() do 
     date = Timex.local |> Timex.shift(days: -15) |> Timex.to_date
     AcsStats.clear_realtime_metrics(date)
-    conn |> json(%{success: true, message: "done"})
   end
 
-  def daily_report(conn, _params) do 
+  # day
+  defp daily_report() do 
     {:ok, date} = Timex.local |> Timex.shift(days: -1) |> Timex.to_date |> Timex.format("{YYYY}-{0M}-{0D}")
     Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
       Reports.generate(app_id, date)
     end)
-
-    conn |> json(%{success: true, message: "daily_report done"})
   end
 
-  def tinify_schedule(conn, _params) do
-    if LazyTinypng.count() > 0 do
-      Enum.each(LazyTinypng.list_files(), fn(image_path) -> 
-        try do 
-          :ok = Tinypng.tinify(image_path)
-          LazyTinypng.remove_from_list(image_path)
-        catch
-          :error, _e ->
-            nil
-        end
-      end) 
-    end
-
-    conn |> json(%{success: true, message: "tinify_schedule done(#{LazyTinypng.count()})"})
+  def report_sms_amount(conn, _params) do 
+    {:ok, amount} = MeishengService.get_amount()
+    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
+    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    conn |> text("ok")
   end
+
 end

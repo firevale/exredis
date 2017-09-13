@@ -115,10 +115,10 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_customer_service
 
       post  "/onlines", StatsController, :onlines
-      post  "/brief_stats", StatsController, :brief_stats
+      post  "/realtime_metrics", StatsController, :realtime_metrics
       post  "/historic_onlines", StatsController, :historic_onlines
-      post  "/get_stats_by_day", StatsController, :get_stats_by_day
-      post  "/get_user_timing_by_day", StatsController, :get_user_timing_by_day
+      post  "/get_stats_by_date", StatsController, :get_stats_by_date
+      post  "/get_user_timing_by_date", StatsController, :get_user_timing_by_date
       post  "/get_stats_retention", StatsController, :get_stats_retention
       post  "/get_stats_device", StatsController, :get_stats_device
       post  "/get_stats_device_details", StatsController, :get_stats_device_details

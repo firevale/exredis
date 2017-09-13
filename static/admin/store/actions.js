@@ -86,9 +86,9 @@ export const joinAppChannel = ({
   commit(types.JOIN_APP_CHANNEL, params)
 }
 
-export const setAppBriefStats = ({
+export const setRealtimeMetrics = ({
   commit
-}, briefStats) => {
-  commit(types.SET_APP_BRIEF_STATS, briefStats)
+}, realtimeMetrics) => {
+  commit(types.SET_APP_BRIEF_STATS, realtimeMetrics)
 }
 

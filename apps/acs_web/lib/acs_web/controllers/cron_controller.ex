@@ -1,8 +1,8 @@
 defmodule AcsWeb.CronController do
   use     AcsWeb, :controller
   alias   AcsWeb.PaymentHelper
-  alias   Acs.MeishengSmsSender
-  alias   Acs.ChaoxinNotifier
+  alias   Exsm.MeishengService
+  alias   Exservice.Chaoxin
   alias   Acs.RedisMall
   alias   Ecto.Adapters.SQL
   alias   Phoenix.PubSub
@@ -54,9 +54,9 @@ defmodule AcsWeb.CronController do
   end
 
   def report_sms_amount(conn, _params) do 
-    {:ok, amount} = MeishengSmsSender.get_amount()
+    {:ok, amount} = MeishengService.get_amount()
     {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-    ChaoxinNotifier.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
+    Chaoxin.send_text_msg("截止#{now}, 美圣短信剩余用量为#{amount}条")
     conn |> text("ok")
   end
 
@@ -105,14 +105,14 @@ defmodule AcsWeb.CronController do
         if count <= 0 do 
           case Exredis.get("_monitor.check_admin_users") do 
             nil -> 
-              ChaoxinNotifier.send_text_msg("#{now}, admin_users 表被清空")          
+              Chaoxin.send_text_msg("#{now}, admin_users 表被清空")          
               Exredis.set("_monitor.check_admin_users", now)
             _ ->
               :ok
           end
         end
       _ ->
-        ChaoxinNotifier.send_text_msg("#{now}, 获取admin_users大小失败")          
+        Chaoxin.send_text_msg("#{now}, 获取admin_users大小失败")          
     end
 
     conn |> json(%{success: true, message: "done"})
@@ -212,7 +212,7 @@ defmodule AcsWeb.CronController do
       Excache.del(cache_key)
       Excache.set(cache_key, ttl: :timer.hours(1))
 
-      PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
+      PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
         event: "new_hourly_online_data", 
         payload: %{
           label: label,
@@ -309,115 +309,14 @@ defmodule AcsWeb.CronController do
       Exredis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
       Excache.del(cache_key)
 
-      yesterday_danu = Exredis.scard("acs.danu.#{yesterday}.#{app_id}") 
-      u_retention = if yesterday_danu > 0 do 
-        Exredis.scard("acs.da2nu.#{today}.#{app_id}") / yesterday_danu * 100
-      else 
-        -1
-      end
-
-      yesterday_danu_ios = Exredis.scard("acs.danu.#{yesterday}.#{app_id}.ios") 
-      u_retention_ios = if yesterday_danu_ios > 0 do 
-        Exredis.scard("acs.da2nu.#{today}.#{app_id}.ios") / yesterday_danu_ios * 100
-      else 
-        -1
-      end
-
-      yesterday_danu_android = Exredis.scard("acs.danu.#{yesterday}.#{app_id}.android") 
-      u_retention_android = if yesterday_danu_android > 0 do 
-        Exredis.scard("acs.da2nu.#{today}.#{app_id}.android") / yesterday_danu_android * 100
-      else 
-        -1
-      end
-
-      da2nd_ios = Exredis.scard("acs.da2nd.#{today}.#{app_id}.ios") 
-      da2nd_android = Exredis.scard("acs.da2nd.#{today}.#{app_id}.android") 
-
-      yesterday_dand = Exredis.scard("acs.dand.#{yesterday}.#{app_id}") 
-      d_retention = if yesterday_dand > 0 do 
-        (da2nd_ios + da2nd_android) / yesterday_dand * 100
-      else 
-        -1
-      end
-
-      yesterday_dand_ios = Exredis.scard("acs.dand.#{yesterday}.#{app_id}.ios") 
-      d_retention_ios = if yesterday_dand_ios > 0 do 
-        da2nd_ios / yesterday_dand_ios * 100
-      else 
-        -1
-      end
-
-      yesterday_dand_android = Exredis.scard("acs.dand.#{yesterday}.#{app_id}.android") 
-      d_retention_android = if yesterday_dand_android > 0 do 
-        da2nd_android / yesterday_dand_android * 100
-      else 
-        -1
-      end
-
-      PubSub.broadcast(Acs.PubSub, "admin.app:#{app_id}", %{
+      PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
         event: "new_online_data", 
         payload: %{
           online: %{
             label: label,
             data: [ n_all, n_ios, n_android ],
           },
-          brief_stats: %{
-            dlu: %{
-              total: Exredis.scard("acs.dlu.#{today}.#{app_id}"),
-              ios: Exredis.scard("acs.dlu.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dlu.#{today}.#{app_id}.android"),
-            },
-            dld: %{
-              total: Exredis.scard("acs.dld.#{today}.#{app_id}.ios") + Exredis.scard("acs.dld.#{today}.#{app_id}.android"),
-              ios: Exredis.scard("acs.dld.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dld.#{today}.#{app_id}.android"),
-            },
-            dau: %{
-              total: Exredis.scard("acs.dau.#{today}.#{app_id}"),
-              ios: Exredis.scard("acs.dau.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dau.#{today}.#{app_id}.android"),
-            },
-            dad: %{
-              total: Exredis.scard("acs.dad.#{today}.#{app_id}.ios") + Exredis.scard("acs.dad.#{today}.#{app_id}.android"),
-              ios: Exredis.scard("acs.dad.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dad.#{today}.#{app_id}.android"),
-            },
-            danu: %{
-              total: Exredis.scard("acs.danu.#{today}.#{app_id}"),
-              ios: Exredis.scard("acs.danu.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.danu.#{today}.#{app_id}.android"),
-            },
-            u2_retention: %{
-              total: u_retention,
-              ios: u_retention_ios,
-              android: u_retention_android,
-            },
-            d2_retention: %{
-              total: d_retention,
-              ios: d_retention_ios,
-              android: d_retention_android,
-            },
-            dand: %{
-              total: Exredis.scard("acs.dand.#{today}.#{app_id}.ios") + Exredis.scard("acs.dand.#{today}.#{app_id}.android"),
-              ios: Exredis.scard("acs.dand.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dand.#{today}.#{app_id}.android"),
-            },
-            dapu: %{
-              total: Exredis.scard("acs.dapu.#{today}.#{app_id}"),
-              ios: Exredis.scard("acs.dapu.#{today}.#{app_id}.ios"),
-              android: Exredis.scard("acs.dapu.#{today}.#{app_id}.android"),
-            },
-            fee: %{
-              ios: case Exredis.get("acs.totalfee.#{today}.#{app_id}.ios") do 
-                    nil -> 0
-                    x -> String.to_integer(x)
-                   end,
-              android: case Exredis.get("acs.totalfee.#{today}.#{app_id}.android") do 
-                         nil -> 0
-                         x when is_bitstring(x) -> String.to_integer(x)
-                       end,
-            }
-          }
+          metrics: AcsStats.get_realtime_metrics(app_id, today)
       }})
     end)
 
@@ -426,38 +325,7 @@ defmodule AcsWeb.CronController do
 
   def daily_refresh(conn, _params) do 
     date = Timex.local |> Timex.shift(days: -15) |> Timex.to_date
-    Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      Exredis.del("acs.dau.#{date}.#{app_id}")
-      Exredis.del("acs.dau.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dau.#{date}.#{app_id}.android")
-      Exredis.del("acs.dad.#{date}.#{app_id}")
-      Exredis.del("acs.dad.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dad.#{date}.#{app_id}.android")
-      Exredis.del("acs.dlu.#{date}.#{app_id}")
-      Exredis.del("acs.dlu.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dlu.#{date}.#{app_id}.android")
-      Exredis.del("acs.dld.#{date}.#{app_id}")
-      Exredis.del("acs.dld.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dld.#{date}.#{app_id}.android")
-      Exredis.del("acs.danu.#{date}.#{app_id}")
-      Exredis.del("acs.danu.#{date}.#{app_id}.ios")
-      Exredis.del("acs.danu.#{date}.#{app_id}.android")
-      Exredis.del("acs.da2nu.#{date}.#{app_id}")
-      Exredis.del("acs.da2nu.#{date}.#{app_id}.ios")
-      Exredis.del("acs.da2nu.#{date}.#{app_id}.android")
-      Exredis.del("acs.dand.#{date}.#{app_id}")
-      Exredis.del("acs.dand.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dand.#{date}.#{app_id}.android")
-      Exredis.del("acs.da2nd.#{date}.#{app_id}")
-      Exredis.del("acs.da2nd.#{date}.#{app_id}.ios")
-      Exredis.del("acs.da2nd.#{date}.#{app_id}.android")
-      Exredis.del("acs.dapu.#{date}.#{app_id}")
-      Exredis.del("acs.dapu.#{date}.#{app_id}.ios")
-      Exredis.del("acs.dapu.#{date}.#{app_id}.android")
-      Exredis.del("acs.totalfee.#{date}.#{app_id}.ios")
-      Exredis.del("acs.totalfee.#{date}.#{app_id}.android")
-    end)
-
+    AcsStats.clear_realtime_metrics(date)
     conn |> json(%{success: true, message: "done"})
   end
 

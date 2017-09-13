@@ -19,10 +19,6 @@ export default [{
     name: 'detail',
     component: require('../views/mobile/postDetail.vue'),
   }, {
-    path: 'comment/:postId',
-    name: 'newComment',
-    component: require('../views/mobile/newComment.vue')
-  }, {
     path: 'newPost',
     name: 'newPost',
     component: require('../views/mobile/newPost.vue')

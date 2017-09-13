@@ -89,27 +89,6 @@ defmodule AcsWeb.CronController do
     conn |> json(%{success: true, message: "done"})
   end
 
-  def check_admin_users(conn, _params) do 
-    {:ok, now} = Timex.local |> Timex.format("%Y-%m-%d %H:%M:%S", :strftime)
-
-    case SQL.query(Acs.Repo, "select count(id) from admin_users") do 
-      {:ok, %{rows: [[count]]}} ->
-        if count <= 0 do 
-          case Exredis.get("_monitor.check_admin_users") do 
-            nil -> 
-              Chaoxin.send_text_msg("#{now}, admin_users 表被清空")          
-              Exredis.set("_monitor.check_admin_users", now)
-            _ ->
-              :ok
-          end
-        end
-      _ ->
-        Chaoxin.send_text_msg("#{now}, 获取admin_users大小失败")          
-    end
-
-    conn |> json(%{success: true, message: "done"})
-  end
-
   @n_hours 7*24
   def save_hourly_online_counter(conn, _params) do 
     now = %{Timex.local | minute: 0, second: 0, microsecond: {0, 0}}

@@ -104,7 +104,6 @@ defmodule AcsWeb.Router do
     get "/report_sms_amount", CronController, :report_sms_amount
     get "/cancel_mall_order", CronController, :cancel_mall_order
     get "/finish_mall_order", CronController, :finish_mall_order
-    get "/check_admin_users", CronController, :check_admin_users
     get "/save_online_counter", CronController, :save_online_counter
     get "/save_hourly_online_counter", CronController, :save_hourly_online_counter
     get "/daily_refresh", CronController, :daily_refresh

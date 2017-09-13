@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.AppOrderController do
   use    AcsWeb, :controller
 
+  require AcsStats
+
   plug :fetch_user
   plug :fetch_zone_id
   plug :create_order
@@ -13,7 +15,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do
 
-    app_user = AcsStats.Repo.get_by(AppUser, app_id: app.id, user_id: user.id, zone_id: zone_id)
+    app_user = AcsStats.get_app_user(app.id, user.id, zone_id)
 
     order_info = %{
       id: Utils.generate_token(16),

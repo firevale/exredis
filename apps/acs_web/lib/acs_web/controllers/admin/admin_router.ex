@@ -143,20 +143,16 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_wcp_menu", WcpController, :update_wcp_menu
     end
 
-    scope "/point" do
+    scope "/pmall" do
       pipe_through :admin_app
-      post "/get_point_logs", PointController, :get_point_logs
-      post "/admin_add_point", PointController, :admin_add_point
       
-    end
-
-    scope "/point_mall" do
-      pipe_through :admin_app
       post  "/fetch_goods", PMallController, :fetch_goods
       post  "/update_goods", PMallController, :update_goods
       post  "/toggle_goods_status", PMallController, :toggle_goods_status
       post  "/delete_goods", PMallController, :delete_goods
       post  "/get_goods_detail", PMallController, :get_goods_detail
+      post "/get_point_logs", PMallController, :get_point_logs
+      post "/admin_add_point", PMallController, :admin_add_point
     end
 
   end

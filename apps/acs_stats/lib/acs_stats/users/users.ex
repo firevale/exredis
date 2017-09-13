@@ -7,11 +7,11 @@ defmodule AcsStats.Users do
   alias AcsStats.Repo
   use Utils.LogAlias
 
-  alias AcsStats.Cache.CachedAppUser
   alias Acs.Search.ESAppUser
   alias AcsStats.Users.AppUser
-
   alias AcsStats.Users.AppUserDailyActivity
+
+  alias AcsStats.Cache.CachedAppUser
   alias AcsStats.Cache.CachedAppUserDailyActivity 
 
   alias AcsStats.RealtimeMetrics
@@ -145,5 +145,9 @@ defmodule AcsStats.Users do
           :inserted_at]),
         order_by: [asc: app_user.zone_id]
     AcsStats.Repo.all(query)
+  end
+
+  def get_app_user(app_id, user_id, zone_id) do 
+    CachedAppUser.get(app_id, user_id, zone_id)
   end
 end

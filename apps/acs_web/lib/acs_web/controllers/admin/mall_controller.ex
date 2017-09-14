@@ -200,7 +200,7 @@ defmodule AcsWeb.Admin.MallController do
         {:error, i18n_message} ->
           json(conn, %{success: false, i18n_message: i18n_message})
         _ ->
-          Elasticsearch.update(%{ index: "mall", type: "orders", doc: %{ doc: %{ transaction_id: transaction_id}}, params: nil, id: order_id})
+          Acs.Search.ESMallOrder.update(order_id, transaction_id)
           order = Malls.get_order_info(order_id)
           json(conn, %{success: true, order: order, i18n_message: "admin.mall.order.messages.opSuccess"})
       end

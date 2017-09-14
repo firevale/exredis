@@ -22,7 +22,6 @@ defmodule Acs.Search.ESForum do
           inserted_at: Timex.format!(post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           last_reply_at: Timex.format!(post.last_reply_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
         },
-        params: nil,
         id: post.id
       })
     end

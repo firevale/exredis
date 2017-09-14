@@ -1,8 +1,8 @@
 defmodule Utils.Password do 
-	require Pbkdf2
+  alias   Comeonin.Pbkdf2
 
 	def hash(password) do 
-		Pbkdf2.hash_pwd_salt(password)
+		Pbkdf2.hashpwsalt(password)
 	end
 
 	def check(password, hash) do 
@@ -10,7 +10,7 @@ defmodule Utils.Password do
       nil ->
         false
 			"$pbkdf2-sha512$" <> _ ->
-				Pbkdf2.verify_pass(password, hash)
+				Pbkdf2.checkpw(password, hash)
 			_ ->
 				(encrypt(password) |> String.downcase) == (hash |> String.downcase)
 		end

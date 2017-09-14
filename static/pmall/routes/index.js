@@ -22,7 +22,7 @@ export default function(VueRouter) {
         {
           path: 'new_address',
           name: 'new_address',
-          component: require('../views/index.vue')
+          component: require('../views/newAddress.vue')
         }, {
           path: 'sign',
           name: 'sign',

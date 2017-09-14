@@ -21,5 +21,4 @@ defmodule Acs.Search.ESOrder do
     })   
   end
 
-
 end

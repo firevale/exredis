@@ -75,35 +75,7 @@ defmodule AcsWeb.MallController do
   end
 
   defp search_goods(_app_id, keyword, page, records_per_page) do
-    if String.length(keyword)>0 do
-          query = %{
-            query: %{
-              bool: %{
-                should: [
-                  %{term: %{id: keyword}},
-                  %{term: %{app_id: keyword}},
-                  %{match: %{name: keyword}},
-                  %{match: %{description: keyword}},
-                ],
-                minimum_should_match: 1,
-                boost: 1.0,
-              },
-            },
-            sort: %{inserted_at: %{order: :desc}},
-            from: (page - 1) * records_per_page,
-            size: records_per_page,
-          }
-
-          case Elasticsearch.search(%{index: "mall", type: "goods", query: query, params: %{timeout: "1m"}}) do
-            {:ok, %{hits: %{hits: hits, total: total}}} ->
-              ids = Enum.map(hits, &(&1._id))
-              {:ok, total, ids }
-            error ->
-             throw(error)
-          end
-        else
-          {:ok,0, {}}
-        end
+    Search.search_mall_goods(keyword, page, records_per_page)
   end
 
   #  show active_mall_goods

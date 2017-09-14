@@ -18,7 +18,7 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
         if SDKIYouxi.verify_signature_if1(app_key, params) do
           case Repo.get(AppOrder, order_id) do
             order = %AppOrder{} ->
-              fee = (order.price / 100) |> Float.to_string([decimals: 2, compact: true])
+              fee = (order.price / 100) |> :erlang.float_to_binary([decimals: 2, compact: true])
 
               result = ~s(
               <sms_pay_check_resp>

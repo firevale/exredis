@@ -87,6 +87,13 @@ input::-webkit-inner-spin-button {
   &.flex-vcentered {
     align-items: center;
   }
+  .column {
+    @for $i from 1 through 12 {
+      &.is-#{$i} {
+        flex: 0 0 ($i / 12) * 100%;
+      }
+    }
+  }
 }
 
 .is-borderless {

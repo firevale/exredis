@@ -49,6 +49,14 @@
       <div class="header-title">
         做任务拿积分
       </div>
+      <div class="pmall is-flex">
+        <div class="item column is-6">
+          AA
+        </div>
+        <div class="item column is-6">
+          BB
+        </div>
+      </div>
     </div>
   </div>
 </template>

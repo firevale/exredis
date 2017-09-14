@@ -48,7 +48,7 @@
         height: virtual-m-rem(210);
         width: virtual-m-rem(210);
       }
-      font-size: $size4;
+      font-size: $size-medium;
       text-shadow: 2px 1px 1px $white;
     }
     .header-right {
@@ -71,6 +71,13 @@
           0.2);
           border-bottom: 1px solid rgba($text-grey,
           0.2);
+        }
+      }
+      .pmall {
+        background: #e1e5eb;
+        .item {
+          height: virtual-m-rem(480);
+          border: 1px solid rgba($text-grey, 0.2);
         }
       }
     }

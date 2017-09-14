@@ -13,9 +13,9 @@ defmodule Exwcp.Plugs.CheckUrlSignature do
   def call(conn = %Plug.Conn{params: %{
     "timestamp" => timestamp, 
     "signature" => signature,
-    "nonce" => nonce}}, opts) do
-    config = opts[:fetch_wcp_config_from_conn].(conn)
+    "nonce" => nonce}}, [fun: fun]) when is_function(fun) do
 
+    config = fun.(conn)
     my_signature = [config.token, timestamp, nonce] |> sign
 
     case my_signature == signature do

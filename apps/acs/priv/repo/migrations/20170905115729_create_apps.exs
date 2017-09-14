@@ -19,6 +19,7 @@ defmodule Acs.Repo.Migrations.CreateApps do
       add :can_assign_code, :boolean, default: false
       add :wcp_download_enabled, :boolean, default: false
       add :obtain_code_url, :string
+      add :itc_app_id, :string
 
       add :chaoxin_group_id, :string   # 超信群组id， 用于发送超信通知
       

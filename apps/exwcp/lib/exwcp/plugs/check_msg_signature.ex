@@ -19,8 +19,8 @@ defmodule Exwcp.Plugs.CheckMsgSignature do
     encoding_aes_key <> "=" |> Base.decode64!
   end
 
-  def call(conn, opts) do
-    config = opts[:fetch_wcp_config_from_conn].(conn)
+  def call(conn, [fun: fun] = opts) when is_function(fun) do
+    config = fun.(conn)
 
     opts = Keyword.merge(opts,
       token: config.token,
@@ -41,6 +41,7 @@ defmodule Exwcp.Plugs.CheckMsgSignature do
     appid = Keyword.fetch!(opts, :appid)
     token = Keyword.fetch!(opts, :token)
     aes_key = Keyword.fetch!(opts, :aes_key)
+
     case msg_valid?(msg_encrypt, conn.params, token) do
       true ->
         case decrypt(msg_encrypt, aes_key) do

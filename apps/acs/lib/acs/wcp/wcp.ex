@@ -40,12 +40,15 @@ defmodule Acs.Wcp do
     end    
   end
 
-  def get_app_wcp_user(app_id, openid) do 
+  def get_app_wcp_user(app_id, openid: openid) do 
     if String.starts_with?(openid, "gh_") do
       %{openid: app_id, nickname: "系统" }
     else
       CachedAppWcpUser.get(app_id, openid)
     end
+  end
+  def get_app_wcp_user(app_id, email: email) do 
+    CachedAppWcpUser.get_by_email(app_id, email)
   end
 
   def create_app_wcp_user!(attr) do 
@@ -105,6 +108,5 @@ defmodule Acs.Wcp do
     CachedAppWcpMessageRule.refresh(rule.app_id)
     result
   end
-
 
 end

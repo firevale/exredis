@@ -1,9 +1,11 @@
 defmodule Acs.Wcp.AppWcpResponse do
 
   alias Acs.Wcp.AppWcpConfig
+  
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Cache.CachedAppWcpMessageRule
+
   alias Acs.Wcp.AppWcpTFDownloadResponse
   alias Acs.Wcp.AppWcpLoginCodeResponse
 

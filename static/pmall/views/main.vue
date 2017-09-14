@@ -1,15 +1,5 @@
 <template>
   <div class="root-container">
-    <nav class="header is-flex flex-fixed-size">
-      <div class="header-item flex-start"></div>
-      <div class="header-item flex-center">
-        <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
-      </div>
-      <div class="header-item flex-right">
-        <router-link class="icon icon-user" :to="{name: 'myProfile'}"></router-link>
-        <router-link class="icon icon-search" :to="{name: 'search'}"></router-link>
-      </div>
-    </nav>
     <transition>
       <router-view class="content-container flex-take-rest"> </router-view>
     </transition>

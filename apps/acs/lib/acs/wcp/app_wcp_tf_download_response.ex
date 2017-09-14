@@ -33,7 +33,6 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
     else 
       _ -> nil
     end
-
   end
 
   def is_waiting_email(app_id, open_id) do 

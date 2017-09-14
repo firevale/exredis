@@ -1,8 +1,10 @@
 html {
   -webkit-text-size-adjust: none;
+  font-size: 12px;
 }
 
 body {
+  font-size: 1rem;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -25,7 +27,7 @@ input::-webkit-inner-spin-button {
 
 #app {
   width: 100vw;
-  height: 100vh; // transform: translateZ(0);
+  height: 100vh; 
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -65,32 +67,46 @@ input::-webkit-inner-spin-button {
   flex-basis: auto;
 }
 
-.flex {
+.is-flex {
   display: flex;
-}
-
-.flex-left {
-  justify-content: flex-start;
-}
-
-.flex-center {
-  justify-content: center;
-}
-
-.flex-right {
-  justify-content: flex-end;
-}
-
-.flex-vcentered {
-  align-items: center;
+  .flex-left {
+    justify-content: flex-start;
+  }
+  .flex-center {
+    justify-content: center;
+  }
+  .flex-right {
+    justify-content: flex-end;
+  }
+  .flex-vcentered {
+    align-items: center;
+  }
+  .flex-top {
+    align-items: flex-start;
+  }
+  .flex-bottom {
+    align-items: flex-end;
+  }
 }
 
 .is-borderless {
   border: 0;
 }
 
-.has-divider {
-  margin-bottom: virtual-m-rem(40);
+.is-marginless {
+  margin: 0 !important
+}
+
+.is-paddingless {
+  padding: 0 !important;
+}
+
+.is-radiusless {
+  border-radius: 0 !important;
+}
+
+.is-shadowless {
+  box-shadow: none !important;
 }
 
 .is-clickable {

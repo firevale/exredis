@@ -1,4 +1,6 @@
-@import "./initial-bulma";
+// @import "./initial-bulma";
+@import "~normalize";
+@import "common/scss/mixins";
 @import "./global";
-$fa-font-path: '~font-awesome/fonts/';
-@import '~font-awesome/scss/font-awesome';
+// $fa-font-path: '~font-awesome/fonts/';
+// @import '~font-awesome/scss/font-awesome';

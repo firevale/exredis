@@ -4,29 +4,10 @@ defmodule AcsWeb.Admin.StatsController do
   require AcsStats
 
   def onlines(conn, %{"app_id" => app_id}) do 
-    chart = Excache.get!("onlines_chart.#{app_id}", fallback: fn(key) -> 
-      case Exredis.get(key) do 
-        nil ->
-          {:commit,  %{ labels: [],
-                        datasets: [
-                          %{
-                            label: "同时在线",
-                            data: [],
-                          },
-                          %{
-                            label: "同时在线(IOS)",
-                            data: [],
-                          },
-                          %{
-                            label: "同时在线(ANDROID)",
-                            data: [],
-                          }
-                        ]}}
-        raw ->
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
-      end
-    end)
-    conn |> json(%{ success: true, chart: chart})
+    conn |> json(%{
+      success: true, 
+      chart: AcsStats.get_online_chart(app_id)
+    })
   end
 
   def realtime_metrics(conn, %{"app_id" => app_id}) do 
@@ -39,29 +20,10 @@ defmodule AcsWeb.Admin.StatsController do
   end
 
   def historic_onlines(conn, %{"app_id" => app_id}) do 
-    chart = Excache.get!("hourly_onlines_chart.#{app_id}", fallback: fn(key) -> 
-      case Exredis.get(key) do 
-        nil ->
-          {:commit,  %{ labels: [],
-                        datasets: [
-                          %{
-                            label: "同时在线",
-                            data: [],
-                          },
-                          %{
-                            label: "同时在线(IOS)",
-                            data: [],
-                          },
-                          %{
-                            label: "同时在线(ANDROID)",
-                            data: [],
-                          }
-                        ]}}
-        raw ->
-          {:commit, raw |> Base.decode64! |> :erlang.binary_to_term}
-      end
-    end)
-    conn |> json(%{ success: true, chart: chart})
+    conn |> json(%{
+      success: true, 
+      chart: AcsStats.get_hourly_online_chart(app_id)
+    })
   end
 
   def get_stats_by_date(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do

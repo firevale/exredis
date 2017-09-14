@@ -50,7 +50,7 @@ const mutations = {
     state.channel.join()
       .receive('ok', _ => {
         console.log('app admin channel joined')
-        state.channel.on('new_online_data', payload => {
+        state.channel.on('realtime_metrics', payload => {
           state.latestOnlineData = payload.online
           state.realtimeMetrics = payload.realtime_metrics
         })

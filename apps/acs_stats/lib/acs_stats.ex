@@ -14,6 +14,11 @@ defmodule AcsStats do
   defdelegate remove_online_node(node), to: AcsStats.Onlines
   defdelegate get_online_user_number(app_id), to: AcsStats.Onlines
   defdelegate get_online_user_number(app_id, platform), to: AcsStats.Onlines
+  defdelegate list_online_apps(), to: AcsStats.Onlines
+  defdelegate update_online_chart(timestamp, label, app_id), to: AcsStats.Onlines
+  defdelegate update_historic_online_chart(beginning, ending, label, app_id), to: AcsStats.Onlines
+  defdelegate get_online_chart(app_id), to: AcsStats.Onlines
+  defdelegate get_hourly_online_chart(app_id), to: AcsStats.Onlines
 
   ### users
   defdelegate log_app_login_user(date, app_id, user_id, platform), to: AcsStats.Users
@@ -24,12 +29,10 @@ defmodule AcsStats do
   defdelegate list_app_users(app_id, user_id), to: AcsStats.Users
   defdelegate get_app_user(app_id, user_id, zone_id), to: AcsStats.Users
 
-
   ### devices
   defdelegate log_device_info(device_id, platform, device_model, os_ver, device_memory_size), to: AcsStats.Devices
   defdelegate log_app_device(date, app_id, device_id, platform, sdk), to: AcsStats.Devices
   defdelegate log_app_device_activity(date, app_id, device_id, active_seconds), to: AcsStats.Devices
-
 
   ### realtime metrics
   defdelegate get_app_user_number(app_id), to: AcsStats.RealtimeMetrics

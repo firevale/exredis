@@ -12,7 +12,6 @@ defmodule AcsStats.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-
     res = Supervisor.start_link([
       supervisor(AcsStats.Repo, []),
     ], strategy: :one_for_one, name: AcsStats.Supervisor)

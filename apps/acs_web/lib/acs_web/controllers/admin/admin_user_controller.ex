@@ -14,16 +14,16 @@ defmodule AcsWeb.Admin.AdminUserController do
   end
 
   def add_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
-                    %{"admin_id" => admin_id , "level" => level, "account_id" => account_id}) do
-    if AdminAuth.get_admin_level(admin_id, nil) == 1 do
+                    %{"admin_id" => user_id , "level" => level, "account_id" => account_id}) do
+    if AdminAuth.get_admin_level(user_id, nil) == 1 do
       conn |> json(%{success: false, i18n_message: "error.server.illegal"})
     else
       if level == 2 and Acs.AdminAuth.get_admin_level(acs_admin_id, nil) != 1 do
         conn |> json(%{success: false, i18n_message: "error.server.illegal"})
       else 
-        case Admin.add_admin_user(app_id, admin_id, account_id, level) do 
+        case Admin.add_admin_user(app_id, user_id, account_id, level) do 
           {:ok, admin_user} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "add_admin_user", admin_user)
+            Admin.log_admin_operation(acs_admin_id, app_id, "add_admin_user", %{account_id: account_id})
             conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
           _ ->
             conn |> json(%{success: false, i18n_message: "error.server.networkError"})
@@ -42,8 +42,12 @@ defmodule AcsWeb.Admin.AdminUserController do
   def delete_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
                         %{"admin_user_id" => admin_user_id} = params) do
     case Admin.delete_admin_user(app_id, admin_user_id) do 
-      {:ok, _} -> 
-        Admin.log_admin_operation(acs_admin_id, app_id, "delete_admin_user", params)
+      {:ok, admin_user} -> 
+        Admin.log_admin_operation(
+          acs_admin_id, 
+          app_id, 
+          "delete_admin_user", 
+          %{user_id: admin_user.user_id, account_id: admin_user.account_id})
         conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"}) 
 
       {:error, :admin_user_not_exists} ->

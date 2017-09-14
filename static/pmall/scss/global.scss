@@ -27,7 +27,7 @@ input::-webkit-inner-spin-button {
 
 #app {
   width: 100vw;
-  height: 100vh; 
+  height: 100vh;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -69,23 +69,23 @@ input::-webkit-inner-spin-button {
 
 .is-flex {
   display: flex;
-  .flex-left {
+  &.is-row {
+    flex-direction: row;
+  }
+  &.is-column {
+    flex-direction: column;
+  }
+  &.flex-left {
     justify-content: flex-start;
   }
-  .flex-center {
+  &.flex-center {
     justify-content: center;
   }
   .flex-right {
     justify-content: flex-end;
   }
-  .flex-vcentered {
+  &.flex-vcentered {
     align-items: center;
-  }
-  .flex-top {
-    align-items: flex-start;
-  }
-  .flex-bottom {
-    align-items: flex-end;
   }
 }
 

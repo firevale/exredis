@@ -1,7 +1,70 @@
 // @import "./initial-bulma";
+@import "./variables";
 @import "~normalize.css";
 @import "common/scss/mixins";
 @import "./global";
 @import "./other";
 // $fa-font-path: '~font-awesome/fonts/';
 // @import '~font-awesome/scss/font-awesome';
+
+.button {
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  &.btn-point {
+    width: virtual-m-rem(272);
+    height: virtual-m-rem(81);
+    background-image: url("~assets/pmall/1242-2234-1_03.png");
+  }
+  &.btn-my-conversion {
+    width: virtual-m-rem(272);
+    height: virtual-m-rem(81);
+    background-image: url("~assets/pmall/1242-2234-1_06.png");
+  }
+}
+
+.header-title {
+  height: virtual-m-rem(90);
+  line-height: virtual-m-rem(90);
+  background-color: red;
+  color: $white;
+}
+
+.index-page {
+  .header {
+    height: virtual-m-rem(410);
+    background-image: url("~assets/pmall/1242-2_02.png");
+    background-size: 100% virtual-m-rem(410);
+    padding: 0 virtual-m-rem(100);
+    display: flex;
+  }
+  .header-left {
+    width: 70%;
+    img {
+      height: virtual-m-rem(210);
+      width: virtual-m-rem(210);
+    }
+    font-size: $size4;
+    text-shadow: 2px 1px 1px $white;
+  }
+  .header-right {
+    width: 30%;
+  }
+  .task-panel {
+    .tasks {
+      display: flex;
+      flex-wrap: wrap;
+      .task {
+        color: $text-grey;
+        border: 1px solid red;
+        flex: 0 0 33.3%;
+        height: virtual-m-rem(325);
+        img {
+          width: virtual-m-rem(144);
+          height: virtual-m-rem(144);
+          margin-bottom: .5rem;
+        }
+      }
+    }
+  }
+}

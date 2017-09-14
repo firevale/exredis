@@ -29,6 +29,7 @@ defmodule Acs.Umbrella.Mixfile do
       {:redix, "~> 0.6", override: true},
       {:redix_pubsub, "~> 0.4", override: true},
       {:distillery, "~> 1.5", runtime: false},
+      {:ecto, "~> 2.2.3", override: true},
     ]
   end
 

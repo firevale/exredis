@@ -3,6 +3,7 @@ defmodule Acs.Accounts.User do
   import Ecto.Changeset
   alias Acs.Accounts.User
 
+  @derive {Poison.Encoder, except: [:__meta__]}
   schema "users" do
     field :email, :string
     field :mobile, :string

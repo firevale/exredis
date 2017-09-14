@@ -4,13 +4,12 @@ defmodule Acs.Admin.OpLog do
   alias Acs.Admin.OpLog
 
   @derive {Poison.Encoder, except: [:app, :user, :__meta__]}
-
   schema "admin_op_logs" do
     field :operate_type, :string
     field :log, :map
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

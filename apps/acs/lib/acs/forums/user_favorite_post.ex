@@ -5,7 +5,7 @@ defmodule Acs.Forums.UserFavoritePost do
 
   @derive {Poison.Encoder, except: [:__meta__]}
   schema "forums_user_favorite_posts" do
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
     belongs_to :post, Acs.Forums.ForumPost, type: :integer
     timestamps()
   end

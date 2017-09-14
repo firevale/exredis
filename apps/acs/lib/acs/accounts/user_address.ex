@@ -3,6 +3,7 @@ defmodule Acs.Accounts.UserAddress do
   import Ecto.Changeset
   alias Acs.Accounts.UserAddress
 
+  @derive {Poison.Encoder, except: [:__meta__, :user]}
   schema "user_addresses" do
     field :name, :string
     field :mobile, :string
@@ -11,7 +12,7 @@ defmodule Acs.Accounts.UserAddress do
     field :area_code, :string
     field :is_default, :boolean, default: false
 
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

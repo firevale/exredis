@@ -10,8 +10,8 @@ defmodule Acs.Forums.ForumComment do
     field :floor, :integer
 
     belongs_to :post, Acs.Forums.ForumPost, type: :integer
-    belongs_to :user, Acs.Accounts.User, type: :integer
-    belongs_to :editer, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
+    belongs_to :editer, Acs.Accounts.User
 
     timestamps()
   end

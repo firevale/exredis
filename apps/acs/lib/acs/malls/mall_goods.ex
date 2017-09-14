@@ -21,7 +21,7 @@ defmodule Acs.Malls.MallGoods do
     field :active, :boolean, default: false
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

@@ -19,10 +19,19 @@ defmodule Acs.Search.ESMallOrder do
         },
         inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
-      params: nil,
       id: order.id
     })
   end
 
+  def update(order_id, transaction_id) do
+    Elasticsearch.update(%{ 
+      index: "mall", 
+      type: "orders", 
+      doc: %{ 
+        transaction_id: transaction_id
+      }, 
+      id: order_id
+    })
+  end
 
 end

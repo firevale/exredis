@@ -14,8 +14,8 @@ Enum.map_every(0..max_id, 100, fn current_id ->
 
    if messages && messages != [] do
     Enum.map(messages, fn msg ->
-      from = Wcp.get_app_wcp_user(msg.app_id, msg.from)
-      to = Wcp.get_app_wcp_user(msg.app_id, msg.to)
+      from = Wcp.get_app_wcp_user(msg.app_id, openid: msg.from)
+      to = Wcp.get_app_wcp_user(msg.app_id, openid: msg.to)
       ESWcpMessage.index(%{
         from: from,
         to: to,

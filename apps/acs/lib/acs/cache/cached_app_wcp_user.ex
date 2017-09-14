@@ -19,7 +19,7 @@ defmodule Acs.Cache.CachedAppWcpUser do
     end)
   end
 
-  def find_by_email(app_id, email) when is_bitstring(app_id) and is_bitstring(email) do
+  def get_by_email(app_id, email) when is_bitstring(app_id) and is_bitstring(email) do
     Excache.get!(email_key(app_id, email), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 

@@ -86,7 +86,7 @@ defmodule AcsWeb.Admin.WcpController do
     admin_user = Accounts.get_user(acs_admin_id) |> Map.take([:nickname, :age, :email])
     
     with config = %AppWcpConfig{} <- Wcp.get_app_wcp_config(app_id),
-         wcp_user = %AppWcpUser{} <- Wcp.get_app_wcp_user(app_id, open_id)
+         wcp_user = %AppWcpUser{} <- Wcp.get_app_wcp_user(app_id, openid: open_id)
     do
       case Exwcp.Message.Custom.send_text(config, open_id, content) do
         %{errcode: 0, errmsg: "ok"} ->

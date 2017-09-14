@@ -22,6 +22,7 @@ defmodule Acs.Apps.App do
     field :can_assign_code, :boolean, default: false  # 是否开放激活码领取
     field :wcp_download_enabled, :boolean, default: false # 是否开放微信公众号下载
     field :obtain_code_url, :string
+    field :itc_app_id, :string
 
     field :chaoxin_group_id, :string # 超信运营群号
     
@@ -55,7 +56,7 @@ defmodule Acs.Apps.App do
     |> cast(attrs, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
       :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
       :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall, :restrict_login, :can_assign_code, 
-      :obtain_code_url, :wcp_download_enabled])
+      :obtain_code_url, :wcp_download_enabled, :itc_app_id])
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
   end

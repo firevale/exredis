@@ -3,9 +3,14 @@ defmodule AcsWeb.WcpController do
 
   alias Acs.Wcp
   alias Acs.Wcp.AppWcpConfig
+  alias Acs.Wcp.AppWcpResponse
 
-  plug Exwcp.Plugs.CheckUrlSignature
-  plug Exwcp.Plugs.CheckMsgSignature when action in [:on_receive_message]
+  plug Exwcp.Plugs.CheckUrlSignature, [fun: &__MODULE__.get_wcp_config/1]
+  plug Exwcp.Plugs.CheckMsgSignature, [fun: &__MODULE__.get_wcp_config/1] when action in [:on_receive_message] 
+
+  def get_wcp_config(%{params: %{"app_id" => app_id}}) do 
+    Acs.Wcp.get_app_wcp_config(app_id)
+  end
 
   def index(conn, %{"echostr" => echostr}) do
     conn |> text(echostr)
@@ -22,7 +27,7 @@ defmodule AcsWeb.WcpController do
 
           case Map.get(user_info, :openid) do
             ^openid ->
-              case Wcp.get_app_wcp_user(app_id, openid) do
+              case Wcp.get_app_wcp_user(app_id, openid: openid) do
                 nil ->
                   Wcp.create_app_wcp_user!(%{
                     openid: user_info.openid,
@@ -36,13 +41,11 @@ defmodule AcsWeb.WcpController do
 
                 wcp_user ->
                   Wcp.update_app_wcp_user!(wcp_user, %{
-                    openid: user_info.openid,
                     nickname: user_info.nickname,
                     sex: user_info.sex,
                     avatar_url: user_info.headimgurl,
                     city: user_info.city,
-                    country: user_info.country,
-                    app_id: app_id
+                    country: user_info.country
                   }) 
               end
             _ ->
@@ -53,7 +56,7 @@ defmodule AcsWeb.WcpController do
       end
     end, [])
 
-    wcp_user = CachedAppWcpUser.get(app_id, msg.fromusername)
+    wcp_user = Wcp.get_app_wcp_user(app_id, openid: msg.fromusername)
 
     case msg.msgtype do
       "text" ->
@@ -61,7 +64,7 @@ defmodule AcsWeb.WcpController do
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: msg.content,
-          inserted_at: Ecto.DateTime.utc,
+          inserted_at: Ecto.DateTime.utc(),
           create_time: msg.createtime,
           app_id: app_id})
 
@@ -71,8 +74,9 @@ defmodule AcsWeb.WcpController do
           msg_type: msg.msgtype,
           content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
           create_time: msg.createtime,
-          inserted_at: Ecto.DateTime.utc,
+          inserted_at: Ecto.DateTime.utc(),
           app_id: app_id})
+
       _ ->
         :do_nothing
     end
@@ -87,7 +91,7 @@ defmodule AcsWeb.WcpController do
           from: %{openid: reply.from, nickname: "系统"},
           msg_type: "text",
           content: reply.content,
-          inserted_at: Ecto.DateTime.utc,
+          inserted_at: Ecto.DateTime.utc(),
           app_id: app_id})
         conn |> render("text.xml", reply: reply)
     end

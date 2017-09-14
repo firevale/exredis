@@ -18,7 +18,7 @@ defmodule Excache.Fastlane do
     error "receive unsubscribed channel message, channel: #{channel}, payload: #{payload}" 
   end
 
-  defp handle_payload(%{action: :del, key: key, node: node}) do 
+  def handle_payload(%{action: "del", key: key, node: node}) do 
     case System.get_env("NODE") do 
       ^node -> 
         :do_nothing

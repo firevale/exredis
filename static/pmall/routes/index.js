@@ -12,12 +12,12 @@ export default function(VueRouter) {
         }, {
           path: 'draw',
           name: 'draw',
-          component: require('../views/index.vue')
+          component: require('../views/draw.vue')
         },
         {
           path: 'my_conversion',
           name: 'my_conversion',
-          component: require('../views/index.vue')
+          component: require('../views/myConversion.vue')
         },
         {
           path: 'new_address',

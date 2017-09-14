@@ -1,0 +1,83 @@
+.icon {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  &.icon-email {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(42);
+    background-image: url("~assets/pmall/1243_2_01.png");
+  }
+}
+
+.draw-page {
+  background-image: url("~assets/pmall/1245_34.jpg");
+  background-size: 100% 100%;
+  height: virtual-m-pixel(2064);
+  width: virtual-m-pixel(1242);
+  position: relative;
+  .draw {
+    background-image: url("~assets/pmall/1245_34_03.png");
+    background-size: 100% 100%;
+    width: virtual-m-pixel(990);
+    height: virtual-m-pixel(982);
+    position: absolute;
+    left: virtual-m-pixel(130);
+    bottom: virtual-m-pixel(380);
+  }
+  .turn-needle {
+    background-image: url("~assets/pmall/1245_34345_12.png");
+    background-size: 100% 100%;
+    width: virtual-m-pixel(145);
+    height: virtual-m-pixel(72);
+    position: absolute;
+    left: virtual-m-pixel(595);
+    bottom: virtual-m-pixel(820);
+  }
+  .click-draw {
+    background-image: url("~assets/pmall/1245_341_15.png");
+    background-size: 100% 100%;
+    width: virtual-m-pixel(482);
+    height: virtual-m-pixel(134);
+    position: absolute;
+    left: virtual-m-pixel(635);
+    bottom: virtual-m-pixel(120);
+  }
+  .my-total {
+    width: virtual-m-pixel(482);
+    height: virtual-m-pixel(130);
+    background-color: black;
+    border: 1px solid #9d2900;
+    position: absolute;
+    left: virtual-m-pixel(135);
+    bottom: virtual-m-pixel(120);
+    color: #fff;
+  }
+  strong {
+    color: #9d2900;
+  }
+}
+
+.my-conversion {
+  .conversion-head {
+    width: 95vw;
+    min-height: virtual-m-rem(130);
+    margin: 1rem auto .5rem auto;
+    padding-left: 1rem;
+    border: 1px solid rgba(167, 167, 167, .4);
+    border-radius: virtual-m-rem(10);
+  }
+  .conversion-content {
+    padding: 1rem;
+    .conversion-item {
+      position: relative;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(black, 0.1);
+      line-height: 1.5rem;
+      .is-right {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+      }
+    }
+  }
+}

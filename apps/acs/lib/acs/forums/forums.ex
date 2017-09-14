@@ -6,11 +6,14 @@ defmodule Acs.Forums do
   import Ecto.Query, warn: false
 
   alias Acs.Repo
+  alias Acs.Admin
   alias Acs.Forums.Forum
   alias Acs.Forums.ForumPost
+  alias Acs.Forums.ForumSection
   alias Acs.Forums.ForumComment
   alias Acs.Forums.UserFavoritePost
   alias Acs.Cache.CachedForum
+  alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedForumSection
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Cache.CachedForumHotPost
@@ -141,6 +144,11 @@ defmodule Acs.Forums do
     posts = Repo.all(query) |> CachedForumHotPost.filter_hot_posts
 
     {:ok, posts, total_page, total}
+  end
+
+  def update_forum_icon(forum, icon_path) do
+    Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
+    CachedForum.refresh(forum.id)
   end
 
   def add_post(forum_post, post) do
@@ -366,6 +374,48 @@ defmodule Acs.Forums do
     Repo.one!(from p in ForumPost, 
               select: count(1), 
               where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
+  end
+
+  def update_forum_info(acs_admin_id, app_id, forum_id, forum_info) do
+    case Repo.get_by(Forum, id: forum_id, app_id: app_id) do
+      nil ->
+        nil
+
+      %Forum{} = forum ->
+        changed = Forum.changeset(forum, forum_info)
+        changed |> Repo.update!
+        CachedForum.refresh(forum_id)
+        CachedApp.refresh(forum.app_id)
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_forum_info", changed.changes)
+        :ok
+    end
+  end
+
+  def update_section_info(acs_admin_id, app_id, section) do
+    case Repo.get(ForumSection, section.id) do
+      nil ->
+        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
+          {:ok, new_section} ->
+            CachedForum.refresh(new_section.forum_id)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", section)
+            {:ok, new_section}
+
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+        end
+
+      %ForumSection{} = old_section ->
+        changed = ForumSection.changeset(old_section, section)
+        case changed |> Repo.update do
+          {:ok, new_section} ->
+            CachedForum.refresh(new_section.forum_id)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", changed.changes)
+            {:ok, new_section}
+
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+        end
+    end
   end
 
   defp add_post_click(post_id, click) do

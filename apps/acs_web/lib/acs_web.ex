@@ -55,6 +55,7 @@ defmodule AcsWeb do
       alias Acs.LoginCodes
       alias Acs.LoginCodes.AppLoginCode
 
+      alias Acs.Forums
       alias Acs.Forums.Forum
       alias Acs.Forums.ForumSection
       alias Acs.Forums.ForumPost

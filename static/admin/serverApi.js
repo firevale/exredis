@@ -330,10 +330,6 @@ export default {
         return post('/admin_actions/log/get_operate_log', params)
       },
 
-      addOperateLog(params) {
-        return post('/admin_actions/log/add_operate_log', params)
-      },
-
       getPointLogs(params) {
         return post('/admin_actions/pmall/get_point_logs', params)
       },

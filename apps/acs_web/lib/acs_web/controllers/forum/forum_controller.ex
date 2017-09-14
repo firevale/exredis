@@ -237,31 +237,8 @@ defmodule AcsWeb.ForumController do
                [] -> post |> Map.put("has_pic", false) |> Map.put("active", true)
                _  -> post |> Map.put("has_pic", true) |> Map.put("active", true)
              end
-      
       {:ok, new_post} = ForumPost.changeset(forum_post, post) |> Repo.update
-
-      Elasticsearch.index(%{
-        index: "forum",
-        type: "posts",
-        doc: %{
-          forum_id: new_post.forum_id,
-          section_id: new_post.section_id,
-          user_id: new_post.user_id,
-          title: title,
-          content: content,
-          is_top: false,
-          is_hot: false,
-          is_vote: false,
-          active: true,
-          has_pic: new_post.has_pic,
-          reads: 0,
-          comms: 0,
-          inserted_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-          last_reply_at: Timex.format!(new_post.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-        },
-        params: nil,
-        id: new_post.id
-      })
+      Acs.Search.ESForum.index(new_post)
 
       conn |>json(%{success: true, message: "forum.newPost.addSuccess"})
     end
@@ -558,21 +535,7 @@ defmodule AcsWeb.ForumController do
                      "keyword" => keyword,
                      "page" => page,
                      "records_per_page" => records_per_page}) do
-    query = %{
-      query: %{
-        bool: %{
-          must: %{multi_match: %{
-          query: keyword,
-          fields: [:title, :content],
-        }},
-          filter: %{ term: %{active: true} }
-        }
-      },
-      from: ((page - 1) * records_per_page),
-      size: min(30, records_per_page)
-    }
-
-    case Elasticsearch.search(%{index: "forum", type: "posts", query: query, params: %{timeout: "1m"}}) do
+    case Search.search_forum(keyword, page, records_per_page) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         postList = Enum.map(hits, fn(%{
           _id: _id,

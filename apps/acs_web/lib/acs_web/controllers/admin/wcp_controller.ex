@@ -122,7 +122,7 @@ defmodule AcsWeb.Admin.WcpController do
 
   # update_wcp_message_rule
   def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, 
-    %{"id" => rule_id, "app_id" => app_id, "keywords" => keywords, "response" => _response} = rule) do
+    %{"id" => rule_id, "app_id" => app_id, "keywords" => _keywords, "response" => _response} = rule) do
     d "rule: #{inspect rule, pretty: true}"
     case Apps.get_app(app_id) do
       nil ->
@@ -132,7 +132,7 @@ defmodule AcsWeb.Admin.WcpController do
         case Wcp.get_wcp_message_rule(rule_id) do
           nil ->
             case Wcp.create_wcp_message_rule(rule) do 
-              {:ok, rule, changeset} -> 
+              {:ok, rule, _changeset} -> 
                 Admin.log_admin_operation(acs_admin_id, app_id, "add_wcp_message_rule", rule)
                 conn |> json(%{success: true, rule: rule})
 
@@ -157,7 +157,7 @@ defmodule AcsWeb.Admin.WcpController do
   end
 
   # delete_wcp_message_rule
-  def delete_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"rule_id" => rule_id} = params) do
+  def delete_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"rule_id" => rule_id}) do
     case Wcp.get_wcp_message_rule(rule_id) do
       %AppWcpMessageRule{} = rule ->
         case Wcp.delete_wcp_message_rule(rule) do

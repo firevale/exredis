@@ -73,6 +73,13 @@
           0.2);
         }
       }
+      .pmall {
+        background: #e1e5eb;
+        .item {
+          height: virtual-m-rem(480);
+          border: 1px solid rgba($text-grey, 0.2);
+        }
+      }
     }
     .banner {
       height: virtual-m-rem(229);

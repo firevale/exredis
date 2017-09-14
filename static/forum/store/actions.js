@@ -86,36 +86,8 @@ export const decrUserPostCount = ({
   commit(types.DECR_USER_POST_COUNT)
 }
 
-export const setCommonIssues = ({
-  commit
-}, issues) => {
-  commit(types.SET_COMMON_ISSUES, issues)
-}
-
 export const updateForumInfo = ({
   commit
 }, forum) => {
   commit(types.UPDATE_FORUM_INFO, forum)
-}
-
-export const updateShoppingCart = ({
-  commit
-}, goodsItem) => {
-  commit(types.UPDATE_MALL_SHOPPINGCART, goodsItem)
-}
-
-export const updateSelectedAddress = ({
-  commit
-}, userAddress) => {
-  commit(types.UPDATE_SELECTED_ADDRESS, userAddress)
-}
-export const updateSelectedGoods = ({
-  commit
-}, goods) => {
-  commit(types.UPDATE_SELECTED_GOODS, goods)
-}
-export const updateSelectedOrder = ({
-  commit
-}, order) => {
-  commit(types.UPDATE_SELECTED_ORDER, order)
 }

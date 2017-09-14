@@ -1,19 +1,26 @@
 <template>
   <div class="root-container">
-    <nav class="header level is-mobile">
-      <div class="level-item">
-      </div>
-      <div class="level-item">
+    <nav class="header is-flex flex-fixed-size">
+      <div class="header-item flex-start"></div>
+      <div class="header-item flex-center">
         <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
       </div>
-      <div class="level-item is-menu menu-right">
-        <router-link class="menu icon icon-user" :to="{name: 'search'}"></router-link>
-        <router-link class="menu icon icon-search" :to="{name: 'search'}"></router-link>
+      <div class="header-item flex-right">
+        <router-link class="icon icon-user" :to="{name: 'myProfile'}"></router-link>
+        <router-link class="icon icon-search" :to="{name: 'search'}"></router-link>
       </div>
     </nav>
-    <transition :name="transitionName">
+    <transition>
       <router-view class="content-container flex-take-rest"> </router-view>
     </transition>
+    <div v-show="showFooterBar" class="footer-bar">
+      <a class="buttons btn-footer-close" @click="closeFooter"></a>
+      <a class="buttons btn-logo"></a>
+      <a class="buttons btn-title"></a>
+      <a class="buttons btn-download"></a>
+    </div>
+    <a class="buttons btn-back-top" href="#"></a>
+    <a class="buttons btn-new-post" href="#"></a>
   </div>
 </template>
 <script>
@@ -32,6 +39,7 @@ export default {
     return {
       inApp: window.acsConfig.inApp,
       canGoBack: false,
+      showFooterBar: true,
     }
   },
 
@@ -89,6 +97,9 @@ export default {
           name: routerName
         })
       })
+    },
+    closeFooter: function() {
+      this.showFooterBar = false
     }
   },
 

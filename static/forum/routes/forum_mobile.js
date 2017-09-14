@@ -1,14 +1,14 @@
 export default [{
-  path: '/forum/index',
-  name: 'forumList',
-  component: require('../views/mobile/forum.vue')
-}, {
   path: '/forum/:forumId',
   name: 'forum',
   component: require('../views/mobile/main.vue'),
   children: [{
     path: 'index',
-    name: 'postList',
+    name: 'index',
+    component: require('../views/mobile/index.vue')
+  }, {
+    path: 'list',
+    name: 'list',
     component: require('../views/mobile/postList.vue')
   }, {
     path: 'search',
@@ -18,10 +18,6 @@ export default [{
     path: 'detail/:postId',
     name: 'detail',
     component: require('../views/mobile/postDetail.vue'),
-  }, {
-    path: 'comment/:postId',
-    name: 'newComment',
-    component: require('../views/mobile/newComment.vue')
   }, {
     path: 'newPost',
     name: 'newPost',
@@ -38,5 +34,49 @@ export default [{
     path: 'myProfile',
     name: 'myProfile',
     component: require('../views/mobile/myProfile.vue')
+  }, {
+    path: 'profile',
+    name: 'profile',
+    component: require('../views/mobile/profile.vue')
+  }, {
+    path: 'myMessage',
+    name: 'myMessage',
+    component: require('../views/mobile/myMessage.vue')
+  }, {
+    path: 'newMessage',
+    name: 'newMessage',
+    component: require('../views/mobile/newMessage.vue')
+  }, {
+    path: 'replyMessage',
+    name: 'replyMessage',
+    component: require('../views/mobile/replyMessage.vue')
+  }, {
+    path: 'messageDetail',
+    name: 'messageDetail',
+    component: require('../views/mobile/messageDetail.vue')
+  }, {
+    path: 'editMobile',
+    name: 'editMobile',
+    component: require('../views/mobile/account/editMobile.vue')
+  }, {
+    path: 'editEmail',
+    name: 'editEmail',
+    component: require('../views/mobile/account/editEmail.vue')
+  }, {
+    path: 'editResident',
+    name: 'editResident',
+    component: require('../views/mobile/account/editResident.vue')
+  }, {
+    path: 'login',
+    name: 'login',
+    component: require('../views/mobile/account/login.vue')
+  }, {
+    path: 'register',
+    name: 'register',
+    component: require('../views/mobile/account/register.vue')
+  }, {
+    path: 'retrievePassword',
+    name: 'retrievePassword',
+    component: require('../views/mobile/account/retrievePassword.vue')
   }]
 }, ]

@@ -27,7 +27,6 @@ defmodule AcsStats.Repo.Migrations.CreateAppDevices do
     create index(:app_devices, [:last_active_at])
     create index(:app_devices, [:last_paid_at])
     create index(:app_devices, [:app_id, :reg_date])
-    create index(:app_devices, [:app_id, :device_id])
     create index(:app_devices, [:platform])
     create index(:app_devices, [:first_paid_at])
   end

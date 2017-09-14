@@ -2,6 +2,7 @@ defmodule AcsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :acs_web
 
   socket "/socket", AcsWeb.UserSocket
+  socket "/app_admin_sock", AcsWeb.AppAdminSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

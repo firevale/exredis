@@ -1,11 +1,12 @@
 defmodule Acs.Auth do
   alias Utils.Password
-  alias Acs.Cache.CachedUser
+
+  alias Acs.Accounts
   alias Acs.Accounts.User
   alias Acs.Auth.AccessToken
 
   def authenticate(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do
-    case CachedUser.get(account_id) do
+    case Accounts.get_user(account_id) do
       nil -> {:error, :notfound}
       user = %User{} ->
         if Password.check(password, user.encrypted_password) do

@@ -24,7 +24,7 @@ defmodule Acs.Wcp.AppWcpResponse do
   def build_reply(app_id, %{msgtype: "text"} = msg) do 
     case CachedApp.get(app_id) do 
       nil -> nil
-      %{wcp_download_enabled: wcp_download_enabled} ->
+      %{wcp_download_enabled: _wcp_download_enabled} ->
         if AppWcpTFDownloadResponse.is_waiting_email(app_id, msg.fromusername) do 
             %{from: msg.tousername, 
               to: msg.fromusername, 
@@ -98,7 +98,7 @@ defmodule Acs.Wcp.AppWcpResponse do
     end
   end
 
-  defp _build_event_reply(app_id, 
+  defp _build_event_reply(_app_id, 
     %{msgtype: "event", event: "subscribe"}, 
     %{subscribed_response: nil}), do: nil
   defp _build_event_reply(app_id, 
@@ -108,14 +108,14 @@ defmodule Acs.Wcp.AppWcpResponse do
       to: msg.fromusername, 
       content: AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
-  defp _build_event_reply(app_id, 
+  defp _build_event_reply(_app_id, 
     %{msgtype: "event", event: "subscribe"} = msg, 
     %{subscribed_response: response}) do 
     %{from: msg.tousername, 
       to: msg.fromusername, 
       content: response}
   end
-  defp _build_event_reply(app_id, 
+  defp _build_event_reply(_app_id, 
     %{msgtype: "event", event: "SCAN"}, 
     %{scan_response: nil}), do: nil 
   defp _build_event_reply(app_id, 
@@ -125,7 +125,7 @@ defmodule Acs.Wcp.AppWcpResponse do
       to: msg.fromusername, 
       content: AppWcpLoginCodeResponse.build_reply_content(app_id, msg.fromusername)}
   end
-  defp _build_event_reply(app_id, 
+  defp _build_event_reply(_app_id, 
     %{msgtype: "event", event: "SCAN"} = msg, 
     %{scan_response: response}) do 
     %{from: msg.tousername, 
@@ -169,7 +169,7 @@ defmodule Acs.Wcp.AppWcpResponse do
           content: content}     
     end
   end
-  defp _build_event_reply(app_id, %{msgtype: "event"}, _cfg), do: nil
+  defp _build_event_reply(_app_id, %{msgtype: "event"}, _cfg), do: nil
 
   defp _android_download_message(app_id) do 
     case CachedApp.get(app_id) do 

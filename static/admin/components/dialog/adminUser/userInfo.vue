@@ -15,7 +15,7 @@
       <form name="section" @submit.prevent="handleSubmit">
         <aside class="menu">
           <ul class="menu-list">
-            <li v-for="item in users" :key="item.id"><a @click="selectUser(item)" :class="selectUserId==item.id ? 'is-active':''">{{item.nickname}}</a></li>
+            <li v-for="item in users" :key="item.id"><a @click="selectUser(item)" :class="selectUserId==item.id ? 'is-active':''">{{item.email}}</a></li>
           </ul>
         </aside>
         <div class="has-text-centered" style="margin-top: 15px">

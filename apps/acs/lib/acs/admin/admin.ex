@@ -18,7 +18,7 @@ defmodule Acs.Admin do
       app_id: app_id,
       user_id: user_id, 
       account_id: email,
-      level: level,
+      admin_level: level,
       active: true
     }) |> Repo.insert_or_update()
     
@@ -47,7 +47,7 @@ defmodule Acs.Admin do
       app_id: app_id, 
       operate_type: operate_type, 
       log: log  
-    }) |> Repo.insert
+    }) |> Repo.insert!
   end
 
   def list_app_admin_users(app_id) do 

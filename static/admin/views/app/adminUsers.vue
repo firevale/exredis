@@ -15,7 +15,7 @@
             <div class="card-content">
               <div class="admin-user">
                 <div v-for="item in users" :key="item.id">
-                  <span class="tag is-info is-medium" v-show="item.admin_level == 0">
+                  <span class="tag is-info is-medium" v-show="item.admin_level == 2">
                     {{item.user.email}}
                     <button v-if="level==1" @click="deleteUsers(item)" class="delete is-small"></button>
                   </span>
@@ -132,9 +132,9 @@ export default {
     deleteUsers: function(users) {
       let confirmMessage = users.admin_level == 2 ? this.$t(
         'admin.messages.confirmDeleteAppManager', {
-          nickName: users.user.nickname
+          nickName: users.user.email
         }) : this.$t('admin.messages.confirmDeleteCustomerService', {
-        nickName: users.user.nickname
+        nickName: users.user.email
       })
       let deletedMessage = users.admin_level == 2 ? this.$t(
         'admin.notification.message.appManagerDeleted', {

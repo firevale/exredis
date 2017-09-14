@@ -5,22 +5,21 @@ $green: hsl(141, 71%, 48%);
 $grey: #474543;
 $grey-light: #616161;
 $white: #ffffff;
-
 $primary: $red;
 $info: $orange;
 $success: $blue;
 $warning: $red;
 $danger: $red;
-
 $text: black;
 $text-grey: #474543;
-
 $size1: 2rem;
 $size2: 2rem;
-$size3: 2rem;
-$size4: 1.7rem;
+$size3: 1.7rem;
+$size4: 1.3rem;
 $size5: 1rem;
 $size6: 0.85rem;
+$size-normal: $size5;
+$size-medium: $size3;
 
 $colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger);
 @each $color in $colors {

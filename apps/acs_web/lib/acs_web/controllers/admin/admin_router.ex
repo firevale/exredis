@@ -49,7 +49,6 @@ defmodule AcsWeb.AdminRouter do
     scope "/log" do
       pipe_through :admin_app
       post "/get_operate_log", AdminController, :get_operate_log
-      post "/add_operate_log", AdminController, :add_operate_log
     end
 
     scope "/mall" do

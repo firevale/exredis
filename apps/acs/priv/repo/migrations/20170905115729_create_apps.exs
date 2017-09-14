@@ -15,6 +15,7 @@ defmodule Acs.Repo.Migrations.CreateApps do
       add :active, :boolean, default: true
       add :has_forum, :boolean, default: false
       add :has_mall, :boolean, default: false
+      add :has_pmall, :boolean, default: false
       add :restrict_login, :boolean, default: false
       add :can_assign_code, :boolean, default: false
       add :wcp_download_enabled, :boolean, default: false

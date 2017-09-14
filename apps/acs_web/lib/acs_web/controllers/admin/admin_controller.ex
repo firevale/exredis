@@ -62,7 +62,7 @@ defmodule AcsWeb.Admin.AdminController do
       %App{} = app ->
         changed = App.changeset(app, app_info)
         {:ok, new_app} = changed |> Repo.update
-        add_operate_log(acs_admin_id, app_id, "update_app_info", changed.changes)
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", changed.changes)
         _update_app_features(conn, new_app)
     end
   end
@@ -73,7 +73,7 @@ defmodule AcsWeb.Admin.AdminController do
         conn |> json(%{success: false, message: translate_errors(errors)})
 
       {:ok, app} ->
-        add_operate_log(acs_admin_id, app.id, "update_app_info", app_info)
+        Admin.log_admin_operation(acs_admin_id, app.id, "update_app_info", app_info)
         _update_app_features(conn, app)
     end
   end
@@ -212,7 +212,7 @@ defmodule AcsWeb.Admin.AdminController do
         {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "app_icons")
         App.changeset(app, %{icon: icon_path}) |> Repo.update!
         CachedApp.refresh(app_id)
-        add_operate_log(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
         conn |> json(%{success: true, icon_url: icon_path})
 
       _ ->
@@ -237,7 +237,7 @@ defmodule AcsWeb.Admin.AdminController do
         {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icons")
         AppGoods.changeset(goods, %{icon: image_path}) |> Repo.update!
         CachedApp.refresh(app_id)
-        add_operate_log(acs_admin_id, app_id, "update_goods_icon", %{icon: image_path})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_goods_icon", %{icon: image_path})
         conn |> json(%{success: true, icon_url: image_path})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
@@ -262,7 +262,7 @@ defmodule AcsWeb.Admin.AdminController do
         case Repo.delete(goods) do
           {:ok, _} ->
             CachedApp.refresh(app_id)
-            add_operate_log(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
+            Admin.log_admin_operation(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->
@@ -285,7 +285,7 @@ defmodule AcsWeb.Admin.AdminController do
         case AppGoodsProductId.changeset(%AppGoodsProductId{}, product_id_info) |> Repo.insert do
           {:ok, new_product_id_info} ->
              CachedApp.refresh(app_id)
-             add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", params)
+             Admin.log_admin_operation(acs_admin_id, app_id, "update_app_goods_product_id", params)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -297,7 +297,7 @@ defmodule AcsWeb.Admin.AdminController do
         case changed |> Repo.update do
           {:ok, new_product_id_info} ->
              CachedApp.refresh(app_id)
-             add_operate_log(acs_admin_id, app_id, "update_app_goods_product_id", changed.changes)
+             Admin.log_admin_operation(acs_admin_id, app_id, "update_app_goods_product_id", changed.changes)
             conn |> json(%{success: true, product_id_info: new_product_id_info})
 
           {:error, %{errors: errors}} ->
@@ -359,35 +359,6 @@ defmodule AcsWeb.Admin.AdminController do
     logs = Repo.all(query)
 
     conn |> json(%{success: true, logs: logs, total: total_page})
-  end
-
-  def add_operate_log(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"operate_type" => operate_type, "log" => log}) do
-    case add_operate_log(user_id, app_id, operate_type, log) do
-      :ok ->
-        conn |> json(%{success: true})
-      :error ->
-        conn |> json(%{success: false})
-    end
-
-    log = log |> Map.put("user_id", user_id) |> Map.put("app_id", app_id)
-    case OpLog.changeset(%OpLog{}, log) |> Repo.insert do
-      {:ok, _new_log} ->
-        conn |> json(%{success: true})
-
-      {:error, %{errors: errors}} ->
-        conn |> json(%{success: false, message: translate_errors(errors)})
-    end
-  end
-
-  def add_operate_log(user_id, app_id, operate_type, log) do
-    params = %{user_id: user_id, app_id: app_id, operate_type: operate_type, log: log}
-    case OpLog.changeset(%OpLog{}, params) |> Repo.insert do
-      {:ok, _new_log} ->
-        :ok
-      {:error, %{errors: errors}} ->
-        d "--------------- add_operate_log fail:#{inspect errors, pretty: true}"
-        :error
-    end
   end
 
 end

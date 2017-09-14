@@ -128,6 +128,9 @@
   </div>
 </template>
 <script>
+
+import Vue from 'vue'
+
 import {
   mapGetters,
   mapActions

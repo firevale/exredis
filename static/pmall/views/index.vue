@@ -9,11 +9,11 @@
         </p>
       </div>
       <div class="header-right is-flex is-column flex-center">
-        <a class="button btn-point"></a>
+        <a class="button btn-point" style="margin-bottom:.6rem"></a>
         <a class="button btn-my-conversion"></a>
       </div>
     </header>
-    <div class="task-panel">
+    <div class="panel">
       <div class="header-title">
         做任务拿积分
       </div>
@@ -43,7 +43,12 @@
             <span class="is-primary">+5</span>积分/日</p>
         </div>
       </div>
-      <div class="banner bg-full"></div>
+    </div>
+    <div class="banner bg-full"></div>
+    <div class="panel">
+      <div class="header-title">
+        做任务拿积分
+      </div>
     </div>
   </div>
 </template>

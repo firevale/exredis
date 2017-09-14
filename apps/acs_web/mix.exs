@@ -51,6 +51,8 @@ defmodule AcsWeb.Mixfile do
       {:acs, in_umbrella: true},
       {:acs_stats, in_umbrella: true},
       {:exsm, in_umbrella: true},
+      {:exredis, in_umbrella: true},
+      {:excache, in_umbrella: true},
       {:exsdks, in_umbrella: true},
       {:exservice, in_umbrella: true},
       {:extcp, in_umbrella: true},

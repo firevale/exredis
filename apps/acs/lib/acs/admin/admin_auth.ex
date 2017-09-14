@@ -25,7 +25,8 @@ defmodule Acs.AdminAuth do
     query = 
       from au in AdminUser, 
         where: au.active == true,
-        distinct: au.user_id 
+        select: au.user_id,
+        distinct: true
   
     for user_id <- Repo.all(query) do 
       Exredis.sadd("acs.admin.ids", user_id)

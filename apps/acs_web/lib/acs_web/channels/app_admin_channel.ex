@@ -3,7 +3,6 @@ defmodule AcsWeb.AppAdminChannel do
 
   require Utils
   alias   Acs.Admin.AdminUser
-  alias   Acs.Auth
 
   def join("admin.app:" <> _, %{"access_token" => access_token,
                                 "app_id" => app_id} = payload, socket) do

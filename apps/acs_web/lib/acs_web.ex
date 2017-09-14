@@ -61,6 +61,7 @@ defmodule AcsWeb do
       alias Acs.Forums.ForumPost
       alias Acs.Forums.ForumComment
       alias Acs.Forums.UserFavoritePost
+      alias Acs.Malls
       alias Acs.Malls.Mall
       alias Acs.Malls.MallOrder
       alias Acs.Malls.MallGoods
@@ -80,6 +81,7 @@ defmodule AcsWeb do
       alias Acs.Accounts
       alias Acs.Accounts.User
       alias Acs.Accounts.UserAddress
+      alias Acs.Admin
       alias Acs.Admin.AdminUser
       alias Acs.Admin.OpLog
       alias Acs.AdminAuth

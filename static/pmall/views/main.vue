@@ -1,0 +1,79 @@
+<template>
+  <div class="root-container">
+    <nav class="header is-flex flex-fixed-size">
+      <div class="header-item flex-start"></div>
+      <div class="header-item flex-center">
+        <router-link class="icon icon-jqxs" :to="{name: 'index'}"></router-link>
+      </div>
+      <div class="header-item flex-right">
+        <router-link class="icon icon-user" :to="{name: 'myProfile'}"></router-link>
+        <router-link class="icon icon-search" :to="{name: 'search'}"></router-link>
+      </div>
+    </nav>
+    <transition>
+      <router-view class="content-container flex-take-rest"> </router-view>
+    </transition>
+  </div>
+</template>
+<script>
+import Vue from '../vue-installed'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+import nativeApi from 'common/js/nativeApi'
+import * as acs from 'common/js/acs'
+import * as filter from 'common/js/keywordFilter'
+
+export default {
+  data: function() {
+    return {
+      inApp: window.acsConfig.inApp,
+      canGoBack: false,
+      showFooterBar: true,
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'transitionName',
+    ]),
+  },
+
+
+
+  methods: {
+    ...mapActions([
+      'setTransitionName', 'setUserProfile'
+    ]),
+
+    onBtnBackClicked: function() {
+      if (this.canGoBack) {
+        this.$router.back()
+      } else if (this.inApp) {
+        nativeApi.closeWebviewWithResult({
+          success: false
+        })
+      }
+    },
+
+    showPage: function(routerName) {
+      acs.checkIsLogin(_ => {
+        this.$router.push({
+          name: routerName
+        })
+      })
+    },
+    closeFooter: function() {
+      this.showFooterBar = false
+    }
+  },
+
+  watch: {
+    '$route' (to, from) {
+      this.canGoBack = (history.state != null)
+    }
+  },
+}
+</script>

@@ -108,6 +108,12 @@ defmodule Acs.Web.PageController do
          |> render("mall.html", is_mobile_account_supported: @is_mobile_account_supported)
   end
 
+  #积分商城
+  def show_pmall_page(conn, _params) do
+    conn |> put_layout(:false)
+         |> render("pmall.html")
+  end
+
   # 购买商品页面, 兼容旧版本
   def show_payment_page(%Plug.Conn{private: %{acs_app: app,
                                               acs_user: user,

@@ -63,6 +63,15 @@ var plugins = [
         './node_modules')) === 0))
     }
   }),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: "pmall_commons",
+    filename: 'js/pmall_commons.js',
+    chunks: ['pmall'],
+    minChunks: function(module, count) {
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
+    }
+  }),
   new ExtractTextPlugin({
     filename: (getPath) => {
       return getPath('css/[name].css').replace('theme_', 'themes/');
@@ -82,6 +91,7 @@ module.exports = {
     app: ['./app'],
     admin: ['./admin'],
     forum: ['./forum'],
+    pmall: ['./pmall'],
   },
 
   output: {
@@ -102,6 +112,7 @@ module.exports = {
       admin: path.join(__dirname, './admin'),
       app: path.join(__dirname, './app'),
       forum: path.join(__dirname, './forum'),
+      pmall: path.join(__dirname, './pmall'),
     }
   },
 

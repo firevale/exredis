@@ -27,6 +27,7 @@ defmodule Exutils.Mixfile do
     [
       {:pbkdf2, "~> 2.0"}, 
       {:comeonin, "~> 4.0"},
+      {:pbkdf2_elixir, "~> 0.12"},
       {:poison, "~> 3.1"},
       {:httpotion, "~> 3.0"},
     ]

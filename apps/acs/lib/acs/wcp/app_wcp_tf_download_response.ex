@@ -3,14 +3,9 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
   require Exredis
   require Excache
   
-  alias Acs.Repo
   alias Acs.Apps
   alias Acs.Wcp
   alias Acs.LoginCodes
-
-  alias Acs.Cache.CachedApp
-  alias Acs.Cache.CachedAppWcpUser
-  alias Acs.Cache.CachedAppWcpConfig
 
   alias Acs.Wcp.AppWcpConfig
   alias Acs.Wcp.AppWcpUser
@@ -47,7 +42,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
 
   def build_email_reply(app_id, open_id, email) do 
     with email = String.downcase(email),
-         app = %App{} <- Apps.get_app(app_id),
+         _app = %App{} <- Apps.get_app(app_id),
          cfg = %AppWcpConfig{} <- Wcp.get_app_wcp_config(app_id) 
     do 
       if Regex.match?(~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, email) do 
@@ -71,12 +66,12 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
 
   defp _invite_user(app_id, open_id, email) do 
     Process.spawn(fn ->
-      with app = %App{itc_app_id: itc_app_id} <- Apps.get_app(app_id),
+      with _app = %App{itc_app_id: itc_app_id} <- Apps.get_app(app_id),
            cfg = %AppWcpConfig{} <- Wcp.get_app_wcp_config(app_id) 
       do 
         if TestFlight.is_tester?(itc_app_id, email) do 
           content = String.replace(cfg.tf_already_invited_template, "#email", email)
-          Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+          Exwcp.Message.Custom.send_text(cfg, open_id, content)  
         else 
           case Wcp.get_app_wcp_user(app_id, openid: open_id) do 
             nil ->
@@ -85,20 +80,20 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
 
             %AppWcpUser{openid: ^open_id, tf_email: nil, nickname: nickname} = wcp_user ->
               case TestFlight.add_tester!(itc_app_id, email, nickname) do 
-                {:ok, _status, num_testers} ->
+                {:ok, _status, _num_testers} ->
                   Exredis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                   Wcp.update_app_wcp_user!(wcp_user, %{tf_email: email})
                   content = String.replace(cfg.new_tf_email_template, "#email", email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
 
                 {:error, :quata} -> 
                   Exredis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                   content = String.replace(cfg.tf_tester_full_template, "#email", email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
 
                 _ ->
                   content = String.replace(cfg.tf_invite_failed_template, "#email", email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
               end
               
             %AppWcpUser{openid: ^open_id, tf_email: old_email, nickname: nickname} = wcp_user ->
@@ -106,22 +101,22 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
               wcp_user = Wcp.update_app_wcp_user!(wcp_user, %{tf_email: nil}) 
 
               case TestFlight.add_tester!(itc_app_id, email, nickname) do 
-                {:ok, status, num_testers} ->
+                {:ok, status, _num_testers} ->
                   info "tester #{email} for #{nickname} added, status: #{status}"
                   Exredis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                   Wcp.update_app_wcp_user!(wcp_user, %{tf_email: email}) 
                   content = String.replace(cfg.update_tf_email_template, "#email", email)
                   content = String.replace(content, "#old_email", old_email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
 
                 {:error, :quata} -> 
                   Exredis.del("_wcp.tfd_wait_email.#{app_id}.#{open_id}")
                   content = String.replace(cfg.tf_tester_full_template, "#email", email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
 
                 _ ->
                   content = String.replace(cfg.tf_invite_failed_template, "#email", email)
-                  Exwcp.Message.Custom.send_text(app_id, open_id, content)  
+                  Exwcp.Message.Custom.send_text(cfg, open_id, content)  
               end                
           end
         end

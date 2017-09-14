@@ -19,6 +19,10 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+p{
+  padding: 0px;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -69,6 +73,7 @@ input::-webkit-inner-spin-button {
 
 .is-flex {
   display: flex;
+  flex-wrap: wrap;
   &.is-row {
     flex-direction: row;
   }

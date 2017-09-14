@@ -19,6 +19,12 @@
       height: virtual-m-rem(81);
       background-image: url("~assets/pmall/1242-2234-1_06.png");
     }
+    &.btn-conversion {
+      display: inline-block;
+      width: virtual-m-rem(163);
+      height: virtual-m-rem(48);
+      background-image: url("~assets/pmall/1249_2234_1_30.png");
+    }
   }
 
   .bg-full {
@@ -36,6 +42,7 @@
 
   .index-page {
     .header {
+      flex-shrink: 0;
       height: virtual-m-rem(410);
       background-image: url("~assets/pmall/1242-2_02.png");
       background-size: 100% virtual-m-rem(410);
@@ -74,10 +81,31 @@
         }
       }
       .pmall {
-        background: #e1e5eb;
-        .item {
+        padding: .5rem;
+        .column {
+          &:nth-child(odd) {
+            padding-right: 0.3rem;
+          }
+          &:nth-child(even) {
+            padding-left: 0.3rem;
+          }
+          padding-bottom: 0.6rem;
+        }
+        .item-box {
+          background: #e1e5eb;
           height: virtual-m-rem(480);
           border: 1px solid rgba($text-grey, 0.2);
+          padding: .5rem;
+          .item {
+            .image {
+              background: $white;
+              height: virtual-m-rem(266);
+              border-radius: 3px;
+            }
+            .item-content{
+                padding: 0 1.5rem;
+            }
+          }
         }
       }
     }

@@ -50,11 +50,32 @@
         做任务拿积分
       </div>
       <div class="pmall is-flex">
-        <div class="item column is-6">
-          AA
+        <div class="column is-6">
+          <div class="item-box">
+            <div class="item">
+              <div class="image"></div>
+              <div class="item-content">
+                <p class="is-flex is-vcentered">
+                  <span class="is-size-4 is-danger">惊奇雨伞</span> <a class="button btn-conversion" style="margin-left:1rem"></a></p>
+                <p>兑换积分:
+                  <span class="is-primary">98</span> <a href="#">查看礼品详情</a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="item column is-6">
-          BB
+        <div class="column is-6">
+          <div class="item-box">
+            <div class="item">
+              <div class="image"></div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="item-box">
+            <div class="item">
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ defmodule Acs.Wcp.AppWcpConfig do
 
   @derive {Poison.Encoder, except: [:app, :__meta__]}
 
-  schema "app_wcp_config" do
+  schema "app_wcp_configs" do
     field :verify_file, :string    # 验证文件
     field :wcp_app_id, :string    # 开发者ID
     field :wcp_app_key, :string   # 开发者密码

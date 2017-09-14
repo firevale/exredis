@@ -35,14 +35,17 @@ defmodule AcsWeb.Admin.AdminController do
             preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
 
     app = Repo.one(query)
-    sdk_bindings = app.sdk_bindings |> Enum.map(fn(%{sdk: sdk} = x) ->
-      binding = 
-        Exsdks.generate_sdk_info(sdk) 
-          |> Map.merge(x.binding 
-          |> JSON.encode!() 
-          |> JSON.decode!(keys: :atoms))
-      Map.put(x, :binding, binding)
-    end)
+
+    sdk_bindings = 
+      app.sdk_bindings 
+        |> Enum.map(fn(%{sdk: sdk} = x) ->
+            binding = 
+              Exsdks.generate_sdk_info(sdk) 
+                |> Map.merge(x.binding 
+                |> JSON.encode!() 
+                |> JSON.decode!(keys: :atoms))
+            Map.put(x, :binding, binding)
+          end)
     Map.put(app, :sdk_bindings, sdk_bindings)
 
     conn |> json(%{success: true, app: app})

@@ -6,6 +6,7 @@ defmodule Acs.Admin do
   import Ecto.Query, warn: false
   alias Acs.Repo
 
+  alias Acs.AdminAuth
   alias Acs.Admin.AdminUser
   alias Acs.Admin.OpLog
 
@@ -13,21 +14,31 @@ defmodule Acs.Admin do
 
   def add_admin_user(app_id, user_id, email, level) do 
     admin_user = Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) || %AdminUser{}
-    AdminUser.changeset(admin_user, %{
+    res = AdminUser.changeset(admin_user, %{
       app_id: app_id,
       user_id: user_id, 
       account_id: email,
       level: level,
       active: true
     }) |> Repo.insert_or_update()
+    
+    AdminAuth.refresh_admin_ids()
+    AdminAuth.refresh_admin_level(user_id, app_id)
+
+    res
   end
 
   def delete_admin_user(app_id, user_id) do 
-    case Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) do 
+    res = case Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) do 
       nil -> {:error, :admin_user_not_exists}
       %AdminUser{} = admin_user ->
         AdminUser.changeset(admin_user, %{active: false}) |> Repo.update
     end
+
+    AdminAuth.refresh_admin_ids()
+    AdminAuth.refresh_admin_level(user_id, app_id)
+
+    res
   end
 
   def log_admin_operation(admin_user_id, app_id, operate_type, log) do

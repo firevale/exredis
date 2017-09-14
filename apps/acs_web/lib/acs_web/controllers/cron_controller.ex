@@ -13,7 +13,7 @@ defmodule AcsWeb.CronController do
   def minutely_schedule(conn, _params) do
     Process.spawn(fn -> notify_cp() end, [])
     Process.spawn(fn -> tinify_images() end, [])
-    Process.spawn(fn -> save_online_counter() end, [])
+    Process.spawn(fn -> save_minutely_metrics() end, [])
 
     conn |> json(%{success: true, message: "minutely_schedule done"})
   end
@@ -21,7 +21,7 @@ defmodule AcsWeb.CronController do
   # by hour
   def hourly_schedule(conn, _params) do
     Process.spawn(fn -> cancel_mall_order() end, [])
-    Process.spawn(fn -> save_hourly_online_counter() end, [])
+    Process.spawn(fn -> save_hourly_metrics() end, [])
 
     conn |> json(%{success: true, message: "hourly_schedule done"})
   end
@@ -59,101 +59,20 @@ defmodule AcsWeb.CronController do
 
   # minute
   @n_mins 180 
-  defp save_online_counter() do 
+  defp save_minutely_metrics() do 
     now = %{Timex.local | second: 0, microsecond: {0, 0}} 
     label = Timex.format!(now, "{h24}:{0m}")
     ts = Timex.to_unix(now)
     today = Timex.to_date(now)
-    #yesterday = now |> Timex.shift(days: -1) |> Timex.to_date
 
-    Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      n_all = Enum.reduce(Exredis.keys("acs.online_counter.#{app_id}.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)  
-
-      n_ios = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.ios.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)   
-
-      n_android = Enum.reduce(Exredis.keys("acs.ponline_counter.#{app_id}.android.*"), 0, fn(key, n) ->
-        n + Exredis.hlen(key)
-      end)   
-
-      Exredis.lpush("_onlines.#{app_id}", "#{ts}.#{n_all}") 
-      Exredis.ltrim("_onlines.#{app_id}", 0, @n_mins) 
-      Exredis.lpush("_ponlines.#{app_id}.ios", "#{ts}.#{n_ios}") 
-      Exredis.ltrim("_ponlines.#{app_id}.ios", 0, @n_mins) 
-      Exredis.lpush("_ponlines.#{app_id}.android", "#{ts}.#{n_android}") 
-      Exredis.ltrim("_ponlines.#{app_id}.android", 0, @n_mins) 
-
-      cache_key = "onlines_chart.#{app_id}" 
-
-      %{
-        labels: labels,
-        datasets: [
-          %{ data: all }, %{data: ios}, %{data: android}
-        ]
-      } = 
-        case Exredis.get(cache_key) do 
-          nil ->
-            %{
-              labels: [],
-              datasets: [
-                %{
-                  label: "同时在线",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(IOS)",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(ANDROID)",
-                  data: [],
-                }
-              ]
-            }
-          raw ->
-            raw |> Base.decode64! |> :erlang.binary_to_term
-        end
-
-      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_mins)
-      {all, _} = Enum.split([n_all | Enum.reverse(all)], @n_mins)
-      {ios, _} = Enum.split([n_ios | Enum.reverse(ios)], @n_mins)
-      {android, _} = Enum.split([n_android | Enum.reverse(android)], @n_mins)
-      
-      chart =
-        %{
-          labels: Enum.reverse(labels),
-          datasets: [
-            %{
-              label: "同时在线",
-              data: Enum.reverse(all),
-            },
-            %{
-              label: "同时在线(IOS)",
-              data: Enum.reverse(ios),
-            },
-            %{
-              label: "同时在线(ANDROID)",
-              data: Enum.reverse(android),
-            }
-          ]          
-        }
-
-      Exredis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
-      Excache.del(cache_key)
-
+    for app_id <- AcsStats.list_online_apps() do 
       PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
-        event: "new_online_data", 
+        event: "realtime_metrics", 
         payload: %{
-          online: %{
-            label: label,
-            data: [ n_all, n_ios, n_android ],
-          },
-          metrics: AcsStats.get_realtime_metrics(app_id, today)
+          online: AcsStats.update_online_chart(ts, label, app_id),
+          metrics: AcsStats.get_realtime_metrics(app_id, today),
       }})
-    end)
+    end
   end
 
   # hour
@@ -197,107 +116,19 @@ defmodule AcsWeb.CronController do
   end
 
   # hour
-  @n_hours 7*24
-  defp save_hourly_online_counter() do 
+  defp save_hourly_metrics() do 
     now = %{Timex.local | minute: 0, second: 0, microsecond: {0, 0}}
-    begining = now |> Timex.shift(hours: -1) |> Timex.to_unix  
+    beginning = now |> Timex.shift(hours: -1) |> Timex.to_unix  
     ending = now |> Timex.to_unix
     label = Timex.format!(now, "{0M}-{D} {h24}:00")
 
-    Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
-      max = Exredis.lrange("_onlines.#{app_id}", 0, 90) |> Enum.filter_map(fn(x) ->
-        [ts, _counter] = String.split(x, ".", trim: true)  
-        ts = String.to_integer(ts)
-        ts >= begining && ts < ending
-      end, fn(x) -> 
-        [_, counter] = String.split(x, ".", trim: true)  
-        String.to_integer(counter)
-      end) |> Enum.max(fn -> 0 end)
-
-      ios_max = Exredis.lrange("_ponlines.#{app_id}.ios", 0, 90) |> Enum.filter_map(fn(x) ->
-        [ts, _counter] = String.split(x, ".", trim: true)  
-        ts = String.to_integer(ts)
-        ts >= begining && ts < ending
-      end, fn(x) -> 
-        [_, counter] = String.split(x, ".", trim: true)  
-        String.to_integer(counter)
-      end) |> Enum.min_max(fn -> 0 end)
-
-      android_max = Exredis.lrange("_ponlines.#{app_id}.android", 0, 90) |> Enum.filter_map(fn(x) ->
-        [ts, _counter] = String.split(x, ".", trim: true)  
-        ts = String.to_integer(ts)
-        ts >= begining && ts < ending
-      end, fn(x) -> 
-        [_, counter] = String.split(x, ".", trim: true)  
-        String.to_integer(counter)
-      end) |> Enum.min_max(fn -> 0 end)
-
-      cache_key = "hourly_onlines_chart.#{app_id}" 
-
-      %{
-        labels: labels,
-        datasets: [
-          %{ data: all }, %{data: ios}, %{data: android}
-        ]
-      } = 
-        case Exredis.get(cache_key) do 
-          nil ->
-            %{
-              labels: [],
-              datasets: [
-                %{
-                  label: "同时在线",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(IOS)",
-                  data: [],
-                },
-                %{
-                  label: "同时在线(ANDROID)",
-                  data: [],
-                }
-              ]
-            }
-          raw ->
-            raw |> Base.decode64! |> :erlang.binary_to_term
-        end
-
-      {labels, _} = Enum.split([label | Enum.reverse(labels)], @n_hours)
-      {all, _} = Enum.split([max | Enum.reverse(all)], @n_hours)
-      {ios, _} = Enum.split([ios_max | Enum.reverse(ios)], @n_hours)
-      {android, _} = Enum.split([android_max | Enum.reverse(android)], @n_hours)
-      
-      chart =
-        %{
-          labels: Enum.reverse(labels),
-          datasets: [
-            %{
-              label: "同时在线",
-              data: Enum.reverse(all),
-            },
-            %{
-              label: "同时在线(IOS)",
-              data: Enum.reverse(ios),
-            },
-            %{
-              label: "同时在线(ANDROID)",
-              data: Enum.reverse(android),
-            }
-          ]          
-        }
-
-      Exredis.set(cache_key, chart |> :erlang.term_to_binary |> Base.encode64)
-      Excache.del(cache_key)
-      Excache.set(cache_key, ttl: :timer.hours(1))
-
+    for app_id <- AcsStats.list_online_apps() do 
       PubSub.broadcast(AcsWeb.PubSub, "admin.app:#{app_id}", %{
-        event: "new_hourly_online_data", 
+        event: "hourly_metrics", 
         payload: %{
-          label: label,
-          data: [ max, ios_max, android_max ]
+          online: AcsStats.update_historic_online_chart(beginning, ending, label, app_id),
       }})
-    end)
+    end
   end
 
   # day

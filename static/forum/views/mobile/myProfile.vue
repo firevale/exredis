@@ -1,41 +1,161 @@
 <template>
-  <div class="my_profile">
-    <div class="columns is-multiline is-mobile has-text-centered">
-      <div class="column is-12">
-        <router-link class="icon icon-head-portrait" :to="{name: 'search'}"></router-link>
-      </div>
-      <div class="column is-12">
-        <span class="nickname">
-          昵称：firevale&nbsp;&nbsp;
-          <router-link class="icon icon-edit" :to="{name: 'search'}"></router-link>
-        </span>
+  <div class="my-profile">
+    <div class="card has-text-centered">
+      <div class="card-content">
+        <p class="title"><a class="icon icon-head-portrait" @click="showTipMsg"></a></p>
+        <p class="title flex flex-center flex-vcentered">昵称：
+          <label v-if="!editName"> {{ userInfo.nickname }}</label>
+          <span class="title" v-if="!editName">
+            &nbsp;&nbsp;<a class="icon icon-edit" @click="editNickName"></a>
+          </span>
+          <span v-if="editName">
+            <input class="input is-primary" type="text" v-model.trim="nickname" :placeholder="$t('forum.placeholder.nickname')"
+              :value="userInfo.nickname">&nbsp;&nbsp;
+          </span>
+          <span v-if="editName">
+            <a class="buttons btn-save" @click="onSubmit"></a>
+          </span>
+        </p>
+        <p v-if="tipError" class="tip-error">
+          <i class="icon icon-error-tip"></i>
+          <strong>{{$t('forum.error.nickNameError')}}</strong>
+        </p>
       </div>
     </div>
-    <div class="binding">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <span class="info">绑定手机：</span>
+    <div class="card has-divider">
+      <div class="card-content">
+        <div class="article">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <span class="title">{{ $t('forum.account.mobile') }}：{{ mobile }}</span>
+            </div>
+            <div class="level-right">
+              <router-link v-if="userInfo.mobile" class="button is-primary is-small is-thickness" :to="{name: 'editMobile'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editMobile'}">{{ $t('forum.account.mobile') }}</router-link>
+            </div>
+          </div>
         </div>
-        <div class="level-right">
-          <input type="button" value="绑定手机" class="button is-info" />
+        <div class="article">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <span class="title">{{ $t('forum.account.email') }}：{{ email }}</span>
+            </div>
+            <div class="level-right">
+              <router-link v-if="userInfo.email" class="button is-primary is-small is-thickness" :to="{name: 'editEmail'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editEmail'}">{{ $t('forum.account.email') }}</router-link>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="level is-mobile">
-        <div class="level-left">
-          <span class="info">绑定邮箱：</span>
+        <div class="article">
+          <div class="level is-mobile" v-if="isMobileAccountSupported">
+            <div class="level-left">
+              <span class="title">{{ $t('forum.account.residentInfo') }}：{{ userInfo.resident_id? $t('forum.account.authenticated')
+                : $t('forum.account.notAuthenticated') }}
+              </span>
+            </div>
+            <div class="level-right">
+              <router-link v-if="userInfo.resident_id" class="button is-primary is-small is-thickness" :to="{name: 'editResident'}">{{ $t('forum.account.change') }}</router-link>
+              <router-link v-else class="button is-primary is-small is-thickness" :to="{name: 'editResident'}">{{ $t('forum.account.residentInfo') }}</router-link>
+            </div>
+          </div>
         </div>
-        <div class="level-right">
-          <input type="button" value="绑定邮箱" class="button is-info" />
-        </div>
-      </div>
-      <div class="level is-mobile">
-        <div class="level-left">
-          <span class="info">实名认证：</span>
-        </div>
-        <div class="level-right">
-          <input type="button" value="实名认证" class="button is-info" />
+        <div class="level is-mobile has-text-centered">
+          <div class="level-item">
+            <router-link class="button is-primary is-small logout" :to="{name: 'editResident'}">退出账号</router-link>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+<script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+import modalDialog from '../../components/modalDialog'
+import * as utils from 'common/js/utils'
+import * as acs from 'common/js/acs'
+import nativeApi from 'common/js/nativeApi'
+
+
+export default {
+  data() {
+    return {
+      editName: false,
+      nickname: '',
+      tipError: false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ]),
+    isInApp() {
+      return acs.isInApp
+    },
+    isMobileAccountSupported() {
+      return acs.isMobileAccountSupported
+    },
+    showLogout() {
+      return acs.showLogout
+    },
+    avatarUrl() {
+      return this.userInfo.avatar_url ? this.userInfo.avatar_url : window.acsConfig.defaultAvatarUrl
+    },
+    email() {
+      return this.userInfo.email ? utils.emailMask(this.userInfo.email) : this.$t(
+        'forum.account.notBound')
+    },
+    mobile() {
+      return this.userInfo.mobile ? utils.mobileMask(this.userInfo.mobile) : this.$t(
+        'forum.account.notBound')
+    }
+  },
+
+  methods: {
+    ...mapActions(['updateUserNickname']),
+
+    showTipMsg: function() {
+      modalDialog.showMessage(
+        this.$t('forum.placeholder.headportraitTips')
+      )
+    },
+    editNickName: function() {
+      this.editName = true
+    },
+    logout: function() {
+      nativeApi.closeWebviewWithResult({
+        success: false,
+        action: 'logout',
+      })
+    },
+    checkCharacter: function(val) {
+      return /^[\w\u4e00-\u9fa5]+$/gi.test(this.nickname)
+    },
+    onSubmit: async function() {
+      if (!this.checkCharacter(this.nickname)) {
+        this.tipError = true
+        return
+      }
+
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.updateUserNickname({
+          nickname: utils.formatEmojiChars(this.nickname)
+        })
+        if (result.success) {
+          this.updateUserNickname(this.nickname)
+          window.acsConfig.user.nickname = this.nickname
+          this.editName = false
+          this.tipError = false
+        } else {
+          this.setErrorMessage(this.$t(result.i18n_message, result.i18n_message_object))
+        }
+        this.processing = false
+      }
+    },
+  },
+}
+</script>

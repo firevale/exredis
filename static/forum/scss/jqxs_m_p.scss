@@ -1,46 +1,258 @@
-@import "common/scss/mixins";
-.person {
-  width: 100%;
-  margin: 0 !important;
-  .media {
-    padding: .5rem 1rem;
-    margin-bottom: 1rem;
-    .media-left {
-      padding-top: virtual-rem(30);
+  @import "common/scss/mixins";
+  .footer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $black;
+    width: 100vw;
+    height: virtual-m-rem(210);
+  }
+
+  .is-olive {
+    color: $olive;
+  }
+
+  .has-radius {
+    border-radius: virtual-m-rem(10);
+  }
+
+  .tip-number {
+    position: absolute;
+    top: 0;
+    right: - .3rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 0.6rem;
+    color: $light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary;
+  }
+
+  .button {
+    &.is-thickness {
+      width: 5rem;
     }
-    .info {
-      margin: 0 0 0 .8rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      line-height: virtual-rem(110);
+    &.is-blackness {
+      width: 8rem;
     }
-    .media-right {
+  }
+
+  .buttons {
+    background-size: contain;
+    background-repeat: no-repeat;
+    &.btn-save {
+      display: block;
+      width: virtual-m-rem(150);
+      height: virtual-m-rem(80);
+      background-image: url("~assets/themes/jqxs_mobile/19_03_03.png");
+    }
+    &.btn-logo {
+      position: absolute;
+      top: - virtual-m-rem(50);
+      left: virtual-m-rem(150);
+      width: virtual-m-rem(230);
+      height: virtual-m-rem(230);
+      background-image: url("~assets/themes/jqxs_mobile/icon1.png");
+    }
+    &.btn-title {
+      position: absolute;
+      top: virtual-m-rem(50);
+      left: virtual-m-rem(410);
+      width: virtual-m-rem(350);
+      height: virtual-m-rem(109);
+      background-image: url("~assets/themes/jqxs_mobile/title.png");
+    }
+    &.btn-download {
+      position: absolute;
+      top: virtual-m-rem(20);
+      right: virtual-m-rem(20);
+      width: virtual-m-rem(413);
+      height: virtual-m-rem(170);
+      background-image: url("~assets/themes/jqxs_mobile/download.png");
+    }
+    &.btn-footer-close {
+      position: absolute;
+      top: virtual-m-rem(72.5);
+      left: virtual-m-rem(38);
+      width: virtual-m-rem(76);
+      height: virtual-m-rem(65);
+      background-image: url("~assets/themes/jqxs_mobile/df_03.png");
+    }
+    &.btn-back-top {
+      position: fixed;
+      bottom: virtual-m-rem(220);
+      right: virtual-m-rem(20);
+      width: virtual-m-rem(120);
+      height: virtual-m-rem(120);
+      background-image: url("~assets/themes/jqxs_mobile/Group_2.png");
+    }
+    &.btn-new-post {
+      position: fixed;
+      bottom: virtual-m-rem(480);
+      right: virtual-m-rem(20);
+      width: virtual-m-rem(120);
+      height: virtual-m-rem(120);
+      background-image: url("~assets/themes/jqxs_mobile/Group_1.png");
+    }
+  }
+
+  .common-page {
+    position: relative;
+    .article {
+      padding: .55rem .3rem;
+      .is-ellipsis-2 {
+        line-height: 1.125rem;
+        max-height: 2.25rem;
+      }
+      &:not(:last-child) {
+        border-bottom: 1px solid $grey;
+      }
+      .article-date {
+        span {
+          margin-right: .7rem;
+        }
+      }
+    }
+  }
+
+  .my-profile {
+    .article {
+      padding: 1.2rem .3rem;
+      &:not(:last-child) {
+        border-bottom: 1px solid $grey;
+      }
+    }
+    input {
+      width: 6.615rem;
+      height: 1.89rem;
+    }
+    .logout {
+      width: 78vw;
+      margin-top: 3rem;
+    }
+    .tip-error {
+      margin-left: 3.402rem;
+      margin-top: .378rem;
+      span {
+        padding-left: .189rem;
+      }
+    }
+  }
+
+  .my-message {
+    .message-item {
+      padding: .7rem .7rem;
+      &:not(:last-child) {
+        border-bottom: 1px solid $grey;
+      }
+    }
+  }
+
+  .common-message {
+    .spacing {
+      padding-top: 2.5rem;
+      padding-bottom: 1rem;
+    }
+    .content {
+      &:not(:last-child) {
+        border: 1px solid $grey
+      }
+    }
+    .icon {
+      margin-left: virtual-m-rem(20);
+      margin-right: virtual-m-rem(10);
+    }
+  }
+
+  .account {
+    background-color: $light;
+    padding-top: 2.8rem;
+    form {
+      width: 78vw;
+      margin: 0 auto 0 auto;
+    }
+    .fields {
+      line-height: 2.5rem;
+    }
+    .btn-verfy {
+      width: 7.56rem;
+    }
+  }
+
+  .message-detail {
+    .message-item {
+      margin-bottom: 1rem !important;
       p {
-        line-height: virtual-rem(80);
-        &:first-child {
-          margin-top: virtual-rem(20);
-        }
-        &:last-child {
-          margin-top: virtual-rem(30);
-        }
+        margin-bottom: 0rem !important;
+      }
+    }
+    .content {
+      position: relative;
+      margin-bottom: 1rem !important;
+    }
+    .self-message {
+      position: relative;
+      background-color: #6bc5fc;
+      margin-right: 1rem;
+      padding: .8rem;
+      max-width: 82vw;
+      &:after {
+        content: '';
+        display: block;
+        right: - .6rem;
+        top: 1rem;
+        position: absolute;
+        font-size: 0;
+        line-height: 0;
+        border-width: .6rem;
+        border-color: #6bc5fc;
+        border-right-width: 0;
+        border-style: dashed;
+        border-left-style: solid;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+      }
+    }
+    .other-message {
+      position: relative;
+      background-color: #c1e8ff;
+      margin-left: 1rem;
+      padding: .8rem;
+      max-width: 82vw;
+      &:after {
+        content: '';
+        display: block;
+        left: - .6rem;
+        top: 1rem;
+        position: absolute;
+        font-size: 0;
+        line-height: 0;
+        border-width: .6rem;
+        border-color: #c1e8ff;
+        border-left-width: 0;
+        border-style: dashed;
+        border-right-style: solid;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+      }
+    }
+    .message-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: virtual-m-rem(160);
+      background-color: $grey;
+      padding: 0 1rem;
+      border-top: 1px solid rgba($grey-light, 0.2);
+      input {
+        background-color: $grey;
+      }
+      .icon {
+        margin-left: virtual-m-rem(30);
       }
     }
   }
-  .content {
-    .content-item {
-      margin-left: virtual-rem(30);
-      margin-right: virtual-rem(30);
-      .section-name {
-        color: #44adec;
-        font-weight: 400;
-      }
-      h5 {
-        width: 98vw;
-        word-wrap: break-word;
-        word-break: normal;
-      }
-    }
-  }
-}

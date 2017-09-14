@@ -362,6 +362,18 @@ export default {
       getPointGoodsDetail(params) {
         return post('/admin_actions/pmall/get_goods_detail', params)
       },
+
+      getTaskList(params) {
+        return post('/admin_actions/task/get_task_list', params)
+      },
+
+      updateTask(params) {
+        return post('/admin_actions/task/update_task', params)
+      },
+
+      toggleTaskStatus(params) {
+        return post('/admin_actions/task/toggle_task_status', params)
+      },
     }
   }
 }

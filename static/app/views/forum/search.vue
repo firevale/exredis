@@ -1,5 +1,10 @@
 <template>
   <div class="search-page">
+    <div>
+      测试
+      <h1 class="title">Title</h1>
+      <h2 class="subtitle">Subtitle</h2>
+    </div>
     <div class="search-bar is-full" :class="postList && postList.length > 0 ? 'has-bottom-line' : ''">
       <div class="field is-grouped">
         <p class="control is-expanded has-icon">

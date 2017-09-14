@@ -6,7 +6,6 @@
 @import "./other";
 // $fa-font-path: '~font-awesome/fonts/';
 // @import '~font-awesome/scss/font-awesome';
-
 .button {
   display: block;
   background-size: contain;
@@ -21,6 +20,10 @@
     height: virtual-m-rem(81);
     background-image: url("~assets/pmall/1242-2234-1_06.png");
   }
+}
+
+.bg-full {
+    background-size: 100% 100%;
 }
 
 .header-title {
@@ -66,5 +69,11 @@
         }
       }
     }
+  }
+  .banner {
+    width: 100vw;
+    height: virtual-m-rem(229);
+    background-image: url("~assets/pmall/12422_04.png");
+    background-size:100% virtual-m-rem(229);
   }
 }

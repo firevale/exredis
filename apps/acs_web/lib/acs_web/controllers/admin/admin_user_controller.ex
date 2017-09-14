@@ -23,8 +23,6 @@ defmodule AcsWeb.Admin.AdminUserController do
       else 
         case Admin.add_admin_user(app_id, admin_id, account_id, level) do 
           {:ok, admin_user} ->
-            AdminAuth.refresh_admin_ids()
-            AdminAuth.refresh_admin_level(admin_id, app_id)
             Admin.log_admin_operation(acs_admin_id, app_id, "add_admin_user", admin_user)
             conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
           _ ->
@@ -45,8 +43,6 @@ defmodule AcsWeb.Admin.AdminUserController do
                         %{"admin_user_id" => admin_user_id} = params) do
     case Admin.delete_admin_user(app_id, admin_user_id) do 
       {:ok, _} -> 
-        AdminAuth.refresh_admin_ids()
-        AdminAuth.refresh_admin_level(admin_user_id, app_id)
         Admin.log_admin_operation(acs_admin_id, app_id, "delete_admin_user", params)
         conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"}) 
 

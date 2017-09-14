@@ -2,6 +2,7 @@ defmodule AcsWeb.Admin.AdminController do
   use AcsWeb, :controller
 
   require Exsdks
+  alias   Acs.Admin
 
   def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
     admin_level = Acs.AdminAuth.get_admin_level(user_id)

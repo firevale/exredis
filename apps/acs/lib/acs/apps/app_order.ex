@@ -40,7 +40,7 @@ defmodule Acs.Apps.AppOrder do
     field :app_user_id, :integer
 
     belongs_to :app,  Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
     belongs_to :goods, Acs.Apps.AppGoods, type: :string
 
     timestamps()

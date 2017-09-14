@@ -36,7 +36,7 @@ defmodule AcsWeb.Admin.AdminUserController do
   end
 
   def list_app_admin_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _)do
-    conn |> json(%{success: true, users: Acs.Admin.list_app_admin_users(app_id)})
+    conn |> json(%{success: true, users: Admin.list_app_admin_users(app_id)})
   end
 
   def delete_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 

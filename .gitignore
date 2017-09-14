@@ -23,4 +23,4 @@ erl_crash.dump
 
 /static/node_modules
 
-/priv/static
+apps/*/priv/static

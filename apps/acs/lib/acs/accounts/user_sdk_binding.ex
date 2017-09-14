@@ -3,11 +3,12 @@ defmodule Acs.Accounts.UserSdkBinding do
   import Ecto.Changeset
   alias Acs.Accounts.UserSdkBinding
 
+  @derive {Poison.Encoder, except: [:__meta__, :user]}
   schema "user_sdk_bindings" do
     field :sdk, :string
     field :sdk_user_id, :string
 
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

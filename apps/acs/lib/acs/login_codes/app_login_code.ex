@@ -12,7 +12,7 @@ defmodule Acs.LoginCodes.AppLoginCode do
     field :used_at, :utc_datetime
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

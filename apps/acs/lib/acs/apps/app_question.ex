@@ -14,7 +14,7 @@ defmodule Acs.Apps.AppQuestion do
     field :reply_at, :utc_datetime
     field :platform, :string
 
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
     belongs_to :app, Acs.Apps.App, type: :string
 
     timestamps()

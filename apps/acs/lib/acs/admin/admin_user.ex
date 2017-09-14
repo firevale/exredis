@@ -2,13 +2,14 @@ defmodule Acs.Admin.AdminUser do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Poison.Encoder, except: [:__meta__, :app, :user]}
   schema "admin_users" do
     field :account_id, :string
     field :active, :boolean, default: true
     field :admin_level, :integer, default: 0
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

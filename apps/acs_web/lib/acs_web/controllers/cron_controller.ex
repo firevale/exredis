@@ -58,7 +58,6 @@ defmodule AcsWeb.CronController do
   end
 
   # minute
-  @n_mins 180 
   defp save_minutely_metrics() do 
     now = %{Timex.local | second: 0, microsecond: {0, 0}} 
     label = Timex.format!(now, "{h24}:{0m}")

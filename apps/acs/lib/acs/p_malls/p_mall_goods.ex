@@ -25,7 +25,7 @@ defmodule Acs.PMalls.PMallGoods do
     field :end_time, :utc_datetime    #结束时间
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end

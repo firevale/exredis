@@ -18,8 +18,8 @@ defmodule Acs.Forums.ForumPost do
 
     belongs_to :forum, Acs.Forums.Forum, type: :integer
     belongs_to :section, Acs.Forums.ForumSection, type: :integer
-    belongs_to :user, Acs.Accounts.User, type: :integer
-    belongs_to :editer, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
+    belongs_to :editer, Acs.Accounts.User
     has_many   :comments, Acs.Forums.ForumComment, foreign_key: :post_id
 
     timestamps()

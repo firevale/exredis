@@ -28,17 +28,17 @@ defmodule Acs.Admin do
     res
   end
 
-  def delete_admin_user(app_id, user_id) do 
-    res = case Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) do 
-      nil -> {:error, :admin_user_not_exists}
+  def delete_admin_user(app_id, admin_user_id) do 
+    case Repo.get(AdminUser, admin_user_id) do 
+      nil -> 
+        {:error, :admin_user_not_exists}
+
       %AdminUser{} = admin_user ->
-        AdminUser.changeset(admin_user, %{active: false}) |> Repo.update
+        res = AdminUser.changeset(admin_user, %{active: false}) |> Repo.update
+        AdminAuth.refresh_admin_ids()
+        AdminAuth.refresh_admin_level(admin_user.user_id, app_id)
+        res
     end
-
-    AdminAuth.refresh_admin_ids()
-    AdminAuth.refresh_admin_level(user_id, app_id)
-
-    res
   end
 
   def log_admin_operation(admin_user_id, app_id, operate_type, log) do
@@ -57,6 +57,7 @@ defmodule Acs.Admin do
         select: map(au, [:id, :account_id, :admin_level, :app_id, :inserted_at,
                          user: [:id, :nickname, :mobile, :email] ]),
         where: not is_nil(au.app_id) and au.admin_level != 1 and au.app_id == ^app_id,
+        where: au.active == true,
         order_by: [desc: au.inserted_at],
         preload: [user: user]
 
@@ -77,7 +78,8 @@ defmodule Acs.Admin do
   def search_user(app_id, keyword) do 
     query = from au in AdminUser,
       select: au.user_id,
-      where: au.admin_level == 1 or au.app_id == ^app_id
+      where: au.admin_level == 1 or au.app_id == ^app_id,
+      where: au.active == true
 
     admin_user_ids = Repo.all(query)
 

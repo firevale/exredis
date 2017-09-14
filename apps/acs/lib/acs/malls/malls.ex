@@ -6,6 +6,7 @@ defmodule Acs.Malls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  alias Acs.Admin
 
   alias Acs.Malls.Mall
   alias Acs.Malls.MallGoods
@@ -397,7 +398,7 @@ defmodule Acs.Malls do
           {:error, i18n_message} ->
             {:error, i18n_message}
           _ ->
-            order = Malls.get_order_info(order_id)
+            order = get_order_info(order_id)
             {:ok, order}
         end
     end

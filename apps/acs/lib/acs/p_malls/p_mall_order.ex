@@ -46,7 +46,7 @@ defmodule Acs.PMalls.PMallOrder do
     field :transaction_status, :string
     
     belongs_to :app,  Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User, type: :integer
+    belongs_to :user, Acs.Accounts.User
     belongs_to :goods, Acs.PMalls.PMallGoods, type: :string
 
     timestamps()

@@ -2,7 +2,7 @@
   <div>
     <div v-if="users">
       <div class="columns is-multiline">
-        <div class="column is-6">
+        <div class="column is-6" style="padding: 1rem">
           <div class="card" style="min-height:15rem;">
             <header class="card-header">
               <p class="card-header-title">
@@ -24,7 +24,7 @@
             </div>
           </div>
         </div>
-        <div class="column is-6">
+        <div class="column is-6" style="padding: 1rem">
           <div style="min-height:15rem" class="card">
             <header class="card-header">
               <p class="card-header-title">

@@ -9,10 +9,13 @@ defmodule Acs.Admin do
   alias Acs.AdminAuth
   alias Acs.Admin.AdminUser
   alias Acs.Admin.OpLog
+  alias Acs.Admin.Setting
 
   alias Acs.Accounts.User
   alias Acs.Apps.App
   alias Acs.Apps
+
+  alias Acs.Cache.CachedAdminSetting
 
   def add_admin_user(app_id, user_id, email, level) do 
     admin_user = Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) || %AdminUser{}
@@ -124,5 +127,83 @@ defmodule Acs.Admin do
     Repo.all(query)
   end
 
+  def get_setting(setting_name) do
+    case Repo.get_by(Setting, name: setting_name) do
+      %Setting{} = setting ->
+        {:ok, setting}
+      _ ->
+        nil
+    end
+  end
+
+  def get_settings_by_group(group) do
+    query = from s in Setting,
+             where: s.group == ^group,
+             order_by: [{:desc, s.id}]
+    Repo.all(query)
+  end
+
+  def delete_setting(setting_name) do
+    case CachedAdminSetting.del(setting_name) do
+      {:ok, _} ->
+        :ok
+      
+      {:error, %{errors: errors}} ->
+        {:error, errors}
+    end
+  end
+
+  def add_setting(params) do
+    with setting <- params |> Map.put("active", true) |> Map.put("name", params.setting_name) |> Map.put("value", params.setting_value),
+      {:ok, setting} <- Setting.changeset(%Setting{}, setting) |> Repo.insert
+    do
+      # add to redis
+      CachedAdminSetting.get(params.setting_name)
+      {:ok, setting}
+    else
+      nil -> :illegal
+      {:error, %{errors: errors}} -> {:error, errors}
+    end
+  end
+
+  def update_setting_by_name(params) do
+    case Repo.get_by(Setting, name: params.setting_name) do
+      nil ->
+        # add new
+        setting = Map.put(params, "name", params.setting_name) |> Map.put("value", params.setting_value)
+        case Setting.changeset(%Setting{}, setting) |> Repo.insert do
+          {:ok, _} ->
+            CachedAdminSetting.refresh(params.setting_name)
+            {:addok, setting}
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+          _ ->
+            :badrequest 
+        end
+
+      %Setting{} = setting ->
+        # update
+        case Setting.changeset(setting, %{active: params.active, value: params.setting_value}) |> Repo.update() do
+          {:ok, _} ->
+            CachedAdminSetting.refresh(params.setting_name) 
+            {:updateok, setting}
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+        end
+    end
+  end
+
+  def update_setting(setting_id, setting_value, active) do
+    with %Setting{} = setting <- Repo.get(Setting, setting_id),
+      {:ok, _} <- Setting.changeset(setting, %{active: active, value: setting_value}) |> Repo.update()
+    do
+      # refresh redis
+      CachedAdminSetting.refresh(setting.name)
+      :ok
+    else
+      nil -> nil
+      {:error, _} -> :error
+    end
+  end
 
 end

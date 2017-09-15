@@ -1,8 +1,10 @@
 html {
   -webkit-text-size-adjust: none;
+  font-size: 12px;
 }
 
 body {
+  font-size: 1rem;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -17,6 +19,10 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+p {
+  padding: 0px;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -25,7 +31,7 @@ input::-webkit-inner-spin-button {
 
 #app {
   width: 100vw;
-  height: 100vh; // transform: translateZ(0);
+  height: 100vh;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -55,7 +61,7 @@ input::-webkit-inner-spin-button {
 
 .flex-fixed-size {
   flex-grow: 0;
-  flex-shrink: 1;
+  flex-shrink: 0;
   flex-basis: auto;
 }
 
@@ -65,32 +71,54 @@ input::-webkit-inner-spin-button {
   flex-basis: auto;
 }
 
-.flex {
+.is-flex {
   display: flex;
-}
-
-.flex-left {
-  justify-content: flex-start;
-}
-
-.flex-center {
-  justify-content: center;
-}
-
-.flex-right {
-  justify-content: flex-end;
-}
-
-.flex-vcentered {
-  align-items: center;
+  flex-wrap: wrap;
+  &.is-row {
+    flex-direction: row;
+  }
+  &.is-column {
+    flex-direction: column;
+  }
+  &.flex-left {
+    justify-content: flex-start;
+  }
+  &.flex-center {
+    justify-content: center;
+  }
+  .flex-right {
+    justify-content: flex-end;
+  }
+  &.flex-vcentered {
+    align-items: center;
+  }
+  .column {
+    @for $i from 1 through 12 {
+      &.is-#{$i} {
+        flex: 0 0 ($i / 12) * 100%;
+      }
+    }
+  }
 }
 
 .is-borderless {
   border: 0;
 }
 
-.has-divider {
-  margin-bottom: virtual-m-rem(40);
+.is-marginless {
+  margin: 0 !important
+}
+
+.is-paddingless {
+  padding: 0 !important;
+}
+
+.is-radiusless {
+  border-radius: 0 !important;
+}
+
+.is-shadowless {
+  box-shadow: none !important;
 }
 
 .is-clickable {
@@ -126,4 +154,16 @@ input::-webkit-inner-spin-button {
       bottom: 0;
     }
   }
+}
+
+.has-text-centered {
+  text-align: center;
+}
+
+.has-text-left {
+  text-align: left;
+}
+
+.has-text-right {
+  text-align: right;
 }

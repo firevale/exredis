@@ -1,10 +1,8 @@
-import forum from './forum'
-import upload from 'common/i18n/zh-hant/upload'
-import common from 'common/i18n/zh-hant/common'
-import error from 'common/i18n/zh-hant/error'
+import upload from 'common/i18n/en/upload'
+import common from 'common/i18n/en/common'
+import error from 'common/i18n/en/error'
 
 export default {
-  forum,
   upload,
   common,
   error

@@ -4,7 +4,7 @@ defmodule AcsWeb.MallRouter do
   scope "/", AcsWeb do
     pipe_through :mall
 
-    get  "/fetch_malls", MallController, :fetch_malls
+    get  "/list_malls", MallController, :list_malls
     get  "/get_mall_info", MallController, :get_mall_info
     post "/get_mall_info", MallController, :get_mall_info
     post "/get_mall_detail", MallController, :get_mall_detail

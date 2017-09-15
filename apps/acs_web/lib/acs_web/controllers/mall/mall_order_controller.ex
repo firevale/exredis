@@ -7,7 +7,7 @@ defmodule AcsWeb.MallOrderController do
   plug :fetch_session_user
   plug :fetch_device_id
 
-  # fetch_malls
+  # list_malls
   def list_mall_orders(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
     do: list_mall_orders(conn, app_id, keyword, page, records_per_page)
   def list_mall_orders(conn, _params),

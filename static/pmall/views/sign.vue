@@ -37,27 +37,7 @@
           </span>
         </p>
         <div class="logs is-flex">
-          <div class="log-box column is-2">
-            <div class="log">
-            </div>
-          </div>
-          <div class="log-box column is-2">
-            <div class="log">
-            </div>
-          </div>
-          <div class="log-box column is-2">
-            <div class="log">
-            </div>
-          </div>
-          <div class="log-box column is-2">
-            <div class="log">
-            </div>
-          </div>
-          <div class="log-box column is-2">
-            <div class="log">
-            </div>
-          </div>
-          <div class="log-box column is-2">
+          <div v-for="index in [1,2,3,4,5,6]" class="log-box column is-2">
             <div class="log">
             </div>
           </div>

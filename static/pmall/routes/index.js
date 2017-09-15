@@ -39,7 +39,7 @@ export default function(VueRouter) {
         }, {
           path: 'knowledge',
           name: 'knowledge',
-          component: require('../views/knowLedge.vue')
+          component: require('../views/knowledge.vue')
         }, {
           path: 'my_point',
           name: 'my_point',

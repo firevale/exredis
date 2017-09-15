@@ -102,18 +102,18 @@ defmodule AcsWeb.Admin.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # toggle_goods_status
-  def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+  # toggle_mall_goods_status
+  def toggle_mall_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
                                               %{"goods_id" => goods_id}) do
-    case Malls.toggle_goods_status(goods_id) do
+    case Malls.toggle_mall_goods_status(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       {:ok, active} ->
-        Admin.log_admin_operation(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => active})
+        Admin.log_admin_operation(user_id, app_id, "toggle_mall_goods_status", %{"goods_id" => goods_id, "active" => active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"}) 
     end
   end
-  def toggle_goods_status(conn, _) do
+  def toggle_mall_goods_status(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

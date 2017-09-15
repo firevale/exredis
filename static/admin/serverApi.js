@@ -159,8 +159,8 @@ export default {
         return post('/admin_actions/mall/update_mall_goods', params)
       },
 
-      toggleGoodsStatus(params) {
-        return post('/admin_actions/mall/toggle_goods_status', params)
+      toggleMallGoodsStatus(params) {
+        return post('/admin_actions/mall/toggle_mall_goods_status', params)
       },
 
       deleteMallGoods(params) {
@@ -344,7 +344,7 @@ export default {
       },
 
       togglePMallGoodsStatus(params) {
-        return post('/admin_actions/pmall/toggle_goods_status', params)
+        return post('/admin_actions/pmall/toggle_pmall_goods_status', params)
       },
 
       deletePMallGoods(params) {

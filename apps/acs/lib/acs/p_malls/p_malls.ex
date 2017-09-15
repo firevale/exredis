@@ -48,7 +48,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def update_mall_goods_pic(goods, image_path) do
+  def update_pmall_goods_pic(goods, image_path) do
     PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
     CachedPMallGoods.refresh(goods)
   end
@@ -96,7 +96,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def toggle_goods_status(goods_id) do
+  def toggle_pmall_goods_status(goods_id) do
     case Repo.get(PMallGoods, goods_id) do
       nil ->
         nil

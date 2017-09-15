@@ -24,7 +24,7 @@ defmodule Acs.Cache.CachedAppSdkPaymentCallback do
 
   def refresh(app_id, platform, sdk) do
     case Repo.get_by(AppSdkPaymentCallback, app_id: app_id, platform: platform, sdk: sdk) do 
-      %AppSdkPaymentCallback{payment_callback: url} = app ->
+      %AppSdkPaymentCallback{payment_callback: url} ->
         Exredis.set(key(app_id, platform, sdk), url)
         key(app_id, platform, sdk) |> Excache.del
         url

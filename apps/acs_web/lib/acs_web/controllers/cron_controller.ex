@@ -111,7 +111,7 @@ defmodule AcsWeb.CronController do
 
   # hour
   defp cancel_mall_order() do 
-    AcsWeb.MallOrderController.cancel_mall_order()
+    Malls.cancel_mall_order()
   end
 
   # hour
@@ -132,7 +132,7 @@ defmodule AcsWeb.CronController do
 
   # day
   defp finish_mall_order() do 
-    AcsWeb.MallOrderController.finish_mall_order()
+    Malls.finish_mall_order()
   end
 
   # day

@@ -6,13 +6,13 @@ defmodule Acs.Malls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
-  alias Acs.Admin
 
   alias Acs.Malls.Mall
   alias Acs.Malls.MallGoods
   alias Acs.Malls.MallOrder
   alias Acs.Accounts.UserAddress
   alias Acs.Malls.MallOrderLog
+  alias Acs.Malls.MallOrderDetail
 
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedUser
@@ -64,7 +64,6 @@ defmodule Acs.Malls do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
               CachedMallGoods.refresh(goods.id)
-              Admin.log_admin_operation(user_id, goods.app_id, "update_goods", goods)
               {:add_ok, goods}
             {:error, %{errors: _errors}} ->
               :error
@@ -82,13 +81,12 @@ defmodule Acs.Malls do
             changed = MallGoods.changeset(mg, %{name: goods.name, description: goods.description, pic: goods.pic, price: goods.price, postage: goods.postage, stock: goods.stock})
             changed |> Repo.update!
             CachedMallGoods.refresh(goods.id)
-            Admin.log_admin_operation(user_id, goods.app_id, "update_goods", changed.changes)
-            {:update_ok, goods}
+            {:update_ok, goods, changed.changes}
         end
     end
   end
 
-  def update_mall_info(acs_admin_id, app_id, mall_info) do
+  def update_mall_info(app_id, mall_info) do
     case Repo.get_by(Mall, id: mall_info.id, app_id: app_id) do
       nil ->
         nil
@@ -97,8 +95,7 @@ defmodule Acs.Malls do
         changed = Mall.changeset(mall, mall_info)
         changed |> Repo.update!
         CachedApp.refresh(mall.app_id)
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_mall_info", changed.changes)
-        :ok
+        {:ok, changed.changes}
     end
   end
 
@@ -305,18 +302,17 @@ defmodule Acs.Malls do
     end
   end
 
-  def toggle_goods_status(user_id, app_id, goods_id) do
+  def toggle_goods_status(goods_id) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         nil
       %MallGoods{} = goods ->
         MallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
-        Admin.log_admin_operation(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => !goods.active})
-        :ok
+        {:ok, !goods.active}
     end
   end
 
-  def delete_goods(user_id, app_id, goods_id, params) do
+  def delete_goods(goods_id) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         nil
@@ -327,7 +323,6 @@ defmodule Acs.Malls do
           case Repo.delete(goods) do
             {:ok, _} ->
               CachedMallGoods.del(goods_id)
-              Admin.log_admin_operation(user_id, app_id, "delete_goods", params)
               :ok
 
             {:error, %{errors: errors}} ->
@@ -404,6 +399,152 @@ defmodule Acs.Malls do
     end
   end
 
+  def fetch_order_list(app_id, keyword, page, records_per_page) do
+    {:ok, searchTotal, ids} = 
+      Acs.Search.search_mall_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
+
+    queryTotal = from o in MallOrder, select: count(1), where: o.app_id == ^app_id
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      :zero
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = 
+        from order in MallOrder,
+          left_join: details in assoc(order, :details),
+          left_join: user in assoc(order, :user),
+          select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+            user: [:id, :nickname, :mobile],
+            details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+          where: order.app_id == ^app_id,
+          order_by: [desc: order.inserted_at],
+          limit: ^records_per_page,
+          offset: ^((page - 1) * records_per_page),
+          preload: [user: user, details: details]
+
+        query =
+          if(String.length(keyword)>0) do
+            where(query, [o], o.id in ^ids)
+          else
+            query
+          end
+
+      orders = Repo.all(query)
+      {:ok, orders, total_page}
+    end
+  end
+
+  def create_mall_order(user_id, platform, device_id, ip_address, order) do
+    with %MallGoods{} = goods <- Repo.get(MallGoods, order.goods_id),
+      order_id <- create_order_id(user_id, order.pay_type)
+    do
+      final_price = goods.price * order.quantity + goods.postage
+      if(order.quantity <= 0 or final_price < 0) do
+        :badrequest
+      else
+        if(goods.stock == 0 or goods.stock < order.quantity) do
+          :stockout
+        else
+          Repo.transaction(fn ->
+            # goods stock
+            MallGoods.changeset(goods, %{stock: goods.stock - order.quantity, sold: goods.sold + order.quantity}) |> Repo.update()
+            CachedMallGoods.refresh(goods)
+
+            # add order
+            mapGoods= Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
+            snapshots = Map.put(%{}, order.goods_id, mapGoods)
+            new_order = %{"id": order_id, "platform": platform, "device_id": device_id, "user_ip": ip_address,
+                        "goods_name": goods.name, "price": goods.price, "postage": goods.postage,
+                        "discount": 0, "final_price": final_price, "currency": goods.currency, "paid_type": order.pay_type,
+                        "app_id": goods.app_id, "user_id": user_id, "address": order.address, "snapshots": snapshots}
+
+            {:ok, _mall_order} = MallOrder.changeset(%MallOrder{}, new_order) |> Repo.insert
+
+            # add order detail
+            order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price,
+                          "amount": order.quantity, "mall_goods_id": goods.id, "mall_order_id": order_id}
+
+            {:ok, _mall_order_detail} = MallOrderDetail.changeset(%MallOrderDetail{}, order_detail) |> Repo.insert
+          end)
+          {:ok, order_id}
+        end
+      end
+    else
+      nil ->
+        :illegal
+    end
+  end
+
+  def fetch_my_orders(type, _user_id, page, records_per_page) do
+    total = Repo.one!(from order in MallOrder, select: count(1))
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = 
+      from order in MallOrder,
+        left_join: details in assoc(order, :details),
+        left_join: user in assoc(order, :user),
+        select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :snapshots, :postage, :inserted_at, :address,
+          user: [:id, :nickname, :mobile],
+          details: [:id, :goods_name, :goods_pic, :price, :amount, :mall_goods_id] ]),
+        order_by: [desc: order.inserted_at],
+        limit: ^records_per_page,
+        offset: ^((page - 1) * records_per_page),
+        preload: [user: user, details: details]
+
+      query =
+        case type  do
+          "waitPay" ->
+            where(query, [o], o.status == 0)
+          "waitConfirm" ->
+            where(query, [o], o.status in [1,2])
+          _ ->
+            query
+        end
+    orders = Repo.all(query)
+    {:ok, orders, total_page}
+  end
+
+  def confirm_recieved(user_id, order_id) do
+    order = Repo.get!(MallOrder, order_id)
+    cond  do
+      not order.status in [1,2]  ->
+        :received
+      order.user_id != user_id ->
+        :illegal
+      true ->
+        finish_status = 4
+        from( od in MallOrder, where: od.id == ^order.id) |> Repo.update_all( set: [status: finish_status])
+        new_order = Map.put(order, :status, finish_status)
+        {:ok, new_order}
+    end
+  end 
+
+  def cancel_mall_order() do
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 0 and
+                order.inserted_at <= ago(20, "minute")
+
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: -1, close_at: now, memo: "auto close over 20 minutes"}) |> Repo.update()
+        rollback_goods_stock(order.id)
+    end)
+  end
+
+  def finish_mall_order() do
+    now = DateTime.utc_now()
+    query = from order in MallOrder,
+              select: order,
+              where: order.status == 1 and
+                order.inserted_at <= ago(15, "day")
+
+      Repo.all(query) |> Enum.each(fn(order) ->
+        MallOrder.changeset(order, %{status: 4, confirm_at: now, memo: "auto finish over 15 days"}) |> Repo.update()
+    end)
+  end
+
   defp search_goods(_app_id, keyword, page, records_per_page) do
     Search.search_mall_goods(keyword, page, records_per_page)
   end
@@ -412,6 +553,27 @@ defmodule Acs.Malls do
     goods = Repo.get(MallGoods, goods_id)
     MallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
     CachedMallGoods.refresh(goods)
+  end
+
+  defp create_order_id(user_id, pay_type) do
+    order_id = Integer.to_string(Utils.unix_timestamp) <> String.slice(Integer.to_string(user_id), -4, 4)
+    order_id = 
+      case pay_type do
+        "wechat" -> "w" <> order_id
+        "alipay" -> "a" <> order_id
+      end
+    order_id
+  end
+
+  defp rollback_goods_stock(order_id) do
+    query = from od in MallOrderDetail,
+                  select: od,
+                  where: od.mall_order_id == ^order_id
+    Repo.all(query) |> Enum.each(fn(detail) ->
+      goods = CachedMallGoods.get(detail.mall_goods_id) 
+      MallGoods.changeset(goods, %{stock: goods.stock + detail.amount, sold: goods.sold - detail.amount}) |> Repo.update()
+      CachedMallGoods.refresh(goods)
+    end)
   end
 
 end

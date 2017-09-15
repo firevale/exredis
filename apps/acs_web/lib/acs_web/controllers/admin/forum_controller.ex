@@ -28,10 +28,11 @@ defmodule AcsWeb.Admin.ForumController do
 
   # update_forum_info
   def update_forum_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, %{"forum" => %{"id" => forum_id} = forum_info}) do
-    case Forums.update_forum_info(acs_admin_id, app_id, forum_id, forum_info) do
+    case Forums.update_forum_info(app_id, forum_id, forum_info) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.forumNotFound"})
-      :ok ->
+      {:ok, changes} ->
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_forum_info", changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.forumUpdated"})
     end
   end
@@ -50,8 +51,13 @@ defmodule AcsWeb.Admin.ForumController do
                           "sort" => _sort,
                           "active" => _active,
                           "forum_id" => _forum_id} = section}) do
-    case Forums.update_section_info(acs_admin_id, app_id, section) do
+    case Forums.update_section_info(section) do
+      {:ok, new_section, changes} ->
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", changes)
+        conn |> json(%{success: true, section: new_section })
+
       {:ok, new_section} ->
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", section)
         conn |> json(%{success: true, section: new_section })
 
       {:error, errors} ->

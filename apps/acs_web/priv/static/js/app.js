@@ -8567,119 +8567,6 @@ var showMobileMenu = function showMobileMenu() {
 
 /***/ }),
 
-/***/ 439:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return init; });
-/* unused harmony export hasKeyword */
-/* unused harmony export replaceKeyword */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hashmap__ = __webpack_require__(474);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hashmap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_hashmap__);
-
-
-var filterMap = new __WEBPACK_IMPORTED_MODULE_0_hashmap___default.a();
-var endTag = '\0'; // 敏感词结束符
-
-var init = function init(data) {
-    var filterWordList = data.split(/,/);
-    for (var i = 0; i < filterWordList.length; i++) {
-        var charArray = filterWordList[i].split('');
-        var len = charArray.length;
-        if (len > 0) {
-            var subMap = filterMap;
-            for (var k = 0; k < len - 1; k++) {
-                var obj = subMap.get(charArray[k]);
-                if (obj == null) {
-                    var subMapTmp = new __WEBPACK_IMPORTED_MODULE_0_hashmap___default.a();
-                    subMap.set(charArray[k], subMapTmp);
-                    subMap = subMapTmp;
-                } else {
-                    subMap = obj;
-                }
-            }
-
-            var obj = subMap.get(charArray[len - 1]);
-            if (obj == null) {
-                var subMapTmp = new __WEBPACK_IMPORTED_MODULE_0_hashmap___default.a();
-                subMapTmp.set(endTag, null);
-                subMap.set(charArray[len - 1], subMapTmp);
-            } else {
-                obj.set(endTag, null);
-            }
-        }
-    }
-};
-
-var hasKeyword = function hasKeyword(text) {
-    if (text == null || text == undefined) return false;
-    var charArray = text.split('');
-    var len = charArray.length;
-    for (var i = 0; i < len; i++) {
-        var index = i;
-        var sub = filterMap.get(charArray[index]);
-        while (sub != null) {
-            if (sub.has(endTag)) {
-                return true;
-            } else {
-                index++;
-                if (index >= len) {
-                    return false;
-                }
-                sub = sub.get(charArray[index]);
-            }
-        }
-    }
-    return false;
-};
-
-var replaceKeyword = function replaceKeyword(text, replaceWord) {
-    if (text == null || text == undefined || replaceWord == null || replaceWord.length == 0) return text;
-    var charArray = text.split('');
-    var len = charArray.length;
-    var newText = '';
-    var i = 0;
-    while (i < len) {
-        var end = -1;
-        var index;
-        var sub = filterMap;
-        for (var index = i; index < len; index++) {
-            sub = sub.get(charArray[index]);
-            if (sub == null) {
-                if (end == -1) {
-                    newText += charArray[i];
-                    i++;
-                    break;
-                } else {
-                    for (var j = i; j <= end; j++) {
-                        newText += replaceWord;
-                    }
-                    i = end + 1;
-                    break;
-                }
-            } else {
-                if (sub.has(endTag)) {
-                    end = index;
-                }
-            }
-        }
-        if (index >= len) {
-            if (end == -1) {
-                newText += charArray[i];
-                i++;
-            } else {
-                for (var j = i; j <= end; j++) {
-                    newText += replaceWord;
-                }
-                i = end + 1;
-            }
-        }
-    }
-    return newText;
-};
-
-/***/ }),
-
 /***/ 444:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -13817,7 +13704,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "emailMask", function() { return __WEBPACK_IMPORTED_MODULE_1__utils__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "mobileMask", function() { return __WEBPACK_IMPORTED_MODULE_1__utils__["c"]; });
 
-// import * as filter from './keywordFilter'
 
 
 
@@ -13905,14 +13791,6 @@ var formatPrice = function formatPrice(val) {
 var secondFormatHour = function secondFormatHour(val) {
   if (val) return parseFloat(val / 3600).toFixed(1);else return 0;
 };
-
-// export const filterKeyword = val => {
-//   if (val) {
-//     return filter.replaceKeyword(val, '*')
-//   } else {
-//     return ''
-//   }
-// }
 
 var isWebpSupported = window.acsConfig.browser == 'chrome' || window.acsConfig.platform == 'android';
 
@@ -19267,7 +19145,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_common_js_nativeApi__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_common_js_acs__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_common_js_keywordFilter__ = __webpack_require__(439);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -19305,7 +19182,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 
 
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -19325,7 +19201,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return __WEBPACK_IMPORTED_MODULE_0__vue_installed__["a" /* default */].axios.post('/forum_actions/get_forum_info_with_keyword', {
+              return __WEBPACK_IMPORTED_MODULE_0__vue_installed__["a" /* default */].axios.post('/forum_actions/get_fat_forum', {
                 forum_id: to.params.forumId
               }).then(function (response) {
                 return response.data;
@@ -19338,7 +19214,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
               if (result.success) {
                 next(function (vm) {
                   vm.updateForumInfo(result.forum);
-                  __WEBPACK_IMPORTED_MODULE_4_common_js_keywordFilter__["a" /* init */](result.keyword);
 
                   if (window.acsConfig.user) {
                     vm.setUserProfile(window.acsConfig.user);
@@ -21864,8 +21739,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_sliderNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_sliderNav__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_common_js_nativeApi__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_common_js_acs__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_common_js_keywordFilter__ = __webpack_require__(439);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_common_components_toast__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_common_components_toast__ = __webpack_require__(51);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -21886,7 +21760,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-
 
 
 

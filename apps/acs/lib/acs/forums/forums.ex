@@ -11,6 +11,7 @@ defmodule Acs.Forums do
   alias Acs.Forums.ForumSection
   alias Acs.Forums.ForumComment
   alias Acs.Forums.UserFavoritePost
+
   alias Acs.Cache.CachedForum
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedForumSection
@@ -21,58 +22,80 @@ defmodule Acs.Forums do
     CachedForum.get(forum_id)
   end
 
-  def get_forum_section(forum_section_id) do 
-    CachedForumSection.get(forum_section_id)
+  def get_fat_forum(forum_id) do
+    CachedForum.get_fat(forum_id)
+  end
+
+  def get_app_forum(app_id) do
+    CachedForum.get_by(app_id: app_id)
   end
 
   def fetch_forums(page, records_per_page) do
     total = Repo.one!(from forum in Forum, select: count(forum.id))
     total_page = round(Float.ceil(total / records_per_page))
 
-    query = from forum in Forum,
-            left_join: sections in assoc(forum, :sections),
-            order_by: [desc: forum.id, desc: sections.sort],
-            limit: ^records_per_page,
-            offset: ^((page - 1) * records_per_page),
-            select: forum,
-            preload: [sections: sections]
+    query = 
+      from forum in Forum,
+        left_join: sections in assoc(forum, :sections),
+        order_by: [desc: forum.id, desc: sections.sort],
+        limit: ^records_per_page,
+        offset: ^((page - 1) * records_per_page),
+        select: forum,
+        preload: [sections: sections]
+
     forums = Repo.all(query)
     {:ok, forums, total_page}
   end
 
-  def fetch_forum(app_id) do
-    query = from forum in Forum,
-            left_join: sections in assoc(forum, :sections),
-            order_by: [desc: forum.id, desc: sections.sort],
-            where: forum.active == true and forum.app_id == ^app_id,
-            select: forum,
-            preload: [sections: sections]
-
-    Repo.one(query)
+  def create_forum!(forum_id, title, app_id) do      
+    Forum.changeset(%Forum{}, %{id: forum_id, title: title, active: true, app_id: app_id}) |> Repo.insert! 
+    ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, forum_id: forum_id}) |> Repo.insert!
+    ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, forum_id: forum_id}) |> Repo.insert!
+    ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, forum_id: forum_id}) |> Repo.insert!
+    ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, forum_id: forum_id}) |> Repo.insert!
+    ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, forum_id: forum_id}) |> Repo.insert!
+    CachedForum.refresh(forum_id)
   end
 
-  def fetch_forum_by_id(forum_id) do
-    query = from forum in Forum,
-            left_join: sections in assoc(forum, :sections),
-            order_by: [desc: forum.id, desc: sections.sort],
-            where: forum.id == ^forum_id,
-            select: forum,
-            preload: [sections: sections]
-
-    Repo.one(query)
-  end
-
-  def get_forum_info_with_keyword(forum_id) do
-    case fetch_forum_by_id(forum_id) do
+  def update_forum(forum_id, forum_info) do
+    case CachedForum.get(forum_id) do
       nil ->
         nil
+
       %Forum{} = forum ->
-        case CachedAdminSetting.get("keyword")  do
-          nil ->
-            %{success: true, forum: forum, keyword: ""}
-          keyword ->
-            %{success: true, forum: forum, keyword: keyword}
-        end        
+        changed = Forum.changeset(forum, forum_info)
+        changed |> Repo.update!
+        CachedForum.refresh(forum_id)
+        {:ok, changed.changes}
+    end
+  end
+
+  def get_forum_section(forum_section_id) do 
+    CachedForumSection.get(forum_section_id)
+  end
+
+  def update_forum_section(section) do
+    case Repo.get(ForumSection, section.id) do
+      nil ->
+        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
+          {:ok, new_section} ->
+            CachedForum.refresh(new_section.forum_id)
+            {:ok, new_section}
+
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+        end
+
+      %ForumSection{} = old_section ->
+        changed = ForumSection.changeset(old_section, section)
+        case changed |> Repo.update do
+          {:ok, new_section} ->
+            CachedForum.refresh(new_section.forum_id)
+            {:ok, new_section, changed.changes}
+
+          {:error, %{errors: errors}} ->
+            {:error, errors}
+        end
     end
   end
 
@@ -145,10 +168,7 @@ defmodule Acs.Forums do
     {:ok, posts, total_page, total}
   end
 
-  def update_forum_icon(forum, icon_path) do
-    Forum.changeset(forum, %{icon: icon_path}) |> Repo.update!
-    CachedForum.refresh(forum.id)
-  end
+
 
   def add_post(forum_post, post) do
     {:ok, new_post} = ForumPost.changeset(forum_post, post) |> Repo.update
@@ -373,45 +393,6 @@ defmodule Acs.Forums do
     Repo.one!(from p in ForumPost, 
               select: count(1), 
               where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
-  end
-
-  def update_forum_info(app_id, forum_id, forum_info) do
-    case Repo.get_by(Forum, id: forum_id, app_id: app_id) do
-      nil ->
-        nil
-
-      %Forum{} = forum ->
-        changed = Forum.changeset(forum, forum_info)
-        changed |> Repo.update!
-        CachedForum.refresh(forum_id)
-        CachedApp.refresh(forum.app_id)
-        {:ok, changed.changes}
-    end
-  end
-
-  def update_section_info(section) do
-    case Repo.get(ForumSection, section.id) do
-      nil ->
-        case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
-          {:ok, new_section} ->
-            CachedForum.refresh(new_section.forum_id)
-            {:ok, new_section}
-
-          {:error, %{errors: errors}} ->
-            {:error, errors}
-        end
-
-      %ForumSection{} = old_section ->
-        changed = ForumSection.changeset(old_section, section)
-        case changed |> Repo.update do
-          {:ok, new_section} ->
-            CachedForum.refresh(new_section.forum_id)
-            {:ok, new_section, changed.changes}
-
-          {:error, %{errors: errors}} ->
-            {:error, errors}
-        end
-    end
   end
 
   defp add_post_click(post_id, click) do

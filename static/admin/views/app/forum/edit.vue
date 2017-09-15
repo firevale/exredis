@@ -33,7 +33,7 @@ import sectionInfoEditor from 'admin/components/forum/sectionInfoEditor'
 
 export default {
   mounted() {
-    this.fetchForum()
+    this.fetchAppForum()
   },
 
   data() {
@@ -45,7 +45,7 @@ export default {
   watch: {
     app: function(newVal) {
       if (typeof newVal === 'object' && newVal.has_forum) {
-        this.fetchForum()
+        this.fetchAppForum()
       }
     }
   },
@@ -57,9 +57,9 @@ export default {
   },
 
   methods: {
-    fetchForum: async function() {
+    fetchAppForum: async function() {
       if (this.app && this.app.has_forum) {
-        let result = await this.$acs.fetchForum({
+        let result = await this.$acs.fetchAppForum({
           app_id: this.app.id
         })
 

@@ -10,11 +10,15 @@ defmodule Acs.Cache.CachedApp do
   @key_base     "acs.app"
 
   def get("account-center"), do: nil
-
+  def get(""), do: nil
+  def get(nil), do: nil
   def get(app_id) when is_bitstring(app_id) do
     _get(app_id, key(app_id), &_refresh/1)
   end
 
+  def get_fat("account-center"), do: nil
+  def get_fat(""), do: nil
+  def get_fat(nil), do: nil
   def get_fat(app_id) when is_bitstring(app_id) do
     _get(app_id, fat_key(app_id), &_refresh_fat/1)
   end

@@ -32,7 +32,6 @@ import {
 
 import nativeApi from 'common/js/nativeApi'
 import * as acs from 'common/js/acs'
-import * as filter from 'common/js/keywordFilter'
 
 export default {
   data: function() {
@@ -51,14 +50,13 @@ export default {
 
   beforeRouteEnter: async function(to, from, next) {
     try {
-      let result = await Vue.axios.post('/forum_actions/get_forum_info_with_keyword', {
+      let result = await Vue.axios.post('/forum_actions/get_fat_forum', {
         forum_id: to.params.forumId
       }).then(response => response.data)
 
       if (result.success) {
         next(vm => {
           vm.updateForumInfo(result.forum)
-          filter.init(result.keyword)
 
           if (window.acsConfig.user) {
             vm.setUserProfile(window.acsConfig.user)

@@ -82,16 +82,16 @@ export default {
         return post('/admin_actions/search_orders', params)
       },
 
-      fetchForum(params) {
-        return post('/forum_actions/fetch_forum', params)
+      fetchAppForum(params) {
+        return post('/forum_actions/get_app_forum', params)
       },
 
       updateForumInfo(params, successMessage) {
-        return post('/admin_actions/forum/update_forum_info', params, successMessage)
+        return post('/admin_actions/forum/update_forum', params, successMessage)
       },
 
       updateForumSectionInfo(params, successMessage) {
-        return post('/admin_actions/forum/update_section_info', params, successMessage)
+        return post('/admin_actions/forum/update_forum_section', params, successMessage)
       },
 
       getSetting(params) {

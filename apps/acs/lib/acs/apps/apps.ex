@@ -16,6 +16,10 @@ defmodule Acs.Apps do
     CachedApp.get(app_id)
   end
 
+  def get_fat_app(app_id) do 
+    CachedApp.get_fat(app_id)
+  end
+
   def update_app_order!(%AppOrder{} = order, attr) do 
     AppOrder.changeset(order, attr) |> Repo.update!
   end

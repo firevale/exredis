@@ -13,9 +13,8 @@ defmodule Acs.Auth.AccessToken do
   require Exredis
   require Excache
   use     Utils.Redisable
-  use     Utils.LogAlias
 
-  @access_token_key          "acs.keys.access_token"
+  @key_base          "acs.access_token"
 
   def create(%{
       app_id: _app_id,
@@ -66,9 +65,9 @@ defmodule Acs.Auth.AccessToken do
   end
 
   defp key(%__MODULE__{id: token_id}) do
-    "#{@access_token_key}.#{token_id}"
+    "#{@key_base}.#{token_id}"
   end
   defp key(token_id) do
-    "#{@access_token_key}.#{token_id}"
+    "#{@key_base}.#{token_id}"
   end
 end

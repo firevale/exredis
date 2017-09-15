@@ -16,7 +16,7 @@ defmodule AcsWeb.AdminRouter do
   scope "/", AcsWeb.Admin do
     pipe_through :admin
 
-    post "/fetch_apps", AdminController, :fetch_apps
+    post "/list_admin_apps", AdminController, :list_admin_apps
     post "/fetch_app", AdminController, :fetch_app
     post "/fetch_supported_sdks", AdminController, :fetch_supported_sdks
     post "/fetch_orders", AdminController, :fetch_orders

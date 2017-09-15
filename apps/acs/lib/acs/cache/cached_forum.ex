@@ -71,18 +71,18 @@ defmodule Acs.Cache.CachedForum do
     _refresh_fat(v)
   end
 
-  def _refresh(forum_id)  do
-    case Repo.get(Forum, forum_id) do
-      %Forum{} = forum ->
-        _refresh(forum)
-        forum
-      _ -> nil
-    end
-  end
   def _refresh(%Forum{id: forum_id, app_id: app_id} = forum) do 
     Exredis.set(key(forum_id), Forum.to_redis(forum))
     Excache.del(key(forum_id))
     Exredis.set(app_key(app_id), forum_id)
+    forum
+  end
+  def _refresh(forum_id)  do
+    case Repo.get(Forum, forum_id) do
+      %Forum{} = forum ->
+        _refresh(forum)
+      _ -> nil
+    end
   end
 
   def _refresh_fat(%Forum{id: forum_id}), do: _refresh_fat(forum_id)

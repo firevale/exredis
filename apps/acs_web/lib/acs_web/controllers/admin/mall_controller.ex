@@ -15,7 +15,7 @@ defmodule AcsWeb.Admin.MallController do
 
       %Mall{} = mall ->
         {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "mall_icons")
-        Malls.update_mall_icon(mall, icon_path)
+        Malls.update_mall!(mall, %{icon: icon_path})
         
         conn |> json(%{success: true, icon_url: icon_path})
       _ ->
@@ -23,14 +23,15 @@ defmodule AcsWeb.Admin.MallController do
     end
   end
 
-  # update_mall_info
-  def update_mall_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
+  # update_mall
+  def update_mall(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
                                 %{"mall" => %{"id" => _mall_id} = mall_info}) do
-    case Malls.update_mall_info(app_id, mall_info) do
+    case Malls.update_mall!(mall_info) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound"})
+
       {:ok, changes} ->
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_mall_info", changes)
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_mall", changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
   end

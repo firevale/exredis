@@ -1,16 +1,12 @@
 defmodule AcsWeb.Admin.AdminSettingController do
   use AcsWeb, :controller
 
-  alias Acs.Admin.Setting
-  alias Acs.Cache.CachedAdminSetting
-
   # get setting
   def get_setting(conn, %{"setting_name" => setting_name}) do
-
-    case Repo.get_by(Setting, name: setting_name) do
-      %Setting{} = setting ->
+    case Admin.get_setting(setting_name) do
+      {:ok, setting} ->
         conn |> json(%{success: true, setting: setting})
-      _ ->
+      nil ->
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
     end
   end
@@ -29,11 +25,7 @@ defmodule AcsWeb.Admin.AdminSettingController do
 
   # get settings
   def get_settings_by_group(conn, %{"group" => group}) do
-     query = from s in Setting,
-              where: s.group == ^group,
-              order_by: [{:desc, s.id}]
-      settings = Repo.all(query)
-
+      settings = Admin.get_settings_by_group(group)
       conn |> json(%{success: true, settings: settings})
   end
   def get_settings_by_group(conn, _) do
@@ -42,11 +34,11 @@ defmodule AcsWeb.Admin.AdminSettingController do
 
   # delete_setting
   def delete_setting(conn, %{"setting_name" => setting_name}) do
-    case CachedAdminSetting.del(setting_name) do
-      {:ok, _} ->
+    case Admin.delete_setting(setting_name) do
+      :ok ->
         conn |> json(%{success: true, i18n_message: "admin.setting.deleteOk"})
       
-      {:error, %{errors: errors}} ->
+      {:error, errors} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
     end
   end
@@ -55,20 +47,15 @@ defmodule AcsWeb.Admin.AdminSettingController do
   end
 
   # add setting
-  def add_setting(conn, %{"setting_name" => setting_name, 
-                        "setting_value" => setting_value,
+  def add_setting(conn, %{"setting_name" => _setting_name, 
+                        "setting_value" => _setting_value,
                         "group" => _group} = params) do
-    with setting <- params |> Map.put("active", true) |> Map.put("name", setting_name) |> Map.put("value", setting_value),
-      {:ok, setting} <- Setting.changeset(%Setting{}, setting) |> Repo.insert
-    do
-      # add to redis
-      CachedAdminSetting.get(setting_name)
-
-      conn |> json(%{success: true, setting: setting})
-    else
-      nil ->
+    case Admin.add_setting(params) do
+      {:ok, setting} ->
+        conn |> json(%{success: true, setting: setting})
+      :illegal ->
         conn |> json(%{success: false, i18n_message: "error.server.illegal"})
-      {:error, %{errors: errors}} ->
+      {:error, errors} ->
         conn |> json(%{success: false, i18n_message: translate_errors(errors)})
     end
   end
@@ -77,33 +64,19 @@ defmodule AcsWeb.Admin.AdminSettingController do
   end
 
   # update setting
-  def update_setting_by_name(conn, %{"setting_name" => setting_name,
-                            "setting_value" => setting_value,
+  def update_setting_by_name(conn, %{"setting_name" => _setting_name,
+                            "setting_value" => _setting_value,
                             "group" => _group,
-                            "active" => active} = setting) do
-    case Repo.get_by(Setting, name: setting_name) do
-      nil ->
-        # add new
-        setting = setting |> Map.put("name", setting_name) |> Map.put("value", setting_value)
-        case Setting.changeset(%Setting{}, setting) |> Repo.insert do
-          {:ok, _} ->
-            CachedAdminSetting.refresh(setting_name)
-            conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.addOk"})
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, i18n_message: translate_errors(errors)})
-          _ -> 
-            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
-        end
-
-      %Setting{} = setting ->
-        # update
-        case Setting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update() do
-          {:ok, _} ->
-            CachedAdminSetting.refresh(setting_name) 
-            conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.updateOk"})
-          {:error, %{errors: errors}} ->
-            conn |> json(%{success: false, i18n_message: translate_errors(errors)})
-        end
+                            "active" => _active} = setting) do
+    case Admin.update_setting_by_name(setting) do
+      {:addok, setting} ->
+        conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.addOk"})
+      {:updateok, setting} ->
+        conn |> json(%{success: true, setting: setting, i18n_message: "admin.setting.updateOk"})
+      {:error, errors} ->
+        conn |> json(%{success: false, i18n_message: translate_errors(errors)})
+      :badrequest ->
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
   end
   def update_setting_by_name(conn, _) do
@@ -112,18 +85,12 @@ defmodule AcsWeb.Admin.AdminSettingController do
   def update_setting(conn, %{"setting_id" => setting_id,
                             "setting_value" => setting_value,
                             "active" => active}) do
-
-    with %Setting{} = setting <- Repo.get(Setting, setting_id),
-      {:ok, _} <- Setting.changeset(setting,%{active: active, value: setting_value}) |> Repo.update()
-    do
-      # refresh redis
-      CachedAdminSetting.refresh(setting.name)
-
-      conn |> json(%{success: true, i18n_message: "admin.setting.updateOk"})
-    else
+    case Admin.update_setting(setting_id, setting_value, active) do
+      :ok ->
+        conn |> json(%{success: true, i18n_message: "admin.setting.updateOk"})
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.setting.notFound"})
-      {:error, _} ->
+      :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
     end
   end

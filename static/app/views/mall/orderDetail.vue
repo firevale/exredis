@@ -84,7 +84,7 @@ export default {
   mounted: async function() {
     acs.checkIsLogin(_ => {})
     if (this.selectedOrder.id == "") {
-      let result = await this.$acs.fetchMallOrder({
+      let result = await this.$acs.getMallOrder({
         order_id: this.$route.params.orderId
       })
 

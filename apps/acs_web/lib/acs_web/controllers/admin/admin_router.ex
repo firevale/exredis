@@ -58,11 +58,11 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_mall_info", MallController, :update_mall_info
       post  "/update_goods_pic", MallController, :update_goods_pic
       post  "/update_goods_content_pic", MallController, :update_goods_content_pic
-      post  "/update_goods", MallController, :update_goods
+      post  "/update_mall_goods", MallController, :update_mall_goods
       post  "/delete_goods", MallController, :delete_goods
       post  "/toggle_goods_status", MallController, :toggle_goods_status
       post  "/refund_order", MallController, :refund_order
-      post  "/update_order_paid", MallController, :update_order_paid
+      post  "/set_mall_order_paid", MallController, :set_mall_order_paid
     end
 
     scope "/forum" do
@@ -144,7 +144,7 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_app
 
       post  "/fetch_goods", PMallController, :fetch_goods
-      post  "/update_goods", PMallController, :update_goods
+      post  "/update_pmall_goods", PMallController, :update_pmall_goods
       post  "/toggle_goods_status", PMallController, :toggle_goods_status
       post  "/delete_goods", PMallController, :delete_goods
       post  "/get_goods_detail", PMallController, :get_goods_detail

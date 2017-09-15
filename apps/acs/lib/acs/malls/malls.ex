@@ -17,7 +17,7 @@ defmodule Acs.Malls do
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedMallGoods
 
-  def get_order_info(order_id) do 
+  def get_mall_order(order_id) do 
     query = 
       from o in MallOrder,
         left_join: details in assoc(o, :details),
@@ -210,8 +210,8 @@ defmodule Acs.Malls do
     end
   end
 
-  def update_order_paid(admin_user_id, order_id, transaction_id) do
-    order = get_order_info(order_id)
+  def set_mall_order_paid(admin_user_id, order_id, transaction_id) do
+    order = get_mall_order(order_id)
     payed_status = 1
     admin_user = CachedUser.get(admin_user_id)
 
@@ -239,14 +239,14 @@ defmodule Acs.Malls do
           {:error, i18n_message}
         _ ->
           Acs.Search.ESMallOrder.update(order_id, transaction_id)
-          order = get_order_info(order_id)
+          order = get_mall_order(order_id)
           {:ok, order}
       end
     end
   end
 
   def refund_order(admin_user_id, order_id, refund_money) do
-    order = get_order_info(order_id)
+    order = get_mall_order(order_id)
     refund_free = refund_money * 100
     admin_user = CachedUser.get(admin_user_id)
     cond do
@@ -271,13 +271,13 @@ defmodule Acs.Malls do
           {:error, i18n_message} ->
             {:error, i18n_message}
           _ ->
-            order = get_order_info(order_id)
+            order = get_mall_order(order_id)
             {:ok, order}
         end
     end
   end
 
-  def fetch_order_list(app_id, keyword, page, records_per_page) do
+  def list_mall_orders(app_id, keyword, page, records_per_page) do
     {:ok, searchTotal, ids} = 
       Acs.Search.search_mall_orders(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page)
 

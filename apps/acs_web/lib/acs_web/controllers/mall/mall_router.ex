@@ -21,8 +21,8 @@ defmodule AcsWeb.MallRouter do
     post "/get_default_address", MallController, :get_default_address
 
     post "/create_mall_order", MallOrderController, :create_mall_order
-    post "/fetch_order_list", MallOrderController, :fetch_order_list
-    post "/fetch_order", MallOrderController, :fetch_order
+    post "/list_mall_orders", MallOrderController, :list_mall_orders
+    post "/get_mall_order", MallOrderController, :get_mall_order
     post "/fetch_my_orders", MallOrderController, :fetch_my_orders
     post "/confirm_recieved", MallOrderController, :confirm_recieved
 

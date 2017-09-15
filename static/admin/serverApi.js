@@ -156,7 +156,7 @@ export default {
       },
 
       updateGoods(params) {
-        return post('/admin_actions/mall/update_goods', params)
+        return post('/admin_actions/mall/update_mall_goods', params)
       },
 
       toggleGoodsStatus(params) {
@@ -171,24 +171,20 @@ export default {
         return post('/mall_actions/get_goods_detail', params)
       },
 
-      fetchMallOrders(params) {
-        return post('/mall_actions/fetch_order_list', params)
+      listMallOrders(params) {
+        return post('/mall_actions/list_mall_orders', params)
       },
 
-      fetchMallOrder(params) {
-        return post('/mall_actions/fetch_order', params)
+      getMallOrder(params) {
+        return post('/mall_actions/get_mall_order', params)
       },
 
-      updateOrderPayed(params) {
-        return post('/admin_actions/mall/update_order_paid', params)
+      setMallOrderPaid(params) {
+        return post('/admin_actions/mall/set_mall_order_paid', params)
       },
 
       refundOrder(params) {
         return post('/admin_actions/mall/refund_order', params)
-      },
-
-      addUser(params) {
-        return post('/admin_actions/user/add_user', params)
       },
 
       listAppAdminUsers(params) {
@@ -344,7 +340,7 @@ export default {
       },
 
       updatePMallGoods(params) {
-        return post('/admin_actions/pmall/update_goods', params)
+        return post('/admin_actions/pmall/update_pmall_goods', params)
       },
 
       togglePMallGoodsStatus(params) {

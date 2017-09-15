@@ -15905,8 +15905,8 @@ var post = function post(uri, params, onProgress, cancelToken) {
       confirmRecieved: function confirmRecieved(params) {
         return post('/mall_actions/confirm_recieved', params);
       },
-      fetchMallOrder: function fetchMallOrder(params) {
-        return post('/mall_actions/fetch_order', params);
+      getMallOrder: function getMallOrder(params) {
+        return post('/mall_actions/get_mall_order', params);
       },
       getGoodsStock: function getGoodsStock(goods_id) {
         return post('/mall_actions/get_goods_stock', { goods_id: goods_id });
@@ -24724,7 +24724,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
               }
 
               _context.next = 4;
-              return this.$acs.fetchMallOrder({
+              return this.$acs.getMallOrder({
                 order_id: this.$route.params.orderId
               });
 

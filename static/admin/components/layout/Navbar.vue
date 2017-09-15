@@ -50,13 +50,13 @@ export default {
   },
 
   created: function() {
-    this.fetchMalls(this.$router.appId)
+    this.listMalls(this.$router.appId)
   },
 
   methods: {
     ...mapActions([
       'toggleSidebar',
-      'fetchMalls',
+      'listMalls',
     ]),
 
     goIndex: function() {

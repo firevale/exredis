@@ -6,7 +6,6 @@ defmodule Acs.Forums do
   import Ecto.Query, warn: false
 
   alias Acs.Repo
-  alias Acs.Admin
   alias Acs.Forums.Forum
   alias Acs.Forums.ForumPost
   alias Acs.Forums.ForumSection
@@ -376,7 +375,7 @@ defmodule Acs.Forums do
               where: p.forum_id == ^forum_id and p.user_id == ^user_id and p.active == true)
   end
 
-  def update_forum_info(acs_admin_id, app_id, forum_id, forum_info) do
+  def update_forum_info(app_id, forum_id, forum_info) do
     case Repo.get_by(Forum, id: forum_id, app_id: app_id) do
       nil ->
         nil
@@ -386,18 +385,16 @@ defmodule Acs.Forums do
         changed |> Repo.update!
         CachedForum.refresh(forum_id)
         CachedApp.refresh(forum.app_id)
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_forum_info", changed.changes)
-        :ok
+        {:ok, changed.changes}
     end
   end
 
-  def update_section_info(acs_admin_id, app_id, section) do
+  def update_section_info(section) do
     case Repo.get(ForumSection, section.id) do
       nil ->
         case ForumSection.changeset(%ForumSection{}, section) |> Repo.insert do
           {:ok, new_section} ->
             CachedForum.refresh(new_section.forum_id)
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", section)
             {:ok, new_section}
 
           {:error, %{errors: errors}} ->
@@ -409,8 +406,7 @@ defmodule Acs.Forums do
         case changed |> Repo.update do
           {:ok, new_section} ->
             CachedForum.refresh(new_section.forum_id)
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_section_info", changed.changes)
-            {:ok, new_section}
+            {:ok, new_section, changed.changes}
 
           {:error, %{errors: errors}} ->
             {:error, errors}

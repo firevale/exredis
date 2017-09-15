@@ -17,7 +17,7 @@ defmodule AcsWeb.Admin.PMallController do
 
       %PMallGoods{} = goods ->
         {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
-        PMalls.update_mall_goods_pic(goods, image_path)
+        PMalls.update_pmall_goods_pic(goods, image_path)
         Admin.log_admin_operation(acs_admin_id, app_id, "update_pmall_goods_pic", %{pic: image_path})
 
         conn |> json(%{success: true, pic_url: image_path})
@@ -73,10 +73,10 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # toggle_goods_status
-  def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+  # toggle_pmall_goods_status
+  def toggle_pmall_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
                   %{"goods_id" => goods_id}) do
-    case PMalls.toggle_goods_status(goods_id) do
+    case PMalls.toggle_pmall_goods_status(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       {:ok, active} ->
@@ -84,7 +84,7 @@ defmodule AcsWeb.Admin.PMallController do
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"}) 
     end
   end
-  def toggle_goods_status(conn, _) do
+  def toggle_pmall_goods_status(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

@@ -8,7 +8,6 @@ defmodule AcsWeb.MallController do
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
   plug :cache_page, [cache_seconds: 10] when action in [:list_malls, :get_active_goods_paged]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
-  plug :check_is_admin when action in [:update_mall_goods, :update_goods_pic, :toggle_goods_status, :delete_mall_goods]
 
   # list_malls
   def list_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do

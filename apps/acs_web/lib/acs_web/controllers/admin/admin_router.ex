@@ -60,7 +60,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_goods_content_pic", MallController, :update_goods_content_pic
       post  "/update_mall_goods", MallController, :update_mall_goods
       post  "/delete_mall_goods", MallController, :delete_mall_goods
-      post  "/toggle_goods_status", MallController, :toggle_goods_status
+      post  "/toggle_mall_goods_status", MallController, :toggle_mall_goods_status
       post  "/refund_order", MallController, :refund_order
       post  "/set_mall_order_paid", MallController, :set_mall_order_paid
     end
@@ -145,7 +145,7 @@ defmodule AcsWeb.AdminRouter do
 
       post  "/list_pmall_goods", PMallController, :list_pmall_goods
       post  "/update_pmall_goods", PMallController, :update_pmall_goods
-      post  "/toggle_goods_status", PMallController, :toggle_goods_status
+      post  "/toggle_pmall_goods_status", PMallController, :toggle_pmall_goods_status
       post  "/delete_pmall_goods", PMallController, :delete_pmall_goods
       post  "/get_pmall_goods_detail", PMallController, :get_pmall_goods_detail
       post "/list_pmall_point_logs", PMallController, :list_pmall_point_logs

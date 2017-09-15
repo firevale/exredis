@@ -368,7 +368,7 @@ export default {
     },
 
     toggleStatus: async function() {
-      let result = await this.$acs.toggleGoodsStatus({
+      let result = await this.$acs.toggleMallGoodsStatus({
         goods_id: this.goods.id
       }, this.$t('admin.operateSuccess'))
       if (result.success) {

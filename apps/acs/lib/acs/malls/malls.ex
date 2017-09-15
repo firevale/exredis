@@ -204,7 +204,7 @@ defmodule Acs.Malls do
     CachedMallGoods.get(goods_id)
   end
 
-  def toggle_goods_status(goods_id) do
+  def toggle_mall_goods_status(goods_id) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         nil

@@ -68,6 +68,12 @@ export const listMalls = ({
     }).catch(e => processAjaxError(e))
 }
 
+export const setMalls = ({
+  commit
+}, malls) => {
+    commit(types.UPDATE_MALLS, malls)
+}
+
 export const updateMyLoginCodes = ({
   commit
 }, codes) => {

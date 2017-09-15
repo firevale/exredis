@@ -67,7 +67,7 @@ defmodule Acs.Cache.CachedApp do
     case Repo.one(query) do 
       %App{} = app ->
         Exredis.set(fat_key(app_id), App.to_redis(app))
-        key(app_id) |> Excache.del
+        fat_key(app_id) |> Excache.del
         app
       _ -> nil     
     end

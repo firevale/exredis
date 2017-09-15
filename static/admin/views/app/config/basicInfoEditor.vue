@@ -29,13 +29,25 @@
           </p>
         </div>
       </div>
-      <div class="column is-4">
+      <div class="column is-2">
         <label class="label"> {{ $t('admin.label.appName')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.name">
         </p>
       </div>
+      <div class="column is-2">
+        <label class="label"> {{ $t('admin.label.appAlias')}}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="app.alias">
+        </p>
+      </div>
       <div class="column is-4">
+        <label class="label"> {{ $t('admin.label.itcAppId')}}: </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="app.itc_app_id">
+        </p>
+      </div>
+      <div class="column is-2">
         <label class="label"> {{ $t('admin.label.currency')}}: </label>
         <p class="control">
           <span class="select" style="width: 80%">
@@ -45,7 +57,7 @@
           </span>
         </p>
       </div>
-      <div class="column is-4">
+      <div class="column is-2">
         <label class="label"> {{ $t('admin.label.chaoxinGroupId')}}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="app.chaoxin_group_id">
@@ -63,6 +75,7 @@
           <input class="input" type="text" v-model.trim="app.obtain_code_url">
         </p>
       </div>
+
       <div class="column is-2">
         <label class="label"> {{ $t('admin.label.appHasForum')}}: </label>
         <p class="control">
@@ -148,6 +161,7 @@ export default {
       'setApp',
       'addForum',
       'listMalls',
+      'setMalls',
     ]),
 
     toastClipboardSuccess: function() {
@@ -168,8 +182,6 @@ export default {
       }))
 
       if (result.success) {
-        this.listMalls(this.$router.appId)
-
         if (result.app) {
           this.setApp(result.app)
           this.$nextTick(_ => {
@@ -179,6 +191,7 @@ export default {
           })
         }
       }
+
       this.processing = false
     },
   },

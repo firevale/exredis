@@ -9,7 +9,7 @@ defmodule Acs.Forums.ForumSection do
     field :sort, :integer
     field :active, :boolean, default: true
 
-    belongs_to :forum, Acs.Forums.Forum, type: :integer
+    belongs_to :forum, Acs.Forums.Forum, type: :string
 
     timestamps()
   end

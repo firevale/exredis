@@ -22,8 +22,8 @@ defmodule Acs.Forums.Forum do
   @doc false
   def changeset(%Forum{} = forum, attrs) do
     forum
-    |> cast(attrs, [:title,:active, :app_id, :icon])
-    |> validate_required([:title, :active, :app_id])
+    |> cast(attrs, [:id, :title,:active, :app_id, :icon])
+    |> validate_required([:id, :title, :active, :app_id])
     |> foreign_key_constraint(:app_id)
   end
 end

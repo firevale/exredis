@@ -6,7 +6,7 @@ defmodule Acs.Forums.ForumManager do
 
   @derive {Poison.Encoder, except: [:forum, :user, :__meta__]}
   schema "forums_managers" do
-    belongs_to :forum, Acs.Forums.Forum
+    belongs_to :forum, Acs.Forums.Forum, type: :string
     belongs_to :user, Acs.Accounts.User
     timestamps()
   end

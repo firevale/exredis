@@ -54,14 +54,14 @@ defmodule Acs.Malls do
   end
 
   def create_mall!(mall_id, title, app_id) do 
-    changed = Mall.changeset(%{}, %{
+    changed = Mall.changeset(%Mall{}, %{
       id: mall_id,
       title: title, 
       active: true,
       app_id: app_id
     })
     new_mall = changed |> Repo.insert!
-    CachedApp.refresh(new_mall)
+    CachedMall.refresh(new_mall)
     {:ok, new_mall}
   end
 

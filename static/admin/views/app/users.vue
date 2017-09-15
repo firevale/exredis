@@ -52,7 +52,7 @@
       <div class="hero-body has-text-centered">
         <div v-if="loading || initing">
           <span class="icon is-large">
-            <i class="fa fa-spinner fa-spin"></i>
+            <i class="fa fa-3x fa-spinner fa-spin"></i>
           </span>
           <h2 class="subtitle" style="margin-top: 10px">
             {{ $t('admin.titles.loading') }}

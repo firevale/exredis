@@ -2,12 +2,12 @@
   <modal :visible="visible">
     <div class="box">
       <div class="heading has-text-centered">
-        <h1 class="title">{{title}}</h1>
+        <h5 class="title is-5">{{title}}</h5>
       </div>
       <article class="media">
         <figure class="media-left">
           <span class="icon is-large" :class="`is-${type}`">
-            <i class="fa fa-warning"></i>
+            <i class="fa fa-3x fa-warning"></i>
           </span>
         </figure>
         <div class="media-content">

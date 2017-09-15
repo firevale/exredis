@@ -41,7 +41,7 @@ defmodule SDKYYH do
     [private_key, mod_key] = key2 |> Base.decode64! |> String.split("+")
 
     msg_md5  = Crypto.md5_sign(transdata)
-    sign_md5 = decrypt_rsa(sign |> String.strip, private_key, mod_key)
+    sign_md5 = decrypt_rsa(sign |> String.trim, private_key, mod_key)
 
     msg_md5 == sign_md5
   end
@@ -55,7 +55,7 @@ defmodule SDKYYH do
     for v <- String.split(cipher, " ") do 
       v = String.to_integer(v, 16)
       :crypto.mod_pow(v, private_key, mod_key) 
-    end |> Enum.join("") |> String.strip
+    end |> Enum.join("") |> String.trim
   end
 
   

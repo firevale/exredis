@@ -29,12 +29,12 @@
           <p class="is-marginless">
             <span class="is-primary">+5</span>积分/日</p>
         </div>
-        <div class="task is-flex is-column flex-center flex-vcentered">
+        <router-link :to="{name:'sign'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
           <img src="~assets/pmall/1242-2234-1_15.png" />
           <p class="is-marginless">每日签到</p>
           <p class="is-marginless">
             <span class="is-primary">+5</span>积分/日</p>
-        </div>
+        </router-link>
         <div class="task is-flex is-column flex-center flex-vcentered">
           <img src="~assets/pmall/1242-2234-1_21.png" />
           <p class="is-marginless">每日问答</p>

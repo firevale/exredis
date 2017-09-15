@@ -22,7 +22,7 @@ defmodule AcsWeb.Admin.AdminUserController do
         conn |> json(%{success: false, i18n_message: "error.server.illegal"})
       else 
         case Admin.add_admin_user(app_id, user_id, account_id, level) do 
-          {:ok, admin_user} ->
+          {:ok, _admin_user} ->
             Admin.log_admin_operation(acs_admin_id, app_id, "add_admin_user", %{account_id: account_id})
             conn |> json(%{success: true, i18n_message: "admin.user.messages.opSuccess"})
           _ ->
@@ -40,7 +40,7 @@ defmodule AcsWeb.Admin.AdminUserController do
   end
 
   def delete_admin_user(%Plug.Conn{private: %{acs_app_id: app_id, acs_admin_id: acs_admin_id}} = conn, 
-                        %{"admin_user_id" => admin_user_id} = params) do
+                        %{"admin_user_id" => admin_user_id}) do
     case Admin.delete_admin_user(app_id, admin_user_id) do 
       {:ok, admin_user} -> 
         Admin.log_admin_operation(

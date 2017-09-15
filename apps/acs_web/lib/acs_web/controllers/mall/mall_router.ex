@@ -10,8 +10,8 @@ defmodule AcsWeb.MallRouter do
     post "/get_mall_detail", MallController, :get_mall_detail
 
     post "/get_active_goods_paged", MallController, :get_active_goods_paged
-    post "/get_goods_detail", MallController, :get_goods_detail
-    post "/fetch_goods", MallController, :fetch_goods
+    post "/get_mall_goods_detail", MallController, :get_mall_goods_detail
+    post "/list_mall_goods", MallController, :list_mall_goods
     post "/get_user_addresses", MallController, :get_user_addresses
     post "/delete_address", MallController, :delete_address
     post "/set_default_address", MallController, :set_default_address

@@ -151,8 +151,8 @@ export default {
         return post('/admin_actions/mall/update_mall', params, successMessage)
       },
 
-      fetchGoods(params) {
-        return post('/mall_actions/fetch_goods', params)
+      listMallGoods(params) {
+        return post('/mall_actions/list_mall_goods', params)
       },
 
       updateGoods(params) {
@@ -164,11 +164,11 @@ export default {
       },
 
       deleteMallGoods(params) {
-        return post('/admin_actions/mall/delete_goods', params)
+        return post('/admin_actions/mall/delete_mall_goods', params)
       },
 
       getGoodsDetail(params) {
-        return post('/mall_actions/get_goods_detail', params)
+        return post('/mall_actions/get_pmall_goods_detail', params)
       },
 
       listMallOrders(params) {
@@ -322,21 +322,21 @@ export default {
         return post('/admin_actions/stats/get_stats_device_details', params)
       },
 
-      getOperateLog(params) {
-        return post('/admin_actions/log/get_operate_log', params)
+      listAdminOperateLog(params) {
+        return post('/admin_actions/log/list_admin_operate_logs', params)
       },
 
-      getPointLogs(params) {
-        return post('/admin_actions/pmall/get_point_logs', params)
+      listPMallPointLogs(params) {
+        return post('/admin_actions/pmall/list_pmall_point_logs', params)
       },
 
-      addPoint(params, successMessage) {
-        return post('/admin_actions/pmall/admin_add_point', params, successMessage)
+      adminAddPMallPoint(params, successMessage) {
+        return post('/admin_actions/pmall/admin_add_pmall_point', params, successMessage)
       },
 
-      fetchPMallGoods(params) {
+      listPMallGoods(params) {
         // TODO: 从前端读, 不要从admin_actions获取
-        return post('/admin_actions/pmall/fetch_goods', params)
+        return post('/admin_actions/pmall/list_pmall_goods', params)
       },
 
       updatePMallGoods(params) {
@@ -347,12 +347,12 @@ export default {
         return post('/admin_actions/pmall/toggle_goods_status', params)
       },
 
-      deletePointGoods(params) {
-        return post('/admin_actions/pmall/delete_goods', params)
+      deletePMallGoods(params) {
+        return post('/admin_actions/pmall/delete_pmall_goods', params)
       },
 
       getPointGoodsDetail(params) {
-        return post('/admin_actions/pmall/get_goods_detail', params)
+        return post('/admin_actions/pmall/get_pmall_goods_detail', params)
       },
 
       getTaskList(params) {

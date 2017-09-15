@@ -108,7 +108,7 @@ export default {
   methods: {
     getLogs: async function(page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.getPointLogs({
+      let result = await this.$acs.listPMallPointLogs({
         user_id: this.userId,
         page: page,
         records_per_page: recordsPerPage

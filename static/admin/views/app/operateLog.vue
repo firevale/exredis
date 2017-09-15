@@ -53,13 +53,13 @@ export default {
   },
 
   mounted: function() {
-    this.getOperateLog(this.userId, this.page, this.recordsPerPage)
+    this.listAdminOperateLog(this.userId, this.page, this.recordsPerPage)
   },
 
   methods: {
-    getOperateLog: async function(userId, page, recordsPerPage) {
+    listAdminOperateLog: async function(userId, page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.getOperateLog({
+      let result = await this.$acs.listAdminOperateLog({
         app_id: this.$route.params.appId, 
         user_id: userId, 
         page: page, 
@@ -75,7 +75,7 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getOperateLog(this.userId, page, this.recordsPerPage)
+      this.listAdminOperateLog(this.userId, page, this.recordsPerPage)
     },
 
   },

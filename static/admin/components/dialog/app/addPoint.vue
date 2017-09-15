@@ -58,7 +58,7 @@ export default {
       }
 
       this.processing = true
-      let result = await this.$acs.addPoint(this.pointLog,
+      let result = await this.$acs.adminAddPMallPoint(this.pointLog,
         this.$t('admin.notification.message.pointUpdated'))
 
       if (this.callback) {

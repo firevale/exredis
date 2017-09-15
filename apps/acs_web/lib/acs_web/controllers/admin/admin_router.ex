@@ -48,7 +48,7 @@ defmodule AcsWeb.AdminRouter do
 
     scope "/log" do
       pipe_through :admin_app
-      post "/get_operate_log", AdminController, :get_operate_log
+      post "/list_admin_operate_logs", AdminController, :list_admin_operate_logs
     end
 
     scope "/mall" do
@@ -59,7 +59,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_goods_pic", MallController, :update_goods_pic
       post  "/update_goods_content_pic", MallController, :update_goods_content_pic
       post  "/update_mall_goods", MallController, :update_mall_goods
-      post  "/delete_goods", MallController, :delete_goods
+      post  "/delete_mall_goods", MallController, :delete_mall_goods
       post  "/toggle_goods_status", MallController, :toggle_goods_status
       post  "/refund_order", MallController, :refund_order
       post  "/set_mall_order_paid", MallController, :set_mall_order_paid
@@ -143,13 +143,13 @@ defmodule AcsWeb.AdminRouter do
     scope "/pmall" do
       pipe_through :admin_app
 
-      post  "/fetch_goods", PMallController, :fetch_goods
+      post  "/list_pmall_goods", PMallController, :list_pmall_goods
       post  "/update_pmall_goods", PMallController, :update_pmall_goods
       post  "/toggle_goods_status", PMallController, :toggle_goods_status
-      post  "/delete_goods", PMallController, :delete_goods
-      post  "/get_goods_detail", PMallController, :get_goods_detail
-      post "/get_point_logs", PMallController, :get_point_logs
-      post "/admin_add_point", PMallController, :admin_add_point
+      post  "/delete_pmall_goods", PMallController, :delete_pmall_goods
+      post  "/get_pmall_goods_detail", PMallController, :get_pmall_goods_detail
+      post "/list_pmall_point_logs", PMallController, :list_pmall_point_logs
+      post "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
     end
 
     scope "/task" do

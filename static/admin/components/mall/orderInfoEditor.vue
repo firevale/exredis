@@ -176,7 +176,7 @@ export default {
 
     fetchOrders: async function() {
       this.loading = true
-      let result = result = await this.$acs.fetchMallOrders({
+      let result = result = await this.$acs.listMallOrders({
         app_id: this.$route.params.appId,
         keyword: this.keyword,
         page: this.page + 1,

@@ -391,8 +391,8 @@ export default {
         return post('/mall_actions/confirm_recieved', params)
       },
 
-      fetchMallOrder(params) {
-        return post('/mall_actions/fetch_order', params)
+      getMallOrder(params) {
+        return post('/mall_actions/get_mall_order', params)
       },
 
       getGoodsStock(goods_id) {

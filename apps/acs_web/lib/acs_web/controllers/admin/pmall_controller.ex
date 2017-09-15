@@ -40,8 +40,8 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: true, link: image_path})
   end
 
-  # update_goods
-  def update_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
+  # update_pmall_goods
+  def update_pmall_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
                 "id" => _id,
                 "app_id" => _app_id,
                 "name" => _name,
@@ -58,18 +58,18 @@ defmodule AcsWeb.Admin.PMallController do
       :exist ->
         conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
       {:add_ok, goods} ->
-        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", goods)
+        Admin.log_admin_operation(user_id, goods.app_id, "update_pmall_goods", goods)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
       {:update_ok, goods, changes} ->
-        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", changes)
+        Admin.log_admin_operation(user_id, goods.app_id, "update_pmall_goods", changes)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
     end
   end
-  def update_goods(conn, _) do
+  def update_pmall_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

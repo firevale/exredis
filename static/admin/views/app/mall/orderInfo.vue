@@ -43,7 +43,7 @@
             <input class="input" type="text" v-model.trim="orderInfo.transaction_id">
           </p>
           <p class="control">
-            <button class="button is-info" :disabled="!orderInfo.transaction_id" @click.prevent="updateOrderPayed">{{$t('admin.mall.order.buttons.payed')}}</button>
+            <button class="button is-info" :disabled="!orderInfo.transaction_id" @click.prevent="setMallOrderPaid">{{$t('admin.mall.order.buttons.payed')}}</button>
           </p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default {
   components: {},
 
   mounted: async function() {
-    let result = await this.$acs.fetchMallOrder({
+    let result = await this.$acs.getMallOrder({
       order_id: this.$route.params.orderId
     })
 
@@ -135,7 +135,7 @@ export default {
     onBack: function() {
       this.$router.go(-1)
     },
-    updateOrderPayed: function() {
+    setMallOrderPaid: function() {
       showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
@@ -144,7 +144,7 @@ export default {
         }),
         type: 'danger',
         onOK: async _ => {
-          let result = await this.$acs.updateOrderPayed({
+          let result = await this.$acs.setMallOrderPaid({
             order_id: this.orderInfo.id,
             transaction_id: this.orderInfo.transaction_id
           })

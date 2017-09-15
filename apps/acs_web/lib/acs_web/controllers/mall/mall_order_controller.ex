@@ -8,12 +8,12 @@ defmodule AcsWeb.MallOrderController do
   plug :fetch_device_id
 
   # fetch_malls
-  def fetch_order_list(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
-    do: fetch_order_list(conn, app_id, keyword, page, records_per_page)
-  def fetch_order_list(conn, _params),
-    do: fetch_order_list(conn, "", "", 1, 100)
-  defp fetch_order_list(conn, app_id, keyword, page, records_per_page) do
-    case Malls.fetch_order_list(app_id, keyword, page, records_per_page) do
+  def list_mall_orders(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}),
+    do: list_mall_orders(conn, app_id, keyword, page, records_per_page)
+  def list_mall_orders(conn, _params),
+    do: list_mall_orders(conn, "", "", 1, 100)
+  defp list_mall_orders(conn, app_id, keyword, page, records_per_page) do
+    case Malls.list_mall_orders(app_id, keyword, page, records_per_page) do
       :zero ->
         json(conn, %{success: true, total: 0, orders: []})
       {:ok, orders, total_page} ->
@@ -21,8 +21,8 @@ defmodule AcsWeb.MallOrderController do
     end
   end
 
-  def fetch_order(conn, %{"order_id" => order_id }) do
-    order = Malls.get_order_info(order_id)
+  def get_mall_order(conn, %{"order_id" => order_id }) do
+    order = Malls.get_mall_order(order_id)
     json(conn, %{success: true, order: order})
   end
 

@@ -71,8 +71,8 @@ defmodule AcsWeb.Admin.MallController do
     conn |> json(%{success: true, link: image_path})
   end
 
-  # update_goods
-  def update_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
+  # update_mall_goods
+  def update_mall_goods(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
                 "id" => _id,
                 "app_id" => _app_id,
                 "name" => _name,
@@ -86,18 +86,18 @@ defmodule AcsWeb.Admin.MallController do
       :exist ->
         conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
       {:add_ok, goods} ->
-        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", goods)
+        Admin.log_admin_operation(user_id, goods.app_id, "update_mall_goods", goods)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
       {:update_ok, goods, changes} ->
-        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", changes)
+        Admin.log_admin_operation(user_id, goods.app_id, "update_mall_goods", changes)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
     end
   end
-  def update_goods(conn, _) do
+  def update_mall_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
@@ -135,10 +135,10 @@ defmodule AcsWeb.Admin.MallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def update_order_paid(conn, %{"order_id" => "", "transaction_id" => ""}),
+  def set_mall_order_paid(conn, %{"order_id" => "", "transaction_id" => ""}),
     do: json(conn, %{success: false, i18n_message: "mall.order.messages.illegal"})
-  def update_order_paid(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
-    case Malls.update_order_paid(admin_user_id, order_id, transaction_id) do
+  def set_mall_order_paid(%Plug.Conn{private: %{acs_admin_id: admin_user_id}} = conn, %{"order_id" => order_id, "transaction_id" => transaction_id}) do
+    case Malls.set_mall_order_paid(admin_user_id, order_id, transaction_id) do
       :limit ->
         json(conn, %{success: false, i18n_message: "admin.mall.order.messages.onlyCancelOrUnpay"})
       {:error, i18n_message} ->

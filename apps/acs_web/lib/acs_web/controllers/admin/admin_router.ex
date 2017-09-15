@@ -150,15 +150,11 @@ defmodule AcsWeb.AdminRouter do
       post  "/get_pmall_goods_detail", PMallController, :get_pmall_goods_detail
       post "/list_pmall_point_logs", PMallController, :list_pmall_point_logs
       post "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
-    end
 
-    scope "/task" do
-      pipe_through :admin_app
       post "/get_task_list", TaskController, :get_task_list
       post "/update_task", TaskController, :update_task
       post "/toggle_task_status", TaskController, :toggle_task_status
       post "/upload_task_pic", TaskController, :upload_task_pic
-      
     end
 
   end

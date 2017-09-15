@@ -55,7 +55,7 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_app
 
       post  "/update_mall_icon", MallController, :update_mall_icon
-      post  "/update_mall_info", MallController, :update_mall_info
+      post  "/update_mall", MallController, :update_mall
       post  "/update_goods_pic", MallController, :update_goods_pic
       post  "/update_goods_content_pic", MallController, :update_goods_content_pic
       post  "/update_mall_goods", MallController, :update_mall_goods

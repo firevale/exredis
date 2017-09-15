@@ -13,6 +13,7 @@ defmodule Acs.Malls do
   alias Acs.Malls.MallOrderLog
   alias Acs.Malls.MallOrderDetail
 
+  alias Acs.Cache.CachedMall
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedMallGoods
@@ -34,15 +35,45 @@ defmodule Acs.Malls do
   end
 
   def get_mall(mall_id) do
-    Repo.get(Mall, mall_id)
+    CachedMall.get(mall_id)
+  end
+
+  def get_app_mall(app_id) do 
+    CachedMall.get_by(app_id: app_id)
+  end
+
+  def update_mall!(mall_info) do
+    case CachedMall.get(mall_info.id) do
+      nil ->
+        nil
+
+      %Mall{} = mall ->
+        {:ok, _, changeset} = update_mall!(mall, mall_info)
+        {:ok, changeset.changes}
+    end
+  end
+
+  def create_mall!(mall_id, title, app_id) do 
+    changed = Mall.changeset(%{}, %{
+      id: mall_id,
+      title: title, 
+      active: true,
+      app_id: app_id
+    })
+    new_mall = changed |> Repo.insert!
+    CachedApp.refresh(new_mall)
+    {:ok, new_mall}
+  end
+
+  def update_mall!(%Mall{} = mall, attr) do 
+    changed = Mall.changeset(mall, attr)
+    new_mall = changed |> Repo.update!
+    CachedMall.refresh(new_mall)
+    {:ok, new_mall, changed}
   end
 
   def get_mall_goods(goods_id) do
-    Repo.get(MallGoods, goods_id)
-  end
-
-  def update_mall_icon(mall, icon_path) do
-    Mall.changeset(mall, %{icon: icon_path}) |> Repo.update!
+    CachedMallGoods.get(goods_id)
   end
 
   def update_mall_goods_pic(goods, image_path) do
@@ -85,18 +116,11 @@ defmodule Acs.Malls do
     end
   end
 
-  def update_mall_info(app_id, mall_info) do
-    case Repo.get_by(Mall, id: mall_info.id, app_id: app_id) do
-      nil ->
-        nil
+  def update_mall_goods(%MallGoods{}, attr) do 
 
-      %Mall{} = mall ->
-        changed = Mall.changeset(mall, mall_info)
-        changed |> Repo.update!
-        CachedApp.refresh(mall.app_id)
-        {:ok, changed.changes}
-    end
   end
+
+
 
   def fetch_malls(app_id) do
     query = from m in Mall,

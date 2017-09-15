@@ -148,7 +148,7 @@ export default {
       },
 
       updateMallInfo(params, successMessage) {
-        return post('/admin_actions/mall/update_mall_info', params, successMessage)
+        return post('/admin_actions/mall/update_mall', params, successMessage)
       },
 
       fetchGoods(params) {

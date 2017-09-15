@@ -5,388 +5,176 @@ defmodule Acs.PMalls do
 
   import Ecto.Query, warn: false
   alias Acs.Repo
-
-  alias Acs.PMalls.PMallOrder
-
-  @doc """
-  Returns the list of pmall_orders.
-
-  ## Examples
-
-      iex> list_pmall_orders()
-      [%PMallOrder{}, ...]
-
-  """
-  def list_pmall_orders do
-    Repo.all(PMallOrder)
-  end
-
-  @doc """
-  Gets a single p_mall_order.
-
-  Raises `Ecto.NoResultsError` if the P mall order does not exist.
-
-  ## Examples
-
-      iex> get_p_mall_order!(123)
-      %PMallOrder{}
-
-      iex> get_p_mall_order!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_p_mall_order!(id), do: Repo.get!(PMallOrder, id)
-
-  @doc """
-  Creates a p_mall_order.
-
-  ## Examples
-
-      iex> create_p_mall_order(%{field: value})
-      {:ok, %PMallOrder{}}
-
-      iex> create_p_mall_order(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_p_mall_order(attrs \\ %{}) do
-    %PMallOrder{}
-    |> PMallOrder.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a p_mall_order.
-
-  ## Examples
-
-      iex> update_p_mall_order(p_mall_order, %{field: new_value})
-      {:ok, %PMallOrder{}}
-
-      iex> update_p_mall_order(p_mall_order, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_p_mall_order(%PMallOrder{} = p_mall_order, attrs) do
-    p_mall_order
-    |> PMallOrder.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a PMallOrder.
-
-  ## Examples
-
-      iex> delete_p_mall_order(p_mall_order)
-      {:ok, %PMallOrder{}}
-
-      iex> delete_p_mall_order(p_mall_order)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_p_mall_order(%PMallOrder{} = p_mall_order) do
-    Repo.delete(p_mall_order)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking p_mall_order changes.
-
-  ## Examples
-
-      iex> change_p_mall_order(p_mall_order)
-      %Ecto.Changeset{source: %PMallOrder{}}
-
-  """
-  def change_p_mall_order(%PMallOrder{} = p_mall_order) do
-    PMallOrder.changeset(p_mall_order, %{})
-  end
-
-  alias Acs.PMalls.PointLog
-
-  @doc """
-  Returns the list of point_logs.
-
-  ## Examples
-
-      iex> list_point_logs()
-      [%PointLog{}, ...]
-
-  """
-  def list_point_logs do
-    Repo.all(PointLog)
-  end
-
-  @doc """
-  Gets a single point_log.
-
-  Raises `Ecto.NoResultsError` if the Point log does not exist.
-
-  ## Examples
-
-      iex> get_point_log!(123)
-      %PointLog{}
-
-      iex> get_point_log!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_point_log!(id), do: Repo.get!(PointLog, id)
-
-  @doc """
-  Creates a point_log.
-
-  ## Examples
-
-      iex> create_point_log(%{field: value})
-      {:ok, %PointLog{}}
-
-      iex> create_point_log(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_point_log(attrs \\ %{}) do
-    %PointLog{}
-    |> PointLog.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a point_log.
-
-  ## Examples
-
-      iex> update_point_log(point_log, %{field: new_value})
-      {:ok, %PointLog{}}
-
-      iex> update_point_log(point_log, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_point_log(%PointLog{} = point_log, attrs) do
-    point_log
-    |> PointLog.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a PointLog.
-
-  ## Examples
-
-      iex> delete_point_log(point_log)
-      {:ok, %PointLog{}}
-
-      iex> delete_point_log(point_log)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_point_log(%PointLog{} = point_log) do
-    Repo.delete(point_log)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking point_log changes.
-
-  ## Examples
-
-      iex> change_point_log(point_log)
-      %Ecto.Changeset{source: %PointLog{}}
-
-  """
-  def change_point_log(%PointLog{} = point_log) do
-    PointLog.changeset(point_log, %{})
-  end
+  alias Acs.Search
 
   alias Acs.PMalls.PMallGoods
+  alias Acs.PMalls.PointLog
 
-  @doc """
-  Returns the list of pmall_goods.
+  alias Acs.Cache.CachedPMallGoods
 
-  ## Examples
-
-      iex> list_pmall_goods()
-      [%PMallGoods{}, ...]
-
-  """
-  def list_pmall_goods do
-    Repo.all(PMallGoods)
+  def get_mall_goods(goods_id) do
+    Repo.get(PMallGoods, goods_id)
   end
 
-  @doc """
-  Gets a single p_mall_goods.
-
-  Raises `Ecto.NoResultsError` if the P mall goods does not exist.
-
-  ## Examples
-
-      iex> get_p_mall_goods!(123)
-      %PMallGoods{}
-
-      iex> get_p_mall_goods!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_p_mall_goods!(id), do: Repo.get!(PMallGoods, id)
-
-  @doc """
-  Creates a p_mall_goods.
-
-  ## Examples
-
-      iex> create_p_mall_goods(%{field: value})
-      {:ok, %PMallGoods{}}
-
-      iex> create_p_mall_goods(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_p_mall_goods(attrs \\ %{}) do
-    %PMallGoods{}
-    |> PMallGoods.changeset(attrs)
-    |> Repo.insert()
+  def get_goods_detail(goods_id) do
+    CachedPMallGoods.get(goods_id)
   end
 
-  @doc """
-  Updates a p_mall_goods.
+  def fetch_goods(app_id, page, records_per_page, keyword) do
+    {:ok, searchTotal, ids} = search_goods(app_id, keyword, page,records_per_page)
 
-  ## Examples
+    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
 
-      iex> update_p_mall_goods(p_mall_goods, %{field: new_value})
-      {:ok, %PMallGoods{}}
+    if total == 0 do
+      :zero
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = from g in PMallGoods,
+                where: g.app_id == ^app_id,
+                order_by: [desc: g.inserted_at],
+                limit: ^records_per_page,
+                offset: ^((page - 1) * records_per_page),
+                select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
 
-      iex> update_p_mall_goods(p_mall_goods, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      query = if(String.length(keyword)>0) do
+        query |> where([p], p.id in ^ids)
+      else
+        query
+      end
 
-  """
-  def update_p_mall_goods(%PMallGoods{} = p_mall_goods, attrs) do
-    p_mall_goods
-    |> PMallGoods.changeset(attrs)
-    |> Repo.update()
+      goodses = Repo.all(query)
+      {:ok, goodses, total_page}
+    end
   end
 
-  @doc """
-  Deletes a PMallGoods.
-
-  ## Examples
-
-      iex> delete_p_mall_goods(p_mall_goods)
-      {:ok, %PMallGoods{}}
-
-      iex> delete_p_mall_goods(p_mall_goods)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_p_mall_goods(%PMallGoods{} = p_mall_goods) do
-    Repo.delete(p_mall_goods)
+  def update_mall_goods_pic(goods, image_path) do
+    PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
+    CachedPMallGoods.refresh(goods)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking p_mall_goods changes.
+  def update_pmall_goods(user_id, goods) do
+    case goods.is_new do
+      true ->
+        # add new
+        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods.app_id and g.id == ^goods.id)
+        if(count > 0) do
+          :exist
+        else
+          goods = goods |> Map.put("user_id", user_id)
+          case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
+            {:ok, new_goods} ->
+              goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+              CachedPMallGoods.refresh(goods.id)
+              {:add_ok, goods}
+            {:error, %{errors: _errors}} ->
+              :error
+          end
+        end
 
-  ## Examples
+      false ->
+        # update
+        case Repo.get(PMallGoods, goods.id) do
+          nil ->
+            nil
 
-      iex> change_p_mall_goods(p_mall_goods)
-      %Ecto.Changeset{source: %PMallGoods{}}
-
-  """
-  def change_p_mall_goods(%PMallGoods{} = p_mall_goods) do
-    PMallGoods.changeset(p_mall_goods, %{})
+          %PMallGoods{} = mg ->
+            goods = Map.put(goods, "user_id", user_id)
+            changed = PMallGoods.changeset(mg, %{name: goods.name, 
+                                                description: goods.description, 
+                                                pic: goods.pic, 
+                                                price: goods.price, 
+                                                postage: goods.postage, 
+                                                stock: goods.stock, 
+                                                is_virtual: goods.is_virtual, 
+                                                begin_time: goods.begin_time, 
+                                                end_time: goods.end_time})
+            changed |> Repo.update!
+            CachedPMallGoods.refresh(goods.id)
+            {:update_ok, goods, changed.changes}
+        end
+    end
   end
 
-  alias Acs.PMalls.TaskBar
-
-  @doc """
-  Returns the list of pmall_task_bars.
-
-  ## Examples
-
-      iex> list_pmall_task_bars()
-      [%TaskBar{}, ...]
-
-  """
-  def list_pmall_task_bars do
-    Repo.all(TaskBar)
+  def toggle_goods_status(goods_id) do
+    case Repo.get(PMallGoods, goods_id) do
+      nil ->
+        nil
+      %PMallGoods{} = goods ->
+        PMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
+        {:ok, !goods.active}
+    end
   end
 
-  @doc """
-  Gets a single task_bar.
+  def delete_goods(goods_id) do
+    case Repo.get(PMallGoods, goods_id) do
+      nil ->
+        nil
+      %PMallGoods{} = goods ->
+        if(goods.sold > 0) do
+          :sold
+        else
+          case Repo.delete(goods) do
+            {:ok, _} ->
+              CachedPMallGoods.del(goods_id)
+              :ok
 
-  Raises `Ecto.NoResultsError` if the Task bar does not exist.
-
-  ## Examples
-
-      iex> get_task_bar!(123)
-      %TaskBar{}
-
-      iex> get_task_bar!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_task_bar!(id), do: Repo.get!(TaskBar, id)
-
-  @doc """
-  Creates a task_bar.
-
-  ## Examples
-
-      iex> create_task_bar(%{field: value})
-      {:ok, %TaskBar{}}
-
-      iex> create_task_bar(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_task_bar(attrs \\ %{}) do
-    %TaskBar{}
-    |> TaskBar.changeset(attrs)
-    |> Repo.insert()
+            {:error, %{errors: errors}} ->
+              {:error, errors}
+          end
+        end
+    end
   end
 
-  @doc """
-  Updates a task_bar.
+  def get_point_logs(app_id, user_id, page, records_per_page) do
+    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
+    totalQuery = case String.length(user_id) do
+      0 -> totalQuery
+      _ -> where(totalQuery, [pl], pl.user_id == ^user_id)
+    end
+    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
-  ## Examples
+    query = from pl in PointLog,
+              join: u in assoc(pl, :user),
+              select: map(pl, [:id, :log_type, :point, :memo, :user_id, :inserted_at, user: [:id, :email]]),
+              limit: ^records_per_page,
+              where: pl.app_id == ^app_id,
+              offset: ^((page - 1) * records_per_page),
+              order_by: [desc: pl.id],
+              preload: [user: u]
 
-      iex> update_task_bar(task_bar, %{field: new_value})
-      {:ok, %TaskBar{}}
-
-      iex> update_task_bar(task_bar, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_task_bar(%TaskBar{} = task_bar, attrs) do
-    task_bar
-    |> TaskBar.changeset(attrs)
-    |> Repo.update()
+    query = case String.length(user_id) do
+      0 -> query
+      _ -> where(query, [pl], pl.user_id == ^user_id)
+    end
+    logs = Repo.all(query)
+    {:ok, logs, total_page}
   end
 
-  @doc """
-  Deletes a TaskBar.
+  def add_point(log) do
+    case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
+      {:ok, new_log} ->
+        log = Map.put(log, "id", new_log.id) |> Map.put("inserted_at", new_log.inserted_at)
+        {:ok, log}
 
-  ## Examples
-
-      iex> delete_task_bar(task_bar)
-      {:ok, %TaskBar{}}
-
-      iex> delete_task_bar(task_bar)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_task_bar(%TaskBar{} = task_bar) do
-    Repo.delete(task_bar)
+      {:error, %{errors: errors}} ->
+        {:error, errors}
+    end
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking task_bar changes.
-
-  ## Examples
-
-      iex> change_task_bar(task_bar)
-      %Ecto.Changeset{source: %TaskBar{}}
-
-  """
-  def change_task_bar(%TaskBar{} = task_bar) do
-    TaskBar.changeset(task_bar, %{})
+  def admin_add_point(user_id, app_id, log) do
+    log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
+    add_point(log)
   end
+
+  def add_goods_click(goods_id, click) do
+    goods = Repo.get(PMallGoods, goods_id)
+    PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
+    CachedPMallGoods.refresh(goods)
+  end
+
+  defp search_goods(_app_id, keyword, page, records_per_page) do
+    Search.search_pmall_goods(keyword, page, records_per_page)
+  end
+
 end

@@ -42,6 +42,7 @@ defmodule AcsWeb do
       alias Utils.Xml
       alias Acs.Repo
       alias Acs.Search
+      alias Acs.Apps
       alias Acs.Apps.App
       alias Acs.Apps.AppNews
       alias Acs.Apps.AppSdkBinding
@@ -75,6 +76,7 @@ defmodule AcsWeb do
       alias Acs.Wcp.AppWcpTFDownloadResponse
       alias Acs.Wcp.AppWcpUser
 
+      alias Acs.PMalls
       alias Acs.PMalls.PointLog
       alias Acs.PMalls.TaskBar
       alias Acs.PMalls.PMallGoods

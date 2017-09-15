@@ -7,6 +7,82 @@
     height: virtual-m-rem(42);
     background-image: url("~assets/pmall/1243_2_01.png");
   }
+  &.icon-logo {
+    width: virtual-m-rem(548);
+    height: virtual-m-rem(285);
+    background-image: url("~assets/pmall/1252_03.png");
+    position: absolute;
+    top: virtual-m-pixel(380);
+    left: virtual-m-pixel(345);
+  }
+}
+
+.bg-full {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  &.bg-bind-mobile {
+    width: 100%;
+    height: virtual-m-rem(2034);
+    background-image: url("~assets/pmall/1252_01.jpg");
+  }
+  &.bg-draw-page {
+    background-image: url("~assets/pmall/1245_34.jpg");
+    height: virtual-m-pixel(2064);
+    width: virtual-m-pixel(1242);
+  }
+  &.bg-draw-item {
+    background-image: url("~assets/pmall/1245_34_03.png");
+    width: virtual-m-pixel(990);
+    height: virtual-m-pixel(982);
+    position: absolute;
+    left: virtual-m-pixel(130);
+    bottom: virtual-m-pixel(380);
+  }
+  &.bg-turn-needle {
+    background-image: url("~assets/pmall/1245_34345_12.png");
+    width: virtual-m-pixel(145);
+    height: virtual-m-pixel(72);
+    position: absolute;
+    left: virtual-m-pixel(595);
+    bottom: virtual-m-pixel(820);
+  }
+  &.bg-know-answer {
+    background-image: url("~assets/pmall/1247_a_03.png");
+    width: virtual-m-pixel(1217);
+    height: virtual-m-pixel(701);
+  }
+}
+
+.button {
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  &.btn-save-address {
+    background-image: url("~assets/pmall/1244_03.png");
+    width: virtual-m-pixel(685);
+    height: virtual-m-pixel(108);
+  }
+  &.btn-official-website {
+    background-image: url("~assets/pmall/1252_234_03.png");
+    width: virtual-m-pixel(370);
+    height: virtual-m-pixel(126);
+    position: absolute;
+    top: virtual-m-pixel(70);
+    right: virtual-m-pixel(60);
+  }
+  &.btn-bind-mobile {
+    background-image: url("~assets/pmall/1252_234_11.png");
+    width: virtual-m-pixel(533);
+    height: virtual-m-pixel(155);
+  }
+  &.btn-click-draw {
+    background-image: url("~assets/pmall/1245_341_15.png");
+    width: virtual-m-pixel(482);
+    height: virtual-m-pixel(134);
+    position: absolute;
+    left: virtual-m-pixel(635);
+    bottom: virtual-m-pixel(120);
+  }
 }
 
 span {
@@ -21,34 +97,7 @@ span {
 }
 
 .draw-page {
-  background-image: url("~assets/pmall/1245_34.jpg");
-  height: virtual-m-pixel(2064);
-  width: virtual-m-pixel(1242);
   position: relative;
-  .draw {
-    background-image: url("~assets/pmall/1245_34_03.png");
-    width: virtual-m-pixel(990);
-    height: virtual-m-pixel(982);
-    position: absolute;
-    left: virtual-m-pixel(130);
-    bottom: virtual-m-pixel(380);
-  }
-  .turn-needle {
-    background-image: url("~assets/pmall/1245_34345_12.png");
-    width: virtual-m-pixel(145);
-    height: virtual-m-pixel(72);
-    position: absolute;
-    left: virtual-m-pixel(595);
-    bottom: virtual-m-pixel(820);
-  }
-  .click-draw {
-    background-image: url("~assets/pmall/1245_341_15.png");
-    width: virtual-m-pixel(482);
-    height: virtual-m-pixel(134);
-    position: absolute;
-    left: virtual-m-pixel(635);
-    bottom: virtual-m-pixel(120);
-  }
   .my-total {
     width: virtual-m-pixel(482);
     height: virtual-m-pixel(130);
@@ -63,13 +112,24 @@ span {
 }
 
 .my-conversion {
-  .conversion-head {
+  header {
     width: 95vw;
     min-height: virtual-m-rem(130);
     margin: 1rem auto .5rem auto;
     padding-left: 1rem;
     border: 1px solid rgba($text, 0.1);
     border-radius: virtual-m-rem(10);
+  }
+  footer {
+    width: 70vw;
+    min-height: 3rem;
+    margin: 1rem auto 2rem auto;
+    border-radius: virtual-m-rem(10);
+    background-color: $primary;
+    .loadmore {
+      font-size: $size4;
+      color: $white;
+    }
   }
   .conversion-content {
     padding: 1rem;
@@ -83,17 +143,6 @@ span {
         right: 1rem;
         bottom: 1rem;
       }
-    }
-  }
-  .conversion-footer {
-    width: 70vw;
-    min-height: 3rem;
-    margin: 1rem auto 2rem auto;
-    border-radius: virtual-m-rem(10);
-    background-color: $primary;
-    .loadmore {
-      font-size: $size4;
-      color: $white;
     }
   }
 }
@@ -111,18 +160,87 @@ span {
     margin: 0 auto;
     .fields {
       padding: 1rem 2rem;
+      &:last-child {
+        margin-top: 2rem;
+      }
     }
     .lable {
       text-align: right;
       width: 15vw;
     }
     input {
-      height: 1.8rem;
       width: 60vw;
+      height: 1.8rem;
       border-radius: 3px;
       &.is-primary {
         border: 1px solid black;
       }
     }
+  }
+}
+
+.bind-mobile {
+  .items {
+    position: relative;
+    top: virtual-m-pixel(745);
+    .item {
+      width: 22rem;
+      padding-bottom: 2rem;
+      &:last-child {
+        margin-top: 1rem;
+      }
+    }
+    input {
+      height: 2.5rem;
+      padding-left: .5rem;
+      &.is-code {
+        width: 12rem;
+        margin-right: .2rem;
+      }
+      &.is-mobile {
+        width: 21rem;
+      }
+    }
+    .btn-valid-code {
+      width: 8.5rem;
+      height: 3.1rem;
+      color: $red;
+      background-color: $text;
+      border: 1px solid $red;
+      font-size: $size5;
+    }
+  }
+}
+
+.know-ledge {
+  header {
+    width: 100vw;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    img {
+      width: virtual-m-pixel(293);
+      height: virtual-m-pixel(157);
+    }
+  }
+  .items {
+    width: 98vw;
+    margin: 0 auto;
+    border: 1px solid rgba($text, 0.1);
+    .q-item {
+      padding-top: 1rem;
+      min-height: 18rem;
+      border-bottom: 1px solid rgba($text, 0.1);
+      p {
+        &.title {
+          font-size: $size3;
+        }
+        &.subtitle {
+          text-indent: 2rem;
+          padding: 0 1rem;
+          font-size: $size4;
+        }
+      }
+    }
+    .a-item {}
   }
 }

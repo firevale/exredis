@@ -44,6 +44,9 @@
           <input type="text" class="input is-primary">
         </div>
       </div>
+      <div class="fields is-flex flex-center flex-vcentered">
+        <a class="button btn-save-address"></a>
+      </div>
     </div>
   </div>
 </template>

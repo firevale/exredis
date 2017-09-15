@@ -39,7 +39,7 @@ export default function(VueRouter) {
         }, {
           path: 'knowledge',
           name: 'knowledge',
-          component: require('../views/index.vue')
+          component: require('../views/knowLedge.vue')
         }, {
           path: 'my_point',
           name: 'my_point',
@@ -47,7 +47,7 @@ export default function(VueRouter) {
         }, {
           path: 'bind_mobile',
           name: 'bind_mobile',
-          component: require('../views/index.vue')
+          component: require('../views/bindMobile.vue')
         }
       ]
     }, {

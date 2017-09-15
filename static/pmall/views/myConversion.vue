@@ -1,8 +1,8 @@
 <template>
   <div class="my-conversion">
-    <div class="conversion-head is-flex flex-vcentered flex-left">
+    <header class=" is-flex flex-vcentered flex-left">
       客服邮箱：<i class="icon icon-email"></i>&nbsp;jqxs@firevale.com
-    </div>
+    </header>
     <div class="conversion-content">
       <div class="conversion-item" v-for="n in 15">
         <span class="title">兑换记录1：礼品名称cdkey（休闲鞋）</span>
@@ -12,8 +12,8 @@
         </div>
       </div>
     </div>
-    <div class="conversion-footer is-flex flex-center flex-vcentered">
+    <footer class="is-flex flex-center flex-vcentered">
       <div class="loadmore">查看更多</div>
-    </div>
+    </footer>
   </div>
 </template>

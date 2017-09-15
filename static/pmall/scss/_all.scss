@@ -25,6 +25,10 @@
       height: virtual-m-rem(48);
       background-image: url("~assets/pmall/1249_2234_1_30.png");
     }
+    &.btn-more-goods {
+      height: virtual-m-rem(83);
+      background-image: url("~assets/pmall/1249_34_09.png");
+    }
   }
 
   .bg-full {
@@ -97,13 +101,18 @@
           border: 1px solid rgba($text-grey, 0.2);
           padding: .5rem;
           .item {
+            height: 100%;
+            width: 100%;
             .image {
               background: $white;
               height: virtual-m-rem(266);
               border-radius: 3px;
             }
-            .item-content{
-                padding: 0 1.5rem;
+            .item-content {
+              .item-title {
+                display: inline-block;
+                max-width: 55%;
+              }
             }
           }
         }

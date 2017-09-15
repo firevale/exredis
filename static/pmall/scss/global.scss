@@ -19,7 +19,7 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-p{
+p {
   padding: 0px;
 }
 
@@ -61,7 +61,7 @@ input::-webkit-inner-spin-button {
 
 .flex-fixed-size {
   flex-grow: 0;
-  flex-shrink: 1;
+  flex-shrink: 0;
   flex-basis: auto;
 }
 
@@ -154,4 +154,16 @@ input::-webkit-inner-spin-button {
       bottom: 0;
     }
   }
+}
+
+.has-text-centered {
+  text-align: center;
+}
+
+.has-text-left {
+  text-align: left;
+}
+
+.has-text-right {
+  text-align: right;
 }

@@ -42,6 +42,7 @@ defmodule AcsWeb do
       alias Utils.Xml
       alias Acs.Repo
       alias Acs.Search
+      alias Acs.Apps
       alias Acs.Apps.App
       alias Acs.Apps.AppNews
       alias Acs.Apps.AppSdkBinding

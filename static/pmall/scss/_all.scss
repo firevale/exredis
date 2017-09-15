@@ -26,14 +26,78 @@
       background-image: url("~assets/pmall/1249_2234_1_30.png");
     }
     &.btn-more-goods {
+      width: 100%;
       height: virtual-m-rem(83);
       background-image: url("~assets/pmall/1249_34_09.png");
+    }
+    &.btn-pmall-more {
+      margin: 0 auto;
+      width: virtual-m-rem(761);
+      height: virtual-m-rem(83);
+      background-image: url("~assets/pmall/1249_34_09.png");
+    }
+    &.btn-conversion-limit {
+      margin: .5rem auto;
+      width: virtual-m-rem(1198);
+      height: virtual-m-rem(179);
+      background-image: url("~assets/pmall/1248_03.png");
+    }
+    &.btn-point-less {
+      margin: .5rem auto;
+      width: virtual-m-rem(1198);
+      height: virtual-m-rem(179);
+      background-image: url("~assets/pmall/1248_05.png");
+    }
+    &.btn-goods-down {
+      margin: .5rem auto;
+      width: virtual-m-rem(1198);
+      height: virtual-m-rem(179);
+      background-image: url("~assets/pmall/1248_01_07.png");
+    }
+    &.btn-sign {
+      width: virtual-m-rem(361);
+      height: virtual-m-rem(135);
+      position: absolute;
+      left: 50%;
+      bottom: virtual-m-rem(-67);
+      margin-left: virtual-m-rem(-361/2);
+      background-image: url("~assets/pmall/1246_03.png");
+    }
+    &.btn-signed {
+      width: virtual-m-rem(361);
+      height: virtual-m-rem(135);
+      position: absolute;
+      left: 50%;
+      bottom: virtual-m-rem(-67);
+      margin-left: virtual-m-rem(-361/2);
+      background-image: url("~assets/pmall/1246_1456_03.png");
     }
   }
 
   .bg-full {
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    &.bg-title-task {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/12422345_02.png");
+    }
+    &.bg-title-pmall-index {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/12422345_04.png");
+    }
+    &.bg-title-pmall {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/1249_02.png");
+    }
+    &.bg-expired {
+      background-repeat: no-repeat, no-repeat;
+      background-image: url("~assets/pmall/1248_34_03.png"), url("~assets/pmall/1248_01_03.png");
+      background-size: virtual-m-rem(21) virtual-m-rem(26), virtual-m-rem(683) virtual-m-rem(65);
+      background-position: virtual-m-rem(10) virtual-m-rem(20), 0 0;
+    }
   }
 
   .header-title {
@@ -121,5 +185,144 @@
     .banner {
       height: virtual-m-rem(229);
       background-image: url("~assets/pmall/12422_04.png");
+    }
+  }
+
+  .my-point-page {
+    header {
+      height: virtual-m-rem(500);
+      .circle {
+        height: virtual-m-rem(360);
+        width: virtual-m-rem(360);
+        border: 2px solid black;
+        border-radius: 50%;
+        background: red;
+        color: white;
+      }
+    }
+    .point-title {
+      height: virtual-m-rem(90);
+      line-height: virtual-m-rem(90);
+      background-color: black;
+      color: white;
+    }
+    .items {
+      .item {
+        margin: 0 1rem;
+        &:not(:last-child) {
+          border-bottom: 1px solid rgba($text-grey, 0.2);
+        }
+      }
+    }
+  }
+
+  .detail-page {
+    padding: .5rem;
+    .box {
+      width: 100%;
+      border: 1px solid rgba($text-grey, 0.2);
+      background: $white;
+      .container {
+        margin: .1rem;
+        padding: .5rem;
+        background: #e1e5eb;
+        .thumb {
+          height: virtual-m-rem(610);
+          background: white;
+          border-radius: 5px;
+        }
+        .expired {
+          width: virtual-m-rem(683);
+          height: virtual-m-rem(65);
+          line-height: virtual-m-rem(65);
+          padding-left: 1rem;
+        }
+      }
+    }
+    .operate {
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  .sign-page {
+    $border-color: rgba(#d40200, 0.5);
+    background-image: url("~assets/pmall/1246_01.jpg");
+    background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
+    .container {
+      flex: 1;
+      background-color: rgba(white, 0.8);
+      .calender {
+        display: block;
+        flex: 0;
+        margin-top: 2px;
+        border: 1px solid $border-color;
+        .head-image {
+          width: 100%;
+          height: virtual-m-rem(410);
+        }
+        .body {
+          color: red;
+          background: #ededed;
+          flex-shrink: 0;
+          height: virtual-m-rem(598);
+          border-top: 1px solid $border-color;
+          .column {
+            height: 100%;
+            &:not(:last-child) {
+              border-right: 1px solid $border-color;
+            }
+            h1.date {
+              margin: 1rem;
+            }
+            h2.yi-ji {
+              margin: 1rem 0;
+              font-weight: normal;
+            }
+            p.terms {
+              margin: 0;
+              .term {
+                width: 1rem;
+                height: virtual-m-rem(350);
+                padding: 0 2px;
+                &:first-child {
+                  border-right: 1px solid rgba( red, 0.2);
+                }
+              }
+            }
+          }
+        }
+      }
+      .sign-logs {
+        margin-top: virtual-m-rem(120);
+        strong {
+          color: red;
+          font-size: $size4;
+        }
+        .logs {
+          background-color: red;
+          height: virtual-m-rem(220);
+          .log-box {
+            padding: 2px;
+            .log {
+              width: 100%;
+              height: 100%;
+              background: white;
+              border: .3rem solid black;
+            }
+          }
+        }
+      }
+      .sign-others {
+        margin-top: 5rem;
+        .sign-users {
+          background: white;
+          border: 1px solid $border-color;
+          border-radius: 5px;
+          height: virtual-m-rem(406);
+        }
+      }
     }
   }

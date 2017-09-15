@@ -145,7 +145,7 @@ defmodule Acs.Malls do
     {:ok, malls, total_page}
   end
   
-  def fetch_goods(app_id, page, records_per_page, keyword) do
+  def list_mall_goods(app_id, page, records_per_page, keyword) do
     {:ok, searchTotal, ids} = search_goods(app_id, keyword, page,records_per_page)
 
     queryTotal = from g in MallGoods, select: count(1), where: g.app_id == ^app_id
@@ -199,7 +199,7 @@ defmodule Acs.Malls do
     Repo.one!(from m in Mall, select: map(m, [:id, :title, :icon]), where: m.app_id == ^app_id and m.active==true)
   end
 
-  def get_goods_detail(goods_id) do
+  def get_mall_goods_detail(goods_id) do
     add_goods_click(goods_id,1)
     CachedMallGoods.get(goods_id)
   end
@@ -214,7 +214,7 @@ defmodule Acs.Malls do
     end
   end
 
-  def delete_goods(goods_id) do
+  def delete_mall_goods(goods_id) do
     case Repo.get(MallGoods, goods_id) do
       nil ->
         nil

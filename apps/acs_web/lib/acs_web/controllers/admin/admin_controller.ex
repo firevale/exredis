@@ -231,7 +231,7 @@ defmodule AcsWeb.Admin.AdminController do
     end
   end
 
-  def get_operate_log(conn, %{"app_id" => app_id, "user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
+  def list_admin_operate_logs(conn, %{"app_id" => app_id, "user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
     totalQuery = from ol in OpLog, where: ol.app_id == ^app_id, select: count(ol.id)
     totalQuery = case String.length(user_id) do
       0 -> totalQuery

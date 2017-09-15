@@ -12,15 +12,15 @@ defmodule Acs.PMalls do
 
   alias Acs.Cache.CachedPMallGoods
 
-  def get_mall_goods(goods_id) do
+  def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
   end
 
-  def get_goods_detail(goods_id) do
+  def get_pmall_goods_detail(goods_id) do
     CachedPMallGoods.get(goods_id)
   end
 
-  def fetch_goods(app_id, page, records_per_page, keyword) do
+  def list_pmall_goods(app_id, page, records_per_page, keyword) do
     {:ok, searchTotal, ids} = search_goods(app_id, keyword, page,records_per_page)
 
     queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id
@@ -106,7 +106,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def delete_goods(goods_id) do
+  def delete_pmall_goods(goods_id) do
     case Repo.get(PMallGoods, goods_id) do
       nil ->
         nil
@@ -126,7 +126,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def get_point_logs(app_id, user_id, page, records_per_page) do
+  def list_pmall_point_logs(app_id, user_id, page, records_per_page) do
     totalQuery = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
     totalQuery = case String.length(user_id) do
       0 -> totalQuery
@@ -162,7 +162,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def admin_add_point(user_id, app_id, log) do
+  def admin_add_pmall_point(user_id, app_id, log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
     add_point(log)
   end

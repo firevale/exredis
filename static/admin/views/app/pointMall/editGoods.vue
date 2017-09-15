@@ -324,7 +324,7 @@ export default {
           message: this.$t('admin.messages.confirmDeleteMallGoods'),
           type: 'danger',
           onOK: async _ => {
-            let result = await this.$acs.deletePointGoods({
+            let result = await this.$acs.deletePMallGoods({
               app_id: this.goods.app_id,
               goods_id: this.goods.id
             }, this.$t('admin.notification.message.mallGoodsDeleted'))

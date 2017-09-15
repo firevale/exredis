@@ -11,7 +11,7 @@ defmodule AcsWeb.Admin.PMallController do
     reformat: "jpg"] when action == :update_goods_pic
   def update_goods_pic(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
                       %{"goods_id" => goods_id, "file" => %{path: image_file_path}}) do
-   case PMalls.get_mall_goods(goods_id) do
+   case PMalls.get_pmall_goods(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound", i18n_message_object: %{goods_id: goods_id}})
 
@@ -88,10 +88,10 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # delete_goods
-  def delete_goods(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+  # delete_pmall_goods
+  def delete_pmall_goods(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
                    %{"goods_id" => goods_id} = params) do
-    case PMalls.delete_goods(goods_id) do
+    case PMalls.delete_pmall_goods(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       :sold ->
@@ -103,18 +103,18 @@ defmodule AcsWeb.Admin.PMallController do
         conn |> json(%{success: false, message: translate_errors(errors)})
     end
   end
-  def delete_goods(conn, _) do
+  def delete_pmall_goods(conn, _) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def get_point_logs(%Plug.Conn{private: %{acs_session_user_id: _user_id, acs_app_id: app_id}} = conn, 
+  def list_pmall_point_logs(%Plug.Conn{private: %{acs_session_user_id: _user_id, acs_app_id: app_id}} = conn, 
                                          %{"user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
-    {:ok, logs, total_page} = PMalls.get_point_logs(app_id, user_id, page, records_per_page)
+    {:ok, logs, total_page} = PMalls.list_pmall_point_logs(app_id, user_id, page, records_per_page)
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 
-  def admin_add_point(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"point" => _point, "memo" => _memo} = log) do
-    case PMalls.admin_add_point(user_id, app_id, log) do
+  def admin_add_pmall_point(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"point" => _point, "memo" => _memo} = log) do
+    case PMalls.admin_add_pmall_point(user_id, app_id, log) do
       {:ok, log} ->
         conn |> json(%{success: true, log: log})
       {:error, errors} ->

@@ -110,13 +110,13 @@ export default {
     ]),
   },
   mounted: async function() {
-    this.fetchPMallGoods(this.page, this.recordsPerPage)
+    this.listPMallGoods(this.page, this.recordsPerPage)
   },
 
   watch: {
     app(newVal) {
       this.appId = newVal.id
-      this.fetchPMallGoods(this.page, this.recordsPerPage)
+      this.listPMallGoods(this.page, this.recordsPerPage)
     }
   },
 
@@ -126,14 +126,14 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.fetchPMallGoods(page, this.recordsPerPage)
+      this.listPMallGoods(page, this.recordsPerPage)
     },
 
     onSearchBoxSubmit: function() {
       if (this.keyword) {
         this.searchGoods(1)
       } else {
-        this.fetchPMallGoods(1, this.recordsPerPage)
+        this.listPMallGoods(1, this.recordsPerPage)
       }
     },
 
@@ -162,7 +162,7 @@ export default {
           message: this.$t('admin.messages.confirmDeleteMallGoods'),
           type: 'danger',
           onOK: async _ => {
-            let result = await this.$acs.deletePointGoods({
+            let result = await this.$acs.deletePMallGoods({
               app_id: goods.app_id,
               goods_id: goods.id
             }, this.$t('admin.notification.message.mallGoodsDeleted'))
@@ -174,9 +174,9 @@ export default {
       }
     },
 
-    fetchPMallGoods: async function(page, recordsPerPage) {
+    listPMallGoods: async function(page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.fetchPMallGoods({
+      let result = await this.$acs.listPMallGoods({
         keyword: "",
         page: page,
         records_per_page: recordsPerPage
@@ -193,7 +193,7 @@ export default {
 
     searchGoods: async function(page) {
       this.searching = true
-      let result = await this.$acs.fetchPMallGoods({
+      let result = await this.$acs.listPMallGoods({
         keyword: this.keyword,
         page: page,
         records_per_page: this.recordsPerPage

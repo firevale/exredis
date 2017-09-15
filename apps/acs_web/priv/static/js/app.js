@@ -15886,7 +15886,7 @@ var post = function post(uri, params, onProgress, cancelToken) {
         });
       },
       getGoodsDetail: function getGoodsDetail(goods_id) {
-        return post('/mall_actions/get_goods_detail', {
+        return post('/mall_actions/get_mall_goods_detail', {
           goods_id: goods_id
         });
       },

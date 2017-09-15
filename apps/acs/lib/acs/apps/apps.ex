@@ -240,6 +240,30 @@ defmodule Acs.Apps do
     end
   end
 
+  def update_question(app_id, q) do
+    with %AppQuestion{} = question <- Repo.get_by(AppQuestion, id: q.id, app_id: app_id),
+         {:ok, question} <- AppQuestion.changeset(question,%{title: q.title, answer: q.answer, active: q.active, is_hot: q.is_hot}) |> Repo.update
+    do
+      Acs.Search.ESQuestion.update(%{ doc: %{ title: q.title, answer: q.answer, active: q.active, is_hot: q.is_hot }}, q.id)
+      {:ok, question}
+    else
+      nil -> nil
+      {:error, %{errors: _errors}} -> :error
+    end
+  end
+
+  def delete_question(app_id, id) do
+    with %AppQuestion{id: ^id} = question <- Repo.get_by(AppQuestion, id: id, app_id: app_id),
+         {:ok, _}  <- Repo.delete(question)
+    do
+      Acs.Search.ESQuestion.delete(id)
+      :ok
+    else
+       nil -> nil
+       {:error, %{errors: errors}} -> {:error, errors}
+    end
+  end
+
   defp update_app_features!(app) do
     update_app_forum!(app)  
     update_app_mall!(app)

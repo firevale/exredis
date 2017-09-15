@@ -54,7 +54,7 @@ defmodule Acs.Apps.App do
   @doc false
   def changeset(%App{} = app, attrs) do
     app
-    |> cast(attrs, [:id, :secret, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
+    |> cast(attrs, [:id, :secret, :alias, :name, :icon, :token_ttl, :currency, :payment_callback, :chaoxin_group_id, :cs_phone_number,
       :forum_name, :forum_url, :baidu_tieba_name, :baidu_tieba_url, :weibo_url, :weibo_name, :website_url,
       :public_weixin_name, :public_weixin_url, :active, :has_forum, :has_mall, :has_pmall, :restrict_login, :can_assign_code, 
       :obtain_code_url, :wcp_download_enabled, :itc_app_id])
@@ -68,6 +68,8 @@ defmodule Acs.Apps.App do
     alias_ = get_field(changeset, :alias)
     has_forum = get_field(changeset, :has_forum)
     has_mall = get_field(changeset, :has_mall)
+
+    IO.puts "alias: #{alias_}"
 
     if has_forum or has_mall do 
       if alias_ in [nil, ""] do

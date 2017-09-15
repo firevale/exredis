@@ -35,6 +35,7 @@ export default {
     appId: '应用ID(APP ID)',
     appKey: '应用秘钥(APP KEY)',
     appName: '应用名称',
+    appAlias: '应用别名(英文)',
     appManager: '应用管理员',
     appCustomerService: '应用客服',
     appHasForum: '是否启用论坛',
@@ -69,6 +70,7 @@ export default {
     forumActive: '是否启用',
     forumCreatedAt: '创建时间',
     keyword: '敏感词',
+    itcAppId: 'iTunes Connect App ID',
   },
 
   currency: {

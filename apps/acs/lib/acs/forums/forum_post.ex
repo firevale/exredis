@@ -16,7 +16,7 @@ defmodule Acs.Forums.ForumPost do
     field :active, :boolean, default: true
     field :has_pic, :boolean, default: false
 
-    belongs_to :forum, Acs.Forums.Forum, type: :integer
+    belongs_to :forum, Acs.Forums.Forum, type: :string
     belongs_to :section, Acs.Forums.ForumSection, type: :integer
     belongs_to :user, Acs.Accounts.User
     belongs_to :editer, Acs.Accounts.User

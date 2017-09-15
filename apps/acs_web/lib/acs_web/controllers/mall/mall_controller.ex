@@ -5,9 +5,6 @@ defmodule AcsWeb.MallController do
   plug :fetch_access_token
   plug :fetch_session_user_id
   plug :fetch_session_user
-  # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
-  plug :cache_page, [cache_seconds: 10] when action in [:list_malls, :get_active_goods_paged]
-  # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
 
   # list_malls
   def list_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do

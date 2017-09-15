@@ -21,8 +21,8 @@ defmodule Acs.Malls.Mall do
   @doc false
   def changeset(%Mall{} = mall, attrs) do
     mall
-    |> cast(attrs, [:title, :icon, :active, :app_id])
-    |> validate_required([:title, :app_id])
+    |> cast(attrs, [:id, :title, :icon, :active, :app_id])
+    |> validate_required([:id, :title, :app_id])
     |> foreign_key_constraint(:app_id)
   end
 end

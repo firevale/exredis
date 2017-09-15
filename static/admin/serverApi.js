@@ -147,6 +147,10 @@ export default {
         return post('/admin_actions/games/toggle_news_status', params, successMessage)
       },
 
+      listMalls(params, successMessage) {
+        return post('/mall_actions/list_malls', params, successMessage)
+      },
+
       updateMallInfo(params, successMessage) {
         return post('/admin_actions/mall/update_mall', params, successMessage)
       },

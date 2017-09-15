@@ -26,7 +26,7 @@ defmodule AcsWeb.Admin.AdminController do
       %App{} = app ->
         case Apps.update_app(app, app_info) do 
           {:ok, _new_app, %{changes: changes}} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", changes)
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", %{"app_name": app.name, changes: changes})
             conn |> json(%{success: true, app: Apps.get_fat_app(app_id)})
 
           {:error, %{errors: errors}} ->

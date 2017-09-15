@@ -162,6 +162,7 @@ export default {
     return {
       selectedButton: {},
       loading: true,
+      bagId: 'menus',
       options: [{
           text: '点击事件(传回服务器)',
           value: 'click'

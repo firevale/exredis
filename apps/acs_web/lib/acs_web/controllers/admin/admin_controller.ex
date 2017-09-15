@@ -4,58 +4,17 @@ defmodule AcsWeb.Admin.AdminController do
   require Exsdks
   alias   Acs.Admin
 
-  def fetch_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
-    admin_level = Acs.AdminAuth.get_admin_level(user_id)
-
-    query =  
-      from app in App,
-        order_by: [desc: app.inserted_at],
-        where: app.active == true,
-        select: map(app, [:id, :name, :icon])
-
-    query =
-      if admin_level > 1  do
-        appids = Acs.Admin.list_admin_app_ids(user_id)
-        where(query, [app], app.id in ^appids)
-      else
-        query
-      end
-
-    apps = Repo.all(query)
-    conn |> json(%{success: true, apps: apps})
+  def list_admin_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
+    conn |> json(%{success: true, apps: Admin.list_admin_apps(user_id)})
   end
 
   def fetch_app(conn, %{"app_id" => app_id}) do
-    query = from app in App,
-            left_join: sdk in assoc(app, :sdk_bindings),
-            left_join: goods in assoc(app, :goods),
-            left_join: product_ids in assoc(goods, :product_ids),
-            order_by: [desc: app.inserted_at, asc: sdk.inserted_at, asc: goods.inserted_at],
-            where: app.active == true and app.id == ^app_id,
-            select: app,
-            preload: [sdk_bindings: sdk, goods: {goods, product_ids: product_ids}]
-
-    app = Repo.one(query)
-
-    sdk_bindings = 
-      app.sdk_bindings 
-        |> Enum.map(fn(%{sdk: sdk} = x) ->
-            binding = 
-              Exsdks.generate_sdk_info(sdk) 
-                |> Map.merge(x.binding 
-                |> JSON.encode!() 
-                |> JSON.decode!(keys: :atoms))
-            Map.put(x, :binding, binding)
-          end)
-    Map.put(app, :sdk_bindings, sdk_bindings)
-
-    conn |> json(%{success: true, app: app})
+    conn |> json(%{success: true, app: Admin.get_app_info(app_id)})
   end
 
   @sdks Application.get_env(:acs, :sdks)
   def fetch_supported_sdks(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
-    admin_level = Repo.one(from au in AdminUser, where: au.user_id == ^user_id and au.admin_level > 0, select: min(au.admin_level)) || 0
-    conn |> json(%{success: true, sdks: @sdks, admin_level: admin_level})
+    conn |> json(%{success: true, sdks: @sdks, admin_level: AdminAuth.get_admin_level(user_id)})
   end
 
   def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"id" => app_id} = app_info}) do
@@ -351,8 +310,8 @@ defmodule AcsWeb.Admin.AdminController do
     query = from ol in OpLog,
               join: u in assoc(ol, :user),
               select: map(ol, [:id, :operate_type, :log, :inserted_at, user: [:id, :email]]),
-              limit: ^records_per_page,
               where: ol.app_id == ^app_id,
+              limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
               order_by: [desc: ol.id],
               preload: [user: u]

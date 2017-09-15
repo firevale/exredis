@@ -46,7 +46,7 @@ export default {
   },
 
   created: async function() {
-    let result = await this.$acs.fetchAppList()
+    let result = await this.$acs.listAdminApps()
     if (result.success) {
       this.appList = result.apps
     }

@@ -11,6 +11,8 @@ defmodule Acs.Admin do
   alias Acs.Admin.OpLog
 
   alias Acs.Accounts.User
+  alias Acs.Apps.App
+  alias Acs.Apps
 
   def add_admin_user(app_id, user_id, email, level) do 
     admin_user = Repo.get_by(AdminUser, app_id: app_id, user_id: user_id) || %AdminUser{}
@@ -64,15 +66,45 @@ defmodule Acs.Admin do
     Repo.all(query)    
   end
 
-  def list_admin_app_ids(user_id) when is_integer(user_id) do
-    query = 
-      from au in AdminUser,
-        where: au.user_id == ^user_id,
-        where: au.active == true,
-        where: au.admin_level >= 1,
-        select: au.app_id
+  def list_admin_apps(user_id) when is_integer(user_id) do 
+    admin_level = AdminAuth.get_admin_level(user_id)
+    
+    query =  
+      from app in App,
+        order_by: [desc: app.inserted_at],
+        where: app.active == true,
+        select: map(app, [:id, :name, :icon])
+
+    query =
+      if admin_level > 1  do
+        appids = 
+          from au in AdminUser,
+            where: au.user_id == ^user_id,
+            where: au.active == true,
+            where: au.admin_level >= 1,
+            select: au.app_id
+
+        where(query, [app], app.id in ^subquery(appids))
+      else
+        query
+      end
 
     Repo.all(query)
+  end
+
+  def get_app_info(app_id) do
+    app = Apps.get_fat_app(app_id)
+
+    sdk_bindings = 
+      app.sdk_bindings 
+        |> Enum.map(fn(%{sdk: sdk} = x) ->
+            binding = 
+              Exsdks.generate_sdk_info(sdk) 
+                |> Map.merge(x.binding |> Poison.encode!() |> Poison.decode!(keys: :atoms))
+            Map.put(x, :binding, binding)
+          end)
+
+    Map.put(app, :sdk_bindings, sdk_bindings)    
   end
 
   def search_user(app_id, keyword) do 

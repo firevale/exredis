@@ -13,6 +13,11 @@ export default function(VueRouter) {
           path: 'pmall',
           name: 'pmall',
           component: require('../views/pmall.vue')
+        },
+        {
+          path: 'detail',
+          name: 'detail',
+          component: require('../views/detail.vue')
         }, {
           path: 'draw',
           name: 'draw',

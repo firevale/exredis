@@ -51,7 +51,7 @@
         <div class="column is-6">
           <div class="item-box">
             <div class="item">
-              <div class="image"></div>
+              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-4 is-danger is-flex flex-vcentered flex-center">
                   <span class="item-title is-ellipsis">惊奇避孕套</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
@@ -65,7 +65,7 @@
         <div class="column is-6">
           <div class="item-box">
             <div class="item">
-              <div class="image"></div>
+              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-4 is-danger is-flex flex-vcentered flex-center">
                       <span class="item-title is-ellipsis">惊奇雨伞</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
@@ -79,7 +79,7 @@
         <div class="column is-6">
           <div class="item-box">
             <div class="item">
-              <div class="image"></div>
+              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-4 is-danger is-flex flex-vcentered flex-center">
                       <span class="item-title is-ellipsis">惊奇抱枕</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>

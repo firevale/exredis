@@ -64,7 +64,7 @@ defmodule Acs.Apps.App do
     |> validate_app_alias(:alias)
   end
 
-  defp validate_app_alias(changeset, field, options \\ []) do 
+  defp validate_app_alias(changeset, _field, _options \\ []) do 
     validate_change(changeset, :alias, fn(:alias, alias_) -> 
       if Map.get(changeset.changes, :has_forum, false) or Map.get(changeset.changes, :has_mall, false)   do
         if alias_ in [nil, ""] do 

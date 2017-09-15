@@ -25,7 +25,7 @@ defmodule AcsWeb.Admin.AdminController do
 
       %App{} = app ->
         case Apps.update_app(app, app_info) do 
-          {:ok, new_app, %{changes: changes}} ->
+          {:ok, _new_app, %{changes: changes}} ->
             Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", changes)
             conn |> json(%{success: true, app: Apps.get_fat_app(app_id)})
 
@@ -35,87 +35,15 @@ defmodule AcsWeb.Admin.AdminController do
     end
   end
   def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"name" => _app_name} = app_info}) do
-    app_info = Map.put(app_info, "id", Utils.generate_token(16)) |> Map.put("secret", Utils.generate_token())
-    case App.changeset(%App{}, app_info) |> Repo.insert do
+    app_id =  Utils.generate_token(16)
+    app_info = Map.put(app_info, "id", app_id) |> Map.put("secret", Utils.generate_token())
+    case Apps.create_app(app_info) do
       {:error, %{errors: errors}} ->
         conn |> json(%{success: false, message: translate_errors(errors)})
 
       {:ok, app} ->
-        Admin.log_admin_operation(acs_admin_id, app.id, "update_app_info", app_info)
-        _update_app_features(conn, app)
-    end
-  end
-
-  defp _update_app_features(conn, app) do 
-    forum_name = case app.forum_name do 
-      x when x in [nil, ""] -> app.name
-      _ -> app.forum_name
-    end
-
-    _update_app_mall(app.has_mall, app.id, app.name)
-    case _update_app_forum(app.has_forum, app.id, forum_name, app.forum_url) do
-      {:ok, forum} ->
-        CachedApp.refresh(app.id)
-        conn |> json(%{success: true, 
-          forum: forum |> Repo.preload(:sections), 
-          app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
-
-      nil ->
-        CachedApp.refresh(app.id)
-        conn |> json(%{success: true, app: app |> Repo.preload(goods: :product_ids) |> Repo.preload(:sdk_bindings)})
-
-      {:error, %{errors: errors}}->
-        conn |> json(%{success: false, message: translate_errors(errors)})
-    end
-  end
-
-  defp _update_app_forum(has_forum, app_id, app_title, _forum_url) do
-    case Repo.get_by(Forum, app_id: app_id) do
-      %Forum{} = forum ->
-        case Forum.changeset(forum, %{title: app_title, active: has_forum}) |> Repo.update do
-          {:ok, new_forum} -> 
-            CachedApp.refresh(app_id)
-            CachedForum.refresh(new_forum.id)
-            {:ok, new_forum}
-
-          {:error, %{errors: errors}} ->
-            {:error, errors}
-        end
-
-      nil -> 
-        if has_forum do 
-          case Forum.changeset(%Forum{}, %{title: app_title, active: has_forum, app_id: app_id}) |> Repo.insert do
-            {:ok, forum} ->
-              ForumSection.changeset(%ForumSection{}, %{title: "综合讨论", sort: 5, active: true, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "攻略心得", sort: 4, active: true, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "转帖分享", sort: 3, active: true, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "玩家原创", sort: 2, active: true, forum_id: forum.id}) |> Repo.insert
-              ForumSection.changeset(%ForumSection{}, %{title: "问题求助", sort: 1, active: true, forum_id: forum.id}) |> Repo.insert
-
-              query = from f in Forum,
-                      where: f.app_id == ^app_id,
-                      preload: [:sections]
-              result = Repo.one(query)
-              CachedForum.refresh(forum.id)
-              CachedApp.refresh(app_id)
-              {:ok, result}
-
-            {:error, %{errors: errors}} ->
-              {:error,errors}
-          end
-        end
-    end
-  end
-
-  defp _update_app_mall(has_mall, app_id, app_name) do
-    case Repo.get_by(Mall, app_id: app_id) do
-      nil ->
-        if has_mall do
-          Mall.changeset(%Mall{}, %{title: app_name, active: true, app_id: app_id}) |> Repo.insert
-        end
-
-      %Mall{} = mall ->
-        Mall.changeset(mall, %{active: has_mall }) |> Repo.update 
+        Admin.log_admin_operation(acs_admin_id, app.id, "create_app", app_info)
+        conn |> json(%{success: true, app: Apps.get_fat_app(app_id)})
     end
   end
 

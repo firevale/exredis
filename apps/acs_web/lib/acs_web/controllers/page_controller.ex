@@ -13,7 +13,7 @@ defmodule AcsWeb.PageController do
   plug :check_admin_authorization, [admin_level: 2] when action == :show_admin_app_page
   plug :check_forum_manager when action in [:show_bbs_page, :show_forum_page]
 
-  @sm_provider                  Application.get_env(:acs, :sm_provider)
+  @sm_provider                  Application.get_env(:exsm, :provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
   def index(conn, _params) do

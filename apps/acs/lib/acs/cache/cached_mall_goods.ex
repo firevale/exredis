@@ -22,7 +22,7 @@ defmodule Acs.Cache.CachedMallGoods do
   end
 
   def refresh(goods = %MallGoods{}) do
-    key(goods.id) |> Exredis.setex(7200, MallGoods.to_redis(goods))
+    key(goods.id) |> Exredis.set(MallGoods.to_redis(goods))
     key(goods.id) |> Excache.del
     goods
   end

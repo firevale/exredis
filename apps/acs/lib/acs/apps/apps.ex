@@ -42,7 +42,7 @@ defmodule Acs.Apps do
     end    
   end
 
-  def update_app(%App{} = app, attr) do 
+  def update_app(%App{}, attr) do 
     cs = App.changeset(%App{}, attr)  
     case Repo.update(cs) do
       {:ok, app} ->
@@ -199,7 +199,7 @@ defmodule Acs.Apps do
         Forums.update_forum(forum_id, %{id: forum_id, active: true})
     end
   end
-  defp update_app_forum!(%{id: app_id, alias: forum_id, has_forum: false} = app) do 
+  defp update_app_forum!(%{id: app_id, alias: forum_id, has_forum: false}) do 
     case Forums.get_app_forum(app_id) do 
       nil ->
         :do_nothing
@@ -209,7 +209,7 @@ defmodule Acs.Apps do
     end
   end
 
-  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: true} = app) when is_bitstring(mall_id) do 
+  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: true}) when is_bitstring(mall_id) do 
 
   end
 

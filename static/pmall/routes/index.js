@@ -10,6 +10,10 @@ export default function(VueRouter) {
           name: 'index',
           component: require('../views/index.vue')
         }, {
+          path: 'pmall',
+          name: 'pmall',
+          component: require('../views/pmall.vue')
+        }, {
           path: 'draw',
           name: 'draw',
           component: require('../views/draw.vue')
@@ -34,7 +38,7 @@ export default function(VueRouter) {
         }, {
           path: 'my_point',
           name: 'my_point',
-          component: require('../views/index.vue')
+          component: require('../views/myPoint.vue')
         }, {
           path: 'bind_mobile',
           name: 'bind_mobile',

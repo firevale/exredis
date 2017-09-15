@@ -28,7 +28,7 @@ $sizes: $size1 $size2 $size3 $size4 $size5 $size6;
   }
 }
 
-$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger);
+$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey) ("grey-light" $grey-light);
 @each $color in $colors {
   $name: nth($color, 1);
   $color: nth($color, 2);

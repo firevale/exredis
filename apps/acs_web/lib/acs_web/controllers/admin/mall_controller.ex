@@ -26,10 +26,11 @@ defmodule AcsWeb.Admin.MallController do
   # update_mall_info
   def update_mall_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 
                                 %{"mall" => %{"id" => _mall_id} = mall_info}) do
-    case Malls.update_mall_info(acs_admin_id, app_id, mall_info) do
+    case Malls.update_mall_info(app_id, mall_info) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.mallNotFound"})
-      :ok ->
+      {:ok, changes} ->
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_mall_info", changes)
         conn |> json(%{success: true, i18n_message: "admin.serverSuccess.mallUpdated"})
     end
   end
@@ -85,12 +86,14 @@ defmodule AcsWeb.Admin.MallController do
       :exist ->
         conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
       {:add_ok, goods} ->
+        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", goods)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.mall.notExist"})
-      {:update_ok, goods} ->
+      {:update_ok, goods, changes} ->
+        Admin.log_admin_operation(user_id, goods.app_id, "update_goods", changes)
         conn |> json(%{success: true, goods: goods, i18n_message: "admin.mall.updateSuccess"})
     end
   end
@@ -101,10 +104,11 @@ defmodule AcsWeb.Admin.MallController do
   # toggle_goods_status
   def toggle_goods_status(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
                                               %{"goods_id" => goods_id}) do
-    case Malls.toggle_goods_status(user_id, app_id, goods_id) do
+    case Malls.toggle_goods_status(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
-      :ok ->
+      {:ok, active} ->
+        Admin.log_admin_operation(user_id, app_id, "toggle_goods_status", %{"goods_id" => goods_id, "active" => active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"}) 
     end
   end
@@ -115,12 +119,13 @@ defmodule AcsWeb.Admin.MallController do
   # delete_goods
   def delete_goods(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
                      %{"goods_id" => goods_id} = params) do
-    case Malls.delete_goods(user_id, app_id, goods_id, params) do
+    case Malls.delete_goods(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
       :sold ->
         conn |> json(%{success: false, i18n_message: "admin.mall.soldCanNotDelete"})
       :ok ->
+        Admin.log_admin_operation(user_id, app_id, "delete_goods", params)
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
       {:error, errors} ->
         conn |> json(%{success: false, message: translate_errors(errors)})

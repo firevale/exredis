@@ -104,7 +104,7 @@ defmodule SDKAlipay do
 
       token = res_data |> xpath(~x"/direct_trade_create_res/request_token/text()[1]")
                        |> to_string
-                       |> String.strip
+                       |> String.trim
 
       {:ok, token}
     else

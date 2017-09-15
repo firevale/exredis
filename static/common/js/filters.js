@@ -1,5 +1,4 @@
 import './date'
-// import * as filter from './keywordFilter'
 
 import { emailMask, mobileMask, concatAndResolveUrl } from './utils'
 
@@ -93,14 +92,6 @@ export const secondFormatHour = val => {
   else
     return 0
 }
-
-// export const filterKeyword = val => {
-//   if (val) {
-//     return filter.replaceKeyword(val, '*')
-//   } else {
-//     return ''
-//   }
-// }
 
 const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfig.platform ==
   'android')

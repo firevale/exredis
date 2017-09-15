@@ -14,7 +14,6 @@ import {
 
 import nativeApi from 'common/js/nativeApi'
 import * as acs from 'common/js/acs'
-import * as filter from 'common/js/keywordFilter'
 
 export default {
   data: function() {

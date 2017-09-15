@@ -5,11 +5,11 @@ defmodule AcsWeb.ForumRouter do
     pipe_through :forum
 
     get   "/fetch_forums", ForumController, :fetch_forums
-    post  "/fetch_forum", ForumController, :fetch_forum
+    post  "/get_app_forum", ForumController, :get_app_forum
+    post  "/get_fat_forum", ForumController, :get_fat_forum
     get   "/get_forum_info", ForumController, :get_forum_info
     post  "/get_forum_info", ForumController, :get_forum_info
     post  "/get_paged_forums", ForumController, :get_paged_forums
-    post  "/get_forum_info_with_keyword", ForumController, :get_forum_info_with_keyword
     get   "/get_paged_post", ForumController, :get_paged_post
     post  "/get_paged_post", ForumController, :get_paged_post
     post  "/get_paged_ban_post", ForumController, :get_paged_ban_post

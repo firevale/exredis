@@ -3,6 +3,7 @@ defmodule AcsWeb.Admin.AdminController do
 
   require Exsdks
   alias   Acs.Admin
+  alias   Acs.Apps
 
   def list_admin_apps(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _params) do
     conn |> json(%{success: true, apps: Admin.list_admin_apps(user_id)})
@@ -18,15 +19,19 @@ defmodule AcsWeb.Admin.AdminController do
   end
 
   def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"id" => app_id} = app_info}) do
-    case Repo.get(App, app_id) do
+    case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
 
       %App{} = app ->
-        changed = App.changeset(app, app_info)
-        {:ok, new_app} = changed |> Repo.update
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", changed.changes)
-        _update_app_features(conn, new_app)
+        case Apps.update_app(app, app_info) do 
+          {:ok, new_app, %{changes: changes}} ->
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_info", changes)
+            conn |> json(%{success: true, app: Apps.get_fat_app(app_id)})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
   def update_app_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app" => %{"name" => _app_name} = app_info}) do

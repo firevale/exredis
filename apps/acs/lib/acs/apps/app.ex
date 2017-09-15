@@ -60,5 +60,21 @@ defmodule Acs.Apps.App do
       :obtain_code_url, :wcp_download_enabled, :itc_app_id])
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
+    |> unique_constraint(:alias)
+    |> validate_app_alias(:alias)
+  end
+
+  defp validate_app_alias(changeset, field, options \\ []) do 
+    validate_change(changeset, :alias, fn(:alias, alias_) -> 
+      if Map.get(changeset.changes, :has_forum, false) or Map.get(changeset.changes, :has_mall, false)   do
+        if alias_ in [nil, ""] do 
+          [alias: "can't not be blank"]
+        else
+          []
+        end
+      else 
+        []
+      end
+    end)
   end
 end

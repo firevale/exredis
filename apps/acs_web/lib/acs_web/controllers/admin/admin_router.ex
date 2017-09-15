@@ -68,8 +68,8 @@ defmodule AcsWeb.AdminRouter do
     scope "/forum" do
       pipe_through :admin_app
       post "/update_forum_icon", ForumController, :update_forum_icon
-      post "/update_forum_info", ForumController, :update_forum_info
-      post "/update_section_info", ForumController, :update_section_info  
+      post "/update_forum", ForumController, :update_forum
+      post "/update_forum_section", ForumController, :update_forum_section  
     end
 
     scope "/games" do

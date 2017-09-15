@@ -23,23 +23,12 @@ defmodule AcsWeb.ForumController do
     conn |> json(%{success: true, forums: forums, total: total_page})
   end
 
-  def fetch_forum(conn, %{"app_id" => app_id} = _params) do
-    forum = Forums.fetch_forum(app_id)
-    conn |> json(%{success: true, forum: forum})
+  def get_app_forum(conn, %{"app_id" => app_id} = _params) do
+    conn |> json(%{success: true, forum: Forums.get_app_forum(app_id)})
   end
 
-  def fetch_forum_by_id(conn, %{"forum_id" => forum_id} = _params) do
-    forum = Forums.fetch_forum_by_id(forum_id)
-    conn |> json(%{success: true, forum: forum})
-  end
-
-  def get_forum_info_with_keyword(conn, %{"forum_id" => forum_id}) do
-    case Forums.get_forum_info_with_keyword(forum_id) do
-      nil ->
-        conn |> json(%{success: false, i18n_message: "error.server.forumNotExist"})
-      v ->
-        conn |> json(v)      
-    end
+  def get_fat_forum(conn, %{"forum_id" => forum_id} = _params) do
+    conn |> json(%{success: true, forum: Forums.get_fat_forum(forum_id)})
   end
 
   # get_paged_post
@@ -505,7 +494,6 @@ defmodule AcsWeb.ForumController do
   def upload_comment_image(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
-
 
   def get_user_post_count(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,
                            %{"forum_id" => forum_id}) do 

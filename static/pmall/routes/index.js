@@ -10,6 +10,15 @@ export default function(VueRouter) {
           name: 'index',
           component: require('../views/index.vue')
         }, {
+          path: 'pmall',
+          name: 'pmall',
+          component: require('../views/pmall.vue')
+        },
+        {
+          path: 'detail',
+          name: 'detail',
+          component: require('../views/detail.vue')
+        }, {
           path: 'draw',
           name: 'draw',
           component: require('../views/draw.vue')
@@ -26,19 +35,19 @@ export default function(VueRouter) {
         }, {
           path: 'sign',
           name: 'sign',
-          component: require('../views/index.vue')
+          component: require('../views/sign.vue')
         }, {
           path: 'knowledge',
           name: 'knowledge',
-          component: require('../views/index.vue')
+          component: require('../views/knowLedge.vue')
         }, {
           path: 'my_point',
           name: 'my_point',
-          component: require('../views/index.vue')
+          component: require('../views/myPoint.vue')
         }, {
           path: 'bind_mobile',
           name: 'bind_mobile',
-          component: require('../views/index.vue')
+          component: require('../views/bindMobile.vue')
         }
       ]
     }, {

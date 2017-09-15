@@ -6,23 +6,23 @@ defmodule AcsWeb.MallController do
   plug :fetch_session_user_id
   plug :fetch_session_user
   # plug :check_forum_manager when action in [:delete_comment, :toggle_post_status]
-  plug :cache_page, [cache_seconds: 10] when action in [:fetch_malls, :get_active_goods_paged]
+  plug :cache_page, [cache_seconds: 10] when action in [:list_malls, :get_active_goods_paged]
   # plug :cache_page, [cache_seconds: 600] when action in [:get_forum_info, :get_paged_forums]
   plug :check_is_admin when action in [:update_mall_goods, :update_goods_pic, :toggle_goods_status, :delete_goods]
 
-  # fetch_malls
-  def fetch_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do
-    fetch_malls(conn, page, records_per_page)
+  # list_malls
+  def list_malls(conn, %{"page" => page, "records_per_page" => records_per_page}) do
+    list_malls(conn, page, records_per_page)
   end
-  def fetch_malls(conn, %{"app_id" => app_id}) do
-    malls = Malls.fetch_malls(app_id)
+  def list_malls(conn, %{"app_id" => app_id}) do
+    malls = Malls.list_malls(app_id)
     conn |> json(%{success: true, malls: malls})
   end  
-  def fetch_malls(conn, _params) do
-    fetch_malls(conn, 1, 100)
+  def list_malls(conn, _params) do
+    list_malls(conn, 1, 100)
   end
-  defp fetch_malls(conn, page, records_per_page) do
-    {:ok, malls, total_page} = Malls.fetch_malls(page, records_per_page)
+  defp list_malls(conn, page, records_per_page) do
+    {:ok, malls, total_page} = Malls.list_malls(page, records_per_page)
     conn |> json(%{success: true, malls: malls, total: total_page})
   end
 

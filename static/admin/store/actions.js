@@ -57,7 +57,7 @@ export const addForum = ({
 export const fetchMalls = ({
   commit
 }, app_id) => {
-  axios.get('/mall_actions/fetch_malls', { params: { app_id: app_id } })
+  axios.get('/mall_actions/list_malls', { params: { app_id: app_id } })
     .then(res => res.data)
     .then(result => {
       if (result.success) {

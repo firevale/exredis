@@ -122,7 +122,7 @@ defmodule Acs.Malls do
 
 
 
-  def fetch_malls(app_id) do
+  def list_malls(app_id) do
     query = from m in Mall,
               order_by: [desc: m.inserted_at],
               where: m.active == true and m.app_id == ^app_id,
@@ -131,7 +131,7 @@ defmodule Acs.Malls do
     Repo.all(query)
   end
 
-  def fetch_malls(page, records_per_page) do
+  def list_malls(page, records_per_page) do
     total = Repo.one!(from m in Mall, select: count(1))
     total_page = round(Float.ceil(total / records_per_page))
 

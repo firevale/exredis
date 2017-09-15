@@ -13,7 +13,6 @@ defmodule Acs.Forums do
   alias Acs.Forums.UserFavoritePost
 
   alias Acs.Cache.CachedForum
-  alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedForumSection
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Cache.CachedForumHotPost

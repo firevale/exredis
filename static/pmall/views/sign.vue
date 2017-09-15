@@ -63,12 +63,30 @@
           </div>
         </div>
       </div>
-      <!-- <div class="sign-others">
+      <div class="sign-others">
         <p class="has-text-centered">共 8907 人签到</p>
-        <div class="sign-users is-flex">
-
+        <div class="sign-users">
+          <div class="sign-user is-flex flex-left flex-vcentered">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <!-- <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png">
+            <img src="~assets/pmall/1249_05.png"> -->
+          </div>
+          <div class="load-more is-flex flex-center flex-vcentered">
+            查看更多
+          </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

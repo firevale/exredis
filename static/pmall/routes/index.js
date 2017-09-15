@@ -35,7 +35,7 @@ export default function(VueRouter) {
         }, {
           path: 'sign',
           name: 'sign',
-          component: require('../views/index.vue')
+          component: require('../views/sign.vue')
         }, {
           path: 'knowledge',
           name: 'knowledge',

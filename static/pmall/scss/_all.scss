@@ -54,6 +54,24 @@
       height: virtual-m-rem(179);
       background-image: url("~assets/pmall/1248_01_07.png");
     }
+    &.btn-sign {
+      width: virtual-m-rem(361);
+      height: virtual-m-rem(135);
+      position: absolute;
+      left: 50%;
+      bottom: virtual-m-rem(-67);
+      margin-left: virtual-m-rem(-361/2);
+      background-image: url("~assets/pmall/1246_03.png");
+    }
+    &.btn-signed {
+      width: virtual-m-rem(361);
+      height: virtual-m-rem(135);
+      position: absolute;
+      left: 50%;
+      bottom: virtual-m-rem(-67);
+      margin-left: virtual-m-rem(-361/2);
+      background-image: url("~assets/pmall/1246_1456_03.png");
+    }
   }
 
   .bg-full {
@@ -226,5 +244,85 @@
       position: fixed;
       bottom: 0;
       left: 0;
+    }
+  }
+
+  .sign-page {
+    $border-color: rgba(#d40200, 0.5);
+    background-image: url("~assets/pmall/1246_01.jpg");
+    background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
+    .container {
+      flex: 1;
+      background-color: rgba(white, 0.8);
+      .calender {
+        display: block;
+        flex: 0;
+        margin-top: 2px;
+        border: 1px solid $border-color;
+        .head-image {
+          width: 100%;
+          height: virtual-m-rem(410);
+        }
+        .body {
+          color: red;
+          background: #ededed;
+          flex-shrink: 0;
+          height: virtual-m-rem(598);
+          border-top: 1px solid $border-color;
+          .column {
+            height: 100%;
+            &:not(:last-child) {
+              border-right: 1px solid $border-color;
+            }
+            h1.date {
+              margin: 1rem;
+            }
+            h2.yi-ji {
+              margin: 1rem 0;
+              font-weight: normal;
+            }
+            p.terms {
+              margin: 0;
+              .term {
+                width: 1rem;
+                height: virtual-m-rem(350);
+                padding: 0 2px;
+                &:first-child {
+                  border-right: 1px solid rgba( red, 0.2);
+                }
+              }
+            }
+          }
+        }
+      }
+      .sign-logs {
+        margin-top: virtual-m-rem(120);
+        strong {
+          color: red;
+          font-size: $size4;
+        }
+        .logs {
+          background-color: red;
+          height: virtual-m-rem(220);
+          .log-box {
+            padding: 2px;
+            .log {
+              width: 100%;
+              height: 100%;
+              background: white;
+              border: .3rem solid black;
+            }
+          }
+        }
+      }
+      .sign-others {
+        margin-top: 5rem;
+        .sign-users {
+          background: white;
+          border: 1px solid $border-color;
+          border-radius: 5px;
+          height: virtual-m-rem(406);
+        }
+      }
     }
   }

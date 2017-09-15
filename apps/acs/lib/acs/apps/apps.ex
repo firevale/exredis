@@ -36,14 +36,14 @@ defmodule Acs.Apps do
       {:ok, app} ->
         CachedApp.refresh(app.id)
         update_app_features!(app)
-        {:ok, app, cs}
+        {:ok, app}
 
       v -> v
     end    
   end
 
-  def update_app(%App{}, attr) do 
-    cs = App.changeset(%App{}, attr)  
+  def update_app(%App{} = app, attr) do 
+    cs = App.changeset(app, attr)  
     case Repo.update(cs) do
       {:ok, app} ->
         CachedApp.refresh(app.id)
@@ -297,7 +297,7 @@ defmodule Acs.Apps do
         Malls.update_mall!(mall, %{id: mall_id, active: true})
     end
   end
-  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: false}) when is_bitstring(mall_id) do 
+  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: false}) do 
     case Malls.get_app_mall(app_id) do 
       nil ->
         :do_nothing

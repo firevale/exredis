@@ -61,20 +61,22 @@ defmodule Acs.Apps.App do
     |> validate_required([:id, :secret, :name, :currency])
     |> unique_constraint(:name)
     |> unique_constraint(:alias)
-    |> validate_app_alias(:alias)
+    |> validate_app_alias()
   end
 
-  defp validate_app_alias(changeset, _field, _options \\ []) do 
-    validate_change(changeset, :alias, fn(:alias, alias_) -> 
-      if Map.get(changeset.changes, :has_forum, false) or Map.get(changeset.changes, :has_mall, false)   do
-        if alias_ in [nil, ""] do 
-          [alias: "can't not be blank"]
-        else
-          []
-        end
-      else 
-        []
+  defp validate_app_alias(changeset) do 
+    alias_ = get_field(changeset, :alias)
+    has_forum = get_field(changeset, :has_forum)
+    has_mall = get_field(changeset, :has_mall)
+
+    if has_forum or has_mall do 
+      if alias_ in [nil, ""] do
+        add_error(changeset, :alias, "can't be blank")
+      else
+        changeset
       end
-    end)
+    else
+      changeset
+    end
   end
 end

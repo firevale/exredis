@@ -168,6 +168,29 @@ defmodule Acs.Apps do
     {:ok, news, total_page, total}
   end
 
+  def get_paged_news_admin(app_id, group, page, records_per_page) do
+    total = Repo.one!(from n in AppNews, select: count(1), where: n.app_id == ^app_id and n.group == ^group)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from n in AppNews,
+              where: n.app_id == ^app_id and n.group == ^group,
+              order_by: [desc: n.id],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(n, [:id, :app_id, :title, :content, :group, :is_top, :active, :pic, :reads, :inserted_at])
+
+    news = Repo.all(query)
+    {:ok, news, total_page, total}
+  end
+
+  def get_news(news_id) do
+    Repo.get(AppNews, news_id)
+  end
+
+  def update_news_pic(news, image_path) do
+    AppNews.changeset(news, %{pic: image_path}) |> Repo.update!
+  end
+
   def get_news_detail(news_id) do
     query = from n in AppNews,
           join: u in assoc(n, :user),
@@ -183,6 +206,62 @@ defmodule Acs.Apps do
   def add_news_click(news_id, click) do
     news = Repo.get(AppNews, news_id)
     AppNews.changeset(news, %{reads: news.reads + click}) |> Repo.update()
+  end
+
+  def update_news(user_id, news) do
+    case Repo.get(AppNews, news.news_id) do
+      nil ->
+        # add new
+        news = news |> Map.put("user_id", user_id)
+        case AppNews.changeset(%AppNews{}, news) |> Repo.insert do
+          {:ok, new_news} ->
+            news = news |> Map.put("id", new_news.id) |> Map.put("created_at", new_news.inserted_at)
+            {:ok, news}
+          {:error, %{errors: _errors}} ->
+            :error
+        end
+        
+      %AppNews{} = ns ->
+        # update
+        changed = AppNews.changeset(ns, %{title: news.title, content: news.content, is_top: news.is_top})
+        changed |> Repo.update!
+        news = news |> Map.put("id", ns.id) |> Map.put("created_at", ns.inserted_at)
+        {:ok, news, changed.changes}
+    end
+  end
+
+  def toggle_news_status(news_id) do
+    case Repo.get(AppNews, news_id) do
+      nil ->
+        nil
+      %AppNews{} = news ->
+        AppNews.changeset(news, %{active: !news.active}) |> Repo.update!
+        {:ok, !news.active}
+    end
+  end
+
+  def update_question(app_id, q) do
+    with %AppQuestion{} = question <- Repo.get_by(AppQuestion, id: q.id, app_id: app_id),
+         {:ok, question} <- AppQuestion.changeset(question,%{title: q.title, answer: q.answer, active: q.active, is_hot: q.is_hot}) |> Repo.update
+    do
+      Acs.Search.ESQuestion.update(%{ doc: %{ title: q.title, answer: q.answer, active: q.active, is_hot: q.is_hot }}, q.id)
+      {:ok, question}
+    else
+      nil -> nil
+      {:error, %{errors: _errors}} -> :error
+    end
+  end
+
+  def delete_question(app_id, id) do
+    with %AppQuestion{id: ^id} = question <- Repo.get_by(AppQuestion, id: id, app_id: app_id),
+         {:ok, _}  <- Repo.delete(question)
+    do
+      Acs.Search.ESQuestion.delete(id)
+      :ok
+    else
+       nil -> nil
+       {:error, %{errors: errors}} -> {:error, errors}
+    end
   end
 
   defp update_app_features!(app) do

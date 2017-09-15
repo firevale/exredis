@@ -193,7 +193,7 @@ defmodule Acs.Apps do
   defp update_app_forum!(%{id: app_id, alias: forum_id, has_forum: true} = app) when is_bitstring(forum_id) do 
     case Forums.get_app_forum(app_id) do 
       nil ->
-        Forums.create_forum!(forum_id, app.name || app.forum_name, app_id)
+      Forums.create_forum!(forum_id, app.name || app.forum_name, app_id)
 
       %Forum{app_id: ^app_id} -> 
         Forums.update_forum(forum_id, %{id: forum_id, active: true})
@@ -209,8 +209,23 @@ defmodule Acs.Apps do
     end
   end
 
-  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: true}) when is_bitstring(mall_id) do 
+  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: true} = app) when is_bitstring(mall_id) do 
+    case Malls.get_app_mall(app_id) do 
+      nil ->
+        Malls.create_mall!(mall_id, app.name, app_id)
 
+      %Mall{app_id: ^app_id} = mall -> 
+        Malls.update_mall!(mall, %{id: mall_id, active: true})
+    end
+  end
+  defp update_app_mall!(%{id: app_id, alias: mall_id, has_mall: false}) when is_bitstring(mall_id) do 
+    case Malls.get_app_mall(app_id) do 
+      nil ->
+        :do_nothing
+
+      %Mall{app_id: ^app_id} = mall -> 
+        Malls.update_mall!(mall, %{id: mall_id, active: false})
+    end
   end
 
 end

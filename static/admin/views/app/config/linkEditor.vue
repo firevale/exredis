@@ -109,7 +109,7 @@ export default {
     ...mapActions([
       'setApp',
       'addForum',
-      'fetchMalls',
+      'listMalls',
     ]),
 
     handleSubmit: async function() {
@@ -126,7 +126,7 @@ export default {
       }))
 
       if (result.success) {
-        this.fetchMalls(this.$router.appId)
+        this.listMalls(this.$router.appId)
 
         if (result.app) {
           this.setApp(result.app)

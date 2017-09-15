@@ -147,7 +147,7 @@ export default {
     ...mapActions([
       'setApp',
       'addForum',
-      'fetchMalls',
+      'listMalls',
     ]),
 
     toastClipboardSuccess: function() {
@@ -168,7 +168,7 @@ export default {
       }))
 
       if (result.success) {
-        this.fetchMalls(this.$router.appId)
+        this.listMalls(this.$router.appId)
 
         if (result.app) {
           this.setApp(result.app)

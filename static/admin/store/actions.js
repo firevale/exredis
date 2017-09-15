@@ -54,7 +54,7 @@ export const addForum = ({
   commit(types.ADD_FORUM, forum)
 }
 
-export const fetchMalls = ({
+export const listMalls = ({
   commit
 }, app_id) => {
   axios.get('/mall_actions/list_malls', { params: { app_id: app_id } })

@@ -10,7 +10,6 @@ defmodule Acs.Malls do
   alias Acs.Malls.Mall
   alias Acs.Malls.MallGoods
   alias Acs.Malls.MallOrder
-  alias Acs.Accounts.UserAddress
   alias Acs.Malls.MallOrderLog
   alias Acs.Malls.MallOrderDetail
 
@@ -179,127 +178,6 @@ defmodule Acs.Malls do
   def get_goods_detail(goods_id) do
     add_goods_click(goods_id,1)
     CachedMallGoods.get(goods_id)
-  end
-
-  def get_user_addresses(user_id) do
-    query = from us in UserAddress,
-              where: us.user_id == ^user_id,
-              order_by: [desc: us.is_default, desc: us.inserted_at],
-              select: map(us, [:id, :name, :mobile, :area, :area_code, :address, :is_default])
-    Repo.all(query)
-  end
-  
-  def delete_address(user_id, address_id) do
-    case Repo.get(UserAddress, address_id) do
-      nil ->
-        nil
-      %UserAddress{} = address ->
-        if(address.is_default)do
-          queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
-          count = Repo.one!(queryTotal)
-          if(count <= 1 )do
-            case Repo.delete(address) do
-              {:ok, _} ->
-                :ok
-              {:error, %{errors: errors}} ->
-                {:error, errors}
-            end          
-          else
-            queryLast = from us in UserAddress, 
-                        where: us.user_id == ^user_id and us.id != ^address_id,
-                        order_by: [desc: us.inserted_at],  
-                        limit: 1,
-                        select: map(us, [:id])
-            lastAddress = Repo.one(queryLast)
-
-            Repo.transaction(fn ->
-              from(us in UserAddress, where: us.id == ^address_id) |> Repo.delete_all
-              from(us in UserAddress, 
-                  where: us.id == ^lastAddress.id) 
-              |> Repo.update_all(set: [is_default: true])
-              end)
-            :ok
-          end
-        else 
-          case Repo.delete(address) do
-              {:ok, _} ->
-                :ok
-              {:error, %{errors: errors}} ->
-                {:error, errors}
-            end
-        end         
-      _ ->
-        :badrequest
-    end
-  end
-
-  def set_default_address(user_id, address_id) do
-    queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
-    case Repo.one!(queryTotal) do
-      0 -> :zero
-      _ ->
-        Repo.transaction(fn ->
-          # set all default false
-          from(us in UserAddress, where: us.user_id == ^user_id) |> Repo.update_all(set: [is_default: false])
-          # set current default true
-          from(us in UserAddress, where: us.id == ^address_id) |> Repo.update_all(set: [is_default: true])
-        end)
-        :ok
-    end
-  end
-
-  def get_default_address(user_id) do
-    query = from ua in UserAddress,
-              select: map(ua,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),
-              where: ua.user_id == ^user_id and ua.is_default == true
-
-    case address = Repo.one(query) do
-      nil -> nil
-      _ -> {:ok, address}
-    end
-  end
-
-  def get_address_detail(address_id) do
-    query = from ads in UserAddress,
-              select: map(ads,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),
-              where: ads.id == ^address_id
-
-    case address = Repo.one!(query) do
-      nil -> nil
-      _ -> {:ok, address}
-    end
-  end
-
-  def insert_address(user_id, us_address) do
-    us_address = us_address |> Map.put("user_id", user_id)
-    queryCount = from us in UserAddress,select: count(1), where: us.user_id == ^user_id
-    count = Repo.one!(queryCount)
-    us_address = case count do
-      0 -> us_address |> Map.put("is_default",true)
-      _ -> us_address
-    end
-
-    case UserAddress.changeset(%UserAddress{}, us_address) |> Repo.insert do
-      {:ok, new_address} ->
-        us_address = us_address |> Map.put("id", new_address.id)
-        {:ok, us_address}
-      {:error, %{errors: _errors}} ->
-        :error
-    end
-  end
-
-  def update_address(user_id, address) do
-    case Repo.get(UserAddress, address.id) do
-      nil ->
-        nil
-      %UserAddress{} = us ->
-        if(us.user_id !== user_id)do
-          :illegal
-        else
-          UserAddress.changeset(us, address) |> Repo.update!
-          :ok
-        end
-    end
   end
 
   def toggle_goods_status(goods_id) do

@@ -58,7 +58,7 @@ span {
     left: virtual-m-pixel(135);
     bottom: virtual-m-pixel(120);
     color: $white;
-    font-size: $size5;
+    font-size: $size4;
   }
 }
 
@@ -94,6 +94,35 @@ span {
     .loadmore {
       font-size: $size4;
       color: $white;
+    }
+  }
+}
+
+.new-address {
+  .address-head {
+    width: 100vw;
+    height: 3.5rem;
+    background-color: $red; //$red-dark;
+    color: $white;
+    font-size: $size4;
+  }
+  .address-content {
+    padding-top: 2rem;
+    margin: 0 auto;
+    .fields {
+      padding: 1rem 2rem;
+    }
+    .lable {
+      text-align: right;
+      width: 15vw;
+    }
+    input {
+      height: 1.8rem;
+      width: 60vw;
+      border-radius: 3px;
+      &.is-primary {
+        border: 1px solid black;
+      }
     }
   }
 }

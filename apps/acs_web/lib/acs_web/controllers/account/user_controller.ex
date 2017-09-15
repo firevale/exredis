@@ -511,6 +511,83 @@ defmodule AcsWeb.UserController do
           |> json(%{success: true, state: state})
   end
 
+  def get_user_addresses(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,_)do
+    addresses = Accounts.get_user_addresses(user_id)
+    conn |> json(%{success: true, addresses: addresses})
+  end
+
+  def delete_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id}) do
+    case Accounts.delete_address(user_id, address_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      :ok ->
+        conn |> json(%{success: true, i18n_message: "mall.address.deleteSuccess"})
+      {:error, errors} ->
+        conn |> json(%{success: false, message: translate_errors(errors)})
+      :badrequest ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    end
+  end
+
+  def set_default_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn,%{"address_id" => address_id})do
+    case Accounts.set_default_address(user_id, address_id) do
+      :zero ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      :ok ->
+        conn |>json(%{success: true, i18n_message: "mall.address.setDefaultSuccess"})
+    end
+  end
+
+  def get_default_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, _) do
+    case Accounts.get_default_address(user_id) do
+      nil ->
+        conn |> json(%{success: false})
+      {:ok, address} ->
+        conn |> json(%{success: true, address: address})
+    end
+  end
+
+  def get_address_detail(%Plug.Conn{private: %{acs_session_user_id: _user_id}} = conn,%{"address_id" => address_id}) do
+    case Accounts.get_address_detail(address_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      {:ok, address} ->
+        conn |> json(%{success: true, address: address})
+    end
+  end
+
+  def insert_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                "name" => _name,
+                "mobile" => _mobile,
+                "area" => _area,
+                "address" => _address,
+                "area_code" => _area_code} = us_address)do
+    case Accounts.insert_address(user_id, us_address) do
+      {:ok, us_address} ->
+        conn |> json(%{success: true, address: us_address, i18n_message: "mall.address.addSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+    end
+  end
+
+  def update_address(%Plug.Conn{private: %{acs_session_user_id: user_id}} = conn, %{
+                                          "id" => _id,
+                                          "name" => _name,
+                                          "mobile" => _mobile,
+                                          "area" => _area,
+                                          "address" => _address,
+                                          "area_code" => _area_code,
+                                          "is_default" => _is_default} = address)do
+    case Accounts.update_address(user_id, address) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.addressNotFound"})
+      :illegal ->
+        conn |> json(%{success: false, i18n_message: "error.server.illegal"})
+      :ok ->
+        conn |> json(%{success: true, i18n_message: "mall.address.updateSuccess"})
+    end
+  end
+
   defp response_access_token(conn, access_token) do
     user = Accounts.get_user(access_token.user_id)
     conn |> json(%{

@@ -1,7 +1,7 @@
 <template>
   <div class="my-point-page">
     <header class="is-flex flex-center flex-vcentered">
-      <div class="my-point is-flex flex-center flex-vcentered">
+      <div class="circle is-flex flex-center flex-vcentered">
         <h1 class="has-text-centered">
 积分<br/>
 100

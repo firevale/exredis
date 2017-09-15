@@ -1,11 +1,11 @@
-$red: #f02929;
+$red: #a11010;
 $orange: #ff6600;
 $blue: #29a1e9;
 $green: hsl(141, 71%, 48%);
 $grey: #474543;
 $grey-light: #616161;
 $white: #ffffff;
-$primary: $red;
+$primary: #f91c1c;
 $info: $orange;
 $success: $blue;
 $warning: $red;
@@ -20,8 +20,15 @@ $size5: 1rem;
 $size6: 0.85rem;
 $size-normal: $size5;
 $size-medium: $size3;
+$sizes: $size1 $size2 $size3 $size4 $size5 $size6;
+@each $size in $sizes {
+  $i: index($sizes, $size);
+  .is-size-#{$i} {
+    font-size: $size !important;
+  }
+}
 
-$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger);
+$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey) ("grey-light" $grey-light);
 @each $color in $colors {
   $name: nth($color, 1);
   $color: nth($color, 2);

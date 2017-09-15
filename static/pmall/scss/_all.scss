@@ -19,11 +19,43 @@
       height: virtual-m-rem(81);
       background-image: url("~assets/pmall/1242-2234-1_06.png");
     }
+    &.btn-conversion {
+      display: inline-block;
+      width: virtual-m-rem(163);
+      height: virtual-m-rem(48);
+      background-image: url("~assets/pmall/1249_2234_1_30.png");
+    }
+    &.btn-more-goods {
+      width: 100%;
+      height: virtual-m-rem(83);
+      background-image: url("~assets/pmall/1249_34_09.png");
+    }
+    &.btn-pmall-more {
+      margin: 0 auto;
+      width: virtual-m-rem(761);
+      height: virtual-m-rem(83);
+      background-image: url("~assets/pmall/1249_34_09.png");
+    }
   }
 
   .bg-full {
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    &.bg-title-task {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/12422345_02.png");
+    }
+    &.bg-title-pmall-index {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/12422345_04.png");
+    }
+    &.bg-title-pmall {
+      width: 100%;
+      height: virtual-m-rem(90);
+      background-image: url("~assets/pmall/1249_02.png");
+    }
   }
 
   .header-title {
@@ -36,6 +68,7 @@
 
   .index-page {
     .header {
+      flex-shrink: 0;
       height: virtual-m-rem(410);
       background-image: url("~assets/pmall/1242-2_02.png");
       background-size: 100% virtual-m-rem(410);
@@ -74,15 +107,69 @@
         }
       }
       .pmall {
-        background: #e1e5eb;
-        .item {
+        padding: .5rem;
+        .column {
+          &:nth-child(odd) {
+            padding-right: 0.3rem;
+          }
+          &:nth-child(even) {
+            padding-left: 0.3rem;
+          }
+          padding-bottom: 0.6rem;
+        }
+        .item-box {
+          background: #e1e5eb;
           height: virtual-m-rem(480);
           border: 1px solid rgba($text-grey, 0.2);
+          padding: .5rem;
+          .item {
+            height: 100%;
+            width: 100%;
+            .image {
+              background: $white;
+              height: virtual-m-rem(266);
+              border-radius: 3px;
+            }
+            .item-content {
+              .item-title {
+                display: inline-block;
+                max-width: 55%;
+              }
+            }
+          }
         }
       }
     }
     .banner {
       height: virtual-m-rem(229);
       background-image: url("~assets/pmall/12422_04.png");
+    }
+  }
+
+  .my-point-page {
+    header {
+      height: virtual-m-rem(500);
+      .my-point {
+        height: virtual-m-rem(360);
+        width: virtual-m-rem(360);
+        border: 2px solid black;
+        border-radius: 50%;
+        background: red;
+        color: white;
+      }
+    }
+    .point-title {
+      height: virtual-m-rem(90);
+      line-height: virtual-m-rem(90);
+      background-color: black;
+      color: white;
+    }
+    .items {
+      .item {
+        margin: 0 1rem;
+        &:not(:last-child) {
+          border-bottom: 1px solid rgba($text-grey, 0.2);
+        }
+      }
     }
   }

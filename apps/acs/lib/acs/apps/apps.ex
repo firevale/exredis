@@ -20,6 +20,7 @@ defmodule Acs.Apps do
   alias Acs.Apps.AppNews
   alias Acs.Apps.AppQuestion
   alias Acs.Cache.CachedApp
+  alias Acs.Cache.CachedAppSdkBinding
 
   def get_app(app_id) do 
     CachedApp.get(app_id)
@@ -61,6 +62,10 @@ defmodule Acs.Apps do
             select: map(app, [:id, :name, :icon])
 
     Repo.all(query)
+  end
+
+  def get_app_sdk_binding(app_id, sdk) do 
+    CachedAppSdkBinding.get(app_id, sdk)
   end
 
   def update_app_order!(%AppOrder{} = order, attr) do 

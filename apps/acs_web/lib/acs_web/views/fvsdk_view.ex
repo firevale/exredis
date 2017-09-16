@@ -1,6 +1,7 @@
 defmodule AcsWeb.FVSdkView do
   use AcsWeb, :view
 
+  alias Acs.Apps
   alias Acs.Apps.App
 
   @custom_iap_config Application.get_env(:acs, :custom_iap, [])
@@ -30,41 +31,41 @@ defmodule AcsWeb.FVSdkView do
   end
 
   def render("app_info.ios.3.json", %{app: %App{} = app, sdk: sdk}) do 
-    goods = transform_goods(app.goods, sdk)
     %{success: true,
       use_custom_iap: @ios_custom_iap,
       supported_custom_iap_channels: @ios_custom_iap_channels,
       currency: app.currency,
       has_forum: app.has_forum,
       has_mall: app.has_mall,
-      fb_app_id: case app.sdk_bindings[:facebook] do 
-                   nil -> ""
-                   %{app_id: app_id} -> app_id
-                   _ -> "" 
-                 end,
-      goods: goods
+      fb_app_id: 
+        case Apps.get_app_sdk_binding(app.id, "facebook") do 
+          nil -> ""
+          %{binding: %{app_id: facebook_app_id}} -> facebook_app_id
+          _ -> ""
+        end,
+      goods: transform_goods(app.goods, sdk)
      }
   end
   def render("app_info.android.3.json", %{app: %App{} = app, sdk: sdk}) do 
-    goods = transform_goods(app.goods, sdk)
     %{success: true,
       use_custom_iap: @android_custom_iap,
       supported_custom_iap_channels: @android_custom_iap_channels,
       currency: app.currency,
       has_forum: app.has_forum, 
       has_mall: app.has_mall,
-      fb_app_id: case app.sdk_bindings[:facebook] do 
-                   nil -> ""
-                   %{app_id: app_id} -> app_id
-                   _ -> "" 
-                 end,
-      wechat_pay_info: case app.sdk_bindings[:wechat] do 
-                         nil -> %{}
-                         wechat_info = %{} -> 
-                           wechat_info |> Map.drop([:app_secret,:signature,:partnerid]) 
-                         _ -> %{}
-                        end,
-      goods: goods,
+      fb_app_id:         
+        case Apps.get_app_sdk_binding(app.id, "facebook") do 
+          nil -> ""
+          %{binding: %{app_id: facebook_app_id}} -> facebook_app_id
+          _ -> ""
+        end,
+      wechat_pay_info: 
+        case Apps.get_app_sdk_binding(app.id, "facebook") do 
+          nil -> ""
+          %{binding: binding} -> Map.drop(binding, [:app_secret, :signature, :partnerid])
+          _ -> ""
+        end,
+      goods: transform_goods(app.goods, sdk),
      }
   end
 

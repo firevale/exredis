@@ -1,11 +1,13 @@
 defmodule AcsWeb.SdkPay.XYCallbackController do
   use     AcsWeb, :controller
   require SDKXY
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"extra" => order_id, "orderid" => trans_no, "amount" => amount} = params) do
-    case app.sdk_bindings.xy do
-      %{pay_key: pay_key} ->
+    case Apps.get_app_sdk_binding(app.id, "xy") do
+      %AppSdkBinding{binding: %{"pay_key" => pay_key}} ->
         if SDKXY.validate_payment(pay_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->
@@ -19,15 +21,15 @@ defmodule AcsWeb.SdkPay.XYCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success") 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else 
-          Logger.error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> 
-        Logger.error "receive invalid xy payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid xy payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

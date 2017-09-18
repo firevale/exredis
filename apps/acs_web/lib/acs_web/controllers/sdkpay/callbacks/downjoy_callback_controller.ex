@@ -1,11 +1,13 @@
 defmodule AcsWeb.SdkPay.DownjoyCallbackController do
   use     AcsWeb, :controller
   require SDKDownjoy
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"ext" => order_id, "order" => trans_no, "money" => amount} = params) do
-    case app.sdk_bindings.downjoy do 
-      %{"app_secret" => app_secret}->
+    case Apps.get_app_sdk_binding(app.id, "downjoy") do 
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         if SDKDownjoy.validate_payment(app_secret, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->
@@ -19,15 +21,15 @@ defmodule AcsWeb.SdkPay.DownjoyCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success")  
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("failure") 
           end 
         else 
-          Logger.error "verify downjoy payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify downjoy payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("failure")  
         end
       _ -> 
-        Logger.error "receive invalid downjoy payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid downjoy payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure") 
     end
   end

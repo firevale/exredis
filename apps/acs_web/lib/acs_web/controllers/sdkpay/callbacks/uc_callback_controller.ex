@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.UCCallbackController do
   use     AcsWeb, :controller
   require SDKUC
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   @success "SUCCESS"
   @failure "FAILURE"
@@ -10,8 +12,8 @@ defmodule AcsWeb.SdkPay.UCCallbackController do
                                       "callbackInfo" => order_id,
                                       "trans_no" => trans_no,
                                       "amount" => amount}} = params) do  
-    case app.sdk_bindings.uc do
-      %{app_key: app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "uc") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKUC.validate_payment(app_key, params) do
           case order_status do
             "S" ->
@@ -28,24 +30,24 @@ defmodule AcsWeb.SdkPay.UCCallbackController do
                   conn |> text(@success) 
 
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text(@failure)
               end
 
             "F" -> 
-              Logger.info "receive payment failed notification, #{inspect params, pretty: true}"
+              info "receive payment failed notification, #{inspect params, pretty: true}"
               conn |> text(@success)
               
             _ ->
-              Logger.info "receive unknown payment status notification, #{inspect params, pretty: true}"
+              info "receive unknown payment status notification, #{inspect params, pretty: true}"
               conn |> text(@failure)
           end
         else 
-          Logger.error "verify uc payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify uc payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text(@failure)
         end
       _ ->
-        Logger.error "uc binding not found in client: #{inspect app, pretty: true}"
+        error "uc binding not found in client: #{inspect app, pretty: true}"
         conn |> text(@failure)
     end 
   end

@@ -1,16 +1,18 @@
 defmodule AcsWeb.SdkPay.CCPlayCallbackController do
   use     AcsWeb, :controller
   require SDKCCPlay
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"partnerTransactionNo" => order_id,
                           "transactionNo" => trade_no,
                           "orderPrice" => price} = params) do
-    case app.bindings.cc do 
-      %{"pay_key" => pay_key} ->
+    case Apps.get_app_sdk_binding(app.id, "cc") do 
+      %AppSdkBinding{binding: %{"pay_key" => pay_key}} ->
         case Repo.get(AppOrder, order_id) do
           nil -> 
-            Logger.error "order is not found, params: #{inspect params, pretty: true}"
+            error "order is not found, params: #{inspect params, pretty: true}"
             conn |> text("failure") 
           
           order = %AppOrder{} ->
@@ -25,18 +27,18 @@ defmodule AcsWeb.SdkPay.CCPlayCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success")  
             else 
-              Logger.error "verify cc payment signature failed, params: #{inspect params, pretty: true}"
+              error "verify cc payment signature failed, params: #{inspect params, pretty: true}"
               conn |> text("failure")  
             end
         end
       _ -> 
-        Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure")
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
     conn |> text("failure")
   end
 end

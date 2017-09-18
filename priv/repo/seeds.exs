@@ -132,3 +132,10 @@ Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "xiaobin@fir
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "zhongxiaobin@firevale.com", user_id: 100002, admin_level: 1}) |> Acs.Repo.insert
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "zhumingzhen@firevale.com", user_id: 100003, admin_level: 1}) |> Acs.Repo.insert
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "xiebing@firevale.com", user_id: 100004, admin_level: 1}) |> Acs.Repo.insert
+
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_bind_mobile", value: "10", group: "point", memo: "绑定手机获得积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_subscribe", value: "10", group: "point", memo: "官网预约获得积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_follow_wechat", value: "30", group: "point", memo: "关注微信获得积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_day_question", value: "5", group: "point", memo: "每日问题获得积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_luck_draw", value: "-10", group: "point", memo: "抽奖每次消耗积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_day_sign", value: "2", group: "point", memo: "每日签到获得积分", active: true}) |> Acs.Repo.insert

@@ -128,8 +128,8 @@ defmodule Acs.Admin do
     Repo.all(query)
   end
 
-  def get_setting(setting_name) do
-    case Repo.get_by(Setting, name: setting_name) do
+  def get_setting(app_id, setting_name) do
+    case Repo.get_by(Setting, name: setting_name, app_id: app_id) do
       %Setting{} = setting ->
         {:ok, setting}
       _ ->
@@ -137,15 +137,16 @@ defmodule Acs.Admin do
     end
   end
 
-  def get_settings_by_group(group) do
+  def get_settings_by_group(app_id, group) do
     query = from s in Setting,
-             where: s.group == ^group,
+             select: map(s, [:id, :name, :value, :group, :memo, :active, app: [:id]]),
+             where: s.app_id == ^app_id and s.group == ^group,
              order_by: [{:desc, s.id}]
     Repo.all(query)
   end
 
-  def delete_setting(setting_name) do
-    case CachedAdminSetting.del(setting_name) do
+  def delete_setting(app_id, setting_name) do
+    case CachedAdminSetting.del(app_id, setting_name) do
       {:ok, _} ->
         :ok
       
@@ -154,12 +155,12 @@ defmodule Acs.Admin do
     end
   end
 
-  def add_setting(params) do
-    with setting <- params |> Map.put("active", true) |> Map.put("name", params.setting_name) |> Map.put("value", params.setting_value),
+  def add_setting(app_id, params) do
+    with setting <- params |> Map.put("active", true) |> Map.put("name", params.setting_name) |> Map.put("value", params.setting_value) |> Map.put("app_id", app_id),
       {:ok, setting} <- Setting.changeset(%Setting{}, setting) |> Repo.insert
     do
       # add to redis
-      CachedAdminSetting.get(params.setting_name)
+      CachedAdminSetting.get(app_id, params.setting_name)
       {:ok, setting}
     else
       nil -> :illegal
@@ -167,14 +168,14 @@ defmodule Acs.Admin do
     end
   end
 
-  def update_setting_by_name(params) do
-    case Repo.get_by(Setting, name: params["setting_name"]) do
+  def update_setting_by_name(app_id, params) do
+    case get_setting(app_id, params["setting_name"]) do
       nil ->
         # add new
         setting = Map.put(params, "name", params["setting_name"]) |> Map.put("value", params["setting_value"])
         case Setting.changeset(%Setting{}, setting) |> Repo.insert do
           {:ok, _} ->
-            CachedAdminSetting.refresh(params["setting_name"])
+            CachedAdminSetting.refresh(app_id, params["setting_name"])
             {:addok, setting}
           {:error, %{errors: errors}} ->
             {:error, errors}
@@ -184,9 +185,9 @@ defmodule Acs.Admin do
 
       %Setting{} = setting ->
         # update
-        case Setting.changeset(setting, %{active: params["active"], value: params["setting_name"]}) |> Repo.update() do
+        case Setting.changeset(setting, %{active: params["active"], value: params["setting_value"]}) |> Repo.update() do
           {:ok, _} ->
-            CachedAdminSetting.refresh(params["setting_name"]) 
+            CachedAdminSetting.refresh(app_id, params["setting_name"]) 
             {:updateok, setting}
           {:error, %{errors: errors}} ->
             {:error, errors}
@@ -199,7 +200,7 @@ defmodule Acs.Admin do
       {:ok, _} <- Setting.changeset(setting, %{active: active, value: setting_value}) |> Repo.update()
     do
       # refresh redis
-      CachedAdminSetting.refresh(setting.name)
+      CachedAdminSetting.refresh(setting.app_id, setting.name)
       :ok
     else
       nil -> nil

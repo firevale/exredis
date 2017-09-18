@@ -1,11 +1,13 @@
 defmodule AcsWeb.SdkPay.PPCallbackController do
   use     AcsWeb, :controller
   require SDKPP
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"billno" => order_id, "order_id" => trans_no, "amount" => amount} = params) do
-    case app.sdk_bindings.pp do
-      %{"pay_key" => pay_key} ->
+    case Apps.get_app_sdk_binding(app.id, "pp") do
+      %AppSdkBinding{binding: %{"pay_key" => pay_key}} ->
         if SDKPP.validate_payment(pay_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->
@@ -20,15 +22,15 @@ defmodule AcsWeb.SdkPay.PPCallbackController do
               conn |> text("success") 
 
             _ -> #{order other than Order%{}}
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else #{verify signature failed}
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> #{client_id invalid}
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

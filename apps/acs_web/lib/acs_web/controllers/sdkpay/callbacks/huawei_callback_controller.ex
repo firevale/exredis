@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.HuaweiCallbackController do
   use     AcsWeb, :controller
   require SDKHuawei
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   plug :fetch_app_id 
   plug :fetch_app
@@ -10,9 +12,8 @@ defmodule AcsWeb.SdkPay.HuaweiCallbackController do
                           "requestId" => order_id, 
                           "orderId" => trans_no, 
                           "amount" => amount} = params) do
-
-    case app.sdk_bindings.huawei do
-      %{"pay_pub_key" => pay_pub_key}->
+    case Apps.get_app_sdk_binding(app.id, "huawei") do
+      %AppSdkBinding{binding: %{"pay_pub_key" => pay_pub_key}} ->
         if SDKHuawei.validate_payment(pay_pub_key, params) do
           case to_string(result) do 
             "0" ->
@@ -29,19 +30,19 @@ defmodule AcsWeb.SdkPay.HuaweiCallbackController do
                   conn |> json(%{"result" => "0"}) 
 
                _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> json(%{"result" => "3"})   
               end
             _ -> 
-              Logger.info "receive huawei payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive huawei payment fail notification, params: #{inspect params, pretty: true}"
               conn |> json(%{"ErrorCode" => "3"}) 
           end
         else 
-          Logger.error "verify huawei payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify huawei payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{"ErrorCode" => "1"}) 
         end
       _ -> 
-        Logger.error "receive invalid huawei payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid huawei payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{"ErrorCode" => "94"}) 
     end
   end

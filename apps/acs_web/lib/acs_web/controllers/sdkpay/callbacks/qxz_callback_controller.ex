@@ -1,12 +1,14 @@
 defmodule AcsWeb.SdkPay.QxzCallbackController do
   use     AcsWeb, :controller
   require SDKQxz
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"transdata" => transdata, "sign" => signature} = params) do
 
-    case app.sdk_bindings.qxz do
-      %{app_key: app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "qxz") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         %{"cpprivate" => order_id, 
           "money" => total_fee, 
           "transid" => trade_no} = data = JSON.decode!(transdata)
@@ -25,21 +27,21 @@ defmodule AcsWeb.SdkPay.QxzCallbackController do
               conn |> text("success")  
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("failure") 
           end 
         else 
-          Logger.error "verify qxz payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify qxz payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("failure")  
         end
       _ -> 
-        Logger.error "receive invalid qxz payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid qxz payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure") 
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid qxz payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid qxz payment notifications, params: #{inspect params, pretty: true}"
     conn |> text("failure") 
   end
 end

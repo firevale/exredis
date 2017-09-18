@@ -177,17 +177,27 @@ defmodule AcsWeb.Admin.AppSdkInfoController do
   end
 
   defp _update_app_sdk_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, app_id, sdk, binding) do 
-    binding = case Repo.get_by(AppSdkBinding, app_id: app_id, sdk: sdk) do 
+    case Apps.get_app_sdk_binding(app_id, sdk) do 
       nil ->
-        AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: app_id, sdk: sdk, binding: binding}) |> Repo.insert!
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{app_id: app_id, sdk: sdk, binding: binding})
-      sdk_binding ->
-        AppSdkBinding.changeset(sdk_binding, %{binding: binding}) |> Repo.update!
-        Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{binding: binding})
-    end
+        case Apps.add_app_sdk_binding(app_id, sdk, binding) do 
+          {:ok, sdk_binding} ->
+            Admin.log_admin_operation(acs_admin_id, app_id, "add_app_sdk_info", %{sdk: sdk, binding: sdk_binding})
+            conn |> json(%{success: true, binding: binding})
 
-    CachedApp.refresh(app_id)
-    conn |> json(%{success: true, binding: binding})
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+
+      sdk_binding ->
+        case Apps.update_app_sdk_binding(sdk_binding, %{binding: binding}) do 
+          {:ok, sdk_binding} ->
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{sdk: sdk, binding: sdk_binding})
+            conn |> json(%{success: true, binding: binding})
+
+          {:error, %{errors: errors}} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
+    end
   end
 
 end

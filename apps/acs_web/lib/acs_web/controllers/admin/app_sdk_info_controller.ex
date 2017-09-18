@@ -181,8 +181,8 @@ defmodule AcsWeb.Admin.AppSdkInfoController do
       nil ->
         case Apps.add_app_sdk_binding(app_id, sdk, binding) do 
           {:ok, sdk_binding} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "add_app_sdk_info", %{sdk: sdk, binding: sdk_binding})
-            conn |> json(%{success: true, binding: binding})
+            Admin.log_admin_operation(acs_admin_id, app_id, "add_app_sdk_info", %{sdk: sdk, binding: binding})
+            conn |> json(%{success: true, binding: sdk_binding})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})
@@ -191,8 +191,8 @@ defmodule AcsWeb.Admin.AppSdkInfoController do
       sdk_binding ->
         case Apps.update_app_sdk_binding(sdk_binding, %{binding: binding}) do 
           {:ok, sdk_binding} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{sdk: sdk, binding: sdk_binding})
-            conn |> json(%{success: true, binding: binding})
+            Admin.log_admin_operation(acs_admin_id, app_id, "update_app_sdk_info", %{sdk: sdk, binding: binding})
+            conn |> json(%{success: true, binding: sdk_binding})
 
           {:error, %{errors: errors}} ->
             conn |> json(%{success: false, message: translate_errors(errors)})

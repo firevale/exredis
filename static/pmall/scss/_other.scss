@@ -120,23 +120,12 @@ span {
 
 .my-conversion {
   header {
-    width: 95vw;
+    width: 90vw;
     min-height: virtual-m-rem(130);
     margin: 1rem auto .5rem auto;
     padding-left: 1rem;
     border: 1px solid rgba($text, 0.1);
     border-radius: virtual-m-rem(10);
-  }
-  footer {
-    width: 70vw;
-    min-height: 3rem;
-    margin: 1rem auto 2rem auto;
-    border-radius: virtual-m-rem(10);
-    background-color: $primary;
-    .loadmore {
-      font-size: $size4;
-      color: $white;
-    }
   }
   .conversion-content {
     padding: 1rem;
@@ -152,13 +141,24 @@ span {
       }
     }
   }
+  footer {
+    width: virtual-m-rem(920);
+    min-height: virtual-m-rem(96);
+    margin: 1rem auto 2rem auto;
+    border-radius: virtual-m-rem(10);
+    background-color: $primary;
+    .loadmore {
+      font-size: $size5;
+      color: $white;
+    }
+  }
 }
 
 .new-address {
   .address-head {
     width: 100vw;
     height: 3.5rem;
-    background-color: $red; //$red-dark;
+    background-color: $red;
     color: $white;
     font-size: $size4;
   }
@@ -170,7 +170,7 @@ span {
         margin-top: 2rem;
       }
       &:last-child {
-        margin-top: 2rem;
+        margin-top: 1rem;
       }
     }
     input {
@@ -258,7 +258,7 @@ span {
         border-bottom: none;
       }
       ul {
-        padding: 1rem 0 0 0rem;
+        padding: 1rem 0 0 0;
         list-style: none;
         li {
           padding-left: 2rem;

@@ -5,7 +5,7 @@ defmodule AcsWeb.BaiduAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %App{sdk_bindings: %{baidu: %{"app_id" => baidu_app_id, "app_secret" => baidu_app_secret}}} = app,
+                acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"baidu_access_token" => baidu_access_token,
@@ -36,7 +36,7 @@ defmodule AcsWeb.BaiduAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :anzhi,
+        sdk: :baidu,
         binding: access_token.binding              
       })
     else

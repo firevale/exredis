@@ -60,7 +60,7 @@ defmodule AcsWeb.WcpController do
 
     case msg.msgtype do
       "text" ->
-        ESWcpMessage.index(%{from: wcp_user,
+        ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: msg.content,
@@ -69,7 +69,7 @@ defmodule AcsWeb.WcpController do
           app_id: app_id})
 
       "event" ->
-        ESWcpMessage.index(%{from: wcp_user,
+        ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
           to: %{openid: msg.tousername, nickname: "系统"},
           msg_type: msg.msgtype,
           content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
@@ -87,7 +87,7 @@ defmodule AcsWeb.WcpController do
         conn |> text("success")
 
       %{} = reply ->
-        ESWcpMessage.index(%{to: wcp_user,
+        ESWcpMessage.index(%{to: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
           from: %{openid: reply.from, nickname: "系统"},
           msg_type: "text",
           content: reply.content,

@@ -31,7 +31,7 @@ defmodule Acs.Wcp.AppWcpResponse do
               content: AppWcpTFDownloadResponse.build_email_reply(app_id, msg.fromusername, msg.content)}
         else 
           case CachedAppWcpMessageRule.get_all(app_id) do 
-            nil ->
+            %{} ->
               _build_default_text_reply(app_id, msg)
 
             rules ->

@@ -132,7 +132,7 @@ defmodule Acs.Search do
     query = %{
       query: %{
         bool: %{
-          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.id"}}],
+          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.openid"}}],
           should: [],
           minimum_should_match: 0,
           boost: 1.0,
@@ -163,7 +163,7 @@ defmodule Acs.Search do
 
     case Elasticsearch.search(%{index: "wcp", type: "messages", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
-        messages = Enum.map(hits, fn(%{_id: _id, _source: %{} = message}) -> message end)
+        messages = Enum.map(hits, fn(%{_id: id, _source: %{} = message}) -> Map.put(message, :id, id) end)
         {:ok, total, messages}
       e ->
          error("search failed: #{inspect e, pretty: true}")

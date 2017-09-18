@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px;">
+    <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px; height:1300px">
       <div class="message-body">
         <div v-for="msg in messages" class="talk">
           <div class="user-info" :class="{'is-right': !msg.from.id}">{{ msg.from.id ? userName :"系统" }}</div>

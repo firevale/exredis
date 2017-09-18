@@ -5,6 +5,7 @@ defmodule Acs.Admin do
 
   import Ecto.Query, warn: false
   alias Acs.Repo
+  use Utils.LogAlias
 
   alias Acs.AdminAuth
   alias Acs.Admin.AdminUser
@@ -167,13 +168,13 @@ defmodule Acs.Admin do
   end
 
   def update_setting_by_name(params) do
-    case Repo.get_by(Setting, name: params.setting_name) do
+    case Repo.get_by(Setting, name: params["setting_name"]) do
       nil ->
         # add new
-        setting = Map.put(params, "name", params.setting_name) |> Map.put("value", params.setting_value)
+        setting = Map.put(params, "name", params["setting_name"]) |> Map.put("value", params["setting_value"])
         case Setting.changeset(%Setting{}, setting) |> Repo.insert do
           {:ok, _} ->
-            CachedAdminSetting.refresh(params.setting_name)
+            CachedAdminSetting.refresh(params["setting_name"])
             {:addok, setting}
           {:error, %{errors: errors}} ->
             {:error, errors}
@@ -183,9 +184,9 @@ defmodule Acs.Admin do
 
       %Setting{} = setting ->
         # update
-        case Setting.changeset(setting, %{active: params.active, value: params.setting_value}) |> Repo.update() do
+        case Setting.changeset(setting, %{active: params["active"], value: params["setting_name"]}) |> Repo.update() do
           {:ok, _} ->
-            CachedAdminSetting.refresh(params.setting_name) 
+            CachedAdminSetting.refresh(params["setting_name"]) 
             {:updateok, setting}
           {:error, %{errors: errors}} ->
             {:error, errors}

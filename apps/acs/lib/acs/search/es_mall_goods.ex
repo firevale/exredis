@@ -14,7 +14,6 @@ defmodule Acs.Search.ESMallGoods do
         description: goods.description,
         inserted_at: Timex.format!(goods.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
-      params: nil,
       id: goods.id
     })
 

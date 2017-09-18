@@ -37,9 +37,9 @@ defmodule SDKMumayi do
       case data |> Crypto.md5_sign |> :binary.part(0, 8) do 
         ^verifyStr ->
           << key_b :: binary-size(6), rest :: binary >> = data
-          rand_key = Crypto.md5_sign(key_b <> app_key) |> String.to_char_list
+          rand_key = Crypto.md5_sign(key_b <> app_key) |> String.to_charlist
           
-          signedOrderID = Base.decode64!(rest) |> String.to_char_list |> Enum.with_index |> Enum.map_join("", fn{c, i} ->
+          signedOrderID = Base.decode64!(rest) |> String.to_charlist |> Enum.with_index |> Enum.map_join("", fn{c, i} ->
             << Bitwise.bxor(c,  Enum.at(rand_key, rem(i, 32))) >>
           end)
 

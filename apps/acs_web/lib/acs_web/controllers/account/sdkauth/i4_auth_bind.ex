@@ -4,7 +4,7 @@ defmodule AcsWeb.I4AuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %App{sdk_bindings: %{i4: %{}}} = app,
+                acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"i4_session_id" => i4_session_id,

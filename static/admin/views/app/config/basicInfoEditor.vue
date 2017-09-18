@@ -93,6 +93,14 @@
         </p>
       </div>
       <div class="column is-2">
+        <label class="label"> {{ $t('admin.label.appHasPMall')}}: </label>
+        <p class="control">
+          <toggle-button :value="app.has_pmall" color="#4e9ed8" :sync="true" 
+          :labels="{checked: $t('admin.switchOn'), unchecked: $t('admin.switchOff')}" 
+          @change="x => app.has_pmall = x.value" ></toggle-button>
+        </p>
+      </div>      
+      <div class="column is-2">
         <label class="label"> {{ $t('admin.label.appRestrictLogin')}}: </label>
         <p class="control">
           <toggle-button :value="app.restrict_login" color="#4e9ed8" :sync="true" 

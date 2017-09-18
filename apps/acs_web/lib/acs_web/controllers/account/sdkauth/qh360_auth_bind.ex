@@ -5,7 +5,7 @@ defmodule AcsWeb.Qh360AuthBind do
   def bind(%Plug.Conn{private: %{acs_app: %App{} = app,
                                  acs_device_id: device_id,
                                  acs_platform: platform}} = conn, 
-           %{"qh360_access_token" => qh360_access_token} = _params) do
+           %{"qh360_access_token" => qh360_access_token}) do
     with %{id: qh360_user_id} <- SDKQh360.validate_session(qh360_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :qh360, 

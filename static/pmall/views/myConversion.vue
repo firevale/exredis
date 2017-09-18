@@ -11,9 +11,9 @@
           <span class="is-right title">-45积分</span>
         </div>
       </div>
+      <footer class="is-flex flex-center flex-vcentered">
+        <div class="loadmore">查看更多</div>
+      </footer>
     </div>
-    <footer class="is-flex flex-center flex-vcentered">
-      <div class="loadmore">查看更多</div>
-    </footer>
   </div>
 </template>

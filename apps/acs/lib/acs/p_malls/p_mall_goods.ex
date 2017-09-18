@@ -13,6 +13,7 @@ defmodule Acs.PMalls.PMallGoods do
     field :description, :binary
 
     field :price, :integer
+    field :original_price, :integer
     field :currency, :string, default: "POINT"
 
     field :postage, :integer      #邮费
@@ -35,8 +36,8 @@ defmodule Acs.PMalls.PMallGoods do
   @doc false
   def changeset(%PMallGoods{} = p_mall_goods, attrs) do
     p_mall_goods
-    |> cast(attrs, [:id, :name, :description, :price, :currency, :postage, :pic, :stock, :sold, :reads, :active, :is_virtual, :begin_time, :end_time, :app_id, :user_id])
-    |> validate_required([:id, :name, :description, :price, :postage, :begin_time, :end_time, :app_id, :user_id])
+    |> cast(attrs, [:id, :name, :description, :price, :original_price, :currency, :postage, :pic, :stock, :sold, :reads, :active, :is_virtual, :begin_time, :end_time, :app_id, :user_id])
+    |> validate_required([:id, :name, :description, :price, :original_price, :postage, :begin_time, :end_time, :app_id, :user_id])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:user_id)
   end

@@ -397,7 +397,7 @@ defmodule Acs.Search do
     end
   end
 
-  def search_pmall_goods(keyword, page, records_per_page) do
+  def search_pmall_goods(keyword, page, records_per_page, is_admin) do
     if String.length(keyword)>0 do
           query = %{
             query: %{
@@ -408,6 +408,7 @@ defmodule Acs.Search do
                   %{match: %{name: keyword}},
                   %{match: %{description: keyword}},
                 ],
+                filter: [],
                 minimum_should_match: 1,
                 boost: 1.0,
               },
@@ -416,6 +417,13 @@ defmodule Acs.Search do
             from: (page - 1) * records_per_page,
             size: records_per_page,
           }
+
+          query =
+          if !is_admin do
+            update_in(query.query.bool.filter, &(&1++[ %{term: %{active: true}}]))
+          else
+            query
+          end
 
           case Elasticsearch.search(%{index: "pmall", type: "goods", query: query, params: %{timeout: "1m"}}) do
             {:ok, %{hits: %{hits: hits, total: total}}} ->

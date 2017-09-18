@@ -3,7 +3,7 @@
 }
 
 @function virtual-m-rem($value) {
-  //14px
+  //12px
   @return $value * 0.025161031rem;
 }
 

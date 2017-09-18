@@ -38,11 +38,15 @@
   }
   &.bg-turn-needle {
     background-image: url("~assets/pmall/1245_34345_12.png");
-    width: virtual-m-rem(145);
+    background-size: virtual-m-rem(145) virtual-m-rem(72);
+    background-position: virtual-m-rem(145) 0;
+    width: virtual-m-rem(145*2);
     height: virtual-m-rem(72);
     position: absolute;
-    left: virtual-m-rem(655);
-    bottom: virtual-m-rem(940);
+    left: 50%;
+    top: 50%;
+    margin-left: virtual-m-rem(-145);
+    margin-top: virtual-m-rem(-72/2);
   }
 }
 
@@ -98,6 +102,12 @@ span {
   footer {
     position: absolute;
     bottom: 4.2rem;
+  }
+  .rotate-container {
+    width: virtual-m-rem(990);
+    height: virtual-m-rem(982);
+    position: absolute;
+    bottom: virtual-m-rem(500);
   }
   .my-total {
     width: virtual-m-rem(482);

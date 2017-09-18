@@ -87,7 +87,7 @@ defmodule AcsWeb.FVSdkView do
   end
 
   defp transform_goods(goods, sdk) do 
-    goods |> Enum.map(fn({_id, g}) ->
+    goods |> Enum.map(fn(g) ->
       {g.id, %{id: g.id,
                name: g.name,
                description: g.description || "",
@@ -99,13 +99,13 @@ defmodule AcsWeb.FVSdkView do
   end
 
   defp transform_app_goods_old(%App{} = app) do 
-    app.goods |> Enum.map(fn({id, goods}) ->
-      {id, %{id: id,
+    app.goods |> Enum.map(fn(g) ->
+      {g.id, %{id: g.id,
              currency: app.currency,
-             name: goods.name,
-             title: goods.description,
-             price: goods.price,
-             product_ids: goods.product_ids
+             name: g.name,
+             title: g.description,
+             price: g.price,
+             product_ids: g.product_ids
              }}
     end) |> Enum.into(%{})
   end 

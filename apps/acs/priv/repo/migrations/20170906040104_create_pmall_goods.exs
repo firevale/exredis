@@ -8,6 +8,7 @@ defmodule Acs.Repo.Migrations.CreatePmallGoods do
       add :description, :binary
 
       add :price, :integer
+      add :original_price, :integer
       add :currency, :string, default: "POINT"
       add :postage, :integer      #邮费(CNY)
       add :pic, :string, size: 800

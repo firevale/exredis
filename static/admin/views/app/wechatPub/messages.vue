@@ -11,7 +11,7 @@
     <div class="tile is-ancestor ">
       <div class="tile is-parent is-vertical">
         <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%"
-          border @row-dblclick="rowClick" @sort-change="sortChange" :default-sort="{prop: 'inserted_at', order: 'descending'}">
+          border @row-click="rowClick" @sort-change="sortChange" :default-sort="{prop: 'inserted_at', order: 'descending'}">
           <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
           </el-table-column> -->
           <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">

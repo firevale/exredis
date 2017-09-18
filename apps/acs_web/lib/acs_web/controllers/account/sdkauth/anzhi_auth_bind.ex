@@ -9,9 +9,9 @@ defmodule AcsWeb.AnzhiAuthBind do
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"anzhi_access_token" => anzhi_access_token,
-              "anzhi_user_id" => anzhi_user_id} = params) do
+              "anzhi_user_id" => anzhi_user_id}) do
 
-    with %AppSdkBinding{binding: %{"app_key" => anzhi_app_key, "app_secret" => anzhi_app_secret}} <- Acs.Apps.get_app_sdk_binding(app.id, "anzhi"),
+    with %AppSdkBinding{binding: %{"app_key" => anzhi_app_key, "app_secret" => anzhi_app_secret}} <- Apps.get_app_sdk_binding(app.id, "anzhi"),
          true <- SDKAnzhi.validate_session(anzhi_app_key, anzhi_app_secret, anzhi_access_token),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :anzhi, 

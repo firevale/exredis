@@ -31,10 +31,8 @@
   }
   &.bg-draw-item {
     background-image: url("~assets/pmall/1245_34_03.png");
-    width: virtual-m-rem(990);
-    height: virtual-m-rem(982);
-    position: absolute;
-    bottom: virtual-m-rem(500);
+    background-size: virtual-m-rem(990) virtual-m-rem(982);
+    background-position-x: center;
   }
   &.bg-turn-needle {
     background-image: url("~assets/pmall/1245_34345_12.png");
@@ -104,10 +102,10 @@ span {
     bottom: 4.2rem;
   }
   .rotate-container {
-    width: virtual-m-rem(990);
+    width: 100%;
     height: virtual-m-rem(982);
     position: absolute;
-    bottom: virtual-m-rem(500);
+    top: virtual-m-rem(714);
   }
   .my-total {
     width: virtual-m-rem(482);

@@ -37,6 +37,7 @@ defmodule AcsWeb.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum,
       has_mall: app.has_mall,
+      has_pmall: app.has_pmall,
       fb_app_id: 
         case Apps.get_app_sdk_binding(app.id, "facebook") do 
           nil -> ""
@@ -53,6 +54,7 @@ defmodule AcsWeb.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum, 
       has_mall: app.has_mall,
+      has_pmall: app.has_pmall,
       fb_app_id:         
         case Apps.get_app_sdk_binding(app.id, "facebook") do 
           nil -> ""
@@ -87,7 +89,7 @@ defmodule AcsWeb.FVSdkView do
   end
 
   defp transform_goods(goods, sdk) do 
-    goods |> Enum.map(fn({_id, g}) ->
+    goods |> Enum.map(fn(g) ->
       {g.id, %{id: g.id,
                name: g.name,
                description: g.description || "",
@@ -99,13 +101,13 @@ defmodule AcsWeb.FVSdkView do
   end
 
   defp transform_app_goods_old(%App{} = app) do 
-    app.goods |> Enum.map(fn({id, goods}) ->
-      {id, %{id: id,
+    app.goods |> Enum.map(fn(g) ->
+      {g.id, %{id: g.id,
              currency: app.currency,
-             name: goods.name,
-             title: goods.description,
-             price: goods.price,
-             product_ids: goods.product_ids
+             name: g.name,
+             title: g.description,
+             price: g.price,
+             product_ids: g.product_ids
              }}
     end) |> Enum.into(%{})
   end 

@@ -16,6 +16,7 @@ const wcpParams = state => state.wcp.wcpParams
 
 const menuitems = state => {
   let has_mall = state.apps.app && state.apps.app.has_mall
+  let has_pmall = state.apps.app && state.apps.app.has_pmall
   let has_forum = state.apps.app && state.apps.app.has_forum
   let restrict_login = state.apps.app && state.apps.app.restrict_login
 
@@ -29,6 +30,10 @@ const menuitems = state => {
 
       case 'has_mall':
         if (has_mall) result.push(element);
+        break;
+
+      case 'has_pmall':
+        if (has_pmall) result.push(element);
         break;
 
       // case 'restrict_login':

@@ -40,6 +40,7 @@ export default {
     appCustomerService: '应用客服',
     appHasForum: '是否启用论坛',
     appHasMall: '是否启用商城',
+    appHasPMall: '是否启用积分商城',
     appRestrictLogin: '激活码登录',
     appCanAssignCode: '激活码领取',
     wcpDownloadEnabled: '公众号下载',

@@ -43,7 +43,9 @@
         </router-link>
       </div>
     </div>
-    <div class="banner bg-full flex-fixed-size"></div>
+    <div class="banner bg-full is-flex flex-fixed-size flex-right flex-vcentered">
+      <router-link class="button btn-draw" :to="{name: 'draw'}"></router-link>
+    </div>
     <div class="panel">
       <div class="bg-full bg-title-pmall-index">
       </div>

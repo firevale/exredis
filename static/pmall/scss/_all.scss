@@ -1,7 +1,7 @@
   // @import "./initial-bulma";
   @import "./variables";
   @import "~normalize.css";
-  @import "common/scss/mixins";
+  @import "./mixins";
   @import "./global";
   @import "./other"; // $fa-font-path: '~font-awesome/fonts/';
   // @import '~font-awesome/scss/font-awesome';
@@ -24,6 +24,11 @@
       width: virtual-m-rem(163);
       height: virtual-m-rem(48);
       background-image: url("~assets/pmall/1249_2234_1_30.png");
+    }
+    &.btn-draw {
+      width: virtual-m-rem(317);
+      height: virtual-m-rem(89);
+      background-image: url("~assets/pmall/12422_011_05.png");
     }
     &.btn-more-goods {
       width: 100%;
@@ -185,6 +190,7 @@
     .banner {
       height: virtual-m-rem(229);
       background-image: url("~assets/pmall/12422_04.png");
+      padding-right: virtual-m-rem(50);
     }
   }
 

@@ -28,15 +28,15 @@ defmodule AcsWeb.SdkPay.OppoCallbackController do
               resp_oppo.("OK", "success")
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp_oppo.("FAIL", "order is not found")
           end
         else 
-            Logger.error "verify oppo payment signature failed, params: #{inspect params, pretty: true}"
+            error "verify oppo payment signature failed, params: #{inspect params, pretty: true}"
             resp_oppo.("FAIL", "verify signature failed")
         end
       _ ->
-        Logger.error "there's no oppo config in app: #{inspect app, pretty: true}"
+        error "there's no oppo config in app: #{inspect app, pretty: true}"
         resp_oppo.("FAIL", "oppo config not found")
     end 
   end

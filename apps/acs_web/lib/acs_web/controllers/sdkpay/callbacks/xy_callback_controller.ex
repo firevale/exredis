@@ -21,15 +21,15 @@ defmodule AcsWeb.SdkPay.XYCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success") 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else 
-          Logger.error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> 
-        Logger.error "receive invalid xy payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid xy payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

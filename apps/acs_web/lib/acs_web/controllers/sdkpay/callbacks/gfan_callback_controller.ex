@@ -33,15 +33,15 @@ defmodule AcsWeb.SdkPay.GfanCallbackController do
               conn |> text("<response><ErrorCode>1</ErrorCode><ErrorDesc>Success</ErrorDesc></response>")
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>") 
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>")  
         end
       _ -> 
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>") 
     end
   end

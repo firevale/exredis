@@ -21,15 +21,15 @@ defmodule AcsWeb.SdkPay.DownjoyCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success")  
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("failure") 
           end 
         else 
-          Logger.error "verify downjoy payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify downjoy payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("failure")  
         end
       _ -> 
-        Logger.error "receive invalid downjoy payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid downjoy payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure") 
     end
   end

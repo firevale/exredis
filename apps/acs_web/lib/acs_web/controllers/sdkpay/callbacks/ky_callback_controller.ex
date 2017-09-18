@@ -22,16 +22,16 @@ defmodule AcsWeb.SdkPay.KYCallbackController do
               conn |> text("success") 
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else 
-          Logger.error "verify ky payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify ky payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
 
       _ -> 
-        Logger.error "receive invalid ky payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid ky payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

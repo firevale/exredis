@@ -30,24 +30,24 @@ defmodule AcsWeb.SdkPay.UCCallbackController do
                   conn |> text(@success) 
 
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text(@failure)
               end
 
             "F" -> 
-              Logger.info "receive payment failed notification, #{inspect params, pretty: true}"
+              info "receive payment failed notification, #{inspect params, pretty: true}"
               conn |> text(@success)
               
             _ ->
-              Logger.info "receive unknown payment status notification, #{inspect params, pretty: true}"
+              info "receive unknown payment status notification, #{inspect params, pretty: true}"
               conn |> text(@failure)
           end
         else 
-          Logger.error "verify uc payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify uc payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text(@failure)
         end
       _ ->
-        Logger.error "uc binding not found in client: #{inspect app, pretty: true}"
+        error "uc binding not found in client: #{inspect app, pretty: true}"
         conn |> text(@failure)
     end 
   end

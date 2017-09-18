@@ -12,7 +12,7 @@ defmodule AcsWeb.SdkPay.CCPlayCallbackController do
       %AppSdkBinding{binding: %{"pay_key" => pay_key}} ->
         case Repo.get(AppOrder, order_id) do
           nil -> 
-            Logger.error "order is not found, params: #{inspect params, pretty: true}"
+            error "order is not found, params: #{inspect params, pretty: true}"
             conn |> text("failure") 
           
           order = %AppOrder{} ->
@@ -27,18 +27,18 @@ defmodule AcsWeb.SdkPay.CCPlayCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("success")  
             else 
-              Logger.error "verify cc payment signature failed, params: #{inspect params, pretty: true}"
+              error "verify cc payment signature failed, params: #{inspect params, pretty: true}"
               conn |> text("failure")  
             end
         end
       _ -> 
-        Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure")
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid cc payment notifications, params: #{inspect params, pretty: true}"
     conn |> text("failure")
   end
 end

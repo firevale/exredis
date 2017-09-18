@@ -23,15 +23,15 @@ defmodule AcsWeb.SdkPay.CoolpadCallbackController do
               conn |> text("SUCCESS")  
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("FAILURE") 
           end 
         else 
-          Logger.error "verify coolpad payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify coolpad payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("FAILURE")  
         end
       _ -> 
-        Logger.error "receive invalid coolpad payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid coolpad payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("FAILURE") 
     end
   end

@@ -29,24 +29,24 @@ defmodule AcsWeb.SdkPay.NdcomCallbackController do
                     conn |> json(%{"ErrorCode" => "1"}) 
 
                  else 
-                    Logger.error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{cp_order_id}"
+                    error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{cp_order_id}"
                     conn |> json(%{"ErrorCode" => "4"}) 
                   end
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> json(%{"ErrorCode" => "4"}) 
               end
 
             _ -> 
-              Logger.info "receive ndcom payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive ndcom payment fail notification, params: #{inspect params, pretty: true}"
               conn |> json(%{"ErrorCode" => "1"}) 
           end
         else 
-          Logger.error "verify ndcom payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify ndcom payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{"ErrorCode" => "5"}) 
         end
       _ -> 
-        Logger.error "receive invalid ndcom payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid ndcom payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{"ErrorCode" => "4"}) 
     end
   end

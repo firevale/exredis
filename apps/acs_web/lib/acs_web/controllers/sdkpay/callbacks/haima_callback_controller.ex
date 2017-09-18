@@ -26,19 +26,19 @@ defmodule AcsWeb.SdkPay.HaimaCallbackController do
                   conn |> text("success")  
 
                _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text("fail") 
               end 
             _ ->
-              Logger.error "invalid trade_status: #{trade_status}"
+              error "invalid trade_status: #{trade_status}"
               conn |> text("fail")               
           end
         else 
-          Logger.error "verify haima payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify haima payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> 
-        Logger.error "app haima bindings not found, params: #{inspect params, pretty: true}"
+        error "app haima bindings not found, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

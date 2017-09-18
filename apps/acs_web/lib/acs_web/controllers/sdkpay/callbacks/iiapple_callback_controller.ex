@@ -36,19 +36,19 @@ defmodule AcsWeb.SdkPay.IIAppleCallbackController do
                 resp_success.()
 
              _ ->
-                Logger.error "iiapple order #{order_id} not found"
+                error "iiapple order #{order_id} not found"
                 resp_fail.("invalid gameExtend value")
             end
           else 
-            Logger.error "iiapple notify invalid status: #{status} for order: #{order_id}"
+            error "iiapple notify invalid status: #{status} for order: #{order_id}"
             resp_fail.("invalid status: #{status}") # okay, we receive the notification but do nothing
           end
         else #{verify signature failed}
-          Logger.error "verify iiapple payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify iiapple payment signature failed, params: #{inspect params, pretty: true}"
           resp_fail.("invalid signature")
         end
       _ -> #{client_id invalid}
-        Logger.error "receive invalid iiapple payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid iiapple payment notifications, params: #{inspect params, pretty: true}"
         resp_fail.("invalid client id")
     end
   end

@@ -22,15 +22,15 @@ defmodule AcsWeb.SdkPay.PPCallbackController do
               conn |> text("success") 
 
             _ -> #{order other than Order%{}}
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else #{verify signature failed}
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> #{client_id invalid}
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

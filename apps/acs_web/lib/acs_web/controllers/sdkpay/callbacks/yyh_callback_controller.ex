@@ -24,15 +24,15 @@ defmodule AcsWeb.SdkPay.YYHCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("SUCCESS") 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("FAILURE") 
           end 
         else 
-          Logger.error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("FAILURE")  
         end
       _ -> 
-        Logger.error "receive invalid yyh payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid yyh payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("FAILURE") 
     end
   end

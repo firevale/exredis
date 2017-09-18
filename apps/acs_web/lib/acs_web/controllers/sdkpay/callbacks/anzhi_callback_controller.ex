@@ -7,17 +7,17 @@ defmodule AcsWeb.SdkPay.AnzhiCallbackController do
                         %{"data" => notify_data} = params) do 
     case Apps.get_app_sdk_binding(app.id, "anzhi") do 
       nil ->
-        Logger.error "can't get app anzhi binding info for app: #{inspect app, pretty: true}"
+        error "can't get app anzhi binding info for app: #{inspect app, pretty: true}"
         conn |> text("anzhi settings not found ")
 
       %AppSdkBinding{binding: %{"app_key" => _app_key, "app_secret" => app_secret}} ->
         case DesEcb3.decrypt(app_secret, notify_data |> Base.decode64!) do
           nil -> 
-            Logger.error "anzhi DesEcb3 fail"
+            error "anzhi DesEcb3 fail"
             conn |> text("decrypt notify data failed")
 
           ""  -> 
-            Logger.error "anzhi DesEcb3 fail"
+            error "anzhi DesEcb3 fail"
             conn |> text("decrypt notify data failed")
 
           notify_data ->  
@@ -42,16 +42,16 @@ defmodule AcsWeb.SdkPay.AnzhiCallbackController do
                   conn |> text("success")   
 
                 _ ->
-                  Logger.error "order #{order_id} not found"
+                  error "order #{order_id} not found"
                   conn |> text("fail")
               end 
             else
-              Logger.error "anzhi order #{order_id} code fail"
+              error "anzhi order #{order_id} code fail"
               conn |> text("fail")
             end
         end    
       _ -> #{client_id invalid}
-        Logger.error "receive invalid anzhi payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid anzhi payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail")
     end
   end

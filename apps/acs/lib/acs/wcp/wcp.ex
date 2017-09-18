@@ -29,7 +29,7 @@ defmodule Acs.Wcp do
     end    
   end
 
-  def update_app_wcp_config(%AppWcpConfig{} = config, attr) do 
+  def update_app_wcp_config(%AppWcpConfig{}, attr) do 
     cs = AppWcpConfig.changeset(%AppWcpConfig{}, attr)  
     case Repo.update(cs) do
       {:ok, config} ->
@@ -74,7 +74,7 @@ defmodule Acs.Wcp do
               offset: ^((page - 1) * records_per_page),
               order_by: [desc: rule.inserted_at]
 
-    {:ok, total, Repo.all(query)}
+    {:ok, total_page, Repo.all(query)}
   end
 
   def get_wcp_message_rule(rule_id) do 

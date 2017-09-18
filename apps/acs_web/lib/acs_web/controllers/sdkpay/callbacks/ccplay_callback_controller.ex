@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.CCPlayCallbackController do
   use     AcsWeb, :controller
   require SDKCCPlay
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"partnerTransactionNo" => order_id,
                           "transactionNo" => trade_no,
                           "orderPrice" => price} = params) do
-    case app.bindings.cc do 
-      %{"pay_key" => pay_key} ->
+    case Apps.get_app_sdk_binding(app.id, "cc") do 
+      %AppSdkBinding{binding: %{"pay_key" => pay_key}} ->
         case Repo.get(AppOrder, order_id) do
           nil -> 
             Logger.error "order is not found, params: #{inspect params, pretty: true}"

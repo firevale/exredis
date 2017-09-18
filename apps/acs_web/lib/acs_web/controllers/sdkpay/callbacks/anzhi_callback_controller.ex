@@ -1,14 +1,16 @@
 defmodule AcsWeb.SdkPay.AnzhiCallbackController do
   use    AcsWeb, :controller
+  alias  Acs.Apps
+  alias  Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"data" => notify_data} = params) do 
-    case app.sdk_bindings.anzhi do 
+    case Apps.get_app_sdk_binding(app.id, "anzhi") do 
       nil ->
         Logger.error "can't get app anzhi binding info for app: #{inspect app, pretty: true}"
         conn |> text("anzhi settings not found ")
 
-      %{"app_key" => _app_key, "app_secret" => app_secret} ->
+      %AppSdkBinding{binding: %{"app_key" => _app_key, "app_secret" => app_secret}} ->
         case DesEcb3.decrypt(app_secret, notify_data |> Base.decode64!) do
           nil -> 
             Logger.error "anzhi DesEcb3 fail"

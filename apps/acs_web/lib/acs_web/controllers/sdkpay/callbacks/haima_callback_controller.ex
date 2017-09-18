@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.HaimaCallbackController do
   use     AcsWeb, :controller
   require SDKHaima
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"out_trade_no" => order_id, 
                           "trade_status" => trade_status, 
                           "total_fee" => total_fee} = params) do
-    case app.sdk_bindings.haima do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "haima") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKHaima.validate_payment(app_key, params) do
           case trade_status do 
             "1" ->

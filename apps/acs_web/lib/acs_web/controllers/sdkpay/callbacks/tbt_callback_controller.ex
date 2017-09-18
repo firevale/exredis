@@ -1,14 +1,16 @@
 defmodule AcsWeb.SdkPay.TbtCallbackController do
   use     AcsWeb, :controller
   require SDKTBT
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"trade_no" => order_id, 
                           "tborder" => trans_no, 
                           "amount" => amount,
                           "paydes" => cp_order_id} = params) do
-    case app.sdk_bindings.tbt do
-      %{app_key: app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "tbt") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKTBT.validate_payment(app_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->

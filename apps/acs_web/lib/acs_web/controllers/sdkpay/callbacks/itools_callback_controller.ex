@@ -1,11 +1,12 @@
 defmodule AcsWeb.SdkPay.ItoolsCallbackController do
   use    AcsWeb, :controller
+  alias  Acs.Apps
+  alias  Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"notify_data" => notify_data, "sign" => sign} = params) do
-    case app.sdk_bindings.itools do
-      %{"app_id" => _app_id, "app_key" => _app_key, "rsa_key" => rsa_key} ->
-
+    case Apps.get_app_sdk_binding(app.id, "itools") do
+      %AppSdkBinding{binding: %{"rsa_key" => rsa_key}} ->
         notify_data = Crypto.rsa_pubseg_decrypt2(rsa_key, notify_data)
 
         if Crypto.rsa_public_verify2(rsa_key, notify_data, sign) do  

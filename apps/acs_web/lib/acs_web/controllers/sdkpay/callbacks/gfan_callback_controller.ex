@@ -1,12 +1,14 @@
 defmodule AcsWeb.SdkPay.GfanCallbackController do
   use     AcsWeb, :controller
   require SDKGFan
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
   import  SweetXml
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"notify_data" => notify_data} = params) do
-    case app.sdk_bindings.gfan do 
-      %{"app_uid" => app_uid} ->
+    case Apps.get_app_sdk_binding(app.id, "gfan") do 
+      %AppSdkBinding{binding: %{"app_uid" => app_uid}} ->
         if SDKGFan.validate_payment(app_uid, params) do
           xmlresult = notify_data 
             |> xpath(~x"//notify", 

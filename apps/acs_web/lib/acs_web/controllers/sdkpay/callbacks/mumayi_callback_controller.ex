@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.MumayiCallbackController do
   use     AcsWeb, :controller
   require SDKMumayi
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"productPrice" => price,
                            "productDesc" => order_id,
                            "orderID" => trade_no} = params) do
-    case app.sdk_bindings.mumayi do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "mumayi") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKMumayi.validate_payment(app_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->

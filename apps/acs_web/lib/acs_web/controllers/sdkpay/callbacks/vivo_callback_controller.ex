@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.VivoCallbackController do
   use     AcsWeb, :controller
   require SDKVivo
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"cpOrderNumber" => order_id, 
                            "orderNumber" => trans_no, 
                            "orderAmount" => amount} = params) do
-    case app.sdk_bindings.vivo do
-      %{cp_key: cp_key}->
+    case Apps.get_app_sdk_binding(app.id, "vivo") do
+      %AppSdkBinding{binding: %{"cp_key" => cp_key}} ->
         if SDKVivo.validate_payment(cp_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->

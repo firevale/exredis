@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.IIAppleCallbackController do
   use     AcsWeb, :controller
   require SDKIIApple
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"transaction" => trans_no, 
@@ -17,8 +19,8 @@ defmodule AcsWeb.SdkPay.IIAppleCallbackController do
                      conn |> json(%{"status" => "0", "transIDO" => trans_no})
                    end
 
-    case app.sdk_bindings.iiapple do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "iiapple") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKIIApple.validate_payment(app_key, params) do
           if status == "1" do 
              case Repo.get(AppOrder, order_id) do 

@@ -68,10 +68,11 @@ defmodule Acs.Apps.App do
     alias_ = get_field(changeset, :alias)
     has_forum = get_field(changeset, :has_forum)
     has_mall = get_field(changeset, :has_mall)
+    has_pmall = get_field(changeset, :has_pmall)
 
     IO.puts "alias: #{alias_}"
 
-    if has_forum or has_mall do 
+    if has_forum or has_mall or has_pmall do 
       if alias_ in [nil, ""] do
         add_error(changeset, :alias, "can't be blank")
       else

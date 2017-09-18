@@ -37,6 +37,7 @@ defmodule AcsWeb.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum,
       has_mall: app.has_mall,
+      has_pmall: app.has_pmall,
       fb_app_id: 
         case Apps.get_app_sdk_binding(app.id, "facebook") do 
           nil -> ""
@@ -53,6 +54,7 @@ defmodule AcsWeb.FVSdkView do
       currency: app.currency,
       has_forum: app.has_forum, 
       has_mall: app.has_mall,
+      has_pmall: app.has_pmall,
       fb_app_id:         
         case Apps.get_app_sdk_binding(app.id, "facebook") do 
           nil -> ""

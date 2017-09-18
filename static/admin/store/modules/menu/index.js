@@ -188,7 +188,7 @@ const state = {
     },
     {
       meta: {
-        must: 'has_mall',
+        must: 'has_pmall',
         icon: 'fa-shopping-bag',
         level: '1,2,',
         label: i18n.t('admin.menu.pointsMall'),
@@ -219,7 +219,7 @@ const state = {
     },
     {
       meta: {
-        must: 'has_mall',
+        must: 'has_pmall',
         icon: 'fa-tasks',
         level: '1,2,',
         label: i18n.t('admin.menu.pointTasks'),

@@ -355,7 +355,8 @@ defmodule Acs.Forums do
       last_reply_at: utc_now}) |> Repo.update()
 
     # check is hot
-    hot_hours = CachedAdminSetting.get("forum_post_hot_hours")
+    app_id = forum_post.forum.app_id
+    hot_hours = CachedAdminSetting.get(app_id, "forum_post_hot_hours")
     if hot_hours != nil do
       hot_hours = String.to_integer(hot_hours)
       if hot_hours > 0 do
@@ -364,7 +365,7 @@ defmodule Acs.Forums do
                 select: count(1), 
                 where: c.post_id == ^(forum_post.id) and c.active == true and c.inserted_at >= ^before_time
         total = Repo.one!(query)
-        CachedForumHotPost.check(forum_post.id, total)
+        CachedForumHotPost.check(app_id, forum_post.id, total)
       end
     end
     :ok

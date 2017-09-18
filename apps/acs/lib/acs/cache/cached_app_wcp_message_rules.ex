@@ -12,7 +12,7 @@ defmodule Acs.Cache.CachedAppWcpMessageRule do
       case Exredis.get(redis_key) do
         nil -> 
           case refresh(app_id) do 
-            %{} -> {:ignore, %{}}
+            nil -> {:ignore, nil}
             rules -> {:commit, rules}
           end
         raw ->
@@ -27,7 +27,7 @@ defmodule Acs.Cache.CachedAppWcpMessageRule do
             where: r.app_id == ^app_id
 
     case Repo.all(query) do 
-      [] -> %{} 
+      [] -> nil 
 
       rules when is_list(rules) ->
         rules = Enum.map(rules, fn(rule) ->
@@ -42,7 +42,7 @@ defmodule Acs.Cache.CachedAppWcpMessageRule do
         Excache.del(key(app_id))
         rules
 
-      _ -> %{} 
+      _ -> nil 
     end
   end
 

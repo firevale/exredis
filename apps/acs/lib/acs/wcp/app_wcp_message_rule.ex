@@ -3,6 +3,7 @@ defmodule Acs.Wcp.AppWcpMessageRule do
   import Ecto.Changeset
   alias Acs.Wcp.AppWcpMessageRule
 
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
   schema "app_wcp_message_rules" do
     field :keywords, :string
     field :response, :binary

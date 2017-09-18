@@ -14,9 +14,6 @@ defmodule Acs.Apps do
   alias Acs.Malls
   alias Acs.Malls.Mall
 
-  alias Acs.PMalls
-  alias Acs.PMalls.PMall
-
   alias Acs.Apps.AppNews
   alias Acs.Apps.AppQuestion
   alias Acs.Cache.CachedApp

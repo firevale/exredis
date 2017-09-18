@@ -1,6 +1,7 @@
 defmodule AcsWeb.GFanAuthBind do
   use     AcsWeb, :controller
   require SDKGFan
+  alias   Acs.Apps
 
   def bind(%Plug.Conn{
               private: %{
@@ -8,9 +9,9 @@ defmodule AcsWeb.GFanAuthBind do
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"gf_access_token" => gfan_access_token,
-              "gf_user_id" => gfan_user_id} = params) do
+              "gf_user_id" => gfan_user_id}) do
 
-    with %AppSdkBinding{binding: %{"app_key" => gfan_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, "gfan"),
+    with %AppSdkBinding{binding: %{"app_key" => gfan_app_key}} <- Apps.get_app_sdk_binding(app.id, "gfan"),
          true <- SDKGFan.validate_session(gfan_app_key, gfan_access_token, gfan_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :gfan, 

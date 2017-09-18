@@ -4,7 +4,6 @@ defmodule Acs.Wcp.AppWcpLoginCodeResponse do
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppWcpConfig
   alias Acs.Wcp.AppWcpConfig
-  alias Acs.LoginCodes.AppLoginCode
   alias Acs.LoginCodes
 
   def build_reply_content(app_id, from) do 

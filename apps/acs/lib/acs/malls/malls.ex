@@ -14,7 +14,6 @@ defmodule Acs.Malls do
   alias Acs.Malls.MallOrderDetail
 
   alias Acs.Cache.CachedMall
-  alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedMallGoods
 
@@ -115,12 +114,6 @@ defmodule Acs.Malls do
         end
     end
   end
-
-  def update_mall_goods(%MallGoods{}, attr) do 
-
-  end
-
-
 
   def list_malls(app_id) do
     query = from m in Mall,

@@ -1,0 +1,10 @@
+
+@function virtual-m-pixel($value) {
+    @return ($value / 1242) * 100vw;
+  }
+  
+  @function virtual-m-rem($value) {
+    //14px
+    @return $value * 0.021566598rem;
+  }
+  

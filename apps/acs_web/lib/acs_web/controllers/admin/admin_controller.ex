@@ -102,14 +102,13 @@ defmodule AcsWeb.Admin.AdminController do
     format: "png",
     resize_to_limit: [width: 128, height: 128]] when action == :update_app_icon
   def update_app_icon(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"app_id" => app_id, "file" => %{path: image_file_path}}) do
-    case Repo.get(App, app_id) do
+    case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound", i18n_message_object: %{app_id: app_id}})
 
       %App{} = app ->
         {:ok, icon_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "app_icons")
-        App.changeset(app, %{icon: icon_path}) |> Repo.update!
-        CachedApp.refresh(app_id)
+        {:ok, _, _} = Apps.update_app(app, %{icon: icon_path})
         Admin.log_admin_operation(acs_admin_id, app_id, "update_app_icon", %{icon: icon_path})
         conn |> json(%{success: true, icon_url: icon_path})
 

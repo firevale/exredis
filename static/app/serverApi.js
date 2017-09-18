@@ -253,7 +253,7 @@ export default {
       },
 
       getApps() {
-        return post('/games_actions/fetch_apps', {})
+        return post('/games_actions/list_thin_apps', {})
       },
 
       cancelGetServicePaged: function() {

@@ -5,8 +5,6 @@ defmodule Acs.Apps do
   import Ecto.Query, warn: false
   alias Acs.Repo
 
-  alias Acs.Apps.App
-  alias Acs.Apps.AppOrder
 
   alias Acs.Forums
   alias Acs.Forums.Forum
@@ -17,8 +15,12 @@ defmodule Acs.Apps do
   alias Acs.PMalls
   alias Acs.PMalls.PMall
 
+  alias Acs.Apps.App
+  alias Acs.Apps.AppOrder
   alias Acs.Apps.AppNews
   alias Acs.Apps.AppQuestion
+  alias Acs.Apps.AppSdkBinding
+
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppSdkBinding
 
@@ -55,7 +57,7 @@ defmodule Acs.Apps do
     end    
   end
 
-  def fetch_apps() do
+  def list_thin_apps() do
     query = from app in App,
             order_by: [desc: app.inserted_at],
             where: app.active == true,
@@ -66,6 +68,26 @@ defmodule Acs.Apps do
 
   def get_app_sdk_binding(app_id, sdk) do 
     CachedAppSdkBinding.get(app_id, sdk)
+  end
+
+  def add_app_sdk_binding(app_id, sdk, binding) do 
+    case AppSdkBinding.changeset(%AppSdkBinding{}, %{app_id: app_id, sdk: sdk, binding: binding}) |> Repo.insert() do 
+      {:ok, sdk_binding} ->
+        CachedAppSdkBinding.refresh(sdk_binding)
+        CachedApp.refresh(app_id) # refresh fat app
+        {:ok, sdk_binding}
+      v -> v
+    end
+  end
+
+  def update_app_sdk_binding(%AppSdkBinding{} = sdk_binding, attr) do 
+    case AppSdkBinding.changeset(sdk_binding, attr) |> Repo.update() do 
+      {:ok, sdk_binding} ->
+        CachedAppSdkBinding.refresh(sdk_binding)
+        CachedApp.refresh(sdk_binding.app_id) # fat app
+        {:ok, sdk_binding}
+      v -> v
+    end    
   end
 
   def update_app_order!(%AppOrder{} = order, attr) do 

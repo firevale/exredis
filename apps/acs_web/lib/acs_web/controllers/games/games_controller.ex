@@ -3,12 +3,12 @@ defmodule AcsWeb.GamesController do
 
   plug :fetch_access_token
   plug :fetch_session_user_id
-  plug :cache_page, [cache_seconds: 600] when action in [:fetch_apps, :get_top_news, :get_paged_news, :get_news_detail]
+  plug :cache_page, [cache_seconds: 600] when action in [:list_thin_apps, :get_top_news, :get_paged_news, :get_news_detail]
   plug :check_is_admin when action in [:update_news, :toggle_news_status, :get_paged_news_admin, :update_news_pic]
 
-  # fetch_apps
-  def fetch_apps(conn, _params) do
-    apps =  Apps.fetch_apps()
+  # list_thin_apps
+  def list_thin_apps(conn, _params) do
+    apps =  Apps.list_thin_apps()
     conn |> json(%{success: true, apps: apps})
   end
 

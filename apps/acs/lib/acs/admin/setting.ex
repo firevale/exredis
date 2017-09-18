@@ -11,6 +11,8 @@ defmodule Acs.Admin.Setting do
     field :memo,  :string
     field :active, :boolean, default: true
 
+    belongs_to :app, Acs.Apps.App, type: :string
+
     timestamps()
   end
 
@@ -19,7 +21,7 @@ defmodule Acs.Admin.Setting do
   @doc false
   def changeset(%Setting{} = setting, attrs) do
     setting
-    |> cast(attrs, [:name, :value, :memo, :active, :group])
-    |> validate_required([:name, :value, :active, :memo, :group])
+    |> cast(attrs, [:name, :value, :memo, :active, :group, :app_id])
+    |> validate_required([:name, :value, :active, :memo, :group, :app_id])
   end
 end

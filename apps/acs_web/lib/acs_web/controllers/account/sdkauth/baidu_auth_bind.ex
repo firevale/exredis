@@ -36,7 +36,7 @@ defmodule AcsWeb.BaiduAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :anzhi,
+        sdk: :baidu,
         binding: access_token.binding              
       })
     else

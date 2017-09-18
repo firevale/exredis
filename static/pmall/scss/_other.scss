@@ -12,8 +12,7 @@
     height: virtual-m-rem(285);
     background-image: url("~assets/pmall/1252_03.png");
     position: absolute;
-    top: virtual-m-pixel(380);
-    left: virtual-m-pixel(345);
+    top: virtual-m-rem(400);
   }
 }
 
@@ -27,24 +26,23 @@
   }
   &.bg-draw-page {
     background-image: url("~assets/pmall/1245_34.jpg");
-    height: virtual-m-pixel(2064);
-    width: virtual-m-pixel(1242);
+    height: virtual-m-rem(2064);
+    width: 100%;
   }
   &.bg-draw-item {
     background-image: url("~assets/pmall/1245_34_03.png");
-    width: virtual-m-pixel(990);
-    height: virtual-m-pixel(982);
+    width: virtual-m-rem(990);
+    height: virtual-m-rem(982);
     position: absolute;
-    left: virtual-m-pixel(130);
-    bottom: virtual-m-pixel(380);
+    bottom: virtual-m-rem(500);
   }
   &.bg-turn-needle {
     background-image: url("~assets/pmall/1245_34345_12.png");
-    width: virtual-m-pixel(145);
-    height: virtual-m-pixel(72);
+    width: virtual-m-rem(145);
+    height: virtual-m-rem(72);
     position: absolute;
-    left: virtual-m-pixel(595);
-    bottom: virtual-m-pixel(820);
+    left: virtual-m-rem(655);
+    bottom: virtual-m-rem(940);
   }
 }
 
@@ -54,34 +52,31 @@
   background-repeat: no-repeat;
   &.btn-save-address {
     background-image: url("~assets/pmall/1244_03.png");
-    width: virtual-m-pixel(685);
-    height: virtual-m-pixel(108);
+    width: virtual-m-rem(685);
+    height: virtual-m-rem(108);
   }
   &.btn-official-website {
     background-image: url("~assets/pmall/1252_234_03.png");
-    width: virtual-m-pixel(370);
-    height: virtual-m-pixel(126);
+    width: virtual-m-rem(370);
+    height: virtual-m-rem(126);
     position: absolute;
-    top: virtual-m-pixel(70);
-    right: virtual-m-pixel(60);
+    top: virtual-m-rem(70);
+    right: virtual-m-rem(60);
   }
   &.btn-bind-mobile {
     background-image: url("~assets/pmall/1252_234_11.png");
-    width: virtual-m-pixel(533);
-    height: virtual-m-pixel(155);
+    width: virtual-m-rem(533);
+    height: virtual-m-rem(155);
   }
   &.btn-click-draw {
     background-image: url("~assets/pmall/1245_341_15.png");
-    width: virtual-m-pixel(482);
-    height: virtual-m-pixel(134);
-    position: absolute;
-    left: virtual-m-pixel(635);
-    bottom: virtual-m-pixel(120);
+    width: virtual-m-rem(482);
+    height: virtual-m-rem(134);
   }
   &.btn-answer-ok {
     background-image: url("~assets/pmall/1247_11.png");
-    width: virtual-m-pixel(304);
-    height: virtual-m-pixel(98);
+    width: virtual-m-rem(304);
+    height: virtual-m-rem(98);
     position: absolute;
     bottom: 1rem;
   }
@@ -100,16 +95,18 @@ span {
 
 .draw-page {
   position: relative;
+  footer {
+    position: absolute;
+    bottom: 4.2rem;
+  }
   .my-total {
-    width: virtual-m-pixel(482);
-    height: virtual-m-pixel(130);
+    width: virtual-m-rem(482);
+    height: virtual-m-rem(134);
     background-color: $text;
     border: 1px solid $red;
-    position: absolute;
-    left: virtual-m-pixel(135);
-    bottom: virtual-m-pixel(120);
     color: $white;
     font-size: $size4;
+    margin-right: 1rem;
   }
 }
 
@@ -181,8 +178,8 @@ span {
 
 .bind-mobile {
   .items {
-    position: relative;
-    top: virtual-m-pixel(745);
+    position: absolute;
+    top: virtual-m-rem(800);
     .item {
       width: 22rem;
       padding-bottom: 2rem;
@@ -218,8 +215,8 @@ span {
     padding-top: 1rem;
     padding-bottom: 1rem;
     img {
-      width: virtual-m-pixel(293);
-      height: virtual-m-pixel(157);
+      width: virtual-m-rem(293);
+      height: virtual-m-rem(157);
     }
   }
   .items {
@@ -269,8 +266,8 @@ span {
         top: - .7rem;
         left: 5rem;
         img {
-          width: virtual-m-pixel(924/1.1);
-          height: virtual-m-pixel(306/1.1);
+          width: virtual-m-rem(924);
+          height: virtual-m-rem(306);
         }
       }
       .answer-error {
@@ -278,8 +275,8 @@ span {
         top: - .7rem;
         left: 5rem;
         img {
-          width: virtual-m-pixel(866/1.1);
-          height: virtual-m-pixel(257/1.1);
+          width: virtual-m-rem(866);
+          height: virtual-m-rem(257);
         }
       }
     }

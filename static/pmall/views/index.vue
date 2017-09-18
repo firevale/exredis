@@ -17,12 +17,12 @@
       <div class="bg-full bg-title-task">
       </div>
       <div class="tasks">
-        <div class="task is-flex is-column flex-center flex-vcentered">
+        <router-link :to="{name: 'bind_mobile'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
           <img src="~assets/pmall/1242-2234-1_11.png" />
           <p class="is-marginless">绑定手机</p>
           <p class="is-marginless">
             <span class="is-primary">+99</span>积分 限1次</p>
-        </div>
+        </router-link>
         <div class="task is-flex is-column flex-center flex-vcentered">
           <img src="~assets/pmall/1242-2234-1_13.png" />
           <p class="is-marginless">官网预约</p>
@@ -35,12 +35,12 @@
           <p class="is-marginless">
             <span class="is-primary">+5</span>积分/日</p>
         </router-link>
-        <div class="task is-flex is-column flex-center flex-vcentered">
+        <router-link :to="{name: 'knowledge'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
           <img src="~assets/pmall/1242-2234-1_21.png" />
           <p class="is-marginless">每日问答</p>
           <p class="is-marginless">
             <span class="is-primary">+5</span>积分/日</p>
-        </div>
+        </router-link>
       </div>
     </div>
     <div class="banner bg-full flex-fixed-size"></div>

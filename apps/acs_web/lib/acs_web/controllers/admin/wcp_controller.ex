@@ -93,7 +93,7 @@ defmodule AcsWeb.Admin.WcpController do
           message = %{
             admin_user: admin_user,
             from: %{openid: "gh_#{acs_admin_id}", nickname: admin_user.email},
-            to: wcp_user,
+            to: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
             msg_type: "text",
             content: content,
             inserted_at: Ecto.DateTime.utc,
@@ -123,7 +123,6 @@ defmodule AcsWeb.Admin.WcpController do
   # update_wcp_message_rule
   def update_wcp_message_rule(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, 
     %{"id" => rule_id, "app_id" => app_id, "keywords" => _keywords, "response" => _response} = rule) do
-    d "rule: #{inspect rule, pretty: true}"
     case Apps.get_app(app_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.appNotFound"})
@@ -132,9 +131,9 @@ defmodule AcsWeb.Admin.WcpController do
         case Wcp.get_wcp_message_rule(rule_id) do
           nil ->
             case Wcp.create_wcp_message_rule(rule) do 
-              {:ok, rule, _changeset} -> 
+              {:ok, new_rule, _changeset} -> 
                 Admin.log_admin_operation(acs_admin_id, app_id, "add_wcp_message_rule", rule)
-                conn |> json(%{success: true, rule: rule})
+                conn |> json(%{success: true, rule: new_rule})
 
               {:error, %{errors: errors}} ->
                 conn |> json(%{success: false, message: translate_errors(errors)})
@@ -162,7 +161,7 @@ defmodule AcsWeb.Admin.WcpController do
       %AppWcpMessageRule{} = rule ->
         case Wcp.delete_wcp_message_rule(rule) do
           {:ok, _} ->
-            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message_rule", rule)
+            Admin.log_admin_operation(acs_admin_id, app_id, "delete_wcp_message_rule", Map.take(rule, [:keywords, :response]))
             conn |> json(%{success: true})
 
           {:error, %{errors: errors}} ->

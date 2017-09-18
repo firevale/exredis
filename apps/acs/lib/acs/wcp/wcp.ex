@@ -77,6 +77,8 @@ defmodule Acs.Wcp do
     {:ok, total_page, Repo.all(query)}
   end
 
+  def get_wcp_message_rule(""), do: nil
+  def get_wcp_message_rule(nil), do: nil
   def get_wcp_message_rule(rule_id) do 
     Repo.get(AppWcpMessageRule, rule_id)  
   end

@@ -29,8 +29,8 @@ defmodule Acs.Wcp do
     end    
   end
 
-  def update_app_wcp_config(%AppWcpConfig{}, attr) do 
-    cs = AppWcpConfig.changeset(%AppWcpConfig{}, attr)  
+  def update_app_wcp_config(%AppWcpConfig{} = config, attr) do 
+    cs = AppWcpConfig.changeset(config, attr)  
     case Repo.update(cs) do
       {:ok, config} ->
         CachedAppWcpConfig.refresh(config)

@@ -2,6 +2,8 @@ defmodule AcsWeb.FVSdkController do
   use     AcsWeb, :controller
   use     Timex
 
+  alias   Acs.Apps
+
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_api_version
@@ -25,23 +27,23 @@ defmodule AcsWeb.FVSdkController do
                                          acs_platform: "ios",
                                          acs_api_version: "3"}} = conn,
                     %{"sdk" => sdk}) do
-    conn |> render("app_info.ios.3.json", %{app: app, sdk: sdk})
+    conn |> render("app_info.ios.3.json", %{app: Apps.get_fat_app(app.id), sdk: sdk})
   end
   def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app,
                                          acs_platform: "android",
                                          acs_api_version: "3"}} = conn,
                     %{"sdk" => sdk}) do
-    conn |> render("app_info.android.3.json", %{app: app, sdk: sdk})
+    conn |> render("app_info.android.3.json", %{app: Apps.get_fat_app(app.id), sdk: sdk})
   end
 
   # 兼容旧版本sdk
   def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                    %{"platform" => "ios"}) do
-    conn |> render("app_info.ios.json", %{app: app})
+    conn |> render("app_info.ios.json", %{app: Apps.get_fat_app(app.id)})
   end
   def get_app_info(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                    %{"platform" => "android"}) do
-    conn |> render("app_info.android.json", %{app: app})
+    conn |> render("app_info.android.json", %{app: Apps.get_fat_app(app.id)})
   end
   def get_app_info(conn, _params) do
     error "bad request headers: #{inspect conn.req_headers, pretty: true}"

@@ -19,6 +19,8 @@ defmodule AcsWeb.Application do
         active: :false, 
         reuseaddr: true, 
         nodelay: true], AcsWeb.Tcp.TcpConn]),
+      
+      supervisor(TcpConn.Supervisor, [AcsWeb.Tcp.TcpConn]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

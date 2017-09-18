@@ -116,7 +116,7 @@
           @change="x => app.can_assign_code = x.value"> </toggle-button>
         </p>
       </div>
-      <div class="column is-3">
+      <div class="column is-2">
         <label class="label"> {{ $t('admin.label.wcpDownloadEnabled')}}: </label>
         <p class="control">
           <toggle-button :value="app.wcp_download_enabled" color="#4e9ed8" :sync="true" 

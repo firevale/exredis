@@ -21,7 +21,35 @@ defmodule Acs.PMalls do
   end
 
   def list_pmall_goods(app_id, page, records_per_page, keyword) do
-    {:ok, searchTotal, ids} = search_goods(app_id, keyword, page,records_per_page)
+    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, false)
+
+    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id and g.active == true
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      :zero
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = from g in PMallGoods,
+                where: g.app_id == ^app_id and g.active == true,
+                order_by: [desc: g.inserted_at],
+                limit: ^records_per_page,
+                offset: ^((page - 1) * records_per_page),
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+
+      query = if(String.length(keyword)>0) do
+        query |> where([p], p.id in ^ids)
+      else
+        query
+      end
+
+      goodses = Repo.all(query)
+      {:ok, goodses, total_page}
+    end
+  end
+
+  def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
+    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, true)
 
     queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id
     total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
@@ -35,7 +63,7 @@ defmodule Acs.PMalls do
                 order_by: [desc: g.inserted_at],
                 limit: ^records_per_page,
                 offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
 
       query = if(String.length(keyword)>0) do
         query |> where([p], p.id in ^ids)
@@ -171,10 +199,6 @@ defmodule Acs.PMalls do
     goods = Repo.get(PMallGoods, goods_id)
     PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
     CachedPMallGoods.refresh(goods)
-  end
-
-  defp search_goods(_app_id, keyword, page, records_per_page) do
-    Search.search_pmall_goods(keyword, page, records_per_page)
   end
 
 end

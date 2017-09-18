@@ -1,17 +1,17 @@
 defmodule AcsWeb.HaimaAuthBind do
   use     AcsWeb, :controller
-  require Logger
   require SDKHaima
+  alias   Acs.Apps
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %App{sdk_bindings: %{haima: %{"app_id" => haima_app_id}}} = app,
+                acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"haima_session_id" => haima_session_id,
-              "haima_user_id" => haima_user_id} = params) do
+              "haima_user_id" => haima_user_id}) do
 
-    with %AppSdkBinding{binding: %{"app_id" => haima_app_id}} <- Acs.Apps.get_app_sdk_binding(app.id, :haima),
+    with %AppSdkBinding{binding: %{"app_id" => haima_app_id}} <- Apps.get_app_sdk_binding(app.id, "haima"),
          true <- SDKHaima.validate_session(haima_app_id, haima_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :haima, 

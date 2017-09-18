@@ -20,7 +20,6 @@ defmodule Acs.Search.ESPMallOrder do
         },
         inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
-      params: nil,
       id: order.id
     })
     

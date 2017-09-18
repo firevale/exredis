@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.VivoCallbackController do
   use     AcsWeb, :controller
   require SDKVivo
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"cpOrderNumber" => order_id, 
                            "orderNumber" => trans_no, 
                            "orderAmount" => amount} = params) do
-    case app.sdk_bindings.vivo do
-      %{cp_key: cp_key}->
+    case Apps.get_app_sdk_binding(app.id, "vivo") do
+      %AppSdkBinding{binding: %{"cp_key" => cp_key}} ->
         if SDKVivo.validate_payment(cp_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->
@@ -22,15 +24,15 @@ defmodule AcsWeb.SdkPay.VivoCallbackController do
               conn |> text("200") 
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("405") 
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("403")  
         end
       _ -> 
-        Logger.error "receive invalid  payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid  payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("500") 
     end
   end

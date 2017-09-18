@@ -1,11 +1,12 @@
 defmodule AcsWeb.SdkPay.CoolpadCallbackController do
   use    AcsWeb, :controller
+  alias  Acs.Apps
+  alias  Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"transdata" => transdata, "sign" => sign} = params) do 
-
-    case app.sdk_bindings.coolpad do 
-      %{"pay_pub_key" => pay_pub_key} ->
+    case Apps.get_app_sdk_binding(app.id, "coolpad") do 
+      %AppSdkBinding{binding: %{"pay_pub_key" => pay_pub_key}} ->
         if Crypto.rsa_public_verify2(pay_pub_key, transdata, sign, :md5) do  
           pay_info = JSON.decode!(transdata)
 
@@ -22,15 +23,15 @@ defmodule AcsWeb.SdkPay.CoolpadCallbackController do
               conn |> text("SUCCESS")  
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("FAILURE") 
           end 
         else 
-          Logger.error "verify coolpad payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify coolpad payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("FAILURE")  
         end
       _ -> 
-        Logger.error "receive invalid coolpad payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid coolpad payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("FAILURE") 
     end
   end

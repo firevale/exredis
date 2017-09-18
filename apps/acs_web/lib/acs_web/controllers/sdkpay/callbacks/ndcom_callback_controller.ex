@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.NdcomCallbackController do
   use     AcsWeb, :controller
   require SDKNdcom
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"PayStatus" => pay_status, 
@@ -8,8 +10,8 @@ defmodule AcsWeb.SdkPay.NdcomCallbackController do
                           "Note" => cp_order_id,
                           "ConsumeStreamId" => trans_no, 
                           "OrderMoney" => amount} = params) do
-    case app.sdk_bindings.ndcom do
-      %{"app_id" => app_id, "app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "ndcom") do
+      %AppSdkBinding{binding: %{"app_id" => app_id, "app_key" => app_key}} ->
         if SDKNdcom.validate_payment(app_id, app_key, params) do
           case pay_status do 
             "1" ->
@@ -27,24 +29,24 @@ defmodule AcsWeb.SdkPay.NdcomCallbackController do
                     conn |> json(%{"ErrorCode" => "1"}) 
 
                  else 
-                    Logger.error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{cp_order_id}"
+                    error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{cp_order_id}"
                     conn |> json(%{"ErrorCode" => "4"}) 
                   end
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> json(%{"ErrorCode" => "4"}) 
               end
 
             _ -> 
-              Logger.info "receive ndcom payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive ndcom payment fail notification, params: #{inspect params, pretty: true}"
               conn |> json(%{"ErrorCode" => "1"}) 
           end
         else 
-          Logger.error "verify ndcom payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify ndcom payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{"ErrorCode" => "5"}) 
         end
       _ -> 
-        Logger.error "receive invalid ndcom payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid ndcom payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{"ErrorCode" => "4"}) 
     end
   end

@@ -1,12 +1,14 @@
 defmodule AcsWeb.SdkPay.LenovoCallbackController do
   use     AcsWeb, :controller
   require SDKLenovo
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"transdata" => transdata, "sign" => sign} = params) do 
 
-    case app.sdk_bindings.lenovo do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "lenovo") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if Crypto.rsa_private_verify2(app_key |> to_string, transdata, sign, :sha) do 
           pay_info = JSON.decode!(transdata)
 
@@ -23,22 +25,22 @@ defmodule AcsWeb.SdkPay.LenovoCallbackController do
               conn |> text("SUCCESS") 
 
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("FAILURE") 
           end 
         else 
-          Logger.error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("FAILURE")  
         end
 
       _ -> 
-        Logger.error "receive invalid wdj payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid wdj payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("FAILURE") 
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid request: #{inspect params, pretty: true}"
+    error "receive invalid request: #{inspect params, pretty: true}"
     conn |> text("FAILURE")
   end
 end

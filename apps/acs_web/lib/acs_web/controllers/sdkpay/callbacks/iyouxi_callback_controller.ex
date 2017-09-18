@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.IYouxiCallbackController do
   use     AcsWeb, :controller
   require SDKIYouxi
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   plug    :set_xml_header
 
@@ -13,8 +15,8 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
                    %{"cp_order_id" => order_id, 
                      "correlator" => correlator,
                      "order_time" => _order_time} = params) do
-    case app.sdk_bindings.iyouxi do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "iyouxi") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKIYouxi.verify_signature_if1(app_key, params) do
           case Repo.get(AppOrder, order_id) do
             order = %AppOrder{} ->
@@ -41,21 +43,21 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
               conn |> text(result)
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else #{verify signature failed}
-          Logger.error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> #{client_id invalid}
-        Logger.error "invalid client config, params: #{inspect params, pretty: true}"
+        error "invalid client config, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end
 
   def if1_callback(conn, params) do
-    Logger.error "receive invalid iyouxi notification, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi notification, params: #{inspect params, pretty: true}"
     conn |> text("fail") 
   end
 
@@ -83,8 +85,8 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
                 )) 
             end
 
-    case app.sdk_bindings.iyouxi do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "iyouxi") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKIYouxi.verify_signature_if2(app_key, params) do
           case Repo.get(AppOrder, order_id) do
             order = %AppOrder{} ->
@@ -100,22 +102,22 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
               PaymentHelper.notify_cp(order)
               resp.(0)
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp.(3) 
           end 
         else 
-          Logger.error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
           resp.(4)  
         end
 
       _ -> 
-        Logger.error "invalid client config, params: #{inspect params, pretty: true}"
+        error "invalid client config, params: #{inspect params, pretty: true}"
         resp.(5) 
     end
   end
 
   def if2_callback(conn, %{"cp_order_id" => order_id} = params) do  
-    Logger.error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
     conn |> text(~s(
       <cp_notify_resp>
 
@@ -128,7 +130,7 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
   end
 
   def if2_callback(conn, params) do
-    Logger.error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
     conn |> text(~s(
       <cp_notify_resp>
 

@@ -5,7 +5,7 @@ defmodule AcsWeb.ItoolsAuthBind do
 
   def bind(%Plug.Conn{
               private: %{
-                acs_app: %App{sdk_bindings: %{itools: %{"app_id" => itools_app_id}}} = app,
+                acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"itools_session_id" => itools_session_id,

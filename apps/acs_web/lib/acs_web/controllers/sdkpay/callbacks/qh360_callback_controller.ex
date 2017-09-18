@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.Qh360CallbackController do
   use     AcsWeb, :controller
   require SDKQh360
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                        %{"gateway_flag" => gateway_flag, 
@@ -9,8 +11,8 @@ defmodule AcsWeb.SdkPay.Qh360CallbackController do
                          "order_id" => trans_no,
                          "amount" => amount} = params) do
 
-    case app.sdk_bindings.qh360 do
-      %{app_secret: app_secret} ->
+    case Apps.get_app_sdk_binding(app.id, "qh360") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         if SDKQh360.validate_payment(app_secret, params) do
           case gateway_flag do 
             "success" ->
@@ -27,23 +29,23 @@ defmodule AcsWeb.SdkPay.Qh360CallbackController do
                     PaymentHelper.notify_cp(order)
                     conn |> text("ok") 
                  else 
-                    Logger.error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["Note"]}"
+                    error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["Note"]}"
                     conn |> text("order id mismatch")
                   end
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text("firevale platform order not found")
               end
             _ -> 
-              Logger.info "receive qh360 payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive qh360 payment fail notification, params: #{inspect params, pretty: true}"
               conn |> text("gateway_flag != 'success'")
           end
         else 
-          Logger.error "verify qh360 payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify qh360 payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("mismatch signature")
         end
       _ -> 
-        Logger.error "receive invalid qh360 payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid qh360 payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("invalid callback url")
     end
   end

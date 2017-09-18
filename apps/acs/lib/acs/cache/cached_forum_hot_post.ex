@@ -14,9 +14,9 @@ defmodule Acs.Cache.CachedForumHotPost do
     end
   end
 
-  def check(post_id, num_comments) do
-    hot_limit = CachedAdminSetting.get("forum_post_hot_limit")
-    hot_hours = CachedAdminSetting.get("forum_post_hot_hours")
+  def check(app_id, post_id, num_comments) do
+    hot_limit = CachedAdminSetting.get(app_id, "forum_post_hot_limit")
+    hot_hours = CachedAdminSetting.get(app_id, "forum_post_hot_hours")
 
     if hot_limit != nil and hot_hours != nil do
       hot_limit = String.to_integer(hot_limit)

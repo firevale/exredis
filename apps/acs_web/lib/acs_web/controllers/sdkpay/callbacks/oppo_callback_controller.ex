@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.OppoCallbackController do
   use     AcsWeb, :controller
   require SDKOppo
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
   
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"partnerOrder" => order_id, 
@@ -10,8 +12,8 @@ defmodule AcsWeb.SdkPay.OppoCallbackController do
                     conn |> text(URI.encode_query(%{result: result_code, resultMsg: message}))
                 end
 
-    case app.sdk_bindings.oppo do
-      %{"app_secret" => _app_secret, "app_key" => _app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "oppo") do
+      %AppSdkBinding{binding: %{"app_secret" => _app_secret, "app_key" => _app_key}} ->
         if SDKOppo.validate_payment(params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->             
@@ -26,15 +28,15 @@ defmodule AcsWeb.SdkPay.OppoCallbackController do
               resp_oppo.("OK", "success")
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp_oppo.("FAIL", "order is not found")
           end
         else 
-            Logger.error "verify oppo payment signature failed, params: #{inspect params, pretty: true}"
+            error "verify oppo payment signature failed, params: #{inspect params, pretty: true}"
             resp_oppo.("FAIL", "verify signature failed")
         end
       _ ->
-        Logger.error "there's no oppo config in app: #{inspect app, pretty: true}"
+        error "there's no oppo config in app: #{inspect app, pretty: true}"
         resp_oppo.("FAIL", "oppo config not found")
     end 
   end

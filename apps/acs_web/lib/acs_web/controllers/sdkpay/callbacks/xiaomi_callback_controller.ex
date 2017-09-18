@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.XiaomiCallbackController do
   use     AcsWeb, :controller
   require SDKXiaomi
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"cpOrderId" => order_id, 
@@ -11,8 +13,8 @@ defmodule AcsWeb.SdkPay.XiaomiCallbackController do
                     conn |> text(URI.encode_query(%{errcode: errcode, errMsg: errmsg}))
                   end
 
-    case app.sdk_bindings.xiaomi do
-      %{app_id: _app_id, app_key: _app_key, app_secret: app_secret} ->
+    case Apps.get_app_sdk_binding(app.id, "xiaomi") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         if SDKXiaomi.validate_payment(params, app_secret) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->             
@@ -26,15 +28,15 @@ defmodule AcsWeb.SdkPay.XiaomiCallbackController do
               PaymentHelper.notify_cp(order)
               resp_xiaomi.("200", "success")
           _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp_xiaomi.("1506", "order is not found")
           end
         else 
-          Logger.error "verify xiaomi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify xiaomi payment signature failed, params: #{inspect params, pretty: true}"
           resp_xiaomi.("1525", "verify signature failed")
         end
       _ -> 
-        Logger.error "app xiaomi bindings not found, params: #{inspect params, pretty: true}"
+        error "app xiaomi bindings not found, params: #{inspect params, pretty: true}"
         resp_xiaomi.("1507", "app xiaomi binding is not set")
     end 
   end

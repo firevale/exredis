@@ -1,12 +1,14 @@
 defmodule AcsWeb.SdkPay.GfanCallbackController do
   use     AcsWeb, :controller
   require SDKGFan
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
   import  SweetXml
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"notify_data" => notify_data} = params) do
-    case app.sdk_bindings.gfan do 
-      %{"app_uid" => app_uid} ->
+    case Apps.get_app_sdk_binding(app.id, "gfan") do 
+      %AppSdkBinding{binding: %{"app_uid" => app_uid}} ->
         if SDKGFan.validate_payment(app_uid, params) do
           xmlresult = notify_data 
             |> xpath(~x"//notify", 
@@ -31,15 +33,15 @@ defmodule AcsWeb.SdkPay.GfanCallbackController do
               conn |> text("<response><ErrorCode>1</ErrorCode><ErrorDesc>Success</ErrorDesc></response>")
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>") 
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>")  
         end
       _ -> 
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("<response><ErrorCode>0</ErrorCode><ErrorDesc>failed</ErrorDesc></response>") 
     end
   end

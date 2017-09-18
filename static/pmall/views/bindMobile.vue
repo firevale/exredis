@@ -1,5 +1,5 @@
 <template>
-  <div class="bind-mobile bg-full bg-bind-mobile">
+  <div class="bind-mobile bg-full bg-bind-mobile is-flex flex-center flex-vcentered">
     <a class="button btn-official-website"></a>
     <i class="icon icon-logo"></i>
     <div class="items is-flex flex-center flex-vcentered">

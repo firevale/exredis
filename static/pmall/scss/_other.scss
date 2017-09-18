@@ -46,11 +46,6 @@
     left: virtual-m-pixel(595);
     bottom: virtual-m-pixel(820);
   }
-  &.bg-know-answer {
-    background-image: url("~assets/pmall/1247_a_03.png");
-    width: virtual-m-pixel(1217);
-    height: virtual-m-pixel(701);
-  }
 }
 
 .button {
@@ -82,6 +77,13 @@
     position: absolute;
     left: virtual-m-pixel(635);
     bottom: virtual-m-pixel(120);
+  }
+  &.btn-answer-ok {
+    background-image: url("~assets/pmall/1247_11.png");
+    width: virtual-m-pixel(304);
+    height: virtual-m-pixel(98);
+    position: absolute;
+    bottom: 1rem;
   }
 }
 
@@ -156,20 +158,18 @@ span {
     font-size: $size4;
   }
   .address-content {
-    padding-top: 2rem;
-    margin: 0 auto;
+    flex: 1;
     .fields {
       padding: 1rem 2rem;
+      &:first-child {
+        margin-top: 2rem;
+      }
       &:last-child {
         margin-top: 2rem;
       }
     }
-    .lable {
-      text-align: right;
-      width: 15vw;
-    }
     input {
-      width: 60vw;
+      width: 90%;
       height: 1.8rem;
       border-radius: 3px;
       &.is-primary {
@@ -227,6 +227,7 @@ span {
     margin: 0 auto;
     border: 1px solid rgba($text, 0.1);
     .q-item {
+      width: 100%;
       padding-top: 1rem;
       min-height: 18rem;
       border-bottom: 1px solid rgba($text, 0.1);
@@ -241,6 +242,61 @@ span {
         }
       }
     }
-    .a-item {}
+    .a-item {
+      flex: 1;
+      position: relative;
+      border: 1px solid rgba($text, 0.1);
+      .is-6 {
+        border-left: 1px solid rgba($text, 0.1);
+        border-right: 1px solid rgba($text, 0.1);
+        border-top: none;
+        border-bottom: none;
+      }
+      ul {
+        padding: 1rem 0 0 0rem;
+        list-style: none;
+        li {
+          padding-left: 2rem;
+          line-height: 2.2rem;
+        }
+      }
+      img {
+        width: virtual-m-rem(290);
+        height: virtual-m-rem(701);
+      }
+      .answer-yes {
+        position: absolute;
+        top: - .7rem;
+        left: 5rem;
+        img {
+          width: virtual-m-pixel(924/1.1);
+          height: virtual-m-pixel(306/1.1);
+        }
+      }
+      .answer-error {
+        position: absolute;
+        top: - .7rem;
+        left: 5rem;
+        img {
+          width: virtual-m-pixel(866/1.1);
+          height: virtual-m-pixel(257/1.1);
+        }
+      }
+    }
+    .n-item {
+      width: 100%;
+      height: virtual-m-rem(430);
+      p {
+        &.title {
+          font-size: $size4;
+          text-indent: .5rem;
+        }
+        &.subtitle {
+          text-indent: 1rem;
+          padding: 0 1rem;
+          font-size: $size5;
+        }
+      }
+    }
   }
 }

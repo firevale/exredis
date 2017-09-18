@@ -316,12 +316,30 @@
         }
       }
       .sign-others {
-        margin-top: 5rem;
+        margin-top: 2rem;
         .sign-users {
           background: white;
           border: 1px solid $border-color;
           border-radius: 5px;
           height: virtual-m-rem(406);
+          .sign-user {
+            padding-left: virtual-m-rem(48.5);
+            max-height: virtual-m-rem(406);
+            min-height: virtual-m-rem(406/1.8);
+            img {
+              width: virtual-m-pixel(155);
+              height: virtual-m-pixel(155);
+              &:not(:nth-child(7n)) {
+                margin-right: virtual-m-rem(10);
+              }
+            }
+          }
+          .load-more {
+            width: 100%;
+            height: virtual-m-rem(180);
+            border-top: 1px solid $border-color;
+            font-size: $size4;
+          }
         }
       }
     }

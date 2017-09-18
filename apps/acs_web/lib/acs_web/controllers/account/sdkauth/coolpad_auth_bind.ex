@@ -1,17 +1,18 @@
 defmodule AcsWeb.CoolpadAuthBind do
   use     AcsWeb, :controller
   require SDKCoolPad
+  alias   Acs.Apps
 
   def bind(%Plug.Conn{
               private: %{
                 acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
-            %{"coolpad_auth_code" => coolpad_auth_code} = _params) do
+            %{"coolpad_auth_code" => coolpad_auth_code}) do
 
     with %AppSdkBinding{binding: %{
            "app_id" => coolpad_app_id, 
-           "app_key" => coolpad_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, :coolpad),
+           "app_key" => coolpad_app_key}} <- Apps.get_app_sdk_binding(app.id, "coolpad"),
          %{openid: coolpad_user_id, 
            access_token: coolpad_access_token, 
            nickname: coolpad_nickname} <- SDKCoolPad.validate_session(

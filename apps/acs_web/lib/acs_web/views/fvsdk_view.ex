@@ -62,7 +62,7 @@ defmodule AcsWeb.FVSdkView do
           _ -> ""
         end,
       wechat_pay_info: 
-        case Apps.get_app_sdk_binding(app.id, "facebook") do 
+        case Apps.get_app_sdk_binding(app.id, "wechat") do 
           nil -> ""
           %{binding: binding} -> Map.drop(binding, [:app_secret, :signature, :partnerid])
           _ -> ""

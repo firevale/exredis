@@ -22,7 +22,7 @@ defmodule Acs.Wcp.AppWcpLoginCodeResponse do
                       _build_content(cfg.new_code_template, code) 
                   end
 
-                code ->
+                %{code: code} ->
                   _build_content(cfg.owned_code_template, code)
               end
             else 

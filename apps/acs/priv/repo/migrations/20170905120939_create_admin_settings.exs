@@ -8,11 +8,11 @@ defmodule Acs.Repo.Migrations.CreateAdminSettings do
       add :group, :string, size: 100
       add :memo,  :string
       add :active, :boolean, default: true
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
 
       timestamps()
     end
 
-    create unique_index(:admin_settings, [:name])
-
+    create unique_index(:admin_settings, [:name, :app_id])
   end
 end

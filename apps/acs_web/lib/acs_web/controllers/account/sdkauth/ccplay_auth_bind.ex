@@ -10,7 +10,7 @@ defmodule AcsWeb.CCPlayAuthBind do
                 acs_platform: platform}} = conn, 
             %{"cc_access_token" => cc_access_token,
               "cc_user_id" => cc_user_id} = params) do
-    with %AppSdkBinding{binding: %{"app_id" => cc_app_id, "app_key" => cc_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, :cc),
+    with %AppSdkBinding{binding: %{"app_id" => cc_app_id, "app_key" => cc_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, "cc"),
          true <- SDKCCPlay.validate_session(cc_app_id, cc_app_key, cc_access_token),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :cc, 

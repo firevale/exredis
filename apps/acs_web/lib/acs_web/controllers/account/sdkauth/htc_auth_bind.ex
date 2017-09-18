@@ -1,6 +1,6 @@
 defmodule AcsWeb.HtcAuthBind do
   use     AcsWeb, :controller
-  require Logger
+  alias   Utils.Crypto
 
   def bind(%Plug.Conn{
               private: %{

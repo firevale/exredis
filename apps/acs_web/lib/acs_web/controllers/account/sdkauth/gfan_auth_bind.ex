@@ -10,7 +10,7 @@ defmodule AcsWeb.GFanAuthBind do
             %{"gf_access_token" => gfan_access_token,
               "gf_user_id" => gfan_user_id} = params) do
 
-    with %AppSdkBinding{binding: %{"app_key" => gfan_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, :gfan),
+    with %AppSdkBinding{binding: %{"app_key" => gfan_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, "gfan"),
          true <- SDKGFan.validate_session(gfan_app_key, gfan_access_token, gfan_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :gfan, 

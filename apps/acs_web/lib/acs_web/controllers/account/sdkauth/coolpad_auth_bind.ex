@@ -11,7 +11,7 @@ defmodule AcsWeb.CoolpadAuthBind do
 
     with %AppSdkBinding{binding: %{
            "app_id" => coolpad_app_id, 
-           "app_key" => coolpad_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, :coolpad),
+           "app_key" => coolpad_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, "coolpad"),
          %{openid: coolpad_user_id, 
            access_token: coolpad_access_token, 
            nickname: coolpad_nickname} <- SDKCoolPad.validate_session(

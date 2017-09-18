@@ -11,7 +11,7 @@ defmodule AcsWeb.BaiduAuthBind do
             %{"baidu_access_token" => baidu_access_token,
               "baidu_user_id" => baidu_user_id} = _params) do
 
-    with %AppSdkBinding{binding: %{"app_id" => baidu_app_id, "app_secret" => baidu_app_secret}} <- Acs.Apps.get_app_sdk_binding(app.id, :baidu),
+    with %AppSdkBinding{binding: %{"app_id" => baidu_app_id, "app_secret" => baidu_app_secret}} <- Acs.Apps.get_app_sdk_binding(app.id, "baidu"),
          true <- SDKBaidu.validate_session(baidu_app_id, baidu_user_id, baidu_access_token, baidu_app_secret),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :baidu, 

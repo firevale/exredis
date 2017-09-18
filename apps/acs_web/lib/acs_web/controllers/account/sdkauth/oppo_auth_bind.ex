@@ -10,7 +10,7 @@ defmodule AcsWeb.OppoAuthBind do
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"oppo_access_token" => oppo_access_token,
-              "oppo_token_secret" => oppo_token_secret} = _params) do
+              "oppo_token_secret" => oppo_token_secret}) do
     with %AppSdkBinding{binding: %{
            "app_key" => oppo_app_key, 
            "app_secret" => oppo_app_secret}} <- Apps.get_app_sdk_binding(app.id, "oppo"),

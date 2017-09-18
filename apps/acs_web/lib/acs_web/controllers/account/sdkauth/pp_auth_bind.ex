@@ -8,7 +8,7 @@ defmodule AcsWeb.PPAuthBind do
                 acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
-            %{"pp_session_id" => pp_session_id} = _params) do
+            %{"pp_session_id" => pp_session_id}) do
     with %AppSdkBinding{binding: %{
            "app_id" => pp_app_id, 
            "app_key" => pp_app_key}} <- Apps.get_app_sdk_binding(app.id, "pp"),

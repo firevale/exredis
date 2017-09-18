@@ -1,6 +1,6 @@
 html {
   -webkit-text-size-adjust: none;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 body {
@@ -86,7 +86,7 @@ input::-webkit-inner-spin-button {
   &.flex-center {
     justify-content: center;
   }
-  .flex-right {
+  &.flex-right {
     justify-content: flex-end;
   }
   &.flex-vcentered {

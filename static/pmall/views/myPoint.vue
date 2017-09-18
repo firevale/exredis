@@ -15,7 +15,7 @@
           <h1 class="is-size-4"><strong>点击公众号菜单</strong></h1>
           <p class="is-grey-light">2017-09-01 16:17: 45</p>
         </div>
-        <p class="column is-2 has-text-right">+15</p>
+        <p class="column is-2 has-text-right" style="font-size:1.2rem">+15</p>
       </div>
       <div class="item is-flex flex-vcentered">
         <div class="column is-10">

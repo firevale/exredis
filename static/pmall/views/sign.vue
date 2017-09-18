@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="sign-others">
-        <p class="has-text-centered">共 8907 人签到</p>
+        <p class="has-text-centered">共 <span style="font-size:1.5rem">8907</span> 人签到</p>
         <div class="sign-users">
           <div class="sign-user is-flex flex-left flex-vcentered">
             <img src="~assets/pmall/1249_05.png">

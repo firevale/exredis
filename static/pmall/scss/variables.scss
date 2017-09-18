@@ -1,25 +1,28 @@
-$red: #a11010;
+$red: #a01211;
 $orange: #ff6600;
-$blue: #29a1e9;
+$blue: #333cde;
 $green: hsl(141, 71%, 48%);
-$grey: #474543;
+$grey: #616161;
+$grey-dark: #494443;
 $grey-light: #616161;
 $white: #ffffff;
-$primary: #f91c1c;
+$primary: #df2521;
 $info: $orange;
 $success: $blue;
 $warning: $red;
 $danger: $red;
 $text: black;
-$text-grey: #474543;
-$size1: 6rem;
-$size2: 3rem;
-$size3: 1.7rem;
-$size4: 1.3rem;
+$text-grey: $grey;
+$size1: 2.5rem;
+$size2: 1.8rem;
+$size3: 1.5rem;
+$size4: 1.2rem;
 $size5: 1rem;
 $size6: 0.85rem;
+$size7: 0.75rem;
 $size-normal: $size5;
-$size-medium: $size3;
+$size-medium: $size4;
+$size-large: $size2;
 $sizes: $size1 $size2 $size3 $size4 $size5 $size6;
 @each $size in $sizes {
   $i: index($sizes, $size);
@@ -28,7 +31,7 @@ $sizes: $size1 $size2 $size3 $size4 $size5 $size6;
   }
 }
 
-$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey) ("grey-light" $grey-light);
+$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey);
 @each $color in $colors {
   $name: nth($color, 1);
   $color: nth($color, 2);

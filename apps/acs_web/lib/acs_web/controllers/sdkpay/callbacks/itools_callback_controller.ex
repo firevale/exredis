@@ -24,15 +24,15 @@ defmodule AcsWeb.SdkPay.ItoolsCallbackController do
               conn |> text("success")   
 
            _ ->
-              Logger.error "itools order #{order_id} not found"
+              error "itools order #{order_id} not found"
               conn |> text("fail")
           end
         else #{verify signature failed}
-          Logger.error "verify itools payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify itools payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")
         end
       _ -> #{client_id invalid}
-        Logger.error "receive invalid itools payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid itools payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail")
     end
   end

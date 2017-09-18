@@ -28,15 +28,15 @@ defmodule AcsWeb.SdkPay.XiaomiCallbackController do
               PaymentHelper.notify_cp(order)
               resp_xiaomi.("200", "success")
           _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp_xiaomi.("1506", "order is not found")
           end
         else 
-          Logger.error "verify xiaomi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify xiaomi payment signature failed, params: #{inspect params, pretty: true}"
           resp_xiaomi.("1525", "verify signature failed")
         end
       _ -> 
-        Logger.error "app xiaomi bindings not found, params: #{inspect params, pretty: true}"
+        error "app xiaomi bindings not found, params: #{inspect params, pretty: true}"
         resp_xiaomi.("1507", "app xiaomi binding is not set")
     end 
   end

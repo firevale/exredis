@@ -24,15 +24,15 @@ defmodule AcsWeb.SdkPay.I4CallbackController do
               conn |> text("success")  
 
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else 
-          Logger.error "verify i4 payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify i4 payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> 
-        Logger.error "receive invalid i4 payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid i4 payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end

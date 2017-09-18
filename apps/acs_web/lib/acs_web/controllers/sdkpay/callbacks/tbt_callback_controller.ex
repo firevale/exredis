@@ -26,19 +26,19 @@ defmodule AcsWeb.SdkPay.TbtCallbackController do
                 conn |> json(%{"status" => "success"})  
 
               else 
-                Logger.error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["paydes"]}"
+                error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["paydes"]}"
                 conn |> json(%{"ErrorCode" => "4"}) 
               end
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> json(%{"ErrorCode" => "4"}) 
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{"ErrorCode" => "5"}) 
         end
       _ -> 
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{"ErrorCode" => "4"}) 
     end
   end

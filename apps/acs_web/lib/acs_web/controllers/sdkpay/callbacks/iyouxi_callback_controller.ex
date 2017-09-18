@@ -43,21 +43,21 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
               conn |> text(result)
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("fail") 
           end 
         else #{verify signature failed}
-          Logger.error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("fail")  
         end
       _ -> #{client_id invalid}
-        Logger.error "invalid client config, params: #{inspect params, pretty: true}"
+        error "invalid client config, params: #{inspect params, pretty: true}"
         conn |> text("fail") 
     end
   end
 
   def if1_callback(conn, params) do
-    Logger.error "receive invalid iyouxi notification, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi notification, params: #{inspect params, pretty: true}"
     conn |> text("fail") 
   end
 
@@ -102,22 +102,22 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
               PaymentHelper.notify_cp(order)
               resp.(0)
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp.(3) 
           end 
         else 
-          Logger.error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify iyouxi payment signature failed, params: #{inspect params, pretty: true}"
           resp.(4)  
         end
 
       _ -> 
-        Logger.error "invalid client config, params: #{inspect params, pretty: true}"
+        error "invalid client config, params: #{inspect params, pretty: true}"
         resp.(5) 
     end
   end
 
   def if2_callback(conn, %{"cp_order_id" => order_id} = params) do  
-    Logger.error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
     conn |> text(~s(
       <cp_notify_resp>
 
@@ -130,7 +130,7 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
   end
 
   def if2_callback(conn, params) do
-    Logger.error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
+    error "receive invalid iyouxi payment notifications, params: #{inspect params, pretty: true}"
     conn |> text(~s(
       <cp_notify_resp>
 

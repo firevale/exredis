@@ -30,19 +30,19 @@ defmodule AcsWeb.SdkPay.HuaweiCallbackController do
                   conn |> json(%{"result" => "0"}) 
 
                _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> json(%{"result" => "3"})   
               end
             _ -> 
-              Logger.info "receive huawei payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive huawei payment fail notification, params: #{inspect params, pretty: true}"
               conn |> json(%{"ErrorCode" => "3"}) 
           end
         else 
-          Logger.error "verify huawei payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify huawei payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{"ErrorCode" => "1"}) 
         end
       _ -> 
-        Logger.error "receive invalid huawei payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid huawei payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{"ErrorCode" => "94"}) 
     end
   end

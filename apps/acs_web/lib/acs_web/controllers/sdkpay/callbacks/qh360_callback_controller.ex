@@ -29,23 +29,23 @@ defmodule AcsWeb.SdkPay.Qh360CallbackController do
                     PaymentHelper.notify_cp(order)
                     conn |> text("ok") 
                  else 
-                    Logger.error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["Note"]}"
+                    error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["Note"]}"
                     conn |> text("order id mismatch")
                   end
                 _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text("firevale platform order not found")
               end
             _ -> 
-              Logger.info "receive qh360 payment fail notification, params: #{inspect params, pretty: true}"
+              info "receive qh360 payment fail notification, params: #{inspect params, pretty: true}"
               conn |> text("gateway_flag != 'success'")
           end
         else 
-          Logger.error "verify qh360 payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify qh360 payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("mismatch signature")
         end
       _ -> 
-        Logger.error "receive invalid qh360 payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid qh360 payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("invalid callback url")
     end
   end

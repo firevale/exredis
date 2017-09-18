@@ -23,15 +23,15 @@ defmodule AcsWeb.SdkPay.SogouCallbackController do
               PaymentHelper.notify_cp(order)
               conn |> text("OK") 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("ERR_100") 
           end 
         else 
-          Logger.error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify xy payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("ERR_200")  
         end
       _ -> 
-        Logger.error "receive invalid sogou payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid sogou payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("ERR_500") 
     end
   end

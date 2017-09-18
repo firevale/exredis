@@ -24,15 +24,15 @@ defmodule AcsWeb.SdkPay.VivoCallbackController do
               conn |> text("200") 
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("405") 
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("403")  
         end
       _ -> 
-        Logger.error "receive invalid  payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid  payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("500") 
     end
   end

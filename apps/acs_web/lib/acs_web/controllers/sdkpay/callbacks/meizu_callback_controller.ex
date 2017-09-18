@@ -32,15 +32,15 @@ defmodule AcsWeb.SdkPay.MeizuCallbackController do
               PaymentHelper.notify_cp(order)
               resp_success.()
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               resp_fail.("invalid gameExtend value")
           end 
         else 
-          Logger.error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify tbt payment signature failed, params: #{inspect params, pretty: true}"
           resp_fail.("invalid signature")
         end
       _ -> 
-        Logger.error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid tbt payment notifications, params: #{inspect params, pretty: true}"
         resp_fail.("invalid client id")
     end
   end

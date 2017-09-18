@@ -25,22 +25,22 @@ defmodule AcsWeb.SdkPay.LenovoCallbackController do
               conn |> text("SUCCESS") 
 
            _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> text("FAILURE") 
           end 
         else 
-          Logger.error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify wdj payment signature failed, params: #{inspect params, pretty: true}"
           conn |> text("FAILURE")  
         end
 
       _ -> 
-        Logger.error "receive invalid wdj payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid wdj payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("FAILURE") 
     end
   end
 
   def purchase_callback(conn, params) do 
-    Logger.error "receive invalid request: #{inspect params, pretty: true}"
+    error "receive invalid request: #{inspect params, pretty: true}"
     conn |> text("FAILURE")
   end
 end

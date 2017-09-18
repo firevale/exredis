@@ -29,21 +29,21 @@ defmodule AcsWeb.SdkPay.HtcCallbackController do
                   conn |> text("success")  
 
                _ -> 
-                  Logger.error "order is not found, params: #{inspect params, pretty: true}"
+                  error "order is not found, params: #{inspect params, pretty: true}"
                   conn |> text("failure") 
               end 
 
             error ->
-              Logger.error "decode json from #{orderText} failed: #{error}"
+              error "decode json from #{orderText} failed: #{error}"
               conn |> text("failure")               
           end
         else
-          Logger.error "receive invalid payment notifications, params: #{inspect body_params, pretty: true}"
+          error "receive invalid payment notifications, params: #{inspect body_params, pretty: true}"
           conn |> text("failure") 
         end
 
       _ -> 
-        Logger.error "receive invalid htc payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid htc payment notifications, params: #{inspect params, pretty: true}"
         conn |> text("failure") 
     end
   end

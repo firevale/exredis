@@ -23,15 +23,15 @@ defmodule AcsWeb.SdkPay.YoukuCallbackController do
               conn |> json(%{status: "success", desc: "received"})
 
             _ -> 
-              Logger.error "order is not found, params: #{inspect params, pretty: true}"
+              error "order is not found, params: #{inspect params, pretty: true}"
               conn |> json(%{status: "failed", desc: "invalid apporderID"})
           end 
         else 
-          Logger.error "verify youku payment signature failed, params: #{inspect params, pretty: true}"
+          error "verify youku payment signature failed, params: #{inspect params, pretty: true}"
           conn |> json(%{status: "failed", desc: "invalid sign"})
         end
       _ -> 
-        Logger.error "receive invalid youku payment notifications, params: #{inspect params, pretty: true}"
+        error "receive invalid youku payment notifications, params: #{inspect params, pretty: true}"
         conn |> json(%{status: "failed", desc: "invalid client id"})
     end
   end

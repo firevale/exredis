@@ -27,7 +27,7 @@ defmodule AcsWeb.MumayiAuthBind do
             device_id: device_id,
             platform: platform,
             ttl: app.token_ttl,
-            binding:  %{mumayi: %{access_token: mumayi_access_token, user_id: mumayi_user_id}}
+            binding: %{mumayi: %{access_token: mumayi_access_token, user_id: mumayi_user_id}}
           })
 
           conn |> json(%{

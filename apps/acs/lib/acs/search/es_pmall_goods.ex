@@ -12,9 +12,9 @@ defmodule Acs.Search.ESPMallGoods do
         name: goods.name,
         app_id: goods.app_id,
         description: goods.description,
+        active: goods.active,
         inserted_at: Timex.format!(goods.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
       },
-      params: nil,
       id: goods.id
     })
     

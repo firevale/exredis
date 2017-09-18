@@ -1,15 +1,16 @@
 defmodule AcsWeb.FacebookAuthBind do
   use     AcsWeb, :controller
   require SDKFacebook
+  alias   Acs.Apps
 
   def bind(%Plug.Conn{
               private: %{
                 acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
-            %{"fb_access_token" => facebook_access_token} = _params) do
+            %{"fb_access_token" => facebook_access_token}) do
 
-    with %AppSdkBinding{binding: %{"app_secret" => facebook_app_secret}} <- Acs.Apps.get_app_sdk_binding(app.id, :facebook),
+    with %AppSdkBinding{binding: %{"app_secret" => facebook_app_secret}} <- Apps.get_app_sdk_binding(app.id, "facebook"),
          %{"id" => facebook_user_id, 
            "email" => email, 
            "name" => facebook_nickname} <- SDKFacebook.me(facebook_app_secret, %{fields: "id,email,name,gender"}, facebook_access_token),

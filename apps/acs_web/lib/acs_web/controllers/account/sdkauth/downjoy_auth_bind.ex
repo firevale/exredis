@@ -1,6 +1,7 @@
 defmodule AcsWeb.DownjoyAuthBind do
   use     AcsWeb, :controller
   require SDKDownjoy
+  alias   Acs.Apps
 
   def bind(%Plug.Conn{
               private: %{
@@ -8,9 +9,9 @@ defmodule AcsWeb.DownjoyAuthBind do
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"dj_access_token" => downjoy_access_token,
-              "dj_user_id" => downjoy_user_id} = _params) do
+              "dj_user_id" => downjoy_user_id}) do
 
-    with %AppSdkBinding{binding: %{"app_id" => downjoy_app_id, "app_key" => downjoy_app_key}} <- Acs.Apps.get_app_sdk_binding(app.id, :downjoy),
+    with %AppSdkBinding{binding: %{"app_id" => downjoy_app_id, "app_key" => downjoy_app_key}} <- Apps.get_app_sdk_binding(app.id, "downjoy"),
          true <- SDKDownjoy.validate_session(downjoy_app_id, downjoy_app_key, downjoy_access_token, downjoy_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: :downjoy, 

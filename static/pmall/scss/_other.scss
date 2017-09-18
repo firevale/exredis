@@ -221,7 +221,6 @@ span {
 }
 
 .know-ledge {
-  position: relative;
   header {
     width: 100vw;
     padding-top: 1rem;
@@ -238,7 +237,6 @@ span {
     .q-item {
       width: 100%;
       padding-top: 1rem;
-      border-bottom: 1px solid rgba($text, 0.1);
       p {
         &.title {
           font-size: $size3;

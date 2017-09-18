@@ -6,11 +6,11 @@
     <div class="items is-flex">
       <div class="q-item">
         <p class="title has-text-centered">问答题</p>
-        <p class="subtitle">明明是谁？明名不知道是谁的屙粑粑了罚单问答题阿斯顿发生的发生大法明明是谁？明名不知道是谁的屙粑粑了罚单问答题阿斯顿发生的发生大法明明是谁？明名不知道是谁的屙粑粑了罚单问答题阿斯顿发生的发生大法明明是谁？明名不知道是谁的屙粑粑了罚单问答题阿斯顿发生的发生大法</p>
+        <p class="subtitle">明明是谁？</p>
       </div>
       <div class="a-item is-flex">
         <div class="column is-3 has-text-left">
-          <img src="~assets/pmall/1247_03_01.png" />
+          <img src="~assets/pmall/1247_03_02.png" />
         </div>
         <div class="column is-6 has-text-left">
           <ul>

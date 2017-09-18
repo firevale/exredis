@@ -1,6 +1,6 @@
 <template>
   <div class="draw-page bg-full bg-draw-page is-flex flex-center flex-vcentered">
-    <div class="bg-full bg-draw-item"></div>
+    <div class="rotate-container bg-full bg-draw-item"></div>
     <div class="rotate-container">
       <div class="bg-full bg-turn-needle"></div>
     </div>
@@ -17,27 +17,45 @@ import anime from 'animejs';
 export default {
   data() {
     return {
-      player: undefined
+      player: undefined,
+      playerOptions: {
+        rotateOffset: -18,
+        duration: 5000,
+        gap: 10,
+        turns: 3,
+      }
     }
   },
   mounted() {
-    this.player = anime({
-      targets: '.bg-turn-needle',
-      rotate: {
-        value: 1630,
-        duration: 5000,
-        easing: 'easeOutCubic'
-      },
-      autoplay: false,
-      loop:false,
-      complete: function(anim) {
-        this.pause()
-      }
-    });
+    // this.player = anime({
+    //   targets: '.bg-turn-needle',
+    //   rotate: {
+    //     duration: 1,
+    //     value: this.playerOptions.rotateOffset
+    //   },
+    //   autoplay: true,
+    // });
   },
   methods: {
     play() {
-      this.player.restart()
+      let maxLen = 8
+      let index = Math.floor(Math.random() * (maxLen - 1)) + 1
+      let angelStart = 360 / maxLen * (index - 1) + this.playerOptions.gap;
+      let angelEnd = 360 / 8 * index - this.playerOptions.gap;
+      let angel = Math.floor(Math.random() * (angelEnd - angelStart)) + angelStart
+      angel += this.playerOptions.rotateOffset
+      angel += this.playerOptions.turns * 360
+      this.player = anime({
+        targets: '.bg-turn-needle',
+        rotate: {
+          duration: this.playerOptions.duration,
+          easing: 'easeOutCubic',
+          value: [this.playerOptions.rotateOffset, angel]
+        },
+        complete: function(anim) {
+          console.info('中奖index:' + index)
+        }
+      })
     }
 
   }

@@ -1,11 +1,12 @@
 defmodule AcsWeb.SdkPay.CoolpadCallbackController do
   use    AcsWeb, :controller
+  alias  Acs.Apps
+  alias  Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                          %{"transdata" => transdata, "sign" => sign} = params) do 
-
-    case app.sdk_bindings.coolpad do 
-      %{"pay_pub_key" => pay_pub_key} ->
+    case Apps.get_app_sdk_binding(app.id, "coolpad") do 
+      %AppSdkBinding{binding: %{"pay_pub_key" => pay_pub_key}} ->
         if Crypto.rsa_public_verify2(pay_pub_key, transdata, sign, :md5) do  
           pay_info = JSON.decode!(transdata)
 

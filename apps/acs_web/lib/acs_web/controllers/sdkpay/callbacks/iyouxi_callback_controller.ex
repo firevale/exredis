@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.IYouxiCallbackController do
   use     AcsWeb, :controller
   require SDKIYouxi
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   plug    :set_xml_header
 
@@ -13,8 +15,8 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
                    %{"cp_order_id" => order_id, 
                      "correlator" => correlator,
                      "order_time" => _order_time} = params) do
-    case app.sdk_bindings.iyouxi do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "iyouxi") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKIYouxi.verify_signature_if1(app_key, params) do
           case Repo.get(AppOrder, order_id) do
             order = %AppOrder{} ->
@@ -83,8 +85,8 @@ defmodule AcsWeb.SdkPay.IYouxiCallbackController do
                 )) 
             end
 
-    case app.sdk_bindings.iyouxi do
-      %{"app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "iyouxi") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKIYouxi.verify_signature_if2(app_key, params) do
           case Repo.get(AppOrder, order_id) do
             order = %AppOrder{} ->

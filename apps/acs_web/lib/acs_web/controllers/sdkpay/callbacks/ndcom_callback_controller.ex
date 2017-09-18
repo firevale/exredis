@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.NdcomCallbackController do
   use     AcsWeb, :controller
   require SDKNdcom
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"PayStatus" => pay_status, 
@@ -8,8 +10,8 @@ defmodule AcsWeb.SdkPay.NdcomCallbackController do
                           "Note" => cp_order_id,
                           "ConsumeStreamId" => trans_no, 
                           "OrderMoney" => amount} = params) do
-    case app.sdk_bindings.ndcom do
-      %{"app_id" => app_id, "app_key" => app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "ndcom") do
+      %AppSdkBinding{binding: %{"app_id" => app_id, "app_key" => app_key}} ->
         if SDKNdcom.validate_payment(app_id, app_key, params) do
           case pay_status do 
             "1" ->

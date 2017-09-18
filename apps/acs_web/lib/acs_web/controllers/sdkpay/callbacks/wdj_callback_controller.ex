@@ -1,12 +1,14 @@
 defmodule AcsWeb.SdkPay.WandoujiaCallbackController do
   use    AcsWeb, :controller
+  alias  Acs.Apps
+  alias  Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"content" => content, 
                           "sign" => sign} = params) do
 
-    case app.sdk_bindings.wdj do
-      %{rsa_key: rsa_key} ->
+    case Apps.get_app_sdk_binding(app.id, "wdj") do
+      %AppSdkBinding{binding: %{"rsa_key" => rsa_key}} ->
         if Crypto.rsa_public_verify2(rsa_key, content, sign) do  
           pay_info = JSON.decode!(content)
           case Repo.get(AppOrder, pay_info["out_trade_no"]) do 

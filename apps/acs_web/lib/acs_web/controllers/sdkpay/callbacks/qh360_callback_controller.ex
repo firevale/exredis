@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.Qh360CallbackController do
   use     AcsWeb, :controller
   require SDKQh360
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                        %{"gateway_flag" => gateway_flag, 
@@ -9,8 +11,8 @@ defmodule AcsWeb.SdkPay.Qh360CallbackController do
                          "order_id" => trans_no,
                          "amount" => amount} = params) do
 
-    case app.sdk_bindings.qh360 do
-      %{app_secret: app_secret} ->
+    case Apps.get_app_sdk_binding(app.id, "qh360") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         if SDKQh360.validate_payment(app_secret, params) do
           case gateway_flag do 
             "success" ->

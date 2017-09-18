@@ -1,13 +1,15 @@
 defmodule AcsWeb.SdkPay.I4CallbackController do
   use     AcsWeb, :controller
   require SDKI4
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"billno" => order_id, 
                           "order_id" => trans_no, 
                           "amount" => amount} = params) do
-    case app.sdk_bindings.i4 do
-      %{"rsa_key" => rsa_key} ->
+    case Apps.get_app_sdk_binding(app.id, "i4") do
+      %AppSdkBinding{binding: %{"rsa_key" => rsa_key}} ->
         if SDKI4.validate_payment(rsa_key, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->

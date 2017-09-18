@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.UCCallbackController do
   use     AcsWeb, :controller
   require SDKUC
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   @success "SUCCESS"
   @failure "FAILURE"
@@ -10,8 +12,8 @@ defmodule AcsWeb.SdkPay.UCCallbackController do
                                       "callbackInfo" => order_id,
                                       "trans_no" => trans_no,
                                       "amount" => amount}} = params) do  
-    case app.sdk_bindings.uc do
-      %{app_key: app_key} ->
+    case Apps.get_app_sdk_binding(app.id, "uc") do
+      %AppSdkBinding{binding: %{"app_key" => app_key}} ->
         if SDKUC.validate_payment(app_key, params) do
           case order_status do
             "S" ->

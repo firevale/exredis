@@ -1,14 +1,16 @@
 defmodule AcsWeb.SdkPay.BaiduCallbackController do
   use     AcsWeb, :controller
   require SDKBaidu
+  alias   Acs.Apps 
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn,
                         %{"AppID" => baidu_app_id,
                           "Content" => content,
                           "CooperatorOrderSerial" => order_id,
                           "OrderSerial" => trans_no} = params) do
-    case app.sdk_bindings.baidu do
-      %{"app_secret" => app_secret} ->
+    case Apps.get_app_sdk_binding(app.id, "baidu") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         resp_baidu =
           fn(result_code, message) ->
             conn |> json(%{

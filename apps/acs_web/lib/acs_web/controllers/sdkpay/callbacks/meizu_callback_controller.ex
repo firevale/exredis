@@ -1,6 +1,8 @@
 defmodule AcsWeb.SdkPay.MeizuCallbackController do
   use     AcsWeb, :controller
   require SDKMeizu
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
 
   def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
                         %{"cp_order_id" => order_id, 
@@ -15,8 +17,8 @@ defmodule AcsWeb.SdkPay.MeizuCallbackController do
                      conn |> json(%{"code" => "200", "message" => "", "value" => "", "redirect" => ""})
                    end
 
-    case app.sdk_bindings.meizu do
-      %{"app_secret" => app_secret} ->
+    case Apps.get_app_sdk_binding(app.id, "meizu") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
         if SDKMeizu.validate_payment(app_secret, params) do
           case Repo.get(AppOrder, order_id) do 
             order = %AppOrder{} ->

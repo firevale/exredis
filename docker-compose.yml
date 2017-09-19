@@ -1,0 +1,87 @@
+version: '3'
+services:
+  mysql:
+    image: docker-registry.firevale.com/mysql:latest
+    container_name: acs_mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=acs_dev
+      - MYSQL_ROOT_PASSWORD=firevale
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: docker-registry.firevale.com/phpmyadmin
+    container_name: acs_phpmyamdin
+    restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=acs_mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=firevale
+      - PMA_ABSOLUTE_URI=http://${USERNAME}.firevale.com/mysql/
+    expose: 
+      - "80"
+  redis:
+    image: docker-registry.firevale.com/redis
+    container_name: acs_redis
+    restart: always
+    command: ['redis-server', '--loglevel', 'debug', '--logfile', '/data/redis-server.log']
+    ports:
+      - "6379:6379"
+  elasticsearch:
+    image: docker-registry.firevale.com/elasticsearchd:latest
+    container_name: acs_elasticsearch
+    restart: always
+    environment:
+      - cluster.name=acs
+      - node.name=${USERNAME}
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+  web: 
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    expose:
+      - "4000"
+    ports:
+      - "9527:9527"
+    environment:
+      - "ACS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_dev"
+      - "ACS_STATS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_stats_dev"
+      - "EXSM_DATABASE_URL=ecto://root:firevale@acs_mysql/exsm"
+      - "REDIS_HOSTNAME=acs_redis"
+      - "REDIS_PORT=6379"
+      - "REDIS_DATABASE=0"
+      - "ELASTICSEARCH_HOSTNAME=acs_elasticsearch"
+      - "ACS_HOST=${USERNAME}.firevale.com"
+      - "NODE=${USERNAME}"
+    volumes:
+      - ${PWD}:/code
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+  nginx: 
+    image: docker-registry.firevale.com/nginx:latest
+    container_name: acs_nginx
+    restart: always
+    volumes:
+      - ./dev.conf:/etc/nginx/conf.d/dev.conf
+    ports: 
+      - "80:80"
+    depends_on:
+      - web
+
+    
+

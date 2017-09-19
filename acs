@@ -1,0 +1,115 @@
+#!/bin/sh
+
+cd `dirname $0`
+PWD=`pwd`
+USERNAME=`whoami`
+
+echo "USERNAME=${USERNAME}" > .env
+echo "PWD=${PWD}" >> .env
+
+build() {
+	docker pull docker-registry.firevale.com/ass_dev:latest
+	docker build ${PWD} -f ${PWD}/Dockerfile -t acs_web:latest
+}
+
+check_build_image() {
+	docker images | grep -qi 'acs_web' || build
+}
+
+docker_run() {
+	mkdir -p _build/yarn_cache _build/hex_cache
+	docker-compose up -d --remove-orphans
+	docker-compose exec web $1
+}
+
+console() {
+	docker-compose up -d
+	check_build_image
+	docker_run iex -S mix phx.server
+}
+
+mix() {
+	docker-compose exec web mix $@
+}
+
+yarn() {
+	docker-compose exec web /bin/zsh -c "cd /code/static/ && yarn $@ --no-bin-links"
+}
+
+test() {
+  docker-compose exec web mix test
+}
+
+test_reset() {
+	docker-compose exec web mix ecto.drop -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.create -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.migrate -r Acs.Repo MIX_ENV=test
+	docker-compose exec web mix ecto.drop -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix ecto.create -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix ecto.migrate -r Acs.StatsRepo MIX_ENV=test
+	docker-compose exec web mix run priv/repo/test_seeds.exs MIX_ENV=test
+}
+
+reset_repo() {
+	docker-compose exec web mix ecto.drop -r Acs.Repo 
+	docker-compose exec web mix ecto.create -r Acs.Repo
+	docker-compose exec web mix ecto.migrate -r Acs.Repo
+	docker-compose exec web mix ecto.drop -r Acs.StatsRepo
+	docker-compose exec web mix ecto.create -r Acs.StatsRepo 
+	docker-compose exec web mix ecto.migrate -r Acs.StatsRepo
+	docker-compose exec web mix run priv/repo/seeds.exs
+}
+
+shell() {
+	check_build_image
+	docker_run /bin/zsh
+}
+
+update() {
+	docker-compose pull
+	docker pull docker-registry.firevale.com/ass_dev
+	build
+}
+
+cd ${PWD}
+
+case "$1" in
+	shell)
+		shell
+		;;
+	console)
+		console
+		;;
+	update)
+		update
+		;;
+	run)
+		run
+		;;
+	build)
+		build
+		;;
+	test)
+		test
+		;;
+	test_reset)
+		test_reset
+		;;
+	reset_repo)
+		reset_repo
+		;;
+	mix)
+		mix ${@:2}
+		;;
+	yarn)
+		yarn ${@:2}
+		;;
+	docker_run)
+		docker_run ${@:2}
+		;;
+	*)
+		echo "$0 COMMAND" && echo "volumn from local: $PWD"
+		echo "COMMAND: shell -- run shell command in acs container"
+		echo "COMMAND: update -- update docker images used by ACS server"
+		;;
+esac

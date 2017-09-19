@@ -1,0 +1,74 @@
+<template>
+  <div class="g-doc">
+    <div ref="gCon" class="g-con">
+      <span v-show="canGoBack" class="icon nav-icon icon-back show-in-app" @click.prevent="$router.back()">
+      </span>
+      <span class="icon nav-icon pull-right icon-close show-in-app" @click="onClose">
+      </span>
+      <div class="g-mask">
+        <transition :enter-active-class="`${transitionName}-enter-active`" :leave-active-class="`${transitionName}-leave-active`">
+          <router-view> </router-view>
+        </transition>
+      </div>
+      <div ref="msg">
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+import nativeApi from 'common/js/nativeApi'
+
+export default {
+  data: function() {
+    return {
+      canGoBack: false,
+    }
+  },
+
+  created: function() {
+    if (this.$route.query.redirect_uri) {
+      this.setRedirectUri(atob(this.$route.query.redirect_uri))
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'transitionName'
+    ]),
+  },
+
+  methods: {
+    ...mapActions([
+      'setTransitionName', 'setRedirectUri'
+    ]),
+
+    onClose: function() {
+      nativeApi.closeWebviewWithResult({
+        success: false
+      })
+    },
+  },
+
+  watch: {
+    '$route': async function(to, from) {
+      let native = await nativeApi.canGoback()
+      switch(native) {
+        case 'yes':
+          this.canGoBack = true
+          break
+        case 'no':
+          this.canGoBack = false
+          break
+        default: 
+          this.canGoBack = (history.state != null)
+          break
+      }
+    }
+  },
+}
+</script>

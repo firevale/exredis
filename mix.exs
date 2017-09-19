@@ -1,38 +1,48 @@
-defmodule Exwcp.Mixfile do
+defmodule Acs.Umbrella.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :exwcp,
-      version: "0.1.0",
-      elixir: "~> 1.4",
-      build_path: "../../_build",
-      config_path: "../../config/config.exs",
-      deps_path: "../../deps",
-      lockfile: "../../mix.lock",
+      apps_path: "apps",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases(),
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger]
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
+  # Dependencies can be Hex packages:
+  #
+  #   {:mydep, "~> 0.3.0"}
+  #
+  # Or git/path repositories:
+  #
+  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
+  #
+  # Type "mix help deps" for more examples and options.
+  #
+  # Dependencies listed here are available only for this project
+  # and cannot be accessed from applications inside the apps folder
   defp deps do
     [
-      {:plug, "~> 1.4"},
-      {:httpoison, "~> 0.13"},
-      {:floki, "~> 0.18"},
-      {:exredis, in_umbrella: true},
-      {:exutils, in_umbrella: true},
-      {:excache, in_umbrella: true},
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:ex_syslogger, "~> 1.3"},
+      {:phoenix_pubsub_redis, "~> 2.1"},
+      {:redix, "~> 0.6", override: true},
+      {:redix_pubsub, "~> 0.4", override: true},
+      {:distillery, "~> 1.5", runtime: false},
+      {:ecto, "~> 2.2.3", override: true},
+    ]
+  end
+
+  defp aliases do
+    ["ecto.setup": ["ecto.create", 
+                    "ecto.migrate", 
+                    "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "test.reset": [
+                    "ecto.drop --quiet", 
+                    "ecto.create --quiet", 
+                    "ecto.migrate --quiet", 
+                    "run priv/repo/test_seeds.exs"],
     ]
   end
 end

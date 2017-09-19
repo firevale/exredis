@@ -1,21 +1,41 @@
-# Exwcp
+# 社区平台服务器
 
-**TODO: Add description**
+平台服务器开发环境通过docker整合，开始开发前需要先安装[`docker for mac`](https://docs.docker.com/docker-for-mac/).
 
-## Installation
+docker hub 服务在国内访问比较慢，可以通过VPN或者使用dao cloud的[`镜像服务`](https://www.daocloud.io/mirror.html#accelerator-doc).
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `exwcp` to your list of dependencies in `mix.exs`:
+安装完docker for mac后就可以进行开发工作了， 第一次执行命令需要下载docker image文件，请耐心等待.
 
-```elixir
-def deps do
-  [
-    {:exwcp, "~> 0.1.0"}
-  ]
-end
+   * 日常开发任务只需要执行'./acs console'即可进入服务器iex交互界面
+
+```bash
+./acs console
+```
+  * 通过命令'./acs mix [task]'可以在container内执行mix任务
+
+```bash
+# 重置数据库
+./acs mix ecto.reset
+# 执行migration
+./acs mix ecto.migrate
+...
+# ./acs mix --help 可以查看任务列表
+```
+  * 单元测试可以执行'./acs mix test'命令
+
+```bash
+./acs mix test
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/exwcp](https://hexdocs.pm/exwcp).
+  * 开发环境有变化时，通过'./acs update'升级.
 
+```bash
+./acs update
+```
+  * 执行'./acs shell'， 可以直接进入docker虚拟主机. 
+
+```bash
+./acs shell
+➜  /code git:(dev) mix --help
+➜  /code git:(dev) mix test
+```

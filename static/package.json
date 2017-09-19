@@ -26,6 +26,7 @@
     "axios": "^0.16.2",
     "bulma": "^0.5.1",
     "chart.js": "^2.6.0",
+    "chinese-lunar": "^0.1.4",
     "font-awesome": "4.7.0",
     "hashmap": "^2.1.0",
     "iscroll": "5.2.0",

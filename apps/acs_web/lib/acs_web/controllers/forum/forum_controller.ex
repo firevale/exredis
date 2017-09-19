@@ -436,7 +436,7 @@ defmodule AcsWeb.ForumController do
   defp check_img(conn, image_path) do
     image_path = case String.starts_with?(String.downcase(image_path), "http") do
       true -> image_path
-      false -> Path.join(["#{@cdn_scheme}://#{@cdn_domain}/acs/", image_path)
+      false -> Path.join(["#{@cdn_scheme}://#{@cdn_domain}/acs/", image_path])
     end
 
     info "check_image: #{image_path}"

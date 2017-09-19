@@ -163,7 +163,7 @@ defmodule AcsWeb.Admin.PMallController do
     end
   end
   def update_task(conn, _) do
-    conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # toggle_article_status
@@ -176,7 +176,7 @@ defmodule AcsWeb.Admin.PMallController do
     end
   end
   def toggle_task_status(conn, _) do
-    conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   # update_article_pic
@@ -201,6 +201,24 @@ defmodule AcsWeb.Admin.PMallController do
   end
   def upload_task_pic(conn, _) do
     conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+  end
+
+  def delete_task(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, 
+                              %{"task_id" => task_id}) do
+    case PMalls.delete_task(task_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+      :ok ->
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+      :error ->
+        conn |> json(%{success: false, message: "admin.error.networkError"})
+    end
+  end
+
+  def change_taskbars_sort(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, 
+                                      %{"needChange" => need_change}) do
+    :ok = PMalls.change_taskbars_sort(need_change)
+    conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
   end
 
 end

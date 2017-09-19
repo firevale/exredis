@@ -3,6 +3,9 @@ defmodule Exservice.TestFlight do
   require Poison
   alias   HTTPoison
 
+  def is_tester?(nil, _email), do: raise "itc_app_id should be something like 1129236740" 
+  def is_tester?("", _email), do: raise "itc_app_id should be something like 1129236740" 
+  def is_tester?(_, nil), do: raise "email can't be nil" 
   def is_tester?(itc_app_id, email) do 
     case HTTPoison.post("https://itc.firevale.com/api/is_tester", %{
       itc_app_id: itc_app_id,
@@ -20,6 +23,8 @@ defmodule Exservice.TestFlight do
     end
   end
 
+  def num_testers!(nil), do: raise "itc_app_id should be something like 1129236740" 
+  def num_testers!(""), do: raise "itc_app_id should be something like 1129236740" 
   def num_testers!(itc_app_id) do 
     Excache.get!("exservice.testflight.num_testers.#{itc_app_id}", fallback: fn(_key) ->
       case HTTPoison.post("https://itc.firevale.com/api/num_testers", %{
@@ -38,6 +43,9 @@ defmodule Exservice.TestFlight do
     end)
   end
 
+  def add_tester!(nil, _email, _), do: raise "itc_app_id should be something like 1129236740" 
+  def add_tester!("", _email, _), do: raise "itc_app_id should be something like 1129236740" 
+  def add_tester!(_, nil, _), do: raise "email can't be nil" 
   def add_tester!(itc_app_id, email, nickname) do 
     case HTTPoison.post("https://itc.firevale.com/api/invite", %{
       itc_app_id: itc_app_id,
@@ -57,6 +65,9 @@ defmodule Exservice.TestFlight do
     end
   end
 
+  def del_tester!(nil, _email), do: raise "itc_app_id should be something like 1129236740" 
+  def del_tester!("", _email), do: raise "itc_app_id should be something like 1129236740" 
+  def del_tester!(_, nil), do: raise "email can't be nil" 
   def del_tester!(itc_app_id, email) do 
     case HTTPoison.post("https://itc.firevale.com/api/remove", %{
       itc_app_id: itc_app_id,

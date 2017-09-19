@@ -23,7 +23,7 @@ defmodule Acs.Wcp.AppWcpTFDownloadResponse do
           nil ->
             cfg.tf_download_no_login_code_template
 
-          code ->
+          %{code: code} ->
             Exredis.setex("_wcp.tfd_wait_email.#{app_id}.#{from}", 3600, code)
             cfg.tf_download_template
         end

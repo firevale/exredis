@@ -85,10 +85,10 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_goods(user_id, goods) do
-    case goods.is_new do
+    case goods["is_new"] do
       true ->
         # add new
-        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods.app_id and g.id == ^goods.id)
+        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods["app_id"] and g.id == ^goods["id"])
         if(count > 0) do
           :exist
         else
@@ -96,7 +96,7 @@ defmodule Acs.PMalls do
           case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              CachedPMallGoods.refresh(goods.id)
+              CachedPMallGoods.refresh(goods["id"])
               {:add_ok, goods}
             {:error, %{errors: _errors}} ->
               :error
@@ -105,23 +105,23 @@ defmodule Acs.PMalls do
 
       false ->
         # update
-        case Repo.get(PMallGoods, goods.id) do
+        case Repo.get(PMallGoods, goods["id"]) do
           nil ->
             nil
 
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
-            changed = PMallGoods.changeset(mg, %{name: goods.name, 
-                                                description: goods.description, 
-                                                pic: goods.pic, 
-                                                price: goods.price, 
-                                                postage: goods.postage, 
-                                                stock: goods.stock, 
-                                                is_virtual: goods.is_virtual, 
-                                                begin_time: goods.begin_time, 
-                                                end_time: goods.end_time})
+            changed = PMallGoods.changeset(mg, %{name: goods["name"], 
+                                                description: goods["description"], 
+                                                pic: goods["pic"], 
+                                                price: goods["price"], 
+                                                postage: goods["postage"], 
+                                                stock: goods["stock"], 
+                                                is_virtual: goods["is_virtual"], 
+                                                begin_time: goods["begin_time"], 
+                                                end_time: goods["end_time"]})
             changed |> Repo.update!
-            CachedPMallGoods.refresh(goods.id)
+            CachedPMallGoods.refresh(goods["id"])
             {:update_ok, goods, changed.changes}
         end
     end

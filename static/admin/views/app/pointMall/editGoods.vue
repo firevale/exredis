@@ -30,6 +30,14 @@
             </div>
             <div class="field is-horizontal">
               <div class="field-label">
+                <label class="label">{{ $t('admin.point.goods.original_price') }}</label>
+              </div>
+              <div class="field-body">
+                <input class="input" type="number" v-model.trim="goods.original_price">
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.stock') }}</label>
               </div>
               <div class="field-body">
@@ -155,6 +163,7 @@ export default {
         name: '',
         description: '',
         price: 0,
+        original_price: 0,
         postage: 0,
         stock: 0,
         app_id: this.$route.params.appId,
@@ -433,6 +442,7 @@ export default {
         pic: this.pics.filter(t => t != "").join("|"),
         description: this.goods.description,
         price: this.goods.price,
+        original_price: this.goods.original_price,
         postage: this.goods.postage,
         stock: this.goods.stock,
         is_virtual: this.goods.is_virtual,

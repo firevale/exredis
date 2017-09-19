@@ -3,6 +3,7 @@ defmodule Acs.Cache.CachedPMallTaskBar do
   require Excache
   import  Ecto.Query
 
+  alias   Utils.JSON
   alias   Acs.Repo
   alias   Acs.PMalls.TaskBar
 
@@ -17,7 +18,7 @@ defmodule Acs.Cache.CachedPMallTaskBar do
             v -> {:commit, v}
           end
         raw ->
-          {:commit, raw }
+          {:commit, JSON.decode!(raw) }
       end
     end)
   end
@@ -27,11 +28,11 @@ defmodule Acs.Cache.CachedPMallTaskBar do
 
     query = from tb in TaskBar,
       order_by: [desc: tb.sort],
-      where: tb.app_id == ^app_id and tb.active == true,
+      where: tb.app_id == ^app_id,
       select: map(tb, [:id, :name, :pic, :sub_name, :point, :path])
 
     task_bars = Repo.all(query)
-    Exredis.set(key(app_id), task_bars)
+    Exredis.set(key(app_id), JSON.encode!(task_bars))
     Excache.del(key(app_id))
     task_bars
   end

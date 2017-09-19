@@ -16,6 +16,11 @@ defmodule AcsWeb.PageController do
   @sm_provider                  Application.get_env(:exsm, :provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
 
+  @ksfile_cfg  Application.get_env(:exservice, KSFile, [cdn_domain: "",
+                                                        cdn_scheme: "http"])
+  @cdn_scheme  @ksfile_cfg[:cdn_scheme]
+  @cdn_domain  @ksfile_cfg[:cdn_domain]  
+
   def index(conn, _params) do
     conn |> redirect(to: "/forum")
   end
@@ -31,24 +36,28 @@ defmodule AcsWeb.PageController do
     conn |> put_layout(:login)
          |> put_session(:locale, conn.private[:acs_locale])
          |> render("login.html", redirect_uri: redirect_uri,
-                                 is_mobile_account_supported: @is_mobile_account_supported)
+                                 is_mobile_account_supported: @is_mobile_account_supported,
+                                 cdn_scheme: @cdn_scheme,
+                                 cdn_domain: @cdn_domain)
   end
 
   # 管理后台
   def show_admin_page(conn, _params) do
     conn |> put_layout(:admin)
-         |> render("admin.html")
+         |> render("admin.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
   end
 
   def show_admin_app_page(conn, _params) do
     conn |> put_layout(:admin)
-         |> render("admin.html")
+         |> render("admin.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
   end
 
   # 用户中心
   def show_account_page(conn, _params) do
     conn |> put_layout(:app)
-         |> render("account.html", is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("account.html", is_mobile_account_supported: @is_mobile_account_supported,
+                                   cdn_scheme: @cdn_scheme,
+                                   cdn_domain: @cdn_domain)
   end
 
   def show_app_forum(%Plug.Conn{private: %{acs_app: %{forum_id: nil}}} = conn, _params) do 
@@ -81,37 +90,48 @@ defmodule AcsWeb.PageController do
 
   def show_bbs_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
     conn |> put_layout(:app)
-         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported,
+                                 cdn_scheme: @cdn_scheme,
+                                 cdn_domain: @cdn_domain)
   end
 
   def show_forum_page(%Plug.Conn{private: %{ is_mobile: _is_mobile}} = conn, _params) do
     _theme_file = String.starts_with?(conn.request_path, "/m") && "/css/themes/jqxs_mobile.css" || "/css/themes/jqxs.css"
     conn |> put_layout(:forum)
-         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, link_files: [] )
+         |> render("forum.html", is_mobile_account_supported: @is_mobile_account_supported, 
+                                 link_files: [],
+                                 cdn_scheme: @cdn_scheme,
+                                 cdn_domain: @cdn_domain)
   end
 
    # 问题反馈
   def show_customer_service_page(conn, _params) do
     conn |> put_layout(:app)
-         |> render("customer_service.html", is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("customer_service.html", is_mobile_account_supported: @is_mobile_account_supported,
+                                            cdn_scheme: @cdn_scheme,
+                                            cdn_domain: @cdn_domain)
   end
 
   # 活动
   def show_games_page(conn, _params) do
     conn |> put_layout(:app)
-         |> render("games.html", is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("games.html", is_mobile_account_supported: @is_mobile_account_supported,
+                                 cdn_scheme: @cdn_scheme,
+                                 cdn_domain: @cdn_domain)
   end
 
   # 商城
   def show_mall_page(conn, _params) do
     conn |> put_layout(:app)
-         |> render("mall.html", is_mobile_account_supported: @is_mobile_account_supported)
+         |> render("mall.html", is_mobile_account_supported: @is_mobile_account_supported,
+                                cdn_scheme: @cdn_scheme,
+                                cdn_domain: @cdn_domain)
   end
 
   #积分商城
   def show_pmall_page(conn, _params) do
     conn |> put_layout(:false)
-         |> render("pmall.html")
+         |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
   end
 
   # 购买商品页面, 兼容旧版本
@@ -167,7 +187,9 @@ defmodule AcsWeb.PageController do
                                    goods_name: app_order.goods_name,
                                    goods_icon: "",
                                    price: price,
-                                   currency: app_order.currency)
+                                   currency: app_order.currency,
+                                   cdn_scheme: @cdn_scheme,
+                                   cdn_domain: @cdn_domain)
   end
   def show_payment_page(conn, %{"order_id" => order_id, "version" => "3"}) do
     show_payment_page_by_order_id(conn, order_id)
@@ -211,7 +233,9 @@ defmodule AcsWeb.PageController do
                                        goods_id: app_order.goods_id,
                                        goods_icon: goods_icon,
                                        price: app_order.price,
-                                       currency: app_order.currency)
+                                       currency: app_order.currency,
+                                       cdn_scheme: @cdn_scheme,
+                                       cdn_domain: @cdn_domain)
     end
   end
 

@@ -18,7 +18,7 @@ defmodule SDKLenovo do
                   user_name: ~x"./Username/text()[1]",
                   device_id: ~x"./DeviceID/text()[1]", 
                   verified:  ~x"./verified/text()[1]")
-        |> Enum.into(%{}, fn({k, v}) -> {k, (v |> to_string |> String.strip)} end)
+        |> Enum.into(%{}, fn({k, v}) -> {k, (v |> to_string |> String.trim)} end)
       %{success: true, account_id: xmlresult.account_id, user_name: xmlresult.user_name}
     else
       %{success: false}

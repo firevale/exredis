@@ -94,9 +94,7 @@
         </div>
         <div class="column is-6">
           <div class="item-box">
-            <div class="item is-flex flex-center flex-vcentered">
-              <router-link class="button btn-more-goods" :to="{name: 'pmall'}"></router-link>
-            </div>
+            <router-link class="button btn-more-goods" :to="{name: 'pmall'}" tag="div"></router-link>
           </div>
         </div>
       </div>

@@ -31,36 +31,38 @@
             </div>
           </div>
           <div v-if="taskBars">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="taskBars && taskBars.length > 0"
-              v-for="(taskBar, index) in taskBars" :key="taskBar.id">
-              <div class="column">
-                 <center>
-                    <figure class="image news-pic" @click="updateArticleIcon(article, 'icon')">
-                      <img :src="article.icon ? article.icon: 'https://placehold.it/'+getSize(iconWidth, iconHeight)" style="max-height:60px; width:auto; "></img>
+            <div v-dragula="taskBars" bag="taskbar">
+              <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="taskBars && taskBars.length > 0"
+                v-for="(taskBar, index) in taskBars" :key="taskBar.id">
+                <div class="column">
+                  <center>
+                    <figure class="image news-pic" @click="updateTaskPic(taskBar)">
+                      <img :src="taskBar.pic ? taskBar.pic: 'https://placehold.it/144x144?text=144X144'" style="max-height:60px; width:auto; "></img>
                     </figure>
                   </center>
-              </div>
-              <div class="column">
-                <p>{{ taskBar.name }}</p>
-              </div>
-              <div class="column">
-                <p>{{ taskBar.point }}</p>
-              </div>
-              <div class="column">
-                 <center>
+                </div>
+                <div class="column">
+                  <p>{{ taskBar.name }}</p>
+                </div>
+                <div class="column">
+                  <p>{{ taskBar.point }}</p>
+                </div>
+                <div class="column">
+                  <center>
                     <toggle-button :value="taskBar.active" color="#4e9ed8" :sync="true" :labels="{checked: $t('admin.newSwitchOn'), unchecked: $t('admin.newSwitchOff')}"
                       @change="toggleTaskBar(taskBar)"> </toggle-button>
                   </center>
-              </div>
-              <div class="column">
-                <a @click.prevent="editTaskBar(taskBar, index)">
+                </div>
+                <div class="column">
+                  <a @click.prevent="editTaskBar(taskBar, index)">
                   <i class="fa fa-pencil"></i>
                 </a>
-              </div>
-              <div class="column">
-                <a @click.prevent="delTaskBar(taskBar.name, index)">
+                </div>
+                <div class="column">
+                  <a @click.prevent="delTaskBar(taskBar.id, index)">
                   <i class="fa fa-trash-o"></i>
                 </a>
+                </div>
               </div>
             </div>
           </div>
@@ -84,6 +86,10 @@ import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
+import {
+  showImageUploadDialog
+} from 'common/components/imageUpload'
+
 import taskBarDialog from 'admin/components/dialog/point/taskBar'
 const taskBarDialogComponent = Vue.extend(taskBarDialog)
 
@@ -98,15 +104,33 @@ const openTaskBarDialog = (propsData = {
 }
 
 export default {
-  mounted: function() {
-    this.getTaskBars()
-  },
-
   data() {
     return {
-      taskBars: Object,
+      taskBars: [],
+      oldSorts: [],
       processing: false
     }
+  },
+
+  created: function() {
+    this.getTaskBars()
+    Vue.vueDragula.options("taskbar", {
+      direction: 'vertical',
+      copy: false
+    })
+    Vue.vueDragula.eventBus.$on(
+      'dropModel',
+      (args) => {
+        let needChange = ''
+        for (var i = 0; i < this.taskBars.length; i++) {
+          if (this.oldSorts[i] != this.taskBars[i].sort) {
+            needChange += this.taskBars[i].id + '=' + this.oldSorts[i] + ','
+            this.taskBars[i].sort = this.oldSorts[i]
+          }
+        }
+        this.changeTaskBarsSort(needChange)
+      }
+    )
   },
 
   methods: {
@@ -114,8 +138,17 @@ export default {
       this.processing = true
       let result = await this.$acs.getTaskList()
       if (result.success) {
-        this.taskBars = result.taskBars
+        this.taskBars = result.tasks
+        for (var i = 0; i < this.taskBars.length; i++) {
+          this.oldSorts.push(this.taskBars[i].sort)
+        }
       }
+      this.processing = false
+    },
+
+    changeTaskBarsSort: async function(needChange) {
+      this.processing = true
+      let result = await this.$acs.changeTaskBarsSort(needChange)
       this.processing = false
     },
 
@@ -123,8 +156,8 @@ export default {
       openTaskBarDialog({
         taskBar: taskBar,
         visible: true,
-        callback: new_taskBar => {
-          this.taskBars[index] = new_taskBar
+        callback: result => {
+          this.taskBars[index] = result
         },
       })
     },
@@ -150,9 +183,10 @@ export default {
 
     toggleTaskBar: async function(taskBar) {
       this.processing = true
-      let result = await this.$acs.toggleTaskStatus(article.id,
-        taskBar.active ? this.$t('admin.point.task.unPublishOK') : this.$t(
-          'admin.point.task.publishOk'))
+      let result = await this.$acs.toggleTaskStatus({
+        task_id: taskBar.id,
+      }, taskBar.active ? this.$t('admin.point.task.unPublishOK') : this.$t(
+        'admin.point.task.publishOk'))
       this.processing = false
       if (result.success) {
         taskBar.active = !taskBar.active
@@ -162,7 +196,7 @@ export default {
     addNewTaskBar: function() {
       openTaskBarDialog({
         taskBar: {
-          id: '',
+          id: '0',
           pic: '',
           name: '',
           sub_name: '',
@@ -173,8 +207,8 @@ export default {
           app_id: this.$route.params.appId
         },
         visible: true,
-        callback: new_taskBar => {
-          this.taskBars.push(new_taskBar)
+        callback: result => {
+          this.taskBars.push(result)
         },
       })
     },
@@ -182,3 +216,30 @@ export default {
 
 }
 </script>
+<style scoped>
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+}
+
+.gu-hide {
+  display: none !important;
+}
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+</style>

@@ -36,5 +36,10 @@ defmodule Acs.Cache.CachedPMallTaskBar do
     task_bars
   end
 
+  def del(app_id) do
+    key(app_id) |> Excache.del
+    key(app_id) |> Exredis.del
+  end
+
   defp key(app_id), do: "#{@key_base}.#{app_id}"
 end

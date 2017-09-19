@@ -1,6 +1,6 @@
 <template>
   <div class="new-address">
-    <div class="address-head is-flex flex-center flex-vcentered">
+    <div class="address-head is-flex flex-center flex-vcentered is-size-medium">
       填写收获地址
     </div>
     <div class="address-content">

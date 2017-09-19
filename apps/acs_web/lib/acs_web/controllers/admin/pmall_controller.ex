@@ -138,5 +138,69 @@ defmodule AcsWeb.Admin.PMallController do
     end
   end
 
+  def get_task_list(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _params) do
+    tasks = PMalls.get_task_list(app_id)
+    conn |> json(%{success: true, tasks: tasks})
+  end
+
+  # update_task
+  def update_task(%Plug.Conn{private: %{acs_admin_id: _admin_id, acs_app_id: _app_id}} = conn, %{
+                            "id" => _id,
+                            "name" => _name,
+                            "sub_name" => _sub_name,
+                            "point" => _point, 
+                            "path" => _path,
+                            "active" => _active,
+                            "sort" => _sort
+                            } = task) do
+    case PMalls.update_task(task) do
+      {:addok, task} ->
+        conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.addSuccess"})
+      {:updateok, task} ->
+        conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.updateSuccess"})
+      :error ->
+        conn |> json(%{success: false, message: "admin.error.networkError"})
+    end
+  end
+  def update_task(conn, _) do
+    conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+  end
+
+  # toggle_article_status
+  def toggle_task_status(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, %{"task_id" => task_id}) do
+    case PMalls.toggle_task_status(task_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})
+      :ok ->
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+    end
+  end
+  def toggle_task_status(conn, _) do
+    conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+  end
+
+  # update_article_pic
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["png", "jpg", "jpeg"],
+    reformat: "jpg"] when action == :upload_task_pic
+  def upload_task_pic(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, 
+                              %{"task_id" => task_id, 
+                              "file" => %{path: image_file_path}}) do
+    case PMalls.get_task(task_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})
+
+      %TaskBar{} = task ->
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "task_pics/#{task_id}")
+        PMalls.update_task_pic(task, image_path)
+        conn |> json(%{success: true, pic: image_path})
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    end
+  end
+  def upload_task_pic(conn, _) do
+    conn |> json(%{success: false, action: "login", i18n_message: "error.server.badRequestParams"})
+  end
 
 end

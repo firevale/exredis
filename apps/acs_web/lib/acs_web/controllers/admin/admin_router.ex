@@ -151,10 +151,10 @@ defmodule AcsWeb.AdminRouter do
       post "/list_pmall_point_logs", PMallController, :list_pmall_point_logs
       post "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
 
-      post "/get_task_list", TaskController, :get_task_list
-      post "/update_task", TaskController, :update_task
-      post "/toggle_task_status", TaskController, :toggle_task_status
-      post "/upload_task_pic", TaskController, :upload_task_pic
+      post "/get_task_list", PMallController, :get_task_list
+      post "/update_task", PMallController, :update_task
+      post "/toggle_task_status", PMallController, :toggle_task_status
+      post "/upload_task_pic", PMallController, :upload_task_pic
     end
 
   end

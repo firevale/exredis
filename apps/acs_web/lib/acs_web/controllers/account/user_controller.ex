@@ -2,6 +2,7 @@ defmodule AcsWeb.UserController do
   use AcsWeb, :controller
 
   alias Utils.Password
+  alias Acs.LoginCodes
 
   plug :fetch_app_id
   plug :fetch_app
@@ -310,7 +311,7 @@ defmodule AcsWeb.UserController do
                       })
 
                       if app.restrict_login do
-                        case CachedLoginCode.get(app.id, user.id) do
+                        case LoginCodes.get_login_code(app.id, user_id: user.id) do
                           nil -> token
                           %{code: code} ->
                             %{token | login_code: code}

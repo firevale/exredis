@@ -1,6 +1,6 @@
 <template>
   <div class="my-conversion">
-    <header class=" is-flex flex-vcentered flex-left">
+    <header class="is-flex flex-vcentered flex-left is-size-medium">
       客服邮箱：<i class="icon icon-email"></i>&nbsp;jqxs@firevale.com
     </header>
     <div class="conversion-content">

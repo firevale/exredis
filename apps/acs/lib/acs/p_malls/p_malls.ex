@@ -193,6 +193,11 @@ defmodule Acs.PMalls do
     end
   end
 
+  def get_user_point(user_id) do
+    total_query = from log in PointLog, select: sum(log.point), where: log.user_id == ^user_id 
+    Repo.one!(total_query)
+  end
+
   def admin_add_pmall_point(user_id, app_id, log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
     add_point(log)

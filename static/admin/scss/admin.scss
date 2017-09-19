@@ -30,15 +30,6 @@ $fa-font-path: '~font-awesome/fonts/';
   }
 }
 
-.app-main {
-  padding-top: 50px;
-  margin-left: 180px;
-  transform: translate3d(0, 0, 0);
-  @include mobile() {
-    margin-left: 0;
-  }
-}
-
 .flex-fixed-size {
   flex-grow: 0;
   flex-shrink: 1;
@@ -49,10 +40,6 @@ $fa-font-path: '~font-awesome/fonts/';
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-}
-
-.app-content {
-  padding: 20px;
 }
 
 .footer {
@@ -70,12 +57,9 @@ $fa-font-path: '~font-awesome/fonts/';
 
 .app-navbar {
   position: fixed;
-  min-width: 100%;
+  width: 100vw;
   box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
-  z-index: 2;
-  .container {
-    margin: auto 10px;
-  }
+  z-index: 9;
   .nav-right {
     align-items: stretch;
     align-items: stretch;
@@ -142,6 +126,25 @@ $fa-font-path: '~font-awesome/fonts/';
     li a+ul {
       margin: 0 10px 0 15px;
     }
+  }
+}
+
+.app-main {
+  position: fixed;
+  top: 55px;
+  left: 180px;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+  
+  @include mobile() {
+    left: 0;
+  }
+  
+  transform: translate3d(0, 0, 0);
+
+  .app-content {
+    padding: 20px;
   }
 }
 

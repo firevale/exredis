@@ -282,8 +282,13 @@
             &:not(:last-child) {
               border-right: 1px solid $border-color;
             }
-            h1.date {
+            h1.day {
               margin: 1rem;
+              font-size: 5rem;
+              font-family: $family-sans-serif;
+            }
+            p.date{
+              color: black;
             }
             h2.yi-ji {
               margin: 1rem 0;

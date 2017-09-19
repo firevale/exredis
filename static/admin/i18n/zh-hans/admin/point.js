@@ -7,6 +7,10 @@
    inserted_at: '积分时间',
    user_id: '用户ID',
    user: '用户',
+   
+   goods: {
+    original_price: '原价',
+   },
 
    task: {
      add: '添加新任务',

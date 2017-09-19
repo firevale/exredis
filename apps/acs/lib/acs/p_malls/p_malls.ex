@@ -6,6 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  use Utils.LogAlias
 
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PointLog
@@ -84,10 +85,10 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_goods(user_id, goods) do
-    case goods.is_new do
+    case goods["is_new"] do
       true ->
         # add new
-        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods.app_id and g.id == ^goods.id)
+        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods["app_id"] and g.id == ^goods["id"])
         if(count > 0) do
           :exist
         else
@@ -95,7 +96,7 @@ defmodule Acs.PMalls do
           case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
             {:ok, new_goods} ->
               goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              CachedPMallGoods.refresh(goods.id)
+              CachedPMallGoods.refresh(goods["id"])
               {:add_ok, goods}
             {:error, %{errors: _errors}} ->
               :error
@@ -104,23 +105,23 @@ defmodule Acs.PMalls do
 
       false ->
         # update
-        case Repo.get(PMallGoods, goods.id) do
+        case Repo.get(PMallGoods, goods["id"]) do
           nil ->
             nil
 
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
-            changed = PMallGoods.changeset(mg, %{name: goods.name, 
-                                                description: goods.description, 
-                                                pic: goods.pic, 
-                                                price: goods.price, 
-                                                postage: goods.postage, 
-                                                stock: goods.stock, 
-                                                is_virtual: goods.is_virtual, 
-                                                begin_time: goods.begin_time, 
-                                                end_time: goods.end_time})
+            changed = PMallGoods.changeset(mg, %{name: goods["name"], 
+                                                description: goods["description"], 
+                                                pic: goods["pic"], 
+                                                price: goods["price"], 
+                                                postage: goods["postage"], 
+                                                stock: goods["stock"], 
+                                                is_virtual: goods["is_virtual"], 
+                                                begin_time: goods["begin_time"], 
+                                                end_time: goods["end_time"]})
             changed |> Repo.update!
-            CachedPMallGoods.refresh(goods.id)
+            CachedPMallGoods.refresh(goods["id"])
             {:update_ok, goods, changed.changes}
         end
     end
@@ -192,6 +193,11 @@ defmodule Acs.PMalls do
     end
   end
 
+  def get_user_point(user_id) do
+    total_query = from log in PointLog, select: sum(log.point), where: log.user_id == ^user_id 
+    Repo.one!(total_query)
+  end
+
   def admin_add_pmall_point(user_id, app_id, log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
     add_point(log)
@@ -211,7 +217,7 @@ defmodule Acs.PMalls do
     query = from tb in TaskBar,
               select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active, :sort]),
               where: tb.app_id == ^app_id,
-              order_by: [desc: tb.sort]
+              order_by: [asc: tb.sort]
 
     Repo.all(query)
   end

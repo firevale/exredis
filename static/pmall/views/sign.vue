@@ -14,11 +14,11 @@
             </p>
           </div>
           <div class="column is-6 has-text-centered is-relative">
-            <h1 class="date is-size-1"><strong>09</strong></h1>
-            <h3 class="is-grey">二零一七年九月
+            <h1 class="day" ><strong>{{ new Date().Format('d')}}</strong></h1>
+            <p class="date">{{solar}}
                 <br/>
                 农历{{lunar}}
-            </h3>
+            </p>
             <!-- <a class="button btn-sign"></a> -->
             <a class="button btn-signed"></a>
           </div>
@@ -72,6 +72,7 @@
   </div>
 </template>
 <script>
+import 'common/js/date'
 import chineseLunar from "chinese-lunar"
 export default {
   data() {
@@ -81,19 +82,22 @@ export default {
   },
   computed: {
     solar() {
-
+      let current = new Date()
+      var dateString = current.Format('yyyy年MM月')
+      var cnStr = '零,一,二,三,四,五,六,七,八,九'.split(",");
+      var result = '';
+      for (var i = 0; i < dateString.length; i++) {
+        var word = dateString.charAt(i)
+        var index = parseInt(word)
+        result += isNaN(index) ? word : cnStr[index]
+      }
+      return result;
     },
     lunar() {
       let current = new Date()
-      var lu = chineseLunar.solarToLunar(current)
-      var sola = chineseLunar.lunarToSolar(lu)
-      console.info(sola)
+      current.setHours(0, 0, 0, 0)
       return chineseLunar.solarToLunar(current, 'Md');
-
     },
-    test() {
-      return 'xxx'
-    }
   },
   mounted() {},
 }

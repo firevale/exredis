@@ -3,6 +3,7 @@ defmodule Acs.PMalls.TaskBar do
   import Ecto.Changeset
   alias Acs.PMalls.TaskBar
 
+  @derive {Poison.Encoder, except: [:__meta__, :app]}
 
   schema "pmall_task_bars" do
 
@@ -18,6 +19,8 @@ defmodule Acs.PMalls.TaskBar do
 
     timestamps()
   end
+
+  use Utils.Redisable
 
   @doc false
   def changeset(%TaskBar{} = task_bar, attrs) do

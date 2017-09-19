@@ -105,14 +105,6 @@
     }
   }
 
-  .header-title {
-    height: virtual-m-rem(90);
-    line-height: virtual-m-rem(90);
-    background-color: red;
-    color: $white;
-    padding-left: 1rem;
-  }
-
   .index-page {
     .header {
       flex-shrink: 0;
@@ -274,7 +266,8 @@
         flex: 0;
         margin-top: 2px;
         border: 1px solid $border-color;
-        .head-image {
+        .head-image,
+        .head-image>img {
           width: 100%;
           height: virtual-m-rem(410);
         }

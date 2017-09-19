@@ -6,6 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  use Utils.LogAlias
 
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PointLog
@@ -211,7 +212,7 @@ defmodule Acs.PMalls do
     query = from tb in TaskBar,
               select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active, :sort]),
               where: tb.app_id == ^app_id,
-              order_by: [desc: tb.sort]
+              order_by: [asc: tb.sort]
 
     Repo.all(query)
   end

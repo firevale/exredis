@@ -32,8 +32,8 @@
     }
     &.btn-more-goods {
       width: 100%;
-      height: virtual-m-rem(83);
-      background-image: url("~assets/pmall/1249_34_09.png");
+      height: 100%;
+      background-image: url("~assets/pmall/1242-2234-1_35.png") !important;
     }
     &.btn-pmall-more {
       margin: 0 auto;
@@ -157,6 +157,7 @@
       .pmall {
         padding: .5rem;
         .column {
+          position: relative;
           &:nth-child(odd) {
             padding-right: 0.3rem;
           }
@@ -166,13 +167,14 @@
           padding-bottom: 0.6rem;
         }
         .item-box {
-          background: #e1e5eb;
+          position: relative;
           height: virtual-m-rem(480);
           border: 1px solid rgba($text-grey, 0.2);
-          padding: .5rem;
+          background: $white;
           .item {
-            height: 100%;
-            width: 100%;
+            margin: .1rem;
+            padding: .5rem;
+            background: #e1e5eb;
             .image {
               background: $white;
               height: virtual-m-rem(266);
@@ -217,6 +219,7 @@
     .items {
       .item {
         margin: 0 1rem;
+        padding-top: 1rem;
         &:not(:last-child) {
           border-bottom: 1px solid rgba($text-grey, 0.2);
         }
@@ -238,6 +241,10 @@
           height: virtual-m-rem(610);
           background: white;
           border-radius: 5px;
+          margin-bottom: 1rem;
+        }
+        p.cost {
+          margin: .5rem 0;
         }
         .expired {
           width: virtual-m-rem(683);

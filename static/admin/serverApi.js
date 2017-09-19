@@ -374,6 +374,10 @@ export default {
       toggleTaskStatus(params, successMessage) {
         return post('/admin_actions/pmall/toggle_task_status', params, successMessage)
       },
+
+      changeTaskBarsSort(needChange) {
+        return post('/admin_actions/pmall/change_taskbars_sort', { needChange})
+      },
     }
   }
 }

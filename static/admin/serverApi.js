@@ -359,16 +359,20 @@ export default {
         return post('/admin_actions/pmall/get_pmall_goods_detail', params)
       },
 
-      getTaskList(params) {
-        return post('/admin_actions/task/get_task_list', params)
+      getTaskList() {
+        return post('/admin_actions/pmall/get_task_list', {})
       },
 
-      updateTask(params) {
-        return post('/admin_actions/task/update_task', params)
+      updateTask(params, successMessage) {
+        return post('/admin_actions/pmall/update_task', params, successMessage)
       },
 
-      toggleTaskStatus(params) {
-        return post('/admin_actions/task/toggle_task_status', params)
+      deleteTaskBar(params) {
+        return post('/admin_actions/pmall/delete_task', params)
+      },
+
+      toggleTaskStatus(params, successMessage) {
+        return post('/admin_actions/pmall/toggle_task_status', params, successMessage)
       },
     }
   }

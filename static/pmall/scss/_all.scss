@@ -139,9 +139,10 @@
         display: flex;
         flex-wrap: wrap;
         .task {
-          color: $text-grey;
-          flex: 0 0 33.3%;
           height: virtual-m-rem(325);
+          flex: 0 0 33.3%;
+          color: $text-grey;
+          font-size: .95rem;
           img {
             width: virtual-m-rem(144);
             height: virtual-m-rem(144);
@@ -176,6 +177,7 @@
               background: $white;
               height: virtual-m-rem(266);
               border-radius: 3px;
+              margin-bottom: .5rem;
             }
             .item-content {
               .item-title {

@@ -9,6 +9,7 @@ defmodule Acs.PMalls do
 
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PointLog
+  alias Acs.PMalls.TaskBar
 
   alias Acs.Cache.CachedPMallGoods
 
@@ -199,6 +200,56 @@ defmodule Acs.PMalls do
     goods = Repo.get(PMallGoods, goods_id)
     PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
     CachedPMallGoods.refresh(goods)
+  end
+
+  def get_task(task_id) do
+    Repo.get(TaskBar, task_id)
+  end
+
+  def get_task_list(app_id) do
+    query = from tb in TaskBar,
+              select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active]),
+              where: tb.app_id == ^app_id,
+              order_by: [desc: tb.sort]
+
+    Repo.all(query)
+  end
+
+  def update_task_pic(task, image_path) do
+    TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
+  end
+
+  # update_task
+  def update_task(task) do
+    case Repo.get(TaskBar, task.id) do
+    nil ->
+      # add new
+      case TaskBar.changeset(%TaskBar{}, task) |> Repo.insert do
+        {:ok, new_task} ->
+          task = Map.put(task, "id", new_task.id) |> Map.put("inserted_at", new_task.inserted_at) |> Map.put("sort", new_task.id)
+          TaskBar.changeset(new_task, %{sort: new_task.id}) |> Repo.update!
+          {:addok, task}
+        {:error, %{errors: _errors}} ->
+          :error
+      end
+
+    %TaskBar{} = ns ->
+      # update
+      TaskBar.changeset(ns, %{name: task.name, sub_name: task.sub_name, point: task.point, path: task.path, active: task.active, sort: task.sort}) |> Repo.update!
+      task = Map.put(task, "id", ns.id) |> Map.put("inserted_at", ns.inserted_at)
+      {:updateok, task}
+    end
+  end
+
+  def toggle_task_status(task_id) do
+    case Repo.get(TaskBar, task_id) do
+      nil ->
+        nil
+
+      %TaskBar{} = task ->
+        TaskBar.changeset(task, %{active: !task.active}) |> Repo.update!
+        :ok
+    end
   end
 
 end

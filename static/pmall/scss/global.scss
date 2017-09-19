@@ -24,6 +24,10 @@ p {
   padding: 0px;
 }
 
+h1{
+  margin: .3rem 0;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -189,7 +193,7 @@ $sizes: $size1 $size2 $size3 $size4 $size5 $size6 $size7;
   font-size: $size-large;
 }
 
-$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey);
+$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey) ("grey-dark" $grey-dark) ("grey-darker" $grey-darker);
 @each $color in $colors {
   $name: nth($color, 1);
   $color: nth($color, 2);

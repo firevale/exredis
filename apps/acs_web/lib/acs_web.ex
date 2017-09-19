@@ -103,7 +103,6 @@ defmodule AcsWeb do
       alias Acs.Cache.CachedForum
       alias Acs.Cache.CachedForumHotPost
       alias Acs.Cache.CachedNeteaseDun
-      alias Acs.Cache.CachedLoginCode
 
       alias AcsStats.Reports
       alias AcsStats.Reports.DailyReport

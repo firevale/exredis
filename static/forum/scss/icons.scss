@@ -1,0 +1,91 @@
+@import "common/scss/mixins";
+.icon {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  &.icon-jqxs {
+    width: virtual-m-rem(211);
+    height: virtual-m-rem(108);
+    background-image: url("~assets/themes/jqxs_mobile/1_03.png");
+  }
+  &.icon-user {
+    width: virtual-m-rem(60);
+    height: virtual-m-rem(60);
+    background-image: url("~assets/themes/jqxs_mobile/1_06.png");
+  }
+  &.icon-search {
+    width: virtual-m-rem(60);
+    height: virtual-m-rem(60);
+    background-image: url("~assets/themes/jqxs_mobile/1_08.png");
+  }
+  &.icon-image {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_3.png");
+  }
+  &.icon-top {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_4.png");
+  }
+  &.icon-refined {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_6.png");
+  }
+  &.icon-hot {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_7.png");
+  }
+  &.icon-vie {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_10.png");
+  }
+  &.icon-close {
+    width: virtual-m-rem(50);
+    height: virtual-m-rem(52);
+    background-image: url("~assets/themes/jqxs_mobile/Group_44.png");
+  }
+  &.icon-edit {
+    width: virtual-m-rem(53);
+    height: virtual-m-rem(53);
+    background-image: url("~assets/themes/jqxs_mobile/Group_20.png");
+  }
+  &.icon-remove {
+    width: virtual-m-rem(29);
+    height: virtual-m-rem(38);
+    background-image: url("~assets/themes/jqxs_mobile/Group_19.png");
+  }
+  &.icon-head-portrait {
+    width: virtual-m-rem(201);
+    height: virtual-m-rem(201);
+    background-image: url("~assets/themes/jqxs_mobile/19_03-2_03.png");
+  }
+  &.icon-head-portrait-small {
+    width: virtual-m-rem(130);
+    height: virtual-m-rem(130);
+    background-image: url("~assets/themes/jqxs_mobile/19_03-2_031.png");
+  }
+  &.icon-error-tip {
+    width: virtual-m-rem(38);
+    height: virtual-m-rem(38);
+    background-image: url("~assets/themes/jqxs_mobile/Group_25.png");
+  }
+  &.icon-new-reply {
+    width: virtual-m-rem(130);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_18.png");
+  }
+  &.icon-message-pic {
+    width: virtual-m-rem(63);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_33.png");
+  }
+  &.icon-message-emoji {
+    width: virtual-m-rem(48);
+    height: virtual-m-rem(48);
+    background-image: url("~assets/themes/jqxs_mobile/Group_34.png");
+  }
+}

@@ -1,0 +1,40 @@
+@function virtual-m-pixel($value) {
+  @return ($value / 1242) * 100vw;
+}
+
+@function virtual-m-rem($value) {
+  //12px
+  @return $value * 0.025161031rem;
+}
+
+@mixin bottom-line($height, $color) {
+  display: block;
+  position: absolute;
+  height: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  content: "";
+  border-bottom: $height solid $color;
+}
+
+@mixin nav-bar($color) {
+  color: $color;
+  background-image: url("~app/assets/nav-narrow@3x.png");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+  border-bottom-width: 0;
+}
+
+@mixin border-radius($val) {
+  border-radius: $val;
+  background-clip: padding-box;
+}
+
+@mixin display-flex($direction, $justify, $align) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}

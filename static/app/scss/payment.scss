@@ -1,0 +1,73 @@
+@import "~common/scss/mixins";
+
+.payment-page {
+  .content-container {
+    left: 0;
+    right: 0;
+    .media {
+      margin-left: 1rem;
+    }
+  }
+  .is-seperator {
+    font-weight: 300;
+    font-size: 1.25rem;
+    padding: 0.5rem 1rem;
+    background-color: $bottom-line-light;
+  }
+  .tile.is-payment-channel {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  .sdk-icon {
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    &.wechat {
+      background-image: url(~assets/wechatpay@1x.png);
+    }
+    &.alipay {
+      background-image: url(~assets/alipay@1x.png);
+    }
+    &.ggplay {
+      background-image: url(~assets/ggplay@1x.png);
+    }
+    @media only screen and (-o-min-device-pixel-ratio: 5/4),
+    only screen and (-webkit-min-device-pixel-ratio: 1.25),
+    only screen and (min--moz-device-pixel-ratio: 1.25),
+    only screen and (min-device-pixel-ratio: 1.25),
+    only screen and (min-resolution: 1.25dppx) {
+      .sdk-icon {
+        &.wechat {
+          background-image: url(~assets/wechatpay@2x.png);
+        }
+        &.alipay {
+          background-image: url(~assets/alipay@2x.png);
+        }
+        &.ggplay {
+          background-image: url(~assets/ggplay@2x.png);
+        }
+      }
+    }
+  }
+
+  .level-left {
+    label {
+      font-size: 1.15rem;
+      font-weight: 300;
+    }
+    label:last-child {
+      font-weight: 400;
+    }
+    label.CNY::before {
+      content: '¥ ';
+    }
+  }
+}
+
+.payment-page > .top-bar > .title-bar {
+  width: 60%;
+  left: 20%;
+}

@@ -1,0 +1,68 @@
+<template>
+  <div class="tile is-ancestor is-vertical root-container account-page">
+    <div class="top-bar flex-fixed-size">
+      <div class="title-bar">
+        <h4 class="title is-4">{{$t('account.accountTitle')}}</h4>
+      </div>
+      <nav class="nav">
+        <div class="nav-left has-text-left">
+          <span v-show="inApp" class="icon image-icon icon-back" @click="onBtnBackClicked"></span>
+        </div>
+      </nav>
+    </div>
+    <transition :name="transitionName">
+      <router-view class="content-container flex-take-rest"> </router-view>
+    </transition>
+  </div>
+</template>
+<script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
+import nativeApi from 'common/js/nativeApi'
+
+export default {
+  data: function() {
+    return {
+      inApp: window.acsConfig.inApp,
+      canGoBack: false,
+    }
+  },
+
+  created: function() {
+    if (window.acsConfig.user) {
+      this.setUserProfile(window.acsConfig.user)
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'transitionName'
+    ]),
+  },
+
+  methods: {
+    ...mapActions([
+      'setTransitionName', 'setUserProfile'
+    ]),
+
+    onBtnBackClicked: function() {
+      if (this.canGoBack) {
+        this.$router.back()
+      } else if (this.inApp) {
+        nativeApi.closeWebviewWithResult({
+          success: false
+        })
+      }
+    },
+  },
+
+  watch: {
+    '$route' (to, from) {
+      this.canGoBack = (history.state != null)
+    }
+  },
+}
+</script>

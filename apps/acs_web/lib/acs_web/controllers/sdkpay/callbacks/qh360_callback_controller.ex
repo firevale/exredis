@@ -1,0 +1,54 @@
+defmodule AcsWeb.SdkPay.Qh360CallbackController do
+  use     AcsWeb, :controller
+  require SDKQh360
+  alias   Acs.Apps
+  alias   Acs.Apps.AppSdkBinding
+
+  def purchase_callback(%Plug.Conn{private: %{acs_app: %App{} = app}} = conn, 
+                       %{"gateway_flag" => gateway_flag, 
+                         "app_ext1" => order_id, 
+                         "app_ext2" => cp_order_id,
+                         "order_id" => trans_no,
+                         "amount" => amount} = params) do
+
+    case Apps.get_app_sdk_binding(app.id, "qh360") do
+      %AppSdkBinding{binding: %{"app_secret" => app_secret}} ->
+        if SDKQh360.validate_payment(app_secret, params) do
+          case gateway_flag do 
+            "success" ->
+              case Repo.get(AppOrder, order_id) do 
+                order = %AppOrder{} ->
+                  if String.starts_with?(order.cp_order_id, cp_order_id) do
+                    {:ok, order} = AppOrder.changeset(order, %{
+                      status: AppOrder.Status.paid,
+                      paid_at: DateTime.utc_now(),
+                      transaction_id: "qh360." <> trans_no, 
+                      fee: String.to_integer(amount)
+                    }) |> Repo.update
+
+                    PaymentHelper.notify_cp(order)
+                    conn |> text("ok") 
+                 else 
+                    error "cp_order_id mismatch, ours: #{order.cp_order_id}, theirs: #{params["Note"]}"
+                    conn |> text("order id mismatch")
+                  end
+                _ -> 
+                  error "order is not found, params: #{inspect params, pretty: true}"
+                  conn |> text("firevale platform order not found")
+              end
+            _ -> 
+              info "receive qh360 payment fail notification, params: #{inspect params, pretty: true}"
+              conn |> text("gateway_flag != 'success'")
+          end
+        else 
+          error "verify qh360 payment signature failed, params: #{inspect params, pretty: true}"
+          conn |> text("mismatch signature")
+        end
+      _ -> 
+        error "receive invalid qh360 payment notifications, params: #{inspect params, pretty: true}"
+        conn |> text("invalid callback url")
+    end
+  end
+  def purchase_callback(conn, _), do: conn |> text("invalid 360 payment callback request")
+
+end

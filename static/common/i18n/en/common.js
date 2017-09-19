@@ -1,0 +1,17 @@
+ export default {
+   ok: 'OK',
+   cancel: 'Cancel',
+   add: 'Add',
+   delete: 'Delete',
+   close: 'Close',
+   save: 'Save',
+   update: 'Update',
+   return: 'Reutrn',
+   
+   bind: 'Bind',
+   camera: 'Take pictures',
+   photoLib: 'Select from photo library',
+   upload: 'Upload',
+   noMoreData: 'No more data',
+   confirmDelete: 'Confirm delete'
+ }

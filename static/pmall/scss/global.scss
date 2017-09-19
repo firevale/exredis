@@ -1,0 +1,203 @@
+@import './variables';
+html {
+  -webkit-text-size-adjust: none;
+  font-size: 14px;
+}
+
+body {
+  font-size: 1rem;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+
+a {
+  border: none;
+  outline: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+p {
+  padding: 0px;
+}
+
+h1{
+  margin: .3rem 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  div {
+    box-sizing: border-box;
+  }
+}
+
+.root-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  &.is-ancestor {
+    margin: 0;
+  }
+}
+
+.content-container {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+}
+
+.flex-fixed-size {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+.flex-take-rest {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+
+.is-flex {
+  display: flex;
+  flex-wrap: wrap;
+  &.is-row {
+    flex-direction: row;
+  }
+  &.is-column {
+    flex-direction: column;
+  }
+  &.flex-left {
+    justify-content: flex-start;
+  }
+  &.flex-center {
+    justify-content: center;
+  }
+  &.flex-right {
+    justify-content: flex-end;
+  }
+  &.flex-vcentered {
+    align-items: center;
+  }
+  .column {
+    @for $i from 1 through 12 {
+      &.is-#{$i} {
+        flex: 0 0 ($i / 12) * 100%;
+      }
+    }
+  }
+}
+
+.is-borderless {
+  border: 0;
+}
+
+.is-marginless {
+  margin: 0 !important
+}
+
+.is-paddingless {
+  padding: 0 !important;
+}
+
+.is-radiusless {
+  border-radius: 0 !important;
+}
+
+.is-shadowless {
+  box-shadow: none !important;
+}
+
+.is-clickable {
+  cursor: pointer;
+}
+
+.is-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.is-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.is-relative {
+  position: relative;
+  .is-left {
+    position: absolute;
+    left: 0;
+    &.is-bottom {
+      bottom: 0;
+    }
+  }
+  .is-right {
+    position: absolute;
+    right: 0;
+    &.is-bottom {
+      bottom: 0;
+    }
+  }
+}
+
+.has-text-centered {
+  text-align: center;
+}
+
+.has-text-left {
+  text-align: left;
+}
+
+.has-text-right {
+  text-align: right;
+}
+
+$sizes: $size1 $size2 $size3 $size4 $size5 $size6 $size7;
+@each $size in $sizes {
+  $i: index($sizes, $size);
+  .is-size-#{$i} {
+    font-size: $size !important;
+  }
+}
+
+.is-size-small {
+  font-size: $size-small;
+}
+
+.is-size-medium {
+  font-size: $size-medium;
+}
+
+.is-size-large {
+  font-size: $size-large;
+}
+
+$colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger) ("grey" $grey) ("grey-dark" $grey-dark) ("grey-darker" $grey-darker);
+@each $color in $colors {
+  $name: nth($color, 1);
+  $color: nth($color, 2);
+  .is-#{$name} {
+    color: $color !important;
+  }
+}

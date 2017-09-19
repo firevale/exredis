@@ -22,7 +22,7 @@ defmodule Acs.PMalls.TaskBar do
   @doc false
   def changeset(%TaskBar{} = task_bar, attrs) do
     task_bar
-    |> cast(attrs, [:pic, :name, :sub_name, :point, :path, :active, :sort])
+    |> cast(attrs, [:pic, :name, :sub_name, :point, :path, :active, :sort, :app_id])
     |> validate_required([:name, :path, :app_id])
   end
 end

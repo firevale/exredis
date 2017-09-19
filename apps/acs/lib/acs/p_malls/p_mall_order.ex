@@ -15,7 +15,7 @@ defmodule Acs.PMalls.PMallOrder do
     def cheat, do: 403
   end
 
-  @derive {Poison.Encoder, except: [:app, :user, :goods, :user_address, :__meta__]}
+  @derive {Poison.Encoder, except: [:app, :wcp_user, :goods, :user_address, :__meta__]}
   @primary_key false
   schema "pmall_orders" do
     field :id, :string, primary_key: true
@@ -46,7 +46,7 @@ defmodule Acs.PMalls.PMallOrder do
     field :transaction_status, :string
     
     belongs_to :app,  Acs.Apps.App, type: :string
-    belongs_to :user, Acs.Accounts.User
+    belongs_to :wcp_user, Acs.Wcp.AppWcpUser
     belongs_to :goods, Acs.PMalls.PMallGoods, type: :string
 
     timestamps()
@@ -61,9 +61,9 @@ defmodule Acs.PMalls.PMallOrder do
       :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
       :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
       :transaction_currency, :transaction_id, :transaction_status, :app_id, :fee,
-      :user_id, :address])
-    |> validate_required([:id, :platform, :app_id, :user_id, :address])
+      :wcp_user_id, :address])
+    |> validate_required([:id, :platform, :app_id, :wcp_user_id, :address])
     |> foreign_key_constraint(:app_id)
-    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:wcp_user_id)
   end
 end

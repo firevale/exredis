@@ -12,6 +12,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.TaskBar
 
   alias Acs.Cache.CachedPMallGoods
+  alias Acs.Cache.CachedPMallTaskBar
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -208,7 +209,7 @@ defmodule Acs.PMalls do
 
   def get_task_list(app_id) do
     query = from tb in TaskBar,
-              select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active]),
+              select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active, :sort]),
               where: tb.app_id == ^app_id,
               order_by: [desc: tb.sort]
 
@@ -250,6 +251,33 @@ defmodule Acs.PMalls do
         TaskBar.changeset(task, %{active: !task.active}) |> Repo.update!
         :ok
     end
+  end
+
+  def delete_task(task_id) do
+    case Repo.get(TaskBar, task_id) do
+      nil ->
+        nil
+      %TaskBar{} = task ->
+        case Repo.delete(task) do
+          {:ok, _} ->
+            CachedPMallTaskBar.del(task.app_id)
+            :ok
+
+          {:error, %{errors: _errors}} ->
+            :error
+        end
+    end
+  end
+
+  def change_taskbars_sort(need_change) do
+    changes = String.split(need_change, ",", trim: true)
+    Enum.map(changes, fn x -> 
+        [a, b] = String.split(x, "=")
+        task = Repo.get(TaskBar, String.to_integer(a)) 
+        TaskBar.changeset(task, %{sort: String.to_integer(b)}) |> Repo.update!
+        CachedPMallTaskBar.refresh(task.app_id)
+      end)
+    :ok
   end
 
 end

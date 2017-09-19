@@ -221,7 +221,7 @@ defmodule Acs.PMalls do
 
   # update_task
   def update_task(task) do
-    case Repo.get(TaskBar, task.id) do
+    case Repo.get(TaskBar, task["id"]) do
     nil ->
       # add new
       case TaskBar.changeset(%TaskBar{}, task) |> Repo.insert do
@@ -235,7 +235,7 @@ defmodule Acs.PMalls do
 
     %TaskBar{} = ns ->
       # update
-      TaskBar.changeset(ns, %{name: task.name, sub_name: task.sub_name, point: task.point, path: task.path, active: task.active, sort: task.sort}) |> Repo.update!
+      TaskBar.changeset(ns, %{name: task["name"], sub_name: task["sub_name"], point: task["point"], path: task["path"], active: task["active"], sort: task["sort"]}) |> Repo.update!
       task = Map.put(task, "id", ns.id) |> Map.put("inserted_at", ns.inserted_at)
       {:updateok, task}
     end

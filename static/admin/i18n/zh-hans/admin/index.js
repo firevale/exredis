@@ -30,6 +30,8 @@ export default {
   switchOn: '开启',
   switchOff: '关闭',
   copy: '拷贝',
+  newSwitchOn: '启用',
+  newSwitchOff: '禁用',
 
   label: {
     appId: '应用ID(APP ID)',
@@ -124,6 +126,7 @@ export default {
     noData: '暂无数据',
     noMoreData: '没有更多数据啦',
     uploadWcpFile: '上传验证文件',
+    editTaskBar: '编辑任务栏信息',
   },
 
   messages: {

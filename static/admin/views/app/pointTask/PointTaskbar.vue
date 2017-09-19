@@ -35,8 +35,8 @@
               v-for="(taskBar, index) in taskBars" :key="taskBar.id">
               <div class="column">
                  <center>
-                    <figure class="image news-pic" @click="updateArticleIcon(article, 'icon')">
-                      <img :src="article.icon ? article.icon: 'https://placehold.it/'+getSize(iconWidth, iconHeight)" style="max-height:60px; width:auto; "></img>
+                    <figure class="image news-pic" @click="updateTaskPic(taskBar)">
+                      <img :src="taskBar.pic ? taskBar.pic: 'https://placehold.it/144x144?text=144X144'" style="max-height:60px; width:auto; "></img>
                     </figure>
                   </center>
               </div>
@@ -104,7 +104,7 @@ export default {
 
   data() {
     return {
-      taskBars: Object,
+      taskBars: [],
       processing: false
     }
   },
@@ -114,7 +114,7 @@ export default {
       this.processing = true
       let result = await this.$acs.getTaskList()
       if (result.success) {
-        this.taskBars = result.taskBars
+        this.taskBars = result.tasks
       }
       this.processing = false
     },
@@ -123,8 +123,8 @@ export default {
       openTaskBarDialog({
         taskBar: taskBar,
         visible: true,
-        callback: new_taskBar => {
-          this.taskBars[index] = new_taskBar
+        callback: result => {
+          this.taskBars[index] = result
         },
       })
     },
@@ -150,7 +150,7 @@ export default {
 
     toggleTaskBar: async function(taskBar) {
       this.processing = true
-      let result = await this.$acs.toggleTaskStatus(article.id,
+      let result = await this.$acs.toggleTaskStatus(taskBar.id,
         taskBar.active ? this.$t('admin.point.task.unPublishOK') : this.$t(
           'admin.point.task.publishOk'))
       this.processing = false
@@ -162,7 +162,7 @@ export default {
     addNewTaskBar: function() {
       openTaskBarDialog({
         taskBar: {
-          id: '',
+          id: '0',
           pic: '',
           name: '',
           sub_name: '',
@@ -173,8 +173,8 @@ export default {
           app_id: this.$route.params.appId
         },
         visible: true,
-        callback: new_taskBar => {
-          this.taskBars.push(new_taskBar)
+        callback: result => {
+          this.taskBars.push(result)
         },
       })
     },

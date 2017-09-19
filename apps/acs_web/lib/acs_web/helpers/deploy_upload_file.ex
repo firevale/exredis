@@ -35,7 +35,7 @@ defmodule DeployUploadedFile do
 
     relative_path = Path.join("/images", "/#{to}")
     url_path = Path.join("/img", "/#{to}")
-    static_path = Application.app_dir(:acs, "priv/static/") 
+    static_path = Application.app_dir(:acs_web, "priv/static/") 
     {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
     dest_file_full_name = Path.join(Path.join(static_path, relative_path), dest_file_name)
     {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "80", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
@@ -59,7 +59,7 @@ defmodule DeployUploadedFile do
   #deploy_wcp_file
   def deploy_wcp_file(from: from, filename: filename) do
     if File.exists?(from) do
-      static_path = Application.app_dir(:acs, "priv/static/")
+      static_path = Application.app_dir(:acs_web, "priv/static/")
       case File.cp(from, Path.join(static_path, filename)) do 
         :ok -> {:ok, filename}
         {:error, reason} -> {:error, reason} 

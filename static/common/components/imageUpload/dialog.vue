@@ -204,7 +204,7 @@ export default {
                     unsharpAmount: 100,
                     unsharpRadius: 2,
                     unsharpThreshold: 220,
-                    alpha: this.destQuality == 'image/png'
+                    alpha: this.destFormat == 'image/png'
                   })
                   .then(result => {
                     let imageUrl = result.toDataURL()

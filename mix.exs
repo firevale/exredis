@@ -1,9 +1,9 @@
-defmodule Exwcp.Mixfile do
+defmodule Exes.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :exwcp,
+      app: :exes,
       version: "0.1.0",
       elixir: "~> 1.4",
       build_path: "../../_build",
@@ -18,21 +18,18 @@ defmodule Exwcp.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :exutils],
+      mod: {Exes.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:plug, "~> 1.4"},
-      {:httpoison, "~> 0.13"},
-      {:floki, "~> 0.18"},
-      {:exredis, in_umbrella: true},
-      {:exutils, in_umbrella: true},
-      {:excache, in_umbrella: true},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:poolboy, "~> 1.5"},
+      {:exutils, in_umbrella: true},
     ]
   end
 end

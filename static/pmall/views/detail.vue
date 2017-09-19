@@ -8,7 +8,7 @@
         <p class="cost is-flex flex-vcentered">
           <span class="is-size-3">100</span>
           <span style="margin: 0 .5rem;">积分</span>
-          <span class="is-grey-light" style="text-decoration:line-through;">78.0</span>
+          <span class="is-grey" style="text-decoration:line-through;">78.0</span>
         </p>
         <p class="expired bg-full bg-expired is-grey is-size-small">
           <span class="">有效期：&nbsp;&nbsp;&nbsp;</span>2017-09-12到2018-09-12

@@ -19,6 +19,11 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
+    goods = PMalls.get_pmall_goods_detail(goods_id)
+    conn |> json(%{success: true, goods: goods})
+  end
+
   # update_goods_pic
   plug :check_upload_image, [
     param_name: "file", 

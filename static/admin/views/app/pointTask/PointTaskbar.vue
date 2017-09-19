@@ -108,6 +108,8 @@ export default {
     return {
       taskBars: [],
       oldSorts: [],
+      picWidth: 400,
+      picHeight: 400,
       processing: false
     }
   },
@@ -191,6 +193,23 @@ export default {
       if (result.success) {
         taskBar.active = !taskBar.active
       }
+    },
+
+    updateTaskPic: function(taskBar) {
+      showImageUploadDialog(this.$i18n, {
+        postAction: '/admin_actions/pmall/upload_task_pic',
+        width: this.picWidth,
+        height: this.picHeight,
+        data: {
+          task_id: taskBar.id
+        },
+        extensions: ['png', 'jpg', 'jpeg'],
+        title: this.$t('admin.titles.uploadNewsPic', {
+          picWidth: this.picWidth,
+          picHeight: this.picHeight
+        }),
+        callback: response => taskBar.pic = response.pic,
+      })
     },
 
     addNewTaskBar: function() {

@@ -4,19 +4,19 @@
       <div class="container">
         <div class="thumb">
         </div>
-        <h1 class="is-primary">惊奇T恤</h1>
-        <p class="is-flex flex-vcentered">
+        <h1 class="is-size-large is-primary">惊奇T恤</h1>
+        <p class="cost is-flex flex-vcentered">
           <span class="is-size-3">100</span>
           <span style="margin: 0 .5rem;">积分</span>
-          <span class="is-grey-light" style="text-decoration:line-through;">78.0</span>
+          <span class="is-grey" style="text-decoration:line-through;">78.0</span>
         </p>
-        <p class="expired bg-full bg-expired is-grey-light is-size-6">
+        <p class="expired bg-full bg-expired is-grey is-size-small">
           <span class="">有效期：&nbsp;&nbsp;&nbsp;</span>2017-09-12到2018-09-12
         </p>
       </div>
     </div>
     <div class="content">
-      <h1 class="is-size-4">详细规则：</h1>
+      <h1 class="is-size-medium">详细规则：</h1>
        xxxxxxx
     </div>
     <div class="operate">

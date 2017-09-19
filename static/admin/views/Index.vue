@@ -9,7 +9,7 @@
       <article class="column is-3" v-for="app in appList" :key="app.id">
         <div class="tile is-parent">
           <figure class="image is-64x64 app-icon" @click.prevent="updateAppIcon(app)">
-            <img :src="app.icon ? app.icon : 'https://placehold.it/64x64?text=128x128'"></img>
+            <img :src="(app.icon ? app.icon : 'https://placehold.it/64x64?text=128x128') | imageStaticUrl"></img>
           </figure>
           <div class="tile is-vertical is-child" style="padding-left: 5px;">
             <h3 style="font-weight: bold"> {{app.name}} </h3>

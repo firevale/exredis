@@ -42,7 +42,7 @@
         },
         <% end %>
         show_logout: <%= @conn.params["can_log_out"] == "1" %>,
-        imagesUrl: '<%= static_url(@conn, "/images/") %>',
+        imagesUrl: '<%= "#{@cdn_scheme}://#{@cdn_domain}/acs/" %>',
         defaultAvatarUrl: '<%= static_url(@conn, "/images/default_avatar@1x.png") %>',
         isMobileAccountSupported: <%= @is_mobile_account_supported %>,
         <%= render @view_module, @view_template, assigns %>

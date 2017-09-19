@@ -9,7 +9,8 @@ defmodule DeployUploadedFile do
       file_name = "#{file_md5}.#{ext}"
       key = Path.join(["acs", path, file_name])
 
-      KSFile.put_file(src, key)
+      {:ok, _url} = KSFile.put_file(src, key)
+      {:ok, Path.join(["/", path, file_name])}
     else 
       {:error, "file #{src} not exists"}
     end

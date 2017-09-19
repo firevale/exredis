@@ -149,8 +149,6 @@ export default {
             let reader = new FileReader()
 
             reader.onloadend = f => {
-              console.log('read file: ', f)
-
               let img = new Image()
               img.onload = _ => {
                 if (this.width && img.width < this.width) {

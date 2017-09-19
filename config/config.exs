@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :exwcp, key: :value
+#     config :exutils, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:exwcp, :key)
+#     Application.get_env(:exutils, :key)
 #
 # You can also configure a 3rd-party app:
 #

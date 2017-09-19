@@ -1,3 +1,4 @@
+$border-color: rgba($text, 0.1);
 .icon {
   background-repeat: no-repeat;
   background-position: center center;
@@ -90,11 +91,9 @@
 span {
   &.title {
     font-size: $size5;
-    color: $grey;
   }
   &.subtitle {
     font-size: $size6;
-    color: $grey;
   }
 }
 
@@ -127,7 +126,7 @@ span {
     min-height: virtual-m-rem(130);
     margin: 1rem auto .5rem auto;
     padding-left: 1rem;
-    border: 1px solid rgba($text, 0.1);
+    border: 1px solid $border-color;
     border-radius: virtual-m-rem(10);
   }
   .conversion-content {
@@ -135,8 +134,18 @@ span {
     .conversion-item {
       position: relative;
       padding: 1rem 0;
-      border-bottom: 1px solid rgba($text, 0.1);
+      border-bottom: 1px solid $border-color;
       line-height: 1.5rem;
+      span {
+        &.title {
+          font-size: $size5;
+          color: $grey-dark;
+        }
+        &.subtitle {
+          font-size: $size6;
+          color: $grey;
+        }
+      }
       .is-right {
         position: absolute;
         right: 1rem;
@@ -181,7 +190,7 @@ span {
       height: 1.8rem;
       border-radius: 3px;
       &.is-primary {
-        border: 1px solid black;
+        border: 1px solid $text;
       }
     }
   }
@@ -225,6 +234,7 @@ span {
     width: 100vw;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    flex-shrink: 0;
     img {
       width: virtual-m-rem(293);
       height: virtual-m-rem(157);
@@ -233,66 +243,78 @@ span {
   .items {
     width: 98vw;
     margin: 0 auto;
-    border: 1px solid rgba($text, 0.1);
+    border: 1px solid $border-color;
+    flex-shrink: 0;
     .q-item {
       width: 100%;
       padding-top: 1rem;
-      p {
+      h1 {
         &.title {
           font-size: $size3;
         }
+      }
+      h2 {
         &.subtitle {
           text-indent: 2rem;
           padding: 0 1rem;
           font-size: $size4;
           color: $grey-dark;
+          font-weight: normal;
         }
       }
     }
     .a-item {
       flex: 1;
-      position: relative;
-      border: 1px solid rgba($text, 0.1);
-      .is-6 {
-        border-left: 1px solid rgba($text, 0.1);
-        border-right: 1px solid rgba($text, 0.1);
+      border: 1px solid $border-color;
+      .answer {
+        border-left: 1px solid $border-color;
+        border-right: 1px solid $border-color;
         border-top: none;
         border-bottom: none;
-      }
-      ul {
-        padding: 1rem 0 0 0;
-        list-style: none;
-        li {
-          padding-left: 2rem;
-          line-height: 2.2rem;
+        position: relative;
+        ul {
+          padding: .5rem 0 0 0;
+          list-style: none;
+          margin-bottom: 2.5rem;
+          li {
+            padding-left: 1rem;
+            line-height: 2.2rem;
+            span {
+              &.subtitle {
+                text-indent: .5rem;
+                font-size: $size6;
+                color: $grey-dark;
+              }
+            }
+          }
+        }
+        .answer-yes {
+          position: absolute;
+          top: - .7rem;
+          width: 100%;
+          img {
+            width: virtual-m-rem(924);
+            height: virtual-m-rem(306);
+          }
+        }
+        .answer-error {
+          position: absolute;
+          width: 100%;
+          top: - .7rem;
+          img {
+            width: virtual-m-rem(866);
+            height: virtual-m-rem(257);
+          }
         }
       }
       img {
         width: 100%;
         height: 100%;
       }
-      .answer-yes {
-        position: absolute;
-        top: - .7rem;
-        width: 100%;
-        img {
-          width: virtual-m-rem(924);
-          height: virtual-m-rem(306);
-        }
-      }
-      .answer-error {
-        position: absolute;
-        width: 100%;
-        top: - .7rem;
-        img {
-          width: virtual-m-rem(866);
-          height: virtual-m-rem(257);
-        }
-      }
     }
     .n-item {
       width: 100%;
-      height: virtual-m-rem(430);
+      height: virtual-m-rem(330);
       p {
         &.title {
           font-size: $size5;

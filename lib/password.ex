@@ -1,4 +1,5 @@
 defmodule Utils.Password do 
+  alias   Comeonin.Pbkdf2
 
 	def hash(password) do 
 		Pbkdf2.hashpwsalt(password)

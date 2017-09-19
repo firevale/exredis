@@ -8,7 +8,7 @@
       </div>
       <div class="item">
         <input class="input is-code" type="text" placeholder="请输入验证码">
-        <input class="btn-valid-code" type="button" value="请输入验证码">
+        <input class="btn-valid-code size-normal" type="button" value="请输入验证码">
       </div>
       <div class="control is-flex flex-center">
         <a class="button btn-bind-mobile"></a>

@@ -46,4 +46,14 @@ defmodule AcsWeb.PMallController do
     end
   end
 
+  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  "records_per_page" => records_per_page}) do
+    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+    wcp_user_id = 1
+    
+    point_logs = PMalls.list_my_points(app_id, wcp_user_id)
+    conn |> json(%{success: true, point_logs: point_logs})
+  end 
+
 end

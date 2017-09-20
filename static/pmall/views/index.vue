@@ -2,10 +2,11 @@
   <div class="index-page">
     <header class="header is-flex">
       <div class="header-left is-flex flex-left flex-vcentered">
-        <img src="~assets/pmall/1242-2234-1_13.png">
-        <p>
+        <img :src="wcpUser.avatar_url">
+        <p class="has-text-centered">
           我的积分
-          <br/> 100
+          <br/>
+          <span class="is-primary">{{wcpUser.points}}</span>
         </p>
       </div>
       <div class="header-right is-flex is-column flex-center">
@@ -103,12 +104,26 @@
 </template>
 <script>
 export default {
-  mounted() {},
-
-  data() {
-    return {}
+  mounted() {
+    this.getUserInfo()
   },
 
-  methods: {}
+  data() {
+    return {
+      wcpUser: {
+        avatar_url: 'https://placehold.it/64x64?text=64x64',
+        points: 0
+      }
+    }
+  },
+
+  methods: {
+    async getUserInfo() {
+      let result = await this.$acs.getUserInfo()
+      if (result.success) {
+        this.wcpUser = result.wcp_user
+      }
+    }
+  }
 }
 </script>

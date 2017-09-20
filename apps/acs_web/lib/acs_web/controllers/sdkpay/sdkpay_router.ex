@@ -1,7 +1,7 @@
 defmodule AcsWeb.SdkPayRouter do
   use AcsWeb, :router
 
-  post "/default_callback", Acs.FVSdkController, :default_callback
+  post "/default_callback", AcsWeb.FVSdkController, :default_callback
 
   scope "/", AcsWeb.SdkPay do
     pipe_through :sdkpay

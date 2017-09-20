@@ -2,7 +2,7 @@
 -name <%= release_name %>@127.0.0.1
 
 ## Cookie for distributed erlang
--setcookie '(jwq4k7&w`~QqXMfxo6j~p;o6{szt^}[LF}>_<X>T,{BJ/*>D9@&HJ$)]yJw$!gS'
+-setcookie acs 
 
 ## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
 ## (Disabled by default..use with caution!)

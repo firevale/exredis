@@ -2,6 +2,7 @@ defmodule AcsWeb.AppleStoreController do
   use    AcsWeb, :controller
 
   require SDKApple
+  alias   Acs.Apps
 
   # 兼容旧版本fvsdk
   def add_order(%Plug.Conn{private: %{acs_session_user: %User{} = user,
@@ -15,8 +16,8 @@ defmodule AcsWeb.AppleStoreController do
                   "cp_order_id" => cp_order_id,
                   "currency_code" => currency,
                   "version" => "2"} = params) do 
-    case app.goods[goods_id |> String.to_atom] do 
-      %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
+    case Apps.get_app_goods(goods_id) do 
+      %{product_ids_map: %{"applestore" => product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
             _deliver_apple_store_order(%{conn: conn, 
@@ -111,8 +112,8 @@ defmodule AcsWeb.AppleStoreController do
                   "price_in_cent" => amount,
                   "cp_order_id" => cp_order_id,
                   "currency_code" => currency}) do 
-    case app.goods[goods_id |> String.to_atom] do 
-      %{product_ids: %{applestore: product_id}, price: _price, name: goods_name} -> 
+    case Apps.get_app_goods(goods_id) do 
+      %{product_ids_map: %{"applestore" => product_id}, price: _price, name: goods_name} -> 
         case SDKApple.verify_receipt(receipt) do 
           {:ok, %{product_id: ^product_id, transaction_id: ^transaction_id, receipt_type: receipt_type}} ->
             _deliver_apple_store_order(%{conn: conn, 

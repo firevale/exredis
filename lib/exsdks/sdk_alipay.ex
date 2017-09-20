@@ -96,8 +96,8 @@ defmodule SDKAlipay do
     if query["res_data"] do
       res_data = case @config[:sign_type] do
                    "0001" ->
-                      key_file = Application.app_dir(:acs, @config[:private_key])
-                      Crypto.rsa_priv_decrypt(key_file, query["res_data"])
+                      # key_file = Application.app_dir(:acs, @config[:private_key])
+                      Crypto.rsa_priv_decrypt(@config[:private_key], query["res_data"])
                    _ ->
                      query["res_data"]
                  end
@@ -137,8 +137,8 @@ defmodule SDKAlipay do
     notify_data
       = case sec_id do
           "0001" ->
-            key_file = Application.app_dir(:acs, @config[:private_key])
-            Crypto.rsa_priv_decrypt(key_file, notify_data)
+            # key_file = Application.app_dir(:acs, @config[:private_key])
+            Crypto.rsa_priv_decrypt(@config[:private_key], notify_data)
 
           _ ->
             notify_data
@@ -175,8 +175,8 @@ defmodule SDKAlipay do
         sign == Crypto.md5_sign("#{param_string}#{@config[:key]}")
 
       x when x in ["RSA", "0001"] ->
-        key_file = Application.app_dir(:acs, @config[:alipay_public_key])
-        Crypto.rsa_public_verify(key_file, param_string, sign)
+        # key_file = Application.app_dir(:acs, @config[:alipay_public_key])
+        Crypto.rsa_public_verify(@config[:alipay_public_key], param_string, sign)
 
       _ ->
         false
@@ -195,8 +195,8 @@ defmodule SDKAlipay do
       "MD5" ->
         Crypto.md5_sign("#{make_param_string(params)}#{@config[:key]}")
       x when x in ["0001", "RSA"] ->
-        key_file = Application.app_dir(:acs, @config[:private_key])
-        Crypto.rsa_priv_sign(key_file, make_param_string(params))
+        # key_file = Application.app_dir(:acs, @config[:private_key])
+        Crypto.rsa_priv_sign(@config[:private_key], make_param_string(params))
       _ ->
         "invald"
     end

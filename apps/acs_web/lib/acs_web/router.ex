@@ -1,5 +1,6 @@
 defmodule AcsWeb.Router do
   use AcsWeb, :router
+  use Plugsnag
   
   scope "/", AcsWeb do
     pipe_through :browser # Use the default browser stack

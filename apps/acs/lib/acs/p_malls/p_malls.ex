@@ -189,7 +189,7 @@ defmodule Acs.PMalls do
 
     query = 
       from pl in PointLog,
-        select: map(pl, [:id, :log_type, :point, :memo,  :inserted_at]),
+        select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
         limit: ^records_per_page,
         where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id,
         offset: ^((page - 1) * records_per_page),

@@ -6,7 +6,7 @@
         <p class="has-text-centered">
           我的积分
           <br/>
-          <span class="is-primary">{{wcpUser.points}}</span>
+          <span class="is-primary">{{points}}</span>
         </p>
       </div>
       <div class="header-right is-flex is-column flex-center">
@@ -103,27 +103,36 @@
   </div>
 </template>
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 export default {
-  mounted() {
-    this.getUserInfo()
-  },
+  mounted() {},
 
   data() {
-    return {
-      wcpUser: {
-        avatar_url: 'https://placehold.it/64x64?text=64x64',
-        points: 0
+    return {}
+  },
+  computed: {
+    ...mapGetters([
+      'wcp_user',
+      'points',
+    ]),
+    wcpUser() {
+      if (this.wcp_user) {
+        return this.wcp_user
+      } else {
+        return {
+          avatar_url: 'https://placehold.it/64x64?text=64x64'
+        }
       }
     }
   },
 
   methods: {
-    async getUserInfo() {
-      let result = await this.$acs.getUserInfo()
-      if (result.success) {
-        this.wcpUser = result.wcp_user
-      }
-    }
+    ...mapActions([
+      'setTransitionName',
+    ])
   }
 }
 </script>

@@ -1,9 +1,10 @@
 import Vue from 'vue'
 
 const transitionName = state => state.app.transitionName
-const userInfo = state => state.user
-
+const wcp_user = state => state.user.wcp_user
+const points = state => state.user.points
 export {
   transitionName,
-  userInfo,
+  wcp_user,
+  points
 }

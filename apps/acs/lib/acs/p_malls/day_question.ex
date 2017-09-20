@@ -5,7 +5,7 @@ defmodule Acs.PMalls.DayQuestion do
 
   schema "pmall_day_questions" do
     field :question, :string
-    field :correct, :integer, default: 0
+    field :correct, :string, size: 200
     field :a1, :string, size: 200
     field :a2, :string, size: 200
     field :a3, :string, size: 200

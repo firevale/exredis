@@ -14,7 +14,7 @@ defmodule AcsWeb.Router do
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
 
     get  "/pmall", PageController, :show_pmall_page
-    get  "/pmall/:pmall_id/*path", PageController, :show_pmall_page
+    get  "/pmall/:app_id/*path", PageController, :show_pmall_page
 
     get  "/bbs", PageController, :show_bbs_page
     get  "/bbs/index", PageController, :show_bbs_page
@@ -128,6 +128,10 @@ defmodule AcsWeb.Router do
 
   scope "/mall_actions", AcsWeb do
     forward "/", MallRouter
+  end
+
+  scope "/pmall_actions", AcsWeb do
+    forward "/", PMallRouter
   end
 
   # Other scopes may use custom stacks.

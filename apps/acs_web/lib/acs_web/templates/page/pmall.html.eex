@@ -23,8 +23,7 @@
         platform: '<%= @conn.private[:acs_platform] %>',
         browser: '<%= @conn.private[:acs_browser] %>',
         locale: '<%= @conn.private[:acs_locale] %>',
-        appId: '<%= @conn.private[:acs_app_id] %>',
-        deviceId: '<%= @conn.private[:acs_device_id] %>',
+        appId: '<%= @conn.params["app_id"]%>',
         accessToken: '<%= @conn.private[:acs_access_token] %>',
         <%= if !is_nil(user) do %>
         user: {

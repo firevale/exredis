@@ -11,10 +11,7 @@
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
-            <div class="column">
-              <p>{{ $t('admin.point.question.id') }}</p>
-            </div>
-            <div class="column">
+            <div class="column is-6">
               <p>{{ $t('admin.point.question.question') }}</p>
             </div>
             <div class="column">
@@ -33,10 +30,7 @@
           <div v-if="questions">
             <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="questions && questions.length > 0"
               v-for="(question, index) in questions" :key="question.id">
-              <div class="column">
-                <p>{{ question.id }}</p>
-              </div>
-              <div class="column">
+              <div class="column is-6">
                 <p>{{ question.question }}</p>
               </div>
               <div class="column">
@@ -114,7 +108,7 @@ export default {
         records_per_page: recordsPerPage
       })
       if (result.success) {
-        this.total = result.total_page
+        this.total = result.total
         this.page = page
         this.questions = result.questions
       }
@@ -170,7 +164,7 @@ export default {
         },
         visible: true,
         callback: result => {
-          this.questions.push(result)
+          this.questions.unshift(result)
         },
       })
     },

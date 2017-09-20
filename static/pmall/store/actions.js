@@ -2,50 +2,21 @@ import Vue from 'vue'
 import * as utils from 'common/js/utils'
 import * as types from './mutationTypes'
 
-export const setUserProfile = ({
+export const setWcpUser = ({
   commit
-}, user) => {
-  commit(types.SET_USER_PROFILE, user)
+}, wcp_user) => {
+  commit(types.SET_WCP_USER, wcp_user)
 }
 
-export const updateUserMobile = ({
+export const setUserPoints = ({
   commit
-}, mobile) => {
-  commit(types.UPDATE_USER_MOBILE, mobile)
+}, points) => {
+  commit(types.SET_USER_POINT, points)
 }
 
-export const updateUserEmail = ({
+export const addUserPoints = ({
   commit
-}, email) => {
-  commit(types.UPDATE_USER_EMAIL, email)
+}, points) => {
+  commit(types.ADD_USER_POINT, points)
 }
 
-export const updateUserNickname = ({
-  commit
-}, nickname) => {
-  commit(types.UPDATE_USER_NICKNAME, nickname)
-}
-
-export const updateUserAvatar = ({
-  commit
-}, avatar_url) => {
-  commit(types.UPDATE_USER_AVATAR, avatar_url)
-}
-
-export const updateUserResidentInfo = ({
-  commit
-}, residentInfo) => {
-  commit(types.UPDATE_USER_RESIDENT_INFO, residentInfo)
-}
-
-export const updateUserPostCount = ({
-  commit
-}, postCount) => {
-  commit(types.UPDATE_USER_POST_COUNT, postCount)
-}
-
-export const decrUserPostCount = ({
-  commit
-}) => {
-  commit(types.DECR_USER_POST_COUNT)
-}

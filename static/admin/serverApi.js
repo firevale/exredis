@@ -379,8 +379,8 @@ export default {
         return post('/admin_actions/pmall/change_taskbars_sort', { needChange})
       },
 
-      listPmallQuestions(params, successMessage) {
-        return post('/admin_actions/pmall/list_pmall_questions', params, successMessage)
+      listPmallQuestions(params) {
+        return post('/admin_actions/pmall/list_pmall_questions', params)
       },
 
       updatePmallQuestion(params, successMessage) {

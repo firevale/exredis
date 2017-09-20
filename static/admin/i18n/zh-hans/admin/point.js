@@ -36,8 +36,18 @@
    },
 
    question: {
+    id: '编号',
+    question: '问题',
+    reads: '答题次数',
+    bingo: '正确次数',
+    add: '添加新问答',
+    edit: '编辑',
+    delete: '删除',
     addSuccess: '添加成功',
     updateSuccess: '修改成功',
     questionNotFound: '问题没有找到',
+    confirmDelete: '您确定要删除该问题么?',
+    configUpdated: '问题已成功更新',
+    configDeleted: '问题已成功删除',
    }
  }

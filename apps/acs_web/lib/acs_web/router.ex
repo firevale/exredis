@@ -14,7 +14,7 @@ defmodule AcsWeb.Router do
     get  "/forum/:forum_id/*path", PageController, :show_forum_page
 
     get  "/pmall", PageController, :show_pmall_page
-    get  "/pmall/:pmall_id/*path", PageController, :show_pmall_page
+    get  "/pmall/:app_id/*path", PageController, :show_pmall_page
 
     get  "/bbs", PageController, :show_bbs_page
     get  "/bbs/index", PageController, :show_bbs_page

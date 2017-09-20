@@ -61,8 +61,15 @@ export default {
       getUserInfo() {
         return post('/pmall_actions/get_user_info')
       },
-      listMyPoints() {
-        return post('/pmall_actions/list_my_points')
+
+      cancelListMyPoints() {
+        if (typeof this.tokens.listMyPoints === 'function') {
+          this.tokens.listMyPoints()
+        }
+      },
+      listMyPoints(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
+        return post('/pmall_actions/list_my_points',params, undefined, cancelToken)
       },
     }
   }

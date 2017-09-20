@@ -11,7 +11,7 @@
       </div>
       <div class="header-right is-flex is-column flex-center">
         <router-link class="button btn-point" :to="{name: 'my_point'}" style="margin-bottom:1rem"></router-link>
-        <router-link class="button btn-my-conversion" :to="{name: 'my_conversion'}"></router-link>
+        <router-link class="button btn-my-exchange" :to="{name: 'my_exchange'}"></router-link>
       </div>
     </header>
     <div class="panel">

@@ -24,9 +24,9 @@ export default function(VueRouter) {
           component: require('../views/draw.vue')
         },
         {
-          path: 'my_conversion',
-          name: 'my_conversion',
-          component: require('../views/myConversion.vue')
+          path: 'my_exchange',
+          name: 'my_exchange',
+          component: require('../views/myExchange.vue')
         },
         {
           path: 'new_address',

@@ -13,3 +13,6 @@ config :exservice, KSFile,
   bucket: "platform",
   cdn_domain: "pfcdn.firevale.com",
   cdn_scheme: "https"
+
+config :bugsnag, :release_stage, "ksbj" 
+config :bugsnag, use_logger: true

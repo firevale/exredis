@@ -51,8 +51,8 @@ defmodule AcsWeb.PMallController do
     app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id = 1
-    
-    point_logs = PMalls.list_my_points(app_id, wcp_user_id)
+
+    point_logs = PMalls.list_my_points(app_id, wcp_user_id, page, records_per_page)
     conn |> json(%{success: true, point_logs: point_logs})
   end 
 

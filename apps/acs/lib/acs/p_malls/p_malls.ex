@@ -112,14 +112,14 @@ defmodule Acs.PMalls do
 
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
-            changed = PMallGoods.changeset(mg, %{name: goods["name"], 
-                                                description: goods["description"], 
-                                                pic: goods["pic"], 
-                                                price: goods["price"], 
-                                                postage: goods["postage"], 
-                                                stock: goods["stock"], 
-                                                is_virtual: goods["is_virtual"], 
-                                                begin_time: goods["begin_time"], 
+            changed = PMallGoods.changeset(mg, %{name: goods["name"],
+                                                description: goods["description"],
+                                                pic: goods["pic"],
+                                                price: goods["price"],
+                                                postage: goods["postage"],
+                                                stock: goods["stock"],
+                                                is_virtual: goods["is_virtual"],
+                                                begin_time: goods["begin_time"],
                                                 end_time: goods["end_time"]})
             changed |> Repo.update!
             CachedPMallGoods.refresh(goods["id"])
@@ -187,11 +187,28 @@ defmodule Acs.PMalls do
     totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
     total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
-    query = 
+    query =
       from pl in PointLog,
         select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
         limit: ^records_per_page,
         where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id,
+        offset: ^((page - 1) * records_per_page),
+        order_by: [desc: pl.id]
+
+    logs = Repo.all(query)
+    {:ok, logs, total_page}
+  end
+
+  def list_my_exchanges(app_id, wcp_user_id, page, records_per_page) do
+    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
+    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+
+    query =
+      from pl in PointLog,
+        select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
+        limit: ^records_per_page,
+        where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id,
+        # where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods",
         offset: ^((page - 1) * records_per_page),
         order_by: [desc: pl.id]
 
@@ -211,7 +228,7 @@ defmodule Acs.PMalls do
   end
 
   def get_user_point(user_id) do
-    total_query = from log in PointLog, select: sum(log.point), where: log.user_id == ^user_id 
+    total_query = from log in PointLog, select: sum(log.point), where: log.user_id == ^user_id
     Repo.one!(total_query)
   end
 
@@ -294,9 +311,9 @@ defmodule Acs.PMalls do
 
   def change_taskbars_sort(need_change) do
     changes = String.split(need_change, ",", trim: true)
-    Enum.map(changes, fn x -> 
+    Enum.map(changes, fn x ->
         [a, b] = String.split(x, "=")
-        task = Repo.get(TaskBar, String.to_integer(a)) 
+        task = Repo.get(TaskBar, String.to_integer(a))
         TaskBar.changeset(task, %{sort: String.to_integer(b)}) |> Repo.update!
         CachedPMallTaskBar.refresh(task.app_id)
       end)
@@ -332,9 +349,9 @@ defmodule Acs.PMalls do
 
     %DayQuestion{} = q ->
       # update
-      changed = DayQuestion.changeset(q, %{question: question["question"], correct: question["correct"], 
-                                    a1: question["a1"], a2: question["a2"], a3: question["a3"], 
-                                    a4: question["a4"], a5: question["a5"], a6: question["a6"]}) 
+      changed = DayQuestion.changeset(q, %{question: question["question"], correct: question["correct"],
+                                    a1: question["a1"], a2: question["a2"], a3: question["a3"],
+                                    a4: question["a4"], a5: question["a5"], a6: question["a6"]})
       changed |> Repo.update!
       question = Map.put(question, "id", q.id)
       {:updateok, question, changed.changes}

@@ -59,4 +59,18 @@ defmodule AcsWeb.PMallController do
      end
   end 
 
+  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  "records_per_page" => records_per_page}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+    wcp_user_id = 1
+
+    result = PMalls.list_my_exchanges(app_id, wcp_user_id, page, records_per_page)
+    case result do
+      {:ok, point_logs, total} ->
+        conn |> json(%{success: true, point_logs: point_logs, total: total})
+      _ ->
+        conn |> json(%{success: false})
+     end
+  end 
+
 end

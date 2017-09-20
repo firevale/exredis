@@ -11,6 +11,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PointLog
   alias Acs.PMalls.TaskBar
+  alias Acs.PMalls.DayQuestion
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -284,6 +285,59 @@ defmodule Acs.PMalls do
         CachedPMallTaskBar.refresh(task.app_id)
       end)
     :ok
+  end
+
+  def list_pmall_questions(app_id, page, records_per_page) do
+    total = Repo.one!(from q in DayQuestion, select: count(1), where: q.app_id == ^app_id)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from q in DayQuestion,
+      where: q.app_id == ^app_id,
+      order_by: [desc: q.inserted_at],
+      limit: ^records_per_page,
+      offset: ^((page - 1) * records_per_page),
+      select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo])
+
+    questions = Repo.all(query)
+    {:ok, questions, total_page}
+  end
+
+  def update_pmall_question(question) do
+    case Repo.get(DayQuestion, question["id"]) do
+    nil ->
+      # add new
+      case DayQuestion.changeset(%DayQuestion{}, question) |> Repo.insert do
+        {:ok, new_question} ->
+          question = Map.put(question, "id", new_question.id)
+          {:addok, question}
+        {:error, %{errors: _errors}} ->
+          :error
+      end
+
+    %DayQuestion{} = q ->
+      # update
+      changed = DayQuestion.changeset(q, %{question: question["question"], correct: question["correct"], 
+                                    a1: question["a1"], a2: question["a2"], a3: question["a3"], 
+                                    a4: question["a4"], a5: question["a5"], a6: question["a6"]}) 
+      changed |> Repo.update!
+      question = Map.put(question, "id", q.id)
+      {:updateok, question, changed.changes}
+    end
+  end
+
+  def delete_pmall_question(question_id) do
+    case Repo.get(DayQuestion, question_id) do
+      nil ->
+        nil
+      %DayQuestion{} = question ->
+        case Repo.delete(question) do
+          {:ok, _} ->
+            :ok
+
+          {:error, %{errors: _errors}} ->
+            :error
+        end
+    end
   end
 
 end

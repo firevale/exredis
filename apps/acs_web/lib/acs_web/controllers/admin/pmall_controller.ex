@@ -227,4 +227,47 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
   end
 
+  def list_pmall_questions(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                                      %{"page" => page, 
+                                      "records_per_page" => records_per_page}) do
+    {:ok, questions, total_page} = PMalls.list_pmall_questions(app_id, page, records_per_page)
+    conn |> json(%{success: true, questions: questions, total: total_page})
+  end
+
+  def update_pmall_question(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
+                "id" => _id,
+                "app_id" => _app_id,
+                "question" => _question,
+                "correct" => _correct,
+                "a1" => _a1,
+                "a2" => _a2,
+                "a3" => _a3,
+                "a4" => _a4,
+                "a5" => _a5,
+                "a6" => _a6} = question) do
+    case PMalls.update_pmall_question(question) do
+      {:add_ok, question} ->
+        Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", question)
+        conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.addSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+      {:update_ok, question, changes} ->
+        Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", changes)
+        conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.updateSuccess"})
+    end
+  end
+
+  def delete_pmall_question(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+                   %{"question_id" => question_id} = params) do
+    case PMalls.delete_pmall_question(question_id)do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.question.questionNotFound"})
+      :ok ->
+        Admin.log_admin_operation(user_id, app_id, "delete_pmall_question", params)
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "admin.error.networkError"})
+    end
+  end
+
 end

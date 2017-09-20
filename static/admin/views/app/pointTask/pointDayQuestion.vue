@@ -170,7 +170,7 @@ export default {
         },
         visible: true,
         callback: result => {
-          this.questions.push(result)
+          this.questions.unshift(result)
         },
       })
     },

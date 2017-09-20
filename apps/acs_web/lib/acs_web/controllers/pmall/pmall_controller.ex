@@ -1,6 +1,9 @@
 defmodule AcsWeb.PMallController do
   use AcsWeb, :controller
 
+  alias Acs.Wcp
+  alias Acs.Accounts
+
   plug :fetch_app_id
   plug :fetch_access_token
   plug :fetch_session_user_id
@@ -72,5 +75,48 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false})
      end
   end 
+
+  def bind_mobile(conn, %{"mobile" => mobile, "verify_code" => verify_code}) do
+    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+
+    case verify_code do
+      "12345" ->
+        case Wcp.get_app_wcp_user(app_id, openid: open_id) do
+          nil ->
+            conn |> json(%{success: false, message: "invalid request params"})
+
+          %AppWcpUser{} = wcp_user ->
+            if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
+              new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
+              Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
+            else
+              case Accounts.get_user(wcp_user.user_id) do
+                %User{} = user ->
+                  Accounts.update_user!(user, %{mobile: mobile})
+                  conn |> json(%{success: true})
+              end
+            end
+            conn |> json(%{success: true})
+        end
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
+    end
+  end
+
+  def insert_address(conn, %{
+                "name" => _name,
+                "mobile" => _mobile,
+                "area" => _area,
+                "address" => _address,
+                "area_code" => _area_code} = us_address) do
+    user_id = 1
+    case Accounts.insert_address(user_id, us_address) do
+      {:ok, us_address} ->
+        conn |> json(%{success: true, address: us_address, i18n_message: "pmall.address.addSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+    end
+  end
 
 end

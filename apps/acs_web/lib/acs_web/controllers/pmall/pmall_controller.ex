@@ -88,8 +88,10 @@ defmodule AcsWeb.PMallController do
 
           %AppWcpUser{} = wcp_user ->
             if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
-              new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
-              Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
+              Repo.transaction(fn ->
+                new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
+                Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
+              end)
             else
               case Accounts.get_user(wcp_user.user_id) do
                 %User{} = user ->

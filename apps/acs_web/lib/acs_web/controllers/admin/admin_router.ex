@@ -157,6 +157,10 @@ defmodule AcsWeb.AdminRouter do
       post "/toggle_task_status", PMallController, :toggle_task_status
       post "/upload_task_pic", PMallController, :upload_task_pic
       post "/change_taskbars_sort", PMallController, :change_taskbars_sort
+
+      post  "/list_pmall_questions", PMallController, :list_pmall_questions
+      post  "/update_pmall_question", PMallController, :update_pmall_question
+      post  "/delete_pmall_question", PMallController, :delete_pmall_question
     end
 
   end

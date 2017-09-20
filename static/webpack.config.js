@@ -10,6 +10,8 @@ var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const projectRoot = path.resolve(__dirname, './')
 
+var publicPath = process.env.PUBLIC_PATH || "/"
+
 var isProduction = function() {
   return process.env.NODE_ENV === 'production'
 }
@@ -168,14 +170,35 @@ module.exports = {
         use: 'css-loader!postcss-loader!stylus-loader'
       })
     }, {
-      test: /\.(jpe?g|png|gif|svg)$/,
-      use: "url-loader?limit=4096&name=/images/[name].[ext]"
+      test: /\.(jpe?g|png|gif|webp)$/,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 4096,
+          name: 'images/[name]-[hash].[ext]',
+          publicPath: publicPath,
+        }
+      }]
     }, {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      use: "url-loader?limit=4096&minetype=application/font-woff&name=/fonts/[name].[ext]"
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 4096,
+          mimetype: 'application/font-woff',
+          name: 'fonts/[name]-[hash].[ext]',
+          publicPath: publicPath,
+        }
+      }]
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      use: "file-loader?name=/fonts/[name].[ext]"
+      use: [{
+        loader: 'file-loader',
+        options: {
+          name: 'fonts/[name]-[hash].[ext]',
+          publicPath: publicPath,
+        }
+      }]
     }, ]
   },
 

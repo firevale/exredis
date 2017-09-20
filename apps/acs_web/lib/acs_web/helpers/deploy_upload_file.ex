@@ -1,22 +1,16 @@
 defmodule DeployUploadedFile do 
 
-  def cp_file_to_md5_name(src, dest, ext) do 
+  alias Exservice.KSFile
+
+  def cp_file_to_md5_name(src, path, ext) do 
     if File.exists?(src) do 
-      case File.mkdir_p!(dest) do 
-        :ok ->
-          {md5sum_result, 0} = System.cmd("md5sum", [src])
-          [file_md5 | _] = String.split(md5sum_result)
-          file_name = "#{file_md5}.#{ext}"
-          case File.cp(src, Path.join(dest, file_name)) do 
-            :ok -> 
-              AcsWeb.LazyTinypng.add_to_list(Path.join(dest, file_name))
-              {:ok, file_name}
-            {:error, reason} -> 
-              {:error, reason} 
-          end
-        {:error, reason} -> 
-          {:error, reason} 
-      end
+      {md5sum_result, 0} = System.cmd("md5sum", [src])
+      [file_md5 | _] = String.split(md5sum_result)
+      file_name = "#{file_md5}.#{ext}"
+      key = Path.join(["acs", path, file_name])
+
+      {:ok, _url} = KSFile.put_file(src, key)
+      {:ok, Path.join(["/", path, file_name])}
     else 
       {:error, "file #{src} not exists"}
     end
@@ -34,21 +28,8 @@ defmodule DeployUploadedFile do
     end
 
     relative_path = Path.join("/images", "/#{to}")
-    url_path = Path.join("/img", "/#{to}")
-    static_path = Application.app_dir(:acs_web, "priv/static/") 
-    {:ok, dest_file_name} = cp_file_to_md5_name(from, Path.join(static_path, relative_path), ext)
-    dest_file_full_name = Path.join(Path.join(static_path, relative_path), dest_file_name)
-    {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "80", "-define", "webp:lossless=false", dest_file_full_name <> ".webp"])
-
-    if opts[:low_quality] do 
-      low_quality_file_name = Path.rootname(dest_file_full_name) <> ".lq.jpg" 
-      File.cp!(dest_file_full_name, low_quality_file_name)
-      {_, 0} = System.cmd("mogrify", ["-background", "white", "-alpha", "remove", "-quality", "5", "-format", "jpg", low_quality_file_name])
-      {_, 0} = System.cmd("convert", [dest_file_full_name, "-quality", "1", "-define", "webp:lossless=false", low_quality_file_name <> ".webp"])
-    end
-
-    path = Path.join(url_path, "/#{dest_file_name}")
-    {:ok, path, width, height}
+    {:ok, url} = cp_file_to_md5_name(from, relative_path, ext)
+    {:ok, url, width, height}
   end
 
   def deploy_image_file(from: from, to: to) do 

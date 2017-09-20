@@ -427,11 +427,16 @@ defmodule AcsWeb.ForumController do
     conn |> put_private(:check_txt, check_out)
   end
 
+  @ksfile_cfg  Application.get_env(:exservice, KSFile, [cdn_domain: "",
+                                                        cdn_scheme: "http"])
+  @cdn_scheme  @ksfile_cfg[:cdn_scheme]
+  @cdn_domain  @ksfile_cfg[:cdn_domain]  
+
   # check image by netease dun
   defp check_img(conn, image_path) do
     image_path = case String.starts_with?(String.downcase(image_path), "http") do
       true -> image_path
-      false -> static_url(conn, String.replace(image_path, "/img/", "/images/"))
+      false -> Path.join(["#{@cdn_scheme}://#{@cdn_domain}/acs/", image_path])
     end
 
     info "check_image: #{image_path}"

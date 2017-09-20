@@ -149,8 +149,6 @@ export default {
             let reader = new FileReader()
 
             reader.onloadend = f => {
-              console.log('read file: ', f)
-
               let img = new Image()
               img.onload = _ => {
                 if (this.width && img.width < this.width) {
@@ -204,7 +202,7 @@ export default {
                     unsharpAmount: 100,
                     unsharpRadius: 2,
                     unsharpThreshold: 220,
-                    alpha: this.destQuality == 'image/png'
+                    alpha: this.destFormat == 'image/png'
                   })
                   .then(result => {
                     let imageUrl = result.toDataURL()

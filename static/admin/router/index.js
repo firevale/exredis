@@ -16,11 +16,11 @@ export default new Router({
     children: [{
       path: 'index',
       name: 'Index',
-      component: require('../views/Index'),
+      component: require('../views/index'),
     }, {
       path: 'settings',
       name: 'Settings',
-      component: require('../views/Settings')
+      component: require('../views/settings')
     }, {
       path: 'new_app',
       name: 'NewApp',

@@ -49,6 +49,7 @@
         isFbLoginSupported: <%= isFbLoginSupported %>,
         isWechatLoginSupported: <%= isWechatLoginSupported %>,
         obtainCodeUrl: '<%= obtainCodeUrl %>',
+        imagesUrl: '<%= "#{@cdn_scheme}://#{@cdn_domain}/acs/" %>',
       }
     </script>
     <script src="<%= static_url(@conn, "/js/login_commons.js") %>"></script>

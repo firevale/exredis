@@ -24,7 +24,7 @@ defmodule AcsWeb.Mixfile do
   def application do
     [
       mod: {AcsWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :bugsnag, :runtime_tools]
     ]
   end
 
@@ -47,6 +47,7 @@ defmodule AcsWeb.Mixfile do
       {:cors_plug, "~> 1.4"},
       {:mogrify, "~> 0.5"},
       {:des_ecb3, github: "xbinxu/des_ecb3"},
+      {:plugsnag, "~> 1.3.0"},
 
       {:acs, in_umbrella: true},
       {:acs_stats, in_umbrella: true},

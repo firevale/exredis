@@ -5,6 +5,7 @@ defmodule AcsWeb.PMallRouter do
     pipe_through :pmall
 
     post   "/get_user_info", PMallController, :get_user_info
+    post   "/list_my_points", PMallController, :list_my_points
     
   end
 

@@ -34,7 +34,6 @@ defmodule AcsWeb.PMallController do
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     # user = Accounts.get_user()
     # point = PMalls.get_user_point(user_id)
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     case CachedAppWcpUser.get(app_id, open_id) do
       %AppWcpUser{} = user ->
@@ -48,12 +47,16 @@ defmodule AcsWeb.PMallController do
 
   def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
   "records_per_page" => records_per_page}) do
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id = 1
 
-    point_logs = PMalls.list_my_points(app_id, wcp_user_id, page, records_per_page)
-    conn |> json(%{success: true, point_logs: point_logs})
+    result = PMalls.list_my_points(app_id, wcp_user_id, page, records_per_page)
+    case result do
+      {:ok, point_logs, total} ->
+        conn |> json(%{success: true, point_logs: point_logs, total: total})
+      _ ->
+        conn |> json(%{success: false})
+     end
   end 
 
 end

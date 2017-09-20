@@ -99,6 +99,13 @@ defmodule Acs.Accounts do
     Repo.one!(query) > 0
   end
 
+  def is_mobile_exists?(mobile, user_id) do 
+    query = from u in User,
+      select: count(1),
+      where: u.mobile == ^mobile and u.id != ^user_id
+    Repo.one!(query) > 0
+  end
+
   def get_user_addresses(user_id) do
     query = from us in UserAddress,
               where: us.user_id == ^user_id,

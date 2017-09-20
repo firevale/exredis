@@ -139,6 +139,7 @@ Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_day_question", value: "5", group: "point", memo: "每日问题获得积分", active: true}) |> Acs.Repo.insert
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_luck_draw", value: "-10", group: "point", memo: "抽奖每次消耗积分", active: true}) |> Acs.Repo.insert
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_day_sign", value: "2", group: "point", memo: "每日签到获得积分", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "point_exchange_goods", value: "0", group: "point", memo: "购物兑换积分", active: true}) |> Acs.Repo.insert
 
 Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "手机绑定", sub_name: "限一次", point: 10, path: "/sjbd", active: true, sort: 1}) |> Acs.Repo.insert
 Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "官网预约", sub_name: "限一次", point: 5, path: "/gwyy", active: true, sort: 2}) |> Acs.Repo.insert

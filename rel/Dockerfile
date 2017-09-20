@@ -14,6 +14,7 @@ RUN { \
         echo 'rsyslogd'; \
         echo 'alias acs=/rel/acs/bin/acs'; \
         echo '/rel/acs/bin/acs start'; \
+        echo 'mkdir -p /var/log/acs'; \
         echo 'touch /var/log/acs/info.log'; \
         echo 'tail -f /var/log/acs/info.log'; \
     } > /start.sh && \

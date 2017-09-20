@@ -33,5 +33,11 @@
      confirmDeleteTask: '您确定要删除该任务栏么?',
      configUpdated: '任务栏已成功更新',
      configDeleted: '任务栏已成功删除',
+   },
+
+   question: {
+    addSuccess: '添加成功',
+    updateSuccess: '修改成功',
+    questionNotFound: '问题没有找到',
    }
  }

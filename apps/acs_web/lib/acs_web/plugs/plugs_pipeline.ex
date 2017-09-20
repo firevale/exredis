@@ -106,4 +106,16 @@ defmodule AcsWeb.PlugsPipeline do
       plug :fetch_session_user
       plug :fetch_locale
     end
+
+    pipeline :pmall do
+      plug :accepts, ["json"]
+      plug :fetch_session
+      plug :protect_from_forgery
+      plug :parse_user_agent
+      plug :fetch_user_id
+      plug :fetch_access_token
+      plug :fetch_session_user_id
+      plug :fetch_session_user
+      plug :fetch_locale
+    end
 end

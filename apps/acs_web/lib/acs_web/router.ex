@@ -129,6 +129,10 @@ defmodule AcsWeb.Router do
     forward "/", MallRouter
   end
 
+  scope "/pmall_actions", AcsWeb do
+    forward "/", PMallRouter
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AcsWeb do
   #   pipe_through :api

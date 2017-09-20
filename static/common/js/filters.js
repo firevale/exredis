@@ -99,9 +99,7 @@ const isWebpSupported = (window.acsConfig.browser == 'chrome' || window.acsConfi
 export const imageStaticUrl = val => {
   if (typeof val === 'string' && !/^https?:\/\//.test(val)) {
     let base = window.acsConfig.imagesUrl
-    let url = /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) :
-      val
-    // return isWebpSupported ? `${url}.webp` : url
+    let url = /^https?:\/\//.test(base) ? concatAndResolveUrl(base, val.replace(/^\/?img/, '')) : val
     return url
   }
 
@@ -109,5 +107,5 @@ export const imageStaticUrl = val => {
 }
 
 export const imageLowQualityUrl = val => {
-  return val.replace(/\.jpg((\.webp)?(\?.*)?)$/, '.lq.jpg$1')
+  return `${val}@base@tag=imgScale&m=0&w=128&q=1`
 }

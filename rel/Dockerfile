@@ -5,7 +5,7 @@ ARG MIX_ENV
 
 COPY _build/${MIX_ENV}/rel /rel
 
-VOLUME ["/rel/acs/lib/acs-0.0.1/priv/static", "/var/log/acs"]
+VOLUME ["/rel/acs/lib/acs_web-0.0.1/priv/static"]
 
 RUN { \
         echo '#/bin/sh'; \
@@ -14,6 +14,7 @@ RUN { \
         echo 'rsyslogd'; \
         echo 'alias acs=/rel/acs/bin/acs'; \
         echo '/rel/acs/bin/acs start'; \
+        echo 'mkdir -p /var/log/acs'; \
         echo 'touch /var/log/acs/info.log'; \
         echo 'tail -f /var/log/acs/info.log'; \
     } > /start.sh && \

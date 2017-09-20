@@ -84,6 +84,7 @@ release :acs do
     exservice: :permanent,
     exmail: :permanent,
     ex_syslogger: :permanent,
+    bugsnag: :permanent,
     phoenix_pubsub_redis: :permanent,
   ]
   set vm_args: "rel/vm.args"

@@ -25,6 +25,8 @@ config :logger, :exsyslog_info,
   option: [:pid, :cons]
 
 config :logger,
+  handle_otp_reports: true,
+  handle_sasl_reports: true,
   backends: [
     {ExSyslogger, :exsyslog_info},
   ]

@@ -24,7 +24,7 @@ defmodule AcsStats.Devices do
   def log_device_info(device_id, platform, device_model, os_ver, device_memory_size) do 
     device_info = CachedDeviceInfo.get(device_model) || %DeviceInfo{}
     case DeviceInfo.changeset(device_info, %{id: device_model, total_mem_size: device_memory_size}) do 
-      %{changes: %{}} -> 
+      %{changes: changes} when changes == %{} -> 
         :not_changed
       cs ->
         {:ok, device_info} = Repo.insert_or_update(cs)
@@ -34,7 +34,7 @@ defmodule AcsStats.Devices do
     device = CachedDevice.get(device_id) || %Device{}    
 
     case Device.changeset(device, %{id: device_id, model: device_model, platform: platform, os: os_ver}) do 
-      %{changes: %{}} -> 
+      %{changes: changes} when changes == %{} -> 
         :not_changed
       cs ->
         {:ok, device} = Repo.insert_or_update(cs)

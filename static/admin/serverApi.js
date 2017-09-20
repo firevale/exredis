@@ -378,6 +378,18 @@ export default {
       changeTaskBarsSort(needChange) {
         return post('/admin_actions/pmall/change_taskbars_sort', { needChange})
       },
+
+      listPmallQuestions(params, successMessage) {
+        return post('/admin_actions/pmall/list_pmall_questions', params, successMessage)
+      },
+
+      updatePmallQuestion(params, successMessage) {
+        return post('/admin_actions/pmall/update_pmall_question', params, successMessage)
+      },
+
+      deletePmallQuestion(params, successMessage) {
+        return post('/admin_actions/pmall/delete_pmall_question', params, successMessage)
+      },
     }
   }
 }

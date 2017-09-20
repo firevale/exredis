@@ -70,13 +70,13 @@ export default {
         }
       } catch (_) {
         this.sendingVerifyCode = false
+        Toast.show('验证码发送失败，请稍后再试')
       }
     },
     onSubmit: async function() {
       if (!this.processing) {
         this.processing = true
-        let result = await this.$acs.bindMobile(this.mobile, this.verify_code
-        )
+        let result = await this.$acs.bindMobile(this.mobile, this.verify_code)
         if (result.success) {
           Toast.show("绑定成功")
         } else {

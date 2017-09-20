@@ -6,6 +6,8 @@ config :acs, :sdks, ~w(alipay appstore applestore ggplay anzhi baidu cc coolpad 
                        htc huawei i4 iiapple itools iyouxi ky lenovo meizu mumayi ndcom oppo pp qh360 qq qxz sogou tbt uc 
                        vivo wdj wechat xiaomi xy youku yyh)
 
+config :acs, :platforms, ~w(ios android wp8)
+
 # use env "ACS_DATABASE_URL" for db connection
 config :acs, Acs.Repo,
   adapter: Ecto.Adapters.MySQL,

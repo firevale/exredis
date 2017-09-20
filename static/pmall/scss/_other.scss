@@ -234,17 +234,10 @@ span {
     .q-item {
       width: 100%;
       padding-top: 1rem;
-      h1 {
-        &.title {
-          font-size: $size3;
-        }
-      }
       h2 {
         &.subtitle {
           text-indent: 2rem;
           padding: 0 1rem;
-          font-size: $size4;
-          color: $grey-dark;
           font-weight: normal;
         }
       }
@@ -268,8 +261,6 @@ span {
             span {
               &.subtitle {
                 text-indent: .5rem;
-                font-size: $size6;
-                color: $grey-dark;
               }
             }
           }
@@ -303,14 +294,11 @@ span {
       height: virtual-m-rem(330);
       p {
         &.title {
-          font-size: $size5;
           text-indent: .5rem;
         }
         &.subtitle {
           text-indent: .5rem;
           padding: 0 .5rem;
-          font-size: $size6;
-          color: $grey-dark;
         }
       }
     }

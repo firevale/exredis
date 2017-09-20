@@ -40,7 +40,9 @@ export default {
       'points',
     ]),
   },
-  mounted() {},
+  mounted() {
+    this.loadmore()
+  },
   methods: {
     resetScroller: function() {
       if (this.$refs.scroller) {

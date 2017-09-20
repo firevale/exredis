@@ -589,7 +589,7 @@ Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "哪种红酒更贵些？", correct: "1992年的啸鹰", a1: "1992年的啸鹰", a2: "1996年的罗曼尼·康帝"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "哪种红酒更贵些？", correct: "2009年玛歌", a1: "2009年玛歌", a2: "1787年拉菲"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "Aurora在哪年推出的超过百万欧元的黑白钻石钢笔系列的？", correct: "2005年", a1: "2005年", a2: "2008年"}) |> Acs.Repo.insert
-Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "4个"G"字母的变形组合，使之成为优雅品位的代名词的打火机品牌是？", correct: "纪梵希", a1: "纪梵希", a2: "卡地亚"}) |> Acs.Repo.insert
+Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "4个‘G’字母的变形组合，使之成为优雅品位的代名词的打火机品牌是？", correct: "纪梵希", a1: "纪梵希", a2: "卡地亚"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "Cartier是哪个国家的品牌？", correct: "法国", a1: "法国", a2: "德国"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "Cartier不生产哪种物品？", correct: "衣服", a1: "衣服", a2: "钟表"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "百达翡丽主要制作的是什么？", correct: "钟表", a1: "钟表", a2: "首饰"}) |> Acs.Repo.insert
@@ -855,7 +855,7 @@ Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "哪类食物能有效改善人体的酸性体质，你知道不？不知道俺可以免费告诉你。", correct: "蔬菜水果", a1: "蔬菜水果", a2: "鸡鸭鱼肉"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "做为一个厨子，最初“糖果”的糖取自哪里还是知道的。", correct: "蜂蜜", a1: "甘蔗", a2: "蜂蜜"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "这馒头起源于我国的哪里你知道不？", correct: "北方", a1: "北方", a2: "南方"}) |> Acs.Repo.insert
-Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "这醋放久了会“生白”，为了防止其"生白"，最好在醋内加一些黄酒后再掺进少啥来着……", correct: "精盐", a1: "精盐", a2: "姜末"}) |> Acs.Repo.insert
+Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "这醋放久了会“生白”，为了防止其‘生白’，最好在醋内加一些黄酒后再掺进少啥来着……", correct: "精盐", a1: "精盐", a2: "姜末"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "这香港回归是哪年来着？", correct: "1997年", a1: "1997年", a2: "1999年"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "俺最近看动物世界，才知道鸟群飞行的基本队形是啥。你知道是啥不？", correct: "V字形", a1: "C字形", a2: "V字形"}) |> Acs.Repo.insert
 Acs.PMalls.DayQuestion.changeset(%Acs.PMalls.DayQuestion{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", question: "你知道四不像真名叫啥不？", correct: "麋鹿", a1: "驯鹿", a2: "麋鹿"}) |> Acs.Repo.insert

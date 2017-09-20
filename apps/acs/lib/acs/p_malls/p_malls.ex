@@ -296,7 +296,7 @@ defmodule Acs.PMalls do
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo])
+      select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
 
     questions = Repo.all(query)
     {:ok, questions, total_page}

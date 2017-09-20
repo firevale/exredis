@@ -240,18 +240,14 @@ defmodule AcsWeb.Admin.PMallController do
                 "question" => _question,
                 "correct" => _correct,
                 "a1" => _a1,
-                "a2" => _a2,
-                "a3" => _a3,
-                "a4" => _a4,
-                "a5" => _a5,
-                "a6" => _a6} = question) do
+                "a2" => _a2} = question) do
     case PMalls.update_pmall_question(question) do
-      {:add_ok, question} ->
+      {:addok, question} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", question)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
-      {:update_ok, question, changes} ->
+      {:updateok, question, changes} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", changes)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.updateSuccess"})
     end

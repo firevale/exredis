@@ -324,7 +324,7 @@ defmodule Acs.PMalls do
       # add new
       case DayQuestion.changeset(%DayQuestion{}, question) |> Repo.insert do
         {:ok, new_question} ->
-          question = Map.put(question, "id", new_question.id)
+          question = Map.put(question, "id", new_question.id) |> Map.put("reads", 0) |> Map.put("bingo", 0)
           {:addok, question}
         {:error, %{errors: _errors}} ->
           :error

@@ -3,7 +3,8 @@ defmodule Acs.Admin.Setting do
   import Ecto.Changeset
   alias Acs.Admin.Setting
 
-  @derive {Poison.Encoder, except: [:__meta__]}
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
+
   schema "admin_settings" do
     field :name, :string
     field :value, :binary

@@ -174,7 +174,7 @@ defmodule Acs.Admin do
     case get_setting(app_id, params["setting_name"]) do
       nil ->
         # add new
-        setting = Map.put(params, "name", params["setting_name"]) |> Map.put("value", params["setting_value"])
+        setting = Map.put(params, "name", params["setting_name"]) |> Map.put("value", params["setting_value"]) |> Map.put("app_id", app_id)
         case Setting.changeset(%Setting{}, setting) |> Repo.insert do
           {:ok, _} ->
             CachedAdminSetting.refresh(app_id, params["setting_name"])
@@ -185,7 +185,7 @@ defmodule Acs.Admin do
             :badrequest 
         end
 
-      %Setting{} = setting ->
+      {:ok, setting} ->
         # update
         case Setting.changeset(setting, %{active: params["active"], value: params["setting_value"]}) |> Repo.update() do
           {:ok, _} ->

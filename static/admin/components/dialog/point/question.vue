@@ -13,7 +13,7 @@
           <p class="control">
             <label class="label"> A: </label>
             <label class="radio">
-              <input type="radio" value="1" v-model.trim="question.correct">
+              <input type="radio" :value="question.a1" v-model.trim="question.correct">
             </label>
             <label class="radio">
               <input class="input" style="width:400px" type="text" v-model.trim="question.a1">
@@ -24,7 +24,7 @@
           <p class="control">
             <label class="label"> B: </label>
             <label class="radio">
-              <input type="radio" value="2" v-model.trim="question.correct">
+              <input type="radio" :value="question.a2" v-model.trim="question.correct">
             </label>
             <label class="radio">
               <input class="input" style="width:400px" type="text" v-model.trim="question.a2">

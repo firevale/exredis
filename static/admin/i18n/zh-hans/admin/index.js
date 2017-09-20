@@ -127,6 +127,7 @@ export default {
     noMoreData: '没有更多数据啦',
     uploadWcpFile: '上传验证文件',
     editTaskBar: '编辑任务栏信息',
+    editQuestion: '编辑问答信息',
   },
 
   messages: {

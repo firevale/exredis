@@ -145,7 +145,7 @@ export default {
           this.processing = true
           let result = await this.$acs.deletePmallQuestion({
             question_id: questionId,
-          }, this.$t('admin.point.question.configDeleted'))
+          }, this.$t('admin.point.question.deleted'))
           if (result.success) {
             this.questions.splice(index, 1)
           }

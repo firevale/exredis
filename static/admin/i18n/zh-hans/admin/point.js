@@ -47,7 +47,7 @@
     updateSuccess: '修改成功',
     questionNotFound: '问题没有找到',
     confirmDelete: '您确定要删除该问题么?',
-    configUpdated: '问题已成功更新',
-    configDeleted: '问题已成功删除',
+    updated: '问题已成功更新',
+    deleted: '问题已成功删除',
    }
  }

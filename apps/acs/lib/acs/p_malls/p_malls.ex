@@ -183,6 +183,22 @@ defmodule Acs.PMalls do
     {:ok, logs, total_page}
   end
 
+  def list_my_points(app_id, wcp_user_id, page, records_per_page) do
+    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
+    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+
+    query = 
+      from pl in PointLog,
+        select: map(pl, [:id, :log_type, :point, :memo,  :inserted_at]),
+        limit: ^records_per_page,
+        where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id,
+        offset: ^((page - 1) * records_per_page),
+        order_by: [desc: pl.id]
+
+    logs = Repo.all(query)
+    {:ok, logs, total_page}
+  end
+
   def add_point(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->

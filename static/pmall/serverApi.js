@@ -58,7 +58,28 @@ export default {
     Vue.prototype.$acs = {
       tokens: {},
 
-    
+      getUserInfo() {
+        return post('/pmall_actions/get_user_info')
+      },
+
+      cancelListMyPoints() {
+        if (typeof this.tokens.listMyPoints === 'function') {
+          this.tokens.listMyPoints()
+        }
+      },
+      listMyPoints(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
+        return post('/pmall_actions/list_my_points',params, undefined, cancelToken)
+      },
+      cancelListMyExchanges() {
+        if (typeof this.tokens.listMyExchanges === 'function') {
+          this.tokens.listMyExchanges()
+        }
+      },
+      listMyExchanges(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchanges = c)
+        return post('/pmall_actions/list_my_exchanges',params, undefined, cancelToken)
+      },
     }
   }
 }

@@ -21,9 +21,6 @@
               <p>{{ $t('admin.setting.memo')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.setting.active')}}</p>
-            </div>
-            <div class="column">
               <p>{{ $t('admin.setting.edit')}}</p>
             </div>
             <div class="column">
@@ -41,10 +38,6 @@
               </div>
               <div class="column">
                 <p>{{ setting.memo }}</p>
-              </div>
-              <div class="column">
-                <p v-if="setting.active">正常</p>
-                <p v-else>禁用</p>
               </div>
               <div class="column">
                 <a @click.prevent="editSettingInfo(setting, index)">

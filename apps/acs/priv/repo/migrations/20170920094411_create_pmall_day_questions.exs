@@ -5,7 +5,7 @@ defmodule Acs.Repo.Migrations.CreatePmallDayQuestions do
     create table(:pmall_day_questions) do
 
       add :question, :string
-      add :correct, :integer, default: 0
+      add :correct, :string, size: 200
       add :a1, :string, size: 200
       add :a2, :string, size: 200
       add :a3, :string, size: 200

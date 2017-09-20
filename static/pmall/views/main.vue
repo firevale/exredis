@@ -30,13 +30,20 @@ export default {
     ]),
   },
 
-
-
+  async mounted() {
+    await this.getUserInfo()
+  },
   methods: {
     ...mapActions([
-      'setTransitionName', 'setUserProfile'
+      'setTransitionName', 'setWcpUser','setUserPoints'
     ]),
-
+    async getUserInfo() {
+      let result = await this.$acs.getUserInfo()
+      if (result.success) {
+        this.setWcpUser(result.wcp_user)
+        this.setUserPoints(result.wcp_user.points)
+      }
+    },
     onBtnBackClicked: function() {
       if (this.canGoBack) {
         this.$router.back()
@@ -46,17 +53,6 @@ export default {
         })
       }
     },
-
-    showPage: function(routerName) {
-      acs.checkIsLogin(_ => {
-        this.$router.push({
-          name: routerName
-        })
-      })
-    },
-    closeFooter: function() {
-      this.showFooterBar = false
-    }
   },
 
   watch: {

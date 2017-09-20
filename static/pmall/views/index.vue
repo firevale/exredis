@@ -2,15 +2,16 @@
   <div class="index-page">
     <header class="header is-flex">
       <div class="header-left is-flex flex-left flex-vcentered">
-        <img src="~assets/pmall/1242-2234-1_13.png">
-        <p>
+        <img :src="wcpUser.avatar_url">
+        <p class="has-text-centered">
           我的积分
-          <br/> 100
+          <br/>
+          <span class="is-primary">{{points}}</span>
         </p>
       </div>
       <div class="header-right is-flex is-column flex-center">
         <router-link class="button btn-point" :to="{name: 'my_point'}" style="margin-bottom:1rem"></router-link>
-        <router-link class="button btn-my-conversion" :to="{name: 'my_conversion'}"></router-link>
+        <router-link class="button btn-my-exchange" :to="{name: 'my_exchange'}"></router-link>
       </div>
     </header>
     <div class="panel">
@@ -102,13 +103,36 @@
   </div>
 </template>
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 export default {
   mounted() {},
 
   data() {
     return {}
   },
+  computed: {
+    ...mapGetters([
+      'wcp_user',
+      'points',
+    ]),
+    wcpUser() {
+      if (this.wcp_user) {
+        return this.wcp_user
+      } else {
+        return {
+          avatar_url: 'https://placehold.it/64x64?text=64x64'
+        }
+      }
+    }
+  },
 
-  methods: {}
+  methods: {
+    ...mapActions([
+      'setTransitionName',
+    ])
+  }
 }
 </script>

@@ -31,4 +31,46 @@ defmodule AcsWeb.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
+    # user = Accounts.get_user()
+    # point = PMalls.get_user_point(user_id)
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+    case CachedAppWcpUser.get(app_id, open_id) do
+      %AppWcpUser{} = user ->
+        wcp_user = Map.take(user, [:id, :nickname, :avatar_url, :app_id])
+        user_info = Map.merge(wcp_user, %{points: 200, has_mobile: false })
+        conn |> json(%{success: true, wcp_user: user_info})
+      _ ->
+        conn |> json(%{success: false })
+    end
+  end
+
+  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  "records_per_page" => records_per_page}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+    wcp_user_id = 1
+
+    result = PMalls.list_my_points(app_id, wcp_user_id, page, records_per_page)
+    case result do
+      {:ok, point_logs, total} ->
+        conn |> json(%{success: true, point_logs: point_logs, total: total})
+      _ ->
+        conn |> json(%{success: false})
+     end
+  end 
+
+  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  "records_per_page" => records_per_page}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+    wcp_user_id = 1
+
+    result = PMalls.list_my_exchanges(app_id, wcp_user_id, page, records_per_page)
+    case result do
+      {:ok, point_logs, total} ->
+        conn |> json(%{success: true, point_logs: point_logs, total: total})
+      _ ->
+        conn |> json(%{success: false})
+     end
+  end 
+
 end

@@ -31,7 +31,7 @@ defmodule AcsWeb.PaymentHelper do
             order.zone_id,
             order.user_id, 
             order.platform,
-            String.to_integer(order.fee))
+            order.fee)
         catch
           _, _ ->
             error "update stats info of order failed: #{inspect order}"

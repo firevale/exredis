@@ -15,7 +15,7 @@ defmodule AcsWeb.MeizuAuthBind do
            "app_secret" => meizu_app_secret}} <- Apps.get_app_sdk_binding(app.id, "meizu"),
          true <- SDKMeizu.validate_session(meizu_app_id, meizu_app_secret, meizu_access_token, meizu_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :meizu, 
+           sdk: "meizu", 
            sdk_user_id: meizu_user_id, 
            email: nil,
            mobile: nil, 
@@ -37,7 +37,7 @@ defmodule AcsWeb.MeizuAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :meizu,
+        sdk: "meizu",
         binding: access_token.binding              
       })
     else

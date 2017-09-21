@@ -178,18 +178,9 @@ export default {
     }
   },
 
-  openWechatPay: function(payinfo) {
-    if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
-      return AndroidNativeAPI.openWechatPay(payinfo)
-    } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {
-      return false
-    } else {
-      return false
-    }
-  },
-
   openWechatPayWithCallback: function(payinfo, callback) {
     if (typeof AndroidNativeAPI === 'object' && typeof AndroidNativeAPI.isWechatPaySupport === 'function') {
+      console.log('call openWechatPayWithCallback')
       window.acsConfig.showSuccessCallback = callback
       return AndroidNativeAPI.openWechatPay(payinfo)
     } else if (typeof IOSNativeAPI === 'object' && typeof IOSNativeAPI.getActiveSession === 'function') {

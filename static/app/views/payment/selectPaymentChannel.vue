@@ -126,7 +126,9 @@ export default {
     wechatPay: async function() {
       let result = await this.$acs.wechatPrepay(window.acsConfig.order_id)
       if (result.success) {
-        nativeApi.openWechatPay(JSON.stringify(result))
+        nativeApi.openWechatPayWithCallback(JSON.stringify(result), _ => {
+          nativeApi.closeWebviewWithResult({success: true})
+        })
       }
     }
   },

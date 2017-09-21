@@ -13,7 +13,7 @@ defmodule AcsWeb.ItoolsAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => itools_app_id}} <- Apps.get_app_sdk_binding(app.id, "itools"),
          true <- SDKItools.validate_session(itools_app_id, itools_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :itools, 
+           sdk: "itools", 
            sdk_user_id: itools_user_id, 
            email: nil,
            mobile: nil, 
@@ -35,7 +35,7 @@ defmodule AcsWeb.ItoolsAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :itools,
+        sdk: "itools",
         binding: access_token.binding              
       })
     else

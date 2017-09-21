@@ -275,4 +275,40 @@ defmodule AcsWeb.Admin.PMallController do
     end
   end
 
+  def list_pmall_draws(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _params) do
+    draws = PMalls.list_pmall_draws(app_id)
+    conn |> json(%{success: true, draws: draws})
+  end
+
+  def update_pmall_draw(%Plug.Conn{private: %{acs_admin_id: user_id}} = conn, %{
+                "id" => _id,
+                "app_id" => _app_id,
+                "name" => _name,
+                "num" => _num,
+                "rate" => _rate} = draw) do
+    case PMalls.update_pmall_draw(draw) do
+      {:addok, draw} ->
+        Admin.log_admin_operation(user_id, draw["app_id"], "update_pmall_draw", draw)
+        conn |> json(%{success: true, draw: draw, i18n_message: "admin.point.draw.addSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+      {:updateok, draw, changes} ->
+        Admin.log_admin_operation(user_id, draw["app_id"], "update_pmall_draw", changes)
+        conn |> json(%{success: true, draw: draw, i18n_message: "admin.point.draw.updateSuccess"})
+    end
+  end
+
+  def delete_pmall_draw(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
+                   %{"draw_id" => draw_id} = params) do
+    case PMalls.delete_pmall_draw(draw_id)do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.draw.notFound"})
+      :ok ->
+        Admin.log_admin_operation(user_id, app_id, "delete_pmall_draw", params)
+        conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+      :error ->
+        conn |> json(%{success: false, i18n_message: "admin.error.networkError"})
+    end
+  end
+
 end

@@ -10,7 +10,7 @@ defmodule AcsWeb.VivoAuthBind do
              "vivo_user_id" => vivo_user_id}) do
     with true <- SDKVivo.validate_session(vivo_user_id, vivo_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :vivo, 
+           sdk: "vivo", 
            sdk_user_id: vivo_user_id, 
            email: nil,
            mobile: nil, 
@@ -32,7 +32,7 @@ defmodule AcsWeb.VivoAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :vivo,
+        sdk: "vivo",
         binding: access_token.binding              
       })
     else

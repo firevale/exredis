@@ -108,8 +108,8 @@ export default {
     return {
       taskBars: [],
       oldSorts: [],
-      picWidth: 400,
-      picHeight: 400,
+      picWidth: 144,
+      picHeight: 144,
       processing: false
     }
   },

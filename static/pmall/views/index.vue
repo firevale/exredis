@@ -14,7 +14,7 @@
         <router-link class="button btn-my-exchange" :to="{name: 'my_exchange'}"></router-link>
       </div>
     </header>
-    <div v-if="tasks.length>0" class="panel">
+    <div  class="panel">
       <div class="bg-full bg-title-task">
       </div>
       <div class="tasks">

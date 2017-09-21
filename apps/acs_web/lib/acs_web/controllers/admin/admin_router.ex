@@ -148,8 +148,9 @@ defmodule AcsWeb.AdminRouter do
       post  "/toggle_pmall_goods_status", PMallController, :toggle_pmall_goods_status
       post  "/delete_pmall_goods", PMallController, :delete_pmall_goods
       post  "/get_pmall_goods_detail", PMallController, :get_pmall_goods_detail
-      post "/list_pmall_point_logs", PMallController, :list_pmall_point_logs
-      post "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
+      post  "/list_pmall_point_logs", PMallController, :list_pmall_point_logs
+      post  "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
+      post  "/update_goods_pic", PMallController, :update_goods_pic
 
       post "/get_task_list", PMallController, :get_task_list
       post "/update_task", PMallController, :update_task

@@ -290,6 +290,7 @@ export default {
         this.goods = result.goods
         if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
           2)
+        alert(this.goods.pic)
         this.pics = this.goods.pic ? this.goods.pic.split('|') : "|||||".split('|')
         this.pics.length = 6
       }
@@ -380,7 +381,7 @@ export default {
           this.showWarning(this.$t('admin.mall.goods.pleaseFill'))
           return;
         }
-        if (!this.goods.pic || this.goods.pic.length == 0) {
+        if (!this.pics || this.pics.length == 0) {
           this.showWarning(this.$t('admin.mall.goods.pleaseUpPic'))
           return;
         }

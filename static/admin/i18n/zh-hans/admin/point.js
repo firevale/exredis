@@ -7,6 +7,8 @@
    inserted_at: '积分时间',
    user_id: '用户ID',
    user: '用户',
+   wcpUserName: '微信用户昵称',
+   userNotExist: '用户不存在',
    
    goods: {
     original_price: '原价',

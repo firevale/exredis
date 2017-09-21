@@ -17,7 +17,9 @@ config :exservice, KSFile,
   cdn_domain: "platform-dev.ks3-cn-beijing.ksyun.com",
   cdn_scheme: "http"
 
-  config :exsdks, :alipay,
-  notify_url: "http://xiaobin.firevale.com/api/pay/alipay/notify",
-  callback_url: "http://xiaobin.firevale.com/payment/pay_proxy?merchant_order_id={order_id}",
-  merchant_url: "http://xiaobin.firevale.com/payment/pay_proxy?merchant_order_id={order_id}"
+
+
+config :exsdks, :alipay,
+  notify_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/api/pay/alipay/notify",
+  callback_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/payment/pay_proxy?merchant_order_id={order_id}",
+  merchant_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/payment/pay_proxy?merchant_order_id={order_id}"

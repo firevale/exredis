@@ -2,71 +2,84 @@ defmodule AcsWeb.WechatController do
   use     AcsWeb, :controller
   require SDKWechat
 
+  alias   Acs.Malls
+  alias   Acs.Apps
+  alias   Acs.Apps.AppOrder
+  alias   Acs.Apps.AppSdkBinding
+
   plug :fetch_app_id
   plug :fetch_app
   plug :fetch_access_token
 
   # prepay
-  def prepay(%Plug.Conn{private: %{acs_app: %App{
-                        sdk_bindings: %{wechat: wechat_info}}}} = conn,
+  def prepay(%Plug.Conn{private: %{acs_app: app}} = conn,
              %{"payment_order_id" => order_id} = _params) do
+    with %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"),
+         %AppOrder{} = order <- Apps.get_app_order(order_id)
+    do 
+      notify_url = "#{url(conn)}/api/pay/wechat/notify"
 
-    notify_url = "#{url(conn)}/api/pay/wechat/notify"
+      ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+        [val | _] -> val
+        _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+      end
 
-    # handling request via nginx reverse proxy
-    ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
-      [val | _] -> val
-      _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
-    end
-
-    case SDKWechat.prepay(order_id, wechat_info, ip_address, notify_url) do
-      {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
-        conn |> json(%{
-          success: true,
-          partnerid: partnerid,
-          prepay_id: prepay_id,
-          noncestr: noncestr,
-          timestamp: timestamp,
-          sign: sign
-        })
+      case SDKWechat.prepay(order, wechat_info, ip_address, notify_url) do
+        {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
+          conn |> json(%{
+            success: true,
+            partnerid: partnerid,
+            prepay_id: prepay_id,
+            noncestr: noncestr,
+            timestamp: timestamp,
+            sign: sign
+          })
+        _ ->
+          conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+      end
+    else
       _ ->
-        conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+        conn |> json(%{success: false, message: "invalid request params"})
     end
   end
   def prepay(conn, _params) do
-    d "req : #{inspect conn.private.acs_app.sdk_bindings, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
   # mallprepay
-  def mallprepay(%Plug.Conn{private: %{acs_app: %App{
-                        sdk_bindings: %{wechat: wechat_info}}}} = conn,
-             %{"payment_order_id" => order_id} = _params) do
+  def mallprepay(%Plug.Conn{private: %{acs_app: app}} = conn,
+                 %{"payment_order_id" => order_id} = _params) do
 
-    notify_url = "#{url(conn)}/api/pay/wechat/mallnotify"
+    with %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"),
+         %MallOrder{} = order <- Malls.get_mall_order(order_id) 
+    do 
+      notify_url = "#{url(conn)}/api/pay/wechat/mallnotify"
 
-    # handling request via nginx reverse proxy
-    ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
-      [val | _] -> val
-      _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
-    end
+      # handling request via nginx reverse proxy
+      ip_address = case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+        [val | _] -> val
+        _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
+      end
 
-    case SDKWechat.mallprepay(order_id, wechat_info, ip_address, notify_url) do
-      {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
-        conn |> json(%{
-          success: true,
-          partnerid: partnerid,
-          prepay_id: prepay_id,
-          noncestr: noncestr,
-          timestamp: timestamp,
-          sign: sign
-        })
+      case SDKWechat.mallprepay(order, wechat_info, ip_address, notify_url) do
+        {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
+          conn |> json(%{
+            success: true,
+            partnerid: partnerid,
+            prepay_id: prepay_id,
+            noncestr: noncestr,
+            timestamp: timestamp,
+            sign: sign
+          })
+        _ ->
+          conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+      end
+    else
       _ ->
-        conn |> json(%{success: false, message: "wechat get prepay_id fail"})
+        conn |> json(%{success: false, message: "invalid request params"})
     end
   end
   def mallprepay(conn, _params) do
-    d "req : #{inspect conn.private, pretty: true}"
     conn |> json(%{success: false, message: "invalid request params"})
   end
 
@@ -141,13 +154,12 @@ defmodule AcsWeb.WechatController do
         #  {:ok, _openid, nickname, _sex, _headimgurl} <- SDKWechat.get_auth_user_info(access_token, openid)
     do
       case Accounts.bind_sdk_user(%{sdk: :wechat, 
-                                     app_id: app.id, 
-                                     sdk_user_id: openid, 
-                                     email: nil,
-                                     nickname: "",
-                                     device_id: device_id,
-                                     mobile: nil,
-                                     avatar_url: nil}) do 
+                                    app_id: app.id, 
+                                    sdk_user_id: openid, 
+                                    email: nil,
+                                    device_id: device_id,
+                                    mobile: nil,
+                                    avatar_url: nil}) do 
         {:ok, user} -> 
           access_token = Auth.create_access_token(%{
             app_id: app.id, 
@@ -185,17 +197,17 @@ defmodule AcsWeb.WechatController do
   end
 
   defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do
-    case CachedApp.get(app_id) do
+    case Apps.get_app_sdk_binding(app_id, "wechat") do
       nil -> {:error, "app not found"}
-      %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
+      %{binding: %{"sign_key" => key}} -> {:ok, key}
       _ -> {:error, "wechat configuration not found"}
     end
   end
 
   defp get_mall_wechat_sign_key(%MallOrder{app_id: app_id}) do
-    case CachedApp.get(app_id) do
+    case Apps.get_app_sdk_binding(app_id, "wechat") do
       nil -> {:error, "app not found"}
-      %{sdk_bindings: %{wechat: %{sign_key: key}}} -> {:ok, key}
+      %{binding: %{"sign_key" => key}} -> {:ok, key}
       _ -> {:error, "wechat configuration not found"}
     end
   end

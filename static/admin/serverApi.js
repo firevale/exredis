@@ -180,7 +180,7 @@ export default {
       },
 
       getMallOrder(params) {
-        return post('/mall_actions/get_mall_order', params)
+        return post('/mall_actions/get_fat_mall_order', params)
       },
 
       setMallOrderPaid(params) {

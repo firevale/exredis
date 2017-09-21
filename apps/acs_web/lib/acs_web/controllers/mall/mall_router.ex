@@ -23,7 +23,7 @@ defmodule AcsWeb.MallRouter do
 
     post "/create_mall_order", MallOrderController, :create_mall_order
     post "/list_mall_orders", MallOrderController, :list_mall_orders
-    post "/get_mall_order", MallOrderController, :get_mall_order
+    post "/get_fat_mall_order", MallOrderController, :get_fat_mall_order
     post "/fetch_my_orders", MallOrderController, :fetch_my_orders
     post "/confirm_recieved", MallOrderController, :confirm_recieved
 

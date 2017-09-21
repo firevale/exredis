@@ -392,7 +392,7 @@ export default {
       },
 
       getMallOrder(params) {
-        return post('/mall_actions/get_mall_order', params)
+        return post('/mall_actions/get_fat_mall_order', params)
       },
 
       getGoodsStock(goods_id) {

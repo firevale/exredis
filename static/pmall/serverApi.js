@@ -90,6 +90,9 @@ export default {
       bindMobile(mobile, verify_code) {
         return post("/pmall_actions/bind_mobile", { mobile, verify_code })
       },
+      sign() {
+        return post("/pmall_actions/sign")
+      },
     }
   }
 }

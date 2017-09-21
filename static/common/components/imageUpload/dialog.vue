@@ -28,8 +28,8 @@
           </div>
           <div class="column has-text-left is-9">
             <div class="control" style="padding-top: 0.375em">
-              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="progress" max="100">
-                {{ progress }}%
+              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="progress || file.progress" max="100">
+                {{ progress || file.progress }}%
               </progress>
             </div>
           </div>
@@ -37,7 +37,7 @@
       </div>
       <p class="is-danger">{{this.errorMessage}}</p>
       <div class="tile is-child is-full has-text-centered">
-        <a class="button is-info" :class="{'is-disabled': !blob, 'is-loading': active}" @click="uploadBlob" :disabled="!blob">
+        <a class="button is-info" :class="{'is-disabled': !file, 'is-loading': active}" @click="uploadBlob" :disabled="!file">
           <span class="icon image-icon icon-upload"></span>
           <span>{{ $t('upload.title') }}</span>
         </a>
@@ -130,7 +130,7 @@ export default {
       file: undefined,
       upload: undefined,
       active: false,
-      progress: 0,
+      progress: undefined,
       blob: undefined,
       errorMessage: '',
       uploadEvents: {
@@ -193,74 +193,104 @@ export default {
                   }
                 }
 
-                let canvas = document.createElement('canvas')
-                canvas.width = destWidth
-                canvas.height = destHeight
+                if (file.size > this.maxFileSize && destWidth > img.width * 2 && destHeight > img.height * 2 ) {
+                  let canvas = document.createElement('canvas')
+                  canvas.width = destWidth
+                  canvas.height = destHeight
 
-                pica.resize(img, canvas, {
-                    quality: 3,
-                    unsharpAmount: 100,
-                    unsharpRadius: 2,
-                    unsharpThreshold: 220,
-                    alpha: this.destFormat == 'image/png'
-                  })
-                  .then(result => {
-                    let imageUrl = result.toDataURL()
-                    this.upload.$el.style.backgroundImage = `url(${imageUrl})`
-                    return pica.toBlob(result, this.destFormat, 100)
-                  })
-                  .then(blob => {
-                    if (blob.size > this.maxFileSize) {
-                      this.errorMessage = this.$t('upload.fileIsTooLarge', {
-                        maxFileSize: humanReadableSize('' + this.maxFileSize)
-                      })
-                      this.upload.clear()
-                    }
-                    else {
-                      this.blob = blob
-                      this.file = file
-                    }
-                  });
+                  pica.resize(img, canvas, {
+                      quality: 3,
+                      unsharpAmount: 100,
+                      unsharpRadius: 2,
+                      unsharpThreshold: 220,
+                      alpha: this.destFormat == 'image/png'
+                    })
+                    .then(result => {
+                      let imageUrl = result.toDataURL()
+                      this.upload.$el.style.backgroundImage = `url(${imageUrl})`
+                      return pica.toBlob(result, this.destFormat, this.destQuality)
+                    })
+                    .then(blob => {
+                      if (blob.size > this.maxFileSize) {
+                        this.errorMessage = this.$t('upload.fileIsTooLarge', {
+                          maxFileSize: humanReadableSize('' + this.maxFileSize)
+                        })
+                        this.upload.clear()
+                      }
+                      else {
+                        this.blob = blob
+                        this.file = file
+                      }
+                    });
+                }
+                else {
+                  this.file = file
+                  console.log('this.file', this.file)
+                  this.upload.$el.style.backgroundImage = `url(${reader.result})`
+                }
               }
               img.src = reader.result
             }
             reader.readAsDataURL(file.file)
           }
         },
+        after: (file, component) => {
+          this.file = undefined
+          this.visible = false
+
+          this.$nextTick(_ => {
+            if (typeof this.callback == 'function') {
+              if (file.xhr.status == 200) {
+                this.callback(file.response)
+              } else {
+                this.callback({
+                  success: false,
+                  i18n_message: 'error.server.networkError'
+                })
+              }
+            }
+          })
+        }
       }
     }
   },
 
   methods: {
     uploadBlob: function() {
-      this.active = true
-      this.progress = 0
-      let fd = new FormData()
-      Object.keys(this.data).forEach(key => {
-        fd.append(key, this.data[key])
-      })
-      fd.append('file', this.blob)
-      axios.post(this.postAction, fd, {
-        onUploadProgress: e => {
-          if (e.lengthComputable) {
-            this.progress = Math.abs(e.loaded / e.total * 100)
+      if (this.blob) {
+        this.active = true
+        this.progress = 0
+        let fd = new FormData()
+        Object.keys(this.data).forEach(key => {
+          fd.append(key, this.data[key])
+        })
+        fd.append('file', this.blob)
+        axios.post(this.postAction, fd, {
+          onUploadProgress: e => {
+            if (e.lengthComputable) {
+              this.progress = Math.abs(e.loaded / e.total * 100)
+            }
+          },
+        }).then(response => {
+          if (typeof this.callback == 'function') {
+            this.$nextTick(_ => {
+              this.callback(response.data)
+            })
           }
-        },
-      }).then(response => {
-        if (typeof this.callback == 'function') {
+          this.file = undefined
+          this.active = false
+          this.visible = false
+        }).catch(e => {
+          console.error(e)
           this.$nextTick(_ => {
-            this.callback(response.data)
-          })
-        }
-        this.file = undefined
-        this.active = false
-        this.visible = false
-      }).catch(e => {
-        console.error(e)
-        this.$nextTick(_ => {
-          this.callback({success: false})
-        })        
-      })
+            this.callback({success: false})
+          })        
+        })
+      }
+      else {
+        this.upload.active = true
+        this.active = true
+      }
     }
   },
 

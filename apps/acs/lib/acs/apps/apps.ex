@@ -127,6 +127,10 @@ defmodule Acs.Apps do
     end
   end
 
+  def get_app_order(order_id) do 
+    Repo.get(AppOrder, order_id)
+  end
+
   def update_app_order!(%AppOrder{} = order, attr) do 
     AppOrder.changeset(order, attr) |> Repo.update!
   end

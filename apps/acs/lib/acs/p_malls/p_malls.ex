@@ -336,6 +336,17 @@ defmodule Acs.PMalls do
     {:ok, questions, total_page}
   end
 
+  def get_daily_question(app_id) do
+    query = from q in DayQuestion,
+            where: q.app_id == ^app_id,
+            limit: 1,
+            order_by: [asc: q.inserted_at],
+            select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
+
+    question = Repo.one(query)
+    {:ok, question}
+  end
+
   def update_pmall_question(question) do
     case Repo.get(DayQuestion, question["id"]) do
     nil ->

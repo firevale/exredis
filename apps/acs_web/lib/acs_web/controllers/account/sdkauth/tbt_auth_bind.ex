@@ -13,7 +13,7 @@ defmodule AcsWeb.TBTAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => tbt_app_id}} <- Apps.get_app_sdk_binding(app.id, "tbt"),
          true <- SDKTBT.validate_session(tbt_app_id, tbt_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :tbt, 
+           sdk: "tbt", 
            sdk_user_id: tbt_user_id, 
            email: nil,
            mobile: nil, 
@@ -35,7 +35,7 @@ defmodule AcsWeb.TBTAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :tbt,
+        sdk: "tbt",
         binding: access_token.binding              
       })
     else

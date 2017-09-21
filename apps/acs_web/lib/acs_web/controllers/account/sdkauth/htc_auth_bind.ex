@@ -15,7 +15,7 @@ defmodule AcsWeb.HtcAuthBind do
     with %AppSdkBinding{binding: %{"pub_key" => htc_pub_key}} <- Apps.get_app_sdk_binding(app.id, "htc"),
          true <- Crypto.rsa_public_verify2(htc_pub_key, htc_account, htc_account_sign),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :htc, 
+           sdk: "htc", 
            sdk_user_id: htc_user_id, 
            email: nil,
            mobile: nil, 
@@ -37,7 +37,7 @@ defmodule AcsWeb.HtcAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :htc,
+        sdk: "htc",
         binding: access_token.binding              
       })
     else

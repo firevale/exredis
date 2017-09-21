@@ -19,7 +19,7 @@ defmodule AcsWeb.IYouxiAuthBind do
            iyouxi_auth_code, 
            iyouxi_sdk_version),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :iyouxi, 
+           sdk: "iyouxi", 
            sdk_user_id: iyouxi_user_id, 
            email: nil,
            mobile: nil, 
@@ -41,7 +41,7 @@ defmodule AcsWeb.IYouxiAuthBind do
         user_email: user.email,
         nick_name: user.nickname,
         is_anonymous: false,
-        sdk: :iyouxi,
+        sdk: "iyouxi",
         binding: access_token.binding              
       })
     else

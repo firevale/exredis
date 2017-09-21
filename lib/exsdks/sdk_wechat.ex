@@ -13,9 +13,9 @@ defmodule SDKWechat do
 
   def mallprepay(order, wechat_info, ip_address, notify_url) do
     params = %{
-      appid: wechat_info.app_id,
+      appid: wechat_info["app_id"],
       body: order.goods_name,
-      mch_id: wechat_info.partnerid,
+      mch_id: wechat_info["partnerid"],
       nonce_str: Utils.nonce,
       notify_url: notify_url,
       out_trade_no: order.id,
@@ -24,7 +24,7 @@ defmodule SDKWechat do
       trade_type: @trade_type,
     }
 
-    req_params = params_with_sign(params, wechat_info.sign_key)
+    req_params = params_with_sign(params, wechat_info["sign_key"])
 
     req_data = """
       <xml>
@@ -38,8 +38,8 @@ defmodule SDKWechat do
     with true <- Httpc.success?(response),
         {:ok, prepay_id} <- get_prepay_id(response.body)
     do
-      resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
-      {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
+      resign_params = re_sign(wechat_info["app_id"], wechat_info["partnerid"], prepay_id, wechat_info["sign_key"])
+      {:ok, wechat_info["partnerid"], prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
     else
       _ -> {:error, "get prepay id failed"}
     end
@@ -47,9 +47,9 @@ defmodule SDKWechat do
 
   def prepay(order, wechat_info, ip_address, notify_url) do      
     params = %{
-      appid: wechat_info.app_id,
+      appid: wechat_info["app_id"],
       body: order.goods_name,
-      mch_id: wechat_info.partnerid,
+      mch_id: wechat_info["partnerid"],
       nonce_str: Utils.nonce,
       notify_url: notify_url,
       out_trade_no: order.id,
@@ -58,7 +58,7 @@ defmodule SDKWechat do
       trade_type: @trade_type,
     }
 
-    req_params = params_with_sign(params, wechat_info.sign_key)
+    req_params = params_with_sign(params, wechat_info["sign_key"])
 
     req_data = """
       <xml>
@@ -72,8 +72,8 @@ defmodule SDKWechat do
     with true <- Httpc.success?(response),
           {:ok, prepay_id} <- get_prepay_id(response.body)
     do
-      resign_params = re_sign(wechat_info.app_id, wechat_info.partnerid, prepay_id, wechat_info.sign_key)
-      {:ok, wechat_info.partnerid, prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
+      resign_params = re_sign(wechat_info["app_id"], wechat_info["partnerid"], prepay_id, wechat_info["sign_key"])
+      {:ok, wechat_info["partnerid"], prepay_id, resign_params[:noncestr], resign_params[:timestamp], resign_params[:sign]}
     else
       _ -> {:error, "get prepay id failed"}
     end
@@ -141,7 +141,7 @@ defmodule SDKWechat do
   end
 
   def get_auth_access_token(wechat_info, code) do
-    url = "#{@auth_base_url}/oauth2/access_token?appid=#{wechat_info.app_id}&secret=#{wechat_info.app_secret}&code=#{code}&grant_type=authorization_code"
+    url = "#{@auth_base_url}/oauth2/access_token?appid=#{wechat_info["app_id"]}&secret=#{wechat_info["app_secret"]}&code=#{code}&grant_type=authorization_code"
     response = Httpc.get(url)
     d "wechat get_auth_access_token, response: #{inspect response.body, pretty: true}"
     case Httpc.success?(response) do

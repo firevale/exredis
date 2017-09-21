@@ -272,8 +272,8 @@ export default {
             'x-csrf-token': window.acsConfig.csrfToken
           },
           title: this.$t('admin.titles.uploadGoodsPic'),
-          width: 400,
-          height: 400,
+          width: 1140,
+          height: 610,
           callback: response => this.pics.splice(index, 1, response.pic_url),
         })
       } else {

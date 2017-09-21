@@ -390,6 +390,18 @@ export default {
       deletePmallQuestion(params, successMessage) {
         return post('/admin_actions/pmall/delete_pmall_question', params, successMessage)
       },
+
+      listPmallDraws(params) {
+        return post('/admin_actions/pmall/list_pmall_draws', params)
+      },
+
+      updatePmallDraw(params, successMessage) {
+        return post('/admin_actions/pmall/update_pmall_draw', params, successMessage)
+      },
+
+      deletePmallDraw(params, successMessage) {
+        return post('/admin_actions/pmall/delete_pmall_draw', params, successMessage)
+      },
     }
   }
 }

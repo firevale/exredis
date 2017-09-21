@@ -145,21 +145,18 @@ defmodule AcsWeb.WechatController do
   def authlogin(%Plug.Conn{private: %{acs_app_id: _app_id,
                                       acs_device_id: device_id,
                                       acs_platform: platform,
-                                      acs_app: %App{sdk_bindings: %{wechat: wechat_info}} = app }} = conn,
+                                      acs_app: %App{} = app }} = conn,
                 %{"state" => state, "code" => code}) do
     session_state = get_session(conn, :wechat_login_state)
    
     with true <- session_state == state,
+        %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"),
         {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
-        #  {:ok, _openid, nickname, _sex, _headimgurl} <- SDKWechat.get_auth_user_info(access_token, openid)
     do
-      case Accounts.bind_sdk_user(%{sdk: :wechat, 
-                                    app_id: app.id, 
+      case Accounts.bind_sdk_user(%{sdk: "wechat", 
                                     sdk_user_id: openid, 
                                     email: nil,
-                                    device_id: device_id,
-                                    mobile: nil,
-                                    avatar_url: nil}) do 
+                                    mobile: nil}) do 
         {:ok, user} -> 
           access_token = Auth.create_access_token(%{
             app_id: app.id, 
@@ -175,7 +172,7 @@ defmodule AcsWeb.WechatController do
             access_token: access_token.id,
             expires_at: AccessToken.expired_at(access_token),
             user_id: "#{user.id}",
-            user_email: user.email,
+            user_email: user.email || "",
             nick_name:  user.nickname,
             is_anonymous: false,
             sdk: :wechat,

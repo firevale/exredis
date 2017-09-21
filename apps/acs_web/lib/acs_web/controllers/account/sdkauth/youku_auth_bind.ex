@@ -13,7 +13,7 @@ defmodule AcsWeb.YoukuAuthBind do
     with %AppSdkBinding{binding: %{"app_key" => youku_app_key, "pay_key" => youku_pay_key}} <- Apps.get_app_sdk_binding(app.id, "youku"),
          {:ok, youku_user_id} <- SDKYouku.validate_session(youku_app_key, youku_pay_key, youku_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :youku, 
+           sdk: "youku", 
            sdk_user_id: youku_user_id, 
            email: nil,
            mobile: nil, 
@@ -35,7 +35,7 @@ defmodule AcsWeb.YoukuAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :youku,
+        sdk: "youku",
         binding: access_token.binding              
       })
     else

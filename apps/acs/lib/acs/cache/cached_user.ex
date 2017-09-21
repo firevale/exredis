@@ -31,6 +31,8 @@ defmodule Acs.Cache.CachedUser do
     end
   end
 
+  def get_by(:email, nil), do: nil
+  def get_by(:email, ""), do: nil
   def get_by(:email, email) do 
     Excache.get!(email_key(email), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
@@ -48,6 +50,8 @@ defmodule Acs.Cache.CachedUser do
     end)    
   end
 
+  def get_by(:mobile, nil), do: nil
+  def get_by(:mobile, ""), do: nil
   def get_by(:mobile, mobile) do 
     Excache.get!(mobile_key(mobile), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
@@ -65,6 +69,8 @@ defmodule Acs.Cache.CachedUser do
     end)    
   end
 
+  def get_by(:device, nil), do: nil
+  def get_by(:device, ""), do: nil
   def get_by(:device, device_id) do 
     Excache.get!(device_key(device_id), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
@@ -82,6 +88,10 @@ defmodule Acs.Cache.CachedUser do
     end)    
   end
 
+  def get_by(:sdk, nil, _), do: nil
+  def get_by(:sdk, "", _), do: nil
+  def get_by(:sdk, _, nil), do: nil
+  def get_by(:sdk, _, ""), do: nil
   def get_by(:sdk, sdk, sdk_user_id) do 
     Excache.get!(sdk_key(sdk, sdk_user_id), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do

@@ -13,7 +13,7 @@ defmodule AcsWeb.YYHAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => yyh_app_id, "app_key" => yyh_app_key}} <- Apps.get_app_sdk_binding(app.id, "yyh"),
          true <- SDKYYH.validate_session(yyh_app_id, yyh_app_key, yyh_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :yyh, 
+           sdk: "yyh", 
            sdk_user_id: yyh_user_id, 
            email: nil,
            mobile: nil, 
@@ -35,7 +35,7 @@ defmodule AcsWeb.YYHAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :yyh,
+        sdk: "yyh",
         binding: access_token.binding              
       })
     else

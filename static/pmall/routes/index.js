@@ -40,6 +40,10 @@ export default function(VueRouter) {
           name: 'my_point',
           component: require('../views/myPoint.vue')
         }, {
+          path: 'my_exchange',
+          name: 'my_exchange',
+          component: require('../views/myExchange.vue')
+        }, {
           path: 'bind_mobile',
           name: 'bind_mobile',
           component: require('../views/bindMobile.vue')

@@ -16,6 +16,9 @@ const mutations = {
   },
   [types.ADD_USER_POINT](state, points) {
     state.points += points
+    if (state.points < 0) {
+      state.points = 0
+    }
   },
 
 }

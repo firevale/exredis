@@ -37,7 +37,7 @@
                 <p>{{ log.id }}</p>
               </div>
               <div class="column">
-                <p>{{ log.user_id }}</p>
+                <p>{{ log.wcp_user.nickname }}</p>
               </div>              
               <div class="column">
                 <p>{{ log.log_type }}</p>
@@ -132,7 +132,8 @@ export default {
           log_type: 'admin_op',
           memo: '',
           point: 0,
-          user_id: ''
+          wcp_user_id: '',
+          nickame: '',
         },
         visible: true,
         callback: log => {

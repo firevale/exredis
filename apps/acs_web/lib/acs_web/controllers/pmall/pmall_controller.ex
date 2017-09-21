@@ -9,20 +9,33 @@ defmodule AcsWeb.PMallController do
   plug :fetch_session_user_id
   plug :fetch_session_user
 
+  def list_index(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+    #任务清单
+    tasks = PMalls.get_task_list(app_id)
+
+    #商品
+    goodses = 
+      case PMalls.list_pmall_goods(app_id, 1, 3, nil) do
+        :zero ->
+          []
+        {:ok, goodses, total_page} ->
+          goodses
+      end
+    
+    conn |> json(%{success: true, tasks: tasks, goodses: goodses})
+
+  end
+
   # list_pmall_goods
   def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
-                                      "records_per_page" => records_per_page,
-                                      "keyword" => keyword}) do
-    case PMalls.list_pmall_goods(app_id, page, records_per_page, keyword) do
+                                      "records_per_page" => records_per_page}) do
+    case PMalls.list_pmall_goods(app_id, page, records_per_page, nil) do
       :zero ->
         conn |> json(%{success: true, total: 0, goodses: []})
       {:ok, goodses, total_page} ->
         conn |> json(%{success: true, goodses: goodses, total: total_page})
     end
-  end
-  def list_pmall_goods(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
@@ -44,7 +57,7 @@ defmodule AcsWeb.PMallController do
         user_info = Map.merge(wcp_user, %{points: 200, has_mobile: false })
         conn |> json(%{success: true, wcp_user: user_info})
       _ ->
-        conn |> json(%{success: false })
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams" })
     end
   end
 
@@ -58,7 +71,7 @@ defmodule AcsWeb.PMallController do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})
       _ ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
 
@@ -72,7 +85,7 @@ defmodule AcsWeb.PMallController do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})
       _ ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
 

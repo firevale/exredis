@@ -135,8 +135,18 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 
-  def admin_add_pmall_point(%Plug.Conn{private: %{acs_session_user_id: user_id, acs_app_id: app_id}} = conn, %{"point" => _point, "memo" => _memo} = log) do
-    case PMalls.admin_add_pmall_point(user_id, app_id, log) do
+  def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                                        %{"nickame" => nickame, 
+                                        "point" => _point, 
+                                        "memo" => _memo} = log) do
+    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, nickame) do
+                    nil -> nil
+                    %AppWcpUser{} = u -> u.id
+                  end
+    if(!wcp_user_id) do
+      conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
+    end
+    case PMalls.admin_add_pmall_point(wcp_user_id, app_id, log) do
       {:ok, log} ->
         conn |> json(%{success: true, log: log})
       {:error, errors} ->

@@ -5,9 +5,9 @@
         <h5 class="title is-5">{{ $t('admin.point.add') }}</h5>
       </div>
       <form name="pointLog" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.point.user_id') }}: </label>
+        <label class="label"> {{ $t('admin.point.wcpUserName') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="pointLog.user_id">
+          <input class="input" type="text" v-model.trim="pointLog.nickame">
         </p>
         <label class="label"> {{ $t('admin.point.point') }}(扣分请输入负数): </label>
         <p class="control">
@@ -52,8 +52,8 @@ export default {
 
   methods: {
     handleSubmit: async function() {
-      if(!this.pointLog.user_id || !this.pointLog.point || !this.pointLog.memo){
-        alert('请填写用户ID, 积分和备注!')
+      if(!this.pointLog.nickame || !this.pointLog.point || !this.pointLog.memo){
+        alert('请填写微信用户昵称, 积分和备注!')
         return
       }
 

@@ -43,7 +43,7 @@ defmodule AcsStats.Users do
       nil ->
         {:ok, app_user} = AppUser.changeset(%AppUser{}, %{
           app_id: app_id,
-          zone_id: zone_id,
+          zone_id: "#{zone_id}",
           user_id: user_id,
           platform: platform,
           sdk: sdk,

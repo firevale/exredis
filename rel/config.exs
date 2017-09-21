@@ -30,35 +30,35 @@ environment :dev do
   # dev mode.
   set dev_mode: true
   set include_erts: false
-  set cookie: :"j~TmSgx.PiLf=5GU,i!b(VN5DKpA;V3!FD.LBrX=^3Z%TS;NW(q4b*5Uoe=Zl{&g"
+  set cookie: :acs
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
   set include_system_libs: true
-  set cookie: :"(jwq4k7&w`~QqXMfxo6j~p;o6{szt^}[LF}>_<X>T,{BJ/*>D9@&HJ$)]yJw$!gS"
+  set cookie: :acs
 end
 
 environment :ksbj do
   set include_erts: true
   set include_src: false
   set include_system_libs: true
-  set cookie: :"(jwq4k7&w`~QqXMfxo6j~p;o6{szt^}[LF}>_<X>T,{BJ/*>D9@&HJ$)]yJw$!gS"
+  set cookie: :acs
 end
 
 environment :ucbj do
   set include_erts: true
   set include_src: false
   set include_system_libs: true
-  set cookie: :"(jwq4k7&w`~QqXMfxo6j~p;o6{szt^}[LF}>_<X>T,{BJ/*>D9@&HJ$)]yJw$!gS"
+  set cookie: :acs
 end
 
 environment :uchk do
   set include_erts: true
   set include_src: false
   set include_system_libs: true
-  set cookie: :"(jwq4k7&w`~QqXMfxo6j~p;o6{szt^}[LF}>_<X>T,{BJ/*>D9@&HJ$)]yJw$!gS"
+  set cookie: :acs
 end
 
 # You may define one or more releases in this file.
@@ -67,7 +67,7 @@ end
 # will be used by default
 
 release :acs do
-  set version: "0.1.0"
+  set version: "0.0.1"
   set applications: [
     :runtime_tools,
     acs: :permanent,

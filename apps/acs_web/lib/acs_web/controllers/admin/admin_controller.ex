@@ -61,31 +61,33 @@ defmodule AcsWeb.Admin.AdminController do
   def update_app_goods_info(conn, %{"goods" => %{"app_id" => ""}}) do
     conn |> json(%{success: false, i18n_message: "error.server.emptyGoodsAppId"})
   end
-  def update_app_goods_info(conn, %{"goods" => %{
+  def update_app_goods_info(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"goods" => %{
       "id" => goods_id,
       "name" => _,
       "description" => _,
       "price" => _goods_price,
-      "app_id" => _,
-    } = goods}) do
-    if goods["price"] < 0 do
+      "app_id" => app_id,
+    } = goods_attr}) do
+    if goods_attr["price"] < 0 do
       conn |> json(%{success: false, i18n_message: "error.server.invalidGoodsPrice"})
     else
-      case Repo.get(AppGoods, goods_id) do
+      case Apps.get_app_goods(goods_id) do
         nil ->
-          case AppGoods.changeset(%AppGoods{}, goods) |> Repo.insert do
-            {:ok, new_goods} ->
-              CachedApp.refresh(new_goods.app_id)
-              conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
-
+          case Apps.create_app_goods(goods_attr) do 
+            {:ok, goods} ->
+              Admin.log_admin_operation(acs_admin_id, app_id, "add_new_app_goods", goods_attr)  
+              conn |> json(%{success: true, goods: goods})
+            
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, message: translate_errors(errors)})
           end
 
-        %AppGoods{} = old_goods ->
-          case AppGoods.changeset(old_goods, goods) |> Repo.update do
-            {:ok, new_goods} ->
-              CachedApp.refresh(new_goods.app_id)
+        %AppGoods{} = goods ->
+          case Apps.update_app_goods(goods, goods_attr) do
+            {:ok, new_goods, %{changes: changes}} ->
+              if changes != %{} do 
+                Admin.log_admin_operation(acs_admin_id, app_id, "update_app_goods", %{goods_id: goods_id, changes: changes})  
+              end
               conn |> json(%{success: true, goods: new_goods |> Repo.preload(:product_ids)})
 
             {:error, %{errors: errors}} ->
@@ -149,16 +151,15 @@ defmodule AcsWeb.Admin.AdminController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
   def delete_app_goods(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn, %{"goods_id" => goods_id, "app_id" => app_id}) do
-    case Repo.get(AppGoods, goods_id) do
+    case Apps.get_app_goods(goods_id) do
       nil ->
         conn |> json(%{success: false,
                        i18n_message: "error.server.goodsNotFound",
                        i18n_message_object: %{goods_id: goods_id}})
 
       %AppGoods{app_id: ^app_id} = goods ->
-        case Repo.delete(goods) do
-          {:ok, _} ->
-            CachedApp.refresh(app_id)
+        case Apps.del_app_goods(goods) do
+          :ok ->
             Admin.log_admin_operation(acs_admin_id, app_id, "delete_app_goods", %{"goods_id" => goods_id})
             conn |> json(%{success: true})
 

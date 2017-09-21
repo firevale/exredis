@@ -98,7 +98,7 @@ defmodule Acs.Accounts do
       where: u.nickname == ^nickname and u.id != ^user_id
     Repo.one!(query) > 0
   end
-
+  
   def get_user_addresses(user_id) do
     query = from us in UserAddress,
               where: us.user_id == ^user_id,

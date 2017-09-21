@@ -20,9 +20,11 @@ defmodule Acs.Apps do
   alias Acs.Apps.AppNews
   alias Acs.Apps.AppQuestion
   alias Acs.Apps.AppSdkBinding
+  alias Acs.Apps.AppGoods
 
   alias Acs.Cache.CachedApp
   alias Acs.Cache.CachedAppSdkBinding
+  alias Acs.Cache.CachedAppGoods
 
   def get_app(app_id) do 
     CachedApp.get(app_id)
@@ -88,6 +90,41 @@ defmodule Acs.Apps do
         {:ok, sdk_binding}
       v -> v
     end    
+  end
+
+  def get_app_goods(goods_id) do 
+    CachedAppGoods.get(goods_id)
+  end
+
+  def create_app_goods(attr) do 
+    case AppGoods.changeset(%AppGoods{}, attr) |> Repo.insert do 
+      {:ok, goods} ->
+        CachedApp.refresh(goods.app_id)
+        CachedAppGoods.refresh(goods.id)
+        {:ok, goods}
+      v -> v
+    end
+  end
+
+  def update_app_goods(%AppGoods{} = goods, attr) do 
+    changeset = AppGoods.changeset(goods, attr)
+    case Repo.update(changeset) do 
+      {:ok, new_goods} -> 
+        CachedApp.refresh(goods.app_id)
+        CachedAppGoods.refresh(goods.id)
+        {:ok, new_goods, changeset}
+      v -> v
+    end
+  end
+
+  def del_app_goods(%AppGoods{} = goods) do 
+    case Repo.delete(goods) do 
+      {:ok, _} -> 
+        CachedApp.refresh(goods.app_id)
+        CachedAppGoods.refresh(goods.id)
+        :ok
+      v -> v
+    end
   end
 
   def update_app_order!(%AppOrder{} = order, attr) do 

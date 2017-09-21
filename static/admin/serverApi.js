@@ -179,7 +179,7 @@ export default {
         return post('/mall_actions/list_mall_orders', params)
       },
 
-      getMallOrder(params) {
+      getFatMallOrder(params) {
         return post('/mall_actions/get_fat_mall_order', params)
       },
 

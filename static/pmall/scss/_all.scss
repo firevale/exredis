@@ -82,6 +82,11 @@
   .bg-full {
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    &.bg-loading {
+      width: virtual-m-rem(200);
+      height: virtual-m-rem(150);
+      background-image: url("~assets/pmall/loading.gif");
+    }
     &.bg-title-task {
       width: 100%;
       height: virtual-m-rem(90);
@@ -103,6 +108,17 @@
       background-size: virtual-m-rem(21) virtual-m-rem(26), virtual-m-rem(683) virtual-m-rem(65);
       background-position: virtual-m-rem(10) virtual-m-rem(20), 0 0;
     }
+  }
+
+  .loading{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    margin-left:virtual-m-rem(-100);
+    margin-top: virtual-m-rem(-75);
+    width: virtual-m-rem(200);
+    height: virtual-m-rem(150);
+    z-index: 999;
   }
 
   .index-page {
@@ -289,7 +305,7 @@
               font-size: 5rem;
               font-family: $family-sans-serif;
             }
-            p.date{
+            p.date {
               color: black;
             }
             h2.yi-ji {

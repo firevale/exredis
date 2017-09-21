@@ -44,7 +44,7 @@ defmodule AcsWeb.PMallController do
         user_info = Map.merge(wcp_user, %{points: 200, has_mobile: false })
         conn |> json(%{success: true, wcp_user: user_info})
       _ ->
-        conn |> json(%{success: false })
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams" })
     end
   end
 
@@ -58,7 +58,7 @@ defmodule AcsWeb.PMallController do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})
       _ ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
 
@@ -72,7 +72,7 @@ defmodule AcsWeb.PMallController do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})
       _ ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
 

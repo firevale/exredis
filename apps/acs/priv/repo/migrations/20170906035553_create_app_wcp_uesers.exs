@@ -12,6 +12,7 @@ defmodule Acs.Repo.Migrations.CreateAppWcpUesers do
       add :tf_email, :string, size: 50
       
       add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
@@ -19,5 +20,6 @@ defmodule Acs.Repo.Migrations.CreateAppWcpUesers do
     create unique_index(:app_wcp_users, [:app_id, :openid])
     create unique_index(:app_wcp_users, [:app_id, :tf_email])
     create index(:app_wcp_users, [:openid])
+    create index(:app_wcp_users, [:app_id, :nickname])
   end
 end

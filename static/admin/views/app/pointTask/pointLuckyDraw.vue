@@ -11,7 +11,7 @@
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
-            <div class="column is-6">
+            <div class="column">
               <p>{{ $t('admin.point.draw.pic') }}</p>
             </div>
             <div class="column">
@@ -33,8 +33,12 @@
           <div v-if="draws">
             <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="draws && draws.length > 0"
               v-for="(draw, index) in draws" :key="draw.id">
-              <div class="column is-6">
-                <p>{{ draw.pic }}</p>
+              <div class="column">
+                <center>
+                  <figure class="image news-pic" @click="updateDrawPic(draw)">
+                    <img :src="draw.pic ? draw.pic: 'https://placehold.it/144x144?text=144X144'" style="max-height:60px; width:auto; "></img>
+                  </figure>
+                </center>
               </div>
               <div class="column">
                 <p>{{ draw.name }}</p>

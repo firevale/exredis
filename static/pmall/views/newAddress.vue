@@ -158,17 +158,20 @@ export default {
     handleSubmit: async function() {
       if (!this.processing) {
         this.processing = true
-        let result = await this.$acs.insertAddress({
-          name: this.addressModel.name,
-          mobile: this.addressModel.mobile,
-          area: this.addressModel.area,
-          area_code: this.addressModel.area_code,
-          address: this.addressModel.address
-        })
-        if (result.success) {
+        let msg = this.errorHint
+        if (msg == '') {
+          let result = await this.$acs.insertAddress({
+            name: this.addressModel.name,
+            mobile: this.addressModel.mobile,
+            area: this.addressModel.area,
+            area_code: this.addressModel.area_code,
+            address: this.addressModel.address
+          })
+          if (result.success) {
 
+          }
+          this.processing = false
         }
-        this.processing = false
       }
     },
   }

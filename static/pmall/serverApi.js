@@ -93,6 +93,9 @@ export default {
       sign() {
         return post("/pmall_actions/sign")
       },
+      insertAddress(params) {
+        return post('/pmall_actions/insert_address', params)
+      },
     }
   }
 }

@@ -162,12 +162,20 @@ defmodule AcsWeb.PMallController do
                 "area" => _area,
                 "address" => _address,
                 "area_code" => _area_code} = us_address) do
-    user_id = 1
-    case Accounts.insert_address(user_id, us_address) do
-      {:ok, us_address} ->
-        conn |> json(%{success: true, address: us_address, i18n_message: "pmall.address.addSuccess"})
-      :error ->
-        conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+
+    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    case Wcp.get_app_wcp_user(app_id, openid: open_id) do
+      nil ->
+        conn |> json(%{success: false, message: "invalid request params"})
+
+      %AppWcpUser{} = wcp_user ->
+        case Accounts.insert_address(wcp_user.user_id, us_address) do
+          {:ok, us_address} ->
+            conn |> json(%{success: true, address: us_address, i18n_message: "pmall.address.addSuccess"})
+          :error ->
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+        end
     end
   end
 

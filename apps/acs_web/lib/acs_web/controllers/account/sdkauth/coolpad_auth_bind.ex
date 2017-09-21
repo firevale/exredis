@@ -18,7 +18,7 @@ defmodule AcsWeb.CoolpadAuthBind do
              coolpad_app_key, 
              coolpad_auth_code),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :coolpad, 
+           sdk: "coolpad", 
            sdk_user_id: coolpad_user_id, 
            email: nil,
            mobile: nil, 
@@ -40,7 +40,7 @@ defmodule AcsWeb.CoolpadAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :coolpad,
+        sdk: "coolpad",
         binding: access_token.binding              
       })
     else

@@ -11,7 +11,7 @@ defmodule AcsWeb.WandoujiaAuthBind do
      with %AppSdkBinding{binding: %{"app_id" => wdj_app_id}} <- Apps.get_app_sdk_binding(app.id, "wdj"),
          true <- SDKWandoujia.validate_session(wdj_app_id, wdj_user_id, wdj_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :wdj, 
+           sdk: "wdj", 
            sdk_user_id: wdj_user_id, 
            email: nil,
            mobile: nil, 
@@ -33,7 +33,7 @@ defmodule AcsWeb.WandoujiaAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :wdj,
+        sdk: "wdj",
         binding: access_token.binding              
       })
     else

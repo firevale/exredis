@@ -15,7 +15,7 @@ defmodule AcsWeb.LenovoAuthBind do
            account_id: lenovo_user_id, 
            user_name: lenovo_nickname} <- SDKLenovo.validate_session(lenovo_app_id, lenovo_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :lenovo, 
+           sdk: "lenovo", 
            sdk_user_id: lenovo_user_id, 
            email: nil,
            mobile: nil, 
@@ -37,7 +37,7 @@ defmodule AcsWeb.LenovoAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :lenovo,
+        sdk: "lenovo",
         binding: access_token.binding              
       })
     else

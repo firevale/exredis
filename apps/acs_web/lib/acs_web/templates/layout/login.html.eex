@@ -1,9 +1,17 @@
 <% isFbLoginSupported = case @conn.private[:acs_app] do 
-                          %{sdk_bindings: %{facebook: %{app_id: _ }}} -> true
+                          %{id: app_id} -> 
+                            case Acs.Apps.get_app_sdk_binding(app_id, "facebook") do 
+                              %{binding: %{}} -> true
+                              _ -> false
+                            end
                           _ -> false 
                         end %>
 <% isWechatLoginSupported = case @conn.private[:acs_app] do 
-                          %{sdk_bindings: %{wechat: %{app_id: _ }}} -> true
+                          %{id: app_id} -> 
+                            case Acs.Apps.get_app_sdk_binding(app_id, "wechat") do 
+                              %{binding: %{}} -> true
+                              _ -> false
+                            end
                           _ -> false 
                         end %>
 

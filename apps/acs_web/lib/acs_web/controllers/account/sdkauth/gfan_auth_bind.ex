@@ -14,7 +14,7 @@ defmodule AcsWeb.GFanAuthBind do
     with %AppSdkBinding{binding: %{"app_key" => gfan_app_key}} <- Apps.get_app_sdk_binding(app.id, "gfan"),
          true <- SDKGFan.validate_session(gfan_app_key, gfan_access_token, gfan_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :gfan, 
+           sdk: "gfan", 
            sdk_user_id: gfan_user_id, 
            email: nil,
            mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.GFanAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :gfan,
+        sdk: "gfan",
         binding: access_token.binding              
       })
     else

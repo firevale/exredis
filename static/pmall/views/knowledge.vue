@@ -54,3 +54,30 @@
     </div>
   </div>
 </template>
+
+
+<script>
+  import {
+    mapGetters,
+    mapActions
+  } from 'vuex'
+  export default {
+    data() {
+      return {
+        question: 0
+      }
+    },
+  
+    mounted() {
+      this.loadData()
+    },
+    methods: {
+      loadData: async function() {
+        let result = await this.$acs.getDailyQuestion()
+        if (result.success) {
+        }
+      }
+    }
+  
+  }
+  </script>

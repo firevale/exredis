@@ -179,4 +179,15 @@ defmodule AcsWeb.PMallController do
     end
   end
 
+  def get_daily_question(conn, _) do
+    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
+
+    case PMalls.get_daily_question(app_id) do
+      nil ->
+        conn |> json(%{success: false})
+      {:ok, question} ->
+        conn |> json(%{success: true, question: question})
+    end
+  end
+
 end

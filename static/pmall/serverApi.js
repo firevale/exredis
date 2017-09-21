@@ -96,6 +96,9 @@ export default {
       insertAddress(params) {
         return post('/pmall_actions/insert_address', params)
       },
+      getDailyQuestion() {
+        return post("/pmall_actions/get_daily_question")
+      },
     }
   }
 }

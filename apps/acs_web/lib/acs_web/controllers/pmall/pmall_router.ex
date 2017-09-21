@@ -13,6 +13,7 @@ defmodule AcsWeb.PMallRouter do
     post   "/bind_mobile", PMallController, :bind_mobile
     post   "/sign", PMallController, :sign
     post   "/insert_address", PMallController, :insert_address
+    post   "/get_daily_question", PMallController, :get_daily_question
   end
 
 end

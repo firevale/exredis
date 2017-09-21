@@ -82,9 +82,9 @@ defmodule Acs.MallsTest do
       assert Malls.list_mall_orders() == [mall_order]
     end
 
-    test "get_mall_order!/1 returns the mall_order with given id" do
+    test "get_fat_mall_order!/1 returns the mall_order with given id" do
       mall_order = mall_order_fixture()
-      assert Malls.get_mall_order!(mall_order.id) == mall_order
+      assert Malls.get_fat_mall_order!(mall_order.id) == mall_order
     end
 
     test "create_mall_order/1 with valid data creates a mall_order" do
@@ -104,13 +104,13 @@ defmodule Acs.MallsTest do
     test "update_mall_order/2 with invalid data returns error changeset" do
       mall_order = mall_order_fixture()
       assert {:error, %Ecto.Changeset{}} = Malls.update_mall_order(mall_order, @invalid_attrs)
-      assert mall_order == Malls.get_mall_order!(mall_order.id)
+      assert mall_order == Malls.get_fat_mall_order!(mall_order.id)
     end
 
     test "delete_mall_order/1 deletes the mall_order" do
       mall_order = mall_order_fixture()
       assert {:ok, %MallOrder{}} = Malls.delete_mall_order(mall_order)
-      assert_raise Ecto.NoResultsError, fn -> Malls.get_mall_order!(mall_order.id) end
+      assert_raise Ecto.NoResultsError, fn -> Malls.get_fat_mall_order!(mall_order.id) end
     end
 
     test "change_mall_order/1 returns a mall_order changeset" do
@@ -140,9 +140,9 @@ defmodule Acs.MallsTest do
       assert Malls.list_mall_order_details() == [mall_order_detail]
     end
 
-    test "get_mall_order_detail!/1 returns the mall_order_detail with given id" do
+    test "get_fat_mall_order_detail!/1 returns the mall_order_detail with given id" do
       mall_order_detail = mall_order_detail_fixture()
-      assert Malls.get_mall_order_detail!(mall_order_detail.id) == mall_order_detail
+      assert Malls.get_fat_mall_order_detail!(mall_order_detail.id) == mall_order_detail
     end
 
     test "create_mall_order_detail/1 with valid data creates a mall_order_detail" do
@@ -162,13 +162,13 @@ defmodule Acs.MallsTest do
     test "update_mall_order_detail/2 with invalid data returns error changeset" do
       mall_order_detail = mall_order_detail_fixture()
       assert {:error, %Ecto.Changeset{}} = Malls.update_mall_order_detail(mall_order_detail, @invalid_attrs)
-      assert mall_order_detail == Malls.get_mall_order_detail!(mall_order_detail.id)
+      assert mall_order_detail == Malls.get_fat_mall_order_detail!(mall_order_detail.id)
     end
 
     test "delete_mall_order_detail/1 deletes the mall_order_detail" do
       mall_order_detail = mall_order_detail_fixture()
       assert {:ok, %MallOrderDetail{}} = Malls.delete_mall_order_detail(mall_order_detail)
-      assert_raise Ecto.NoResultsError, fn -> Malls.get_mall_order_detail!(mall_order_detail.id) end
+      assert_raise Ecto.NoResultsError, fn -> Malls.get_fat_mall_order_detail!(mall_order_detail.id) end
     end
 
     test "change_mall_order_detail/1 returns a mall_order_detail changeset" do
@@ -256,9 +256,9 @@ defmodule Acs.MallsTest do
       assert Malls.list_mall_order_logs() == [mall_order_log]
     end
 
-    test "get_mall_order_log!/1 returns the mall_order_log with given id" do
+    test "get_fat_mall_order_log!/1 returns the mall_order_log with given id" do
       mall_order_log = mall_order_log_fixture()
-      assert Malls.get_mall_order_log!(mall_order_log.id) == mall_order_log
+      assert Malls.get_fat_mall_order_log!(mall_order_log.id) == mall_order_log
     end
 
     test "create_mall_order_log/1 with valid data creates a mall_order_log" do
@@ -278,13 +278,13 @@ defmodule Acs.MallsTest do
     test "update_mall_order_log/2 with invalid data returns error changeset" do
       mall_order_log = mall_order_log_fixture()
       assert {:error, %Ecto.Changeset{}} = Malls.update_mall_order_log(mall_order_log, @invalid_attrs)
-      assert mall_order_log == Malls.get_mall_order_log!(mall_order_log.id)
+      assert mall_order_log == Malls.get_fat_mall_order_log!(mall_order_log.id)
     end
 
     test "delete_mall_order_log/1 deletes the mall_order_log" do
       mall_order_log = mall_order_log_fixture()
       assert {:ok, %MallOrderLog{}} = Malls.delete_mall_order_log(mall_order_log)
-      assert_raise Ecto.NoResultsError, fn -> Malls.get_mall_order_log!(mall_order_log.id) end
+      assert_raise Ecto.NoResultsError, fn -> Malls.get_fat_mall_order_log!(mall_order_log.id) end
     end
 
     test "change_mall_order_log/1 returns a mall_order_log changeset" do

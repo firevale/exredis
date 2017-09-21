@@ -17,7 +17,7 @@ defmodule Acs.Malls do
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedMallGoods
 
-  def get_mall_order(order_id) do 
+  def get_fat_mall_order(order_id) do 
     query = 
       from o in MallOrder,
         left_join: details in assoc(o, :details),
@@ -27,10 +27,14 @@ defmodule Acs.Malls do
           user: [:id, :nickname, :mobile, :email],
           details: [:id, :goods_name, :goods_pic, :price, :amount, :mall_goods_id],
           op_logs: [:id, :status, :changed_status, :content, :admin_user, :inserted_at] ]),
-        where: o.id ==^order_id,
+        where: o.id == ^order_id,
         preload: [user: user, details: details, op_logs: op_logs]
 
     Repo.one(query)
+  end
+
+  def get_mall_order(order_id) do 
+    Repo.get(MallOrder, order_id)
   end
 
   def get_mall(mall_id) do
@@ -228,7 +232,7 @@ defmodule Acs.Malls do
   end
 
   def set_mall_order_paid(admin_user_id, order_id, transaction_id) do
-    order = get_mall_order(order_id)
+    order = get_fat_mall_order(order_id)
     payed_status = 1
     admin_user = CachedUser.get(admin_user_id)
 
@@ -256,14 +260,14 @@ defmodule Acs.Malls do
           {:error, i18n_message}
         _ ->
           Acs.Search.ESMallOrder.update(order_id, transaction_id)
-          order = get_mall_order(order_id)
+          order = get_fat_mall_order(order_id)
           {:ok, order}
       end
     end
   end
 
   def refund_order(admin_user_id, order_id, refund_money) do
-    order = get_mall_order(order_id)
+    order = get_fat_mall_order(order_id)
     refund_free = refund_money * 100
     admin_user = CachedUser.get(admin_user_id)
     cond do
@@ -288,7 +292,7 @@ defmodule Acs.Malls do
           {:error, i18n_message} ->
             {:error, i18n_message}
           _ ->
-            order = get_mall_order(order_id)
+            order = get_fat_mall_order(order_id)
             {:ok, order}
         end
     end

@@ -26,7 +26,7 @@ defmodule AcsWeb.PMallController do
   end
 
   # list_pmall_goods
-  def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+  def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
                                       "records_per_page" => records_per_page}) do
     case PMalls.list_pmall_goods(app_id, page, records_per_page, nil) do
@@ -37,13 +37,10 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
+  def get_goods_detail(conn,%{"goods_id" =>goods_id})do
     goods = PMalls.get_pmall_goods_detail(goods_id)
     PMalls.add_goods_click(goods_id, 1)
     conn |> json(%{success: true, goods: goods})
-  end
-  def get_pmall_goods_detail(conn, _) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do

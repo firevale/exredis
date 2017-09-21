@@ -14,7 +14,7 @@
         <router-link class="button btn-my-exchange" :to="{name: 'my_exchange'}"></router-link>
       </div>
     </header>
-    <div  class="panel">
+    <div class="panel">
       <div class="bg-full bg-title-task">
       </div>
       <div class="tasks">
@@ -35,43 +35,15 @@
       <div class="bg-full bg-title-pmall-index">
       </div>
       <div class="pmall is-flex">
-        <div class="column is-6">
+        <div v-for="goods in goodses" class="column is-6">
           <div class="item-box">
             <div class="item">
-              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
+              <router-link class="image" :to="{name: 'detail', params:{ id: goods.id}}" tag="div"></router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-medium  is-danger is-flex flex-vcentered flex-center">
-                  <span class="item-title is-ellipsis">惊奇避孕套</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
+                  <span class="item-title is-ellipsis">{{goods.name}}</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
                 <p class="is-marginless is-size-small   has-text-centered">兑换积分:
-                  <span class="is-primary">98</span> <a href="#" style="margin-left:1rem">查看礼品详情</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="column is-6">
-          <div class="item-box">
-            <div class="item">
-              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
-              <div class="item-content is-flex is-column is-center">
-                <h1 class="is-size-medium  is-danger is-flex flex-vcentered flex-center">
-                      <span class="item-title is-ellipsis">惊奇雨伞</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
-                <p class="is-marginless is-size-small   has-text-centered">兑换积分:
-                  <span class="is-primary">98</span> <a href="#" style="margin-left:1rem">查看礼品详情</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="column is-6">
-          <div class="item-box">
-            <div class="item">
-              <router-link class="image" :to="{name: 'detail'}" tag="div"></router-link>
-              <div class="item-content is-flex is-column is-center">
-                <h1 class="is-size-medium   is-danger is-flex flex-vcentered flex-center">
-                      <span class="item-title is-ellipsis">惊奇抱枕</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
-                <p class="is-marginless is-size-small   has-text-centered">兑换积分:
-                  <span class="is-primary">98</span> <a href="#" style="margin-left:1rem">查看礼品详情</a>
+                  <span class="is-primary">{{goods.price}}</span> <a href="#" style="margin-left:1rem">查看礼品详情</a>
                 </p>
               </div>
             </div>

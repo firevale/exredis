@@ -11,9 +11,7 @@
           <span class="is-right">{{item.point}}积分</span>
         </div>
       </div>
-      <footer v-show="this.page!=0 && this.total>this.page" class="is-flex flex-center flex-vcentered">
-        <div class="loadmore" @click="loadData">查看更多</div>
-      </footer>
+      <div v-show="this.page!=0 && this.total>this.page" class="button btn-record-more" @click="loadData"></div>
     </div>
   </div>
 </template>

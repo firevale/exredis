@@ -57,24 +57,21 @@ export default {
   install: function(Vue, options) {
     Vue.prototype.$acs = {
       tokens: {},
+      cancel(tokenName) {
+        if (this.tokens[tokenName] && typeof this.tokens[tokenName] === 'function') {
+          this.tokens[tokenName]()
+        }
+      },
 
       getUserInfo() {
         return post('/pmall_actions/get_user_info')
       },
-
-      cancelListMyPoints() {
-        if (typeof this.tokens.listMyPoints === 'function') {
-          this.tokens.listMyPoints()
-        }
+      list_index() {
+        return post("/pmall_actions/list_index")
       },
       listMyPoints(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
         return post('/pmall_actions/list_my_points', params, undefined, cancelToken)
-      },
-      cancelListMyExchanges() {
-        if (typeof this.tokens.listMyExchanges === 'function') {
-          this.tokens.listMyExchanges()
-        }
       },
       listMyExchanges(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchanges = c)

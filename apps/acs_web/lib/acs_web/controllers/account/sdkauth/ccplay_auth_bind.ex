@@ -13,7 +13,7 @@ defmodule AcsWeb.CCPlayAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => cc_app_id, "app_key" => cc_app_key}} <- Apps.get_app_sdk_binding(app.id, "cc"),
          true <- SDKCCPlay.validate_session(cc_app_id, cc_app_key, cc_access_token),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :cc, 
+           sdk: "cc", 
            sdk_user_id: cc_user_id, 
            email: nil,
            mobile: nil, 
@@ -35,7 +35,7 @@ defmodule AcsWeb.CCPlayAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :cc,
+        sdk: "cc",
         binding: access_token.binding              
       })
     else

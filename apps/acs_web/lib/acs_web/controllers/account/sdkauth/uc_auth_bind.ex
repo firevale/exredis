@@ -10,7 +10,7 @@ defmodule AcsWeb.UCAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => uc_app_id, "app_key" => uc_app_key}} <- Apps.get_app_sdk_binding(app.id, "uc"),
          %{id: uc_user_id} <- SDKUC.validate_session(uc_app_id, uc_app_key, uc_access_token, params["debug_mode"]),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :uc, 
+           sdk: "uc", 
            sdk_user_id: uc_user_id, 
            email: nil,
            mobile: nil, 
@@ -32,7 +32,7 @@ defmodule AcsWeb.UCAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :uc,
+        sdk: "uc",
         binding: access_token.binding              
       })
     else

@@ -14,7 +14,7 @@ defmodule AcsWeb.HaimaAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => haima_app_id}} <- Apps.get_app_sdk_binding(app.id, "haima"),
          true <- SDKHaima.validate_session(haima_app_id, haima_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :haima, 
+           sdk: "haima", 
            sdk_user_id: haima_user_id, 
            email: nil,
            mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.HaimaAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :haima,
+        sdk: "haima",
         binding: access_token.binding              
       })
     else

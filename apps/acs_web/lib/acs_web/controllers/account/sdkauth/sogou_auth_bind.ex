@@ -15,7 +15,7 @@ defmodule AcsWeb.SogouAuthBind do
            "app_secret" => sogou_app_secret}} <- Apps.get_app_sdk_binding(app.id, "sogou"),
          true <- SDKSogou.validate_session(sogou_app_id, sogou_access_token, sogou_user_id, sogou_app_secret),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :sogou, 
+           sdk: "sogou", 
            sdk_user_id: sogou_user_id, 
            email: nil,
            mobile: nil, 
@@ -37,7 +37,7 @@ defmodule AcsWeb.SogouAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :sogou,
+        sdk: "sogou",
         binding: access_token.binding              
       })
     else

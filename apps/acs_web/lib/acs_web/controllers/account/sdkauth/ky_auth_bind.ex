@@ -12,7 +12,7 @@ defmodule AcsWeb.KYAuthBind do
     with %AppSdkBinding{binding: %{"app_key" => ky_app_key}} <- Apps.get_app_sdk_binding(app.id, "ky"),
          %{id: ky_user_id, nickname: ky_nickname} <- SDKKY.validate_session(ky_app_key, ky_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :ky, 
+           sdk: "ky", 
            sdk_user_id: ky_user_id, 
            email: nil,
            mobile: nil, 
@@ -34,7 +34,7 @@ defmodule AcsWeb.KYAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :ky,
+        sdk: "ky",
         binding: access_token.binding              
       })
     else

@@ -255,8 +255,8 @@ const state = {
           label: i18n.t('admin.menu.pointDayQuestion'),
         },
       }, {
-        name: 'PointRoulette',
-        path: '/admin/app/:appId/pointRoulette',
+        name: 'PointLuckyDraw',
+        path: '/admin/app/:appId/pointLuckyDraw',
         meta: {
           level: '1,2,',
           label: i18n.t('admin.menu.pointRoulette'),

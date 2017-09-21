@@ -24,7 +24,7 @@
     <p class="is-seperator flex-fixed-sized">{{ $t('payment.selectPaymentChannel') }}
     </p>
     <div class="tile is-vertical flex-take-rest">
-      <div class="tile is-payment-channel has-bottom-line" v-for="channel in channels">
+      <div class="tile is-payment-channel has-bottom-line" v-for="channel in channels" :key="channel">
         <v-touch @tap="setActiveChannel(channel)" class="level is-mobile" style="padding: 0.5rem 0; width: 100%; cursor: pointer">
           <div class="level-left">
             <a class="sdk-icon" :class="channel">

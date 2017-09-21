@@ -46,6 +46,7 @@ export default {
         this.loading = true
         return config
       }, error => {
+        console.info('start error')
         return Promise.reject(error)
       })
 
@@ -54,7 +55,7 @@ export default {
         return response
       }, error => {
         this.loading = false
-        return Promise.resolve(error.response)
+        return Promise.reject(error)
       })
     },
     async getUserInfo() {

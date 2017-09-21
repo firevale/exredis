@@ -75,6 +75,12 @@ defmodule AcsStats.Devices do
   def log_app_device_activity(date, app_id, device_id, active_seconds) do 
     with app_device = %AppDevice{} <- CachedAppDevice.get(app_id, device_id)
     do
+      app_device = AppDevice.changeset(app_device, %{
+        active_seconds: app_device.active_seconds + active_seconds
+      }) |> Repo.update!()
+      
+      CachedAppDevice.refresh(app_device)
+
       case CachedAppDeviceDailyActivity.get(app_device.id, date) do 
         nil ->
           {:ok, model} = AppDeviceDailyActivity.changeset(%AppDeviceDailyActivity{}, %{

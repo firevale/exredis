@@ -50,7 +50,7 @@ export default {
       }
     },
     loadmore: async function() {
-      this.$acs.cancelListMyPoints()
+      this.$acs.cancel('listMyPoints')
       let result = await this.$acs.listMyPoints({
         page: this.page + 1,
         records_per_page: 10

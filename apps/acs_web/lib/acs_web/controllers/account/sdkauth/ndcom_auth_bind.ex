@@ -15,7 +15,7 @@ defmodule AcsWeb.NdcomAuthBind do
            "app_key" => ndcom_app_key}} <- Apps.get_app_sdk_binding(app.id, "ndcom"),
          true <- SDKNdcom.validate_session(ndcom_app_id, ndcom_app_key, ndcom_session_id, ndcom_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :ndcom, 
+           sdk: "ndcom", 
            sdk_user_id: ndcom_user_id, 
            email: nil,
            mobile: nil, 
@@ -37,7 +37,7 @@ defmodule AcsWeb.NdcomAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :ndcom,
+        sdk: "ndcom",
         binding: access_token.binding              
       })
     else

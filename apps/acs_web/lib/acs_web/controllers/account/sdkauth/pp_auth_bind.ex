@@ -14,7 +14,7 @@ defmodule AcsWeb.PPAuthBind do
            "app_key" => pp_app_key}} <- Apps.get_app_sdk_binding(app.id, "pp"),
          %{id: pp_user_id} <- SDKPP.validate_session(pp_app_id, pp_app_key, pp_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :pp, 
+           sdk: "pp", 
            sdk_user_id: pp_user_id, 
            email: nil,
            mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.PPAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :pp,
+        sdk: "pp",
         binding: access_token.binding              
       })
     else

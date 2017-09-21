@@ -20,7 +20,7 @@ defmodule AcsWeb.OppoAuthBind do
            oppo_access_token, 
            oppo_token_secret),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :oppo, 
+           sdk: "oppo", 
            sdk_user_id: oppo_user_id, 
            email: email,
            mobile: nil, 
@@ -42,7 +42,7 @@ defmodule AcsWeb.OppoAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :oppo,
+        sdk: "oppo",
         binding: access_token.binding              
       })
     else
@@ -67,7 +67,7 @@ defmodule AcsWeb.OppoAuthBind do
            oppo_access_token, 
            oppo_user_id),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :oppo, 
+           sdk: "oppo", 
            sdk_user_id: oppo_user_id, 
            email: email,
            mobile: nil, 
@@ -89,7 +89,7 @@ defmodule AcsWeb.OppoAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :oppo,
+        sdk: "oppo",
         binding: access_token.binding              
       })
     else

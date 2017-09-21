@@ -10,7 +10,7 @@ defmodule AcsWeb.HuaweiAuthBind do
             %{"hw_access_token" => huawei_access_token}) do
     with %{success: true, user_id: huawei_user_id} <- SDKHuawei.validate_session(huawei_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :huawei, 
+           sdk: "huawei", 
            sdk_user_id: huawei_user_id, 
            email: nil,
            mobile: nil, 
@@ -32,7 +32,7 @@ defmodule AcsWeb.HuaweiAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :huawei,
+        sdk: "huawei",
         binding: access_token.binding              
       })
     else

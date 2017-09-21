@@ -14,7 +14,7 @@ defmodule AcsWeb.AnzhiAuthBind do
     with %AppSdkBinding{binding: %{"app_key" => anzhi_app_key, "app_secret" => anzhi_app_secret}} <- Apps.get_app_sdk_binding(app.id, "anzhi"),
          true <- SDKAnzhi.validate_session(anzhi_app_key, anzhi_app_secret, anzhi_access_token),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :anzhi, 
+           sdk: "anzhi", 
            sdk_user_id: anzhi_user_id, 
            email: nil,
            mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.AnzhiAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :anzhi,
+        sdk: "anzhi",
         binding: access_token.binding              
       })
     else

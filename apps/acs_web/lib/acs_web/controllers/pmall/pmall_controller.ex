@@ -13,17 +13,16 @@ defmodule AcsWeb.PMallController do
     #任务清单
     tasks = PMalls.get_task_list(app_id)
 
-    #商品
+    # #商品
     goodses = 
-      case PMalls.list_pmall_goods(app_id, 1, 3, nil) do
-        :zero ->
-          []
+      case PMalls.list_pmall_goods(app_id, 1, 3, "") do
         {:ok, goodses, total_page} ->
           goodses
+       _ ->
+          []
       end
     
     conn |> json(%{success: true, tasks: tasks, goodses: goodses})
-
   end
 
   # list_pmall_goods

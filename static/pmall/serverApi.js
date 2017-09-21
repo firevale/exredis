@@ -66,7 +66,7 @@ export default {
       getUserInfo() {
         return post('/pmall_actions/get_user_info')
       },
-      list_index() {
+      listIndex() {
         return post("/pmall_actions/list_index")
       },
       listMyPoints(params) {

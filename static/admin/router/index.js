@@ -175,9 +175,9 @@ export default new Router({
           component: require('../views/app/pointTask/pointDayQuestion')
         },
         {
-          name: 'PointRoulette',
-          path: 'pointRoulette',
-          component: require('../views/app/pointTask/pointRoulette')
+          name: 'PointLuckyDraw',
+          path: 'pointLuckyDraw',
+          component: require('../views/app/pointTask/pointLuckyDraw')
         },{
           name: 'EditPointGoods',
           path: 'pointMall/edit_goods',

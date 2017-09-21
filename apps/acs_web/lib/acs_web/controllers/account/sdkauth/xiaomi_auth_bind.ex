@@ -12,7 +12,7 @@ defmodule AcsWeb.XiaomiAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => xiaomi_app_id, "app_secret" => xiaomi_app_secret}} <- Apps.get_app_sdk_binding(app.id, "xiaomi"),
          true <- SDKXiaomi.validate_session(xiaomi_app_id, xiaomi_access_token, xiaomi_user_id, xiaomi_app_secret),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :xiaomi, 
+           sdk: "xiaomi", 
            sdk_user_id: xiaomi_user_id, 
            email: nil,
            mobile: nil, 
@@ -34,7 +34,7 @@ defmodule AcsWeb.XiaomiAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :xiaomi,
+        sdk: "xiaomi",
         binding: access_token.binding              
       })
     else

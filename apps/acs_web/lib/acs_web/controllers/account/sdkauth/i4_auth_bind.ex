@@ -11,7 +11,7 @@ defmodule AcsWeb.I4AuthBind do
               "i4_user_id" => i4_user_id}) do
     with true <- SDKI4.validate_session(i4_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :i4, 
+           sdk: "i4", 
            sdk_user_id: i4_user_id, 
            email: nil,
            mobile: nil, 
@@ -33,7 +33,7 @@ defmodule AcsWeb.I4AuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :i4,
+        sdk: "i4",
         binding: access_token.binding              
       })
     else

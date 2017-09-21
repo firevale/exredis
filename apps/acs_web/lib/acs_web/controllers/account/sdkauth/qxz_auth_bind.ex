@@ -12,7 +12,7 @@ defmodule AcsWeb.QxzAuthBind do
            "app_key" => qxz_app_key}} <- Apps.get_app_sdk_binding(app.id, "qxz"),
          true <-  SDKQxz.validate_session(qxz_app_id, qxz_app_key, qxz_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :qxz, 
+           sdk: "qxz", 
            sdk_user_id: qxz_user_id, 
            email: nil,
            mobile: nil, 
@@ -34,7 +34,7 @@ defmodule AcsWeb.QxzAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :qxz,
+        sdk: "qxz",
         binding: access_token.binding              
       })
     else

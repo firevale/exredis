@@ -79,16 +79,21 @@ defmodule Acs.Accounts do
                 sdk: sdk, 
                 user_id: user.id, 
                 sdk_user_id: sdk_user_id}) |> Repo.insert!
+              
+              {:ok, user}
             end)
+
           user = %User{} ->
             UserSdkBinding.changeset(%UserSdkBinding{}, %{
               sdk: sdk, 
               user_id: user.id, 
               sdk_user_id: sdk_user_id}) |> Repo.insert!            
+
+            {:ok, user}
         end
 
       %User{} = user ->
-        user 
+        {:ok, user}
     end
   end
 

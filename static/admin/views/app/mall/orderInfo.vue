@@ -102,7 +102,7 @@ export default {
   components: {},
 
   mounted: async function() {
-    let result = await this.$acs.getMallOrder({
+    let result = await this.$acs.getFatMallOrder({
       order_id: this.$route.params.orderId
     })
 

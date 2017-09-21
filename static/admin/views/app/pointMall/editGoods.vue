@@ -274,6 +274,7 @@ export default {
           title: this.$t('admin.titles.uploadGoodsPic'),
           width: 1140,
           height: 610,
+          destFormat: 'image/jpg',
           callback: response => this.pics.splice(index, 1, response.pic_url),
         })
       } else {

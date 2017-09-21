@@ -39,7 +39,7 @@ export default {
     end_time: '结束时间',
     pleaseFill: '请完整填写各项内容',
     pleaseUpPic: '请上传商品图片',
-    picPlaceholder: '图片为正方形，支持jpg、png格式，大小不超过500k；',
+    picPlaceholder: '支持jpg、png格式，大小不超过1024k；',
     namePlaceholder: '不超过50个字节',
     descPlaceholder: '文字不超过8000个字节，图片支持jpg,png格式，大小不超过200k;',
     priceList: '单价：{price} / 邮费: {postage}',

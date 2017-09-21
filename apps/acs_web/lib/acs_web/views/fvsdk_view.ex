@@ -90,13 +90,16 @@ defmodule AcsWeb.FVSdkView do
 
   defp transform_goods(goods, sdk) do 
     goods |> Enum.map(fn(g) ->
+      product_id = case g.product_ids |> Enum.filter(&( &1.sdk == sdk )) do 
+        [] -> ""
+        [x | _] -> x.product_id
+      end
       {g.id, %{id: g.id,
                name: g.name,
                description: g.description || "",
                price: g.price,
                icon: g.icon || "",
-               product_ids: g.product_ids,
-               product_id: g.product_ids[sdk |> String.to_atom] || ""}}
+               product_id: product_id}}
     end) |> Enum.into(%{})
   end
 

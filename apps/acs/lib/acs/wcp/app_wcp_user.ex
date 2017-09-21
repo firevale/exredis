@@ -15,6 +15,7 @@ defmodule Acs.Wcp.AppWcpUser do
     field :tf_email, :string
 
     belongs_to :app, Acs.Apps.App, type: :string
+    belongs_to :user, Acs.Accounts.User
 
     timestamps()
   end
@@ -24,7 +25,8 @@ defmodule Acs.Wcp.AppWcpUser do
   @doc false
   def changeset(%AppWcpUser{} = app_wcp_user, attrs) do
     app_wcp_user
-    |> cast(attrs, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :tf_email])
-    |> validate_required([:app_id])
+    |> cast(attrs, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :user_id, :tf_email])
+    |> validate_required([:app_id, :user_id])
+    |> foreign_key_constraint(:user_id)
   end
 end

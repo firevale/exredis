@@ -2,6 +2,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
   use    AcsWeb, :controller
 
   require AcsStats
+  alias   Acs.Apps
 
   plug :fetch_user
   plug :fetch_zone_id
@@ -48,7 +49,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
     order_info = case params["goods_id"] do
                   nil -> order_info
                   goods_id ->
-                    case app.goods[goods_id |> String.to_atom] do
+                    case Apps.get_app_goods(goods_id) do
                       nil -> order_info
                       %{price: goods_price, name: goods_name} ->
                         %{order_info | goods_id: goods_id,
@@ -68,12 +69,12 @@ defmodule AcsWeb.SdkPay.AppOrderController do
 
   #vivo订单
   def add_vivo_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn, params) do
-    case app.sdk_bindings.vivo do
+    case Apps.get_app_sdk_binding(app.id, "vivo") do
       nil ->
         error "can't get app vivo binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application vivo binding not set"})
 
-      %{"app_id" => vivo_app_id, "cp_id" => vivo_cp_id, "cp_key" => vivo_cp_key} ->
+      %{binding: %{"app_id" => vivo_app_id, "cp_id" => vivo_cp_id, "cp_key" => vivo_cp_key}} ->
         create_time = Timex.format!(Timex.local, "%Y%m%d%H%M%S", :strftime)
         notify_url = params["notifyUrl"] || ""
 
@@ -135,12 +136,12 @@ defmodule AcsWeb.SdkPay.AppOrderController do
   #魅族带签名的订单
   def add_meizu_order(%Plug.Conn{private: %{acs_app_order: app_order, acs_app: app}} = conn,
                       %{"product_id" => product_id} = params) do
-    case app.sdk_bindings.meizu do
+    case Apps.get_app_sdk_binding(app.id, "meizu") do
       nil ->
         error "can't get app meizu binding info for app: #{inspect app, pretty: true}"
         conn |> json(%{success: false, message: "application meizu binding not set"})
 
-      %{"app_id" => meizu_app_id, "app_key" => _meizu_app_key, "app_secret" => meizu_app_secret} ->
+      %{binding: %{"app_id" => meizu_app_id, "app_key" => _meizu_app_key, "app_secret" => meizu_app_secret}} ->
         create_time = Utils.unix_timestamp
         subject = "购买" <> app_order.goods_name
 

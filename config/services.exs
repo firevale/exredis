@@ -67,6 +67,9 @@ config :exmail, Exmail.SendCloudMailer,
   from: "noreply@sdmail.firevale.com",
   reply: "noreply@sdmail.firevale.com"
 
+config :bugsnag, :notify_release_stages, ["ksbj"]
+
+
 
 
 

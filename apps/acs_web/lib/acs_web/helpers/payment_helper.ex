@@ -26,12 +26,14 @@ defmodule AcsWeb.PaymentHelper do
 
       app ->
         try do 
-          AcsStats.log_app_user_payment(Timex.local() |> Timex.to_date(), 
-            order.app_id,
-            order.zone_id,
-            order.user_id, 
-            order.platform,
-            String.to_integer(order.fee))
+          if not order.debug_mode do 
+            AcsStats.log_app_user_payment(Timex.local() |> Timex.to_date(), 
+              order.app_id,
+              order.zone_id,
+              order.user_id, 
+              order.platform,
+              order.fee)
+          end
         catch
           _, _ ->
             error "update stats info of order failed: #{inspect order}"

@@ -69,7 +69,7 @@ export default {
       },
       listMyPoints(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
-        return post('/pmall_actions/list_my_points',params, undefined, cancelToken)
+        return post('/pmall_actions/list_my_points', params, undefined, cancelToken)
       },
       cancelListMyExchanges() {
         if (typeof this.tokens.listMyExchanges === 'function') {
@@ -78,7 +78,13 @@ export default {
       },
       listMyExchanges(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchanges = c)
-        return post('/pmall_actions/list_my_exchanges',params, undefined, cancelToken)
+        return post('/pmall_actions/list_my_exchanges', params, undefined, cancelToken)
+      },
+      sendBindMobileVerifyCode(mobile) {
+        return post("/send_mobile_bind_verify_code", { mobile })
+      },
+      bindMobile(mobile, verify_code) {
+        return post("/pmall_actions/bind_mobile", { mobile, verify_code })
       },
     }
   }

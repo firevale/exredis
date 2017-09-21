@@ -19,7 +19,7 @@ defmodule AcsStats.Cache.CachedAppUser do
     Excache.get!(key(app_id, zone_id, user_id), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do 
         nil ->
-          case Repo.get_by(AppUser, app_id: app_id, zone_id: zone_id, user_id: user_id) do 
+          case Repo.get_by(AppUser, app_id: app_id, zone_id: "#{zone_id}", user_id: "#{user_id}") do 
             nil -> 
               {:ignore, nil}
 

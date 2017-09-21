@@ -7,8 +7,11 @@ export default {
   common,
   error,
   pmall: {
-    sign:{
+    sign: {
       signed: '你已经签到过了，明日再来'
+    },
+    address: {
+      addSuccess: '地址添加成功'
     }
   }
 }

@@ -31,7 +31,13 @@ export default {
     }
   },
 
-  created: function() {},
+  created: function() {
+    if (window.config.order_status == 0 || window.config.order_status == 2) {
+      nativeApi.closeWebviewWithResult({
+        success: false
+      })      
+    }
+  },
 
   computed: {
     ...mapGetters([

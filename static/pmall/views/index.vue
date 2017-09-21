@@ -19,7 +19,7 @@
       </div>
       <div class="tasks">
         <template v-for="task in tasks">
-          <router-link :to="{name: 'bind_mobile'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
+          <router-link :to="{name: task.path}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
             <img :src="task.pic | imageStaticUrl" />
             <p class="is-marginless">{{task.name}}</p>
             <p class="is-marginless is-size-small  ">

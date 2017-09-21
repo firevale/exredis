@@ -71,6 +71,14 @@ defmodule AcsStats.Users do
   def log_app_user_activity(date, app_id, zone_id, user_id, active_seconds) do 
     with app_user = %AppUser{} <- CachedAppUser.get(app_id, zone_id, user_id) 
     do 
+      app_user = AppUser.changeset(app_user, %{
+        active_seconds: app_user.active_seconds + active_seconds,
+        last_active_at: DateTime.utc_now(),
+      }) |> Repo.update!()
+
+      ESAppUser.index(app_user, user_id)
+      CachedAppUser.refresh(app_user)
+
       case CachedAppUserDailyActivity.get(app_user.id, date) do
         nil ->
           {:ok, model} = AppUserDailyActivity.changeset(%AppUserDailyActivity{}, %{
@@ -102,9 +110,12 @@ defmodule AcsStats.Users do
 
     with app_user = %AppUser{} <- CachedAppUser.get(app_id, zone_id, user_id) 
     do 
+      now = DateTime.utc_now()
       {:ok, app_user} = AppUser.changeset(app_user, %{
         pay_amount: app_user.pay_amount + fee,
-        last_active_at: DateTime.utc_now(),
+        first_paid_at: app_user.first_paid_at || now,
+        last_active_at: now,
+        last_paid_at: now,
       }) |> Repo.update()       
 
       CachedAppUser.refresh(app_user)

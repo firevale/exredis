@@ -158,26 +158,26 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_point_logs(app_id, user_id, page, records_per_page) do
+  def list_pmall_point_logs(app_id, wcp_user_id, page, records_per_page) do
     totalQuery = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
-    totalQuery = case String.length(user_id) do
+    totalQuery = case String.length(wcp_user_id) do
       0 -> totalQuery
-      _ -> where(totalQuery, [pl], pl.user_id == ^user_id)
+      _ -> where(totalQuery, [pl], pl.wcp_user_id == ^wcp_user_id)
     end
     total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
     query = from pl in PointLog,
-              join: u in assoc(pl, :user),
-              select: map(pl, [:id, :log_type, :point, :memo, :user_id, :inserted_at, user: [:id, :email]]),
+              join: u in assoc(pl, :wcp_user),
+              select: map(pl, [:id, :log_type, :point, :memo, :wcp_user_id, :inserted_at, wcp_user: [:id, :nickname]]),
               limit: ^records_per_page,
               where: pl.app_id == ^app_id,
               offset: ^((page - 1) * records_per_page),
               order_by: [desc: pl.id],
-              preload: [user: u]
+              preload: [wcp_user: u]
 
-    query = case String.length(user_id) do
+    query = case String.length(wcp_user_id) do
       0 -> query
-      _ -> where(query, [pl], pl.user_id == ^user_id)
+      _ -> where(query, [pl], pl.wcp_user_id == ^wcp_user_id)
     end
     logs = Repo.all(query)
     {:ok, logs, total_page}
@@ -227,13 +227,13 @@ defmodule Acs.PMalls do
     end
   end
 
-  def get_user_point(user_id) do
-    total_query = from log in PointLog, select: sum(log.point), where: log.user_id == ^user_id
+  def get_user_point(wcp_user_id) do
+    total_query = from log in PointLog, select: sum(log.point), where: log.wcp_user_id == ^wcp_user_id
     Repo.one!(total_query)
   end
 
-  def admin_add_pmall_point(user_id, app_id, log) do
-    log = Map.put(log, "app_id", app_id) |> Map.put("user_id", user_id) |> Map.put("log_type", "admin_op")
+  def admin_add_pmall_point(wcp_user_id, app_id, log) do
+    log = Map.put(log, "app_id", app_id) |> Map.put("wcp_user_id", wcp_user_id) |> Map.put("log_type", "admin_op")
     add_point(log)
   end
 

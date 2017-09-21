@@ -48,5 +48,5 @@ export default {
   PointTaskbar: '任务栏',
   PointDaySign: '日常签到',
   PointDayQuestion: '每日问答',
-  PointRoulette: '幸运抽奖',
+  PointLuckyDraw: '幸运抽奖',
 }

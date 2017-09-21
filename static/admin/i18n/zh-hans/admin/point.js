@@ -51,5 +51,18 @@
     confirmDelete: '您确定要删除该问题么?',
     updated: '问题已成功更新',
     deleted: '问题已成功删除',
+   },
+
+   draw: {
+    add: '添加新奖品',
+    pic: '图片',
+    name: '名称',
+    num: '数量',
+    rate: '概率',
+    edit: '编辑',
+    delete: '删除',
+    confirmDelete: '您确定要删除该奖品么?',
+    updated: '奖品已成功更新',
+    deleted: '奖品已成功删除',
    }
  }

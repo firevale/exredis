@@ -142,16 +142,6 @@ span {
       }
     }
   }
-  footer {
-    width: virtual-m-rem(920);
-    min-height: virtual-m-rem(96);
-    margin: 1rem auto 2rem auto;
-    border-radius: virtual-m-rem(10);
-    background-color: $primary;
-    .loadmore {
-      color: $white;
-    }
-  }
 }
 
 .new-address {

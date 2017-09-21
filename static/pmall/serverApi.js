@@ -69,6 +69,13 @@ export default {
       listIndex() {
         return post("/pmall_actions/list_index")
       },
+      listGoods(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listGoods = c)
+        return post('/pmall_actions/list_goods', params, undefined, cancelToken)
+      },
+      getGoods(params) {
+        return post('/pmall_actions/get_goods_detail', params)
+      },
       listMyPoints(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
         return post('/pmall_actions/list_my_points', params, undefined, cancelToken)

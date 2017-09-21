@@ -14,7 +14,7 @@ defmodule AcsWeb.DownjoyAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => downjoy_app_id, "app_key" => downjoy_app_key}} <- Apps.get_app_sdk_binding(app.id, "downjoy"),
          true <- SDKDownjoy.validate_session(downjoy_app_id, downjoy_app_key, downjoy_access_token, downjoy_user_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :downjoy, 
+           sdk: "downjoy", 
            sdk_user_id: downjoy_user_id, 
            email: nil,
            mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.DownjoyAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :downjoy,
+        sdk: "downjoy",
         binding: access_token.binding              
       })
     else

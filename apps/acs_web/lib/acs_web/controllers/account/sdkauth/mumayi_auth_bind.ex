@@ -11,7 +11,7 @@ defmodule AcsWeb.MumayiAuthBind do
               "mmy_user_id" => mumayi_user_id} = params) do
     with SDKMumayi.validate_session(mumayi_access_token, mumayi_user_id),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :mumayi, 
+           sdk: "mumayi", 
            sdk_user_id: mumayi_user_id, 
            email: nil,
            mobile: nil, 
@@ -33,7 +33,7 @@ defmodule AcsWeb.MumayiAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :mumayi,
+        sdk: "mumayi",
         binding: access_token.binding              
       })
     else

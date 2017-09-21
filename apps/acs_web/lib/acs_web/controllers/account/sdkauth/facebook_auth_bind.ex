@@ -14,7 +14,7 @@ defmodule AcsWeb.FacebookAuthBind do
          %{"id" => facebook_user_id, 
            "email" => email} <- SDKFacebook.me(facebook_app_secret, %{fields: "id,email,name,gender"}, facebook_access_token),
         {:ok, user} <- Accounts.bind_sdk_user(%{
-          sdk: :facebook, 
+          sdk: "facebook", 
           sdk_user_id: facebook_user_id, 
           email: email,
           mobile: nil, 
@@ -36,7 +36,7 @@ defmodule AcsWeb.FacebookAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :facebook,
+        sdk: "facebook",
         binding: access_token.binding              
       })
     else

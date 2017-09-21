@@ -8,7 +8,7 @@ defmodule AcsWeb.Qh360AuthBind do
            %{"qh360_access_token" => qh360_access_token}) do
     with %{id: qh360_user_id} <- SDKQh360.validate_session(qh360_access_token),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :qh360, 
+           sdk: "qh360", 
            sdk_user_id: qh360_user_id, 
            email: nil,
            mobile: nil, 
@@ -30,7 +30,7 @@ defmodule AcsWeb.Qh360AuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :qh360,
+        sdk: "qh360",
         binding: access_token.binding              
       })
     else

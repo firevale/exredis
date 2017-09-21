@@ -19,7 +19,7 @@ defmodule AcsWeb.IIAppleAuthBind do
              iiapple_user_id, 
              iiapple_session_id),   
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: :iiapple, 
+           sdk: "iiapple", 
            sdk_user_id: iiapple_user_id, 
            email: nil,
            mobile: nil, 
@@ -41,7 +41,7 @@ defmodule AcsWeb.IIAppleAuthBind do
         user_email: user.email,
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: :iiapple,
+        sdk: "iiapple",
         binding: access_token.binding              
       })
     else

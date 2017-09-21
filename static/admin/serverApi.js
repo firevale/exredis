@@ -179,7 +179,7 @@ export default {
         return post('/mall_actions/list_mall_orders', params)
       },
 
-      getMallOrder(params) {
+      getFatMallOrder(params) {
         return post('/mall_actions/get_fat_mall_order', params)
       },
 
@@ -389,6 +389,18 @@ export default {
 
       deletePmallQuestion(params, successMessage) {
         return post('/admin_actions/pmall/delete_pmall_question', params, successMessage)
+      },
+
+      listPmallDraws(params) {
+        return post('/admin_actions/pmall/list_pmall_draws', params)
+      },
+
+      updatePmallDraw(params, successMessage) {
+        return post('/admin_actions/pmall/update_pmall_draw', params, successMessage)
+      },
+
+      deletePmallDraw(params, successMessage) {
+        return post('/admin_actions/pmall/delete_pmall_draw', params, successMessage)
       },
     }
   }

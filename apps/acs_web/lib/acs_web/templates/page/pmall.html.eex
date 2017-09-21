@@ -39,7 +39,7 @@
           nil_password: <%= is_nil(user.encrypted_password) %>,
         },
         <% end %>
-        imagesUrl: '<%= static_url(@conn, "/images/") %>',
+        imagesUrl: '<%= "#{@cdn_scheme}://#{@cdn_domain}/acs/" %>',
       }
     </script>
     <script src="<%= static_url(@conn, "/js/pmall_commons.js") %>"></script>

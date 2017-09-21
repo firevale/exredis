@@ -14,34 +14,18 @@
         <router-link class="button btn-my-exchange" :to="{name: 'my_exchange'}"></router-link>
       </div>
     </header>
-    <div class="panel">
+    <div v-if="tasks.length>0" class="panel">
       <div class="bg-full bg-title-task">
       </div>
       <div class="tasks">
-        <router-link :to="{name: 'bind_mobile'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
-          <img src="~assets/pmall/1242-2234-1_11.png" />
-          <p class="is-marginless">绑定手机</p>
-          <p class="is-marginless is-size-small  ">
-            <span class="is-primary">+99</span>积分 限1次</p>
-        </router-link>
-        <div class="task is-flex is-column flex-center flex-vcentered">
-          <img src="~assets/pmall/1242-2234-1_13.png" />
-          <p class="is-marginless">官网预约</p>
-          <p class="is-marginless is-size-small  ">
-            <span class="is-primary">+5</span>积分/日</p>
-        </div>
-        <router-link :to="{name:'sign'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
-          <img src="~assets/pmall/1242-2234-1_15.png" />
-          <p class="is-marginless">每日签到</p>
-          <p class="is-marginless  is-size-small  ">
-            <span class="is-primary">+5</span>积分/日</p>
-        </router-link>
-        <router-link :to="{name: 'knowledge'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
-          <img src="~assets/pmall/1242-2234-1_21.png" />
-          <p class="is-marginless ">每日问答</p>
-          <p class="is-marginless is-size-small  ">
-            <span class="is-primary">+5</span>积分/日</p>
-        </router-link>
+        <template v-for="task in tasks">
+          <router-link :to="{name: 'bind_mobile'}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
+            <img :src="task.pic | imageStaticUrl" />
+            <p class="is-marginless">{{task.name}}</p>
+            <p class="is-marginless is-size-small  ">
+              <span class="is-primary">{{task.point>0 ? `+${task.point}`: task.point}}</span>积分 {{task.sub_name}}</p>
+          </router-link>
+        </template>
       </div>
     </div>
     <div class="banner bg-full is-flex flex-fixed-size flex-right flex-vcentered">
@@ -108,10 +92,15 @@ import {
   mapActions
 } from 'vuex'
 export default {
-  mounted() {},
+  mounted() {
+    this.loadData()
+  },
 
   data() {
-    return {}
+    return {
+      tasks: [],
+      goodses: []
+    }
   },
   computed: {
     ...mapGetters([
@@ -132,7 +121,14 @@ export default {
   methods: {
     ...mapActions([
       'setTransitionName',
-    ])
+    ]),
+    async loadData() {
+      let result = await this.$acs.listIndex()
+      if (result.success) {
+        this.tasks = result.tasks
+        this.goodses = result.goodses
+      }
+    }
   }
 }
 </script>

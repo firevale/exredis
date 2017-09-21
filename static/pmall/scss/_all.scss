@@ -110,11 +110,11 @@
     }
   }
 
-  .loading{
+  .loading {
     position: fixed;
-    top:50%;
+    top: 50%;
     left: 50%;
-    margin-left:virtual-m-rem(-100);
+    margin-left: virtual-m-rem(-100);
     margin-top: virtual-m-rem(-75);
     width: virtual-m-rem(200);
     height: virtual-m-rem(150);
@@ -148,6 +148,7 @@
       .tasks {
         display: flex;
         flex-wrap: wrap;
+        min-height: virtual-m-rem(325);
         .task {
           height: virtual-m-rem(325);
           flex: 0 0 33.3%;

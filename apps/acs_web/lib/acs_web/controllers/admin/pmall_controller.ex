@@ -27,7 +27,6 @@ defmodule AcsWeb.Admin.PMallController do
   # update_goods_pic
   plug :check_upload_image, [
     param_name: "file", 
-    square: true,
     format: ["png", "jpeg", "jpg"],
     reformat: "jpg"] when action == :update_goods_pic
   def update_goods_pic(%Plug.Conn{private: %{acs_admin_id: acs_admin_id, acs_app_id: app_id}} = conn, 

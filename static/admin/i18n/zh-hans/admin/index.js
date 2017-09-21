@@ -120,7 +120,7 @@ export default {
     editNoticeInfo: '编辑公告信息',
     editNewsInfo: '编辑新闻信息',
     uploadNewsPic: '修改题图(640X260, JPG或PNG)',
-    uploadGoodsPic: '修改商品题图(400X400大小的png图)',
+    uploadGoodsPic: '修改商品题图(1140X610大小的png图)',
     yes: '是',
     no: '否',
     noData: '暂无数据',

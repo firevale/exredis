@@ -64,6 +64,8 @@ defmodule Acs.Cache.CachedMall do
       %Mall{} = mall ->
         _refresh(mall)
       _ -> 
+        Exredis.del(key(mall_id))
+        Excache.del(key(mall_id))
         nil
     end
   end

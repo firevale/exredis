@@ -158,7 +158,7 @@ defmodule AcsStats.Users do
     AcsStats.Repo.all(query)
   end
 
-  def get_app_user(app_id, user_id, zone_id) do 
-    CachedAppUser.get(app_id, user_id, zone_id)
+  def get_app_user(app_id, zone_id, user_id) do 
+    CachedAppUser.get(app_id, zone_id, user_id)
   end
 end

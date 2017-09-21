@@ -18,13 +18,13 @@ defmodule Acs.Cache.CachedAdminSetting do
             v -> {:commit, v.value}
           end
         v ->
-          {:commit, Setting.from_redis(v).value}
+          {:commit, v}
       end
     end)
   end
 
   def get_fat(app_id, name)  do
-    Excache.get!(key(app_id, name), fallback: fn(redis_key) -> 
+    Excache.get!(fat_key(app_id, name), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do
         nil ->
           case refresh(app_id, name) do 
@@ -45,8 +45,10 @@ defmodule Acs.Cache.CachedAdminSetting do
       nil -> nil
 
       %Setting{} = setting ->
-        Exredis.set(key(app_id, name), Setting.to_redis(setting))
+        Exredis.set(key(app_id, name), setting.value)
+        Exredis.set(fat_key(app_id, name), Setting.to_redis(setting))
         Excache.del(key(app_id, name))
+        Excache.del(fat_key(app_id, name))
         setting
     end
   end
@@ -65,5 +67,6 @@ defmodule Acs.Cache.CachedAdminSetting do
   end
 
   defp key(app_id, name), do: "#{@key_base}.#{app_id}.#{name}"
+  defp fat_key(app_id, name), do: "#{@key_base}.#{app_id}.fat.#{name}"
 
 end

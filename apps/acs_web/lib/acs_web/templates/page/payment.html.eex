@@ -1,5 +1,6 @@
 goodsId: '<%= @goods_id %>',
 order_id: '<%= @order_id %>',
+order_status: '<%= @order_status %>',
 goods_name: '<%= @goods_name %>',
 goods_icon: <%= if is_nil(@goods_icon) do %>
             null

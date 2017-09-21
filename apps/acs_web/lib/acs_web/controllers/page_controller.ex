@@ -229,6 +229,7 @@ defmodule AcsWeb.PageController do
                                        is_mobile_account_supported: @is_mobile_account_supported,
                                        app_id: app_order.app_id,
                                        order_id: app_order.id,
+                                       order_status: app_order.status,
                                        goods_name: app_order.goods_name,
                                        goods_id: app_order.goods_id,
                                        goods_icon: goods_icon,

@@ -162,6 +162,10 @@ defmodule AcsWeb.AdminRouter do
       post  "/list_pmall_questions", PMallController, :list_pmall_questions
       post  "/update_pmall_question", PMallController, :update_pmall_question
       post  "/delete_pmall_question", PMallController, :delete_pmall_question
+
+      post  "/list_pmall_draws", PMallController, :list_pmall_draws
+      post  "/update_pmall_draw", PMallController, :update_pmall_draw
+      post  "/delete_pmall_draw", PMallController, :delete_pmall_draw
     end
 
   end

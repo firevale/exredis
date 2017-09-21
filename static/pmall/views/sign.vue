@@ -14,13 +14,12 @@
             </p>
           </div>
           <div class="column is-6 has-text-centered is-relative">
-            <h1 class="day" ><strong>{{ new Date().Format('d')}}</strong></h1>
+            <h1 class="day"><strong>{{ new Date().Format('d')}}</strong></h1>
             <p class="date">{{solar}}
-                <br/>
-                农历{{lunar}}
+              <br/> 农历{{lunar}}
             </p>
-            <!-- <a class="button btn-sign"></a> -->
-            <a class="button btn-signed"></a>
+            <a v-if="sign_times == 0" class="button btn-sign" @click="sign"></a>
+            <a v-else class="button btn-signed"></a>
           </div>
           <div class="column is-3 has-text-centered">
             <h2 class="yi-ji is-size-1">忌</h2>
@@ -77,7 +76,7 @@ import chineseLunar from "chinese-lunar"
 export default {
   data() {
     return {
-
+      sign_times: 0
     }
   },
   computed: {
@@ -100,5 +99,13 @@ export default {
     },
   },
   mounted() {},
+  methods: {
+    async sign() {
+      let result = await this.$acs.sign()
+      if (result.success) {
+        this.sign_times = result.sign_times
+      }
+    }
+  }
 }
 </script>

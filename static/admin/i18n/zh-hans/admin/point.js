@@ -54,6 +54,7 @@
    },
 
    draw: {
+    editDraw: '编辑奖品信息',
     add: '添加新奖品',
     pic: '图片',
     name: '名称',
@@ -64,5 +65,8 @@
     confirmDelete: '您确定要删除该奖品么?',
     updated: '奖品已成功更新',
     deleted: '奖品已成功删除',
+    addSuccess: '添加成功',
+    updateSuccess: '修改成功',
+    notFound: '奖品没有找到',
    }
  }

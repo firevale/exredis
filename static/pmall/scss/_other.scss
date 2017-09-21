@@ -162,6 +162,13 @@ span {
         margin-top: 1rem;
       }
     }
+    select {
+      width: 90%;
+      border: 1px solid $text;
+      height: 1.8rem;
+      border-radius: 3px;
+      color: $grey-darker;
+    }
     input {
       width: 90%;
       height: 1.8rem;

@@ -3,8 +3,8 @@
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addNewQuestion">
-            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.question.add') }}
+          <a class="button is-primary" style="min-width: 100px" @click="addNewDraw">
+            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.draw.add') }}
           </a>
         </div>
       </article>
@@ -12,49 +12,52 @@
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
             <div class="column is-6">
-              <p>{{ $t('admin.point.question.question') }}</p>
+              <p>{{ $t('admin.point.draw.pic') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.reads')}}</p>
+              <p>{{ $t('admin.point.draw.name')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.bingo')}}</p>
+              <p>{{ $t('admin.point.draw.num')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.edit')}}</p>
+              <p>{{ $t('admin.point.draw.rate')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.delete')}}</p>
+              <p>{{ $t('admin.point.draw.edit')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.draw.delete')}}</p>
             </div>
           </div>
-          <div v-if="questions">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="questions && questions.length > 0"
-              v-for="(question, index) in questions" :key="question.id">
+          <div v-if="draws">
+            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="draws && draws.length > 0"
+              v-for="(draw, index) in draws" :key="draw.id">
               <div class="column is-6">
-                <p>{{ question.question }}</p>
+                <p>{{ draw.pic }}</p>
               </div>
               <div class="column">
-                <p>{{ question.reads }}</p>
+                <p>{{ draw.name }}</p>
               </div>
               <div class="column">
-                <p>{{ question.bingo }}</p>
+                <p>{{ draw.num }}</p>
               </div>
               <div class="column">
-                <a @click.prevent="editQuestion(question, index)">
+                <p>{{ draw.rate }}</p>
+              </div>
+              <div class="column">
+                <a @click.prevent="editDraw(draw, index)">
                   <i class="fa fa-pencil"></i>
                 </a>
               </div>
               <div class="column">
-                <a @click.prevent="delQuestion(question.id, index)">
+                <a @click.prevent="delDraw(draw.id, index)">
                   <i class="fa fa-trash-o"></i>
                 </a>
               </div>
             </div>
           </div>
         </div>
-      </article>
-      <article class="tile is-child is-12">
-        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
       </article>
     </div>
   </div>
@@ -69,16 +72,13 @@ import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
-import Pagination from 'admin/components/Pagination'
-import Tooltip from 'vue-bulma-tooltip'
+import drawDialog from 'admin/components/dialog/point/luckyDraw'
+const drawDialogComponent = Vue.extend(drawDialog)
 
-import questionDialog from 'admin/components/dialog/point/question'
-const questionDialogComponent = Vue.extend(questionDialog)
-
-const openQuestionDialog = (propsData = {
+const openDrawDialog = (propsData = {
   visible: true
 }) => {
-  return new questionDialogComponent({
+  return new drawDialogComponent({
     i18n,
     el: document.createElement('div'),
     propsData
@@ -88,92 +88,74 @@ const openQuestionDialog = (propsData = {
 export default {
   data() {
     return {
-      questions: [],
-      page: 1,
-      total: 1,
-      recordsPerPage: 20,
+      draws: [],
       processing: false
     }
   },
 
   created: function() {
-    this.getQuestions(this.page, this.recordsPerPage)
+    this.getDraws(this.page, this.recordsPerPage)
   },
 
   methods: {
-    getQuestions: async function(page, recordsPerPage) {
+    getDraws: async function() {
       this.processing = true
-      let result = await this.$acs.listPmallQuestions({
-        page: page,
-        records_per_page: recordsPerPage
-      })
+      let result = await this.$acs.listPmallDraws()
       if (result.success) {
-        this.total = result.total
-        this.page = page
-        this.questions = result.questions
+        this.draws = result.draws
       }
       this.processing = false
     },
 
-    onPageChange: function(page) {
-      this.getQuestions(page, this.recordsPerPage)
-    },
-
-    editQuestion: function(question, index) {
-      openQuestionDialog({
-        question: question,
+    editDraw: function(draw, index) {
+      openDrawDialog({
+        draw: draw,
         visible: true,
         callback: result => {
-          this.questions[index] = result
+          this.draws[index] = result
         },
       })
     },
 
-    delQuestion: function(questionId, index) {
+    delDraw: function(drawId, index) {
       showMessageBox({
         visible: true,
         title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.point.question.confirmDelete'),
+        message: this.$t('admin.point.draw.confirmDelete'),
         type: 'danger',
         onOK: async _ => {
           this.processing = true
-          let result = await this.$acs.deletePmallQuestion({
-            question_id: questionId,
-          }, this.$t('admin.point.question.deleted'))
+          let result = await this.$acs.deletePmallDraw({
+            draw_id: drawId,
+          }, this.$t('admin.point.draw.deleted'))
           if (result.success) {
-            this.questions.splice(index, 1)
+            this.draws.splice(index, 1)
           }
           this.processing = false
         },
       })
     },
 
-    addNewQuestion: function() {
-      openQuestionDialog({
-        question: {
-          id: '0',
-          question: '',
-          correct: '',
-          a1: '',
-          a2: '',
-          a3: '',
-          a4: '',
-          a5: '',
-          a6: '',
-          app_id: this.$route.params.appId
-        },
-        visible: true,
-        callback: result => {
-          this.questions.unshift(result)
-        },
-      })
+    addNewDraw: function() {
+      if (this.draws.length >= 8) {
+        alert("只能设置8个奖品");
+      } else {
+        openDrawDialog({
+          draw: {
+            id: '0',
+            name: '',
+            pic: '',
+            num: '',
+            rate: '',
+            app_id: this.$route.params.appId
+          },
+          visible: true,
+          callback: result => {
+            this.draws.unshift(result)
+          },
+        })
+      }
     },
   },
-
-  components: {
-    Pagination,
-    Tooltip,
-  }
-
 }
 </script>

@@ -12,6 +12,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.PointLog
   alias Acs.PMalls.TaskBar
   alias Acs.PMalls.DayQuestion
+  alias Acs.PMalls.LuckyDraw
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -364,6 +365,49 @@ defmodule Acs.PMalls do
         nil
       %DayQuestion{} = question ->
         case Repo.delete(question) do
+          {:ok, _} ->
+            :ok
+
+          {:error, %{errors: _errors}} ->
+            :error
+        end
+    end
+  end
+
+  def list_pmall_draws(app_id) do
+    query = from d in LuckyDraw,
+      where: d.app_id == ^app_id,
+      order_by: [desc: d.inserted_at]
+    Repo.all(query)
+  end
+
+  def update_pmall_draw(draw) do
+    case Repo.get(LuckyDraw, draw["id"]) do
+    nil ->
+      # add new
+      case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
+        {:ok, new_draw} ->
+          draw = Map.put(draw, "id", new_draw.id)
+          {:addok, draw}
+        {:error, %{errors: _errors}} ->
+          :error
+      end
+
+    %LuckyDraw{} = q ->
+      # update
+      changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
+      changed |> Repo.update!
+      draw = Map.put(draw, "id", q.id)
+      {:updateok, draw, changed.changes}
+    end
+  end
+
+  def delete_pmall_draw(draw_id) do
+    case Repo.get(LuckyDraw, draw_id) do
+      nil ->
+        nil
+      %LuckyDraw{} = draw ->
+        case Repo.delete(draw) do
           {:ok, _} ->
             :ok
 

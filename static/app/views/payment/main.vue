@@ -32,7 +32,7 @@ export default {
   },
 
   created: function() {
-    if (window.config.order_status == 0 || window.config.order_status == 2) {
+    if (window.acsConfig.order_status == 0 || window.acsConfig.order_status == 2) {
       nativeApi.closeWebviewWithResult({
         success: false
       })      

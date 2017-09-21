@@ -81,7 +81,7 @@
               <div v-dragula="pics" :bag="bagId" class="columns is-multiline container2">
                 <div class="column is-4" v-for="(pic, index) in pics" :key="pic">
                   <figure class="image" style="display: block" @click="onShowImageUpload(index)">
-                    <img :src="pic ? pic: 'https://placehold.it/256x256?text=400X400' | imageStaticUrl" style="width:120px; height:120px;"></img>
+                    <img :src="pic ? pic: 'https://placehold.it/228x122?text=1140X610' | imageStaticUrl" style="width:228px; height:122px;"></img>
                   </figure>
                 </div>
               </div>
@@ -290,7 +290,6 @@ export default {
         this.goods = result.goods
         if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
           2)
-        alert(this.goods.pic)
         this.pics = this.goods.pic ? this.goods.pic.split('|') : "|||||".split('|')
         this.pics.length = 6
       }

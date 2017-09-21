@@ -21,8 +21,8 @@ defmodule AcsWeb.MallOrderController do
     end
   end
 
-  def get_mall_order(conn, %{"order_id" => order_id }) do
-    order = Malls.get_mall_order(order_id)
+  def get_fat_mall_order(conn, %{"order_id" => order_id }) do
+    order = Malls.get_fat_mall_order(order_id)
     json(conn, %{success: true, order: order})
   end
 

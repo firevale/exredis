@@ -206,15 +206,17 @@ defmodule Acs.PMalls do
   end
 
   def list_my_exchanges(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
+    totalQuery = 
+      from pl in PointLog, 
+        where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods", 
+        select: count(pl.id)
     total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
     query =
       from pl in PointLog,
         select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
         limit: ^records_per_page,
-        where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id,
-        # where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods",
+        where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods",
         offset: ^((page - 1) * records_per_page),
         order_by: [desc: pl.id]
 
@@ -222,26 +224,28 @@ defmodule Acs.PMalls do
     {:ok, logs, total_page}
   end
   
-  def exchange_goods(goods_id, app_id, wcp_user_id) do
+  def exchange_goods(app_id, wcp_user_id, goods_id) do
     wcp_user = Repo.get(AppWcpUser, wcp_user_id)
     points = get_user_point(app_id, wcp_user_id)
     goods = get_pmall_goods(goods_id)
     cond do
       not goods.active ->
-        {:error, i18n_message: 'pmall.exchange.unactive'}
+        {:error, "pmall.exchange.unactive"}
       goods.stock <= 0  ->
-        {:error, i18n_message: 'pmall.exchange.soldout'}
-      goods.begin_time > Timex.local() or goods.end_time < Timex.local()  ->
-        {:error, i18n_message: 'pmall.exchange.expired'}
-      points < goods.price ->
-        {:error, i18n_message: 'pmall.exchange.pointless'}
+        {:error, "pmall.exchange.soldout"}
+      DateTime.compare(goods.begin_time, DateTime.utc_now()) == :gt ->
+        {:error, "pmall.exchange.expired"}
+      DateTime.compare(goods.end_time, DateTime.utc_now()) == :lt ->
+        {:error, "pmall.exchange.expired"}
+      Decimal.to_integer(points) < goods.price ->
+        {:error, "pmall.exchange.pointless"}
       true  ->
-         result = _create_pmall_order(app_id, wcp_user, goods)
+         result = _create_pmall_order(app_id, wcp_user_id, goods)
          case result do
            {:ok, order_id} ->
-              {:ok, i18n_message: 'pmall.exchange.success'}
+              {:ok, "pmall.exchange.success"}
             _ ->
-              {:ok, i18n_message: 'pmall.exchange.failed'}
+              {:error, "pmall.exchange.failed"}
          end
     end
   end
@@ -253,7 +257,7 @@ defmodule Acs.PMalls do
     Repo.transaction(fn ->
       # goods stock
       new_goods = PMallGoods.changeset(goods, %{stock: goods.stock - 1, sold: goods.sold + 1}) |> Repo.update()
-      CachedPMallGoods.refresh(new_goods)
+      CachedPMallGoods.refresh(goods.id)
 
       # add order
       order_id = _create_order_id(wcp_user_id)
@@ -262,7 +266,7 @@ defmodule Acs.PMalls do
       new_order = %{"id": order_id, 
                   "goods_name": goods.name, "price": goods.price,
                   "discount": 0, "final_price": goods.price, 
-                  "app_id": app_id, "user_id": wcp_user_id,  "snapshots": snapshots}
+                  "app_id": app_id, "wcp_user_id": wcp_user_id,  "snapshots": snapshots}
 
       {:ok, _mall_order} = PMallOrder.changeset(%PMallOrder{}, new_order) |> Repo.insert
 

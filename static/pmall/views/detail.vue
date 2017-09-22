@@ -24,7 +24,7 @@
       <a v-if="!goods.active" class="button btn-goods-down"></a>
       <a v-else-if="goods.stock<=0" class="button btn-conversion-limit"></a>
       <a v-else-if="points < goods.price" class="button btn-point-less"></a>
-      <a v-else class="button btn-point-exchange"></a>
+      <a class="button btn-point-exchange" @click="exchange"></a>
     </div>
   </div>
 </template>
@@ -75,8 +75,14 @@ export default {
         goods_id: this.goodsId
       })
 
+      if(goods.is_virtual){
+        //填写收货地址
+      }
+
       if (result.success) {
-        // this.goods = result.goods
+        Toast.show(this.$t(result.i18n_message))
+      }else{
+        Toast.show(this.$t(result.i18n_message))
       }
     }
   }

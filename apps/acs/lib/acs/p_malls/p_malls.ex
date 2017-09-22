@@ -229,7 +229,7 @@ defmodule Acs.PMalls do
       from order in PMallOrder,
         left_join: details in assoc(order, :details),
         where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.id == ^goods_id,
-        select: count(details.id)
+        select: count(order.id)
 
     Decimal.to_integer(Repo.one!(query))
   end

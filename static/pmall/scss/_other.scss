@@ -28,11 +28,10 @@ $border-color: rgba($text, 0.1);
   &.bg-draw-page {
     background-image: url("~assets/pmall/1245_34.jpg");
     min-height: virtual-m-rem(2064);
-    width: 100%;
   }
   &.bg-draw-item {
     background-image: url("~assets/pmall/1245_34_03.png");
-    background-size: virtual-m-rem(990) virtual-m-rem(982);
+    background-size: virtual-m-pixel(990) virtual-m-pixel(982);
     background-position-x: center;
   }
   &.bg-turn-needle {
@@ -98,24 +97,27 @@ span {
 }
 
 .draw-page {
-  position: relative;
-  footer {
-    position: absolute;
-    bottom: 4.2rem;
+  header {
+    width: 100vw;
+    height: virtual-m-pixel(800);
   }
   .rotate-container {
     width: 100%;
-    height: virtual-m-rem(982);
-    position: absolute;
-    top: virtual-m-rem(714);
+    height: virtual-m-pixel(982);
+    position: relative;
   }
-  .my-total {
-    width: virtual-m-rem(482);
-    height: virtual-m-rem(134);
-    background-color: $text;
-    border: 1px solid $red;
-    color: $white;
-    margin-right: 1rem;
+  footer {
+    margin-top: 1.5rem;
+    .my-total {
+      min-width: virtual-m-rem(482);
+      padding-left: .3rem;
+      padding-right: .3rem;
+      height: virtual-m-rem(134);
+      background-color: $text;
+      border: 1px solid $red;
+      color: $white;
+      margin-right: 1rem;
+    }
   }
 }
 

@@ -1,20 +1,31 @@
 <template>
-  <div class="draw-page bg-full bg-draw-page is-flex flex-center flex-vcentered">
-    <div class="rotate-container bg-full bg-draw-item"></div>
-    <div class="rotate-container">
+  <div class="draw-page bg-full bg-draw-page">
+    <header></header>
+    <div class="rotate-container bg-full bg-draw-item">
       <div class="bg-full bg-turn-needle"></div>
     </div>
-    <footer class="is-flex">
+    <footer class="is-flex flex-center flex-vcentered ">
       <div class="my-total is-flex flex-center flex-vcentered is-size-medium">
-        <span>我的积分总额 <strong class="is-primary">90</strong></span>
+        <span>我的积分总额 <strong class="is-primary"><label  v-if="wcp_user">{{wcp_user.points}}</label><label v-else>0</label></strong></span>
       </div>
-      <div class="button btn-click-draw" @click="play"></div>
+      <div>
+        <a class="button btn-click-draw" @click="play"></a>
+      </div>
     </footer>
   </div>
 </template>
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 import anime from 'animejs';
 export default {
+  computed: {
+    ...mapGetters([
+      'wcp_user'
+    ])
+  },
   data() {
     return {
       player: undefined,
@@ -22,7 +33,7 @@ export default {
         rotateOffset: -18,
         duration: 5000,
         gap: 10,
-        turns: 3,
+        turns: 100,
       }
     }
   },
@@ -57,8 +68,6 @@ export default {
         }
       })
     }
-
   }
-
 }
 </script>

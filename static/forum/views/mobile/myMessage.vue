@@ -2,7 +2,7 @@
   <div class="my-message">
     <div class="card has-divider">
       <div class="card-content is-paddingless">
-        <router-link v-for="n in 15" class="message-item title" :to="{name: 'myMessage', params:{ }}" tag="div">
+        <router-link v-for="n in 15" :key="n" class="message-item title" :to="{name: 'myMessage', params:{ }}" tag="div">
           <div class="comp-author-info">
             <figure class="is-large is-relative">
               <img class="is-large" src="~assets/themes/jqxs_mobile/19_03-2_03.png">

@@ -20,7 +20,7 @@
       </el-table>
       <br/>
       <div v-if="appUsers">
-        <el-card class="box-card" v-for="(app, index) in appUsers">
+        <el-card class="box-card" v-for="(app, index) in appUsers" :key="app.id">
           <br/>
           <div slot="header" class="clearfix">
             <span style="line-height: 36px;">

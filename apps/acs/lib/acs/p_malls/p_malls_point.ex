@@ -14,14 +14,13 @@ defmodule Acs.PMallsPoint do
 
   alias Acs.Cache.CachedAdminSetting
 
-  def add_point(log_type, app_id, wcp_user_id, minus \\ false) do
+  def add_point(log_type, app_id, wcp_user_id) do
     %Acs.Admin.Setting{} = setting  = CachedAdminSetting.get_fat(app_id, log_type)
-    point = unless minus, do: setting.value, else: -setting.value
     log = %{
       app_id: app_id,
       wcp_user_id: wcp_user_id,
       log_type: log_type,
-      point: point,
+      point: setting.value,
       memo: setting.memo
     }
 

@@ -152,12 +152,12 @@ defmodule AcsWeb.AdminRouter do
       post  "/admin_add_pmall_point", PMallController, :admin_add_pmall_point
       post  "/update_goods_pic", PMallController, :update_goods_pic
 
-      post "/get_task_list", PMallController, :get_task_list
-      post "/update_task", PMallController, :update_task
-      post "/delete_task", PMallController, :delete_task
-      post "/toggle_task_status", PMallController, :toggle_task_status
-      post "/upload_task_pic", PMallController, :upload_task_pic
-      post "/change_taskbars_sort", PMallController, :change_taskbars_sort
+      post  "/get_task_list", PMallController, :get_task_list
+      post  "/update_task", PMallController, :update_task
+      post  "/delete_task", PMallController, :delete_task
+      post  "/toggle_task_status", PMallController, :toggle_task_status
+      post  "/upload_task_pic", PMallController, :upload_task_pic
+      post  "/change_taskbars_sort", PMallController, :change_taskbars_sort
 
       post  "/list_pmall_questions", PMallController, :list_pmall_questions
       post  "/update_pmall_question", PMallController, :update_pmall_question
@@ -166,6 +166,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/list_pmall_draws", PMallController, :list_pmall_draws
       post  "/update_pmall_draw", PMallController, :update_pmall_draw
       post  "/delete_pmall_draw", PMallController, :delete_pmall_draw
+      post  "/upload_draw_pic", PMallController, :upload_draw_pic
     end
 
   end

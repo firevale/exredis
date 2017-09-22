@@ -519,6 +519,10 @@ defmodule Acs.PMalls do
     LuckyDraw.changeset(draw, %{pic: image_path}) |> Repo.update!
   end
 
+  def update_draw_num(draw, num) do
+    LuckyDraw.changeset(draw, %{num: num}) |> Repo.update!
+  end
+
   defp check_pmall_draw_rate(app_id, rate) do
     total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
     case is_integer(total) do

@@ -71,8 +71,8 @@ import {
   showMessageBox
 } from '../dialog/messageBox'
 
-import settingInfoDialog from 'admin/components/dialog/setting/settingInfo'
-const settingInfoDialogComponent = Vue.extend(settingInfoDialog)
+import settingJsonInfoDialog from 'admin/components/dialog/setting/settingJsonInfo'
+const settingInfoDialogComponent = Vue.extend(settingJsonInfoDialog)
 
 const openSettingInfoDialog = (propsData = {
   visible: true
@@ -89,6 +89,10 @@ export default {
     group: {
       type: String,
       default: ''
+    },
+    hasPic: {
+      type: Boolean,
+      default: false
     },
     columns: {
       type: String,
@@ -123,6 +127,7 @@ export default {
       openSettingInfoDialog({
         setting: setting,
         visible: true,
+        columns: this.columns,
         callback: new_setting => {
           this.settings[index] = new_setting
         },
@@ -161,6 +166,7 @@ export default {
           active: true,
         },
         visible: true,
+        columns: this.columns,
         callback: setting => {
           this.settings.push(setting)
         },

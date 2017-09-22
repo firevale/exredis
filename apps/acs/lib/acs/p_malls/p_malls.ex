@@ -231,7 +231,7 @@ defmodule Acs.PMalls do
         where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.id == ^goods_id,
         select: count(order.id)
 
-    Decimal.to_integer(Repo.one!(query))
+    Repo.one!(query)
   end
 
   def exchange_goods(app_id, wcp_user_id, goods_id, address \\ %{}) do
@@ -241,25 +241,25 @@ defmodule Acs.PMalls do
       points = get_user_point(app_id, wcp_user_id)
       cond do
         not goods.active ->
-          {:error, "pmall.exchange.unactive"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.unactive"})
         goods.stock <= 0  ->
-          {:error, "pmall.exchange.soldout"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.soldout"})
         DateTime.compare(goods.begin_time, DateTime.utc_now()) == :gt ->
-          {:error, "pmall.exchange.expired"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.expired"})
         DateTime.compare(goods.end_time, DateTime.utc_now()) == :lt ->
-          {:error, "pmall.exchange.expired"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.expired"})
         Decimal.to_integer(points) < goods.price ->
-          {:error, "pmall.exchange.pointless"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.pointless"})
         not exchange_count >= 1 ->
-          {:error, "pmall.exchange.limit"}
+          Repo.rollback(%{i18n_message: "pmall.exchange.limit"})
         true ->
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
                {:ok, log} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
-            {:ok, "pmall.exchange.success"}
+            %{i18n_message: "pmall.exchange.success"}
           else
             _ ->
-              {:error, "pmall.exchange.failed"}
+              Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
           end
       end
     end)

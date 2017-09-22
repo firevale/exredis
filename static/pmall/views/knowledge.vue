@@ -6,7 +6,7 @@
     <div class="items is-flex">
       <div class="q-item">
         <h1 class="title has-text-centered is-size-large">问答题</h1>
-        <h2 class="subtitle is-size-medium is-grey-dark">明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁？明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁？明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁？明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁明明是谁？</h2>
+        <h2 class="subtitle is-size-medium is-grey-dark">{{question.question}}</h2>
       </div>
       <div class="a-item is-flex">
         <div class="column is-3 has-text-left">
@@ -15,32 +15,28 @@
         <div class="answer column is-6 has-text-left">
           <ul>
             <li class="is-flex flex-vcentered">
-              <input type="radio" name="answer">&nbsp;A
-              <span class="subtitle is-size-small is-grey-dark">第一个答案</span>
+              <input type="radio" v-model.trim="correct" :value="question.a1">&nbsp;A
+              <span class="subtitle is-size-small is-grey-dark">{{question.a1}}</span>
             </li>
             <li class="is-flex flex-vcentered">
-              <input type="radio" name="answer">&nbsp;B
-              <span class="subtitle is-size-small is-grey-dark">第二个答案</span>
+              <input type="radio" v-model.trim="correct" :value="question.a2">&nbsp;B
+              <span class="subtitle is-size-small is-grey-dark">{{question.a2}}</span>
             </li>
             <li class="is-flex flex-vcentered">
-              <input type="radio" name="answer">&nbsp;C
-              <span class="subtitle is-size-small is-grey-dark">第三个答案</span>
-            </li>
-            <li class="is-flex flex-vcentered">
-              <input type="radio" name="answer">&nbsp;D
-              <span class="subtitle is-size-small is-grey-dark">第四个答案</span>
+              <input type="radio" v-model.trim="correct" :value="unknow">&nbsp;C
+              <span class="subtitle is-size-small is-grey-dark">{{unknow}}</span>
             </li>
           </ul>
           <div class="is-flex flex-center">
-            <a class="button btn-answer-ok"></a>
-            <!-- <a class="button btn-answer-complete"></a> -->
+            <a v-if="!isComplete" class="button btn-answer-ok" @click="onSubmit"></a>
+            <a v-else class="button btn-answer-complete"></a>
           </div>
-          <!-- <div class="answer-yes is-flex flex-center">
+          <div v-show="isCorrect" class="answer-yes is-flex flex-center">
             <img src="~assets/pmall/1247_r_03.png" />
-          </div> -->
-          <div class="answer-error is-flex flex-center">
-          <img src="~assets/pmall/1247_2_03.png" />
-        </div>
+          </div>
+          <div v-show="isWwrong" class="answer-error is-flex flex-center">
+            <img src="~assets/pmall/1247_2_03.png" />
+          </div>
         </div>
         <div class="column is-3 has-text-right">
           <img src="~assets/pmall/1247_03_02.png" />
@@ -54,30 +50,54 @@
     </div>
   </div>
 </template>
-
-
 <script>
-  import {
-    mapGetters,
-    mapActions
-  } from 'vuex'
-  export default {
-    data() {
-      return {
-        question: 0
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+export default {
+  data() {
+    return {
+      correct: '',
+      unknow: '加载中',
+      question: {
+        question: '加载中',
+        a1: '加载中',
+        a2: '加载中'
+      },
+      isCorrect: false,
+      isWwrong: false,
+      isComplete: false
+    }
+  },
+
+  mounted() {
+    this.loadData()
+  },
+  methods: {
+    loadData: async function() {
+      let result = await this.$acs.getDailyQuestion()
+      if (result.success) {
+        this.question = result.question
+        this.unknow = "不知道"
       }
     },
-  
-    mounted() {
-      this.loadData()
-    },
-    methods: {
-      loadData: async function() {
-        let result = await this.$acs.getDailyQuestion()
+    onSubmit: async function() {
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.answerQuestion(this.question.id, this.correct)
         if (result.success) {
+          this.isCorrect = true
+          this.isWwrong = false
+        } else {
+          this.isWwrong = true
+          this.isCorrect = false
         }
+        this.isComplete = true
+        this.processing = false
       }
     }
-  
   }
-  </script>
+
+}
+</script>

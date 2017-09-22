@@ -42,10 +42,13 @@ defmodule AcsWeb.PMallController do
     conn |> json(%{success: true, total: total_page, goodses: goodses})
   end
 
-  def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = PMalls.get_pmall_goods_detail(goods_id)
+  def get_goods_detail(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"goods_id" =>goods_id})do
     PMalls.add_goods_click(goods_id, 1)
-    conn |> json(%{success: true, goods: goods})
+    goods = PMalls.get_pmall_goods_detail(goods_id)
+
+    wcp_user_id = 1
+    exchange_count =  PMalls.count_exchange_goods(app_id, wcp_user_id, goods_id)
+    conn |> json(%{success: true, goods: goods, exchanged: exchange_count>=1})
   end
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
@@ -95,8 +98,8 @@ defmodule AcsWeb.PMallController do
     wcp_user_id = 1
     result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
     case result do
-      {:ok, %{i18n_message: i18n_message}} ->
-        conn |> json(%{success: true, i18n_message: i18n_message})
+      {:ok, %{last_point: point,i18n_message: i18n_message}} ->
+        conn |> json(%{success: true, point: point, i18n_message: i18n_message})
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end

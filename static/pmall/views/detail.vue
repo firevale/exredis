@@ -12,7 +12,7 @@
           <span class="is-grey" style="text-decoration:line-through;">{{goods.original_price}}</span>
         </p>
         <p class="expired bg-full bg-expired is-grey is-size-small">
-          <span class="">有效期：&nbsp;&nbsp;&nbsp;</span>{{goods.begin_time | formatServerDate }}至{{goods.end_time |formatServerDate
+          <span class="">有效期：&nbsp;&nbsp;</span>{{goods.begin_time | formatServerDate }}至{{goods.end_time |formatServerDate
           }}
         </p>
       </div>
@@ -21,10 +21,10 @@
       <h1 class="is-size-medium">详细规则：</h1> {{goods.description}}
     </div>
     <div v-show="goods.id>0" class="operate">
-      <a v-if="!goods.active" class="button btn-goods-down"></a>
-      <a v-else-if="goods.stock<=0" class="button btn-conversion-limit"></a>
+      <a v-if="!goods.active || goods.stock<=0" class="button btn-goods-down"></a>
+      <a v-else-if="exchanged" class="button btn-conversion-limit"></a>
       <a v-else-if="points < goods.price" class="button btn-point-less"></a>
-      <a class="button btn-point-exchange" @click="exchange"></a>
+      <a v-else class="button btn-point-exchange" @click="exchange"></a>
     </div>
   </div>
 </template>
@@ -33,9 +33,12 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+import Toast from 'common/components/toast'
+
 export default {
   data() {
     return {
+      exchanged: false,
       goods: {
         id: 0,
         name: '',
@@ -61,12 +64,16 @@ export default {
     this.loadData()
   },
   methods: {
+    ...mapActions([
+      'setUserPoints'
+    ]),
     async loadData() {
       let result = await this.$acs.getGoods({
         goods_id: this.goodsId
       })
 
       if (result.success) {
+        this.exchanged = result.exchanged
         this.goods = result.goods
       }
     },
@@ -80,6 +87,8 @@ export default {
       })
 
       if (result.success) {
+        this.exchanged = true
+        this.setUserPoints(result.point)
         Toast.show(this.$t(result.i18n_message))
       }
     }

@@ -62,7 +62,7 @@ defmodule Acs.PMalls.PMallOrder do
       :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
       :transaction_currency, :transaction_id, :transaction_status, :app_id, :fee,
       :wcp_user_id, :address])
-    |> validate_required([:id, :platform, :app_id, :wcp_user_id, :address])
+    |> validate_required([:id, :app_id, :wcp_user_id, :address])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:wcp_user_id)
   end

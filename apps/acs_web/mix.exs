@@ -24,7 +24,7 @@ defmodule AcsWeb.Mixfile do
   def application do
     [
       mod: {AcsWeb.Application, []},
-      extra_applications: [:logger, :bugsnag, :runtime_tools]
+      extra_applications: [:logger, :bugsnag, :exutils, :exmail, :exsdks, :exwcp, :runtime_tools]
     ]
   end
 

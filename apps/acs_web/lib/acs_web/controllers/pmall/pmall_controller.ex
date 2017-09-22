@@ -95,9 +95,9 @@ defmodule AcsWeb.PMallController do
     wcp_user_id = 1
     result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
     case result do
-      {:ok, i18n_message} ->
+      {:ok, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: true, i18n_message: i18n_message})
-      {:error, i18n_message} ->
+      {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end

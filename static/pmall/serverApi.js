@@ -105,6 +105,9 @@ export default {
       answerQuestion(id, correct) {
         return post("/pmall_actions/answer_question", { id, correct })
       },
+      luckDraw() {
+        return post("/pmall_actions/luck_draw")
+      },
     }
   }
 }

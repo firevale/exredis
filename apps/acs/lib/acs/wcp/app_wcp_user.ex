@@ -26,7 +26,7 @@ defmodule Acs.Wcp.AppWcpUser do
   def changeset(%AppWcpUser{} = app_wcp_user, attrs) do
     app_wcp_user
     |> cast(attrs, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :user_id, :tf_email])
-    |> validate_required([:app_id, :user_id])
+    |> validate_required([:app_id, :openid])
     |> foreign_key_constraint(:user_id)
   end
 end

@@ -15,20 +15,20 @@ defmodule AcsWeb.PMallController do
     tasks = PMalls.get_task_list(app_id)
 
     #商品
-    goodses = 
+    goodses =
       case PMalls.list_pmall_goods(app_id, 1, 3, "") do
         {:ok, goodses, total_page} ->
           goodses
        _ ->
           []
       end
-    
+
     conn |> json(%{success: true, tasks: tasks, goodses: goodses})
   end
 
   # list_pmall_goods
-  def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                                      %{"page" => page, 
+  def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,
+                                      %{"page" => page,
                                       "records_per_page" => records_per_page}) do
     {total_page, goodses} =
       case PMalls.list_pmall_goods(app_id, page, records_per_page, "") do
@@ -62,7 +62,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page,
   "records_per_page" => records_per_page}) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id = 1
@@ -74,9 +74,9 @@ defmodule AcsWeb.PMallController do
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
-  end 
+  end
 
-  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page, 
+  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"page" => page,
   "records_per_page" => records_per_page}) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id = 1
@@ -88,10 +88,10 @@ defmodule AcsWeb.PMallController do
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
-  end 
+  end
 
   def exchange(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"goods_id" => goods_id}) do
-    wcp_user_id = 1 
+    wcp_user_id = 1
     result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
     case result do
       {:ok, i18n_message} ->
@@ -104,11 +104,11 @@ defmodule AcsWeb.PMallController do
   def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
   def cache_key_sign_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
   def cache_key_sign_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
-  
+
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
-    wcp_user_id = 1 
+    wcp_user_id = 1
     sign_key = cache_key_sign(app_id, wcp_user_id)
-    
+
     signed = Exredis.incr(sign_key)
     case signed do
       1 ->
@@ -117,7 +117,7 @@ defmodule AcsWeb.PMallController do
       _ ->
         conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
     end
-    
+
   end
   defp _sign(app_id, wcp_user_id) do
     sign_key = cache_key_sign(app_id, wcp_user_id)
@@ -137,7 +137,7 @@ defmodule AcsWeb.PMallController do
     Exredis.expire(sign_key, 172800)
     #添加积分
     Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
-    
+
     {:ok, times}
 
   end
@@ -203,7 +203,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id, 
+  def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id,
     "correct" => correct}) do
       wcp_user_id = 1
       question = PMalls.get_question(id)
@@ -218,6 +218,22 @@ defmodule AcsWeb.PMallController do
             conn |> json(%{success: false})
           end
       end
+  end
+
+  def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
+    wcp_user_id = 1
+    index = :rand.uniform(8)
+    draw = PMalls.get_draw(index)
+    case draw do
+      nil ->
+        conn |> json(%{success: true, index: 1})
+      _ ->
+        Repo.transaction(fn ->
+          PMallsPoint.add_point("point_luck_draw", app_id, wcp_user_id)
+          PMalls.update_draw_num(draw, draw.num - 1)
+        end)
+        conn |> json(%{success: true, index: index})
+    end
   end
 
 end

@@ -1,11 +1,28 @@
 defmodule AcsWeb.PlugsPipeline do
     import  AcsWeb.Plugs
     use     Phoenix.Router
+
     pipeline :browser do
       plug :accepts, ["html"]
       plug :fetch_session
-      plug :fetch_flash
-      plug :protect_from_forgery
+      # plug :fetch_flash
+      plug :protect_from_forgery 
+      plug :put_secure_browser_headers
+      plug :parse_user_agent
+      plug :fetch_access_token
+      plug :fetch_session_user_id
+      plug :fetch_session_user
+      plug :fetch_user_id
+      plug :fetch_user
+      plug :fetch_device_id
+      plug :fetch_locale
+    end
+
+    pipeline :user do
+      plug :accepts, ["html"]
+      plug :fetch_session
+      # plug :fetch_flash
+      # plug :protect_from_forgery 
       plug :put_secure_browser_headers
       plug :parse_user_agent
       plug :fetch_access_token

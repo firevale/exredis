@@ -7,9 +7,9 @@ defmodule Acs.Repo.Migrations.CreatePMallOrderDetails do
       add :goods_pic, :string
       add :price, :integer
       add :amount, :integer
-      
+
       add :pmall_goods_id, references(:pmall_goods, type: :string, on_delete: :nothing), size: 100
-      add :pmall_order_id, references(:pmall_orders, type: :string,on_delete: :nothing), size: 100
+      add :pmall_order_id, references(:pmall_orders, type: :string, on_delete: :nothing), size: 100
 
       timestamps()
     end

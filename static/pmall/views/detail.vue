@@ -37,14 +37,14 @@ export default {
   data() {
     return {
       goods: {
-        id:0,
+        id: 0,
         name: '',
         price: 0,
         original_price: 0,
         begin_time: '2099-01-01 00:00:00',
         end_time: '2099-12-01 00:00:00',
         description: '',
-        active:false,
+        active: false,
       }
     }
   },
@@ -70,7 +70,7 @@ export default {
         this.goods = result.goods
       }
     },
-    exchange(){
+    async exchange() {
       let result = await this.$acs.exchange({
         goods_id: this.goodsId
       })

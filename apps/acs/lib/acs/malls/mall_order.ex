@@ -48,9 +48,8 @@ defmodule Acs.Malls.MallOrder do
     
     belongs_to :app,  Acs.Apps.App, type: :string
     belongs_to :user, Acs.Accounts.User
-    belongs_to :goods,   Acs.Malls.MallGoods, type: :string
 
-    has_one  :details, Acs.Malls.MallOrderDetail, references: :id
+    has_one    :details, Acs.Malls.MallOrderDetail, references: :id
 
     timestamps()
   end

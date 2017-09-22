@@ -396,20 +396,30 @@ defmodule Acs.PMalls do
     case Repo.get(LuckyDraw, draw["id"]) do
     nil ->
       # add new
-      case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
-        {:ok, new_draw} ->
-          draw = Map.put(draw, "id", new_draw.id)
-          {:addok, draw}
-        {:error, %{errors: _errors}} ->
-          :error
+      case check_pmall_draw_rate(draw["app_id"], draw["rate"]) do
+        true ->
+          case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
+            {:ok, new_draw} ->
+              draw = Map.put(draw, "id", new_draw.id)
+              {:addok, draw}
+            {:error, %{errors: _errors}} ->
+              :error
+          end
+        false ->
+          :overflow
       end
 
     %LuckyDraw{} = q ->
       # update
-      changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
-      changed |> Repo.update!
-      draw = Map.put(draw, "id", q.id)
-      {:updateok, draw, changed.changes}
+      case check_pmall_draw_rate(draw["app_id"], draw["rate"]-q.rate) do
+        true ->
+          changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
+          changed |> Repo.update!
+          draw = Map.put(draw, "id", q.id)
+          {:updateok, draw, changed.changes}
+        false ->
+          :overflow
+      end
     end
   end
 
@@ -426,6 +436,11 @@ defmodule Acs.PMalls do
             :error
         end
     end
+  end
+
+  defp check_pmall_draw_rate(app_id, rate) do
+    total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id)
+    (total+rate) <= 100
   end
 
 end

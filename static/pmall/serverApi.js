@@ -84,8 +84,8 @@ export default {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchanges = c)
         return post('/pmall_actions/list_my_exchanges', params, undefined, cancelToken)
       },
-      exchange() {
-        return post("/pmall_actions/exchange")
+      exchange(params) {
+        return post("/pmall_actions/exchange", params)
       },
       sendBindMobileVerifyCode(mobile) {
         return post("/send_mobile_bind_verify_code", { mobile })

@@ -12,6 +12,14 @@ export default {
     },
     address: {
       addSuccess: '地址添加成功'
+    },
+    exchange: {
+      success: '兑换成功',
+      failed: '兑换成功',
+      pointless: '积分不足',
+      unactive: '该商品己下架',
+      expired: '你来晚了，兑换时间己截止',
+      soldout: '你来晚了，该商品己被抢光了',
     }
   }
 }

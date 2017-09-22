@@ -20,9 +20,9 @@
     <div class="content">
       <h1 class="is-size-medium">详细规则：</h1> {{goods.description}}
     </div>
-    <div class="operate">
-      <a v-if="!active" class="button btn-goods-down"></a>
-      <a v-else-if="stock<=0" class="button btn-conversion-limit"></a>
+    <div v-show="goods.id>0" class="operate">
+      <a v-if="!goods.active" class="button btn-goods-down"></a>
+      <a v-else-if="goods.stock<=0" class="button btn-conversion-limit"></a>
       <a v-else-if="points < goods.price" class="button btn-point-less"></a>
       <a v-else class="button btn-point-exchange"></a>
     </div>
@@ -37,12 +37,14 @@ export default {
   data() {
     return {
       goods: {
+        id: 0,
         name: '',
         price: 0,
         original_price: 0,
         begin_time: '2099-01-01 00:00:00',
         end_time: '2099-12-01 00:00:00',
-        description: ''
+        description: '',
+        active: false,
       }
     }
   },
@@ -66,6 +68,15 @@ export default {
 
       if (result.success) {
         this.goods = result.goods
+      }
+    },
+    async exchange() {
+      let result = await this.$acs.exchange({
+        goods_id: this.goodsId
+      })
+
+      if (result.success) {
+        // this.goods = result.goods
       }
     }
   }

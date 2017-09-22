@@ -49,7 +49,7 @@ defmodule AcsWeb.PMallController do
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     # user = Accounts.get_user()
-    # point = PMalls.get_user_point(user_id)
+    # point = PMalls.get_user_point(app_id, user_id)
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     case CachedAppWcpUser.get(app_id, open_id) do
       %AppWcpUser{} = user ->

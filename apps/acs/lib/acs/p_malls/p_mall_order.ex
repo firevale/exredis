@@ -44,10 +44,10 @@ defmodule Acs.PMalls.PMallOrder do
     field :transaction_currency, :string
     field :transaction_id, :string
     field :transaction_status, :string
-    
+
     belongs_to :app,  Acs.Apps.App, type: :string
     belongs_to :wcp_user, Acs.Wcp.AppWcpUser
-    has_one  :details, Acs.PMalls.PMallOrderDetail, references: :id
+    has_one :details, Acs.PMalls.PMallOrderDetail, foreign_key: :pmall_order_id
 
     timestamps()
   end
@@ -58,8 +58,8 @@ defmodule Acs.PMalls.PMallOrder do
   def changeset(%PMallOrder{} = p_mall_order, attrs) do
     p_mall_order
     |> cast(attrs, [:id, :platform, :device_id, :user_ip, :goods_name, :price,
-      :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at, 
-      :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
+      :postage, :discount, :final_price, :currency, :paid_type, :paid_at, :confirm_at,
+      :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode,
       :transaction_currency, :transaction_id, :transaction_status, :app_id, :fee,
       :wcp_user_id, :address])
     |> validate_required([:id, :app_id, :wcp_user_id])

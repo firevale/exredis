@@ -49,10 +49,9 @@ const mutations = {
 
     state.channel.join()
       .receive('ok', _ => {
-        console.log('app admin channel joined')
         state.channel.on('realtime_metrics', payload => {
           state.latestOnlineData = payload.online
-          state.realtimeMetrics = payload.realtime_metrics
+          state.realtimeMetrics = payload.metrics
         })
       })
       .receive('error', reasons => console.log('can NOT join app admin channel', reasons))

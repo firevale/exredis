@@ -166,12 +166,12 @@ defmodule Acs.PMalls do
   end
 
   def list_pmall_point_logs(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
-    totalQuery = case String.length(wcp_user_id) do
-      0 -> totalQuery
-      _ -> where(totalQuery, [pl], pl.wcp_user_id == ^wcp_user_id)
+    total_query = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
+    total_query = case String.length(wcp_user_id) do
+      0 -> total_query
+      _ -> where(total_query, [pl], pl.wcp_user_id == ^wcp_user_id)
     end
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query = from pl in PointLog,
               join: u in assoc(pl, :wcp_user),
@@ -191,8 +191,8 @@ defmodule Acs.PMalls do
   end
 
   def list_my_points(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_query = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query =
       from pl in PointLog,
@@ -207,11 +207,11 @@ defmodule Acs.PMalls do
   end
 
   def list_my_exchanges(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery =
+    total_query =
       from pl in PointLog,
         where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods",
         select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query =
       from pl in PointLog,

@@ -68,7 +68,7 @@ defmodule AcsWeb.CronController do
         event: "realtime_metrics", 
         payload: %{
           online: AcsStats.update_online_chart(ts, label, app_id),
-          metrics: AcsStats.get_realtime_metrics(app_id, today),
+          metrics: AcsStats.get_realtime_metrics(today, app_id),
       }})
     end
   end

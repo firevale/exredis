@@ -14,6 +14,7 @@ defmodule AcsWeb.PMallRouter do
     post   "/sign", PMallController, :sign
     post   "/insert_address", PMallController, :insert_address
     post   "/get_daily_question", PMallController, :get_daily_question
+    post   "/answer_question", PMallController, :answer_question
   end
 
 end

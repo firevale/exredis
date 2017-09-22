@@ -335,10 +335,16 @@ defmodule Acs.PMalls do
     questions = Repo.all(query)
     {:ok, questions, total_page}
   end
-
+  
+  def get_question(id) do
+    Repo.get(DayQuestion, id)
+  end
+  
   def get_daily_question(app_id) do
+    max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
+
     query = from q in DayQuestion,
-            where: q.app_id == ^app_id,
+            where: q.app_id == ^app_id and q.id >= ^max_id,
             limit: 1,
             order_by: [asc: q.inserted_at],
             select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])

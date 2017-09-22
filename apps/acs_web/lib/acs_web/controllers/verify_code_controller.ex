@@ -2,6 +2,7 @@ defmodule AcsWeb.VerifyCodeController do
   use AcsWeb, :controller
 
   alias Utils.Captcha
+  alias Acs.Accounts
   alias Exsm.MeishengService
   alias Exmail.EmailService
 
@@ -85,7 +86,7 @@ defmodule AcsWeb.VerifyCodeController do
   end
 
   defp check_account_exist(%Plug.Conn{params: %{"account_id" => account_id}} = conn, _options) do 
-    if not CachedUser.get!(account_id) do 
+    if not Accounts.get_user(account_id) do 
       conn |> json(%{success: false, i18n_message: "error.server.accountNotFound"}) |> halt
     else 
       conn

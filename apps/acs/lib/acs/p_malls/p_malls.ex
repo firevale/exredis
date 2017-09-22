@@ -17,6 +17,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.DayQuestion
   alias Acs.PMalls.LuckyDraw
   alias Acs.Wcp.AppWcpUser
+  alias Acs.PMalls.LuckyDrawLog
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -228,7 +229,7 @@ defmodule Acs.PMalls do
     query =
       from order in PMallOrder,
         left_join: details in assoc(order, :details),
-        where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.id == ^goods_id,
+        where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.pmall_goods_id == ^goods_id,
         select: count(order.id)
 
     Repo.one!(query)
@@ -531,6 +532,17 @@ defmodule Acs.PMalls do
 
   def update_draw_num(draw, num) do
     LuckyDraw.changeset(draw, %{num: num}) |> Repo.update!
+  end
+
+  def create_draw_log(log) do
+    LuckyDrawLog.changeset(%LuckyDrawLog{}, log) |> Repo.insert
+  end
+
+  def is_draw_exists?(app_id, wcp_user_id, lucky_draw_id) do
+    query = from log in LuckyDrawLog,
+      select: count(1),
+      where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^lucky_draw_id
+    Repo.one!(query) > 0
   end
 
   defp check_pmall_draw_rate(app_id, rate) do

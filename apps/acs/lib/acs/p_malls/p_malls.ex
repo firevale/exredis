@@ -257,7 +257,8 @@ defmodule Acs.PMalls do
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
                {:ok, log} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
-            %{i18n_message: "pmall.exchange.success"}
+            CachedPMallGoods.refresh(goods.id)
+            %{last_point: points - goods.price ,i18n_message: "pmall.exchange.success"}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -272,7 +273,6 @@ defmodule Acs.PMalls do
   defp _create_pmall_order(app_id, wcp_user_id, goods, address) do
       # goods stock
       new_goods = PMallGoods.changeset(goods, %{stock: goods.stock - 1, sold: goods.sold + 1}) |> Repo.update()
-      CachedPMallGoods.refresh(goods.id)
 
       # add order
       order_id = _create_order_id(wcp_user_id)

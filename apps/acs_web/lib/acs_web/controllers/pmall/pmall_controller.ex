@@ -29,12 +29,15 @@ defmodule AcsWeb.PMallController do
   def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
                                       "records_per_page" => records_per_page}) do
-    case PMalls.list_pmall_goods(app_id, page, records_per_page, nil) do
-      :zero ->
-        conn |> json(%{success: true, total: 0, goodses: []})
-      {:ok, goodses, total_page} ->
-        conn |> json(%{success: true, goodses: goodses, total: total_page})
-    end
+    {total_page, goodses} =
+      case PMalls.list_pmall_goods(app_id, page, records_per_page, "") do
+        {:ok, goodses, total_page} ->
+          {total_page, goodses}
+        _ ->
+          {0, []}
+      end
+
+    conn |> json(%{success: true, total: total_page, goodses: goodses})
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
@@ -84,6 +87,21 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
+
+  def exchange(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{goods_id: goods_id}) do
+    wcp_user_id = 1 
+    sign_key = cache_key_sign(app_id, wcp_user_id)
+    
+    signed = Exredis.incr(sign_key)
+    case signed do
+      1 ->
+        {:ok, times} = _sign(app_id, wcp_user_id)
+        conn |> json(%{success: true, sign_times: times})
+      _ ->
+        conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
+    end
+    
+  end
 
   def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
   def cache_key_sign_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"

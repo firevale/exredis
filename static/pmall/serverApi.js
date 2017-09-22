@@ -99,6 +99,9 @@ export default {
       getDailyQuestion() {
         return post("/pmall_actions/get_daily_question")
       },
+      answerQuestion(id, correct) {
+        return post("/pmall_actions/answer_question", { id, correct })
+      },
     }
   }
 }

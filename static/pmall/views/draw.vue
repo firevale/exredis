@@ -53,29 +53,31 @@ export default {
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.luckDraw()
+        this.processing = false
         if (result.success) {
           index = result.index
+        } else {
+          return
         }
-        this.processing = false
-      }
 
-      let maxLen = 8
-      let angelStart = 360 / maxLen * (index - 1) + this.playerOptions.gap;
-      let angelEnd = 360 / 8 * index - this.playerOptions.gap;
-      let angel = Math.floor(Math.random() * (angelEnd - angelStart)) + angelStart
-      angel += this.playerOptions.rotateOffset
-      angel += this.playerOptions.turns * 360
-      this.player = anime({
-        targets: '.bg-turn-needle',
-        rotate: {
-          duration: this.playerOptions.duration,
-          easing: 'easeOutCubic',
-          value: [this.playerOptions.rotateOffset, angel]
-        },
-        complete: function(anim) {
-          console.info('中奖index:' + index)
-        }
-      })
+        let maxLen = 8
+        let angelStart = 360 / maxLen * (index - 1) + this.playerOptions.gap;
+        let angelEnd = 360 / 8 * index - this.playerOptions.gap;
+        let angel = Math.floor(Math.random() * (angelEnd - angelStart)) + angelStart
+        angel += this.playerOptions.rotateOffset
+        angel += this.playerOptions.turns * 360
+        this.player = anime({
+          targets: '.bg-turn-needle',
+          rotate: {
+            duration: this.playerOptions.duration,
+            easing: 'easeOutCubic',
+            value: [this.playerOptions.rotateOffset, angel]
+          },
+          complete: function(anim) {
+            console.info('中奖index:' + index)
+          }
+        })
+      }
     }
   }
 }

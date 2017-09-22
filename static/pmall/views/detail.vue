@@ -71,17 +71,15 @@ export default {
       }
     },
     async exchange() {
+      if (this.goods.is_virtual) {
+        //填写收货地址
+      }
+
       let result = await this.$acs.exchange({
         goods_id: this.goodsId
       })
 
-      if(goods.is_virtual){
-        //填写收货地址
-      }
-
       if (result.success) {
-        Toast.show(this.$t(result.i18n_message))
-      }else{
         Toast.show(this.$t(result.i18n_message))
       }
     }

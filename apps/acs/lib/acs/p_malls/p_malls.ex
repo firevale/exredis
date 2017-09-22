@@ -228,7 +228,7 @@ defmodule Acs.PMalls do
     query =
       from order in PMallOrder,
         left_join: details in assoc(order, :details),
-        where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.id == ^goods_id,
+        where: order.app_id == ^app_id and order.wcp_user_id == ^wcp_user_id and details.pmall_goods_id == ^goods_id,
         select: count(order.id)
 
     Repo.one!(query)

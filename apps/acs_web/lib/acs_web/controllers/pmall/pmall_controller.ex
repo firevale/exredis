@@ -14,7 +14,7 @@ defmodule AcsWeb.PMallController do
     #任务清单
     tasks = PMalls.get_task_list(app_id)
 
-    # #商品
+    #商品
     goodses = 
       case PMalls.list_pmall_goods(app_id, 1, 3, "") do
         {:ok, goodses, total_page} ->
@@ -49,12 +49,13 @@ defmodule AcsWeb.PMallController do
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     # user = Accounts.get_user()
-    # point = PMalls.get_user_point(app_id, user_id)
+    wcp_user_id = 1
+    point = PMalls.get_user_point(app_id, wcp_user_id)
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     case CachedAppWcpUser.get(app_id, open_id) do
       %AppWcpUser{} = user ->
         wcp_user = Map.take(user, [:id, :nickname, :avatar_url, :app_id])
-        user_info = Map.merge(wcp_user, %{points: 200, has_mobile: false })
+        user_info = Map.merge(wcp_user, %{points: point, has_mobile: false })
         conn |> json(%{success: true, wcp_user: user_info})
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams" })
@@ -89,19 +90,15 @@ defmodule AcsWeb.PMallController do
      end
   end 
 
-  def exchange(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{goods_id: goods_id}) do
+  def exchange(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"goods_id" => goods_id}) do
     wcp_user_id = 1 
-    sign_key = cache_key_sign(app_id, wcp_user_id)
-    
-    signed = Exredis.incr(sign_key)
-    case signed do
-      1 ->
-        {:ok, times} = _sign(app_id, wcp_user_id)
-        conn |> json(%{success: true, sign_times: times})
-      _ ->
-        conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
+    result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
+    case result do
+      {:ok, i18n_message} ->
+        conn |> json(%{success: true, i18n_message: i18n_message})
+      {:error, i18n_message} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
     end
-    
   end
 
   def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"

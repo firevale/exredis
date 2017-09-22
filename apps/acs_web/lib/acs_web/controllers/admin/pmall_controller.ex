@@ -20,7 +20,7 @@ defmodule AcsWeb.Admin.PMallController do
   end
 
   def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = PMalls.get_pmall_goods_detail(goods_id)
+    goods = PMalls.get_pmall_goods(goods_id)
     conn |> json(%{success: true, goods: goods})
   end
 
@@ -194,7 +194,6 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # update_article_pic
   plug :check_upload_image, [
     param_name: "file", 
     format: ["png", "jpg", "jpeg"],
@@ -311,6 +310,29 @@ defmodule AcsWeb.Admin.PMallController do
       :error ->
         conn |> json(%{success: false, i18n_message: "admin.error.networkError"})
     end
+  end
+
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["png", "jpg", "jpeg"],
+    reformat: "jpg"] when action == :upload_draw_pic
+  def upload_draw_pic(%Plug.Conn{private: %{acs_admin_id: _admin_id}} = conn, 
+                              %{"draw_id" => draw_id, 
+                              "file" => %{path: image_file_path}}) do
+    case PMalls.get_draw(draw_id) do
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.draw.notFound"})
+
+      %LuckyDraw{} = draw ->
+        {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "draw_pics/#{draw_id}")
+        PMalls.update_draw_pic(draw, image_path)
+        conn |> json(%{success: true, pic: image_path})
+      _ ->
+        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+    end
+  end
+  def upload_draw_pic(conn, _) do
+    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
 end

@@ -69,5 +69,11 @@
     updateSuccess: '修改成功',
     notFound: '奖品没有找到',
     overflow: '添加的所有奖品概率总和不能超过100',
+   },
+
+   sign:{
+    topPic: '顶部图片',
+    lunar: '农历宜忌',
+    signAward: '签到奖品',
    }
  }

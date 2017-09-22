@@ -42,7 +42,7 @@ defmodule AcsWeb.Router do
   end
 
   scope "/user", AcsWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :user # Use the default browser stack
 
     get  "/login", PageController, :show_login_page # 兼容旧的账号系统(for wp8 users)
 

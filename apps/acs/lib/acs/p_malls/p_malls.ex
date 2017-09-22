@@ -248,9 +248,9 @@ defmodule Acs.PMalls do
           Repo.rollback(%{i18n_message: "pmall.exchange.expired"})
         DateTime.compare(goods.end_time, DateTime.utc_now()) == :lt ->
           Repo.rollback(%{i18n_message: "pmall.exchange.expired"})
-        Decimal.to_integer(points) < goods.price ->
+        points < goods.price ->
           Repo.rollback(%{i18n_message: "pmall.exchange.pointless"})
-        not exchange_count >= 1 ->
+        exchange_count >= 1 ->
           Repo.rollback(%{i18n_message: "pmall.exchange.limit"})
         true ->
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),

@@ -397,10 +397,16 @@ defmodule Acs.PMalls do
     questions = Repo.all(query)
     {:ok, questions, total_page}
   end
-
+  
+  def get_question(id) do
+    Repo.get(DayQuestion, id)
+  end
+  
   def get_daily_question(app_id) do
+    max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
+
     query = from q in DayQuestion,
-            where: q.app_id == ^app_id,
+            where: q.app_id == ^app_id and q.id >= ^max_id,
             limit: 1,
             order_by: [asc: q.inserted_at],
             select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
@@ -450,6 +456,7 @@ defmodule Acs.PMalls do
   def list_pmall_draws(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,
+      select: map(d, [:id, :name, :pic, :num, :rate, :app_id]),
       order_by: [desc: d.inserted_at]
     Repo.all(query)
   end
@@ -458,7 +465,7 @@ defmodule Acs.PMalls do
     case Repo.get(LuckyDraw, draw["id"]) do
     nil ->
       # add new
-      case check_pmall_draw_rate(draw["app_id"], draw["rate"]) do
+      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])) do
         true ->
           case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
             {:ok, new_draw} ->
@@ -473,7 +480,7 @@ defmodule Acs.PMalls do
 
     %LuckyDraw{} = q ->
       # update
-      case check_pmall_draw_rate(draw["app_id"], draw["rate"]-q.rate) do
+      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])-q.rate) do
         true ->
           changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
           changed |> Repo.update!
@@ -500,9 +507,14 @@ defmodule Acs.PMalls do
     end
   end
 
-  defp check_pmall_draw_rate(app_id, rate) do
-    total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id)
-    (total+rate) <= 100
+  def check_pmall_draw_rate(app_id, rate) do
+    total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
+    case is_integer(total) do
+      true ->
+        (total + rate) <= 100
+      false ->
+        (Decimal.to_integer(total) + rate) <= 100
+    end
   end
 
 end

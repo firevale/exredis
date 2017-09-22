@@ -3,6 +3,7 @@ defmodule AcsWeb.PMallController do
   require Exredis
   alias Acs.Wcp
   alias Acs.Accounts
+  alias Acs.PMallsPoint
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -174,14 +175,13 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def insert_address(conn, %{
+  def insert_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
                 "name" => _name,
                 "mobile" => _mobile,
                 "area" => _area,
                 "address" => _address,
                 "area_code" => _area_code} = us_address) do
 
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
     case Wcp.get_app_wcp_user(app_id, openid: open_id) do
       nil ->
@@ -197,15 +197,30 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def get_daily_question(conn, _) do
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
-
+  def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     case PMalls.get_daily_question(app_id) do
       nil ->
         conn |> json(%{success: false})
       {:ok, question} ->
         conn |> json(%{success: true, question: question})
     end
+  end
+
+  def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id, 
+    "correct" => correct}) do
+      wcp_user_id = 1
+      question = PMalls.get_question(id)
+      case question do
+        nil ->
+          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+        _ ->
+          if(question.correct == correct) do
+            PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
+            conn |> json(%{success: true})
+          else
+            conn |> json(%{success: false})
+          end
+      end
   end
 
 end

@@ -9,6 +9,7 @@ config :acs_web, AcsWeb.Endpoint,
   static_url: [host: "acs01.firevale.com", port: 443, scheme: "https", path: "/acs"]
 
 config :exsm, :provider, :meisheng
+config :exmail, :email_service_provider, Exmail.SendCloudMailer
 
 config :exservice, KSFile,
   domain: "ks3-cn-beijing-internal.ksyun.com",

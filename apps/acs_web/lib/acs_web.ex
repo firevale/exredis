@@ -80,6 +80,7 @@ defmodule AcsWeb do
       alias Acs.PMalls.PointLog
       alias Acs.PMalls.TaskBar
       alias Acs.PMalls.PMallGoods
+      alias Acs.PMalls.LuckyDraw
       alias Acs.Accounts
       alias Acs.Accounts.User
       alias Acs.Accounts.UserAddress

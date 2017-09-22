@@ -4,6 +4,7 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcp
   alias Acs.Accounts
   alias Acs.PMallsPoint
+  alias Acs.Cache.CachedAdminSetting
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -222,6 +223,7 @@ defmodule AcsWeb.PMallController do
 
   def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     wcp_user_id = 1
+    log_type = "point_luck_draw"
     index = :rand.uniform(8)
     draw = PMalls.get_draw(index)
     case draw do
@@ -229,10 +231,27 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: true, index: 1})
       _ ->
         Repo.transaction(fn ->
-          PMallsPoint.add_point("point_luck_draw", app_id, wcp_user_id)
-          PMalls.update_draw_num(draw, draw.num - 1)
+          setting  = CachedAdminSetting.get_fat(app_id, log_type)
+          user_point = PMalls.get_user_point(app_id, wcp_user_id)
+          cond do
+            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
+              conn |> json(%{success: false, i18n_message: "pmall.draw.pointless"})
+            true ->
+              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
+              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
+              }
+              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+              PMalls.update_draw_num(draw, draw.num - 1)
+              PMalls.create_draw_log(draw_log)
+          end
         end)
-        conn |> json(%{success: true, index: index})
+
+        user_point = PMalls.get_user_point(app_id, wcp_user_id)
+        if PMalls.is_draw_exists?(app_id, wcp_user_id, draw.id) do
+          conn |> json(%{success: true, index: 1, point: user_point})
+        else
+          conn |> json(%{success: true, index: index, point: user_point})
+        end
     end
   end
 

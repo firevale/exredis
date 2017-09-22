@@ -2,13 +2,13 @@
   <div>
     <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
       <tab-pane icon="fa fa-clone" :label="$t('admin.point.sign.topPic')">
-        <json-info-editor group="signPic"></json-info-editor>
+        <json-info-editor group="signPic" hasPic="true"></json-info-editor>
       </tab-pane>
       <tab-pane icon="fa fa-support" :label="$t('admin.point.sign.lunar')">
-        <json-info-editor group="signLunar"></json-info-editor>
+        <json-info-editor group="signLunar" columns="宜=should|忌=bogey"></json-info-editor>
       </tab-pane>
       <tab-pane icon="fa fa-support" :label="$t('admin.point.sign.signAward')">
-        <json-info-editor group="signAward"></json-info-editor>
+        <json-info-editor group="signAward" columns="积分=point|天数=days" hasPic="true"></json-info-editor>
       </tab-pane>
     </tabs>
   </div>

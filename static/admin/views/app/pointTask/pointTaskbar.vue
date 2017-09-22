@@ -204,7 +204,7 @@ export default {
           task_id: taskBar.id
         },
         extensions: ['png', 'jpg', 'jpeg'],
-        title: this.$t('admin.titles.uploadNewsPic', {
+        title: this.$t('admin.titles.uploadTaskPic', {
           picWidth: this.picWidth,
           picHeight: this.picHeight
         }),

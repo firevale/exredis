@@ -76,6 +76,10 @@ import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
+import {
+  showImageUploadDialog
+} from 'common/components/imageUpload'
+
 import drawDialog from 'admin/components/dialog/point/luckyDraw'
 const drawDialogComponent = Vue.extend(drawDialog)
 
@@ -93,6 +97,8 @@ export default {
   data() {
     return {
       draws: [],
+      picWidth: 200,
+      picHeight: 400,
       processing: false
     }
   },
@@ -109,6 +115,23 @@ export default {
         this.draws = result.draws
       }
       this.processing = false
+    },
+
+    updateDrawPic: function(draw) {
+      showImageUploadDialog(this.$i18n, {
+        postAction: '/admin_actions/pmall/upload_draw_pic',
+        width: this.picWidth,
+        height: this.picHeight,
+        data: {
+          draw_id: draw.id
+        },
+        extensions: ['png', 'jpg', 'jpeg'],
+        title: this.$t('admin.titles.uploadDrawPic', {
+          picWidth: this.picWidth,
+          picHeight: this.picHeight
+        }),
+        callback: response => draw.pic = response.pic,
+      })
     },
 
     editDraw: function(draw, index) {

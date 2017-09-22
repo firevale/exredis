@@ -11,26 +11,25 @@ defmodule AcsWeb.CronController do
 
   # by minute
   def minutely_schedule(conn, _params) do
-    Process.spawn(fn -> notify_cp() end, [])
-    Process.spawn(fn -> tinify_images() end, [])
-    Process.spawn(fn -> save_minutely_metrics() end, [])
-
+    do_job(&notify_cp/0)
+    do_job(&tinify_images/0)
+    do_job(&save_minutely_metrics/0)
     conn |> json(%{success: true, message: "minutely_schedule done"})
   end
 
   # by hour
   def hourly_schedule(conn, _params) do
-    Process.spawn(fn -> cancel_mall_order() end, [])
-    Process.spawn(fn -> save_hourly_metrics() end, [])
+    do_job(&cancel_mall_order/0)
+    do_job(&save_hourly_metrics/0)
 
     conn |> json(%{success: true, message: "hourly_schedule done"})
   end
   
   # by day
   def daily_schedule(conn, _params) do
-    Process.spawn(fn -> finish_mall_order() end, [])
-    Process.spawn(fn -> clear_realtime_metrics() end, [])
-    Process.spawn(fn -> generate_daily_report() end, [])
+    do_job(&finish_mall_order/0)
+    do_job(&clear_realtime_metrics/0)
+    do_job(&generate_daily_report/0)
 
     conn |> json(%{success: true, message: "daily_schedule done"})
   end
@@ -69,7 +68,7 @@ defmodule AcsWeb.CronController do
         event: "realtime_metrics", 
         payload: %{
           online: AcsStats.update_online_chart(ts, label, app_id),
-          metrics: AcsStats.get_realtime_metrics(app_id, today),
+          metrics: AcsStats.get_realtime_metrics(today, app_id),
       }})
     end
   end
@@ -147,6 +146,16 @@ defmodule AcsWeb.CronController do
     Enum.each(Exredis.smembers("online_apps"), fn(app_id) -> 
       Reports.generate(app_id, date)
     end)
+  end
+
+  defp do_job(fun) do 
+    Process.spawn(fn -> 
+      try do 
+        fun.() 
+      rescue 
+        exception -> Bugsnag.report(exception)
+      end
+    end, [])
   end
 
 

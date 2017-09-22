@@ -2,20 +2,25 @@ defmodule Acs.PMalls do
   @moduledoc """
   The PMalls context.
   """
-
+  require Timex
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
   use Utils.LogAlias
 
+  alias Acs.PMallsPoint
   alias Acs.PMalls.PMallGoods
+  alias Acs.PMalls.PMallOrder
+  alias Acs.PMalls.PMallOrderDetail
   alias Acs.PMalls.PointLog
   alias Acs.PMalls.TaskBar
   alias Acs.PMalls.DayQuestion
   alias Acs.PMalls.LuckyDraw
+  alias Acs.Wcp.AppWcpUser
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
+  alias Acs.Cache.CachedAppWcpUser
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -216,6 +221,63 @@ defmodule Acs.PMalls do
     logs = Repo.all(query)
     {:ok, logs, total_page}
   end
+  
+  def exchange_goods(goods_id, app_id, wcp_user_id) do
+    wcp_user = Repo.get(AppWcpUser, wcp_user_id)
+    points = get_user_point(app_id, wcp_user_id)
+    goods = get_pmall_goods(goods_id)
+    cond do
+      not goods.active ->
+        {:error, i18n_message: 'pmall.exchange.unactive'}
+      goods.stock <= 0  ->
+        {:error, i18n_message: 'pmall.exchange.soldout'}
+      goods.begin_time > Timex.local() or goods.end_time < Timex.local()  ->
+        {:error, i18n_message: 'pmall.exchange.expired'}
+      points < goods.price ->
+        {:error, i18n_message: 'pmall.exchange.pointless'}
+      true  ->
+         result = _create_pmall_order(app_id, wcp_user, goods)
+         case result do
+           {:ok, order_id} ->
+              {:ok, i18n_message: 'pmall.exchange.success'}
+            _ ->
+              {:ok, i18n_message: 'pmall.exchange.failed'}
+         end
+    end
+  end
+
+  defp _create_order_id(wcp_user_id) do
+   Integer.to_string(Utils.unix_timestamp) <> String.slice(Integer.to_string(wcp_user_id), -4, 4)
+  end
+  defp _create_pmall_order(app_id, wcp_user_id, goods) do
+    Repo.transaction(fn ->
+      # goods stock
+      new_goods = PMallGoods.changeset(goods, %{stock: goods.stock - 1, sold: goods.sold + 1}) |> Repo.update()
+      CachedPMallGoods.refresh(new_goods)
+
+      # add order
+      order_id = _create_order_id(wcp_user_id)
+      mapGoods= Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
+      snapshots = Map.put(%{}, goods.id, mapGoods)
+      new_order = %{"id": order_id, 
+                  "goods_name": goods.name, "price": goods.price,
+                  "discount": 0, "final_price": goods.price, 
+                  "app_id": app_id, "user_id": wcp_user_id,  "snapshots": snapshots}
+
+      {:ok, _mall_order} = PMallOrder.changeset(%PMallOrder{}, new_order) |> Repo.insert
+
+      # add order detail
+      # order_detail = %{"goods_name": goods.name, "goods_pic": goods.pic, "price": goods.price,
+      #               "amount": 1, "mall_goods_id": goods.id, "mall_order_id": order_id}
+
+      # {:ok, _mall_order_detail} = PMallOrderDetail.changeset(%PMallOrderDetail{}, order_detail) |> Repo.insert
+
+      #积分记录
+      PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
+
+      {:ok, order_id}
+    end)
+  end
 
   def add_point(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
@@ -228,8 +290,8 @@ defmodule Acs.PMalls do
     end
   end
 
-  def get_user_point(wcp_user_id) do
-    total_query = from log in PointLog, select: sum(log.point), where: log.wcp_user_id == ^wcp_user_id
+  def get_user_point(app_id, wcp_user_id) do
+    total_query = from log in PointLog, select: sum(log.point), where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id
     Repo.one!(total_query)
   end
 

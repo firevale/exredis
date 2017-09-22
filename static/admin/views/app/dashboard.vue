@@ -34,7 +34,7 @@
         </div>
       </div>
     </nav>
-      <nav class="level">
+    <nav class="level">
       <div class="level-item has-text-centered box">
         <div>
           <p class="heading">{{ $t('admin.app.dau') }}</p>

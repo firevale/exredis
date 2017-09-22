@@ -68,5 +68,6 @@
     addSuccess: '添加成功',
     updateSuccess: '修改成功',
     notFound: '奖品没有找到',
+    overflow: '添加的所有奖品概率总和不能超过100',
    }
  }

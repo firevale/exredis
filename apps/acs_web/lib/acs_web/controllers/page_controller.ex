@@ -103,6 +103,9 @@ defmodule AcsWeb.PageController do
                                  cdn_scheme: @cdn_scheme,
                                  cdn_domain: @cdn_domain)
   end
+  def show_app_faq(conn, _params) do 
+    conn |> send_resp(404, gettext("page not found"))
+  end
 
    # 问题反馈
   def show_customer_service_page(conn, _params) do

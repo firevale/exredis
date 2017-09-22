@@ -48,9 +48,18 @@ export default {
     // });
   },
   methods: {
-    play() {
+    play: async function() {
+      let index = 1
+      if (!this.processing) {
+        this.processing = true
+        let result = await this.$acs.luckDraw()
+        if (result.success) {
+          index = result.index
+        }
+        this.processing = false
+      }
+
       let maxLen = 8
-      let index = Math.floor(Math.random() * (maxLen - 1)) + 1
       let angelStart = 360 / maxLen * (index - 1) + this.playerOptions.gap;
       let angelEnd = 360 / 8 * index - this.playerOptions.gap;
       let angel = Math.floor(Math.random() * (angelEnd - angelStart)) + angelStart

@@ -98,7 +98,7 @@ export default {
   },
 
   created: function() {
-    this.getDraws(this.page, this.recordsPerPage)
+    this.getDraws()
   },
 
   methods: {

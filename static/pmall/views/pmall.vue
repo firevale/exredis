@@ -6,7 +6,7 @@
       <div class="bg-full bg-title-pmall">
       </div>
       <div class="pmall is-flex">
-        <div v-for="goods in goodes" class="column is-6">
+        <div v-for="goods in goodses" class="column is-6">
           <div class="item-box">
             <div class="item">
               <router-link class="image" :to="{name: 'detail',params:{id: goods.id}}" tag="div"></router-link>
@@ -37,7 +37,7 @@ export default {
     return {
       page: 0,
       total: 1,
-      goodes: [],
+      goodses: [],
     }
   },
 
@@ -51,8 +51,7 @@ export default {
         records_per_page: 10
       })
       if (result.success) {
-        this.tasks = result.tasks
-        this.goodses = result.goodses
+        this.goodses =  this.goodses.concat(result.goodses)
         this.total = result.total
         this.page++
       }

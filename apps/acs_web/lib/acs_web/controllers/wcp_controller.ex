@@ -48,6 +48,32 @@ defmodule AcsWeb.WcpController do
                     country: user_info.country
                   }) 
               end
+
+              wcp_user = Wcp.get_app_wcp_user(app_id, openid: msg.fromusername)
+
+              case msg.msgtype do
+                "text" ->
+                  ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
+                    to: %{openid: msg.tousername, nickname: "系统"},
+                    msg_type: msg.msgtype,
+                    content: msg.content,
+                    inserted_at: Ecto.DateTime.utc(),
+                    create_time: msg.createtime,
+                    app_id: app_id})
+
+                "event" ->
+                  ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
+                    to: %{openid: msg.tousername, nickname: "系统"},
+                    msg_type: msg.msgtype,
+                    content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
+                    create_time: msg.createtime,
+                    inserted_at: Ecto.DateTime.utc(),
+                    app_id: app_id})
+
+                _ ->
+                  :do_nothing
+              end
+
             _ ->
               :do_nothing
           end
@@ -55,31 +81,6 @@ defmodule AcsWeb.WcpController do
           :do_nothing
       end
     end, [])
-
-    wcp_user = Wcp.get_app_wcp_user(app_id, openid: msg.fromusername)
-
-    case msg.msgtype do
-      "text" ->
-        ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
-          to: %{openid: msg.tousername, nickname: "系统"},
-          msg_type: msg.msgtype,
-          content: msg.content,
-          inserted_at: Ecto.DateTime.utc(),
-          create_time: msg.createtime,
-          app_id: app_id})
-
-      "event" ->
-        ESWcpMessage.index(%{from: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
-          to: %{openid: msg.tousername, nickname: "系统"},
-          msg_type: msg.msgtype,
-          content: "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}",
-          create_time: msg.createtime,
-          inserted_at: Ecto.DateTime.utc(),
-          app_id: app_id})
-
-      _ ->
-        :do_nothing
-    end
 
     case AppWcpResponse.build_reply(app_id, msg) do
       nil ->

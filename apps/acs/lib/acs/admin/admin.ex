@@ -81,14 +81,14 @@ defmodule Acs.Admin do
 
     query =
       if admin_level > 1  do
-        appids = 
+        appids = Repo.all(
           from au in AdminUser,
             where: au.user_id == ^user_id,
             where: au.active == true,
             where: au.admin_level >= 1,
-            select: au.app_id
+            select: au.app_id)
 
-        where(query, [app], app.id in ^subquery(appids))
+        where(query, [app], app.id in ^appids)
       else
         query
       end

@@ -5,7 +5,7 @@ defmodule AcsWeb.PlugsPipeline do
       plug :accepts, ["html"]
       plug :fetch_session
       plug :fetch_flash
-      plug :protect_from_forgery
+      # plug :protect_from_forgery #disabled untile ios sdk updated
       plug :put_secure_browser_headers
       plug :parse_user_agent
       plug :fetch_access_token

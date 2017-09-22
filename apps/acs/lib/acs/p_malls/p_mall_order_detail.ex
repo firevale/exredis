@@ -11,7 +11,7 @@ defmodule Acs.PMalls.PMallOrderDetail do
     field :amount, :integer
 
     belongs_to :pmall_goods, Acs.PMalls.PMallGoods, type: :string
-    belongs_to :pmall_order, Acs.PMalls.PMallOrder, type: :string, foreign_key: :pmall_order_id
+    belongs_to :pmall_order, Acs.PMalls.PMallOrder, type: :string
 
     timestamps()
   end

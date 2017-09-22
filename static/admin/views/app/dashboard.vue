@@ -34,6 +34,40 @@
         </div>
       </div>
     </nav>
+    <nav class="level">
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.dau') }}</p>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.dau.ios + realtimeMetrics.dau.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.dau.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.dau.android : 0 }}]</sub>
+          </p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.danu') }}</p>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.danu.ios + realtimeMetrics.danu.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.danu.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.danu.android : 0 }}]</sub>
+          </p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.totalFee') }}</p>
+          <p class="title">{{ realtimeMetrics ? (realtimeMetrics.fee.ios + realtimeMetrics.fee.android) / 100 : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.fee.ios / 100 : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.fee.android / 100 : 0 }}]</sub>
+          </p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered box">
+        <div>
+          <p class="heading">{{ $t('admin.app.paidUserNumber') }}</p>
+          <p class="title">{{ realtimeMetrics ? realtimeMetrics.dapu.ios + realtimeMetrics.dapu.android : 0 }}
+            <sub>[ios: {{ realtimeMetrics ? realtimeMetrics.dapu.ios : 0  }}, android: {{ realtimeMetrics ? realtimeMetrics.dapu.android : 0 }}]</sub>
+          </p>
+        </div>
+      </div>
+    </nav>
     <article class="tile box chart">
       <line-chart ref="chart" :options="options" :width="'100%'"></line-chart>
     </article>

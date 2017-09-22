@@ -2,8 +2,12 @@ export default function(VueRouter) {
   return new VueRouter({
     mode: 'history',
     routes: [{
+      path: '/pmall/:appId/error',
+      name: 'error',
+      component: require('../views/error.vue')
+    }, {
       path: '/pmall/:appId',
-      name: 'pmall',
+      name: 'app',
       component: require('../views/main.vue'),
       children: [{
           path: 'index',
@@ -15,7 +19,7 @@ export default function(VueRouter) {
           component: require('../views/pmall.vue')
         },
         {
-          path: 'detail',
+          path: 'detail/:id',
           name: 'detail',
           component: require('../views/detail.vue')
         }, {
@@ -49,10 +53,6 @@ export default function(VueRouter) {
           component: require('../views/bindMobile.vue')
         }
       ]
-    }, {
-      path: '/pmall/:appId/error',
-      name: 'error',
-      component: require('../views/error.vue')
-    }, ]
+    }]
   })
 }

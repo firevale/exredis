@@ -3,6 +3,7 @@ defmodule AcsWeb.PMallController do
   require Exredis
   alias Acs.Wcp
   alias Acs.Accounts
+  alias Acs.PMallsPoint
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -29,12 +30,15 @@ defmodule AcsWeb.PMallController do
   def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
                                       "records_per_page" => records_per_page}) do
-    case PMalls.list_pmall_goods(app_id, page, records_per_page, nil) do
-      :zero ->
-        conn |> json(%{success: true, total: 0, goodses: []})
-      {:ok, goodses, total_page} ->
-        conn |> json(%{success: true, goodses: goodses, total: total_page})
-    end
+    {total_page, goodses} =
+      case PMalls.list_pmall_goods(app_id, page, records_per_page, "") do
+        {:ok, goodses, total_page} ->
+          {total_page, goodses}
+        _ ->
+          {0, []}
+      end
+
+    conn |> json(%{success: true, total: total_page, goodses: goodses})
   end
 
   def get_goods_detail(conn,%{"goods_id" =>goods_id})do
@@ -84,6 +88,21 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
      end
   end 
+
+  def exchange(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{goods_id: goods_id}) do
+    wcp_user_id = 1 
+    sign_key = cache_key_sign(app_id, wcp_user_id)
+    
+    signed = Exredis.incr(sign_key)
+    case signed do
+      1 ->
+        {:ok, times} = _sign(app_id, wcp_user_id)
+        conn |> json(%{success: true, sign_times: times})
+      _ ->
+        conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
+    end
+    
+  end
 
   def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
   def cache_key_sign_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
@@ -156,14 +175,13 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def insert_address(conn, %{
+  def insert_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
                 "name" => _name,
                 "mobile" => _mobile,
                 "area" => _area,
                 "address" => _address,
                 "area_code" => _area_code} = us_address) do
 
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
     case Wcp.get_app_wcp_user(app_id, openid: open_id) do
       nil ->
@@ -179,15 +197,30 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def get_daily_question(conn, _) do
-    app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
-
+  def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     case PMalls.get_daily_question(app_id) do
       nil ->
         conn |> json(%{success: false})
       {:ok, question} ->
         conn |> json(%{success: true, question: question})
     end
+  end
+
+  def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id, 
+    "correct" => correct}) do
+      wcp_user_id = 1
+      question = PMalls.get_question(id)
+      case question do
+        nil ->
+          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+        _ ->
+          if(question.correct == correct) do
+            PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
+            conn |> json(%{success: true})
+          else
+            conn |> json(%{success: false})
+          end
+      end
   end
 
 end

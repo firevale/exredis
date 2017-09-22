@@ -19,7 +19,7 @@ defmodule Acs.PMalls.LuckyDraw do
   @doc false
   def changeset(%LuckyDraw{} = lucky_draw, attrs) do
     lucky_draw
-    |> cast(attrs, [:name, :pic, :num, :rate])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :pic, :num, :rate, :app_id])
+    |> validate_required([:name, :app_id])
   end
 end

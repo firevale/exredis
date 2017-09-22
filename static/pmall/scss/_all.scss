@@ -59,6 +59,12 @@
       height: virtual-m-rem(179);
       background-image: url("~assets/pmall/1248_05.png");
     }
+    &.btn-point-exchange {
+      margin: .5rem auto;
+      width: virtual-m-rem(1198);
+      height: virtual-m-rem(179);
+      background-image: url("~assets/pmall/1248_34_07.png");
+    },
     &.btn-goods-down {
       margin: .5rem auto;
       width: virtual-m-rem(1198);
@@ -259,6 +265,10 @@
           background: white;
           border-radius: 5px;
           margin-bottom: 1rem;
+          img {
+            max-width: virtual-m-rem(1140);
+            max-width: virtual-m-rem(610);
+          }
         }
         p.cost {
           margin: .5rem 0;

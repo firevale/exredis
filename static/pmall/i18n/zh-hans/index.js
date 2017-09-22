@@ -21,6 +21,7 @@ export default {
       limit: '你己兑换过了',
       expired: '你来晚了，兑换时间己截止',
       soldout: '你来晚了，该商品己被抢光了',
+      missing_address: '你忘填写收货地址啦～',
     }
   }
 }

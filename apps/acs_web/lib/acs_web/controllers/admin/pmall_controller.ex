@@ -20,7 +20,7 @@ defmodule AcsWeb.Admin.PMallController do
   end
 
   def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = PMalls.get_pmall_goods_detail(goods_id)
+    goods = PMalls.get_pmall_goods(goods_id)
     conn |> json(%{success: true, goods: goods})
   end
 

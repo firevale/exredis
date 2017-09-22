@@ -36,7 +36,7 @@
               <div class="column">
                 <center>
                   <figure class="image news-pic" @click="updateDrawPic(draw)">
-                    <img :src="draw.pic ? draw.pic: 'https://placehold.it/144x144?text=144X144'" style="max-height:60px; width:auto; "></img>
+                    <img :src="draw.pic ? draw.pic: 'https://placehold.it/150x200?text=300X400'  | imageStaticUrl" style="max-height:60px; width:auto; "></img>
                   </figure>
                 </center>
               </div>
@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       draws: [],
-      picWidth: 200,
+      picWidth: 300,
       picHeight: 400,
       processing: false
     }
@@ -124,6 +124,9 @@ export default {
         height: this.picHeight,
         data: {
           draw_id: draw.id
+        },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
         },
         extensions: ['png', 'jpg', 'jpeg'],
         title: this.$t('admin.titles.uploadDrawPic', {

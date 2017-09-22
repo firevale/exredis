@@ -37,7 +37,7 @@
                 <div class="column">
                   <center>
                     <figure class="image news-pic" @click="updateTaskPic(taskBar)">
-                      <img :src="taskBar.pic ? taskBar.pic: 'https://placehold.it/144x144?text=144X144'" style="max-height:60px; width:auto; "></img>
+                      <img :src="taskBar.pic ? taskBar.pic: 'https://placehold.it/144x144?text=144X144' | imageStaticUrl" style="max-height:60px; width:auto; "></img>
                     </figure>
                   </center>
                 </div>
@@ -202,6 +202,9 @@ export default {
         height: this.picHeight,
         data: {
           task_id: taskBar.id
+        },
+        headers: {
+          'x-csrf-token': window.acsConfig.csrfToken
         },
         extensions: ['png', 'jpg', 'jpeg'],
         title: this.$t('admin.titles.uploadTaskPic', {

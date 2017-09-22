@@ -15,7 +15,7 @@ defmodule Acs.PMalls.PMallOrder do
     def cheat, do: 403
   end
 
-  @derive {Poison.Encoder, except: [:app, :wcp_user, :goods, :user_address, :__meta__]}
+  @derive {Poison.Encoder, except: [:app, :wcp_user, :details, :__meta__]}
   @primary_key false
   schema "pmall_orders" do
     field :id, :string, primary_key: true
@@ -47,7 +47,7 @@ defmodule Acs.PMalls.PMallOrder do
     
     belongs_to :app,  Acs.Apps.App, type: :string
     belongs_to :wcp_user, Acs.Wcp.AppWcpUser
-    belongs_to :goods, Acs.PMalls.PMallGoods, type: :string
+    has_one  :details, Acs.PMalls.PMallOrderDetail, references: :id
 
     timestamps()
   end
@@ -62,7 +62,7 @@ defmodule Acs.PMalls.PMallOrder do
       :deliver_at, :close_at, :status, :snapshots, :paid_result, :memo, :debug_mode, 
       :transaction_currency, :transaction_id, :transaction_status, :app_id, :fee,
       :wcp_user_id, :address])
-    |> validate_required([:id, :app_id, :wcp_user_id, :address])
+    |> validate_required([:id, :app_id, :wcp_user_id])
     |> foreign_key_constraint(:app_id)
     |> foreign_key_constraint(:wcp_user_id)
   end

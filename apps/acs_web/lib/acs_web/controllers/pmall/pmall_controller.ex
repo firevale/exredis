@@ -107,7 +107,7 @@ defmodule AcsWeb.PMallController do
 
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
-    {:ok,signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
+    {:ok, signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
     conn |> json(%{success: true, signed: signed, sign_times: sign_times})
   end
 
@@ -121,7 +121,6 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end
-
 
   def bind_mobile(conn, %{"mobile" => mobile, "verify_code" => verify_code}) do
     app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"

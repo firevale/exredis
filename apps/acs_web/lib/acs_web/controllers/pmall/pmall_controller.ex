@@ -98,8 +98,8 @@ defmodule AcsWeb.PMallController do
     wcp_user_id = 1
     result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
     case result do
-      {:ok, %{last_point: point,i18n_message: i18n_message}} ->
-        conn |> json(%{success: true, point: point, i18n_message: i18n_message})
+      {:ok, exchange_info} ->
+        conn |> json(Map.merge(%{success: true}, exchange_info))
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
@@ -108,14 +108,18 @@ defmodule AcsWeb.PMallController do
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
     {:ok, signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
-    conn |> json(%{success: true, signed: signed, sign_times: sign_times})
+    {total, sign_users} = PMalls.get_sign_users(app_id)
+    conn |> json(%{success: true, signed: signed, sign_times: sign_times, sign_total: total, sign_users: sign_users})
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
+
     result = PMalls.sign(app_id, wcp_user_id)
     case result do
       {:ok, sign_info} ->
+        PMalls.add_sign_user(app_id, open_id)
         conn |> json(Map.merge(%{success: true}, sign_info))
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})

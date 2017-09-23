@@ -15,7 +15,7 @@ export default {
       addSuccess: '地址添加成功'
     },
     exchange: {
-      success: '兑换成功',
+      success: '兑换成功,{point}积分',
       failed: '兑换失败',
       pointless: '积分不足',
       unactive: '该商品己下架',

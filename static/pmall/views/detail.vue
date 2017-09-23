@@ -88,8 +88,8 @@ export default {
 
       if (result.success) {
         this.exchanged = true
-        this.setUserPoints(result.point)
-        Toast.show(this.$t(result.i18n_message))
+        this.setUserPoints(result.total_point)
+        Toast.show(this.$t(result.i18n_message,{point: result.add_point}))
       }
     }
   }

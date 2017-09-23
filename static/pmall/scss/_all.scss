@@ -370,13 +370,14 @@
           border: 1px solid $border-color;
           border-radius: 5px;
           height: virtual-m-rem(406);
-          .sign-user {
+          .avatars {
             padding-left: virtual-m-rem(48.5);
             max-height: virtual-m-rem(406);
             min-height: virtual-m-rem(406/1.8);
             img {
               width: virtual-m-pixel(155);
               height: virtual-m-pixel(155);
+              border-radius: 50%;
               &:not(:nth-child(7n)) {
                 margin-right: virtual-m-rem(10);
               }

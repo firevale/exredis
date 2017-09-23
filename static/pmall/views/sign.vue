@@ -46,23 +46,10 @@
       </div>
       <div class="sign-others">
         <p class="has-text-centered">共
-          <span style="font-size:1.5rem">8907</span> 人签到</p>
+          <span style="font-size:1.5rem">{{sign_total}}</span> 人签到</p>
         <div class="sign-users">
-          <div class="sign-user is-flex flex-left flex-vcentered">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <!-- <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png">
-            <img src="~assets/pmall/1249_05.png"> -->
+          <div class="avatars is-flex flex-left flex-vcentered">
+            <img v-for="user in sign_users" :src="user.avatar_url">
           </div>
           <div class="load-more is-flex flex-center flex-vcentered">
             查看更多
@@ -84,10 +71,15 @@ export default {
   data() {
     return {
       signed: undefined,
-      sign_times: 0
+      sign_times: 0,
+      sign_total: 0,
+      sign_users: []
     }
   },
   computed: {
+    ...mapGetters([
+      'wcp_user',
+    ]),
     solar() {
       let current = new Date()
       var dateString = current.Format('yyyy年MM月')
@@ -118,6 +110,8 @@ export default {
       if (result.success) {
         this.signed = result.signed
         this.sign_times = result.sign_times
+        this.sign_total = result.sign_total
+        this.sign_users = result.sign_users
       }
     },
     async sign() {
@@ -125,6 +119,8 @@ export default {
       if (result.success) {
         this.signed = true
         this.sign_times = result.sign_times
+        this.sign_total++;
+        this.sign_users.splice(0, 0, this.wcp_user)
         this.setUserPoints(result.total_point)
         Toast.show(this.$t('pmall.sign.success', {
           point: result.add_point

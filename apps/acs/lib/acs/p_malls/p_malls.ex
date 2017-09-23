@@ -18,6 +18,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.LuckyDraw
   alias Acs.Wcp.AppWcpUser
   alias Acs.PMalls.LuckyDrawLog
+  alias Acs.PMalls.SignWcpUser
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -255,10 +256,10 @@ defmodule Acs.PMalls do
           Repo.rollback(%{i18n_message: "pmall.exchange.limit"})
         true ->
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
-               {:ok, log} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
+               {:ok, add_point, total_point} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
             CachedPMallGoods.refresh(goods.id)
-            %{last_point: points - goods.price ,i18n_message: "pmall.exchange.success"}
+            %{add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -279,7 +280,7 @@ defmodule Acs.PMalls do
       mapGoods = Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
       snapshots = Map.put(%{}, goods.id, mapGoods)
       new_order = %{"id": order_id, "goods_name": goods.name, "price": goods.price,
-        "discount": 0, "final_price": goods.price, "app_id": app_id, "wcp_user_id": wcp_user_id,  
+        "discount": 0, "final_price": goods.price, "app_id": app_id, "wcp_user_id": wcp_user_id,
         "address": address, "snapshots": snapshots
       }
 
@@ -298,6 +299,8 @@ defmodule Acs.PMalls do
   def _sign_cache_key(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
   def _sign_cache_key_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
   def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
+  def _sign_cache_key_users(app_id), do: "pmall:sign:users:#{app_id}:#{Timex.today}"
+
   def sign(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
     signed = Exredis.incr(sign_key)
@@ -323,12 +326,33 @@ defmodule Acs.PMalls do
           1
       end
 
-    ## 最后签到时间2天后过期
+    ## 过期设置
     Exredis.expire(sign_key, 172800)
+    Exredis.expire(sign_key_times, 172800)
+
     ## 添加积分
    {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
    {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
 
+  end
+
+  def add_sign_user(app_id, open_id) do
+    sign_key_users = _sign_cache_key_users(app_id)
+    score = DateTime.utc_now() |> DateTime.to_unix
+    Exredis.zadd(sign_key_users, score, open_id)
+    Exredis.expire(sign_key_users, 172800)
+  end
+
+  def get_sign_users(app_id) do
+    sign_key_users = _sign_cache_key_users(app_id)
+    total = Exredis.zcard(sign_key_users)
+    open_ids = Exredis.zrange(sign_key_users, 0, 20)
+    wcp_users = 
+      Enum.map(open_ids, fn open_id ->
+        wcp_user = CachedAppWcpUser.get(app_id, open_id)
+        Map.take(wcp_user, [:id, :nickname, :avatar_url])
+      end)
+    {total, wcp_users}
   end
 
   def get_sign_info(app_id, wcp_user_id) do
@@ -336,13 +360,13 @@ defmodule Acs.PMalls do
     sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
-    sign_times = 
+    sign_times =
       case  Exredis.get(sign_key_times) do
         nil -> 0
         times -> String.to_integer(times)
       end
     {:ok, signed, sign_times}
-  end 
+  end
 
   # 积分
   def add_point(log) do

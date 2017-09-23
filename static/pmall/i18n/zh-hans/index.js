@@ -8,6 +8,7 @@ export default {
   error,
   pmall: {
     sign: {
+      success:'签到成功,+{point}积分',
       signed: '你已经签到过了，明日再来'
     },
     address: {

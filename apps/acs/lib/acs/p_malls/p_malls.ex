@@ -294,6 +294,57 @@ defmodule Acs.PMalls do
       {:ok, order_id}
   end
 
+  # 签到
+  def _sign_cache_key(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
+  def _sign_cache_key_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
+  def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
+  def sign(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    signed = Exredis.incr(sign_key)
+    case signed do
+      1 ->
+         _sign(app_id, wcp_user_id)
+      _ ->
+        {:error, %{i18n_message: "pmall.sign.signed"}}
+    end
+  end
+  defp _sign(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    sign_key_before = _sign_cache_key_before(app_id, wcp_user_id)
+    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
+
+    ## 连续签到次数
+    times  =
+      case Exredis.exists(sign_key_before) do
+        1 ->
+          Exredis.incr(sign_key_times)
+        _ ->
+          Exredis.set(sign_key_times, 1)
+          1
+      end
+
+    ## 最后签到时间2天后过期
+    Exredis.expire(sign_key, 172800)
+    ## 添加积分
+   {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
+   {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
+
+  end
+
+  def get_sign_info(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
+
+    signed = if Exredis.exists(sign_key) == 1, do: true, else: false
+    sign_times = 
+      case  Exredis.get(sign_key_times) do
+        nil -> 0
+        times -> String.to_integer(times)
+      end
+    {:ok, signed, sign_times}
+  end 
+
+  # 积分
   def add_point(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->

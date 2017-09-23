@@ -105,46 +105,23 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
-  def cache_key_sign_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
-  def cache_key_sign_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
+  def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+    wcp_user_id = 1
+    {:ok,signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
+    conn |> json(%{success: true, signed: signed, sign_times: sign_times})
+  end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
-    sign_key = cache_key_sign(app_id, wcp_user_id)
-
-    signed = Exredis.incr(sign_key)
-    case signed do
-      1 ->
-        {:ok, times} = _sign(app_id, wcp_user_id)
-        conn |> json(%{success: true, sign_times: times})
-      _ ->
-        conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
+    result = PMalls.sign(app_id, wcp_user_id)
+    case result do
+      {:ok, sign_info} ->
+        conn |> json(Map.merge(%{success: true}, sign_info))
+      {:error, %{i18n_message: i18n_message}} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
     end
-
   end
-  defp _sign(app_id, wcp_user_id) do
-    sign_key = cache_key_sign(app_id, wcp_user_id)
-    sign_key_before = cache_key_sign_before(app_id, wcp_user_id)
-    sign_key_times = cache_key_sign_times(app_id, wcp_user_id)
 
-    #连续签到次数
-    times  =
-      case Exredis.exists(sign_key_before) do
-        1 ->
-          Exredis.incr(sign_key_times)
-        _ ->
-          Exredis.set(sign_key_times, 1)
-      end
-
-    #最后签到时间2天后过期
-    Exredis.expire(sign_key, 172800)
-    #添加积分
-    Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
-
-    {:ok, times}
-
-  end
 
   def bind_mobile(conn, %{"mobile" => mobile, "verify_code" => verify_code}) do
     app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"

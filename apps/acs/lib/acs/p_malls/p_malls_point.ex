@@ -25,7 +25,9 @@ defmodule Acs.PMallsPoint do
     }
 
     PMalls.add_point(log)
+    total_point = PMalls.get_user_point(app_id, wcp_user_id)
 
+    {:ok, String.to_integer(setting.value), total_point}
   end
 
   def exchange_goods_point(app_id, wcp_user_id, goods) do
@@ -38,6 +40,9 @@ defmodule Acs.PMallsPoint do
     }
 
     PMalls.add_point(log)
+    total_point = PMalls.get_user_point(app_id, wcp_user_id)
+
+    {:ok, -goods.price, total_point}
   end
 
 end

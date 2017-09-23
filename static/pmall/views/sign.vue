@@ -18,8 +18,10 @@
             <p class="date">{{solar}}
               <br/> 农历{{lunar}}
             </p>
-            <a v-if="sign_times == 0" class="button btn-sign" @click="sign"></a>
-            <a v-else class="button btn-signed"></a>
+            <template v-if="signed != undefined">
+              <a v-if="!signed" class="button btn-sign" @click="sign"></a>
+              <a v-else class="button btn-signed"></a>
+            </template>
           </div>
           <div class="column is-3 has-text-centered">
             <h2 class="yi-ji is-size-1">忌</h2>
@@ -31,7 +33,7 @@
         </div>
       </div>
       <div class="sign-logs">
-        <p class="has-text-centered">你已经连续<strong>签到3天</strong>，连续签到可以领取更多奖励
+        <p class="has-text-centered">你已经连续<strong>签到{{sign_times}}天</strong>，连续签到可以领取更多奖励
           <span class="icon"></span>
           </span>
         </p>
@@ -71,11 +73,17 @@
   </div>
 </template>
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 import 'common/js/date'
 import chineseLunar from "chinese-lunar"
+import Toast from 'common/components/toast'
 export default {
   data() {
     return {
+      signed: undefined,
       sign_times: 0
     }
   },
@@ -98,12 +106,29 @@ export default {
       return chineseLunar.solarToLunar(current, 'Md');
     },
   },
-  mounted() {},
+  mounted() {
+    this.getSignInfo()
+  },
   methods: {
+    ...mapActions([
+      'setUserPoints'
+    ]),
+    async getSignInfo() {
+      let result = await this.$acs.getSignInfo()
+      if (result.success) {
+        this.signed = result.signed
+        this.sign_times = result.sign_times
+      }
+    },
     async sign() {
       let result = await this.$acs.sign()
       if (result.success) {
+        this.signed = true
         this.sign_times = result.sign_times
+        this.setUserPoints(result.total_point)
+        Toast.show(this.$t('pmall.sign.success', {
+          point: result.add_point
+        }))
       }
     }
   }

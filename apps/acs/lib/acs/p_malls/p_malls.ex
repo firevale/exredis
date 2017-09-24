@@ -16,13 +16,17 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.TaskBar
   alias Acs.PMalls.DayQuestion
   alias Acs.PMalls.LuckyDraw
+  alias Acs.Wcp
   alias Acs.Wcp.AppWcpUser
   alias Acs.PMalls.LuckyDrawLog
   alias Acs.PMalls.SignWcpUser
+  alias Acs.Accounts
+  
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
   alias Acs.Cache.CachedAppWcpUser
+  alias Acs.Cache.CachedAdminSetting
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -543,6 +547,41 @@ defmodule Acs.PMalls do
     end
   end
 
+  # 答题
+  def _answer_cache_key(app_id, wcp_user_id), do: "acs.pmall_answer_#{app_id}_#{wcp_user_id}_#{Timex.today}"
+
+  def exists_answer(app_id, wcp_user_id) do
+    answer_key = _answer_cache_key(app_id, wcp_user_id)
+    Exredis.exists(answer_key)
+  end
+
+  def answer_question(question_id, app_id, wcp_user_id, correct) do
+    case exists_answer(app_id, wcp_user_id) do
+      1 ->
+        {:error, %{i18n_message: "pmall.question.answer.exists"}}
+      _ ->
+        Repo.transaction(fn ->
+          case get_question(question_id) do
+            nil ->
+              Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
+            %DayQuestion{} = question ->
+              if(question.correct == correct) do
+                PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
+                DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
+
+                answer_key = _answer_cache_key(app_id, wcp_user_id)
+                Exredis.set(answer_key, question_id)
+                Exredis.expire(answer_key, 86400)
+                %{i18n_message: "pmall.question.answer.success"}
+              else
+                DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
+                Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
+              end
+          end
+        end)
+      end
+  end
+
   def list_pmall_draws(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,
@@ -620,6 +659,54 @@ defmodule Acs.PMalls do
     Repo.one!(query) > 0
   end
 
+  # 抽奖
+  def luck_draw(app_id, wcp_user_id, log_type) do
+    index = :rand.uniform(8)
+    Repo.transaction(fn ->
+      draw = get_draw(index)
+      if(draw == nil) do
+        Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
+      end
+
+      setting  = CachedAdminSetting.get_fat(app_id, log_type)
+      user_point = get_user_point(app_id, wcp_user_id)
+      case setting do
+        nil ->
+          Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
+        _ ->
+          cond do
+            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
+              Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
+            draw.num <= 0  ->
+                Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
+            true ->
+              # if count_draw_logs(app_id, wcp_user_id, draw.id) >= 1 do
+              #   index = 1
+              #   draw = get_draw(index)
+              # end
+
+              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
+              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
+              }
+              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+              update_draw_num(draw, draw.num - 1) 
+              create_draw_log(draw_log)
+
+              %{i18n_message: "pmall.draw.success", index: index}
+          end
+      end
+    end)
+  end
+
+  def count_draw_logs(app_id, wcp_user_id, draw_id) do
+    query =
+      from log in LuckyDrawLog,
+        where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^draw_id,
+        select: count(log.id)
+
+    Repo.one!(query)
+  end
+
   defp check_pmall_draw_rate(app_id, rate) do
     total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
     case is_integer(total) do
@@ -628,6 +715,26 @@ defmodule Acs.PMalls do
       false ->
         (Decimal.to_integer(total) + rate) <= 100
     end
+  end
+
+  # 绑定手机
+  def bind_mobile(app_id, open_id, mobile) do
+    Repo.transaction(fn ->
+      case Wcp.get_app_wcp_user(app_id, openid: open_id) do
+        nil ->
+          Repo.rollback(%{i18n_message: "pmall.bindMobile.notFound"})
+
+        %AppWcpUser{} = wcp_user ->
+          if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
+              new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
+              Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
+          else
+            user = Accounts.get_user(wcp_user.user_id)
+            Accounts.update_user!(user, %{mobile: mobile})
+          end
+          %{i18n_message: "pmall.bindMobile.success"}
+      end
+    end)
   end
 
 end

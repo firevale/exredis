@@ -4,7 +4,6 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcp
   alias Acs.Accounts
   alias Acs.PMallsPoint
-  alias Acs.Cache.CachedAdminSetting
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -132,24 +131,11 @@ defmodule AcsWeb.PMallController do
 
     case verify_code do
       "12345" ->
-        case Wcp.get_app_wcp_user(app_id, openid: open_id) do
-          nil ->
-            conn |> json(%{success: false, message: "invalid request params"})
-
-          %AppWcpUser{} = wcp_user ->
-            if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
-              Repo.transaction(fn ->
-                new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
-                Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
-              end)
-            else
-              case Accounts.get_user(wcp_user.user_id) do
-                %User{} = user ->
-                  Accounts.update_user!(user, %{mobile: mobile})
-                  conn |> json(%{success: true})
-              end
-            end
-            conn |> json(%{success: true})
+        case PMalls.bind_mobile(app_id, open_id, mobile) do
+          {:ok, mobile} ->
+            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.addSuccess"})
+          :error ->
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -179,62 +165,38 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
+    wcp_user_id = 1
+    exists = PMalls.exists_answer(app_id, wcp_user_id)
     case PMalls.get_daily_question(app_id) do
       nil ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, exists: exists})
       {:ok, question} ->
-        conn |> json(%{success: true, question: question})
+        conn |> json(%{success: true, question: question, exists: exists})
     end
   end
 
   def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id,
     "correct" => correct}) do
       wcp_user_id = 1
-      question = PMalls.get_question(id)
-      case question do
-        nil ->
-          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-        _ ->
-          if(question.correct == correct) do
-            PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
-            conn |> json(%{success: true})
-          else
-            conn |> json(%{success: false})
-          end
+      result = PMalls.answer_question(id, app_id, wcp_user_id, correct)
+      case result do
+        {:ok, %{i18n_message: i18n_message}} ->
+          conn |> json(%{success: true, i18n_message: i18n_message})
+        {:error, %{i18n_message: i18n_message}} ->
+          conn |> json(%{success: false, i18n_message: i18n_message})
       end
   end
 
   def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     wcp_user_id = 1
     log_type = "point_luck_draw"
-    index = :rand.uniform(8)
-    draw = PMalls.get_draw(index)
-    case draw do
-      nil ->
-        conn |> json(%{success: true, index: 1})
-      _ ->
-        Repo.transaction(fn ->
-          setting  = CachedAdminSetting.get_fat(app_id, log_type)
-          user_point = PMalls.get_user_point(app_id, wcp_user_id)
-          cond do
-            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
-              conn |> json(%{success: false, i18n_message: "pmall.draw.pointless"})
-            true ->
-              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
-              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
-              }
-              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
-              PMalls.update_draw_num(draw, draw.num - 1)
-              PMalls.create_draw_log(draw_log)
-          end
-        end)
 
-        user_point = PMalls.get_user_point(app_id, wcp_user_id)
-        if PMalls.is_draw_exists?(app_id, wcp_user_id, draw.id) do
-          conn |> json(%{success: true, index: 1, point: user_point})
-        else
-          conn |> json(%{success: true, index: index, point: user_point})
-        end
+    result = PMalls.luck_draw(app_id, wcp_user_id, log_type)    
+    case result do
+      {:ok, draw} ->
+        conn |> json(%{success: true, index: draw.index})
+      {:error, %{i18n_message: i18n_message}} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end
 

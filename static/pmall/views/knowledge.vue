@@ -78,6 +78,7 @@ export default {
     loadData: async function() {
       let result = await this.$acs.getDailyQuestion()
       if (result.success) {
+        this.isComplete = result.exists > 0
         this.question = result.question
         this.unknow = "不知道"
       }

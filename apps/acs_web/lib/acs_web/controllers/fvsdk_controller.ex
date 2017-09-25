@@ -13,10 +13,9 @@ defmodule AcsWeb.FVSdkController do
     acs_device_id: device_id, 
     acs_platform: platform}} = conn, _options) do
     with [os_ver | _] <- get_req_header(conn, "acs-os-ver"),
-         [device_model | _] <- get_req_header(conn, "acs-device-model"),
-         [device_memory_size | _] <- get_req_header(conn, "acs-device-memory")
+         [device_model | _] <- get_req_header(conn, "acs-device-model")
     do
-      AcsStats.log_device_info(device_id, platform, device_model, os_ver, device_memory_size)
+      AcsStats.log_device_info(device_id, platform, device_model, os_ver, List.first(get_req_header(conn, "acs-device-memory")))
     end
 
     conn

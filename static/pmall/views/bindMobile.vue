@@ -83,7 +83,7 @@ export default {
           if (result.success) {
             Toast.show("绑定成功")
           } else {
-            Toast.show("绑定失败")
+            Toast.show(this.$t(result.i18n_message))
           }
           this.processing = false
         }

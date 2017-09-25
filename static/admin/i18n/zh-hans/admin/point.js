@@ -54,6 +54,8 @@
    },
 
    draw: {
+    setting: '奖品设置',
+    log: '抽奖记录',
     editDraw: '编辑奖品信息',
     add: '添加新奖品',
     pic: '图片',

@@ -35,3 +35,13 @@ Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "sign_award_4", value: "{\"point\":\"50\",\"days\":\"15\",\"pic\":\"/images/setting_pics/25/8b61581a1db9beb68ed9491435d3484a.jpg\"}", group: "signAward", memo: "签到15天奖励", active: true}) |> Acs.Repo.insert
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "sign_award_5", value: "{\"days\":\"30\",\"point\":\"100\",\"pic\":\"/images/setting_pics/26/8b61581a1db9beb68ed9491435d3484a.jpg\"}", group: "signAward", memo: "签到30天奖励", active: true}) |> Acs.Repo.insert
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "sign_award_6", value: "{\"point\":\"200\",\"days\":\"50\",\"pic\":\"/images/setting_pics/27/8b61581a1db9beb68ed9491435d3484a.jpg\"}", group: "signAward", memo: "签到50天奖励", active: true}) |> Acs.Repo.insert
+
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "衣服", num: 10, rate: 5 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "雨伞", num: 10, rate: 10 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "鞋子", num: 20, rate: 10 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "帽子", num: 50, rate: 10 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "钱包", num: 40, rate: 10 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "拖鞋", num: 50, rate: 10 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "游戏机", num: 3, rate: 1 }) |> Acs.Repo.insert
+Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "谢谢您", num: 99999999, rate: 40 }) |> Acs.Repo.insert
+

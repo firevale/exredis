@@ -25,7 +25,7 @@ export default {
       missing_address: '你忘填写收货地址啦～',
     },
     draw: {
-      pointless: '积分不足',
+      pointless: '抱歉，您的积分不足',
       soldout: '你来晚了，该物品己被抢光了',
       nonsetting: '没有配置',
     },

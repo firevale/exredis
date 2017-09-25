@@ -1,50 +1,64 @@
 <template>
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox" v-model.trim="showOnlyWin"> 只看中奖记录
+          </label>
+        </div>
+      </div>
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
             <div class="column">
-              <p>{{ $t('admin.point.draw.name')}}</p>
+              <p>{{ $t('admin.point.drawLog.id') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.draw.num')}}</p>
+              <p>{{ $t('admin.point.drawLog.name') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.draw.rate')}}</p>
+              <p>{{ $t('admin.point.drawLog.user') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.draw.edit')}}</p>
+              <p>{{ $t('admin.point.drawLog.status')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.draw.delete')}}</p>
+              <p>{{ $t('admin.point.drawLog.paidAt')}}</p>
+            </div>
+            <div class="column">
+              <p>{{ $t('admin.point.drawLog.operate')}}</p>
             </div>
           </div>
-          <div v-if="draws">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="draws && draws.length > 0"
-              v-for="(draw, index) in draws" :key="draw.id">
+          <div v-if="orders">
+            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="orders && orders.length > 0"
+              v-for="(order, index) in orders" :key="order.id">
               <div class="column">
-                <p>{{ draw.name }}</p>
+                <p>{{ order.id }}</p>
               </div>
               <div class="column">
-                <p>{{ draw.num }}</p>
+                <p>{{ order.name }}</p>
               </div>
               <div class="column">
-                <p>{{ draw.rate }}</p>
+                <p>{{ order.wcp_user_id }}</p>
               </div>
               <div class="column">
-                <a @click.prevent="editDraw(draw, index)">
+                <p>{{ order.status }}</p>
+              </div>
+              <div class="column">
+                <p>{{ order.paidAt | formatServerDateTime }}</p>
+              </div>
+              <div class="column">
+                <a @click.prevent="editOrder(order, index)">
                   <i class="fa fa-pencil"></i>
-                </a>
-              </div>
-              <div class="column">
-                <a @click.prevent="delDraw(draw.id, index)">
-                  <i class="fa fa-trash-o"></i>
                 </a>
               </div>
             </div>
           </div>
         </div>
+      </article>
+      <article class="tile is-child is-12">
+        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
       </article>
     </div>
   </div>
@@ -54,22 +68,23 @@ import Vue from 'vue'
 import {
   i18n
 } from 'admin/vue-i18n'
+import {
+  openNotification,
+  processAjaxError
+} from 'admin/miscellaneous'
 
 import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
 
-import {
-  showImageUploadDialog
-} from 'common/components/imageUpload'
+import Pagination from 'admin/components/Pagination'
+import orderDialog from 'admin/components/dialog/point/drawOrder'
+const orderDialogComponent = Vue.extend(orderDialog)
 
-import drawDialog from 'admin/components/dialog/point/luckyDraw'
-const drawDialogComponent = Vue.extend(drawDialog)
-
-const openDrawDialog = (propsData = {
+const openDrawOrderDialog = (propsData = {
   visible: true
 }) => {
-  return new drawDialogComponent({
+  return new orderDialogComponent({
     i18n,
     el: document.createElement('div'),
     propsData
@@ -79,96 +94,52 @@ const openDrawDialog = (propsData = {
 export default {
   data() {
     return {
-      draws: [],
-      picWidth: 300,
-      picHeight: 400,
-      processing: false
+      orders: [],
+      page: 1,
+      total: 1,
+      recordsPerPage: 20,
+      loading: false,
+      showOnlyWin: true 
     }
   },
 
-  created: function() {
-    this.getDraws()
+  created: async function() {
+    this.getOrders(this.page, this.recordsPerPage)
   },
 
   methods: {
-    getDraws: async function() {
-      this.processing = true
-      let result = await this.$acs.listPmallDraws()
-      if (result.success) {
-        this.draws = result.draws
-      }
-      this.processing = false
-    },
-
-    updateDrawPic: function(draw) {
-      showImageUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/pmall/upload_draw_pic',
-        width: this.picWidth,
-        height: this.picHeight,
-        data: {
-          draw_id: draw.id
-        },
-        headers: {
-          'x-csrf-token': window.acsConfig.csrfToken
-        },
-        extensions: ['png', 'jpg', 'jpeg'],
-        title: this.$t('admin.titles.uploadDrawPic', {
-          picWidth: this.picWidth,
-          picHeight: this.picHeight
-        }),
-        callback: response => draw.pic = response.pic,
+    getOrders: async function(page, recordsPerPage) {
+      this.loading = true
+      let result = await this.$acs.listPMallLuckyDrawOrders({
+        page: page,
+        records_per_page: recordsPerPage
       })
+      this.loading = false
+      if (result.success) {
+        this.total = result.total_page
+        this.orders = result.orders
+        this.page = page
+      }
     },
 
-    editDraw: function(draw, index) {
-      openDrawDialog({
-        draw: draw,
+    editOrder: function(order, index) {
+      openDrawOrderDialog({
+        order: order,
         visible: true,
         callback: result => {
-          this.draws[index] = result
+          this.orders[index] = result
         },
       })
     },
 
-    delDraw: function(drawId, index) {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.point.draw.confirmDelete'),
-        type: 'danger',
-        onOK: async _ => {
-          this.processing = true
-          let result = await this.$acs.deletePmallDraw({
-            draw_id: drawId,
-          }, this.$t('admin.point.draw.deleted'))
-          if (result.success) {
-            this.draws.splice(index, 1)
-          }
-          this.processing = false
-        },
-      })
-    },
-
-    addNewDraw: function() {
-      if (this.draws.length >= 8) {
-        alert("只能设置8个奖品");
-      } else {
-        openDrawDialog({
-          draw: {
-            id: '0',
-            name: '',
-            pic: '',
-            num: '',
-            rate: '',
-            app_id: this.$route.params.appId
-          },
-          visible: true,
-          callback: result => {
-            this.draws.unshift(result)
-          },
-        })
-      }
+    onPageChange: function(page) {
+      this.getorders(page, this.recordsPerPage)
     },
   },
+
+  components: {
+    Pagination,
+  }
+
 }
 </script>

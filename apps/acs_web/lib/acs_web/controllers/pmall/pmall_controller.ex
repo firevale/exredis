@@ -166,7 +166,7 @@ defmodule AcsWeb.PMallController do
 
   def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     wcp_user_id = 1
-    exists = PMalls.exists_answer(app_id, wcp_user_id)
+    exists = PMalls.exists_answer_user(app_id, wcp_user_id)
     case PMalls.get_daily_question(app_id) do
       nil ->
         conn |> json(%{success: false, exists: exists})

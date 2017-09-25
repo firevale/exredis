@@ -497,16 +497,25 @@ defmodule Acs.PMalls do
   end
 
   def get_daily_question(app_id) do
-    max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
+    case Exredis.get(_answer_cache_key(app_id)) do
+      nil ->
+        max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
+        query = from q in DayQuestion,
+                where: q.app_id == ^app_id and q.id >= ^max_id,
+                limit: 1,
+                order_by: [asc: q.inserted_at],
+                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
 
-    query = from q in DayQuestion,
-            where: q.app_id == ^app_id and q.id >= ^max_id,
-            limit: 1,
-            order_by: [asc: q.inserted_at],
-            select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
+        question = Repo.one(query)
+        {:ok, question}
+      question_id ->
+        query = from q in DayQuestion,
+                where: q.id == ^String.to_integer(question_id),
+                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
 
-    question = Repo.one(query)
-    {:ok, question}
+        question = Repo.one(query)
+        {:ok, question}
+    end
   end
 
   def update_pmall_question(question) do
@@ -548,16 +557,34 @@ defmodule Acs.PMalls do
   end
 
   # 答题
-  def _answer_cache_key(app_id, wcp_user_id), do: "acs.pmall_answer_#{app_id}_#{wcp_user_id}_#{Timex.today}"
+  def _answer_cache_key(app_id), do: "acs.pmall_answer_#{app_id}_#{Timex.today}"
+  def _answer_cache_key_user(app_id, wcp_user_id), do: "acs.pmall_answer_#{app_id}_#{wcp_user_id}_#{Timex.today}"
 
-  def exists_answer(app_id, wcp_user_id) do
-    answer_key = _answer_cache_key(app_id, wcp_user_id)
+  def exists_answer(app_id) do
+    answer_key = _answer_cache_key(app_id)
     Exredis.exists(answer_key)
+  end
+
+  def exists_answer_user(app_id, wcp_user_id) do
+    answer_key_user = _answer_cache_key_user(app_id, wcp_user_id)
+    Exredis.exists(answer_key_user)
+  end
+  
+  defp add_answer(app_id, question_id) do
+    answer_key = _answer_cache_key(app_id)
+    Exredis.set(answer_key, question_id)
+    Exredis.expire(answer_key, 86400)
+  end
+
+  defp add_answer_user(app_id, wcp_user_id,question_id) do
+    answer_key_user = _answer_cache_key_user(app_id, wcp_user_id)
+    Exredis.set(answer_key_user, question_id)
+    Exredis.expire(answer_key_user, 86400)
   end
 
   def answer_question(question_id, app_id, wcp_user_id, correct) do
     Repo.transaction(fn ->
-      case exists_answer(app_id, wcp_user_id) do
+      case exists_answer_user(app_id, wcp_user_id) do
         1 ->
           Repo.rollback(%{i18n_message: "pmall.question.exists"})
         _ ->
@@ -565,9 +592,14 @@ defmodule Acs.PMalls do
             nil ->
               Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
             %DayQuestion{} = question ->
+              if(exists_answer(app_id) == 0) do
+                add_answer(app_id, question_id)
+              end
+
               if(question.correct == correct) do
                 with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_day_question", app_id, wcp_user_id) do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
+                
                   add_answer_user(app_id, wcp_user_id, question_id)
                   %{i18n_message: "pmall.question.answer.success", answer: true}
                 else
@@ -582,12 +614,6 @@ defmodule Acs.PMalls do
           end
         end
       end)
-  end
-
-  defp add_answer_user(app_id, wcp_user_id,question_id) do
-    answer_key = _answer_cache_key(app_id, wcp_user_id)
-    Exredis.set(answer_key, question_id)
-    Exredis.expire(answer_key, 86400)
   end
 
   def list_pmall_draws(app_id) do
@@ -665,8 +691,8 @@ defmodule Acs.PMalls do
 
   # 抽奖
   def luck_draw(app_id, wcp_user_id, log_type) do
-    index = :rand.uniform(8)
     Repo.transaction(fn ->
+      index = :rand.uniform(8)
       draw = get_draw(index)
       if(draw == nil) do
         Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
@@ -684,11 +710,6 @@ defmodule Acs.PMalls do
             draw.num <= 0  ->
                 Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
             true ->
-              # if count_draw_logs(app_id, wcp_user_id, draw.id) >= 1 do
-              #   index = 1
-              #   draw = get_draw(index)
-              # end
-
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
               }

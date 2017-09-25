@@ -57,9 +57,9 @@ defmodule AcsWeb.Admin.WcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  # list_wcp_user_messages
-  def list_wcp_user_messages(conn, %{"app_id" => app_id, "keyword" => keyword, "sorts" => sorts, "page" => page, "records_per_page" => records_per_page}) do
-    case Search.search_wcp_message(keyword: keyword, app_id: app_id, sorts: sorts, page: page, records_per_page: records_per_page) do
+  # list_wcp_messages
+  def list_wcp_messages(conn, %{"app_id" => app_id, "keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+    case Search.search_wcp_message(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do
       {:ok, total, messages} ->
         total_page = round(Float.ceil(total/records_per_page))
         json(conn, %{success: true, messages: messages, total: total_page})
@@ -67,7 +67,7 @@ defmodule AcsWeb.Admin.WcpController do
         json(conn, %{success: false})
     end
   end
-  def list_wcp_user_messages(conn, _params) do
+  def list_wcp_messages(conn, _params) do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 

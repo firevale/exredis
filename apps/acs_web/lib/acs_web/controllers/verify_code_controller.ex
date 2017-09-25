@@ -5,6 +5,7 @@ defmodule AcsWeb.VerifyCodeController do
   alias Acs.Accounts
   alias Exsm.MeishengService
   alias Exmail.EmailService
+  require Exsm
 
   plug :detect_account_id 
   plug :check_account_exist 
@@ -53,7 +54,7 @@ defmodule AcsWeb.VerifyCodeController do
     case Exredis.get("vc.mobile.sms.#{mobile}") do 
       nil ->
         code = gen_code()
-        case MeishengService.send_verify_code(mobile, code) do 
+        case Exsm.send_verify_code(mobile, code) do       
           :ok ->
             Exredis.setex("vc.mobile.sms.#{mobile}", 60, code)
             conn |> put_session(String.to_atom("#{type}_account_id"), mobile)

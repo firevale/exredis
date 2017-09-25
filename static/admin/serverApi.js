@@ -279,8 +279,8 @@ export default {
         })
       },
 
-      listWcpUserMessages(data) {
-        return post('/admin_actions/wcp/list_wcp_user_messages', data)
+      listWcpMessages(data) {
+        return post('/admin_actions/wcp/list_wcp_messages', data)
       },
 
       listUserWcpMessages(app_id, open_id) {

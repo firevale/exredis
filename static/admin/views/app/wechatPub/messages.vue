@@ -81,7 +81,7 @@ export default {
   },
 
   mounted: function() {
-    this.listWcpUserMessages()
+    this.listWcpMessages()
   },
 
   methods: {
@@ -92,32 +92,33 @@ export default {
         appId: this.$route.params.appId,
       })
     },
-    listWcpUserMessages: async function() {
+    listWcpMessages: async function(page) {
       this.loading = true
       var data = {
         app_id: this.$route.params.appId,
         keyword: this.keyword,
-        page: this.page,
+        page: page || this.page,
         records_per_page: this.recordsPerPage,
         sorts: this.sorts
       }
 
-      let result = await this.$acs.listWcpUserMessages(data)
+      let result = await this.$acs.listWcpMessages(data)
       if (result.success) {
         this.total = result.total
         this.messages = result.messages
+        this.page = page
       }
       this.loading = false
     },
 
-    onPageChange: function() {
-      this.listWcpUserMessages(this.page, this.recordsPerPage)
+    onPageChange: function(page) {
+      this.listWcpMessages(page)
     },
 
     onSearchBoxSubmit: async function() {
       this.messages = []
       this.page = 1
-      await this.listWcpUserMessages()
+      await this.listWcpMessages()
     },
   },
 

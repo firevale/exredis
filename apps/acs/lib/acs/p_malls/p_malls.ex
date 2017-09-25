@@ -16,12 +16,17 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.TaskBar
   alias Acs.PMalls.DayQuestion
   alias Acs.PMalls.LuckyDraw
+  alias Acs.Wcp
   alias Acs.Wcp.AppWcpUser
   alias Acs.PMalls.LuckyDrawLog
+  alias Acs.PMalls.SignWcpUser
+  alias Acs.Accounts
+  
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
   alias Acs.Cache.CachedAppWcpUser
+  alias Acs.Cache.CachedAdminSetting
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -166,12 +171,12 @@ defmodule Acs.PMalls do
   end
 
   def list_pmall_point_logs(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
-    totalQuery = case String.length(wcp_user_id) do
-      0 -> totalQuery
-      _ -> where(totalQuery, [pl], pl.wcp_user_id == ^wcp_user_id)
+    total_query = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
+    total_query = case String.length(wcp_user_id) do
+      0 -> total_query
+      _ -> where(total_query, [pl], pl.wcp_user_id == ^wcp_user_id)
     end
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query = from pl in PointLog,
               join: u in assoc(pl, :wcp_user),
@@ -191,8 +196,8 @@ defmodule Acs.PMalls do
   end
 
   def list_my_points(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_query = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id, select: count(pl.id)
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query =
       from pl in PointLog,
@@ -207,11 +212,11 @@ defmodule Acs.PMalls do
   end
 
   def list_my_exchanges(app_id, wcp_user_id, page, records_per_page) do
-    totalQuery =
+    total_query =
       from pl in PointLog,
         where: pl.app_id == ^app_id and pl.wcp_user_id == ^wcp_user_id and pl.log_type == "point_exchange_goods",
         select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
+    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
 
     query =
       from pl in PointLog,
@@ -255,9 +260,10 @@ defmodule Acs.PMalls do
           Repo.rollback(%{i18n_message: "pmall.exchange.limit"})
         true ->
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
-               {:ok, log} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
+               {:ok, add_point, total_point} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
-            %{i18n_message: "pmall.exchange.success"}
+            CachedPMallGoods.refresh(goods.id)
+            %{add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -272,14 +278,13 @@ defmodule Acs.PMalls do
   defp _create_pmall_order(app_id, wcp_user_id, goods, address) do
       # goods stock
       new_goods = PMallGoods.changeset(goods, %{stock: goods.stock - 1, sold: goods.sold + 1}) |> Repo.update()
-      CachedPMallGoods.refresh(goods.id)
 
       # add order
       order_id = _create_order_id(wcp_user_id)
       mapGoods = Map.from_struct(goods) |> Map.drop([:__meta__, :app, :user])
       snapshots = Map.put(%{}, goods.id, mapGoods)
       new_order = %{"id": order_id, "goods_name": goods.name, "price": goods.price,
-        "discount": 0, "final_price": goods.price, "app_id": app_id, "wcp_user_id": wcp_user_id,  
+        "discount": 0, "final_price": goods.price, "app_id": app_id, "wcp_user_id": wcp_user_id,
         "address": address, "snapshots": snapshots
       }
 
@@ -294,6 +299,80 @@ defmodule Acs.PMalls do
       {:ok, order_id}
   end
 
+  # 签到
+  def _sign_cache_key(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
+  def _sign_cache_key_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
+  def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
+  def _sign_cache_key_users(app_id), do: "pmall:sign:users:#{app_id}:#{Timex.today}"
+
+  def sign(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    signed = Exredis.incr(sign_key)
+    case signed do
+      1 ->
+         _sign(app_id, wcp_user_id)
+      _ ->
+        {:error, %{i18n_message: "pmall.sign.signed"}}
+    end
+  end
+  defp _sign(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    sign_key_before = _sign_cache_key_before(app_id, wcp_user_id)
+    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
+
+    ## 连续签到次数
+    times  =
+      case Exredis.exists(sign_key_before) do
+        1 ->
+          Exredis.incr(sign_key_times)
+        _ ->
+          Exredis.set(sign_key_times, 1)
+          1
+      end
+
+    ## 过期设置
+    Exredis.expire(sign_key, 172800)
+    Exredis.expire(sign_key_times, 172800)
+
+    ## 添加积分
+   {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
+   {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
+
+  end
+
+  def add_sign_user(app_id, open_id) do
+    sign_key_users = _sign_cache_key_users(app_id)
+    score = DateTime.utc_now() |> DateTime.to_unix
+    Exredis.zadd(sign_key_users, score, open_id)
+    Exredis.expire(sign_key_users, 172800)
+  end
+
+  def get_sign_users(app_id) do
+    sign_key_users = _sign_cache_key_users(app_id)
+    total = Exredis.zcard(sign_key_users)
+    open_ids = Exredis.zrange(sign_key_users, 0, 20)
+    wcp_users = 
+      Enum.map(open_ids, fn open_id ->
+        wcp_user = CachedAppWcpUser.get(app_id, open_id)
+        Map.take(wcp_user, [:id, :nickname, :avatar_url])
+      end)
+    {total, wcp_users}
+  end
+
+  def get_sign_info(app_id, wcp_user_id) do
+    sign_key = _sign_cache_key(app_id, wcp_user_id)
+    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
+
+    signed = if Exredis.exists(sign_key) == 1, do: true, else: false
+    sign_times =
+      case  Exredis.get(sign_key_times) do
+        nil -> 0
+        times -> String.to_integer(times)
+      end
+    {:ok, signed, sign_times}
+  end
+
+  # 积分
   def add_point(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->
@@ -468,6 +547,41 @@ defmodule Acs.PMalls do
     end
   end
 
+  # 答题
+  def _answer_cache_key(app_id, wcp_user_id), do: "acs.pmall_answer_#{app_id}_#{wcp_user_id}_#{Timex.today}"
+
+  def exists_answer(app_id, wcp_user_id) do
+    answer_key = _answer_cache_key(app_id, wcp_user_id)
+    Exredis.exists(answer_key)
+  end
+
+  def answer_question(question_id, app_id, wcp_user_id, correct) do
+    case exists_answer(app_id, wcp_user_id) do
+      1 ->
+        {:error, %{i18n_message: "pmall.question.answer.exists"}}
+      _ ->
+        Repo.transaction(fn ->
+          case get_question(question_id) do
+            nil ->
+              Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
+            %DayQuestion{} = question ->
+              if(question.correct == correct) do
+                PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
+                DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
+
+                answer_key = _answer_cache_key(app_id, wcp_user_id)
+                Exredis.set(answer_key, question_id)
+                Exredis.expire(answer_key, 86400)
+                %{i18n_message: "pmall.question.answer.success"}
+              else
+                DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
+                Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
+              end
+          end
+        end)
+      end
+  end
+
   def list_pmall_draws(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,
@@ -545,6 +659,54 @@ defmodule Acs.PMalls do
     Repo.one!(query) > 0
   end
 
+  # 抽奖
+  def luck_draw(app_id, wcp_user_id, log_type) do
+    index = :rand.uniform(8)
+    Repo.transaction(fn ->
+      draw = get_draw(index)
+      if(draw == nil) do
+        Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
+      end
+
+      setting  = CachedAdminSetting.get_fat(app_id, log_type)
+      user_point = get_user_point(app_id, wcp_user_id)
+      case setting do
+        nil ->
+          Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
+        _ ->
+          cond do
+            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
+              Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
+            draw.num <= 0  ->
+                Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
+            true ->
+              # if count_draw_logs(app_id, wcp_user_id, draw.id) >= 1 do
+              #   index = 1
+              #   draw = get_draw(index)
+              # end
+
+              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
+              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
+              }
+              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+              update_draw_num(draw, draw.num - 1) 
+              create_draw_log(draw_log)
+
+              %{i18n_message: "pmall.draw.success", index: index}
+          end
+      end
+    end)
+  end
+
+  def count_draw_logs(app_id, wcp_user_id, draw_id) do
+    query =
+      from log in LuckyDrawLog,
+        where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^draw_id,
+        select: count(log.id)
+
+    Repo.one!(query)
+  end
+
   defp check_pmall_draw_rate(app_id, rate) do
     total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
     case is_integer(total) do
@@ -553,6 +715,26 @@ defmodule Acs.PMalls do
       false ->
         (Decimal.to_integer(total) + rate) <= 100
     end
+  end
+
+  # 绑定手机
+  def bind_mobile(app_id, open_id, mobile) do
+    Repo.transaction(fn ->
+      case Wcp.get_app_wcp_user(app_id, openid: open_id) do
+        nil ->
+          Repo.rollback(%{i18n_message: "pmall.bindMobile.notFound"})
+
+        %AppWcpUser{} = wcp_user ->
+          if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
+              new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
+              Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
+          else
+            user = Accounts.get_user(wcp_user.user_id)
+            Accounts.update_user!(user, %{mobile: mobile})
+          end
+          %{i18n_message: "pmall.bindMobile.success"}
+      end
+    end)
   end
 
 end

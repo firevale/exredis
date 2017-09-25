@@ -4,7 +4,6 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcp
   alias Acs.Accounts
   alias Acs.PMallsPoint
-  alias Acs.Cache.CachedAdminSetting
 
   plug :fetch_app_id
   plug :fetch_access_token
@@ -42,10 +41,13 @@ defmodule AcsWeb.PMallController do
     conn |> json(%{success: true, total: total_page, goodses: goodses})
   end
 
-  def get_goods_detail(conn,%{"goods_id" =>goods_id})do
-    goods = PMalls.get_pmall_goods_detail(goods_id)
+  def get_goods_detail(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"goods_id" =>goods_id})do
     PMalls.add_goods_click(goods_id, 1)
-    conn |> json(%{success: true, goods: goods})
+    goods = PMalls.get_pmall_goods_detail(goods_id)
+
+    wcp_user_id = 1
+    exchange_count =  PMalls.count_exchange_goods(app_id, wcp_user_id, goods_id)
+    conn |> json(%{success: true, goods: goods, exchanged: exchange_count>=1})
   end
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
@@ -95,52 +97,32 @@ defmodule AcsWeb.PMallController do
     wcp_user_id = 1
     result = PMalls.exchange_goods(app_id, wcp_user_id, goods_id)
     case result do
-      {:ok, %{i18n_message: i18n_message}} ->
-        conn |> json(%{success: true, i18n_message: i18n_message})
+      {:ok, exchange_info} ->
+        conn |> json(Map.merge(%{success: true}, exchange_info))
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end
 
-  def cache_key_sign(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.today}:#{wcp_user_id}"
-  def cache_key_sign_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
-  def cache_key_sign_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
+  def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
+    wcp_user_id = 1
+    {:ok, signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
+    {total, sign_users} = PMalls.get_sign_users(app_id)
+    conn |> json(%{success: true, signed: signed, sign_times: sign_times, sign_total: total, sign_users: sign_users})
+  end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
-    sign_key = cache_key_sign(app_id, wcp_user_id)
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
 
-    signed = Exredis.incr(sign_key)
-    case signed do
-      1 ->
-        {:ok, times} = _sign(app_id, wcp_user_id)
-        conn |> json(%{success: true, sign_times: times})
-      _ ->
-        conn |> json(%{success: false, i18n_message: "pmall.sign.signed"})
+    result = PMalls.sign(app_id, wcp_user_id)
+    case result do
+      {:ok, sign_info} ->
+        PMalls.add_sign_user(app_id, open_id)
+        conn |> json(Map.merge(%{success: true}, sign_info))
+      {:error, %{i18n_message: i18n_message}} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
     end
-
-  end
-  defp _sign(app_id, wcp_user_id) do
-    sign_key = cache_key_sign(app_id, wcp_user_id)
-    sign_key_before = cache_key_sign_before(app_id, wcp_user_id)
-    sign_key_times = cache_key_sign_times(app_id, wcp_user_id)
-
-    #连续签到次数
-    times  =
-      case Exredis.exists(sign_key_before) do
-        1 ->
-          Exredis.incr(sign_key_times)
-        _ ->
-          Exredis.set(sign_key_times, 1)
-      end
-
-    #最后签到时间2天后过期
-    Exredis.expire(sign_key, 172800)
-    #添加积分
-    Acs.PMallsPoint.add_point("point_day_sign", app_id, wcp_user_id)
-
-    {:ok, times}
-
   end
 
   def bind_mobile(conn, %{"mobile" => mobile, "verify_code" => verify_code}) do
@@ -149,24 +131,11 @@ defmodule AcsWeb.PMallController do
 
     case verify_code do
       "12345" ->
-        case Wcp.get_app_wcp_user(app_id, openid: open_id) do
-          nil ->
-            conn |> json(%{success: false, message: "invalid request params"})
-
-          %AppWcpUser{} = wcp_user ->
-            if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
-              Repo.transaction(fn ->
-                new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
-                Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
-              end)
-            else
-              case Accounts.get_user(wcp_user.user_id) do
-                %User{} = user ->
-                  Accounts.update_user!(user, %{mobile: mobile})
-                  conn |> json(%{success: true})
-              end
-            end
-            conn |> json(%{success: true})
+        case PMalls.bind_mobile(app_id, open_id, mobile) do
+          {:ok, mobile} ->
+            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.addSuccess"})
+          :error ->
+            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
         end
       _ ->
         conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
@@ -196,62 +165,38 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
+    wcp_user_id = 1
+    exists = PMalls.exists_answer(app_id, wcp_user_id)
     case PMalls.get_daily_question(app_id) do
       nil ->
-        conn |> json(%{success: false})
+        conn |> json(%{success: false, exists: exists})
       {:ok, question} ->
-        conn |> json(%{success: true, question: question})
+        conn |> json(%{success: true, question: question, exists: exists})
     end
   end
 
   def answer_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"id" => id,
     "correct" => correct}) do
       wcp_user_id = 1
-      question = PMalls.get_question(id)
-      case question do
-        nil ->
-          conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
-        _ ->
-          if(question.correct == correct) do
-            PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
-            conn |> json(%{success: true})
-          else
-            conn |> json(%{success: false})
-          end
+      result = PMalls.answer_question(id, app_id, wcp_user_id, correct)
+      case result do
+        {:ok, %{i18n_message: i18n_message}} ->
+          conn |> json(%{success: true, i18n_message: i18n_message})
+        {:error, %{i18n_message: i18n_message}} ->
+          conn |> json(%{success: false, i18n_message: i18n_message})
       end
   end
 
   def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     wcp_user_id = 1
     log_type = "point_luck_draw"
-    index = :rand.uniform(8)
-    draw = PMalls.get_draw(index)
-    case draw do
-      nil ->
-        conn |> json(%{success: true, index: 1})
-      _ ->
-        Repo.transaction(fn ->
-          setting  = CachedAdminSetting.get_fat(app_id, log_type)
-          user_point = PMalls.get_user_point(app_id, wcp_user_id)
-          cond do
-            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
-              conn |> json(%{success: false, i18n_message: "pmall.draw.pointless"})
-            true ->
-              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
-              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
-              }
-              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
-              PMalls.update_draw_num(draw, draw.num - 1)
-              PMalls.create_draw_log(draw_log)
-          end
-        end)
 
-        user_point = PMalls.get_user_point(app_id, wcp_user_id)
-        if PMalls.is_draw_exists?(app_id, wcp_user_id, draw.id) do
-          conn |> json(%{success: true, index: 1, point: user_point})
-        else
-          conn |> json(%{success: true, index: index, point: user_point})
-        end
+    result = PMalls.luck_draw(app_id, wcp_user_id, log_type)    
+    case result do
+      {:ok, draw} ->
+        conn |> json(%{success: true, index: draw.index})
+      {:error, %{i18n_message: i18n_message}} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end
 

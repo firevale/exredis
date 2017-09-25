@@ -96,6 +96,9 @@ export default {
       sign() {
         return post("/pmall_actions/sign")
       },
+      getSignInfo() {
+        return post("/pmall_actions/get_sign_info")
+      },
       insertAddress(params) {
         return post('/pmall_actions/insert_address', params)
       },

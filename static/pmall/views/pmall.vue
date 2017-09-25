@@ -28,6 +28,7 @@
   </div>
 </template>
 <script>
+import Toast from 'common/components/toast'
 export default {
   mounted() {
     this.listGoods()
@@ -51,7 +52,7 @@ export default {
         records_per_page: 10
       })
       if (result.success) {
-        this.goodses =  this.goodses.concat(result.goodses)
+        this.goodses = this.goodses.concat(result.goodses)
         this.total = result.total
         this.page++
       }

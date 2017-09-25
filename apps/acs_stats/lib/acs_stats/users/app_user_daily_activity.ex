@@ -23,5 +23,6 @@ defmodule AcsStats.Users.AppUserDailyActivity do
     app_user_daily_activity
     |> cast(attrs, [:date, :active_seconds, :pay_amount, :app_user_id])
     |> validate_required([:date, :app_user_id])
+    |> foreign_key_constraint(:app_user_id)
   end
 end

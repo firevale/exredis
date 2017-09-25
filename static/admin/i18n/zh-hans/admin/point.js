@@ -73,6 +73,23 @@
     overflow: '添加的所有奖品概率总和不能超过100',
    },
 
+   drawLog: {
+    id: '编号',
+    name: '奖品',
+    user: '获奖者',
+    status: '状态',
+    paidAt: '时间',
+    address: '地址',
+    deliverAt: '递送时间',
+    operate: '操作',
+    notExist: '抽奖记录不存在',
+    updateSuccess: '更新成功',
+    save: '保存',
+    close: '关闭订单',
+    finish: '完成订单',
+    delivered: '已寄出',
+   },
+
    sign:{
     topPic: '顶部图片',
     lunar: '农历宜忌',

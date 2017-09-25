@@ -9,22 +9,16 @@
         <p class="control">
           <input class="input" type="text" v-model.trim="setting.name">
         </p>
-        <label class="label"> {{ $t('admin.setting.configValue') }}: </label>
-        <p class="control">
-          <textarea class="textarea" style="height:120px" v-model.trim="setting.value"></textarea>
-        </p>
+        <div v-if="columns" v-for="column in columns.split('|')" :key="column">
+          <label class="label"> {{ column.split("=")[0] }}: </label>
+          <p class="control">
+            <input class="input" :id="column.split('=')[1]" type="text" @input="updateMessage">
+          </p>
+        </div>
         <label class="label"> {{ $t('admin.setting.memo') }}: </label>
         <p class="control">
           <input class="input" type="text" v-model.trim="setting.memo">
         </p>
-        <!-- <label class="label"> {{ $t('admin.setting.configGroup') }}: </label>
-        <p class="control">
-          <span class="select">
-            <select v-model.trim="setting.group">
-              <option v-for="group in groups" :value="group">{{$t('admin.setting.groups.' + group)}}</option>
-            </select>
-          </span>
-        </p> -->
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
         </div>
@@ -48,6 +42,10 @@ export default {
       type: Boolean,
       default: true
     },
+    columns: {
+      type: String,
+      default: ''
+    },
     setting: Object,
     callback: Function,
   },
@@ -60,12 +58,20 @@ export default {
   },
 
   methods: {
+    updateMessage(e) {
+      if (this.setting.value.length > 0) {
+        let jobj = JSON.parse(this.setting.value)
+        jobj[e.target.id] = e.target.value
+        this.setting.value = JSON.stringify(jobj)
+      } else {
+        this.setting.value = '{"' + e.target.id + '":"' + e.target.value + '"}'
+      }
+    },
     handleSubmit: async function() {
       this.processing = true
-
       let result = await this.$acs.updateSettingByName({
         setting_name: this.setting.name,
-        setting_value: this.setting.value,
+        setting_value: this.setting.value ? this.setting.value : '{}',
         group: this.setting.group,
         memo: this.setting.memo,
         active: true
@@ -78,7 +84,6 @@ export default {
         }
         this.visible = false
       }
-
       this.processing = false
     }
   },

@@ -52,7 +52,7 @@ defmodule AcsWeb.FVSdkView do
       goods: transform_goods(app.goods, sdk)
      }
   end
-  def render("app_info.android.3.json", %{app: %App{} = app, sdk: sdk}) do 
+  def render("app_info.android.3.json", %{app: nil, sdk: sdk}) do 
     %{success: false,
       message: "application not found"
      }

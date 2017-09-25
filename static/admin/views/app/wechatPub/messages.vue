@@ -13,14 +13,14 @@
         <div class="box" v-for="message in messages" :key="message.id" >
           <article class="media">
             <div class="media-left">
-              <figure class="image is-64x64">
-                <img :src="message.from.avatar_url" alt="Image">
+              <figure class="image is-48x48">
+                <img :src="message.from.avatar_url" alt="wechat avatar">
               </figure>
             </div>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>{{message.from.nickname}}</strong> <small>@{{message.inserted_at | formatServerDateTime }}</small> 
+                  <strong>{{message.from.nickname}}</strong>
                   <br>
                   {{message.content}}
                 </p>
@@ -28,20 +28,23 @@
               <nav class="level is-mobile">
                 <div class="level-left">
                   <a class="level-item">
-                    <span class="icon is-small" @click="$refs.talk.open(message)"><i class="fa fa-reply"></i></span>
+                    <span class="icon is-small" @click="showChat(message)"><i class="fa fa-reply"></i></span>
                   </a>
+                </div>
+                <div class="level-right">
+                  <span class="level-item">
+                    <small><timeago :since="message.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
+                  </span>
                 </div>
               </nav>
             </div>
           </article>
         </div>
-        <div v-if="messages && messages.length > 0" class="tile is-child  ele-pagination">
-          <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
-          </el-pagination>
-        </div>
+        <article class="tile is-child is-12">
+          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+        </article>
       </div>
     </div>
-    <talk ref="talk" @close="showTalkModal = false"></talk>
   </div>
 </template>
 <script>
@@ -50,7 +53,10 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import talk from './talk'
+import {
+  showChatDialog
+} from 'admin/components/dialog/wcp/chat'
+
 import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
@@ -60,7 +66,6 @@ import Pagination from 'admin/components/Pagination'
 export default {
   components: {
     Pagination,
-    talk
   },
   data() {
     return {
@@ -80,11 +85,12 @@ export default {
   },
 
   methods: {
-    getRowKey: function(row) {
-      return row.id
-    },
-    rowClick: function(row, event) {
-      this.$refs.talk.open(row)
+    showChat: function(message) {
+      showChatDialog({
+        visible: true,
+        message: message,
+        appId: this.$route.params.appId,
+      })
     },
     listWcpUserMessages: async function() {
       this.loading = true
@@ -113,21 +119,6 @@ export default {
       this.page = 1
       await this.listWcpUserMessages()
     },
-    sortChange: function(column) {
-      var field = column.prop
-
-      if (column.column == null) {
-        this.sorts = {}
-      } else if (column.order == "descending") {
-        this.sorts[column.prop] = "desc"
-      } else {
-        this.sorts[column.prop] = "asc"
-      }
-
-      this.page = 1
-      this.listWcpUserMessages()
-    },
-
   },
 
 }

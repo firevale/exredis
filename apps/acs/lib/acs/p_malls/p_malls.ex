@@ -596,20 +596,21 @@ defmodule Acs.PMalls do
                 add_answer(app_id, question_id)
               end
 
-              if(question.correct == correct) do
-                with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_day_question", app_id, wcp_user_id) do
+              with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_day_question", app_id, wcp_user_id) do
+                if(question.correct == correct) do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
                 
                   add_answer_user(app_id, wcp_user_id, question_id)
-                  %{i18n_message: "pmall.question.answer.success", answer: true}
+                  %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.success", answer: true}
                 else
-                  _ ->
-                    Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
+                  DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
+                  add_answer_user(app_id, wcp_user_id, question_id)
+
+                  %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.failed", answer: false}
                 end
               else
-                DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
-                add_answer_user(app_id, wcp_user_id, question_id)
-                %{i18n_message: "pmall.question.answer.failed", answer: false}
+                _ ->
+                  Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
               end
           end
         end
@@ -772,7 +773,13 @@ defmodule Acs.PMalls do
             user = Accounts.get_user(wcp_user.user_id)
             Accounts.update_user!(user, %{mobile: mobile})
           end
-          %{i18n_message: "pmall.bindMobile.success"}
+
+          with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_bind_mobile", app_id, wcp_user.id) do
+            %{add_point: add_point, total_point: total_point,i18n_message: "pmall.bindMobile.success"}
+          else
+            _ ->
+              Repo.rollback(%{i18n_message: "pmall.bindMobile.failed"})
+          end
       end
     end)
   end

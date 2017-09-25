@@ -51,6 +51,7 @@
   </div>
 </template>
 <script>
+import Toast from 'common/components/toast'
 import {
   mapGetters,
   mapActions
@@ -91,6 +92,9 @@ export default {
           if (result.answer) {
             this.isCorrect = true
             this.isWwrong = false
+            Toast.show(this.$t(result.i18n_message, {
+              point: result.add_point
+            }))
           } else {
             this.isWwrong = true
             this.isCorrect = false

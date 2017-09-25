@@ -9,7 +9,7 @@
           <div class="content box" :class="{'is-success': !msg.from.id}">
             {{msg.content}}
             <div class="datetime">
-              <small><timeago :since="message.inserted_at | formatServerDateTime" :auto-update="60"></timeago></small>
+              <small><timeago :since="msg.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
             </div>
           </div>
         </div>

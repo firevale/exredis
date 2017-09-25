@@ -33,7 +33,7 @@
                 </div>
                 <div class="level-right">
                   <span class="level-item">
-                    <small><timeago :since="message.inserted_at | formatServerDateTime" :auto-update="60"></timeago></small>
+                    <small><timeago :since="message.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
                   </span>
                 </div>
               </nav>

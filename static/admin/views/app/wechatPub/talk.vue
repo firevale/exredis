@@ -2,9 +2,12 @@
   <div>
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px; height:1300px">
       <div class="message-body">
-        <div v-for="msg in messages" class="talk">
-          <div class="user-info" :class="{'is-right': !msg.from.id}">{{ msg.from.id ? userName :"系统" }}</div>
-          <div class="content box">{{msg.content}}
+        <div v-for="msg in messages" :key="msg.id" class="talk">
+          <div class="user-info" :class="{'is-right': !msg.from.id}">
+            {{ msg.from.nickname }}
+          </div>
+          <div class="content box" :class="{'is-success': !msg.from.id}">
+            {{msg.content}}
             <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
           </div>
         </div>
@@ -41,7 +44,7 @@ export default {
       return `与${this.userName}的对话`
     },
     userName() {
-      return this.message.from.id ? this.message.from.nickname : this.message.to.nickname
+      return this.message.from.nickname
     }
   },
   watch: {
@@ -62,8 +65,7 @@ export default {
     },
     async reply() {
       var appId = this.$route.params.appId
-      var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
-      var result = await this.$acs.replyUserWcpMessage(appId, openId, this.content)
+      var result = await this.$acs.replyUserWcpMessage(appId, this.message.from.openid, this.content)
       if (result.success) {
         this.messages.push(result.message)
         this.content = ''
@@ -72,8 +74,7 @@ export default {
     async fetchData() {
       this.messages = []
       var appId = this.$route.params.appId
-      var openId = this.message.from.id ? this.message.from.openid : this.message.to.openid
-      var result = await this.$acs.listUserWcpMessages(appId, openId)
+      var result = await this.$acs.listUserWcpMessages(appId, this.message.from.openid)
       if (result.success) {
         this.messages = result.messages
       }

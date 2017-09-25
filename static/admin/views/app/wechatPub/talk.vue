@@ -3,7 +3,7 @@
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px; height:1300px">
       <div class="message-body">
         <div v-for="msg in messages" :key="msg.id" class="talk">
-          <div class="user-info" :class="{'is-right': !msg.from.id}">
+          <div class="user-info" :class="{'is-right': !msg.from.id && msg.from.openid.match(/^gh_.*$/)}">
             {{ msg.from.nickname }}
           </div>
           <div class="content box" :class="{'is-success': !msg.from.id}">

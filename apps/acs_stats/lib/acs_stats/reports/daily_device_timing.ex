@@ -17,5 +17,6 @@ defmodule AcsStats.Reports.DailyDeviceTiming do
     daily_device_timing
     |> cast(attrs, [:nmin, :counter, :report_id])
     |> validate_required([:nmin, :counter, :report_id])
+    |> foreign_key_constraint(:report_id)
   end
 end

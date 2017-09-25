@@ -9,7 +9,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # config sm service provider to none
 # get verify code from console info log
-config :exsm, :provider, :none
+config :exsm, :provider, :meisheng
 
 config :exservice, KSFile,
   domain: "ks3-cn-beijing.ksyun.com",

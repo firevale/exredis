@@ -168,6 +168,8 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_pmall_draw", PMallController, :update_pmall_draw
       post  "/delete_pmall_draw", PMallController, :delete_pmall_draw
       post  "/upload_draw_pic", PMallController, :upload_draw_pic
+      post  "/list_pmall_draw_orders", PMallController, :list_pmall_draw_orders
+      post  "/update_pmall_draw_order", PMallController, :update_pmall_draw_order
     end
 
   end

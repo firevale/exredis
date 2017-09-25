@@ -335,4 +335,26 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  def list_pmall_draw_orders(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                                      %{"page" => page, 
+                                      "records_per_page" => records_per_page}) do
+    {:ok, orders, total} = PMalls.list_pmall_draw_orders(app_id, page, records_per_page)
+    conn |> json(%{success: true, orders: orders, total: total})
+  end
+
+  def update_pmall_draw_order(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn, %{
+                "id" => order_id,
+                "status" => status,
+                "address" => address,
+                "deliver_at" => deliver_at,
+                "close_at" => close_at} = order) do
+    case PMalls.update_pmall_draw_order(order_id, status, address, deliver_at, close_at) do
+      :ok ->
+        Admin.log_admin_operation(user_id, app_id, "update_pmall_draw_order", order)
+        conn |> json(%{success: true, order: order, i18n_message: "admin.point.drawLog.updateSuccess"})
+      nil ->
+        conn |> json(%{success: false, i18n_message: "admin.point.drawLog.notExist"})
+    end
+  end
+
 end

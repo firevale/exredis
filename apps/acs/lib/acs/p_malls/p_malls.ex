@@ -21,7 +21,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.LuckyDrawOrder
   alias Acs.PMalls.SignWcpUser
   alias Acs.Accounts
-  
+  alias Acs.PMalls.LuckyDrawOrder
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -782,6 +782,31 @@ defmodule Acs.PMalls do
           end
       end
     end)
+  end
+
+  def list_pmall_draw_orders(app_id, page, records_per_page) do
+    total = Repo.one!(from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id)
+    total_page = round(Float.ceil(total / records_per_page))
+
+    query = from q in LuckyDrawOrder,
+      where: q.app_id == ^app_id,
+      order_by: [desc: q.inserted_at],
+      limit: ^records_per_page,
+      offset: ^((page - 1) * records_per_page),
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :wcp_user_id, :lucky_draw_id])
+
+    orders = Repo.all(query)
+    {:ok, orders, total_page}
+  end
+
+  def update_pmall_draw_order(order_id, status, address, deliver_at, close_at) do
+    case Repo.get(LuckyDrawOrder, order_id) do
+      nil ->
+        nil
+      %LuckyDrawOrder{} = order ->
+        LuckyDrawOrder.changeset(order, %{status: status, address: address, deliver_at: deliver_at, close_at: close_at}) |> Repo.update!
+        :ok
+    end
   end
 
 end

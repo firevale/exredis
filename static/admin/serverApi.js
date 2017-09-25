@@ -406,6 +406,14 @@ export default {
       deletePmallDraw(params, successMessage) {
         return post('/admin_actions/pmall/delete_pmall_draw', params, successMessage)
       },
+
+      listPMallLuckyDrawOrders(params) {
+        return post('/admin_actions/pmall/list_pmall_draw_orders', params)
+      },
+
+      updatePmallDrawOrder(params, successMessage) {
+        return post('/admin_actions/pmall/update_pmall_draw_order', params, successMessage)
+      },
     }
   }
 }

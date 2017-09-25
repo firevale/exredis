@@ -21,5 +21,6 @@ defmodule AcsStats.Devices.AppDeviceDailyActivity do
     app_device_daily_activity
     |> cast(attrs, [:date, :active_seconds, :pay_amount, :app_device_id])
     |> validate_required([:date, :app_device_id])
+    |> foreign_key_constraint(:app_device_id)
   end
 end

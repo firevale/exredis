@@ -81,7 +81,9 @@ export default {
           this.processing = true
           let result = await this.$acs.bindMobile(this.mobile, this.verify_code)
           if (result.success) {
-            Toast.show("绑定成功")
+            Toast.show(this.$t(result.i18n_message, {
+              point: result.add_point
+            }))
           } else {
             Toast.show(this.$t(result.i18n_message))
           }

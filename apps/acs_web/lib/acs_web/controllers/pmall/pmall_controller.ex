@@ -133,7 +133,8 @@ defmodule AcsWeb.PMallController do
       ^verify_code ->
         case PMalls.bind_mobile(app_id, open_id, mobile) do
           {:ok, mobile} ->
-            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.success"})
+            conn |> delete_session(:bind_mobile_verify_code)
+                 |> json(Map.merge(%{success: true}, mobile))
           {:error, %{i18n_message: i18n_message}} ->
             conn |> json(%{success: false, i18n_message: i18n_message})
         end
@@ -180,8 +181,8 @@ defmodule AcsWeb.PMallController do
       wcp_user_id = 1
       result = PMalls.answer_question(id, app_id, wcp_user_id, correct)
       case result do
-        {:ok, %{i18n_message: i18n_message}} ->
-          conn |> json(%{success: true, i18n_message: i18n_message})
+        {:ok, answer} ->
+          conn |> json(Map.merge(%{success: true}, answer))
         {:error, %{i18n_message: i18n_message}} ->
           conn |> json(%{success: false, i18n_message: i18n_message})
       end

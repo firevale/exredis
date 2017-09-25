@@ -25,22 +25,23 @@ export default {
       missing_address: '你忘填写收货地址啦～',
     },
     draw: {
+      success: '抽奖成功,{point}积分',
       pointless: '抱歉，您的积分不足',
       soldout: '你来晚了，该物品己被抢光了',
       nonsetting: '没有配置',
     },
     question: {
       nonexists: '问答题不存在',
-      success: '回答正确',
-      failed: '回答错误',
+      exists: "今日已答完",
       answer: {
-        exists: "今日已答完"
+        success: '回答正确,+{point}积分',
+        failed: '回答错误',
       }
     },
     bindMobile: {
       hasBind: '已绑定',
       notFound: '用户不存在',
-      success: '绑定成功',
+      success: '绑定成功,+{point}积分',
       failed: '绑定失败',
       invalidVerifyCode: '验证码输入错误'
     }

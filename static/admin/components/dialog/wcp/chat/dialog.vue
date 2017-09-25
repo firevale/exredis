@@ -1,14 +1,19 @@
 <template>
-  <div>
-    <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px; height:1300px">
+  <modal :visible="visible">
+    <div class="box">
+      <div class="heading has-text-centered">
+        <h5 class="title is-5">{{title}}</h5>
+      </div>
       <div class="message-body">
         <div v-for="msg in messages" :key="msg.id" class="talk">
-          <div class="user-info" :class="{'is-right': !msg.from.id}">
+          <div class="user-info" :class="{'is-right': !msg.from.id && !msg.from.openid.match(/^gh_.*$/)}">
             {{ msg.from.nickname }}
           </div>
           <div class="content box" :class="{'is-success': !msg.from.id}">
             {{msg.content}}
-            <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
+            <div class="datetime">
+              <small><timeago :since="msg.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
+            </div>
           </div>
         </div>
       </div>
@@ -26,15 +31,22 @@
           </button>
         </div>
       </div>
-    </el-dialog>
-  </div>
+    </div>
+  </modal>
 </template>
 <script>
+import {
+  Modal
+} from 'vue-bulma-modal'
+
 export default {
+  props: {
+    visible: Boolean,
+    message: Object,
+    appId: String,
+  },
   data() {
     return {
-      visible: false,
-      message: undefined,
       messages: [],
       content: '',
     }
@@ -47,25 +59,12 @@ export default {
       return this.message.from.nickname
     }
   },
-  watch: {
-    'visible' (newValue) {
-      if (!newValue) {
-        this.$emit("close")
-      }
-    }
+  mounted: function() {
+    this.fetchData()
   },
   methods: {
-    open(message) {
-      this.visible = true
-      this.message = message
-      this.fetchData()
-    },
-    close() {
-      this.visible = false
-    },
     async reply() {
-      var appId = this.$route.params.appId
-      var result = await this.$acs.replyUserWcpMessage(appId, this.message.from.openid, this.content)
+      let result = await this.$acs.replyUserWcpMessage(this.appId, this.message.from.openid, this.content)
       if (result.success) {
         this.messages.push(result.message)
         this.content = ''
@@ -73,13 +72,16 @@ export default {
     },
     async fetchData() {
       this.messages = []
-      var appId = this.$route.params.appId
-      var result = await this.$acs.listUserWcpMessages(appId, this.message.from.openid)
+      let result = await this.$acs.listUserWcpMessages(this.appId, this.message.from.openid)
       if (result.success) {
         this.messages = result.messages
+        console.log(this.messages)
       }
     }
-  }
+  },
+  components: {
+    Modal,
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -105,32 +107,6 @@ div.talk {
       color: gray;
       text-align: right;
     }
-  }
-}
-
-.dialog-fade-enter-active {
-  animation: dialog-fade-in .3s;
-}
-
-.dialog-fade-leave-active {
-  animation: dialog-fade-out .3s;
-}
-
-@keyframes dialog-fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes dialog-fade-out {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
   }
 }
 </style>

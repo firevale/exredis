@@ -556,30 +556,38 @@ defmodule Acs.PMalls do
   end
 
   def answer_question(question_id, app_id, wcp_user_id, correct) do
-    case exists_answer(app_id, wcp_user_id) do
-      1 ->
-        {:error, %{i18n_message: "pmall.question.answer.exists"}}
-      _ ->
-        Repo.transaction(fn ->
+    Repo.transaction(fn ->
+      case exists_answer(app_id, wcp_user_id) do
+        1 ->
+          Repo.rollback(%{i18n_message: "pmall.question.exists"})
+        _ ->
           case get_question(question_id) do
             nil ->
               Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
             %DayQuestion{} = question ->
               if(question.correct == correct) do
-                PMallsPoint.add_point("point_day_question", app_id, wcp_user_id)
-                DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
-
-                answer_key = _answer_cache_key(app_id, wcp_user_id)
-                Exredis.set(answer_key, question_id)
-                Exredis.expire(answer_key, 86400)
-                %{i18n_message: "pmall.question.answer.success"}
+                with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_day_question", app_id, wcp_user_id) do
+                  DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
+                  add_answer_user(app_id, wcp_user_id, question_id)
+                  %{i18n_message: "pmall.question.answer.success", answer: true}
+                else
+                  _ ->
+                    Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
+                end
               else
                 DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
-                Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
+                add_answer_user(app_id, wcp_user_id, question_id)
+                %{i18n_message: "pmall.question.answer.failed", answer: false}
               end
           end
-        end)
-      end
+        end
+      end)
+  end
+
+  defp add_answer_user(app_id, wcp_user_id,question_id) do
+    answer_key = _answer_cache_key(app_id, wcp_user_id)
+    Exredis.set(answer_key, question_id)
+    Exredis.expire(answer_key, 86400)
   end
 
   def list_pmall_draws(app_id) do
@@ -644,10 +652,6 @@ defmodule Acs.PMalls do
     LuckyDraw.changeset(draw, %{pic: image_path}) |> Repo.update!
   end
 
-  def update_draw_num(draw, num) do
-    LuckyDraw.changeset(draw, %{num: num}) |> Repo.update!
-  end
-
   def create_draw_order(order) do
     LuckyDrawOrder.changeset(%LuckyDrawOrder{}, order) |> Repo.insert
   end
@@ -688,11 +692,21 @@ defmodule Acs.PMalls do
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
               }
-              PMallsPoint.add_point(log_type, app_id, wcp_user_id)
-              update_draw_num(draw, draw.num - 1) 
-              create_draw_order(draw_order)
-
-              %{i18n_message: "pmall.draw.success", index: index}
+              # 扣除积分
+              with {:ok, add_point, total_point} <-  PMallsPoint.add_point(log_type, app_id, wcp_user_id) do
+                # 减奖品数
+                LuckyDraw.changeset(draw, %{num: draw.num - 1}) |> Repo.update!
+                # 创建抽奖订单
+                case create_draw_order(draw_order) do
+                  {:error, %{errors: _errors}} ->
+                    Repo.rollback(%{i18n_message: "pmall.draw.123"})
+                  _ ->
+                    %{i18n_message: "pmall.draw.success", index: index}
+                end
+              else
+                _ ->
+                  Repo.rollback(%{i18n_message: "pmall.draw.failed"})
+              end
           end
       end
     end)

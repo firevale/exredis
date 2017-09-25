@@ -32,5 +32,6 @@ defmodule AcsStats.Devices.AppDevice do
     |> validate_number(:pay_amount, greater_than_or_equal_to: 0, message: "pay_amount should be greater than or equal to 0")
     |> validate_number(:active_seconds, greater_than_or_equal_to: 0, message: "active_seconds should be greater than or equal to 0")
     |> validate_inclusion(:platform, ~w(ios android wp8), message: "unknown platform")
+    |> foreign_key_constraint(:device_id)
   end
 end

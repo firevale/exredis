@@ -18,7 +18,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.LuckyDraw
   alias Acs.Wcp
   alias Acs.Wcp.AppWcpUser
-  alias Acs.PMalls.LuckyDrawLog
+  alias Acs.PMalls.LuckyDrawOrder
   alias Acs.PMalls.SignWcpUser
   alias Acs.Accounts
   
@@ -648,12 +648,12 @@ defmodule Acs.PMalls do
     LuckyDraw.changeset(draw, %{num: num}) |> Repo.update!
   end
 
-  def create_draw_log(log) do
-    LuckyDrawLog.changeset(%LuckyDrawLog{}, log) |> Repo.insert
+  def create_draw_order(order) do
+    LuckyDrawOrder.changeset(%LuckyDrawOrder{}, order) |> Repo.insert
   end
 
   def is_draw_exists?(app_id, wcp_user_id, lucky_draw_id) do
-    query = from log in LuckyDrawLog,
+    query = from log in LuckyDrawOrder,
       select: count(1),
       where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^lucky_draw_id
     Repo.one!(query) > 0
@@ -685,12 +685,12 @@ defmodule Acs.PMalls do
               #   draw = get_draw(index)
               # end
 
-              draw_log = %{"name": draw.name, "pic": draw.pic, "status": 0,
+              draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
               }
               PMallsPoint.add_point(log_type, app_id, wcp_user_id)
               update_draw_num(draw, draw.num - 1) 
-              create_draw_log(draw_log)
+              create_draw_order(draw_order)
 
               %{i18n_message: "pmall.draw.success", index: index}
           end
@@ -698,9 +698,9 @@ defmodule Acs.PMalls do
     end)
   end
 
-  def count_draw_logs(app_id, wcp_user_id, draw_id) do
+  def count_draw_orders(app_id, wcp_user_id, draw_id) do
     query =
-      from log in LuckyDrawLog,
+      from log in LuckyDrawOrder,
         where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^draw_id,
         select: count(log.id)
 

@@ -18,5 +18,6 @@ defmodule AcsStats.Reports.DailyDeviceRetention do
     daily_device_retention
     |> cast(attrs, [:nday, :retention, :report_id])
     |> validate_required([:nday, :retention, :report_id])
+    |> foreign_key_constraint(:report_id)
   end
 end

@@ -176,7 +176,8 @@ defmodule Acs.Admin do
         # add new
         setting = Map.put(params, "name", params["setting_name"]) |> Map.put("value", params["setting_value"]) |> Map.put("app_id", app_id)
         case Setting.changeset(%Setting{}, setting) |> Repo.insert do
-          {:ok, _} ->
+          {:ok, new_setting} ->
+            setting = Map.put(setting, "id", new_setting.id)
             CachedAdminSetting.refresh(app_id, params["setting_name"])
             {:addok, setting}
           {:error, %{errors: errors}} ->

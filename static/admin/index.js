@@ -11,6 +11,7 @@ import Vuelidate from 'vuelidate'
 import VueDragula from 'vue-dragula'
 import ToggleButton from 'vue-js-toggle-button'
 import VueClipboard from 'vue-clipboard2'
+import VueTimeago from 'vue-timeago'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 
@@ -37,6 +38,13 @@ Vue.use(VueQuillEditor)
 Vue.use(ToggleButton)
 Vue.use(VueClipboard)
 Vue.use(ElementUI)
+Vue.use(VueTimeago, {
+  name: 'timeago', // component name, `timeago` by default
+  locale: 'zh-CN',
+  locales: {
+    'zh-CN': require('vue-timeago/locales/zh-CN.json')
+  },
+})
 
 axios.defaults.headers.common['x-csrf-token'] = window.acsConfig.csrfToken
 

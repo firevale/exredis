@@ -45,7 +45,7 @@ defmodule AcsWeb.WcpController do
           ESWcpMessage.index(%{from: %{
               openid: wcp_user.openid, 
               nickname: wcp_user.nickname,
-              avatar_url: wcp_user.avatar_url 
+              avatar_url: wcp_user.avatar_url |> String.replace_leading("http:", ""), 
               },
             to: %{openid: msg.tousername, nickname: "系统"},
             msg_type: msg.msgtype,
@@ -58,7 +58,11 @@ defmodule AcsWeb.WcpController do
             app_id: app_id})
 
           if is_map(reply) do 
-            ESWcpMessage.index(%{to: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
+            ESWcpMessage.index(%{to: %{
+              openid: wcp_user.openid, 
+              nickname: wcp_user.nickname,
+              avatar_url: wcp_user.avatar_url |> String.replace_leading("http:", ""),
+              },
               from: %{openid: reply.from, nickname: "系统"},
               msg_type: "text",
               content: reply.content,

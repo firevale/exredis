@@ -6,7 +6,7 @@
     </div>
     <footer class="is-flex flex-center flex-vcentered ">
       <div class="my-total is-flex flex-center flex-vcentered is-size-medium">
-        <span>我的积分总额 <strong class="is-primary"><label  v-if="wcp_user">{{wcp_user.points}}</label><label v-else>0</label></strong></span>
+        <span>我的积分总额 <strong class="is-primary"><label v-if="wcp_user">{{wcp_user.points}}</label><label v-else>0</label></strong></span>
       </div>
       <div>
         <a class="button btn-click-draw" @click="play"></a>
@@ -78,6 +78,7 @@ export default {
           }
         })
       }
+
     }
   }
 }

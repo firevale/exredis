@@ -5,7 +5,7 @@ defmodule Acs.Search.ESUser do
     def index(%User{} = user) do
       Elasticsearch.index(%{
         index: "acs",
-        type: "user",
+        type: "users",
         doc: user,
         id: user.id
       })

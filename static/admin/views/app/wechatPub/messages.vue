@@ -10,38 +10,31 @@
     </div>
     <div class="tile is-ancestor ">
       <div class="tile is-parent is-vertical">
-        <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%"
-          border @row-click="rowClick" @sort-change="sortChange" :default-sort="{prop: 'inserted_at', order: 'descending'}">
-          <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
-          </el-table-column> -->
-          <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
-            <template scope="scope">
-              {{ scope.row.from && scope.row.from.nickname ? scope.row.from.nickname : "" }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgTo')" width="180">
-            <template scope="scope">
-              {{ scope.row.to && scope.row.to.nickname ? scope.row.to.nickname : "" }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgContent')" width="400">
-            <template scope="scope">
-              <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"> {{ scope.row.content }} </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="total_mem_size" :label="$t('admin.wcp.msgType')" width="120">
-            <template scope="scope">
-              {{ scope.row.msg_type }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgTime')" prop="inserted_at" sortable="custom" width="180">
-            <template scope="scope">
-              {{ scope.row.inserted_at | formatServerDateTime }}
-            </template>
-          </el-table-column>
-          <el-table-column>
-          </el-table-column>
-        </el-table>
+        <div class="box" v-for="message in messages" :key="message.id" >
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img :src="message.from.avatar_url" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>{{message.from.nickname}}</strong> <small>@{{message.inserted_at | formatServerDateTime }}</small> 
+                  <br>
+                  {{message.content}}
+                </p>
+              </div>
+              <nav class="level is-mobile">
+                <div class="level-left">
+                  <a class="level-item">
+                    <span class="icon is-small" @click="$refs.talk.open(message)"><i class="fa fa-reply"></i></span>
+                  </a>
+                </div>
+              </nav>
+            </div>
+          </article>
+        </div>
         <div v-if="messages && messages.length > 0" class="tile is-child  ele-pagination">
           <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
           </el-pagination>

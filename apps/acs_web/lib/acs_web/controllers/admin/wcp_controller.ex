@@ -92,7 +92,7 @@ defmodule AcsWeb.Admin.WcpController do
         %{errcode: 0, errmsg: "ok"} ->
           message = %{
             admin_user: admin_user,
-            from: %{openid: "gh_#{acs_admin_id}", nickname: admin_user.email},
+            from: %{nickname: admin_user.email, id: acs_admin_id},
             to: %{openid: wcp_user.openid, nickname: wcp_user.nickname},
             msg_type: "text",
             content: content,

@@ -132,7 +132,15 @@ defmodule Acs.Search do
     query = %{
       query: %{
         bool: %{
-          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.openid"}}],
+          must: [ 
+            %{term: %{app_id: app_id}}, 
+            %{term: %{msg_type: "text"}}, 
+            %{exists: %{field: "from.openid"}},
+            %{exists: %{field: "from.avatar_url"}},
+          ],
+          must_not: [
+            %{term: %{"from.nickname" => "系统"}},
+          ],
           should: [],
           minimum_should_match: 0,
           boost: 1.0,

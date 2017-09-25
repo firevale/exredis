@@ -104,4 +104,18 @@ defmodule AcsWeb.Admin.AdminSettingController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
+  plug :check_upload_image, [
+    param_name: "file", 
+    format: ["png", "jpg", "jpeg"],
+    reformat: "jpg"
+    ] when action == :upload_setting_pic
+  def upload_setting_pic(conn, %{"setting_id" => setting_id, "file" => %{path: image_file_path}}) do
+    {:ok, image_path, width, height} = 
+      DeployUploadedFile.deploy_image_file_return_size(
+        from: image_file_path, 
+        to: "setting_pics/#{setting_id}", 
+        low_quality: true)
+    conn |> json(%{success: true, pic: image_path, width: width, height: height})
+  end
+
 end

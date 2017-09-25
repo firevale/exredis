@@ -106,6 +106,10 @@ export default {
         return post('/admin_actions/setting/update_setting_by_name', params, successMessage)
       },
 
+      updateSetting(params) {
+        return post('/admin_actions/setting/update_setting', params)
+      },
+
       deleteSettingByName(params, successMessage) {
         return post('/admin_actions/setting/delete_setting', params, successMessage)
       },

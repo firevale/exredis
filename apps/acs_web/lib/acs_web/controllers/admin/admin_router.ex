@@ -31,6 +31,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/add_setting", AdminSettingController, :add_setting
       post  "/update_setting", AdminSettingController, :update_setting
       post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+      post  "/upload_setting_pic", AdminSettingController, :upload_setting_pic
     end
 
     scope "/app" do

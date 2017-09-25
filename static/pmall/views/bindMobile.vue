@@ -64,8 +64,6 @@ export default {
           }
           this.sendingVerifyCode = false
         } else {
-          this.cooldownCounter = 60
-          setTimeout(this.cooldownTimer, 1000)
           Toast.show('请输入正确的手机号码')
         }
       } catch (_) {
@@ -75,14 +73,20 @@ export default {
     },
     onSubmit: async function() {
       if (!this.processing) {
-        this.processing = true
-        let result = await this.$acs.bindMobile(this.mobile, this.verify_code)
-        if (result.success) {
-          Toast.show("绑定成功")
+        if (!utils.isValidMobileNumber(this.mobile)) {
+          Toast.show('请输入正确的手机号码')
+        } else if (this.verify_code == "") {
+          Toast.show('请输入验证码')
         } else {
-          Toast.show("绑定失败")
+          this.processing = true
+          let result = await this.$acs.bindMobile(this.mobile, this.verify_code)
+          if (result.success) {
+            Toast.show("绑定成功")
+          } else {
+            Toast.show("绑定失败")
+          }
+          this.processing = false
         }
-        this.processing = false
       }
     },
   }

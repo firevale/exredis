@@ -149,7 +149,7 @@ defmodule AcsWeb.PMallController do
                 "address" => _address,
                 "area_code" => _area_code} = us_address) do
 
-    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     case Wcp.get_app_wcp_user(app_id, openid: open_id) do
       nil ->
         conn |> json(%{success: false, message: "invalid request params"})

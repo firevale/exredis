@@ -55,7 +55,7 @@ defmodule Acs.Search do
     query = %{
       query: %{
         has_child: %{
-          child_type: "app_users",
+          type: "app_users",
           query:  %{term: %{app_id: app_id}}
         }
       },
@@ -108,7 +108,7 @@ defmodule Acs.Search do
   end
 
   defp _search_user(query) do
-    case Elasticsearch.search(%{index: "acs", type: "user", query: query, params: %{timeout: "1m"}}) do
+    case Elasticsearch.search(%{index: "acs", type: "users", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         ids = Enum.map(hits, &(&1._id))
         # TODO: return user info directly from elasticsearch

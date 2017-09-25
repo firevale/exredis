@@ -20,7 +20,7 @@
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>{{message.from.nickname}}</strong> <small>@{{message.inserted_at | formatServerDateTime }}</small> 
+                  <strong>{{message.from.nickname}}</strong>
                   <br>
                   {{message.content}}
                 </p>
@@ -30,6 +30,11 @@
                   <a class="level-item">
                     <span class="icon is-small" @click="$refs.talk.open(message)"><i class="fa fa-reply"></i></span>
                   </a>
+                </div>
+                <div class="level-right">
+                  <span class="level-item">
+                    <small><timeago :since="message.inserted_at | formatServerDateTime" :auto-update="60"></timeago></small>
+                  </span>
                 </div>
               </nav>
             </div>

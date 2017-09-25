@@ -3,12 +3,14 @@
     <el-dialog v-if="message" :title="title" :visible.sync="visible" :modal="false" style="width:1300px; height:1300px">
       <div class="message-body">
         <div v-for="msg in messages" :key="msg.id" class="talk">
-          <div class="user-info" :class="{'is-right': !msg.from.id && msg.from.openid.match(/^gh_.*$/)}">
+          <div class="user-info" :class="{'is-right': !msg.from.id && !msg.from.openid.match(/^gh_.*$/)}">
             {{ msg.from.nickname }}
           </div>
           <div class="content box" :class="{'is-success': !msg.from.id}">
             {{msg.content}}
-            <div class="datetime">{{msg.inserted_at | formatServerDateTime}}</div>
+            <div class="datetime">
+              <small><timeago :since="message.inserted_at | formatServerDateTime" :auto-update="60"></timeago></small>
+            </div>
           </div>
         </div>
       </div>

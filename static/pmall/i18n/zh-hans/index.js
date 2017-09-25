@@ -38,8 +38,11 @@ export default {
       }
     },
     bindMobile: {
+      hasBind: '已绑定',
       notFound: '用户不存在',
-      success: '绑定成功'
+      success: '绑定成功',
+      failed: '绑定失败',
+      invalidVerifyCode: '验证码输入错误'
     }
   }
 }

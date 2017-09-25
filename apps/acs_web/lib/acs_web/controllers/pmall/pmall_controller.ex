@@ -129,16 +129,16 @@ defmodule AcsWeb.PMallController do
     app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
 
-    case verify_code do
-      "12345" ->
+    case get_session(conn, :bind_mobile_verify_code) do
+      ^verify_code ->
         case PMalls.bind_mobile(app_id, open_id, mobile) do
           {:ok, mobile} ->
-            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.addSuccess"})
-          :error ->
-            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.success"})
+          {:error, %{i18n_message: i18n_message}} ->
+            conn |> json(%{success: false, i18n_message: i18n_message})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
+        conn |> json(%{success: false, i18n_message: "pmall.bindMobile.invalidVerifyCode"})
     end
   end
 

@@ -760,7 +760,12 @@ defmodule Acs.PMalls do
           Repo.rollback(%{i18n_message: "pmall.bindMobile.notFound"})
 
         %AppWcpUser{} = wcp_user ->
-          if(wcp_user.user_id == nil || Accounts.exists?(mobile)) do
+          is_bind = Accounts.exists?(mobile)
+          if(is_bind) do
+            Repo.rollback(%{i18n_message: "pmall.bindMobile.hasBind"})
+          end
+
+          if(wcp_user.user_id == nil) do
               new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
               Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
           else

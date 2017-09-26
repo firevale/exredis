@@ -36,7 +36,7 @@
           <input type="text" class="input is-primary" v-model.trim="addressModel.address" placeholder="请输入您的地址">
         </div>
       </div>
-      <div class="fields is-flex flex-center flex-vcentered" v-show="errorHint && processing">
+      <div class="fields is-flex flex-center flex-vcentered" v-show="errorHint && !loading">
         <div class="column is-3 has-text-right is-warning">
           提示：
         </div>
@@ -101,6 +101,7 @@ export default {
   },
   data: function() {
     return {
+      loading: true,
       processing: false,
       addressModel: {
         mobile: '',
@@ -163,6 +164,7 @@ export default {
     },
     handleSubmit: async function() {
       if (!this.processing) {
+        this.loading = false
         this.processing = true
         let msg = this.errorHint
         if (msg != '') {
@@ -183,7 +185,9 @@ export default {
         let result;
         if (this.action == "exchange") {
           result = await this.$acs.updateAddress(data)
-        } else if (this.action == "draw") {}
+        } else if (this.action == "draw") {
+          result = await this.$acs.updateDrawAddress(data)
+        }
 
         if (result.success) {
           Toast.show(this.$t('pmall.address.saveSuccess'))

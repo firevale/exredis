@@ -81,6 +81,7 @@
     paidAt: '时间',
     address: '地址',
     deliverAt: '递送时间',
+    closeAt: '关闭时间',
     operate: '操作',
     notExist: '抽奖记录不存在',
     updateSuccess: '更新成功',
@@ -88,6 +89,8 @@
     close: '关闭订单',
     finish: '完成订单',
     delivered: '已寄出',
+    confirmUpdate: '是否将订单改为({status})的状态',
+    confirmUpdateAddress: '是否更新订单的地址信息',
    },
 
    sign:{

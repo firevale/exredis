@@ -104,6 +104,18 @@ defmodule AcsWeb.PMallController do
     end
   end
 
+  def take_award(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"days" => days}) do
+    wcp_user_id = 1
+    result = PMalls.take_sign_award(app_id, wcp_user_id, String.to_integer(days))
+    case result do
+      {:ok, add_point, total_point} ->
+        conn |> json(%{success: true, add_point: add_point, total_point: total_point, i18n_message: "pmall.award.gotSuccess"})
+      {:error, i18n_message} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
+    end
+   
+  end
+
   def update_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
   "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
@@ -119,11 +131,11 @@ defmodule AcsWeb.PMallController do
 
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
-    {:ok, signed, sign_times, pic, terms} = PMalls.get_sign_info(app_id, wcp_user_id)
-
+    {:ok, signed, sign_times, pic_raw, terms, awards} = PMalls.get_sign_info(app_id, wcp_user_id)
+    %{"pic" => pic} = pic_raw
     {total, sign_users} = PMalls.get_sign_users(app_id)
     conn |> json(%{success: true, signed: signed, sign_times: sign_times, pic: pic, terms: terms,
-    sign_total: total, sign_users: sign_users})
+    awards: awards, sign_total: total, sign_users: sign_users})
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do

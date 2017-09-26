@@ -228,9 +228,10 @@ span {
   .items {
     width: 98vw;
     margin: 0 auto;
-    border: 1px solid $border-color;
     flex-shrink: 0;
     .q-item {
+      border: 1px solid $border-color;
+      border-bottom: none;
       width: 100%;
       padding-top: 1rem;
       h2 {
@@ -244,6 +245,7 @@ span {
     .a-item {
       flex: 1;
       border: 1px solid $border-color;
+      width: 100%;
       .answer {
         border-left: 1px solid $border-color;
         border-right: 1px solid $border-color;

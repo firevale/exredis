@@ -54,6 +54,8 @@
    },
 
    draw: {
+    setting: '奖品设置',
+    log: '抽奖记录',
     editDraw: '编辑奖品信息',
     add: '添加新奖品',
     pic: '图片',
@@ -69,6 +71,23 @@
     updateSuccess: '修改成功',
     notFound: '奖品没有找到',
     overflow: '添加的所有奖品概率总和不能超过100',
+   },
+
+   drawLog: {
+    id: '编号',
+    name: '奖品',
+    user: '获奖者',
+    status: '状态',
+    paidAt: '时间',
+    address: '地址',
+    deliverAt: '递送时间',
+    operate: '操作',
+    notExist: '抽奖记录不存在',
+    updateSuccess: '更新成功',
+    save: '保存',
+    close: '关闭订单',
+    finish: '完成订单',
+    delivered: '已寄出',
    },
 
    sign:{

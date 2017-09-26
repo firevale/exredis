@@ -10,45 +10,41 @@
     </div>
     <div class="tile is-ancestor ">
       <div class="tile is-parent is-vertical">
-        <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="messages" style="width: 100%"
-          border @row-click="rowClick" @sort-change="sortChange" :default-sort="{prop: 'inserted_at', order: 'descending'}">
-          <!-- <el-table-column prop="id" :label="$t('admin.wcp.msgId')" sortable="custom" width="100">
-          </el-table-column> -->
-          <el-table-column :label="$t('admin.wcp.msgFrom')" width="180">
-            <template scope="scope">
-              {{ scope.row.from && scope.row.from.nickname ? scope.row.from.nickname : "" }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgTo')" width="180">
-            <template scope="scope">
-              {{ scope.row.to && scope.row.to.nickname ? scope.row.to.nickname : "" }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgContent')" width="400">
-            <template scope="scope">
-              <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"> {{ scope.row.content }} </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="total_mem_size" :label="$t('admin.wcp.msgType')" width="120">
-            <template scope="scope">
-              {{ scope.row.msg_type }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.wcp.msgTime')" prop="inserted_at" sortable="custom" width="180">
-            <template scope="scope">
-              {{ scope.row.inserted_at | formatServerDateTime }}
-            </template>
-          </el-table-column>
-          <el-table-column>
-          </el-table-column>
-        </el-table>
-        <div v-if="messages && messages.length > 0" class="tile is-child  ele-pagination">
-          <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
-          </el-pagination>
+        <div class="box" v-for="message in messages" :key="message.id" >
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img :src="message.from.avatar_url" alt="wechat avatar">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>{{message.from.nickname}}</strong>
+                  <br>
+                  {{message.content}}
+                </p>
+              </div>
+              <nav class="level is-mobile">
+                <div class="level-left">
+                  <a class="level-item">
+                    <span class="icon is-small" @click="showChat(message)"><i class="fa fa-reply"></i></span>
+                  </a>
+                </div>
+                <div class="level-right">
+                  <span class="level-item">
+                    <small><timeago :since="message.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
+                  </span>
+                </div>
+              </nav>
+            </div>
+          </article>
         </div>
+        <article class="tile is-child is-12">
+          <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+        </article>
       </div>
     </div>
-    <talk ref="talk" @close="showTalkModal = false"></talk>
   </div>
 </template>
 <script>
@@ -57,7 +53,10 @@ import {
   processAjaxError
 } from 'admin/miscellaneous'
 
-import talk from './talk'
+import {
+  showChatDialog
+} from 'admin/components/dialog/wcp/chat'
+
 import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
@@ -67,7 +66,6 @@ import Pagination from 'admin/components/Pagination'
 export default {
   components: {
     Pagination,
-    talk
   },
   data() {
     return {
@@ -83,58 +81,45 @@ export default {
   },
 
   mounted: function() {
-    this.listWcpUserMessages()
+    this.listWcpMessages()
   },
 
   methods: {
-    getRowKey: function(row) {
-      return row.id
+    showChat: function(message) {
+      showChatDialog({
+        visible: true,
+        message: message,
+        appId: this.$route.params.appId,
+      })
     },
-    rowClick: function(row, event) {
-      this.$refs.talk.open(row)
-    },
-    listWcpUserMessages: async function() {
+    listWcpMessages: async function(page) {
       this.loading = true
       var data = {
         app_id: this.$route.params.appId,
         keyword: this.keyword,
-        page: this.page,
+        page: page || this.page,
         records_per_page: this.recordsPerPage,
         sorts: this.sorts
       }
 
-      let result = await this.$acs.listWcpUserMessages(data)
+      let result = await this.$acs.listWcpMessages(data)
       if (result.success) {
         this.total = result.total
         this.messages = result.messages
+        this.page = page
       }
       this.loading = false
     },
 
-    onPageChange: function() {
-      this.listWcpUserMessages(this.page, this.recordsPerPage)
+    onPageChange: function(page) {
+      this.listWcpMessages(page)
     },
 
     onSearchBoxSubmit: async function() {
       this.messages = []
       this.page = 1
-      await this.listWcpUserMessages()
+      await this.listWcpMessages()
     },
-    sortChange: function(column) {
-      var field = column.prop
-
-      if (column.column == null) {
-        this.sorts = {}
-      } else if (column.order == "descending") {
-        this.sorts[column.prop] = "desc"
-      } else {
-        this.sorts[column.prop] = "asc"
-      }
-
-      this.page = 1
-      this.listWcpUserMessages()
-    },
-
   },
 
 }

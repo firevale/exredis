@@ -4,6 +4,7 @@
    keywordInfo: '敏感词配置',
    notFound: '配置项没有找到',
    id: '配置编号',
+   pic: '配置图',
    configName: '配置名',
    configValue: '配置值',
    configGroup: '分组',
@@ -12,6 +13,7 @@
    edit: '修改',
    delete: '删除',
    memo: '备注',
+   updateOk: '更新成功',
 
    groups: {
      basicInfo: '基本信息',

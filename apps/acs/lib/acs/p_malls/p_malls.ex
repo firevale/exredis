@@ -851,9 +851,13 @@ defmodule Acs.PMalls do
     end)
   end
 
-  def list_pmall_draw_orders(app_id, page, records_per_page) do
-    total = Repo.one!(from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id)
-    total_page = round(Float.ceil(total / records_per_page))
+  def list_pmall_draw_orders(app_id, page, records_per_page, show_only_win) do
+    totalQuery = from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id
+    totalQuery = case show_only_win do
+      true -> where(totalQuery, [q], q.lucky_draw_id != 8)
+      false -> totalQuery
+    end
+    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
     query = from q in LuckyDrawOrder,
       join: user in assoc(q, :wcp_user),
@@ -863,6 +867,11 @@ defmodule Acs.PMalls do
       offset: ^((page - 1) * records_per_page),
       select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
       preload: [wcp_user: user]
+
+    query = case show_only_win do
+      true -> where(query, [q], q.lucky_draw_id != 8)
+      false -> query
+    end
 
     orders = Repo.all(query)
     {:ok, orders, total_page}

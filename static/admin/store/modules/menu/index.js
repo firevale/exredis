@@ -123,6 +123,35 @@ const state = {
     {
       meta: {
         must: 'restrict_login',
+        icon: 'fa-paw',
+        level: '1,2,',
+        label: i18n.t('admin.menu.redeemCode'),
+        expanded: false,
+      },
+
+      children: [{
+          name: 'RedeemCodes',
+          path: '/admin/app/:appId/redeemCodes',
+          meta: {
+            icon: 'fa-registered',
+            level: '1,2,',
+            label: i18n.t('admin.menu.redeemCodeManage'),
+          },
+        },
+        {
+          name: 'RedeemCodeLog',
+          path: '/admin/app/:appId/redeemCodeLog',
+          meta: {
+            icon: 'fa-registered',
+            level: '1,2,',
+            label: i18n.t('admin.menu.redeemCodeLog'),
+          },
+        },
+      ]
+    },
+    {
+      meta: {
+        must: 'restrict_login',
         icon: 'fa-wechat',
         level: '1,2,3,',
         label: i18n.t('admin.menu.wechatPublic'),

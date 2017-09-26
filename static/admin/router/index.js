@@ -99,6 +99,14 @@ export default new Router({
           path: 'myLoginCodes',
           component: require('../views/app/loginCodes/myCodes')
         }, {
+          name: 'RedeemCodes',
+          path: 'redeemCodes',
+          component: require('../views/app/redeemCodes/codes')
+        }, {
+          name: 'RedeemCodeLog',
+          path: 'redeemCodeLog',
+          component: require('../views/app/redeemCodes/codeLog')
+        }, {
           name: 'WcpParams',
           path: 'wcpParams',
           component: require('../views/app/wechatPub/params')

@@ -337,8 +337,9 @@ defmodule AcsWeb.Admin.PMallController do
 
   def list_pmall_draw_orders(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
+                                      "show_only_win" => show_only_win,
                                       "records_per_page" => records_per_page}) do
-    {:ok, orders, total} = PMalls.list_pmall_draw_orders(app_id, page, records_per_page)
+    {:ok, orders, total} = PMalls.list_pmall_draw_orders(app_id, page, records_per_page, show_only_win)
     conn |> json(%{success: true, orders: orders, total: total})
   end
 

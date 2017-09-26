@@ -772,7 +772,7 @@ defmodule Acs.PMalls do
   end
 
   # 抽奖
-  def luck_draw(app_id, wcp_user_id, log_type) do
+  def luck_draw(app_id, wcp_user_id, log_type, address \\ %{}) do
     Repo.transaction(fn ->
       index = :rand.uniform(8)
       draw = get_draw(index)
@@ -793,7 +793,7 @@ defmodule Acs.PMalls do
                 Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
             true ->
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
-              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
+              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
               }
               # 扣除积分
               with {:ok, add_point, total_point} <-  PMallsPoint.add_point(log_type, app_id, wcp_user_id) do
@@ -802,9 +802,9 @@ defmodule Acs.PMalls do
                 # 创建抽奖订单
                 case create_draw_order(draw_order) do
                   {:error, %{errors: _errors}} ->
-                    Repo.rollback(%{i18n_message: "pmall.draw.123"})
-                  _ ->
-                    %{i18n_message: "pmall.draw.success", index: index}
+                    Repo.rollback(%{i18n_message: "pmall.draw.failed"})
+                  {:ok, order} ->
+                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: index, order: order, draw_name: draw.name}
                 end
               else
                 _ ->
@@ -813,6 +813,28 @@ defmodule Acs.PMalls do
           end
       end
     end)
+  end
+
+  def update_draw_address(wcp_user_id, order_id, address) do
+    with %LuckyDrawOrder{} = order  <- Repo.get(LuckyDrawOrder, order_id),
+      true <- wcp_user_id == order.wcp_user_id,
+      false <- Map.has_key?(order.address, "name")
+    do
+      LuckyDrawOrder.changeset(order, %{address: address}) |> Repo.update()
+    else
+      nil ->
+        {:error, "pmall.address.invalidOrder"}
+      false ->
+        {:error, "pmall.address.illegal"}
+      true ->
+        {:error, "pmall.address.illegal"}
+      %UserAddress{} ->
+        {:error, "pmall.address.illegal"}
+      other ->
+        d "#{inspect other}"
+        {:error, "pmall.address.failed"}
+    end
+
   end
 
   def count_draw_orders(app_id, wcp_user_id, draw_id) do
@@ -865,9 +887,13 @@ defmodule Acs.PMalls do
     end)
   end
 
-  def list_pmall_draw_orders(app_id, page, records_per_page) do
-    total = Repo.one!(from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id)
-    total_page = round(Float.ceil(total / records_per_page))
+  def list_pmall_draw_orders(app_id, page, records_per_page, show_only_win) do
+    totalQuery = from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id
+    totalQuery = case show_only_win do
+      true -> where(totalQuery, [q], q.lucky_draw_id != 8)
+      false -> totalQuery
+    end
+    total_page = round(Float.ceil(Repo.one!(totalQuery) / records_per_page))
 
     query = from q in LuckyDrawOrder,
       join: user in assoc(q, :wcp_user),
@@ -877,6 +903,11 @@ defmodule Acs.PMalls do
       offset: ^((page - 1) * records_per_page),
       select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
       preload: [wcp_user: user]
+
+    query = case show_only_win do
+      true -> where(query, [q], q.lucky_draw_id != 8)
+      false -> query
+    end
 
     orders = Repo.all(query)
     {:ok, orders, total_page}

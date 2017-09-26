@@ -1,7 +1,8 @@
 <template>
   <div class="draw-page bg-full bg-draw-page">
     <header></header>
-    <div class="rotate-container bg-full bg-draw-item">
+    <div class="rotate-container">
+      <img src="~assets/pmall/1245_34_03.png">
       <div class="bg-full bg-turn-needle"></div>
     </div>
     <footer class="is-flex flex-center flex-vcentered ">
@@ -20,6 +21,7 @@ import {
   mapActions
 } from 'vuex'
 import anime from 'animejs';
+import Toast from 'common/components/toast'
 export default {
   computed: {
     ...mapGetters([
@@ -33,7 +35,7 @@ export default {
         rotateOffset: -18,
         duration: 5000,
         gap: 10,
-        turns: 100,
+        turns: 15,
       }
     }
   },
@@ -53,10 +55,26 @@ export default {
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.luckDraw()
-        this.processing = false
         if (result.success) {
           index = result.index
+          setTimeout(() => {
+            Toast.show(this.$t(result.i18n_message, {
+              draw_name: result.draw_name
+            }))
+          }, 6000)
+          setTimeout(() => {
+            this.$router.push({
+              name: "new_address",
+              params: {
+                action: "draw",
+                order_id: result.order_id
+              }
+            })
+            this.processing = false
+          }, 8000)
         } else {
+          this.processing = false
+          Toast.show('抽奖失败，请稍后再试')
           return
         }
 

@@ -27,6 +27,6 @@ defmodule Acs.PMalls.LuckyDrawOrder do
   def changeset(%LuckyDrawOrder{} = lucky_draw_order, attrs) do
     lucky_draw_order
     |> cast(attrs, [:name, :pic, :status, :app_id, :wcp_user_id, :lucky_draw_id])
-    |> validate_required([:name, :pic, :status, :app_id, :wcp_user_id, :lucky_draw_id])
+    |> validate_required([:name, :status, :app_id, :wcp_user_id, :lucky_draw_id])
   end
 end

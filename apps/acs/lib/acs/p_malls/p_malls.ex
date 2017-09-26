@@ -799,12 +799,12 @@ defmodule Acs.PMalls do
     {:ok, orders, total_page}
   end
 
-  def update_pmall_draw_order(order_id, status, address, deliver_at, close_at) do
-    case Repo.get(LuckyDrawOrder, order_id) do
+  def update_pmall_draw_order(draw_order) do
+    case Repo.get(LuckyDrawOrder, draw_order["order_id"]) do
       nil ->
         nil
       %LuckyDrawOrder{} = order ->
-        LuckyDrawOrder.changeset(order, %{status: status, address: address, deliver_at: deliver_at, close_at: close_at}) |> Repo.update!
+        LuckyDrawOrder.changeset(order, %{status: draw_order["status"], address: draw_order["address"], deliver_at: draw_order["deliver_at"], close_at: draw_order["close_at"]}) |> Repo.update!
         :ok
     end
   end

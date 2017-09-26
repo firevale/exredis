@@ -43,10 +43,10 @@
                 <p>{{ order.wcp_user_id }}</p>
               </div>
               <div class="column">
-                <p>{{ order.status }}</p>
+                <p>{{ getStatus(order.status) }}</p>
               </div>
               <div class="column">
-                <p>{{ order.paidAt | formatServerDateTime }}</p>
+                <p>{{ order.paid_at | formatServerDateTime }}</p>
               </div>
               <div class="column">
                 <a @click.prevent="editOrder(order, index)">
@@ -99,7 +99,7 @@ export default {
       total: 1,
       recordsPerPage: 20,
       loading: false,
-      showOnlyWin: true 
+      showOnlyWin: true
     }
   },
 
@@ -108,6 +108,21 @@ export default {
   },
 
   methods: {
+    getStatus(status) {
+      switch (status) {
+        case -1:
+          return '已关闭'
+        case 0:
+          return '待支付'
+        case 1:
+          return '已支付'
+        case 2:
+          return '待收货'
+        case 4:
+          return '已完成'
+      }
+    },
+
     getOrders: async function(page, recordsPerPage) {
       this.loading = true
       let result = await this.$acs.listPMallLuckyDrawOrders({
@@ -127,6 +142,7 @@ export default {
         order: order,
         visible: true,
         callback: result => {
+          alert("callback")
           this.orders[index] = result
         },
       })

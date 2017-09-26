@@ -120,25 +120,27 @@ defmodule Acs.Search do
     end
   end
 
-  def search_wcp_message(keyword: keyword, app_id: app_id, sorts: sorts, page: page, records_per_page: records_per_page) do
-    build_sort =
-      fn (key, exp) ->
-        order_by = Map.get(sorts, key)
-        Map.put_new(exp, key, %{order: order_by})
-      end
-
-    sort = Enum.reduce(Map.keys(sorts), %{}, build_sort)
-
+  def search_wcp_message(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do
     query = %{
       query: %{
         bool: %{
-          must: [ %{term: %{app_id: app_id}}, %{exists: %{field: "from.openid"}}],
+          must: [ 
+            %{term: %{app_id: app_id}}, 
+            %{term: %{msg_type: "text"}}, 
+            %{exists: %{field: "from.openid"}},
+            %{exists: %{field: "from.avatar_url"}},
+          ],
+          must_not: [
+            %{term: %{"from.nickname" => "系统"}},
+          ],
           should: [],
           minimum_should_match: 0,
           boost: 1.0,
         },
       },
-      sort: sort,
+      sort: [ 
+        %{inserted_at: :desc}
+      ],
       from: (page - 1) * records_per_page,
       size: records_per_page,
     }

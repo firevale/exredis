@@ -1,191 +1,34 @@
 <template>
-  <div class="tile is-ancestor">
-    <div class="tile is-parent is-vertical">
-      <article class="tile is-child is-12">
-        <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addNewDraw">
-            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.draw.add') }}
-          </a>
-        </div>
-      </article>
-      <article class="tile is-child is-12">
-        <div class="table-responsive">
-          <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
-            <div class="column">
-              <p>{{ $t('admin.point.draw.pic') }}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.draw.name')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.draw.num')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.draw.rate')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.draw.edit')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.draw.delete')}}</p>
-            </div>
-          </div>
-          <div v-if="draws">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="draws && draws.length > 0"
-              v-for="(draw, index) in draws" :key="draw.id">
-              <div class="column">
-                <center>
-                  <figure class="image news-pic" @click="updateDrawPic(draw)">
-                    <img :src="draw.pic ? draw.pic: 'https://placehold.it/150x200?text=300X400'  | imageStaticUrl" style="max-height:60px; width:auto; "></img>
-                  </figure>
-                </center>
-              </div>
-              <div class="column">
-                <p>{{ draw.name }}</p>
-              </div>
-              <div class="column">
-                <p>{{ draw.num }}</p>
-              </div>
-              <div class="column">
-                <p>{{ draw.rate }}</p>
-              </div>
-              <div class="column">
-                <a @click.prevent="editDraw(draw, index)">
-                  <i class="fa fa-pencil"></i>
-                </a>
-              </div>
-              <div class="column">
-                <a @click.prevent="delDraw(draw.id, index)">
-                  <i class="fa fa-trash-o"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </div>
+  <div>
+    <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
+      <tab-pane icon="fa fa-clone" :label="$t('admin.point.draw.setting')">
+        <lucky-draw></lucky-draw>
+      </tab-pane>
+      <tab-pane icon="fa fa-support" :label="$t('admin.point.draw.log')">
+        <lucky-draw-log></lucky-draw-log>
+      </tab-pane>
+    </tabs>
   </div>
 </template>
 <script>
-import Vue from 'vue'
 import {
-  i18n
-} from 'admin/vue-i18n'
-
-import {
-  showMessageBox
-} from 'admin/components/dialog/messageBox'
+  mapActions
+} from 'vuex'
 
 import {
-  showImageUploadDialog
-} from 'common/components/imageUpload'
+  Tabs,
+  TabPane
+} from 'vue-bulma-tabs'
 
-import drawDialog from 'admin/components/dialog/point/luckyDraw'
-const drawDialogComponent = Vue.extend(drawDialog)
-
-const openDrawDialog = (propsData = {
-  visible: true
-}) => {
-  return new drawDialogComponent({
-    i18n,
-    el: document.createElement('div'),
-    propsData
-  })
-}
+import luckyDraw from 'admin/components/pmall/luckyDraw'
+import luckyDrawLog from 'admin/components/pmall/luckyDrawLog'
 
 export default {
-  data() {
-    return {
-      draws: [],
-      picWidth: 300,
-      picHeight: 400,
-      processing: false
-    }
-  },
-
-  created: function() {
-    this.getDraws()
-  },
-
-  methods: {
-    getDraws: async function() {
-      this.processing = true
-      let result = await this.$acs.listPmallDraws()
-      if (result.success) {
-        this.draws = result.draws
-      }
-      this.processing = false
-    },
-
-    updateDrawPic: function(draw) {
-      showImageUploadDialog(this.$i18n, {
-        postAction: '/admin_actions/pmall/upload_draw_pic',
-        width: this.picWidth,
-        height: this.picHeight,
-        data: {
-          draw_id: draw.id
-        },
-        headers: {
-          'x-csrf-token': window.acsConfig.csrfToken
-        },
-        extensions: ['png', 'jpg', 'jpeg'],
-        title: this.$t('admin.titles.uploadDrawPic', {
-          picWidth: this.picWidth,
-          picHeight: this.picHeight
-        }),
-        callback: response => draw.pic = response.pic,
-      })
-    },
-
-    editDraw: function(draw, index) {
-      openDrawDialog({
-        draw: draw,
-        visible: true,
-        callback: result => {
-          this.draws[index] = result
-        },
-      })
-    },
-
-    delDraw: function(drawId, index) {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.point.draw.confirmDelete'),
-        type: 'danger',
-        onOK: async _ => {
-          this.processing = true
-          let result = await this.$acs.deletePmallDraw({
-            draw_id: drawId,
-          }, this.$t('admin.point.draw.deleted'))
-          if (result.success) {
-            this.draws.splice(index, 1)
-          }
-          this.processing = false
-        },
-      })
-    },
-
-    addNewDraw: function() {
-      if (this.draws.length >= 8) {
-        alert("只能设置8个奖品");
-      } else {
-        openDrawDialog({
-          draw: {
-            id: '0',
-            name: '',
-            pic: '',
-            num: '',
-            rate: '',
-            app_id: this.$route.params.appId
-          },
-          visible: true,
-          callback: result => {
-            this.draws.unshift(result)
-          },
-        })
-      }
-    },
+  components: {
+    Tabs,
+    TabPane,
+    luckyDraw,
+    luckyDrawLog,
   },
 }
 </script>

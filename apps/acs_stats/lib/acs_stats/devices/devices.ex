@@ -21,16 +21,7 @@ defmodule AcsStats.Devices do
 
   alias AcsStats.RealtimeMetrics
 
-  def log_device_info(device_id, platform, device_model, os_ver, device_memory_size) do 
-    device_info = CachedDeviceInfo.get(device_model) || %DeviceInfo{}
-    case DeviceInfo.changeset(device_info, %{id: device_model, total_mem_size: device_memory_size}) do 
-      %{changes: changes} when changes == %{} -> 
-        :not_changed
-      cs ->
-        {:ok, device_info} = Repo.insert_or_update(cs)
-        CachedDeviceInfo.refresh(device_info)
-    end
-
+  def log_device_info(device_id, platform, device_model, os_ver, nil) do 
     device = CachedDevice.get(device_id) || %Device{}    
 
     case Device.changeset(device, %{id: device_id, model: device_model, platform: platform, os: os_ver}) do 
@@ -40,6 +31,19 @@ defmodule AcsStats.Devices do
         {:ok, device} = Repo.insert_or_update(cs)
         CachedDevice.refresh(device)
     end
+  end
+
+  def log_device_info(device_id, platform, device_model, os_ver, device_memory_size) do 
+    device_info = CachedDeviceInfo.get(device_model) || %DeviceInfo{}
+    case DeviceInfo.changeset(device_info, %{id: device_model, total_mem_size: device_memory_size}) do 
+      %{changes: changes} when changes == %{} -> 
+        :not_changed
+      cs ->
+        {:ok, device_info} = Repo.insert_or_update(cs)
+        CachedDeviceInfo.refresh(device_info)
+    end
+    
+    log_device_info(device_id, platform, device_model, os_ver, nil)
   end
 
   def log_app_device(date, app_id, device_id, platform, sdk) do 

@@ -142,16 +142,17 @@ defmodule AcsWeb.PMallController do
     app_id = "3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
 
-    case verify_code do
-      "12345" ->
+    case get_session(conn, :bind_mobile_verify_code) do
+      ^verify_code ->
         case PMalls.bind_mobile(app_id, open_id, mobile) do
           {:ok, mobile} ->
-            conn |> json(%{success: true, i18n_message: "pmall.bindMobile.addSuccess"})
-          :error ->
-            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+            conn |> delete_session(:bind_mobile_verify_code)
+                 |> json(Map.merge(%{success: true}, mobile))
+          {:error, %{i18n_message: i18n_message}} ->
+            conn |> json(%{success: false, i18n_message: i18n_message})
         end
       _ ->
-        conn |> json(%{success: false, i18n_message: "error.server.invalidVerifyCode"})
+        conn |> json(%{success: false, i18n_message: "pmall.bindMobile.invalidVerifyCode"})
     end
   end
 
@@ -162,7 +163,7 @@ defmodule AcsWeb.PMallController do
                 "address" => _address,
                 "area_code" => _area_code} = us_address) do
 
-    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     case Wcp.get_app_wcp_user(app_id, openid: open_id) do
       nil ->
         conn |> json(%{success: false, message: "invalid request params"})
@@ -179,7 +180,7 @@ defmodule AcsWeb.PMallController do
 
   def get_daily_question(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     wcp_user_id = 1
-    exists = PMalls.exists_answer(app_id, wcp_user_id)
+    exists = PMalls.exists_answer_user(app_id, wcp_user_id)
     case PMalls.get_daily_question(app_id) do
       nil ->
         conn |> json(%{success: false, exists: exists})
@@ -193,8 +194,8 @@ defmodule AcsWeb.PMallController do
       wcp_user_id = 1
       result = PMalls.answer_question(id, app_id, wcp_user_id, correct)
       case result do
-        {:ok, %{i18n_message: i18n_message}} ->
-          conn |> json(%{success: true, i18n_message: i18n_message})
+        {:ok, answer} ->
+          conn |> json(Map.merge(%{success: true}, answer))
         {:error, %{i18n_message: i18n_message}} ->
           conn |> json(%{success: false, i18n_message: i18n_message})
       end

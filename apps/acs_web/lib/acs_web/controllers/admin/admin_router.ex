@@ -31,6 +31,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/add_setting", AdminSettingController, :add_setting
       post  "/update_setting", AdminSettingController, :update_setting
       post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
+      post  "/upload_setting_pic", AdminSettingController, :upload_setting_pic
     end
 
     scope "/app" do
@@ -128,7 +129,7 @@ defmodule AcsWeb.AdminRouter do
 
       post  "/create_app_wcp_config", WcpController, :create_app_wcp_config
       post  "/update_app_wcp_config", WcpController, :update_app_wcp_config 
-      post  "/list_wcp_user_messages", WcpController, :list_wcp_user_messages
+      post  "/list_wcp_messages", WcpController, :list_wcp_messages
       post  "/list_user_wcp_messages", WcpController, :list_user_wcp_messages
       post  "/reply_user_wcp_message", WcpController, :reply_user_wcp_message
       post  "/update_wcp_message_rule", WcpController, :update_wcp_message_rule
@@ -167,6 +168,8 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_pmall_draw", PMallController, :update_pmall_draw
       post  "/delete_pmall_draw", PMallController, :delete_pmall_draw
       post  "/upload_draw_pic", PMallController, :upload_draw_pic
+      post  "/list_pmall_draw_orders", PMallController, :list_pmall_draw_orders
+      post  "/update_pmall_draw_order", PMallController, :update_pmall_draw_order
     end
 
   end

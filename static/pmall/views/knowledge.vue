@@ -51,6 +51,7 @@
   </div>
 </template>
 <script>
+import Toast from 'common/components/toast'
 import {
   mapGetters,
   mapActions
@@ -88,11 +89,16 @@ export default {
         this.processing = true
         let result = await this.$acs.answerQuestion(this.question.id, this.correct)
         if (result.success) {
-          this.isCorrect = true
-          this.isWwrong = false
-        } else {
-          this.isWwrong = true
-          this.isCorrect = false
+          if (result.answer) {
+            this.isCorrect = true
+            this.isWwrong = false
+            Toast.show(this.$t(result.i18n_message, {
+              point: result.add_point
+            }))
+          } else {
+            this.isWwrong = true
+            this.isCorrect = false
+          }
         }
         this.isComplete = true
         this.processing = false

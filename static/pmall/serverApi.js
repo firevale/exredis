@@ -117,6 +117,9 @@ export default {
       luckDraw() {
         return post("/pmall_actions/luck_draw")
       },
+      updateDrawAddress(params) {
+        return post("/pmall_actions/update_draw_address", params)
+      },
     }
   }
 }

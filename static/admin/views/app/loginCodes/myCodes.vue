@@ -3,7 +3,7 @@
     <div class="columns" v-for="code in myLoginCodes" :key="code.id">
       <span class="column is-3">{{ code.code}} </span>
       <span class="column is-3">{{ code.user_id}} </span>
-      <span class="column is-3">{{ code.assigned_at }} </span>
+      <span class="column is-3">{{ code.assigned_at | formatServerDateTime }} </span>
 
 
     </div>

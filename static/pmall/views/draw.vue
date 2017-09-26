@@ -1,7 +1,8 @@
 <template>
   <div class="draw-page bg-full bg-draw-page">
     <header></header>
-    <div class="rotate-container bg-full bg-draw-item">
+    <div class="rotate-container">
+      <img src="~assets/pmall/1245_34_03.png">
       <div class="bg-full bg-turn-needle"></div>
     </div>
     <footer class="is-flex flex-center flex-vcentered ">
@@ -60,7 +61,6 @@ export default {
             Toast.show(this.$t(result.i18n_message, {
               draw_name: result.draw_name
             }))
-            this.processing = false
           }, 6000)
           setTimeout(() => {
             this.$router.push({
@@ -70,6 +70,7 @@ export default {
                 order_id: result.order_id
               }
             })
+            this.processing = false
           }, 8000)
         } else {
           this.processing = false

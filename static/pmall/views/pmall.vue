@@ -12,9 +12,10 @@
               <router-link class="image" :to="{name: 'detail',params:{id: goods.id}}" tag="div"></router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-medium  is-danger is-flex flex-vcentered flex-center">
-                      <span class="item-title is-ellipsis">{{goods.name}}</span> <a class="button btn-conversion" style="margin-left:1rem"></a></h1>
+                      <span class="item-title is-ellipsis">{{goods.name}}</span> <router-link class="button btn-conversion" style="margin-left:1rem" :to="{name: 'detail',params:{id: goods.id}}" tag="a"></router-link></h1>
                 <p class="is-marginless is-size-small   has-text-centered">兑换积分:
-                  <span class="is-primary">{{goods.price}}</span> <a href="#" style="margin-left:1rem">查看礼品详情</a>
+                  <span class="is-primary">{{goods.price}}</span>
+                  <router-link style="margin-left:1rem" :to="{name: 'detail',params:{id: goods.id}}" tag="a">查看礼品详情</router-link>
                 </p>
               </div>
             </div>

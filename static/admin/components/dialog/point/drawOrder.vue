@@ -78,7 +78,7 @@ export default {
         message: this.$t('admin.point.drawLog.confirmUpdateAddress'),
         type: 'danger',
         onOK: _ => {
-          // this._updateOrder(order)
+          this._updateOrder(order)
         },
       })
     },
@@ -94,7 +94,7 @@ export default {
         onOK: _ => {
           order.status = status
           if (status == 2) order.deliver_at = new Date()
-          // this._updateOrder(order)
+          this._updateOrder(order)
         },
       })
     },

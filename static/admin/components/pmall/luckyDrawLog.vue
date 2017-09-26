@@ -138,6 +138,7 @@ export default {
     },
 
     editOrder: function(order, index) {
+      console.log(order)
       openDrawOrderDialog({
         order: order,
         visible: true,

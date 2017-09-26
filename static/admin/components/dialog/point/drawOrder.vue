@@ -6,7 +6,7 @@
       </div>
       <form name="section" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.point.drawLog.name') }}: {{ order.name }}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.user') }}: {{ order.wcp_user_id }}</label>
+        <label class="label"> {{ $t('admin.point.drawLog.user') }}: {{ order.wcp_user.nickname }}</label>
         <label class="label"> {{ $t('admin.point.drawLog.status') }}: {{ getStatus(order.status) }}</label>
         <label class="label"> {{ $t('admin.point.drawLog.paidAt') }}: {{ order.paid_at | formatServerDateTime }}</label>
         <label class="label"> {{ $t('admin.point.drawLog.deliverAt') }}: {{ order.deliver_at | formatServerDateTime}}</label>

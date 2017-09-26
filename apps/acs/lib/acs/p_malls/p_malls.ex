@@ -812,11 +812,13 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from q in LuckyDrawOrder,
+      join: user in assoc(q, :wcp_user),
       where: q.app_id == ^app_id,
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :wcp_user_id, :lucky_draw_id])
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
+      preload: [wcp_user: user]
 
     orders = Repo.all(query)
     {:ok, orders, total_page}

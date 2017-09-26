@@ -3,8 +3,6 @@ defmodule Acs.PMalls.LuckyDrawOrder do
   import Ecto.Changeset
   alias Acs.PMalls.LuckyDrawOrder
   
-  @derive {Poison.Encoder, except: [:app, :wcp_user, :__meta__]}
-
   schema "pmall_lucky_draw_orders" do
     field :name, :string
     field :pic, :string

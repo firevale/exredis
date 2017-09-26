@@ -20,7 +20,7 @@ Enum.map_every(0..max_id, 100, fn current_id ->
       case Acs.Accounts.get_user(app_user.user_id) do
         %User{} = user ->
           Elasticsearch.index(%{index: "acs",
-            type: "user",
+            type: "users",
             params: nil,
             id: user.id,
             doc: user})

@@ -1,17 +1,18 @@
 <template>
   <el-table :data="appUsers">
-    <el-table-column prop="app_user_name" label="游戏ID" width="200">
+    <el-table-column prop="app_user_id" label="游戏id" width="130">
     </el-table-column>
-    <el-table-column prop="app_user_level" label="等级">
+    <el-table-column prop="app_user_name" label="昵称" width="160">
     </el-table-column>
-    <el-table-column label="最后活跃时间" width="180">
+    <el-table-column prop="app_user_level" label="等级" width="80">
+    </el-table-column>
+    <el-table-column label="最后活跃时间" width="190">
       <template scope="scope">
         {{ scope.row.last_active_at | formatServerDateTime }}
       </template>
     </el-table-column>
-    <el-table-column label="充值金额" width="150">
+    <el-table-column label="充值金额" width="120">
       <template scope="scope">
-        <el-icon name="information"></el-icon>
         <span>{{ scope.row.pay_amount | formatPrice }} 元</span>
       </template>
     </el-table-column>

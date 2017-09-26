@@ -9,20 +9,6 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
     Elasticsearch.delete_index("acs")
 
     mappings = %{
-      orders: %{
-        properties: %{
-          id: %{type: :keyword},
-          app_id: %{type: :keyword},
-          user_id: %{type: :keyword},
-          goods_id: %{type: :keyword},
-          device_id: %{type: :keyword},
-          cp_order_id: %{type: :text},
-          transaction_id: %{type: :text},
-          app_user_id: %{type: :keyword},
-          sdk_user_id: %{type: :keyword},
-          inserted_at: %{type: :date},
-        }
-      },
       users: %{
         properties: %{
           id: %{type: :keyword},
@@ -31,6 +17,41 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           nickname: %{type: :text, analyzer: :ik_smart},
           device_id: %{type: :keyword},
           inserted_at: %{type: :date}
+        }
+      },
+      sdk_users: %{
+        _parent: %{type: :users},
+        properties: %{
+          id: %{type: :keyword},
+          sdk: %{type: :keyword},
+          nickname: %{type: :text, analyzer: :ik_smart},
+        }        
+      },
+      app_orders: %{
+        _parent: %{type: :users},
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          user_id: %{type: :keyword},
+          status: %{type: :keyword},
+          goods_id: %{type: :keyword},
+          goods_name: %{type: :text, analyzer: :ik_smart},
+          goods_price: %{type: :integer},
+          goods_icon: %{type: :keyword},
+          currency: %{type: :keyword},
+          fee: %{type: :integer},
+          transaction_currency: %{type: :keyword},
+          device_id: %{type: :keyword},
+          cp_order_id: %{type: :text},
+          transaction_id: %{type: :text},
+          app_user_id: %{type: :keyword},
+          zone_id: %{type: :keyword},
+          sdk: %{type: :keyword},
+          sdk_user_id: %{type: :keyword},
+          inserted_at: %{type: :date},
+          paid_at: %{type: :date},
+          delivered_at: %{type: :date},
+          cp_result: %{type: :text}
         }
       },
       app_users: %{

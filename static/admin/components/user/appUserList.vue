@@ -1,12 +1,12 @@
 <template>
   <el-table :data="appUsers">
-    <el-table-column prop="app_user_id" label="游戏id" width="100">
+    <el-table-column prop="app_user_id" label="游戏id" width="130">
     </el-table-column>
-    <el-table-column prop="app_user_name" label="昵称" width="200">
+    <el-table-column prop="app_user_name" label="昵称" width="160">
     </el-table-column>
     <el-table-column prop="app_user_level" label="等级" width="80">
     </el-table-column>
-    <el-table-column label="最后活跃时间" width="180">
+    <el-table-column label="最后活跃时间" width="190">
       <template scope="scope">
         {{ scope.row.last_active_at | formatServerDateTime }}
       </template>

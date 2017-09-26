@@ -33,7 +33,7 @@ defmodule AcsWeb.WcpController do
               openid: user_info.openid,
               nickname: user_info.nickname,
               sex: user_info.sex,
-              avatar_url: user_info.headimgurl |> String.replace_leading("http:", ""),
+              avatar_url: user_info.headimgurl |> remove_scheme(),
               city: user_info.city,
               country: user_info.country,
               app_id: app_id
@@ -45,8 +45,8 @@ defmodule AcsWeb.WcpController do
           ESWcpMessage.index(%{from: %{
               openid: wcp_user.openid, 
               nickname: wcp_user.nickname,
-              avatar_url: wcp_user.avatar_url |> String.replace_leading("http:", ""), 
-              },
+              avatar_url: user_info.headimgurl |> remove_scheme(),
+            },
             to: %{openid: msg.tousername, nickname: "系统"},
             msg_type: msg.msgtype,
             content: case msg.msgtype do 
@@ -61,7 +61,7 @@ defmodule AcsWeb.WcpController do
             ESWcpMessage.index(%{to: %{
               openid: wcp_user.openid, 
               nickname: wcp_user.nickname,
-              avatar_url: wcp_user.avatar_url |> String.replace_leading("http:", ""),
+              avatar_url: wcp_user.avatar_url |> remove_scheme(),
               },
               from: %{openid: reply.from, nickname: "系统"},
               msg_type: "text",
@@ -84,4 +84,9 @@ defmodule AcsWeb.WcpController do
         conn |> text("success")
     end
   end
+
+  defp remove_scheme(nil), do: nil
+  defp remove_scheme("http:" <> v), do: v
+  defp remove_scheme("https:" <> v), do: v
+  defp remove_scheme(v), do: v
 end

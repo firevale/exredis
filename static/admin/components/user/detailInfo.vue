@@ -16,9 +16,9 @@
             </div>
           </nav>
           <div class="content">
-            <span>昵称:&nbsp<small>{{user.nickname}}</small><br/></span>
-            <span v-show="user.email">email:&nbsp<small>{{user.email}}</small><br/></span>
-            <span v-show="user.mobile">手机:&nbsp<small>{{user.mobile}}</small><br/></span>
+            <span>昵称:&nbsp<small>{{user.nickname}}</small></span>
+            <span v-show="user.email">email:&nbsp<small>{{user.email}}</small></span>
+            <span v-show="user.mobile">手机:&nbsp<small>{{user.mobile}}</small></span>
           </div>
         </div>
       </article>          

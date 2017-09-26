@@ -327,7 +327,7 @@ defmodule Acs.PMalls do
   def _sign_cache_key_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
   def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
   def _sign_cache_key_users(app_id), do: "pmall:sign:users:#{app_id}:#{Timex.today}"
-
+  def _sign_cache_key_calendar(app_id, group_name), do: "pmall:sign:calendar:#{app_id}:#{group_name}:#{Timex.today}"
   def sign(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
     signed = Exredis.incr(sign_key)
@@ -387,12 +387,34 @@ defmodule Acs.PMalls do
     sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
-    sign_times =
-      case  Exredis.get(sign_key_times) do
-        nil -> 0
-        times -> String.to_integer(times)
-      end
-    {:ok, signed, sign_times}
+    sign_times = _get_sign_times(sign_key_times)
+
+    pic = _get_sign_calendar(app_id, "signPic")
+    terms =  _get_sign_calendar(app_id, "signLunar")
+      
+    {:ok, signed, sign_times, pic, terms}
+  end
+  defp _get_sign_times(sign_key_times) do
+    case  Exredis.get(sign_key_times) do
+      nil -> 0
+      times -> String.to_integer(times)
+    end
+  end
+
+  defp _get_sign_calendar(app_id, groun_name) do
+    cache_key = _sign_cache_key_calendar(app_id, groun_name)
+    case  Exredis.get(cache_key) do
+      nil ->
+          values = Acs.Admin.get_settings_by_group(app_id, groun_name)
+          index = Date.utc_today |> Date.days_in_month
+          value = Enum.at(values, Integer.mod(index, Enum.count(values)))
+          encode_value = value |> :erlang.term_to_binary |> Base.encode64
+          Exredis.set(cache_key, encode_value)
+          value
+      raw ->
+          raw |> Base.decode64! |> :erlang.binary_to_term
+    end
+    
   end
 
   # 积分
@@ -834,11 +856,13 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(total / records_per_page))
 
     query = from q in LuckyDrawOrder,
+      join: user in assoc(q, :wcp_user),
       where: q.app_id == ^app_id,
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :wcp_user_id, :lucky_draw_id])
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
+      preload: [wcp_user: user]
 
     orders = Repo.all(query)
     {:ok, orders, total_page}

@@ -141,10 +141,9 @@ export default {
       openDrawOrderDialog({
         order: order,
         visible: true,
-        callback: result => {
-          alert("callback")
-          this.orders[index] = result
-        },
+        // callback: result => {
+        //   this.orders[index] = result
+        // },
       })
     },
 

@@ -12,7 +12,7 @@
         <div v-if="columns" v-for="column in columns.split('|')" :key="column">
           <label class="label"> {{ column.split("=")[0] }}: </label>
           <p class="control">
-            <input class="input" :id="column.split('=')[1]" type="text" @input="updateMessage">
+            <input class="input" :id="column.split('=')[1]" type="text" :value="getValue(setting.value,column.split('=')[1])" @input="updateMessage">
           </p>
         </div>
         <label class="label"> {{ $t('admin.setting.memo') }}: </label>
@@ -58,6 +58,14 @@ export default {
   },
 
   methods: {
+    getValue(value, name) {
+      if (value.length > 0) {
+        let jobj = JSON.parse(value)
+        return jobj[name]
+      } else {
+        return ''
+      }
+    },
     updateMessage(e) {
       if (this.setting.value.length > 0) {
         let jobj = JSON.parse(this.setting.value)

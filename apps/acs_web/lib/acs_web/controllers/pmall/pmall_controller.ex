@@ -119,9 +119,11 @@ defmodule AcsWeb.PMallController do
 
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
     wcp_user_id = 1
-    {:ok, signed, sign_times} = PMalls.get_sign_info(app_id, wcp_user_id)
+    {:ok, signed, sign_times, pic, terms} = PMalls.get_sign_info(app_id, wcp_user_id)
+
     {total, sign_users} = PMalls.get_sign_users(app_id)
-    conn |> json(%{success: true, signed: signed, sign_times: sign_times, sign_total: total, sign_users: sign_users})
+    conn |> json(%{success: true, signed: signed, sign_times: sign_times, pic: pic, terms: terms,
+    sign_total: total, sign_users: sign_users})
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
@@ -208,10 +210,23 @@ defmodule AcsWeb.PMallController do
     result = PMalls.luck_draw(app_id, wcp_user_id, log_type)    
     case result do
       {:ok, draw} ->
-        conn |> json(%{success: true, index: draw.index})
+        conn |> json(%{success: true, index: draw.index, draw_name: draw.draw_name, order_id: draw.order.id, total_point: draw.total_point, i18n_message: draw.i18n_message})
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
+  end
+
+  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
+  "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    wcp_user_id  = 1
+    result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)
+    case result do 
+      {:ok, order} ->
+        conn |> json(%{success: true})
+      {:error, i18n_message} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
+    end 
   end
 
 end

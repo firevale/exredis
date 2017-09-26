@@ -1,24 +1,27 @@
 <template>
   <modal :visible="visible" class="user-detail">
     <div class="box" v-if="user">
-      <el-table :data="user">
-        <el-table-column prop="email" label="账号" width="180">
-        </el-table-column>
-        <el-table-column prop="nickname" label="昵称" width="120">
-        </el-table-column>
-        <el-table-column prop="mobile" label="移动电话" width="130">
-        </el-table-column>
-        <el-table-column prop="age" label="年龄">
-        </el-table-column>
-        <el-table-column label="性别">
-          <template scope="scope">
-            {{ scope.row.gender =='male' ? '男' : '女' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="inserted_at" label="注册时间" width="180" :formatter="formatServerDateTime">
-        </el-table-column>
-      </el-table>
-      <br/>
+      <article class="media" style="margin-bottom: 1rem">
+        <div class="media-left">
+          <figure class="image is-48x48">
+            <img :src="(user.avatar_url || '/images/default_avatar.png') | imageStaticUrl" alt="user avatar">
+          </figure>
+        </div>
+        <div class="media-content">
+          <nav class="level is-mobile" style="margin-bottom: 0.25rem">
+            <div class="level-left">
+              <span class="level-item">
+                <strong>{{user.id}}</strong>
+              </span>
+            </div>
+          </nav>
+          <div class="content">
+            <span>昵称:&nbsp<small>{{user.nickname}}</small></span>
+            <span v-show="user.email">email:&nbsp<small>{{user.email}}</small></span>
+            <span v-show="user.mobile">手机:&nbsp<small>{{user.mobile}}</small></span>
+          </div>
+        </div>
+      </article>          
       <div v-if="appUsers">
         <el-card class="box-card" v-for="(app, index) in appUsers" :key="app.id">
           <br/>
@@ -35,11 +38,10 @@
           </div>
           <div class="column has-text-right">
             <div class=" has-text-left">
-              <h1 class="title is-marginless">合计：</h1>
-              <h2 class="subtitle is-marginless">充值金额：<strong>{{ summaryAmount | formatPrice }} 元</strong>
-              </h2>
-              <h2 class="subtitle is-marginless">活跃时长：<strong>{{ summarySeconds| secondFormatHour }}小时</strong>
-              </h2>
+              <h3 class="title is-5 is-marginless">合计：</h3>
+              <h5 class="subtitle is-6 is-marginless">充值金额：<strong>{{ sumAmount | formatPrice }} 元</strong> </h5>
+              <h5 class="subtitle is-6 is-marginless">活跃时长：<strong>{{ sumSeconds| secondFormatHour }}小时</strong>
+              </h5>
             </div>
           </div>
         </div>
@@ -63,8 +65,8 @@
 import {
   Modal
 } from 'vue-bulma-modal'
-import * as filters from 'common/js/filters'
 
+import * as filters from 'common/js/filters'
 import AppUserList from 'admin/components/user/appUserList'
 
 export default {
@@ -86,8 +88,8 @@ export default {
       buttonType: ["success", "danger", "info", "text", "warning", "primary"],
       user: undefined,
       appUsers: undefined,
-      summarySeconds: 0,
-      summaryAmount: 0
+      sumSeconds: 0,
+      sumAmount: 0
     }
   },
   methods: {
@@ -100,10 +102,10 @@ export default {
       let result = await this.$acs.getUserInfo(this.id)
       if (result.success) {
         this.user = result.user
-        this.appUsers = this.user[0].app_users
-        for (var app of this.appUsers) {
-          this.summaryAmount += parseInt(app.pay_amount)
-          this.summarySeconds += parseInt(app.active_seconds)
+        this.appUsers = this.user.app_users
+        for (var appUser of this.appUsers) {
+          this.sumAmount += parseInt(appUser.pay_amount)
+          this.sumSeconds += parseInt(appUser.active_seconds)
         }
       }
     },

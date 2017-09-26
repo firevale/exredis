@@ -47,8 +47,13 @@ defmodule Acs.Accounts do
 
   def fetch_anonymous_user(device_id) do 
     case CachedUser.get_by(:device, device_id) do 
-      nil -> User.changeset(%User{}, %{device_id: device_id, nickname: gen_nickname()}) |> Repo.insert!
-      user = %User{} -> user
+      nil -> 
+        user = User.changeset(%User{}, %{device_id: device_id, nickname: gen_nickname()}) |> Repo.insert!
+        CachedUser.refresh(user)
+        ESUser.index(user)
+        user
+      user = %User{} -> 
+        user
     end
   end
 
@@ -60,6 +65,7 @@ defmodule Acs.Accounts do
         new_user = User.changeset(user, attr) |> Repo.update!        
         CachedUser.del_device_index(device_id)
         CachedUser.refresh(new_user)
+        ESUser.index(new_user)
         new_user
     end
   end
@@ -79,6 +85,8 @@ defmodule Acs.Accounts do
                 sdk: sdk, 
                 user_id: user.id, 
                 sdk_user_id: sdk_user_id}) |> Repo.insert!
+              CachedUser.refresh(user)
+              ESUser.index(user)
               
               {:ok, user}
             end)

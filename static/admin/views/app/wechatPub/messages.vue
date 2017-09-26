@@ -10,7 +10,7 @@
     </div>
     <div class="tile is-ancestor ">
       <div class="tile is-parent is-vertical">
-        <div class="box" v-for="message in messages" :key="message.id" >
+        <div class="box" style="padding: 0.75rem" v-for="message in messages" :key="message.id" >
           <article class="media">
             <div class="media-left">
               <figure class="image is-48x48">
@@ -18,17 +18,13 @@
               </figure>
             </div>
             <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong>{{message.from.nickname}}</strong>
-                  <br>
-                  {{message.content}}
-                </p>
-              </div>
-              <nav class="level is-mobile">
+              <nav class="level is-mobile" style="margin-bottom: 0.25rem">
                 <div class="level-left">
+                  <span class="level-item">
+                    <strong>{{message.from.nickname}}</strong>
+                  </span>
                   <a class="level-item">
-                    <span class="icon is-small" @click="showChat(message)"><i class="fa fa-reply"></i></span>
+                    <span class="icon is-small" style="padding-bottom: 1rem" @click="showChat(message)"><i class="fa fa-commenting"></i></span>
                   </a>
                 </div>
                 <div class="level-right">
@@ -37,6 +33,11 @@
                   </span>
                 </div>
               </nav>
+              <div class="content">
+                <p>
+                  {{message.content}}
+                </p>
+              </div>
             </div>
           </article>
         </div>
@@ -81,7 +82,7 @@ export default {
   },
 
   mounted: function() {
-    this.listWcpMessages()
+    this.listWcpMessages(1)
   },
 
   methods: {
@@ -97,7 +98,7 @@ export default {
       var data = {
         app_id: this.$route.params.appId,
         keyword: this.keyword,
-        page: page || this.page,
+        page: page,
         records_per_page: this.recordsPerPage,
         sorts: this.sorts
       }
@@ -117,8 +118,7 @@ export default {
 
     onSearchBoxSubmit: async function() {
       this.messages = []
-      this.page = 1
-      await this.listWcpMessages()
+      await this.listWcpMessages(1)
     },
   },
 

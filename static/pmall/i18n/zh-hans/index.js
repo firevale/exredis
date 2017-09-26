@@ -12,7 +12,10 @@ export default {
       signed: '你已经签到过了，明日再来'
     },
     address: {
-      addSuccess: '地址添加成功'
+      saveSuccess: '地址保存成功',
+      invalidOrder: '无效订单',
+      illegal: '非法操作',
+      failed: '地址保存失败，请联系客服'
     },
     exchange: {
       success: '兑换成功,{point}积分',

@@ -52,6 +52,7 @@
 </template>
 <script>
 import citySelect from 'common/components/citySelect/citySelect'
+import Toast from 'common/components/toast'
 
 import {
   required,
@@ -67,8 +68,13 @@ export default {
     citySelect
   },
   mounted: function() {},
-
   computed: {
+    order_id() {
+      return this.$route.params && this.$route.params.order_id
+    },
+    action() {
+      return this.$route.params && this.$route.params.action ? this.$route.params.action : ""
+    },
     errorHint: function() {
       if (!this.$v.addressModel.name.required) {
         return "请输入您的大名"
@@ -159,21 +165,33 @@ export default {
       if (!this.processing) {
         this.processing = true
         let msg = this.errorHint
-        if (msg == '') {
-          let result = await this.$acs.insertAddress({
+        if (msg != '') {
+          return
+        }
+
+        var data = {
+          order_id: this.order_id,
+          user_address: {
             name: this.addressModel.name,
             mobile: this.addressModel.mobile,
             area: this.addressModel.area,
             area_code: this.addressModel.area_code,
             address: this.addressModel.address
-          })
-          if (result.success) {
-
           }
-          this.processing = false
         }
+
+        let result;
+        if (this.action == "exchange") {
+          result = await this.$acs.updateAddress(data)
+        } else if (this.action == "draw") {}
+
+        if (result.success) {
+          Toast.show(this.$t('pmall.address.saveSuccess'))
+          this.$router.go(-1)
+        }
+        this.processing = false
       }
-    },
+    }
   }
 }
 </script>

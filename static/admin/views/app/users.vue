@@ -92,7 +92,7 @@ export default {
       users: [],
       page: 1,
       total: 1,
-      recordsPerPage: 5,
+      recordsPerPage: 20,
     }
   },
 

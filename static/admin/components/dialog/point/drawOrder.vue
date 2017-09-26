@@ -17,7 +17,7 @@
         </p>
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" v-if="order.status<2" @click.prevent="updateOrder(order)">{{ $t('admin.point.drawLog.save') }}</a>
-          <a class="button is-primary" v-if="order.status=1" @click.prevent="updateOrderStatus(order, 2)">{{ $t('admin.point.drawLog.delivered') }}</a>
+          <a class="button is-primary" v-if="order.status==1" @click.prevent="updateOrderStatus(order, 2)">{{ $t('admin.point.drawLog.delivered') }}</a>
           <a class="button is-primary" @click.prevent="updateOrderStatus(order, -1)">{{ $t('admin.point.drawLog.close') }}</a>
         </div>
       </form>

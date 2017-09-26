@@ -45,4 +45,19 @@ defmodule Acs.PMallsPoint do
     {:ok, -goods.price, total_point}
   end
 
+  def take_award_point(app_id, wcp_user_id, days, points) do
+    log = %{
+      app_id: app_id,
+      wcp_user_id: wcp_user_id,
+      log_type: "point_sign_award",
+      point: points,
+      memo: "连续签到#{days}天奖励"
+    }
+
+    PMalls.add_point(log)
+    total_point = PMalls.get_user_point(app_id, wcp_user_id)
+
+    {:ok, points, total_point}
+  end
+
 end

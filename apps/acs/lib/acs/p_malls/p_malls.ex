@@ -328,6 +328,7 @@ defmodule Acs.PMalls do
   def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
   def _sign_cache_key_users(app_id), do: "pmall:sign:users:#{app_id}:#{Timex.today}"
   def _sign_cache_key_calendar(app_id, group_name), do: "pmall:sign:calendar:#{app_id}:#{group_name}:#{Timex.today}"
+  def _sign_cache_key_awards(app_id, wcp_user_id), do: "pmall:sign-awards:#{app_id}:#{wcp_user_id}"
   def sign(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
     signed = Exredis.incr(sign_key)
@@ -384,17 +385,20 @@ defmodule Acs.PMalls do
 
   def get_sign_info(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
-    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
+   
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
-    sign_times = _get_sign_times(sign_key_times)
+    sign_times = _get_sign_times(app_id, wcp_user_id)
 
     pic = _get_sign_calendar(app_id, "signPic")
     terms =  _get_sign_calendar(app_id, "signLunar")
-      
-    {:ok, signed, sign_times, pic, terms}
+    awards = _get_sign_awards(app_id, wcp_user_id)
+    
+    {:ok, signed, sign_times, pic, terms, awards}
   end
-  defp _get_sign_times(sign_key_times) do
+
+  defp _get_sign_times(app_id, wcp_user_id) do
+    sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
     case  Exredis.get(sign_key_times) do
       nil -> 0
       times -> String.to_integer(times)
@@ -403,18 +407,50 @@ defmodule Acs.PMalls do
 
   defp _get_sign_calendar(app_id, groun_name) do
     cache_key = _sign_cache_key_calendar(app_id, groun_name)
-    case  Exredis.get(cache_key) do
-      nil ->
+    record =
+      case  Exredis.get(cache_key) do
+        nil ->
           values = Acs.Admin.get_settings_by_group(app_id, groun_name)
           index = Date.utc_today |> Date.days_in_month
           value = Enum.at(values, Integer.mod(index, Enum.count(values)))
           encode_value = value |> :erlang.term_to_binary |> Base.encode64
           Exredis.set(cache_key, encode_value)
           value
-      raw ->
+        raw ->
           raw |> Base.decode64! |> :erlang.binary_to_term
+     end
+     Poison.decode!(record[:value])
+  end
+  
+  defp _get_sign_awards(app_id, wcp_user_id) do
+    cache_key = _sign_cache_key_awards(app_id, wcp_user_id)
+    my_awards = Exredis.hgetall(cache_key)
+    awards_raw = Acs.Admin.get_settings_by_group(app_id, "signAward")
+    Enum.map(awards_raw, fn raw -> 
+      award = Poison.decode!(raw[:value])
+      got = Map.has_key?(my_awards, award["days"])
+      Map.put(award, :got, got)
+    end)
+  end
+
+  def take_sign_award(app_id, wcp_user_id, days) when is_integer(days) do
+    sign_times = _get_sign_times(app_id, wcp_user_id)
+    my_awards = _get_sign_awards(app_id, wcp_user_id)
+    with  true <- sign_times >= days,
+        %{got: got, point: point} = Enum.find(my_awards, nil, fn award -> end),
+        false <- got
+    do
+      cache_key = _sign_cache_key_awards(app_id, wcp_user_id)
+      Exredis.hset(cache_key, days, 1)
+      PMallsPoint.take_award_point(app_id, wcp_user_id, days, point)
+    else
+      false ->
+        {:error, "pmall.award.unreached"}
+      nil ->
+        {:error, "pmall.award.illegal"}
+      true ->
+        {:error, "pmall.award.got"}
     end
-    
   end
 
   # 积分

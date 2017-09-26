@@ -3,14 +3,13 @@
     <div class="container  is-flex is-column">
       <div class="calender">
         <header class="head-image">
-          <img class="head-image" src="~assets/pmall/1242-2_02.png">
+          <img class="head-image" :src="pic | imageStaticUrl">
         </header>
         <div class="body is-flex">
           <div class="column is-3 has-text-centered">
             <h2 class="yi-ji is-size-1">宜</h2>
             <p class="terms is-flex flex-center">
-              <span class="term">穿格子衣服</span>
-              <span class="term">相亲</span>
+              <span v-for="term in terms.should.split('|')" class="term">{{term}}</span>
             </p>
           </div>
           <div class="column is-6 has-text-centered is-relative">
@@ -26,20 +25,20 @@
           <div class="column is-3 has-text-centered">
             <h2 class="yi-ji is-size-1">忌</h2>
             <p class="terms is-flex flex-center">
-              <span class="term">穿格子衣服</span>
-              <span class="term">相亲</span>
+              <span v-for="term in terms.bogey.split('|')" class="term">{{term}}</span>
             </p>
           </div>
         </div>
       </div>
-      <div class="sign-logs">
+      <div class="sign-awards">
         <p class="has-text-centered">你已经连续<strong>签到{{sign_times}}天</strong>，连续签到可以领取更多奖励
           <span class="icon"></span>
           </span>
         </p>
-        <div class="logs is-flex">
-          <div v-for="index in [1,2,3,4,5,6]" class="log-box column is-2">
-            <div class="log">
+        <div class="awards is-flex">
+          <div v-for="award in awards" class="award-box column is-2">
+            <div class="award is-grey">
+              <img :src="award.pic | imageStaticUrl">
             </div>
           </div>
         </div>
@@ -73,6 +72,12 @@ export default {
       signed: undefined,
       sign_times: 0,
       sign_total: 0,
+      pic: '',
+      terms: {
+        should: '',
+        bogey: '',
+      },
+      awards: [],
       sign_users: []
     }
   },
@@ -110,8 +115,11 @@ export default {
       if (result.success) {
         this.signed = result.signed
         this.sign_times = result.sign_times
+        this.pic = result.pic
+        this.terms = result.terms
         this.sign_total = result.sign_total
         this.sign_users = result.sign_users
+        this.awards = result.awards.sort((a, b) => parseInt(a.days) < parseInt(b.days) ? -1 : 1)
       }
     },
     async sign() {
@@ -126,7 +134,16 @@ export default {
           point: result.add_point
         }))
       }
-    }
+    },
+    async takeAward(days) {
+      let result = await this.$acs.takeAward({days: days})
+      if (result.success) {
+        this.setUserPoints(result.total_point)
+        Toast.show(this.$t('pmall.award.gotSuccess', {
+          point: result.add_point
+        }))
+      }
+    },
   }
 }
 </script>

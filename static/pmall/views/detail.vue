@@ -78,10 +78,6 @@ export default {
       }
     },
     async exchange() {
-      if (this.goods.is_virtual) {
-        //填写收货地址
-      }
-
       let result = await this.$acs.exchange({
         goods_id: this.goodsId
       })
@@ -89,7 +85,16 @@ export default {
       if (result.success) {
         this.exchanged = true
         this.setUserPoints(result.total_point)
-        Toast.show(this.$t(result.i18n_message,{point: result.add_point}))
+        Toast.show(this.$t(result.i18n_message, {
+          point: result.add_point
+        }))
+        this.$router.push({
+          name: "new_address",
+          params: {
+            action: "exchange",
+            order_id: result.order_id
+          }
+        })
       }
     }
   }

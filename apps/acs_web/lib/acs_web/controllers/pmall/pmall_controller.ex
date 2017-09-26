@@ -208,10 +208,23 @@ defmodule AcsWeb.PMallController do
     result = PMalls.luck_draw(app_id, wcp_user_id, log_type)    
     case result do
       {:ok, draw} ->
-        conn |> json(%{success: true, index: draw.index})
+        conn |> json(%{success: true, index: draw.index, draw_name: draw.draw_name, order_id: draw.order.id, total_point: draw.total_point, i18n_message: draw.i18n_message})
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
+  end
+
+  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
+  "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    wcp_user_id  = 1
+    result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)
+    case result do 
+      {:ok, order} ->
+        conn |> json(%{success: true})
+      {:error, i18n_message} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
+    end 
   end
 
 end

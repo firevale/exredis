@@ -20,6 +20,7 @@ import {
   mapActions
 } from 'vuex'
 import anime from 'animejs';
+import Toast from 'common/components/toast'
 export default {
   computed: {
     ...mapGetters([
@@ -53,10 +54,26 @@ export default {
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.luckDraw()
-        this.processing = false
         if (result.success) {
           index = result.index
+          setTimeout(() => {
+            Toast.show(this.$t(result.i18n_message, {
+              draw_name: result.draw_name
+            }))
+            this.processing = false
+          }, 6000)
+          setTimeout(() => {
+            this.$router.push({
+              name: "new_address",
+              params: {
+                action: "draw",
+                order_id: result.order_id
+              }
+            })
+          }, 8000)
         } else {
+          this.processing = false
+          Toast.show('抽奖失败，请稍后再试')
           return
         }
 

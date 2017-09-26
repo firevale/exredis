@@ -41,9 +41,6 @@
           </div>
         </div>
       </div>
-      <article class="tile is-child is-12">
-        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-      </article>
     </div>
     <div class="box" v-else>
       <div class="hero-body has-text-centered">
@@ -65,6 +62,9 @@
         </div>
       </div>
     </div>
+    <article class="tile is-child is-12">
+      <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+    </article>
   </div>
 </template>
 <script>
@@ -92,35 +92,35 @@ export default {
       users: [],
       page: 1,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 5,
     }
   },
 
   mounted: async function() {
-    await this.searchUsers()
+    await this.searchUsers(1)
     this.initing = false
   },
 
   methods: {
     onPageChange: async function(page) {
-      await this.searchUsers()
+      await this.searchUsers(page)
     },
 
     onSearchBoxSubmit: async function() {
-      this.page = 1
-      await this.searchUsers()
+      await this.searchUsers(1)
     },
 
-    searchUsers: async function() {
+    searchUsers: async function(page) {
       this.searching = true
       let result = await this.$acs.searchUsers({
         keyword: this.keyword,
-        page: this.page,
+        page: page,
         records_per_page: this.recordsPerPage
       })
       if (result.success) {
         this.total = result.total
         this.users = result.users
+        this.page = page
       }
       this.searching = false
     },

@@ -82,7 +82,7 @@ export default {
   },
 
   mounted: function() {
-    this.listWcpMessages()
+    this.listWcpMessages(1)
   },
 
   methods: {
@@ -98,7 +98,7 @@ export default {
       var data = {
         app_id: this.$route.params.appId,
         keyword: this.keyword,
-        page: page || this.page,
+        page: page,
         records_per_page: this.recordsPerPage,
         sorts: this.sorts
       }
@@ -118,8 +118,7 @@ export default {
 
     onSearchBoxSubmit: async function() {
       this.messages = []
-      this.page = 1
-      await this.listWcpMessages()
+      await this.listWcpMessages(1)
     },
   },
 

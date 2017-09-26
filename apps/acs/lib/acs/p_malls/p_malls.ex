@@ -327,7 +327,7 @@ defmodule Acs.PMalls do
   def _sign_cache_key_before(app_id, wcp_user_id), do: "pmall:sign:#{app_id}:#{Timex.shift(Timex.today, days: -1)}:#{wcp_user_id}"
   def _sign_cache_key_times(app_id, wcp_user_id), do: "pmall:signtimes:#{app_id}:#{wcp_user_id}"
   def _sign_cache_key_users(app_id), do: "pmall:sign:users:#{app_id}:#{Timex.today}"
-
+  def _sign_cache_key_calendar(app_id, group_name), do: "pmall:sign:calendar:#{app_id}:#{group_name}:#{Timex.today}"
   def sign(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
     signed = Exredis.incr(sign_key)
@@ -387,12 +387,34 @@ defmodule Acs.PMalls do
     sign_key_times = _sign_cache_key_times(app_id, wcp_user_id)
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
-    sign_times =
-      case  Exredis.get(sign_key_times) do
-        nil -> 0
-        times -> String.to_integer(times)
-      end
-    {:ok, signed, sign_times}
+    sign_times = _get_sign_times(sign_key_times)
+
+    pic = _get_sign_calendar(app_id, "signPic")
+    terms =  _get_sign_calendar(app_id, "signLunar")
+      
+    {:ok, signed, sign_times, pic, terms}
+  end
+  defp _get_sign_times(sign_key_times) do
+    case  Exredis.get(sign_key_times) do
+      nil -> 0
+      times -> String.to_integer(times)
+    end
+  end
+
+  defp _get_sign_calendar(app_id, groun_name) do
+    cache_key = _sign_cache_key_calendar(app_id, groun_name)
+    case  Exredis.get(cache_key) do
+      nil ->
+          values = Acs.Admin.get_settings_by_group(app_id, groun_name)
+          index = Date.utc_today |> Date.days_in_month
+          value = Enum.at(values, Integer.mod(index, Enum.count(values)))
+          encode_value = value |> :erlang.term_to_binary |> Base.encode64
+          Exredis.set(cache_key, encode_value)
+          value
+      raw ->
+          raw |> Base.decode64! |> :erlang.binary_to_term
+    end
+    
   end
 
   # 积分
@@ -714,7 +736,7 @@ defmodule Acs.PMalls do
   end
 
   # 抽奖
-  def luck_draw(app_id, wcp_user_id, log_type) do
+  def luck_draw(app_id, wcp_user_id, log_type, address \\ %{}) do
     Repo.transaction(fn ->
       index = :rand.uniform(8)
       draw = get_draw(index)
@@ -735,7 +757,7 @@ defmodule Acs.PMalls do
                 Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
             true ->
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
-              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id
+              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
               }
               # 扣除积分
               with {:ok, add_point, total_point} <-  PMallsPoint.add_point(log_type, app_id, wcp_user_id) do
@@ -744,9 +766,9 @@ defmodule Acs.PMalls do
                 # 创建抽奖订单
                 case create_draw_order(draw_order) do
                   {:error, %{errors: _errors}} ->
-                    Repo.rollback(%{i18n_message: "pmall.draw.123"})
-                  _ ->
-                    %{i18n_message: "pmall.draw.success", index: index}
+                    Repo.rollback(%{i18n_message: "pmall.draw.failed"})
+                  {:ok, order} ->
+                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: index, order: order, draw_name: draw.name}
                 end
               else
                 _ ->
@@ -755,6 +777,28 @@ defmodule Acs.PMalls do
           end
       end
     end)
+  end
+
+  def update_draw_address(wcp_user_id, order_id, address) do
+    with %LuckyDrawOrder{} = order  <- Repo.get(LuckyDrawOrder, order_id),
+      true <- wcp_user_id == order.wcp_user_id,
+      false <- Map.has_key?(order.address, "name")
+    do
+      LuckyDrawOrder.changeset(order, %{address: address}) |> Repo.update()
+    else
+      nil ->
+        {:error, "pmall.address.invalidOrder"}
+      false ->
+        {:error, "pmall.address.illegal"}
+      true ->
+        {:error, "pmall.address.illegal"}
+      %UserAddress{} ->
+        {:error, "pmall.address.illegal"}
+      other ->
+        d "#{inspect other}"
+        {:error, "pmall.address.failed"}
+    end
+
   end
 
   def count_draw_orders(app_id, wcp_user_id, draw_id) do

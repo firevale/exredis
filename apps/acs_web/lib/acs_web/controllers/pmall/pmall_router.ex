@@ -19,6 +19,7 @@ defmodule AcsWeb.PMallRouter do
     post   "/get_daily_question", PMallController, :get_daily_question
     post   "/answer_question", PMallController, :answer_question
     post   "/luck_draw", PMallController, :luck_draw
+    post   "/update_draw_address", PMallController, :update_draw_address
   end
 
 end

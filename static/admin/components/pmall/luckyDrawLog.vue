@@ -4,7 +4,7 @@
       <div class="field">
         <div class="control">
           <label class="checkbox">
-            <input type="checkbox" v-model.trim="showOnlyWin"> 只看中奖记录
+            <input type="checkbox" v-model.trim="showOnlyWin" v-on:click="switchShow"> 只看中奖记录
           </label>
         </div>
       </div>
@@ -123,15 +123,20 @@ export default {
       }
     },
 
+    switchShow: function() {
+      this.getOrders(this.page, this.recordsPerPage)
+    },
+
     getOrders: async function(page, recordsPerPage) {
       this.loading = true
       let result = await this.$acs.listPMallLuckyDrawOrders({
+        show_only_win: this.showOnlyWin,
         page: page,
         records_per_page: recordsPerPage
       })
       this.loading = false
       if (result.success) {
-        this.total = result.total_page
+        this.total = result.total
         this.orders = result.orders
         this.page = page
       }
@@ -148,7 +153,7 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.getorders(page, this.recordsPerPage)
+      this.getOrders(page, this.recordsPerPage)
     },
   },
 

@@ -96,66 +96,12 @@ export default {
     }
   },
 
-  computed: {
-    appIcon: function() {
-      if (this.app && this.app.icon) {
-        return this.app.icon
-      } else {
-        return 'https://placehold.it/32x32?text=' + this.app.name
-      }
-    },
-
-    currency: function() {
-      if (this.app && this.app.currency) {
-        return this.app.currency
-      } else {
-        return ''
-      }
-    },
-
-  },
-
   mounted: async function() {
     await this.searchUsers()
     this.initing = false
   },
 
   methods: {
-    getOrderPlatformIcon: function(user) {
-      let result = 'fa fa-'
-      switch (user.platform) {
-        case 'android':
-          result = result + 'android'
-          break
-        case 'ios':
-          result = result + 'apple '
-          break
-        case 'wp8':
-          result = result + 'windows '
-          break
-        default:
-          result = result + 'apple '
-          break
-      }
-
-      switch (user.status) {
-        case 0:
-          result = result + ' is-primary'
-          break;
-        case 1:
-          result = result + ' is-info'
-          break;
-        case 2:
-          result = result + ' is-success'
-          break;
-        case 3:
-          result = result + ' is-danger'
-          break;
-      }
-
-      return result
-    },
-
     onPageChange: async function(page) {
       await this.searchUsers()
     },

@@ -21,6 +21,7 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.LuckyDrawOrder
   alias Acs.PMalls.SignWcpUser
   alias Acs.Accounts
+  alias Acs.Accounts.UserAddress
   alias Acs.PMalls.LuckyDrawOrder
 
   alias Acs.Cache.CachedPMallGoods
@@ -263,7 +264,7 @@ defmodule Acs.PMalls do
                {:ok, add_point, total_point} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
             CachedPMallGoods.refresh(goods.id)
-            %{add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
+            %{order_id: order_id, add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -297,6 +298,28 @@ defmodule Acs.PMalls do
 
       PMallOrderDetail.changeset(%PMallOrderDetail{}, order_detail) |> Repo.insert!
       {:ok, order_id}
+  end
+
+  def update_order_address(wcp_user_id, order_id, address) do
+    with %PMallOrder{} = order  <- Repo.get(PMallOrder, order_id),
+      true <- wcp_user_id == order.wcp_user_id,
+      false <- Map.has_key?(order.address, "name")
+    do
+      PMallOrder.changeset(order, %{address: address}) |> Repo.update()
+    else
+      nil ->
+        {:error, "pmall.address.invalidOrder"}
+      false ->
+        {:error, "pmall.address.illegal"}
+      true ->
+        {:error, "pmall.address.illegal"}
+      %UserAddress{} ->
+        {:error, "pmall.address.illegal"}
+      other ->
+        d "#{inspect other}"
+        {:error, "pmall.address.failed"}
+    end
+
   end
 
   # 签到
@@ -351,7 +374,7 @@ defmodule Acs.PMalls do
     sign_key_users = _sign_cache_key_users(app_id)
     total = Exredis.zcard(sign_key_users)
     open_ids = Exredis.zrange(sign_key_users, 0, 20)
-    wcp_users = 
+    wcp_users =
       Enum.map(open_ids, fn open_id ->
         wcp_user = CachedAppWcpUser.get(app_id, open_id)
         Map.take(wcp_user, [:id, :nickname, :avatar_url])

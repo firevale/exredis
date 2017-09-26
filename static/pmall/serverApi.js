@@ -87,6 +87,9 @@ export default {
       exchange(params) {
         return post("/pmall_actions/exchange", params)
       },
+      updateAddress(params) {
+        return post("/pmall_actions/update_address", params)
+      },
       sendBindMobileVerifyCode(mobile) {
         return post("/send_mobile_bind_verify_code", { mobile })
       },

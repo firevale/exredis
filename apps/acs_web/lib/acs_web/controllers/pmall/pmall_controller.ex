@@ -16,7 +16,7 @@ defmodule AcsWeb.PMallController do
 
     #商品
     goodses =
-      case PMalls.list_pmall_goods(app_id, 1, 3, "") do
+      case PMalls.list_pmall_goods(app_id, 1, 5, "") do
         {:ok, goodses, total_page} ->
           goodses
        _ ->
@@ -102,6 +102,19 @@ defmodule AcsWeb.PMallController do
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
+  end
+
+  def update_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
+  "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    wcp_user_id  = 1
+    result = PMalls.update_order_address( wcp_user_id, order_id, user_address)
+    case result do 
+      {:ok, order} ->
+        conn |> json(%{success: true})
+      {:error, i18n_message} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
+    end 
   end
 
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do

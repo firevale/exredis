@@ -35,7 +35,7 @@ export default {
         rotateOffset: -18,
         duration: 5000,
         gap: 10,
-        turns: 100,
+        turns: 15,
       }
     }
   },

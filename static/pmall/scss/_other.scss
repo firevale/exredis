@@ -105,6 +105,11 @@ span {
     width: 100%;
     height: virtual-m-pixel(982);
     position: relative;
+    text-align: center;
+    img {
+      width: virtual-m-pixel(990);
+      height: virtual-m-pixel(982);
+    }
   }
   footer {
     margin-top: 1.5rem;

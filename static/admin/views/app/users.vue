@@ -8,43 +8,37 @@
         <i v-else class="fa fa-search"></i>
       </span>
     </div>
-    <div class="tile is-ancestor" v-if="!initing && users.length > 0">
-      <div class="tile is-parent is-vertical">
-        <el-table class="tile is-child box is-paddingless" ref="tbl" stripe :data="users" style="width: 100%"
-          @row-dblclick="showDetails" >
-          <el-table-column :label="$t('admin.user.fields.avatar')" width="80">
-            <template scope="scope">
-              <figure class="image is-48x48">
-                <img :src="scope.row.avatar_url ? scope.row.avatar_url : 'https://placehold.it/48x48' | imageStaticUrl"></img>
-              </figure>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.user.fields.nickname')" width="200">
-            <template scope="scope">
-              {{ scope.row.nickname }} </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.user.fields.email')" width="200">
-            <template scope="scope">
-              {{ scope.row.email }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="mobile" :label="$t('admin.user.fields.mobile')" width="180">
-          </el-table-column>
-          <el-table-column :label="$t('admin.user.fields.gender')" width="100">
-            <template scope="scope">
-              {{ scope.row.gender =='male' ? $t('admin.user.gender.male') : $t('admin.user.gender.famale') }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('admin.user.fields.insertedAt')" prop="inserted_at" width="180">
-            <template scope="scope">
-              <span style="font-family:'microsoft yahei', Tahoma, Geneva, Verdana, sans-serif"> {{ scope.row.inserted_at | formatServerDateTime }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column></el-table-column>
-        </el-table>
-        <div v-if="users && users.length > 0" class="tile ele-pagination">
-          <el-pagination layout="prev, pager, next" :page-count="total" :current-page.sync="page" @current-change="onPageChange">
-          </el-pagination>
+    <div class="box" v-if="!initing && users.length > 0">
+      <div class="columns is-multiline">
+        <div class="column is-3" v-for="user in users" :key="user.id">
+          <div class="box">
+            <article class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <img :src="(user.avatar_url || '/images/default_avatar.png') | imageStaticUrl" alt="user avatar">
+                </figure>
+              </div>
+              <div class="media-content">
+                <nav class="level is-mobile" style="margin-bottom: 0.25rem">
+                  <div class="level-left">
+                    <span class="level-item">
+                      <strong>{{user.id}}</strong>
+                    </span>
+                  </div>
+                  <div class="level-right">
+                    <span class="level-item">
+                      <span class="icon is-small is-primary" style="cursor: pointer" @click="showDetail(user.id)"><i class="fa fa-clone"></i></span>
+                    </span>
+                  </div>
+                </nav>
+                <div class="content">
+                  <span>昵称:&nbsp<small>{{user.nickname}}</small><br/></span>
+                  <span v-show="user.email">email:&nbsp<small>{{user.email}}</small><br/></span>
+                  <span v-show="user.mobile">手机:&nbsp<small>{{user.mobile}}</small><br/></span>
+                </div>
+              </div>
+            </article>          
+          </div>
         </div>
       </div>
     </div>
@@ -68,6 +62,9 @@
         </div>
       </div>
     </div>
+    <article class="tile is-child is-12">
+      <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
+    </article>
   </div>
 </template>
 <script>
@@ -95,94 +92,40 @@ export default {
       users: [],
       page: 1,
       total: 1,
-      recordsPerPage: 10,
+      recordsPerPage: 20,
     }
   },
 
-  computed: {
-    appIcon: function() {
-      if (this.app && this.app.icon) {
-        return this.app.icon
-      } else {
-        return 'https://placehold.it/32x32?text=' + this.app.name
-      }
-    },
-
-    currency: function() {
-      if (this.app && this.app.currency) {
-        return this.app.currency
-      } else {
-        return ''
-      }
-    },
-
-  },
-
   mounted: async function() {
-    await this.searchUsers()
+    await this.searchUsers(1)
     this.initing = false
   },
 
   methods: {
-    getOrderPlatformIcon: function(user) {
-      let result = 'fa fa-'
-      switch (user.platform) {
-        case 'android':
-          result = result + 'android'
-          break
-        case 'ios':
-          result = result + 'apple '
-          break
-        case 'wp8':
-          result = result + 'windows '
-          break
-        default:
-          result = result + 'apple '
-          break
-      }
-
-      switch (user.status) {
-        case 0:
-          result = result + ' is-primary'
-          break;
-        case 1:
-          result = result + ' is-info'
-          break;
-        case 2:
-          result = result + ' is-success'
-          break;
-        case 3:
-          result = result + ' is-danger'
-          break;
-      }
-
-      return result
-    },
-
     onPageChange: async function(page) {
-      await this.searchUsers()
+      await this.searchUsers(page)
     },
 
     onSearchBoxSubmit: async function() {
-      this.page = 1
-      await this.searchUsers()
+      await this.searchUsers(1)
     },
 
-    searchUsers: async function() {
+    searchUsers: async function(page) {
       this.searching = true
       let result = await this.$acs.searchUsers({
         keyword: this.keyword,
-        page: this.page,
+        page: page,
         records_per_page: this.recordsPerPage
       })
       if (result.success) {
         this.total = result.total
         this.users = result.users
+        this.page = page
       }
       this.searching = false
     },
-    showDetails: function(row, event) {
-      UserDetail.show(row.id)
+    showDetail: function(user_id) {
+      UserDetail.show(user_id)
     },
   },
 

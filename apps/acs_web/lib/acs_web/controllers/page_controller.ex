@@ -12,6 +12,7 @@ defmodule AcsWeb.PageController do
   plug :check_is_admin when action in  [:show_admin_page, :show_admin_app_page]
   plug :check_admin_authorization, [admin_level: 2] when action == :show_admin_app_page
   plug :check_forum_manager when action in [:show_bbs_page, :show_forum_page]
+  plug :fetch_session_wcp_user_id when action == :show_pmall_page
 
   @sm_provider                  Application.get_env(:exsm, :provider)
   @is_mobile_account_supported  not (is_nil(@sm_provider) || @sm_provider == :none)
@@ -132,8 +133,14 @@ defmodule AcsWeb.PageController do
   end
 
   #积分商城
-  def show_pmall_page(conn, _params) do
+  def show_pmall_page(%Plug.Conn{private: %{wcp_user_id: wcp_user_id}} = conn, _params) do 
     conn |> put_layout(:false)
+         |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
+  end
+  def show_pmall_page(conn, _params) do
+    # DEBUG MODE
+    conn |> put_layout(:false)
+         |> put_session(:wcp_user_id, 1) # TODO: delete this line
          |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
   end
 

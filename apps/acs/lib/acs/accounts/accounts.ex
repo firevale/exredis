@@ -195,6 +195,14 @@ defmodule Acs.Accounts do
     end
   end
 
+  def get_address_quantity(user_id) do
+    queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
+    case quantity = Repo.one!(queryTotal) do
+      0 -> 0
+      _ -> quantity
+    end
+  end
+
   def get_address_detail(address_id) do
     query = from ads in UserAddress,
               select: map(ads,[:id, :name, :mobile, :area, :address, :area_code, :is_default]),

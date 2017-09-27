@@ -502,6 +502,17 @@ defmodule AcsWeb.Plugs do
     end
   end
 
+  def fetch_session_wcp_user_id(%Plug.Conn{private: private} = conn, _options) do
+    with {:ok, :done} <- Map.fetch(private, :plug_session_fetch),
+         wcp_user_id <- get_session(conn, :wcp_user_id)
+    do
+      conn |> put_private(:wcp_user_id, wcp_user_id)
+    else
+      _ ->
+        conn
+    end
+  end
+
   defp _response_admin_access_failed(conn) do
     case get_req_header(conn, "x-csrf-token") do
       [] ->

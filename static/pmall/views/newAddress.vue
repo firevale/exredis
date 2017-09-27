@@ -25,7 +25,8 @@
           所在地区：
         </div>
         <div class="column is-9 has-text-left">
-          <city-select @onSelect="onSelect" style="width:100%;margin-top: -1rem; margin-bottom:-1rem"></city-select>
+          <city-select v-if="provinceCode>0" @onSelect="onSelect" :_province="provinceCode" :_city="cityCode" :_district="districtCode"
+            style="width:100%;margin-top: -1rem; margin-bottom:-1rem"></city-select>
         </div>
       </div>
       <div class="fields is-flex flex-center flex-vcentered">
@@ -67,7 +68,9 @@ export default {
   components: {
     citySelect
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getDefaultAddress()
+  },
   computed: {
     order_id() {
       return this.$route.params && this.$route.params.order_id
@@ -109,6 +112,7 @@ export default {
         address: '',
         area: '',
         area_code: '',
+        id: 0
       },
       province: '',
       city: '',
@@ -148,6 +152,22 @@ export default {
     }
   },
   methods: {
+    getDefaultAddress: async function() {
+
+      let result = await this.$acs.getDefaultAddress()
+      if (result.success) {
+        this.addressModel = result.address
+
+        let areaItem = result.address.area.split('-')
+        let codeItem = result.address.area_code.split('-')
+        this.province = areaItem[0]
+        this.city = areaItem[1]
+        this.district = areaItem[2]
+        this.provinceCode = codeItem[0]
+        this.cityCode = codeItem[1]
+        this.districtCode = codeItem[2]
+      }
+    },
     onSelect: function(province, city, district) {
       this.province = province.name
       this.provinceCode = province.code
@@ -174,6 +194,7 @@ export default {
         var data = {
           order_id: this.order_id,
           user_address: {
+            id: this.addressModel.id,
             name: this.addressModel.name,
             mobile: this.addressModel.mobile,
             area: this.addressModel.area,

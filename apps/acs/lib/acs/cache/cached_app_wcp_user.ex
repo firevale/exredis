@@ -43,16 +43,6 @@ defmodule Acs.Cache.CachedAppWcpUser do
     end)
   end
 
-  def refresh(wcp_user_id) do 
-    Excache.del(key(wcp_user_id))
-    case Repo.get(AppWcpUser, wcp_user_id) do 
-      %AppWcpUser{} = wcp_user ->
-        refresh(wcp_user)
-      _ -> 
-        nil
-    end
-  end
-
   def refresh(%AppWcpUser{id: id, app_id: app_id, openid: openid} = wcp_user) do 
     Exredis.set(key(id), AppWcpUser.to_redis(wcp_user))
     Exredis.set(openid_key(app_id, openid), id)
@@ -66,6 +56,16 @@ defmodule Acs.Cache.CachedAppWcpUser do
     end
 
     wcp_user
+  end
+
+  def refresh(wcp_user_id) do 
+    Excache.del(key(wcp_user_id))
+    case Repo.get(AppWcpUser, wcp_user_id) do 
+      %AppWcpUser{} = wcp_user ->
+        refresh(wcp_user)
+      _ -> 
+        nil
+    end
   end
 
   defp key(id) do 

@@ -47,7 +47,7 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id, wcp_user_id: wcp_user_id}} = conn, _) do
-    # user = Accounts.get_user()
+    d "wcp_user_id: #{wcp_user_id}"
     point = PMalls.get_user_point(app_id, wcp_user_id)
     case Wcp.get_app_wcp_user(wcp_user_id) do
       %AppWcpUser{} = user ->
@@ -232,7 +232,7 @@ defmodule AcsWeb.PMallController do
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})
-        
+
       {:error, i18n_message} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end

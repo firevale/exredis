@@ -1,8 +1,8 @@
-defmodule Acs.Repo.Migrations.CreateAppRedeemCodes do
+defmodule Acs.Repo.Migrations.CreatePMallRedeemCodes do
   use Ecto.Migration
 
   def change do
-    create table(:app_redeem_codes) do
+    create table(:pmall_redeem_codes) do
 
       add :code, :string
       add :code_type, :string
@@ -15,8 +15,8 @@ defmodule Acs.Repo.Migrations.CreateAppRedeemCodes do
       timestamps()
     end
 
-    create index(:app_redeem_codes, [:app_id])
-    create index(:app_redeem_codes, [:app_id, :code_type])
+    create index(:pmall_redeem_codes, [:app_id])
+    create index(:pmall_redeem_codes, [:app_id, :code_type])
 
   end
 end

@@ -101,7 +101,7 @@ export default new Router({
         }, {
           name: 'RedeemCodes',
           path: 'redeemCodes',
-          component: require('../views/app/redeemCodes/redeemCodes')
+          component: require('../views/app/pointMall/redeemCodes')
         }, {
           name: 'WcpParams',
           path: 'wcpParams',

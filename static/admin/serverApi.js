@@ -410,6 +410,10 @@ export default {
       updatePmallDrawOrder(params, successMessage) {
         return post('/admin_actions/pmall/update_pmall_draw_order', params, successMessage)
       },
+
+      listPMallRedeemCodes(params) {
+        return post('/admin_actions/pmall/list_pmall_redeem_codes', params)
+      },
     }
   }
 }

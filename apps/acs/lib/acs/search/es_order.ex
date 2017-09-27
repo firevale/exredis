@@ -39,7 +39,7 @@ defmodule Acs.Search.ESOrder do
           sdk_user_id: order.sdk_user_id,
           inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           paid_at: Timex.format!(order.paid_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-          delivered_at: Timex.format!(order.delivered_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+          delivered_at: Timex.format!(order.deliver_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           cp_result: order.cp_result,
         },
         id: order.id

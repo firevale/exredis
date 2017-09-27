@@ -1,11 +1,11 @@
-defmodule Acs.Search.ESAppUser do 
+defmodule AcsStats.Search.ESAppUser do 
   require Elasticsearch
   alias AcsStats.Users.AppUser
 
-  def index(%AppUser{} = app_user, user_id) do
+  def index(%AppUser{} = app_user) do
     Elasticsearch.index(%{index: "acs",
       type: "app_users",
-      params: %{parent: user_id},
+      params: %{parent: app_user.user_id},
       id: app_user.id,
       doc: %{
         id: app_user.id,

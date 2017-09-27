@@ -7,7 +7,7 @@ defmodule AcsStats.Users do
   alias AcsStats.Repo
   use Utils.LogAlias
 
-  alias Acs.Search.ESAppUser
+  alias AcsStats.Search.ESAppUser
   alias AcsStats.Users.AppUser
   alias AcsStats.Users.AppUserDailyActivity
 
@@ -53,7 +53,7 @@ defmodule AcsStats.Users do
           app_user_level: game_user_level,
           last_active_at: DateTime.utc_now(),
         }) |> Repo.insert()
-        ESAppUser.index(app_user, user_id)
+        ESAppUser.index(app_user)
         CachedAppUser.refresh(app_user)
 
       app_user ->
@@ -63,7 +63,7 @@ defmodule AcsStats.Users do
           app_user_level: game_user_level,
           last_active_at: DateTime.utc_now(),
         }) |> Repo.update()      
-        ESAppUser.index(app_user, user_id)
+        ESAppUser.index(app_user)
         CachedAppUser.refresh(app_user)
     end
   end
@@ -76,7 +76,7 @@ defmodule AcsStats.Users do
         last_active_at: DateTime.utc_now(),
       }) |> Repo.update!()
 
-      ESAppUser.index(app_user, user_id)
+      ESAppUser.index(app_user)
       CachedAppUser.refresh(app_user)
 
       case CachedAppUserDailyActivity.get(app_user.id, date) do

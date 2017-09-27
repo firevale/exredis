@@ -4,6 +4,7 @@ defmodule Acs.Repo.Migrations.CreateAppWcpUesers do
   def change do
     create table(:app_wcp_users) do 
       add :openid, :string, size: 100
+      add :unionid, :string, size: 100
       add :nickname, :string, size: 50
       add :sex, :integer
       add :avatar_url, :string
@@ -19,6 +20,7 @@ defmodule Acs.Repo.Migrations.CreateAppWcpUesers do
 
     create unique_index(:app_wcp_users, [:app_id, :openid])
     create unique_index(:app_wcp_users, [:app_id, :tf_email])
+    create unique_index(:app_wcp_users, [:unionid])
     create index(:app_wcp_users, [:openid])
     create index(:app_wcp_users, [:app_id, :nickname])
   end

@@ -138,7 +138,6 @@ defmodule AcsWeb.PageController do
          |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
   end
   def show_pmall_page(conn, _params) do
-    # DEBUG MODE
     conn |> put_layout(:false)
          |> put_session(:wcp_user_id, 1) # TODO: delete this line
          |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)

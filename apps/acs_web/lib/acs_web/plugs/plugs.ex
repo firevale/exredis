@@ -325,7 +325,8 @@ defmodule AcsWeb.Plugs do
 
   defp _fetch_session_access_token(%Plug.Conn{} = conn) do
     case Map.fetch(conn.private, :plug_session_fetch) do
-      {:ok, :done} -> get_session(conn, :access_token)
+      {:ok, :done} -> 
+        get_session(conn, :access_token)
       _ -> nil
     end
   end
@@ -503,10 +504,14 @@ defmodule AcsWeb.Plugs do
   end
 
   def fetch_session_wcp_user_id(%Plug.Conn{private: private} = conn, _options) do
-    with {:ok, :done} <- Map.fetch(private, :plug_session_fetch),
-         wcp_user_id <- get_session(conn, :wcp_user_id)
+    with {:ok, :done} <- Map.fetch(private, :plug_session_fetch)
     do
-      conn |> put_private(:wcp_user_id, wcp_user_id)
+      case get_session(conn, :wcp_user_id) do 
+        nil ->
+          conn 
+        wcp_user_id ->
+          conn |> put_private(:wcp_user_id, wcp_user_id)
+      end
     else
       _ ->
         conn

@@ -7,6 +7,7 @@ defmodule Acs.Wcp.AppWcpUser do
 
   schema "app_wcp_users" do
     field :openid, :string       
+    field :unionid, :string
     field :nickname, :string
     field :sex, :integer
     field :avatar_url, :string
@@ -25,8 +26,9 @@ defmodule Acs.Wcp.AppWcpUser do
   @doc false
   def changeset(%AppWcpUser{} = app_wcp_user, attrs) do
     app_wcp_user
-    |> cast(attrs, [:openid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :user_id, :tf_email])
+    |> cast(attrs, [:openid, :unionid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :user_id, :tf_email])
     |> validate_required([:app_id, :openid])
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:unionid)
   end
 end

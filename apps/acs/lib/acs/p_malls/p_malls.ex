@@ -264,8 +264,8 @@ defmodule Acs.PMalls do
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
                {:ok, add_point, total_point} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
-            CachedPMallGoods.refresh(goods.id)
-            %{order_id: order_id, add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
+            goods = get_pmall_goods_detail(goods.id)
+            %{i18n_message: "pmall.exchange.success", order_id: order_id, add_point: add_point, total_point: total_point, is_virtual: goods.is_virtual}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -775,8 +775,9 @@ defmodule Acs.PMalls do
           draw = get_draw(rand_draw.id)
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcp_user_id, draw) do
-              %{add_point: add_point, total_point: total_point, i18n_message: "pmall.draw.success", 
-              index: draw.id, order_id: order.id, draw_name: draw.name}
+            goods = get_pmall_goods_detail(draw.goods_id)
+            %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point, 
+              index: draw.id, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
           else
             false ->
               %{index: draw.id, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
@@ -813,7 +814,7 @@ defmodule Acs.PMalls do
     |> Enum.filter(fn draw -> draw.num > 0 end)
     |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
   end
-
+  
   defp _start_draw(draws) do
     rand_draws = 
       Enum.reduce(draws, [], fn(draw, result) -> 
@@ -821,6 +822,7 @@ defmodule Acs.PMalls do
       end)
     Enum.random(rand_draws)
   end
+
 
   def update_draw_address(wcp_user_id, order_id, address) do
     with %LuckyDrawOrder{} = order  <- Repo.get(LuckyDrawOrder, order_id),

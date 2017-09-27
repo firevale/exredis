@@ -1,9 +1,9 @@
-defmodule Acs.RedeemCode.AppRedeemCode do
+defmodule Acs.PMalls.RedeemCode do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Acs.RedeemCode.AppRedeemCode
+  alias Acs.PMalls.RedeemCode
 
-  schema "app_redeem_codes" do
+  schema "pmall_redeem_codes" do
     field :code, :string
     field :code_type, :string
     field :assigned_at, :utc_datetime
@@ -16,8 +16,8 @@ defmodule Acs.RedeemCode.AppRedeemCode do
   end
 
   @doc false
-  def changeset(%AppRedeemCode{} = app_redeem_code, attrs) do
-    app_redeem_code
+  def changeset(%RedeemCode{} = redeem_code, attrs) do
+    redeem_code
     |> cast(attrs, [:code, :code_type, :assigned_at, :used_at, :app_id, :user_id])
     |> validate_required([:code, :code_type, :app_id])
   end

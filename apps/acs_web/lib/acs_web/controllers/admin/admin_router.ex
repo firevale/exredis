@@ -169,6 +169,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/upload_draw_pic", PMallController, :upload_draw_pic
       post  "/list_pmall_draw_orders", PMallController, :list_pmall_draw_orders
       post  "/update_pmall_draw_order", PMallController, :update_pmall_draw_order
+      post  "/list_pmall_redeem_codes", PMallController, :list_pmall_redeem_codes
     end
 
   end

@@ -19,8 +19,9 @@ defmodule Acs.Repo.Migrations.CreateAppWcpUesers do
     end
 
     create unique_index(:app_wcp_users, [:app_id, :openid])
+    create unique_index(:app_wcp_users, [:app_id, :unionid])
     create unique_index(:app_wcp_users, [:app_id, :tf_email])
-    create unique_index(:app_wcp_users, [:unionid])
+    create index(:app_wcp_users, [:unionid])
     create index(:app_wcp_users, [:openid])
     create index(:app_wcp_users, [:app_id, :nickname])
   end

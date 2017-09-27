@@ -74,12 +74,8 @@ export default {
         return post('/admin_actions/app/generate_dummy_sdk_info', params)
       },
 
-      fetchOrders(params) {
-        return post('/admin_actions/fetch_orders', params)
-      },
-
-      searchOrders(params) {
-        return post('/admin_actions/search_orders', params)
+      searchAppOrders(params) {
+        return post('/admin_actions/search_app_orders', params)
       },
 
       fetchAppForum(params) {

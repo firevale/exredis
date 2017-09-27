@@ -10,6 +10,7 @@ defmodule Acs.Search.ESOrder do
   alias Acs.Cache.CachedApp
 
   def index(%AppOrder{goods_id: nil}), do: nil
+  def index(%AppOrder{paid_at: nil}), do: nil
   def index(%AppOrder{} = order) do 
     with goods = %AppGoods{} <- CachedAppGoods.get(order.goods_id),
          app = %App{} <- CachedApp.get(order.app_id)

@@ -45,7 +45,6 @@ export default {
       'setUserPoints'
     ]),
     play: async function() {
-      let index = 1
       if (this.processing) {
         return
       }
@@ -68,18 +67,21 @@ export default {
           draw_name: result.draw_name,
           point: result.add_point,
         }))
-        this.editAddress(result.order_id)
+
+        if (!result.is_virtual) {
+          this.editAddress("draw", result.order_id)
+        }
       } else {
         Toast.show(this.$t(result.i18n_message, {
           point: result.add_point,
         }))
       }
     },
-    editAddress(order_id) {
+    editAddress(action, order_id) {
       this.$router.push({
         name: "new_address",
         params: {
-          action: "draw",
+          action: action,
           order_id: order_id
         }
       })

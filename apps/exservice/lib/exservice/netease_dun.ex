@@ -5,7 +5,7 @@ defmodule Exservice.NeteaseDun do
   alias   Utils.Crypto
   use     Utils.LogAlias
 
-  @dun_config         Application.get_env(:exsdks, :netease_dun)
+  @dun_config         Application.get_env(:exservice, NeteaseDun)
   @check_txt_url      @dun_config[:check_txt_url]
   @check_img_url      @dun_config[:check_img_url]
   @secretId           @dun_config[:secretId]

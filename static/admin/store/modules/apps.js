@@ -23,6 +23,10 @@ const mutations = {
 
   [types.SET_APP](state, app) {
     state.app = app
+    for (let i in app.goods) {
+      let g = app.goods[i]
+      state.goods[g.id] = g
+    }
   },
 
   [types.SET_MY_LOGIN_CODES](state, codes) {

@@ -299,6 +299,9 @@ span {
     .n-item {
       width: 100%;
       height: virtual-m-rem(330);
+      border-left: 1px solid $border-color;
+      border-right: 1px solid $border-color;
+      border-bottom: 1px solid $border-color;
       p {
         &.title {
           text-indent: .5rem;

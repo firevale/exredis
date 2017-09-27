@@ -204,23 +204,7 @@ defmodule AcsWeb.Admin.AdminController do
     end
   end
 
-  def fetch_orders(conn, %{"app_id" => app_id, "page" => page, "records_per_page" => records_per_page}) do
-    total = Repo.one!(from order in AppOrder, where: order.app_id == ^app_id, select: count(order.id))
-    total_page = round(Float.ceil(total / records_per_page))
-
-    query = from order in AppOrder,
-              select: order,
-              limit: ^records_per_page,
-              where: order.status != 1 and order.app_id == ^app_id,
-              offset: ^((page - 1) * records_per_page),
-              order_by: [desc: order.inserted_at]
-
-    orders = Repo.all(query)
-
-    conn |> json(%{success: true, orders: orders, total: total_page})
-  end
-
-  def search_orders(conn, %{"app_id" => app_id,
+  def search_app_orders(conn, %{"app_id" => app_id,
                             "keyword" => keyword,
                             "page" => page,
                             "records_per_page" => records_per_page}) do

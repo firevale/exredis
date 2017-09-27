@@ -9,6 +9,19 @@ defmodule Acs.Search do
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedForum
   
+  def search_app_order(keyword: "", app_id: app_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        term: %{app_id: app_id}
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_app_order(query)
+  end
+
   def search_app_order(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
     query = %{
       query: %{
@@ -24,6 +37,19 @@ defmodule Acs.Search do
             %{term: %{sdk_user_id: keyword}},
             %{match: %{cp_order_id: keyword}},
             %{match: %{transaction_id: keyword}},
+            %{has_parent: %{
+              parent_type: "users",
+              query: %{
+                bool: %{
+                  should: [
+                    %{term: %{mobile: keyword}},
+                    %{term: %{email: keyword}},
+                    %{term: %{resident_id: keyword}},
+                    %{term: %{resident_name: keyword}},
+                  ],
+                  minimum_should_match: 1
+              }}
+            }},
           ],
           minimum_should_match: 1,
           boost: 1.0,
@@ -34,21 +60,19 @@ defmodule Acs.Search do
       size: records_per_page,
     }
 
+    _search_app_order(query)
+  end
+
+  def _search_app_order(query) do 
     case Elasticsearch.search(%{index: "acs", type: "app_orders", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
-        ids = Enum.map(hits, &(&1._id))
-
-        query = from order in AppOrder,
-                  select: order,
-                  where: order.id in ^ids,
-                  order_by: [desc: order.inserted_at]
-
-        {:ok, total, Repo.all(query)}
+        orders = Enum.map(hits, &(&1._source))
+        {:ok, total, orders}
 
       e ->
         error "search orders failed: #{inspect e, pretty: true}"
         e
-    end    
+    end 
   end
 
   def search_user(keyword: "", app_id: app_id, page: page, records_per_page: records_per_page) do 
@@ -82,6 +106,8 @@ defmodule Acs.Search do
             %{term: %{email: %{value: keyword, boost: 4.0}}},
             %{term: %{mobile: %{value: keyword, boost: 4.0}}},
             %{match: %{nickname: %{query: keyword, boost: 3.0}}},
+            %{term: %{resident_id: %{value: keyword, boost: 4.0}}},
+            %{term: %{resident_name: %{value: keyword, boost: 4.0}}},
             %{has_child: %{
               type: "app_users",
               query: %{

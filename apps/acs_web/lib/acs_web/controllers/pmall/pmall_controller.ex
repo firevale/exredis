@@ -119,14 +119,16 @@ defmodule AcsWeb.PMallController do
   def update_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
     %{"order_id" => order_id,  
       "user_address" => 
-        %{"name" => name,
+        %{"id" => id,
+          "name" => name,
           "mobile" => mobile, 
           "area" => area, 
           "address" => address, 
           "area_code" => area_code} = user_address}) do
-    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id  = 1
     result = PMalls.update_order_address( wcp_user_id, order_id, user_address)
+    PMalls.save_address(app_id, open_id, user_address)
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})
@@ -176,24 +178,18 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def insert_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{
-                "name" => _name,
-                "mobile" => _mobile,
-                "area" => _area,
-                "address" => _address,
-                "area_code" => _area_code} = us_address) do
-
+  def get_default_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
-    case Wcp.get_app_wcp_user(app_id, openid: open_id) do
+    wcp_user = Wcp.get_app_wcp_user(app_id, openid: open_id)
+    case wcp_user do
       nil ->
-        conn |> json(%{success: false, message: "invalid request params"})
-
-      %AppWcpUser{} = wcp_user ->
-        case Accounts.insert_address(wcp_user.user_id, us_address) do
-          {:ok, us_address} ->
-            conn |> json(%{success: true, address: us_address, i18n_message: "pmall.address.addSuccess"})
-          :error ->
-            conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+        conn |> json(%{success: false})
+      _ ->
+        case Accounts.get_default_address(wcp_user.user_id) do
+          nil ->
+            conn |> json(%{success: false})
+          {:ok, address} ->
+            conn |> json(%{success: true, address: address})
         end
     end
   end
@@ -236,14 +232,16 @@ defmodule AcsWeb.PMallController do
     %{
       "order_id" => order_id,  
       "user_address" => 
-        %{"name" => name,
+        %{"id" => id,
+          "name" => name,
           "mobile" => mobile, 
           "area" => area, 
           "address" => address, 
           "area_code" => area_code} = user_address}) do
-    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
+    open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_WA"
     wcp_user_id  = 1
     result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)
+    PMalls.save_address(app_id, open_id, user_address)
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})

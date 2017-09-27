@@ -701,7 +701,7 @@ defmodule Acs.PMalls do
   def list_pmall_draws(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,
-      select: map(d, [:id, :name, :pic, :num, :rate, :app_id]),
+      select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
     Repo.all(query)
   end

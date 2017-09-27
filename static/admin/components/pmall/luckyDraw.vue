@@ -15,6 +15,9 @@
               <p>{{ $t('admin.point.draw.name')}}</p>
             </div>
             <div class="column">
+              <p>{{ $t('admin.point.draw.goodsId')}}</p>
+            </div>
+            <div class="column">
               <p>{{ $t('admin.point.draw.num')}}</p>
             </div>
             <div class="column">
@@ -32,6 +35,9 @@
               v-for="(draw, index) in draws" :key="draw.id">
               <div class="column">
                 <p>{{ draw.name }}</p>
+              </div>
+              <div class="column">
+                <p>{{ draw.goods_id }}</p>
               </div>
               <div class="column">
                 <p>{{ draw.num }}</p>
@@ -167,6 +173,7 @@ export default {
             pic: '',
             num: '',
             rate: '',
+            goods_id: '',
             app_id: this.$route.params.appId
           },
           visible: true,

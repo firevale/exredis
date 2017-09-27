@@ -1,11 +1,11 @@
-defmodule Acs.Wcp.AppWcpUser do
+defmodule Acs.Wcs.WcsUser do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Acs.Wcp.AppWcpUser
+  alias Acs.Wcs.WcsUser
 
   @derive {Poison.Encoder, except: [:app, :__meta__]}
 
-  schema "app_wcp_users" do
+  schema "wcs_users" do
     field :openid, :string       
     field :unionid, :string
     field :nickname, :string
@@ -13,9 +13,7 @@ defmodule Acs.Wcp.AppWcpUser do
     field :avatar_url, :string
     field :city, :string
     field :country, :string
-    field :tf_email, :string
 
-    belongs_to :app, Acs.Apps.App, type: :string
     belongs_to :user, Acs.Accounts.User
 
     timestamps()
@@ -24,10 +22,10 @@ defmodule Acs.Wcp.AppWcpUser do
   use Utils.Redisable
 
   @doc false
-  def changeset(%AppWcpUser{} = app_wcp_user, attrs) do
+  def changeset(%WcsUser{} = app_wcp_user, attrs) do
     app_wcp_user
-    |> cast(attrs, [:openid, :unionid, :nickname, :sex, :avatar_url, :city, :country, :app_id, :user_id, :tf_email])
-    |> validate_required([:app_id, :openid])
+    |> cast(attrs, [:openid, :unionid, :nickname, :sex, :avatar_url, :city, :country, :user_id])
+    |> validate_required([:openid])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:unionid)
   end

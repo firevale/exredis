@@ -19,13 +19,6 @@
                       <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
                     </td>
                     <td class="is-icon" rowspan="2">
-                      <tooltip :label="app.name" placement="top">
-                        <figure class="image is-32x32" style="display: block">
-                          <img :src="appIcon | imageStaticUrl"></img>
-                        </figure>
-                      </tooltip>
-                    </td>
-                    <td class="is-icon" rowspan="2">
                       <tooltip :label="getGoodsName(order)" placement="top">
                         <figure class="image is-32x32" style="display: block">
                           <img :src="getGoodsIcon(order) | imageStaticUrl"></img>
@@ -45,7 +38,7 @@
                       {{ $t('admin.label.paidAt') + ': ' }} {{ order.paid_at | formatServerDateTime }}
                     </td>
                     <td style="border-bottom: none">
-                      {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.deliver_at | formatServerDateTime }}
+                      {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.delivered_at | formatServerDateTime }}
                     </td>
                   </tr>
                   <tr :key="order.id">
@@ -138,7 +131,7 @@ export default {
 
   mounted: function() {
     if (this.app) {
-      this.fetchOrders(this.app.id, this.page, this.recordsPerPage)
+      this.searchAppOrders(1)
     }
   },
 
@@ -147,7 +140,7 @@ export default {
       if (typeof newVal === 'object' && typeof newVal.id === 'string') {
         this.page = 1
         this.total = 1
-        this.fetchOrders(newVal.id, this.page, this.recordsPerPage)
+        this.searchAppOrders(1)
       }
     }
   },
@@ -215,33 +208,11 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.fetchOrders(this.app.id, page, this.recordsPerPage)
+      this.searchAppOrders(page)
     },
 
     onSearchBoxSubmit: function() {
-      if (this.keyword) {
-        this.searchAppOrders(1)
-      } else {
-        this.fetchOrders(1, this.recordsPerPage)
-      }
-    },
-
-    fetchOrders: async function(app_id, page, recordsPerPage) {
-      this.loading = true
-      let result = await this.$acs.searchAppOrders({
-        app_id: this.app.id,
-        keyword: '',
-        page: page,
-        records_per_page: this.recordsPerPage
-      })
-
-      if (result.success) {
-        this.total = result.total
-        this.orders = result.orders
-        this.page = page
-      }
-
-      this.loading = false
+      this.searchAppOrders(1)
     },
 
     searchAppOrders: async function(page) {
@@ -256,7 +227,6 @@ export default {
         this.total = result.total
         this.orders = result.orders
         this.page = page
-
       }
       this.searching = false
     },

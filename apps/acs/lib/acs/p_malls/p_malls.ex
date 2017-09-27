@@ -760,7 +760,7 @@ defmodule Acs.PMalls do
     Repo.transaction(fn ->
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
-      draws = get_vaild_draws(app_id, wcp_user_id)
+      draws = _get_vaild_draws(app_id, wcp_user_id)
       cond do
         nil == setting ->
           Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
@@ -806,7 +806,7 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
-  def get_vaild_draws(app_id, wcp_user_id) do
+  defp _get_vaild_draws(app_id, wcp_user_id) do
     my_draw_ids = _get_my_draw_ids(app_id, wcp_user_id)
     list_pmall_draws(app_id)
     |> Enum.filter(fn draw -> draw.num > 0 end)

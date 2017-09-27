@@ -103,10 +103,6 @@ export default new Router({
           path: 'redeemCodes',
           component: require('../views/app/redeemCodes/codes')
         }, {
-          name: 'RedeemCodeLog',
-          path: 'redeemCodeLog',
-          component: require('../views/app/redeemCodes/codeLog')
-        }, {
           name: 'WcpParams',
           path: 'wcpParams',
           component: require('../views/app/wechatPub/params')

@@ -814,8 +814,17 @@ defmodule Acs.PMalls do
     end)
   end
 
-  defp luck_draw(app_id, wcp_user_id) do
-    
+  def luck_draw(app_id, wcp_user_id) do
+    draws = list_pmall_draws(app_id)
+
+    got_draws = 
+    #filter 中奖过的
+    finally_draws = draws
+    sections = 
+      Enum.reduce(draws, [], fn(draw, result) -> 
+        result ++ Enum.map(1..draw.rate, fn num -> draw end)
+      end)
+    Enum.random(sections)
   end
 
   def update_draw_address(wcp_user_id, order_id, address) do

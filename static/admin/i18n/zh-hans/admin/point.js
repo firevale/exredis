@@ -64,6 +64,7 @@
     rate: '概率',
     edit: '编辑',
     delete: '删除',
+    goodsId: '对应商品',
     confirmDelete: '您确定要删除该奖品么?',
     updated: '奖品已成功更新',
     deleted: '奖品已成功删除',

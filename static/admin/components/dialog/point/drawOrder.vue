@@ -16,7 +16,14 @@
             <label class="label"> {{ $t('admin.point.drawLog.address') }}: </label>
           </div>
           <div class="column">
-            <label class="label"> {{ $t('admin.point.draw.goodsId') }}: {{ order.lucky_draw.goods_id }}</label>
+            <label class="label"> {{ $t('admin.point.draw.goodsId') }}: {{ goods.name }}</label>
+            <div>
+              <figure class="image" style="display: block">
+                <img v-if="goods.pic" :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/228x122?text=未上传' | imageStaticUrl"
+                  style="width:228px; height:122px;"></img>
+                <img v-else src="https://placehold.it/228x122?text=未上传" style="width:228px; height:122px;"></img>
+              </figure>
+            </div>
           </div>
         </div>
         <p class="control">
@@ -59,8 +66,13 @@ export default {
     return {
       processing: false,
       address: '',
+      goods: '',
       groups: ['basicInfo']
     }
+  },
+
+  created: function() {
+    this.getGoods(this.order.lucky_draw.goods_id)
   },
 
   methods: {
@@ -81,6 +93,17 @@ export default {
 
     updateMessage(e) {
       this.address = e.target.value
+    },
+
+    getGoods: async function(goods_id) {
+      this.processing = true
+      let result = await this.$acs.getPointGoodsDetail({
+        goods_id: goods_id
+      })
+      if (result.success) {
+        this.goods = result.goods
+      }
+      this.processing = false
     },
 
     updateOrder: function(order) {

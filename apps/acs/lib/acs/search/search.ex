@@ -78,10 +78,10 @@ defmodule Acs.Search do
               },
           }},
           should: [
-            %{term: %{id: keyword}},
-            %{term: %{email: keyword}},
-            %{term: %{mobile: keyword}},
-            %{match: %{nickname: keyword}},
+            %{term: %{id: %{value: keyword, boost: 5.0}}},
+            %{term: %{email: %{value: keyword, boost: 4.0}}},
+            %{term: %{mobile: %{value: keyword, boost: 4.0}}},
+            %{match: %{nickname: %{query: keyword, boost: 3.0}}},
             %{has_child: %{
               type: "app_users",
               query: %{
@@ -92,7 +92,18 @@ defmodule Acs.Search do
                   ],
                   minimum_should_match: 1
               }}
-            }}
+            }},
+            %{has_child: %{
+              type: "sdk_users",
+              query: %{
+                bool: %{
+                  should: [
+                    %{match: %{sdk_user_id: keyword}},
+                    %{term: %{nickname: keyword}}
+                  ],
+                  minimum_should_match: 1
+              }}
+            }},
           ],
           minimum_should_match: 1,
           boost: 1.0,

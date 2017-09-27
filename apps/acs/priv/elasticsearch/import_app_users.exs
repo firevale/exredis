@@ -10,7 +10,7 @@ limit = 500
 Enum.map_every(0..count, limit, fn(offset) ->
   IO.puts "limit: #{limit}, offset: #{offset}"
   query =
-    from user in AppUser,
+    from au in AppUser,
     select: au,
     limit: ^limit,
     offset: ^offset, 

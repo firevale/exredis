@@ -6,6 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  
   use Utils.LogAlias
 
   alias Acs.PMallsPoint
@@ -435,8 +436,8 @@ defmodule Acs.PMalls do
   def take_sign_award(app_id, wcp_user_id, days) do
     sign_times = _get_sign_times(app_id, wcp_user_id)
     my_awards = _get_sign_awards(app_id, wcp_user_id)
-    d "-------#{inspect my_awards}"
-    with  true <- sign_times >= String.to_integer(days),
+
+    with true <- sign_times >= String.to_integer(days),
         %{"got" => got, "point" => point} = Enum.find(my_awards, nil, fn award -> award["days"] == days end),
         false <- got
     do
@@ -477,7 +478,7 @@ defmodule Acs.PMalls do
 
   def add_goods_click(goods_id, click) do
     goods = Repo.get(PMallGoods, goods_id)
-    PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
+    PMallGoods.changeset(goods, %{reads: goods.reads + click}) |> Repo.update()
     CachedPMallGoods.refresh(goods)
   end
 
@@ -895,12 +896,13 @@ defmodule Acs.PMalls do
 
     query = from q in LuckyDrawOrder,
       join: user in assoc(q, :wcp_user),
+      join: draw in assoc(q, :lucky_draw),
       where: q.app_id == ^app_id,
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
-      preload: [wcp_user: user]
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url], lucky_draw: [:id, :goods_id]]),
+      preload: [wcp_user: user, lucky_draw: draw]
 
     query = case show_only_win do
       true -> where(query, [q], q.lucky_draw_id != 8)

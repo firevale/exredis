@@ -1,12 +1,15 @@
 <template>
   <div>
     <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
-      <tab-pane icon="fa fa-clone" :label="$t('admin.point.draw.setting')">
+      <tab-pane icon="fa fa-clone" :label="$t('admin.menu.redeemCodeType')">
         <basic-info-editor group="redeemCodeType"></basic-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-support" :label="$t('admin.point.draw.log')">
+      <tab-pane icon="fa fa-support" :label="$t('admin.menu.redeemCodeManage')">
         <redeem-codes></redeem-codes>
       </tab-pane>
+      <tab-pane icon="fa fa-support" :label="$t('admin.menu.redeemCodeLog')">
+        <redeem-code-logs></redeem-code-logs>
+      </tab-pane>      
     </tabs>
   </div>
 </template>
@@ -22,6 +25,7 @@ import {
 
 import basicInfoEditor from 'admin/components/setting/basicInfoEditor'
 import redeemCodes from 'admin/components/code/redeemCodes'
+import redeemCodeLogs from 'admin/components/code/redeemCodeLogs'
 
 export default {
   components: {
@@ -29,6 +33,7 @@ export default {
     TabPane,
     basicInfoEditor,
     redeemCodes,
+    redeemCodeLogs
   },
 }
 </script>

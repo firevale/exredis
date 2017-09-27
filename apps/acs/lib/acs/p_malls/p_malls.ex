@@ -852,16 +852,6 @@ defmodule Acs.PMalls do
     Repo.one!(query)
   end
 
-  # defp check_pmall_draw_rate(app_id, rate) do
-  #   total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
-  #   case is_integer(total) do
-  #     true ->
-  #       (total + rate) <= 100
-  #     false ->
-  #       (Decimal.to_integer(total) + rate) <= 100
-  #   end
-  # end
-
   # 绑定手机
   def bind_mobile(app_id, open_id, mobile) do
     Repo.transaction(fn ->

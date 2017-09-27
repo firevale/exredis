@@ -9,9 +9,10 @@ defmodule Acs.PMalls.LuckyDraw do
     field :name, :string
     field :pic, :string
     field :num, :integer, default: 0
-    field :rate, :integer, default: 0
+    field :rate, :integer, default: 
 
     belongs_to :app, Acs.Apps.App, type: :string
+    belongs_to :goods, Acs.PMalls.PMallGoods, type: :string
 
     timestamps()
   end
@@ -21,7 +22,7 @@ defmodule Acs.PMalls.LuckyDraw do
   @doc false
   def changeset(%LuckyDraw{} = lucky_draw, attrs) do
     lucky_draw
-    |> cast(attrs, [:name, :pic, :num, :rate, :app_id])
+    |> cast(attrs, [:name, :pic, :num, :rate, :app_id, :goods_id])
     |> validate_required([:name, :app_id])
   end
 end

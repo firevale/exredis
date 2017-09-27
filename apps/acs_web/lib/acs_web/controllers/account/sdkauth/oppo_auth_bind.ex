@@ -24,6 +24,7 @@ defmodule AcsWeb.OppoAuthBind do
            sdk_user_id: oppo_user_id, 
            email: email,
            mobile: nil, 
+           nickname: nil,
            }),
          access_token <- Auth.create_access_token(%{
            app_id: app.id,
@@ -71,6 +72,7 @@ defmodule AcsWeb.OppoAuthBind do
            sdk_user_id: oppo_user_id, 
            email: email,
            mobile: nil, 
+           nickname: nil,
            }),
          access_token <- Auth.create_access_token(%{
            app_id: app.id,

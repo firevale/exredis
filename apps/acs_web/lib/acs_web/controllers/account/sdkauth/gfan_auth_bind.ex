@@ -17,7 +17,8 @@ defmodule AcsWeb.GFanAuthBind do
            sdk: "gfan", 
            sdk_user_id: gfan_user_id, 
            email: nil,
-           mobile: nil, 
+           mobile: nil,  
+           nickname: nil,
            }),
          access_token <- Auth.create_access_token(%{
            app_id: app.id,

@@ -24,6 +24,7 @@ defmodule Acs.PMalls do
   alias Acs.Accounts
   alias Acs.Accounts.UserAddress
   alias Acs.PMalls.LuckyDrawOrder
+  alias Acs.PMalls.RedeemCode
 
   alias Acs.Cache.CachedPMallGoods
   alias Acs.Cache.CachedPMallTaskBar
@@ -921,6 +922,33 @@ defmodule Acs.PMalls do
         LuckyDrawOrder.changeset(order, %{status: draw_order["status"], address: draw_order["address"], deliver_at: draw_order["deliver_at"], close_at: draw_order["close_at"]}) |> Repo.update!
         :ok
     end
+  end
+
+  def list_pmall_redeem_codes(app_id, page, records_per_page, code_type) do
+    queryTotal = from g in RedeemCode, select: count(1), where: g.app_id == ^app_id
+    queryTotal = if String.length(code_type) > 0 do
+      queryTotal |> where([g], g.code_type == ^code_type)
+    else
+      queryTotal
+    end
+    total_page = round(Float.ceil(Repo.one!(queryTotal) / records_per_page))
+
+    query = from g in RedeemCode,
+              join: u in assoc(g, :user),
+              where: g.app_id == ^app_id,
+              order_by: [desc: g.id],
+              limit: ^records_per_page,
+              offset: ^((page - 1) * records_per_page),
+              select: map(g, [:id, :code, :code_type, :assigned_at, user: [:id, :nickname, :email]]),
+              preload: [user: u]
+
+    query = if String.length(code_type) > 0  do
+      query |> where([g], g.code_type == ^code_type)
+    else
+      query
+    end
+    codes = Repo.all(query)
+    {:ok, codes, total_page}
   end
 
 end

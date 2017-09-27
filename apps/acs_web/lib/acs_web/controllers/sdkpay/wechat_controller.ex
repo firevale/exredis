@@ -156,7 +156,8 @@ defmodule AcsWeb.WechatController do
       case Accounts.bind_sdk_user(%{sdk: "wechat", 
                                     sdk_user_id: openid, 
                                     email: nil,
-                                    mobile: nil}) do 
+                                    mobile: nil,
+                                    nickname: nil}) do 
         {:ok, user} -> 
           access_token = Auth.create_access_token(%{
             app_id: app.id, 

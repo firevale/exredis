@@ -14,6 +14,7 @@ defmodule AcsWeb.HuaweiAuthBind do
            sdk_user_id: huawei_user_id, 
            email: nil,
            mobile: nil, 
+           nickname: nil,
            }),
          access_token <- Auth.create_access_token(%{
            app_id: app.id,

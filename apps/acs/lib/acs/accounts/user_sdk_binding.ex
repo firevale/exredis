@@ -25,5 +25,6 @@ defmodule Acs.Accounts.UserSdkBinding do
     |> validate_required([:sdk, :sdk_user_id, :user_id])
     |> validate_inclusion(:sdk, @sdks)
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:sdk_user_id, name: :user_sdk_bindings_sdk_sdk_user_id_index)
   end
 end

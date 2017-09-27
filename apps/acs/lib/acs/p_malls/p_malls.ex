@@ -774,12 +774,6 @@ defmodule Acs.PMalls do
   # 抽奖
   def luck_draw(app_id, wcp_user_id, log_type, address \\ %{}) do
     Repo.transaction(fn ->
-      index = :rand.uniform(8)
-      draw = get_draw(index)
-      if(draw == nil) do
-        Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
-      end
-
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
       case setting do
@@ -789,9 +783,10 @@ defmodule Acs.PMalls do
           cond do
             user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
               Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
-            draw.num <= 0  ->
-                Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
             true ->
+              bingo_id = luck_draw(app_id, wcp_user_id)
+              
+              draw = get_draw(bingo_id)
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
               }
@@ -813,6 +808,10 @@ defmodule Acs.PMalls do
           end
       end
     end)
+  end
+
+  defp luck_draw(app_id, wcp_user_id) do
+    
   end
 
   def update_draw_address(wcp_user_id, order_id, address) do

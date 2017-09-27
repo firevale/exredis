@@ -70,7 +70,9 @@ defmodule AcsWeb.WcpController do
               app_id: app_id})
           end
         rescue
-          exception -> Bugsnag.report(exception)
+          exception -> Bugsnag.report(exception, metadata: %{
+            wcp_msg: msg
+          })
         end
       end, [])
 

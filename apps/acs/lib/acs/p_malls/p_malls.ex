@@ -760,15 +760,18 @@ defmodule Acs.PMalls do
     Repo.transaction(fn ->
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
+      draws = _get_vaild_draws(app_id, wcp_user_id)
       cond do
         nil == setting ->
           Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
         user_point + String.to_integer(setting.value) < 0 ->
           Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
+        Enum.count(draws) == 0 ->
+          Repo.rollback(%{i18n_message: "pmall.draw.late"})
         true ->
-          rand_draw = _start_draw(app_id, wcp_user_id)
-          draw = get_draw(rand_draw.id)
           {:ok, add_point, total_point} = PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+          rand_draw = _start_draw(draws)
+          draw = get_draw(rand_draw.id)
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcp_user_id, draw) do
               %{add_point: add_point, total_point: total_point, i18n_message: "pmall.draw.success", 
@@ -803,15 +806,16 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
-  defp _start_draw(app_id, wcp_user_id) do
+  defp _get_vaild_draws(app_id, wcp_user_id) do
     my_draw_ids = _get_my_draw_ids(app_id, wcp_user_id)
-    finally_draws = 
-      list_pmall_draws(app_id)
-      |> Enum.filter(fn draw -> draw.num > 0 end)
-      |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+    list_pmall_draws(app_id)
+    |> Enum.filter(fn draw -> draw.num > 0 end)
+    |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+  end
 
+  defp _start_draw(draws) do
     rand_draws = 
-      Enum.reduce(finally_draws, [], fn(draw, result) -> 
+      Enum.reduce(draws, [], fn(draw, result) -> 
         result ++ Enum.map(1..draw.rate, fn num -> draw end)
       end)
     Enum.random(rand_draws)
@@ -847,16 +851,6 @@ defmodule Acs.PMalls do
 
     Repo.one!(query)
   end
-
-  # defp check_pmall_draw_rate(app_id, rate) do
-  #   total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
-  #   case is_integer(total) do
-  #     true ->
-  #       (total + rate) <= 100
-  #     false ->
-  #       (Decimal.to_integer(total) + rate) <= 100
-  #   end
-  # end
 
   # 绑定手机
   def bind_mobile(app_id, open_id, mobile) do

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="control has-icon has-icon-left">
-      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchOrders')" v-model="keyword">
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchAppOrders')" v-model="keyword">
       <span class="icon is-small">
         <i v-if="searching" class="fa fa-spinner fa-spin"></i>
         <i v-else class="fa fa-search"></i>
@@ -13,7 +13,7 @@
           <div class="table-responsive">
             <table class="table is-narrow goods-table">
               <tbody>
-                <template v-for="order in orders" :key="order.id">
+                <template v-for="order in orders">
                   <tr :key="order.id">
                     <td class="is-icon" rowspan="2">
                       <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
@@ -220,7 +220,7 @@ export default {
 
     onSearchBoxSubmit: function() {
       if (this.keyword) {
-        this.searchOrders(1)
+        this.searchAppOrders(1)
       } else {
         this.fetchOrders(1, this.recordsPerPage)
       }
@@ -228,10 +228,11 @@ export default {
 
     fetchOrders: async function(app_id, page, recordsPerPage) {
       this.loading = true
-      let result = await this.$acs.fetchOrders({
-        app_id,
-        page,
-        records_per_page: recordsPerPage
+      let result = await this.$acs.searchAppOrders({
+        app_id: this.app.id,
+        keyword: '',
+        page: page,
+        records_per_page: this.recordsPerPage
       })
 
       if (result.success) {
@@ -243,9 +244,9 @@ export default {
       this.loading = false
     },
 
-    searchOrders: async function(page) {
+    searchAppOrders: async function(page) {
       this.searching = true
-      let result = await this.$acs.searchOrders({
+      let result = await this.$acs.searchAppOrders({
         app_id: this.app.id,
         keyword: this.keyword,
         page: page,

@@ -885,37 +885,6 @@ defmodule Acs.PMalls do
     Repo.one!(query)
   end
 
-  # 绑定手机
-  def bind_mobile(app_id, open_id, mobile) do
-    Repo.transaction(fn ->
-      case Wcp.get_app_wcp_user(app_id, openid: open_id) do
-        nil ->
-          Repo.rollback(%{i18n_message: "pmall.bindMobile.notFound"})
-
-        %AppWcpUser{} = wcp_user ->
-          is_bind = Accounts.exists?(mobile)
-          if(is_bind) do
-            Repo.rollback(%{i18n_message: "pmall.bindMobile.hasBind"})
-          end
-
-          if(wcp_user.user_id == nil) do
-              new_user = Accounts.create_user!(mobile , String.slice(mobile, 5..10))
-              Wcp.update_app_wcp_user!(wcp_user, %{user_id: new_user.id})
-          else
-            user = Accounts.get_user(wcp_user.user_id)
-            Accounts.update_user!(user, %{mobile: mobile})
-          end
-
-          with {:ok, add_point, total_point} <-  PMallsPoint.add_point("point_bind_mobile", app_id, wcp_user.id) do
-            %{add_point: add_point, total_point: total_point,i18n_message: "pmall.bindMobile.success"}
-          else
-            _ ->
-              Repo.rollback(%{i18n_message: "pmall.bindMobile.failed"})
-          end
-      end
-    end)
-  end
-
   def list_pmall_draw_orders(app_id, page, records_per_page, show_only_win) do
     totalQuery = from q in LuckyDrawOrder, select: count(1), where: q.app_id == ^app_id
     totalQuery = case show_only_win do

@@ -38,9 +38,9 @@ defmodule Acs.Search.ESOrder do
           platform: order.platform,
           sdk: order.sdk,
           sdk_user_id: order.sdk_user_id,
-          inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-          paid_at: Timex.format!(order.paid_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-          delivered_at: Timex.format!(order.deliver_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+          inserted_at: order.inserted_at,
+          paid_at: order.paid_at,
+          delivered_at: order.deliver_at,
           cp_result: order.cp_result,
         },
         id: order.id

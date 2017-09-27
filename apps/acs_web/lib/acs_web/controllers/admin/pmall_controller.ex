@@ -136,13 +136,14 @@ defmodule AcsWeb.Admin.PMallController do
 
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                         %{"nickame" => nickame, 
-                                        "point" => _point, 
-                                        "memo" => _memo} = log) do
-    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, nickame) do
+                                          "point" => _point, 
+                                          "memo" => _memo} = log) do
+    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, nickname: nickame) do
                     nil -> nil
                     %AppWcpUser{} = u -> u.id
                   end
-    if(!wcp_user_id) do
+
+    if is_nil(wcp_user_id) do
       conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
     end
     case PMalls.admin_add_pmall_point(wcp_user_id, app_id, log) do
@@ -353,6 +354,14 @@ defmodule AcsWeb.Admin.PMallController do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.point.drawLog.notExist"})
     end
+  end
+
+  def list_pmall_redeem_codes(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                                      %{"page" => page, 
+                                      "records_per_page" => records_per_page,
+                                      "code_type" => code_type}) do
+    {:ok, codes, total_page} = PMalls.list_pmall_redeem_codes(app_id, page, records_per_page, code_type)
+    conn |> json(%{success: true, codes: codes, total: total_page})
   end
 
 end

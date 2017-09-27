@@ -3,7 +3,7 @@
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
         <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addNewQuestion">
+          <a class="button is-primary" style="min-width: 100px" @click="importCodes">
             <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.question.add') }}
           </a>
         </div>
@@ -27,9 +27,9 @@
               <p>{{ $t('admin.point.question.delete')}}</p>
             </div>
           </div>
-          <div v-if="questions">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="questions && questions.length > 0"
-              v-for="(question, index) in questions" :key="question.id">
+          <div v-if="codes">
+            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="codes && codes.length > 0"
+              v-for="(question, index) in codes" :key="question.id">
               <div class="column is-6">
                 <p>{{ question.question }}</p>
               </div>
@@ -72,13 +72,13 @@ import {
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
 
-import questionDialog from 'admin/components/dialog/point/question'
-const questionDialogComponent = Vue.extend(questionDialog)
+import codeDialog from 'admin/components/dialog/point/redeemCode'
+const codeDialogComponent = Vue.extend(codeDialog)
 
-const openQuestionDialog = (propsData = {
+const openCodeDialog = (propsData = {
   visible: true
 }) => {
-  return new questionDialogComponent({
+  return new codeDialogComponent({
     i18n,
     el: document.createElement('div'),
     propsData
@@ -88,7 +88,8 @@ const openQuestionDialog = (propsData = {
 export default {
   data() {
     return {
-      questions: [],
+      codes: [],
+      codeType: '',
       page: 1,
       total: 1,
       recordsPerPage: 20,
@@ -97,74 +98,35 @@ export default {
   },
 
   created: function() {
-    this.getQuestions(this.page, this.recordsPerPage)
+    this.getCodes(this.page, this.recordsPerPage)
   },
 
   methods: {
-    getQuestions: async function(page, recordsPerPage) {
+    getCodes: async function(page, recordsPerPage) {
       this.processing = true
-      let result = await this.$acs.listPmallQuestions({
+      let result = await this.$acs.listPMallRedeemCodes({
+        code_type: this.codeType,
         page: page,
         records_per_page: recordsPerPage
       })
       if (result.success) {
         this.total = result.total
         this.page = page
-        this.questions = result.questions
+        this.codes = result.codes
       }
       this.processing = false
     },
 
     onPageChange: function(page) {
-      this.getQuestions(page, this.recordsPerPage)
+      this.getCodes(page, this.recordsPerPage)
     },
 
-    editQuestion: function(question, index) {
-      openQuestionDialog({
-        question: question,
+    importCodes: function() {
+      openCodeDialog({
+        codeType: '',
         visible: true,
         callback: result => {
-          this.questions[index] = result
-        },
-      })
-    },
-
-    delQuestion: function(questionId, index) {
-      showMessageBox({
-        visible: true,
-        title: this.$t('admin.titles.warning'),
-        message: this.$t('admin.point.question.confirmDelete'),
-        type: 'danger',
-        onOK: async _ => {
-          this.processing = true
-          let result = await this.$acs.deletePmallQuestion({
-            question_id: questionId,
-          }, this.$t('admin.point.question.deleted'))
-          if (result.success) {
-            this.questions.splice(index, 1)
-          }
-          this.processing = false
-        },
-      })
-    },
-
-    addNewQuestion: function() {
-      openQuestionDialog({
-        question: {
-          id: '0',
-          question: '',
-          correct: '',
-          a1: '',
-          a2: '',
-          a3: '',
-          a4: '',
-          a5: '',
-          a6: '',
-          app_id: this.$route.params.appId
-        },
-        visible: true,
-        callback: result => {
-          this.questions.unshift(result)
+          this.codes.unshift(result.codes)
         },
       })
     },

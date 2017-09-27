@@ -66,13 +66,14 @@ defmodule AcsWeb.Tcp.TcpConn do
   end
   def handle_info({:tcp, _socket, payload}, %{socket: socket} = state) do
     :inet.setopts(socket, active: :once)
-    case handle_message(Poison.decode!(payload, keys: :atoms), state) do 
-      {:ok, new_state} ->  
-        :ok = :gen_tcp.send(socket, "ok\r\n")
-        {:noreply, new_state}
-      _ ->
-        error "receive invalid message: #{inspect payload}"
-        :ok = :gen_tcp.send(socket, "error\r\n")
+    with {:ok, message} <- Poison.decode(payload, keys: :atoms),
+         {:ok, new_state} <- handle_message(message, state),
+         :ok <- :gen_tcp.send(socket, "ok\r\n")
+    do 
+      {:noreply, new_state}
+    else 
+      x ->
+        error "error processing received payload #{inspect payload}, error: #{inspect x}"
         {:stop, :error, state}
     end
   end
@@ -94,7 +95,7 @@ defmodule AcsWeb.Tcp.TcpConn do
     app_id: app_id,
     user_id: user_id,
     platform: platform} = state) do
-    info "stats tcp connection terminate with reason: #{reason}, #{inspect state}"
+    info "stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     AcsStats.remove_online_user(node, app_id, platform, user_id)
     log_stats_activities(state)
     :gen_tcp.close(socket)
@@ -107,7 +108,7 @@ defmodule AcsWeb.Tcp.TcpConn do
     app_id: app_id,
     user_id: user_id,
     platform: platform} = state) do
-    info "inactive stats tcp connection terminate with reason: #{reason}, #{inspect state}"
+    info "inactive stats tcp connection terminate with reason: #{inspect reason}, #{inspect state}"
     AcsStats.remove_online_user(node, app_id, platform, user_id)
     :gen_tcp.close(socket)
     :ok

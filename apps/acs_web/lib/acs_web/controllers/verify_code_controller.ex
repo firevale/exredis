@@ -60,7 +60,8 @@ defmodule AcsWeb.VerifyCodeController do
             conn |> put_session(String.to_atom("#{type}_account_id"), mobile)
                  |> put_session(String.to_atom("#{type}_verify_code"), code)
                  |> json(%{success: true})
-          _ ->
+          e ->
+            error "send mobile verify code failed: #{inspect e}"
             conn |> json(%{success: false, i18n_message: "error.server.sendSmsFailed"})
         end
       _ ->

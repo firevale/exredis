@@ -34,7 +34,7 @@ defmodule Acs.Search do
       size: records_per_page,
     }
 
-    case Elasticsearch.search(%{index: "acs", type: "orders", query: query, params: %{timeout: "1m"}}) do
+    case Elasticsearch.search(%{index: "acs", type: "app_orders", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total}}} ->
         ids = Enum.map(hits, &(&1._id))
 

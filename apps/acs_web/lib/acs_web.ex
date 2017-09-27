@@ -50,9 +50,6 @@ defmodule AcsWeb do
       alias Acs.Apps.AppGoodsProductId
       alias Acs.Apps.AppOrder
       alias Acs.Apps.AppQuestion
-      alias Acs.AppWcpResponse
-      alias Acs.AppWcpMessage
-      alias Acs.AppWcpUser
       alias Acs.LoginCodes
       alias Acs.LoginCodes.AppLoginCode
 
@@ -69,6 +66,7 @@ defmodule AcsWeb do
       alias Acs.Malls.MallOrderDetail
       alias Acs.Malls.MallOrderLog
 
+      alias Acs.Wcp
       alias Acs.Wcp.AppWcpConfig
       alias Acs.Wcp.AppWcpMessage
       alias Acs.Wcp.AppWcpResponse

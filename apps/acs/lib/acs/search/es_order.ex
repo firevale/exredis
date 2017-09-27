@@ -9,6 +9,8 @@ defmodule Acs.Search.ESOrder do
   alias Acs.Cache.CachedAppGoods
   alias Acs.Cache.CachedApp
 
+  def index(%AppOrder{goods_id: nil}), do: nil
+  def index(%AppOrder{paid_at: nil}), do: nil
   def index(%AppOrder{} = order) do 
     with goods = %AppGoods{} <- CachedAppGoods.get(order.goods_id),
          app = %App{} <- CachedApp.get(order.app_id)
@@ -38,7 +40,7 @@ defmodule Acs.Search.ESOrder do
           sdk_user_id: order.sdk_user_id,
           inserted_at: Timex.format!(order.inserted_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           paid_at: Timex.format!(order.paid_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
-          delivered_at: Timex.format!(order.delivered_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
+          delivered_at: Timex.format!(order.deliver_at, "{YYYY}-{0M}-{0D}T{h24}:{0m}:{0s}+00:00"),
           cp_result: order.cp_result,
         },
         id: order.id

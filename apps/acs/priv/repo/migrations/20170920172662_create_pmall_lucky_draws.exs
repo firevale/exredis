@@ -10,6 +10,7 @@ defmodule Acs.Repo.Migrations.CreatePmallLuckyDraws do
       add :rate, :integer, default: 0
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
+      add :goods_id, references(:pmall_goods, type: :string, on_delete: :nothing), size: 100
 
       timestamps()
     end

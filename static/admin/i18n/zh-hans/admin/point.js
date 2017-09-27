@@ -64,6 +64,7 @@
     rate: '概率',
     edit: '编辑',
     delete: '删除',
+    goodsId: '对应商品',
     confirmDelete: '您确定要删除该奖品么?',
     updated: '奖品已成功更新',
     deleted: '奖品已成功删除',
@@ -71,6 +72,7 @@
     updateSuccess: '修改成功',
     notFound: '奖品没有找到',
     overflow: '添加的所有奖品概率总和不能超过100',
+    goodsNotExist: '对应商品不存在，请检查商品编号',
    },
 
    drawLog: {

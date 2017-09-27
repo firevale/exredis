@@ -701,17 +701,18 @@ defmodule Acs.PMalls do
   def list_pmall_draws(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,
-      select: map(d, [:id, :name, :pic, :num, :rate, :app_id]),
+      select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
     Repo.all(query)
   end
 
   def update_pmall_draw(draw) do
-    case Repo.get(LuckyDraw, draw["id"]) do
-    nil ->
-      # add new
-      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])) do
-        true ->
+    if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
+      :notexist
+    else
+      case Repo.get(LuckyDraw, draw["id"]) do
+        nil ->
+          # add new
           case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
             {:ok, new_draw} ->
               draw = Map.put(draw, "id", new_draw.id)
@@ -719,21 +720,14 @@ defmodule Acs.PMalls do
             {:error, %{errors: _errors}} ->
               :error
           end
-        false ->
-          :overflow
-      end
-
-    %LuckyDraw{} = q ->
-      # update
-      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])-q.rate) do
-        true ->
+    
+        %LuckyDraw{} = q ->
+          # update
           changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
           changed |> Repo.update!
           draw = Map.put(draw, "id", q.id)
           {:updateok, draw, changed.changes}
-        false ->
-          :overflow
-      end
+        end
     end
   end
 
@@ -760,62 +754,67 @@ defmodule Acs.PMalls do
     LuckyDraw.changeset(draw, %{pic: image_path}) |> Repo.update!
   end
 
-  def create_draw_order(order) do
-    LuckyDrawOrder.changeset(%LuckyDrawOrder{}, order) |> Repo.insert
-  end
-
-  def is_draw_exists?(app_id, wcp_user_id, lucky_draw_id) do
-    query = from log in LuckyDrawOrder,
-      select: count(1),
-      where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id and log.lucky_draw_id == ^lucky_draw_id
-    Repo.one!(query) > 0
-  end
-
   # 抽奖
-  def luck_draw(app_id, wcp_user_id, log_type, address \\ %{}) do
+  def luck_draw(app_id, wcp_user_id) do
+    log_type = "point_luck_draw"
     Repo.transaction(fn ->
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
-      case setting do
-        nil ->
+      cond do
+        nil == setting ->
           Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
-        _ ->
-          cond do
-            user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
-              Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
-            true ->
-              bingo_id = luck_draw(app_id, wcp_user_id)
-              
-              draw = get_draw(bingo_id)
-              draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
-              "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
-              }
-              draw_order = if draw.name == "谢谢您" , 
-              do: Map.put(draw_order, :status, 4) |>  Map.put(:paid_at, Timex.now), 
-              else: Map.put(draw_order, :status, 2)
-              
-              # 扣除积分
-              with {:ok, add_point, total_point} <-  PMallsPoint.add_point(log_type, app_id, wcp_user_id) do
-                # 减奖品数
-                LuckyDraw.changeset(draw, %{num: draw.num - 1}) |> Repo.update!
-                # 创建抽奖订单
-                case create_draw_order(draw_order) do
-                  {:error, %{errors: _errors}} ->
-                    Repo.rollback(%{i18n_message: "pmall.draw.failed"})
-                  {:ok, order} ->
-                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: bingo_id, order: order, draw_name: draw.name}
-                end
-              else
-                _ ->
-                  Repo.rollback(%{i18n_message: "pmall.draw.failed"})
-              end
+        user_point + String.to_integer(setting.value) < 0 ->
+          Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
+        true ->
+          rand_draw = _start_draw(app_id, wcp_user_id)
+          draw = get_draw(rand_draw.id)
+          {:ok, add_point, total_point} = PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+          with  true <- draw.goods_id != nil,
+            {:ok, order} <- _create_draw_order(app_id, wcp_user_id, draw) do
+              %{add_point: add_point, total_point: total_point, i18n_message: "pmall.draw.success", 
+              index: draw.id, order_id: order.id, draw_name: draw.name}
+          else
+            false ->
+              %{index: draw.id, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
+            _ ->
+              Repo.rollback(%{i18n_message: "pmall.draw.failed"})
           end
       end
     end)
   end
 
-  defp luck_draw(app_id, wcp_user_id) do
+  def _create_draw_order(app_id, wcp_user_id, draw) do
+    # 减奖品数
+    LuckyDraw.changeset(draw, %{num: draw.num - 1}) |> Repo.update!
+
+    # 创建抽奖订单
+    draw_order = %{"name": draw.name, "pic": draw.pic,"app_id": app_id, 
+    "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": %{},
+      "status": 4, "paid_at": Timex.now
+    }
     
+    LuckyDrawOrder.changeset(%LuckyDrawOrder{}, draw_order) |> Repo.insert
+  end
+
+  defp _get_my_draw_ids(app_id, wcp_user_id) do
+    query = from order in LuckyDrawOrder,
+      where: order.app_id == ^app_id and  order.wcp_user_id == ^wcp_user_id,
+      select: order.lucky_draw_id
+    Repo.all(query)
+  end
+
+  defp _start_draw(app_id, wcp_user_id) do
+    my_draw_ids = _get_my_draw_ids(app_id, wcp_user_id)
+    finally_draws = 
+      list_pmall_draws(app_id)
+      |> Enum.filter(fn draw -> draw.num > 0 end)
+      |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+
+    rand_draws = 
+      Enum.reduce(finally_draws, [], fn(draw, result) -> 
+        result ++ Enum.map(1..draw.rate, fn num -> draw end)
+      end)
+    Enum.random(rand_draws)
   end
 
   def update_draw_address(wcp_user_id, order_id, address) do
@@ -849,15 +848,15 @@ defmodule Acs.PMalls do
     Repo.one!(query)
   end
 
-  defp check_pmall_draw_rate(app_id, rate) do
-    total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
-    case is_integer(total) do
-      true ->
-        (total + rate) <= 100
-      false ->
-        (Decimal.to_integer(total) + rate) <= 100
-    end
-  end
+  # defp check_pmall_draw_rate(app_id, rate) do
+  #   total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
+  #   case is_integer(total) do
+  #     true ->
+  #       (total + rate) <= 100
+  #     false ->
+  #       (Decimal.to_integer(total) + rate) <= 100
+  #   end
+  # end
 
   # 绑定手机
   def bind_mobile(app_id, open_id, mobile) do

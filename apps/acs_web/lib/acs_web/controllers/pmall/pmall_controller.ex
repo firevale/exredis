@@ -115,7 +115,7 @@ defmodule AcsWeb.PMallController do
           "area_code" => area_code} = user_address}) do
    
     result = PMalls.update_order_address( wcp_user_id, order_id, user_address)
-    PMalls.save_address(app_id, open_id, user_address)
+    PMalls.save_address(wcp_user_id, user_address)
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})
@@ -228,7 +228,7 @@ defmodule AcsWeb.PMallController do
           "area_code" => area_code} = user_address}) do
    
     result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)
-    PMalls.save_address(app_id, open_id, user_address)
+    PMalls.save_address(wcp_user_id, user_address)
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})

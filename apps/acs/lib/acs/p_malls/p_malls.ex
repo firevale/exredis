@@ -850,8 +850,8 @@ defmodule Acs.PMalls do
 
   end
 
-  def save_address(app_id, open_id, address) do
-    wcp_user = Wcp.get_app_wcp_user(app_id, openid: open_id)
+  def save_address(wcp_user_id, address) do
+    wcp_user = Wcp.get_app_wcp_user(wcp_user_id)
     if(wcp_user == nil) do
       nil
     else

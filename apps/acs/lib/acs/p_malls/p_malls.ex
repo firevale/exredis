@@ -799,7 +799,7 @@ defmodule Acs.PMalls do
                   {:error, %{errors: _errors}} ->
                     Repo.rollback(%{i18n_message: "pmall.draw.failed"})
                   {:ok, order} ->
-                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: index, order: order, draw_name: draw.name}
+                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: bingo_id, order: order, draw_name: draw.name}
                 end
               else
                 _ ->

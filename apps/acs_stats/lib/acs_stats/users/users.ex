@@ -7,7 +7,7 @@ defmodule AcsStats.Users do
   alias AcsStats.Repo
   use Utils.LogAlias
 
-  alias Acs.Search.ESAppUser
+  alias AcsStats.Search.ESAppUser
   alias AcsStats.Users.AppUser
   alias AcsStats.Users.AppUserDailyActivity
 

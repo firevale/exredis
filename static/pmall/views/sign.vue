@@ -37,7 +37,7 @@
         </p>
         <div class="awards is-flex">
           <div v-for="award in awards" class="award-box column is-2">
-            <div class="award is-grey">
+            <div class="award" :class="{'is-grey': award.got}" @click="takeAward(award)">
               <img :src="award.pic | imageStaticUrl">
             </div>
           </div>
@@ -135,9 +135,16 @@ export default {
         }))
       }
     },
-    async takeAward(days) {
-      let result = await this.$acs.takeAward({days: days})
+    async takeAward(award) {
+      if (award.got) {
+        return
+      }
+
+      let result = await this.$acs.takeAward({
+        days: award.days
+      })
       if (result.success) {
+        award.got = true
         this.setUserPoints(result.total_point)
         Toast.show(this.$t('pmall.award.gotSuccess', {
           point: result.add_point

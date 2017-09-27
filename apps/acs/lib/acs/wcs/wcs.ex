@@ -29,7 +29,7 @@ defmodule Acs.Wcs do
     CachedWcsUser.refresh(new_wcp_user)
   end
 
-  def acs_user_bind_mobile(wcs_user_id, mobile) do
+  def bind_mobile(wcs_user_id, mobile) do
     with wcs_user = %WcsUser{} <- get_wcs_user(wcs_user_id),
          nil <- wcs_user.user_id
     do 

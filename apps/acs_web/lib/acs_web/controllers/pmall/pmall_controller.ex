@@ -106,7 +106,7 @@ defmodule AcsWeb.PMallController do
 
   def take_award(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"days" => days}) do
     wcp_user_id = 1
-    result = PMalls.take_sign_award(app_id, wcp_user_id, String.to_integer(days))
+    result = PMalls.take_sign_award(app_id, wcp_user_id, days)
     case result do
       {:ok, add_point, total_point} ->
         conn |> json(%{success: true, add_point: add_point, total_point: total_point, i18n_message: "pmall.award.gotSuccess"})

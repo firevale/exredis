@@ -385,7 +385,6 @@ defmodule Acs.PMalls do
 
   def get_sign_info(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
-   
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
     sign_times = _get_sign_times(app_id, wcp_user_id)
@@ -429,15 +428,16 @@ defmodule Acs.PMalls do
     Enum.map(awards_raw, fn raw -> 
       award = Poison.decode!(raw[:value])
       got = Map.has_key?(my_awards, award["days"])
-      Map.put(award, :got, got)
+      Map.put(award, "got", got)
     end)
   end
 
-  def take_sign_award(app_id, wcp_user_id, days) when is_integer(days) do
+  def take_sign_award(app_id, wcp_user_id, days) do
     sign_times = _get_sign_times(app_id, wcp_user_id)
     my_awards = _get_sign_awards(app_id, wcp_user_id)
-    with  true <- sign_times >= days,
-        %{got: got, point: point} = Enum.find(my_awards, nil, fn award -> end),
+    d "-------#{inspect my_awards}"
+    with  true <- sign_times >= String.to_integer(days),
+        %{"got" => got, "point" => point} = Enum.find(my_awards, nil, fn award -> award["days"] == days end),
         false <- got
     do
       cache_key = _sign_cache_key_awards(app_id, wcp_user_id)

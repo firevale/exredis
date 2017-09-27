@@ -385,7 +385,6 @@ defmodule Acs.PMalls do
 
   def get_sign_info(app_id, wcp_user_id) do
     sign_key = _sign_cache_key(app_id, wcp_user_id)
-   
 
     signed = if Exredis.exists(sign_key) == 1, do: true, else: false
     sign_times = _get_sign_times(app_id, wcp_user_id)
@@ -429,15 +428,16 @@ defmodule Acs.PMalls do
     Enum.map(awards_raw, fn raw -> 
       award = Poison.decode!(raw[:value])
       got = Map.has_key?(my_awards, award["days"])
-      Map.put(award, :got, got)
+      Map.put(award, "got", got)
     end)
   end
 
-  def take_sign_award(app_id, wcp_user_id, days) when is_integer(days) do
+  def take_sign_award(app_id, wcp_user_id, days) do
     sign_times = _get_sign_times(app_id, wcp_user_id)
     my_awards = _get_sign_awards(app_id, wcp_user_id)
-    with  true <- sign_times >= days,
-        %{got: got, point: point} = Enum.find(my_awards, nil, fn award -> end),
+    d "-------#{inspect my_awards}"
+    with  true <- sign_times >= String.to_integer(days),
+        %{"got" => got, "point" => point} = Enum.find(my_awards, nil, fn award -> award["days"] == days end),
         false <- got
     do
       cache_key = _sign_cache_key_awards(app_id, wcp_user_id)
@@ -774,12 +774,6 @@ defmodule Acs.PMalls do
   # 抽奖
   def luck_draw(app_id, wcp_user_id, log_type, address \\ %{}) do
     Repo.transaction(fn ->
-      index = :rand.uniform(8)
-      draw = get_draw(index)
-      if(draw == nil) do
-        Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
-      end
-
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
       case setting do
@@ -789,9 +783,10 @@ defmodule Acs.PMalls do
           cond do
             user_point < String.to_integer(setting.value) * -1 || user_point <= 0 ->
               Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
-            draw.num <= 0  ->
-                Repo.rollback(%{i18n_message: "pmall.draw.soldout"})
             true ->
+              bingo_id = luck_draw(app_id, wcp_user_id)
+              
+              draw = get_draw(bingo_id)
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
               }
@@ -804,7 +799,7 @@ defmodule Acs.PMalls do
                   {:error, %{errors: _errors}} ->
                     Repo.rollback(%{i18n_message: "pmall.draw.failed"})
                   {:ok, order} ->
-                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: index, order: order, draw_name: draw.name}
+                    %{add_point: add_point, total_point: total_point,i18n_message: "pmall.draw.success",  index: bingo_id, order: order, draw_name: draw.name}
                 end
               else
                 _ ->
@@ -813,6 +808,10 @@ defmodule Acs.PMalls do
           end
       end
     end)
+  end
+
+  defp luck_draw(app_id, wcp_user_id) do
+    
   end
 
   def update_draw_address(wcp_user_id, order_id, address) do

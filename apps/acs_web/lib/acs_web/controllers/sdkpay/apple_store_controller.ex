@@ -204,7 +204,7 @@ defmodule AcsWeb.AppleStoreController do
           id: Utils.generate_token(16),
           app_id: app.id, 
           user_id: user.id, 
-          app_user_id: app_user && app_user.id,
+          app_user_id: app_user && app_user.app_user_id,
           platform: "ios",
           device_id: device_id,
           sdk: "firevale",

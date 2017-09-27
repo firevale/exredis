@@ -13,22 +13,22 @@
           <div class="table-responsive">
             <table class="table is-narrow goods-table">
               <tbody>
-                <template v-for="order in orders">
-                  <tr>
+                <template v-for="order in orders" :key="order.id">
+                  <tr :key="order.id">
                     <td class="is-icon" rowspan="2">
                       <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
                     </td>
                     <td class="is-icon" rowspan="2">
                       <tooltip :label="app.name" placement="top">
                         <figure class="image is-32x32" style="display: block">
-                          <img :src="appIcon"></img>
+                          <img :src="appIcon | imageStaticUrl"></img>
                         </figure>
                       </tooltip>
                     </td>
                     <td class="is-icon" rowspan="2">
                       <tooltip :label="getGoodsName(order)" placement="top">
                         <figure class="image is-32x32" style="display: block">
-                          <img :src="getGoodsIcon(order)"></img>
+                          <img :src="getGoodsIcon(order) | imageStaticUrl"></img>
                         </figure>
                       </tooltip>
                     </td>
@@ -48,7 +48,7 @@
                       {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.deliver_at | formatServerDateTime }}
                     </td>
                   </tr>
-                  <tr>
+                  <tr :key="order.id">
                     <td> {{ order.zone_id }}区 </td>
                     <td> {{ $t('admin.label.transactionId') + ': ' }} {{ getOrderTransactionId(order) }} </td>
                     <td colspan="2"> {{ $t('admin.label.cpOrderId') + ': ' }} {{ order.cp_order_id }} </td>
@@ -154,7 +154,7 @@ export default {
 
   methods: {
     getGoodsIcon: function(order) {
-      let goodsInfo = this.goods[`${order.app_id}-${order.goods_id}`]
+      let goodsInfo = this.goods[order.goods_id]
       if (goodsInfo && goodsInfo.icon) {
         return goodsInfo.icon
       } else {

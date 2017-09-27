@@ -46,6 +46,7 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           transaction_id: %{type: :text},
           app_user_id: %{type: :keyword},
           zone_id: %{type: :keyword},
+          platform: %{type: :keyword},
           sdk: %{type: :keyword},
           sdk_user_id: %{type: :keyword},
           inserted_at: %{type: :date},
@@ -57,12 +58,20 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
       app_users: %{
         _parent: %{type: :users},
         properties: %{
+          id: %{type: :keyword},
           app_id: %{type: :keyword},
           zone_id: %{type: :keyword},
           game_user_id: %{type: :keyword},
-          game_user_name: %{type: :text, analyzer: :ik_smart},
+          game_user_name: %{type: :keyword},
           game_user_level: %{type: :integer},
-          pay_amount:  %{type: :integer}
+          pay_amount:  %{type: :integer},
+          platform: %{type: :keyword},
+          reg_date: %{type: :date},
+          inserted_at: %{type: :date},
+          last_active_at:  %{type: :date},
+          last_paid_at:  %{type: :date},
+          first_paid_at:  %{type: :date},
+          updated_at:  %{type: :date},
         }
       },
     }
@@ -140,115 +149,113 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
     Elasticsearch.create_index("forum", settings, mappings)
 
     Elasticsearch.delete_index("mall")
-    Elasticsearch.create_index("mall")
 
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        app_id: %{type: :keyword},
-        name: %{type: :text, analyzer: :ik_smart},
-        description:  %{type: :text, analyzer: :ik_smart},
-        user_id: %{type: :integer},
-        active: %{type: :boolean},
-        inserted_at: %{type: :date}
+    mappings = %{
+      goods: %{
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          name: %{type: :text, analyzer: :ik_smart},
+          description:  %{type: :text, analyzer: :ik_smart},
+          user_id: %{type: :integer},
+          active: %{type: :boolean},
+          inserted_at: %{type: :date}
+        }
+      },
+      orders: %{
+        properties: %{
+          id: %{type: :keyword},
+          goods_name: %{type: :text, analyzer: :ik_smart},
+          app_id: %{type: :keyword},
+          platform: %{type: :keyword},
+          device_id: %{type: :keyword},
+          user_ip: %{type: :keyword},
+          user_id: %{type: :integer},
+          currency: %{type: :keyword},
+          paid_type: %{type: :keyword},
+          memo: %{type: :text, analyzer: :ik_smart},
+          address: %{
+            properties: %{
+              name: %{type: :keyword},
+              mobile: %{type: :keyword},
+              address: %{type: :text, analyzer: :ik_smart},
+              area: %{type: :text, analyzer: :ik_smart},                 
+              area_code: %{type: :keyword}
+            }
+          },
+          transaction_id: %{type: :keyword},
+          status: %{type: :integer},
+          inserted_at: %{type: :date}
+        }
       }
     }
 
-    Elasticsearch.put_mapping(%{index: "mall", type: "goods", mapping: mapping})
-
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        goods_name: %{type: :text, analyzer: :ik_smart},
-        app_id: %{type: :keyword},
-        platform: %{type: :keyword},
-        device_id: %{type: :keyword},
-        user_ip: %{type: :keyword},
-        user_id: %{type: :integer},
-        currency: %{type: :keyword},
-        paid_type: %{type: :keyword},
-        memo: %{type: :text, analyzer: :ik_smart},
-        address: %{
-          properties: %{
-            name: %{type: :keyword},
-            mobile: %{type: :keyword},
-            address: %{type: :text, analyzer: :ik_smart},
-            area: %{type: :text, analyzer: :ik_smart},                 
-            area_code: %{type: :keyword}
-          }
-        },
-        transaction_id: %{type: :keyword},
-        status: %{type: :integer},
-        inserted_at: %{type: :date}
-      }
-    }
-    Elasticsearch.put_mapping(%{index: "mall", type: "orders", mapping: mapping})
+    Elasticsearch.create_index("mall", %{}, mappings)
 
     Elasticsearch.delete_index("pmall")
-    Elasticsearch.create_index("pmall")
 
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        goods_name: %{type: :text, analyzer: :ik_smart},
-        app_id: %{type: :keyword},
-        platform: %{type: :keyword},
-        device_id: %{type: :keyword},
-        user_ip: %{type: :keyword},
-        user_id: %{type: :integer},
-        currency: %{type: :keyword},
-        paid_type: %{type: :keyword},
-        memo: %{type: :text, analyzer: :ik_smart},
-        address: %{
-          properties: %{
-            name: %{type: :keyword},
-            mobile: %{type: :keyword},
-            address: %{type: :text, analyzer: :ik_smart},
-            area: %{type: :text, analyzer: :ik_smart},                 
-            area_code: %{type: :keyword}
-          }
-        },
-        transaction_id: %{type: :keyword},
-        status: %{type: :integer},
-        inserted_at: %{type: :date}
+    mappings = %{
+      orders: %{
+        properties: %{
+          id: %{type: :keyword},
+          goods_name: %{type: :text, analyzer: :ik_smart},
+          app_id: %{type: :keyword},
+          platform: %{type: :keyword},
+          device_id: %{type: :keyword},
+          user_ip: %{type: :keyword},
+          user_id: %{type: :integer},
+          currency: %{type: :keyword},
+          paid_type: %{type: :keyword},
+          memo: %{type: :text, analyzer: :ik_smart},
+          address: %{
+            properties: %{
+              name: %{type: :keyword},
+              mobile: %{type: :keyword},
+              address: %{type: :text, analyzer: :ik_smart},
+              area: %{type: :text, analyzer: :ik_smart},                 
+              area_code: %{type: :keyword}
+            }
+          },
+          transaction_id: %{type: :keyword},
+          status: %{type: :integer},
+          inserted_at: %{type: :date}
+        }
+      },
+      goods: %{
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          name: %{type: :text, analyzer: :ik_smart},
+          description:  %{type: :text, analyzer: :ik_smart},
+          user_id: %{type: :integer},
+          active: %{type: :boolean},
+          inserted_at: %{type: :date}
+        }
       }
     }
-    Elasticsearch.put_mapping(%{index: "pmall", type: "orders", mapping: mapping})
 
-    mapping = %{
-      properties: %{
-        id: %{type: :keyword},
-        app_id: %{type: :keyword},
-        name: %{type: :text, analyzer: :ik_smart},
-        description:  %{type: :text, analyzer: :ik_smart},
-        user_id: %{type: :integer},
-        active: %{type: :boolean},
-        inserted_at: %{type: :date}
-      }
-    }
-
-    Elasticsearch.put_mapping(%{index: "pmall", type: "goods", mapping: mapping})
+    Elasticsearch.create_index("pmall", %{}, mappings)
 
     Elasticsearch.delete_index("customer_service")
-    Elasticsearch.create_index("customer_service")
 
-    mapping = %{
-      properties: %{
-        id: %{type: :integer},
-        app_id: %{type: :keyword},
-        platform: %{type: :integer},
-        title: %{type: :text, analyzer: :ik_smart},
-        answer: %{type: :text, analyzer: :ik_smart},
-        active: %{type: :boolean},
-        is_hot: %{type: :boolean},
-        sort_index: %{type: :integer},
-        user_id: %{type: :integer},
-        inserted_at: %{type: :date},
-        updated_at: %{type: :date},
-        reply_at: %{type: :date}
+    mappings = %{
+      questions: %{
+        properties: %{
+          id: %{type: :integer},
+          app_id: %{type: :keyword},
+          platform: %{type: :integer},
+          title: %{type: :text, analyzer: :ik_smart},
+          answer: %{type: :text, analyzer: :ik_smart},
+          active: %{type: :boolean},
+          is_hot: %{type: :boolean},
+          sort_index: %{type: :integer},
+          user_id: %{type: :integer},
+          inserted_at: %{type: :date},
+          updated_at: %{type: :date},
+          reply_at: %{type: :date}
+        }
       }
     }
-
-    Elasticsearch.put_mapping(%{index: "customer_service", type: "questions", mapping: mapping})
+    Elasticsearch.create_index("customer_service", %{}, mappings)
   end
 end

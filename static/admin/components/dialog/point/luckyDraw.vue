@@ -9,11 +9,15 @@
         <p class="control">
           <input class="input" type="text" v-model.trim="draw.name">
         </p>
+        <label class="label"> {{ $t('admin.point.draw.goodsId') }}(没中奖的请留空): </label>
+        <p class="control">
+          <input class="input" type="text" v-model.trim="draw.goods_id">
+        </p>
         <label class="label"> {{ $t('admin.point.draw.num') }}: </label>
         <p class="control">
           <input class="input" type="number" v-model.trim="draw.num">
         </p>
-        <label class="label"> {{ $t('admin.point.draw.rate') }}(所有概率总和为100): </label>
+        <label class="label"> {{ $t('admin.point.draw.rate') }}: </label>
         <p class="control">
           <input class="input" type="number" v-model.trim="draw.rate">
         </p>

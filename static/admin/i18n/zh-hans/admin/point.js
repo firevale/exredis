@@ -72,6 +72,7 @@
     updateSuccess: '修改成功',
     notFound: '奖品没有找到',
     overflow: '添加的所有奖品概率总和不能超过100',
+    goodsNotExist: '对应商品不存在，请检查商品编号',
    },
 
    drawLog: {

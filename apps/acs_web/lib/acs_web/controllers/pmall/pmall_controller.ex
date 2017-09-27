@@ -116,8 +116,14 @@ defmodule AcsWeb.PMallController do
 
   end
 
-  def update_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
-  "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
+  def update_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+    %{"order_id" => order_id,  
+      "user_address" => 
+        %{"name" => name,
+          "mobile" => mobile, 
+          "area" => area, 
+          "address" => address, 
+          "area_code" => area_code} = user_address}) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
     wcp_user_id  = 1
     result = PMalls.update_order_address( wcp_user_id, order_id, user_address)
@@ -226,8 +232,15 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"order_id" => order_id,  "user_address" => %{"name" => name,
-  "mobile" => mobile, "area" => area, "address" => address, "area_code" => area_code} = user_address}) do
+  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+    %{
+      "order_id" => order_id,  
+      "user_address" => 
+        %{"name" => name,
+          "mobile" => mobile, 
+          "area" => area, 
+          "address" => address, 
+          "area_code" => area_code} = user_address}) do
     open_id = "o4tfGszZK1U0c_Z6lj29NAYAv_EE"
     wcp_user_id  = 1
     result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)

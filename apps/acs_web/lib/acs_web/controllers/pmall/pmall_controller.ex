@@ -228,10 +228,11 @@ defmodule AcsWeb.PMallController do
           "area" => area, 
           "address" => address, 
           "area_code" => area_code} = user_address}) do
-    result = PMalls.update_draw_address( wcp_user_id, order_id, user_address)
+    result = PMalls.update_draw_address(wcp_user_id, order_id, user_address)
     case result do
       {:ok, order} ->
         conn |> json(%{success: true})
+        
       {:error, i18n_message} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end

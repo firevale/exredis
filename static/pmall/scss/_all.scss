@@ -291,12 +291,20 @@
 
   .sign-page {
     $border-color: rgba(#d40200, 0.5);
-    background-image: url("~assets/pmall/1246_01.jpg");
-    background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
     .container {
       flex: 1;
       background-color: rgba(white, 0.8);
+      position: relative;
+      .container-background {
+        z-index: 2;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: virtual-m-pixel(1242);
+        height: virtual-m-pixel(2346);
+      }
       .calender {
+        z-index: 10;
         display: block;
         flex: 0;
         margin-top: 2px;
@@ -345,6 +353,7 @@
       }
       .sign-awards {
         margin-top: virtual-m-rem(120);
+        z-index: 10;
         strong {
           color: red;
           font-size: $size4;
@@ -364,13 +373,14 @@
                 height: 100%;
               }
               &.is-grey {
-                filter:grayscale(100%);
+                filter: grayscale(100%);
               }
             }
           }
         }
       }
       .sign-others {
+        z-index: 10;
         margin-top: 2rem;
         .sign-users {
           background: white;

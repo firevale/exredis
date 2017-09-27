@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="control has-icon has-icon-left">
-      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchOrders')" v-model="keyword">
+      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchAppOrders')" v-model="keyword">
       <span class="icon is-small">
         <i v-if="searching" class="fa fa-spinner fa-spin"></i>
         <i v-else class="fa fa-search"></i>
@@ -13,17 +13,10 @@
           <div class="table-responsive">
             <table class="table is-narrow goods-table">
               <tbody>
-                <template v-for="order in orders" :key="order.id">
+                <template v-for="order in orders">
                   <tr :key="order.id">
                     <td class="is-icon" rowspan="2">
                       <i :class="getOrderPlatformIcon(order)" style="font-size: 21px"></i>
-                    </td>
-                    <td class="is-icon" rowspan="2">
-                      <tooltip :label="app.name" placement="top">
-                        <figure class="image is-32x32" style="display: block">
-                          <img :src="appIcon | imageStaticUrl"></img>
-                        </figure>
-                      </tooltip>
                     </td>
                     <td class="is-icon" rowspan="2">
                       <tooltip :label="getGoodsName(order)" placement="top">
@@ -45,7 +38,7 @@
                       {{ $t('admin.label.paidAt') + ': ' }} {{ order.paid_at | formatServerDateTime }}
                     </td>
                     <td style="border-bottom: none">
-                      {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.deliver_at | formatServerDateTime }}
+                      {{ $t('admin.label.deliveredAt') + ': ' }} {{ order.delivered_at | formatServerDateTime }}
                     </td>
                   </tr>
                   <tr :key="order.id">
@@ -138,7 +131,7 @@ export default {
 
   mounted: function() {
     if (this.app) {
-      this.fetchOrders(this.app.id, this.page, this.recordsPerPage)
+      this.searchAppOrders(1)
     }
   },
 
@@ -147,7 +140,7 @@ export default {
       if (typeof newVal === 'object' && typeof newVal.id === 'string') {
         this.page = 1
         this.total = 1
-        this.fetchOrders(newVal.id, this.page, this.recordsPerPage)
+        this.searchAppOrders(1)
       }
     }
   },
@@ -215,37 +208,16 @@ export default {
     },
 
     onPageChange: function(page) {
-      this.fetchOrders(this.app.id, page, this.recordsPerPage)
+      this.searchAppOrders(page)
     },
 
     onSearchBoxSubmit: function() {
-      if (this.keyword) {
-        this.searchOrders(1)
-      } else {
-        this.fetchOrders(1, this.recordsPerPage)
-      }
+      this.searchAppOrders(1)
     },
 
-    fetchOrders: async function(app_id, page, recordsPerPage) {
-      this.loading = true
-      let result = await this.$acs.fetchOrders({
-        app_id,
-        page,
-        records_per_page: recordsPerPage
-      })
-
-      if (result.success) {
-        this.total = result.total
-        this.orders = result.orders
-        this.page = page
-      }
-
-      this.loading = false
-    },
-
-    searchOrders: async function(page) {
+    searchAppOrders: async function(page) {
       this.searching = true
-      let result = await this.$acs.searchOrders({
+      let result = await this.$acs.searchAppOrders({
         app_id: this.app.id,
         keyword: this.keyword,
         page: page,
@@ -255,7 +227,6 @@ export default {
         this.total = result.total
         this.orders = result.orders
         this.page = page
-
       }
       this.searching = false
     },

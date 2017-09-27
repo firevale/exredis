@@ -1,9 +1,9 @@
 <template>
   <div class="sign-page">
-    <div class="container  is-flex is-column">
+    <div class="container is-flex is-column">
+      <img class="container-background" :src="pic | imageStaticUrl">
       <div class="calender">
         <header class="head-image">
-          <img class="head-image" :src="pic | imageStaticUrl">
         </header>
         <div class="body is-flex">
           <div class="column is-3 has-text-centered">
@@ -32,7 +32,7 @@
       </div>
       <div class="sign-awards">
         <p class="has-text-centered">你已经连续<strong>签到{{sign_times}}天</strong>，连续签到可以领取更多奖励
-          <span class="icon"></span>
+          <span class="icon">
           </span>
         </p>
         <div class="awards is-flex">

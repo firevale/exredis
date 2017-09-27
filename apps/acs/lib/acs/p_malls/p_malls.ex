@@ -6,6 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  
   use Utils.LogAlias
 
   alias Acs.PMallsPoint
@@ -435,8 +436,8 @@ defmodule Acs.PMalls do
   def take_sign_award(app_id, wcp_user_id, days) do
     sign_times = _get_sign_times(app_id, wcp_user_id)
     my_awards = _get_sign_awards(app_id, wcp_user_id)
-    d "-------#{inspect my_awards}"
-    with  true <- sign_times >= String.to_integer(days),
+
+    with true <- sign_times >= String.to_integer(days),
         %{"got" => got, "point" => point} = Enum.find(my_awards, nil, fn award -> award["days"] == days end),
         false <- got
     do
@@ -477,7 +478,7 @@ defmodule Acs.PMalls do
 
   def add_goods_click(goods_id, click) do
     goods = Repo.get(PMallGoods, goods_id)
-    PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
+    PMallGoods.changeset(goods, %{reads: goods.reads + click}) |> Repo.update()
     CachedPMallGoods.refresh(goods)
   end
 

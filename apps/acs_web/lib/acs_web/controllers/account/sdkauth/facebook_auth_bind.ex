@@ -18,6 +18,7 @@ defmodule AcsWeb.FacebookAuthBind do
           sdk_user_id: facebook_user_id, 
           email: email,
           mobile: nil, 
+          nickname: nil,
           }),
         access_token <- Auth.create_access_token(%{
           app_id: app.id,

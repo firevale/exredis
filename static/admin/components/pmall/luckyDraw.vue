@@ -163,25 +163,21 @@ export default {
     },
 
     addNewDraw: function() {
-      if (this.draws.length >= 8) {
-        alert("只能设置8个奖品");
-      } else {
-        openDrawDialog({
-          draw: {
-            id: '0',
-            name: '',
-            pic: '',
-            num: '',
-            rate: '',
-            goods_id: '',
-            app_id: this.$route.params.appId
-          },
-          visible: true,
-          callback: result => {
-            this.draws.unshift(result)
-          },
-        })
-      }
+      openDrawDialog({
+        draw: {
+          id: '0',
+          name: '',
+          pic: '',
+          num: '',
+          rate: '',
+          goods_id: '',
+          app_id: this.$route.params.appId
+        },
+        visible: true,
+        callback: result => {
+          this.draws.unshift(result)
+        },
+      })
     },
   },
 }

@@ -707,11 +707,12 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_draw(draw) do
-    case Repo.get(LuckyDraw, draw["id"]) do
-    nil ->
-      # add new
-      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])) do
-        true ->
+    if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
+      :notexist
+    else
+      case Repo.get(LuckyDraw, draw["id"]) do
+        nil ->
+          # add new
           case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
             {:ok, new_draw} ->
               draw = Map.put(draw, "id", new_draw.id)
@@ -719,21 +720,14 @@ defmodule Acs.PMalls do
             {:error, %{errors: _errors}} ->
               :error
           end
-        false ->
-          :overflow
-      end
-
-    %LuckyDraw{} = q ->
-      # update
-      case check_pmall_draw_rate(draw["app_id"], String.to_integer(draw["rate"])-q.rate) do
-        true ->
+    
+        %LuckyDraw{} = q ->
+          # update
           changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
           changed |> Repo.update!
           draw = Map.put(draw, "id", q.id)
           {:updateok, draw, changed.changes}
-        false ->
-          :overflow
-      end
+        end
     end
   end
 
@@ -866,15 +860,15 @@ defmodule Acs.PMalls do
     Repo.one!(query)
   end
 
-  defp check_pmall_draw_rate(app_id, rate) do
-    total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
-    case is_integer(total) do
-      true ->
-        (total + rate) <= 100
-      false ->
-        (Decimal.to_integer(total) + rate) <= 100
-    end
-  end
+  # defp check_pmall_draw_rate(app_id, rate) do
+  #   total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
+  #   case is_integer(total) do
+  #     true ->
+  #       (total + rate) <= 100
+  #     false ->
+  #       (Decimal.to_integer(total) + rate) <= 100
+  #   end
+  # end
 
   # 绑定手机
   def bind_mobile(app_id, open_id, mobile) do

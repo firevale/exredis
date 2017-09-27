@@ -35,7 +35,7 @@ export default {
         rotateOffset: -18,
         duration: 5000,
         gap: 10,
-        turns: 15,
+        turns: 6,
       }
     }
   },
@@ -57,7 +57,6 @@ export default {
         this.playAnimation(result, this.drawCallBack)
       } else {
         this.processing = false
-        Toast.show(this.$t(i18n_message))
       }
     },
     drawCallBack(result) {
@@ -69,7 +68,7 @@ export default {
           draw_name: result.draw_name,
           point: result.add_point,
         }))
-        editAddress(result.order_id)
+        this.editAddress(result.order_id)
       } else {
         Toast.show(this.$t(result.i18n_message, {
           point: result.add_point,

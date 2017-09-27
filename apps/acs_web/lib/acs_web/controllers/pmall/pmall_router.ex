@@ -16,6 +16,7 @@ defmodule AcsWeb.PMallRouter do
     post   "/bind_mobile", PMallController, :bind_mobile
     post   "/get_sign_info", PMallController, :get_sign_info
     post   "/sign", PMallController, :sign
+    post   "/get_default_address", PMallController, :get_default_address
     post   "/insert_address", PMallController, :insert_address
     post   "/get_daily_question", PMallController, :get_daily_question
     post   "/answer_question", PMallController, :answer_question

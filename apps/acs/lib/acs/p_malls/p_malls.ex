@@ -827,7 +827,6 @@ defmodule Acs.PMalls do
     Enum.random(rand_draws)
   end
 
-
   def update_draw_address(wcp_user_id, order_id, address) do
     with %LuckyDrawOrder{} = order  <- Repo.get(LuckyDrawOrder, order_id),
       true <- wcp_user_id == order.wcp_user_id,
@@ -848,6 +847,28 @@ defmodule Acs.PMalls do
         {:error, "pmall.address.failed"}
     end
 
+  end
+
+  def save_address(app_id, open_id, address) do
+    wcp_user = Wcp.get_app_wcp_user(app_id, openid: open_id)
+    if(wcp_user == nil) do
+      nil
+    else
+      quantity = Accounts.get_address_quantity(wcp_user.user_id)
+      case quantity do
+        0 ->
+          Accounts.insert_address(wcp_user.user_id, address)
+        _ ->
+          case Repo.get(UserAddress, address["id"]) do
+            nil ->
+              nil
+            %UserAddress{} = us ->
+              if(us.user_id == wcp_user.user_id)do
+                UserAddress.changeset(us, address) |> Repo.update!
+              end
+          end
+      end
+    end
   end
 
   def count_draw_orders(app_id, wcp_user_id, draw_id) do

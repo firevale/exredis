@@ -3,7 +3,7 @@
     <div class="address-head is-flex flex-center flex-vcentered is-size-medium">
       填写收获地址
     </div>
-    <div class="address-content">
+    <div v-if="loadAddress" class="address-content">
       <div class="fields is-flex flex-center flex-vcentered">
         <div class="column is-3 has-text-right">
           收件人：
@@ -27,6 +27,7 @@
         <div class="column is-9 has-text-left">
           <city-select v-if="provinceCode>0" @onSelect="onSelect" :_province="provinceCode" :_city="cityCode" :_district="districtCode"
             style="width:100%;margin-top: -1rem; margin-bottom:-1rem"></city-select>
+          <city-select v-else @onSelect="onSelect" style="width:100%;margin-top: -1rem; margin-bottom:-1rem"></city-select>
         </div>
       </div>
       <div class="fields is-flex flex-center flex-vcentered">
@@ -37,7 +38,7 @@
           <input type="text" class="input is-primary" v-model.trim="addressModel.address" placeholder="请输入您的地址">
         </div>
       </div>
-      <div class="fields is-flex flex-center flex-vcentered" v-show="errorHint && !loading">
+      <div class="fields is-flex flex-center flex-vcentered" v-show="errorHint">
         <div class="column is-3 has-text-right is-warning">
           提示：
         </div>
@@ -104,7 +105,7 @@ export default {
   },
   data: function() {
     return {
-      loading: true,
+      loadAddress: false,
       processing: false,
       addressModel: {
         mobile: '',
@@ -153,7 +154,6 @@ export default {
   },
   methods: {
     getDefaultAddress: async function() {
-
       let result = await this.$acs.getDefaultAddress()
       if (result.success) {
         this.addressModel = result.address
@@ -167,6 +167,7 @@ export default {
         this.cityCode = codeItem[1]
         this.districtCode = codeItem[2]
       }
+      this.loadAddress = true
     },
     onSelect: function(province, city, district) {
       this.province = province.name
@@ -184,10 +185,10 @@ export default {
     },
     handleSubmit: async function() {
       if (!this.processing) {
-        this.loading = false
         this.processing = true
         let msg = this.errorHint
         if (msg != '') {
+          this.processing = false
           return
         }
 

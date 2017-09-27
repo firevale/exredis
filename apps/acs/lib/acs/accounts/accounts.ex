@@ -12,6 +12,7 @@ defmodule Acs.Accounts do
   alias Acs.Cache.CachedUser
   alias Utils.Password
   alias Acs.Search.ESUser
+  alias Acs.Search.ESSdkUser
 
   def create_user!(account_id, password) when is_bitstring(account_id) and is_bitstring(password) do 
     user = User.changeset(%User{}, gen_user_attr!(account_id, password)) |> Repo.insert!
@@ -74,6 +75,7 @@ defmodule Acs.Accounts do
     sdk: sdk,
     mobile: mobile,
     email: email,
+    nickname: nickname,
     sdk_user_id: sdk_user_id}) do
     case CachedUser.get_by(:sdk, sdk, sdk_user_id) do 
       nil -> 
@@ -81,22 +83,25 @@ defmodule Acs.Accounts do
           nil -> 
             Repo.transaction(fn -> 
               user = User.changeset(%User{}, %{nickname: gen_nickname()}) |> Repo.insert!
-              UserSdkBinding.changeset(%UserSdkBinding{}, %{
+              sdk_user = UserSdkBinding.changeset(%UserSdkBinding{}, %{
                 sdk: sdk, 
                 user_id: user.id, 
+                nickname: nickname,
                 sdk_user_id: sdk_user_id}) |> Repo.insert!
               CachedUser.refresh(user)
               ESUser.index(user)
+              ESSdkUser.index(sdk_user)
               
               {:ok, user}
             end)
 
           user = %User{} ->
-            UserSdkBinding.changeset(%UserSdkBinding{}, %{
+            sdk_user = UserSdkBinding.changeset(%UserSdkBinding{}, %{
               sdk: sdk, 
               user_id: user.id, 
+              nickname: nickname,
               sdk_user_id: sdk_user_id}) |> Repo.insert!            
-
+            ESSdkUser.index(sdk_user)
             {:ok, user}
         end
 

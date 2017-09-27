@@ -31,14 +31,14 @@ defmodule Acs.Repo.Migrations.CreatePointMallOrders do
       add :transaction_status, :string, size: 20
 
       add :app_id, references(:apps, type: :string, on_delete: :nothing), size: 40
-      add :wcp_user_id, references(:app_wcp_users, on_delete: :nothing)
+      add :wcs_user_id, references(:wcs_users, on_delete: :nothing)
 
       timestamps()
     end
 
     create index(:pmall_orders, [:app_id])
-    create index(:pmall_orders, [:wcp_user_id])
-    create index(:pmall_orders, [:wcp_user_id, :status])
+    create index(:pmall_orders, [:wcs_user_id])
+    create index(:pmall_orders, [:wcs_user_id, :status])
     create unique_index(:pmall_orders, [:transaction_id])
 
   end

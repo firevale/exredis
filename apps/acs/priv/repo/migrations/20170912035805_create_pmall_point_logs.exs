@@ -9,7 +9,7 @@ defmodule Acs.Repo.Migrations.CreatePmallPointLogs do
       add :memo, :string   #备注
 
       add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
-      add :wcp_user_id, references(:app_wcp_users, on_delete: :delete_all)
+      add :wcs_user_id, references(:wcs_users, on_delete: :delete_all)
 
       timestamps()
     end

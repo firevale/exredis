@@ -5,15 +5,22 @@
         <h5 class="title is-5">{{ $t('admin.titles.editDrawOrder') }}</h5>
       </div>
       <form name="section" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.point.drawLog.name') }}: {{ order.name }}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.user') }}: {{ order.wcp_user.nickname }}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.status') }}: {{ getStatus(order.status) }}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.paidAt') }}: {{ order.paid_at | formatServerDateTime }}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.deliverAt') }}: {{ order.deliver_at | formatServerDateTime}}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.closeAt') }}: {{ order.close_at | formatServerDateTime}}</label>
-        <label class="label"> {{ $t('admin.point.drawLog.address') }}: </label>
+        <div class="columns">
+          <div class="column">
+            <label class="label"> {{ $t('admin.point.drawLog.name') }}: {{ order.name }}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.user') }}: {{ order.wcp_user.nickname }}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.status') }}: {{ getStatus(order.status) }}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.paidAt') }}: {{ order.paid_at | formatServerDateTime }}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.deliverAt') }}: {{ order.deliver_at | formatServerDateTime}}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.closeAt') }}: {{ order.close_at | formatServerDateTime}}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.address') }}: </label>
+          </div>
+          <div class="column">
+            <label class="label"> {{ $t('admin.point.draw.goodsId') }}: {{ order.lucky_draw.goods_id }}</label>
+          </div>
+        </div>
         <p class="control">
-          <textarea class="textarea" style="height:120px" v-model.trim="order.address"></textarea>
+          <textarea class="textarea" style="height:120px" :value="JSON.stringify(order.address)" @input="updateMessage"></textarea>
         </p>
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" v-if="order.status<2" @click.prevent="updateOrder(order)">{{ $t('admin.point.drawLog.save') }}</a>
@@ -51,6 +58,7 @@ export default {
   data() {
     return {
       processing: false,
+      address: '',
       groups: ['basicInfo']
     }
   },
@@ -71,6 +79,10 @@ export default {
       }
     },
 
+    updateMessage(e) {
+      this.address = e.target.value
+    },
+
     updateOrder: function(order) {
       showMessageBox({
         visible: true,
@@ -78,6 +90,7 @@ export default {
         message: this.$t('admin.point.drawLog.confirmUpdateAddress'),
         type: 'danger',
         onOK: _ => {
+          if (this.address.length > 0) order.address = JSON.parse(this.address)
           this._updateOrder(order)
         },
       })
@@ -101,6 +114,7 @@ export default {
 
     _updateOrder: async function(order) {
       this.processing = true
+      alert(JSON.stringify(order.address))
       let result = await this.$acs.updatePmallDrawOrder({
         order_id: order.id,
         status: order.status,

@@ -6,6 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
+  
   use Utils.LogAlias
 
   alias Acs.PMallsPoint
@@ -263,8 +264,8 @@ defmodule Acs.PMalls do
           with {:ok, order_id} <- _create_pmall_order(app_id, wcp_user_id, goods, address),
                {:ok, add_point, total_point} <-  PMallsPoint.exchange_goods_point(app_id, wcp_user_id, goods)
           do
-            CachedPMallGoods.refresh(goods.id)
-            %{order_id: order_id, add_point: add_point, total_point: total_point,i18n_message: "pmall.exchange.success"}
+            goods = get_pmall_goods_detail(goods.id)
+            %{i18n_message: "pmall.exchange.success", order_id: order_id, add_point: add_point, total_point: total_point, is_virtual: goods.is_virtual}
           else
             _ ->
               Repo.rollback(%{i18n_message: "pmall.exchange.failed"})
@@ -435,8 +436,8 @@ defmodule Acs.PMalls do
   def take_sign_award(app_id, wcp_user_id, days) do
     sign_times = _get_sign_times(app_id, wcp_user_id)
     my_awards = _get_sign_awards(app_id, wcp_user_id)
-    d "-------#{inspect my_awards}"
-    with  true <- sign_times >= String.to_integer(days),
+
+    with true <- sign_times >= String.to_integer(days),
         %{"got" => got, "point" => point} = Enum.find(my_awards, nil, fn award -> award["days"] == days end),
         false <- got
     do
@@ -481,7 +482,7 @@ defmodule Acs.PMalls do
 
   def add_goods_click(goods_id, click) do
     goods = Repo.get(PMallGoods, goods_id)
-    PMallGoods.changeset(goods, %{reads: goods.reads+click}) |> Repo.update()
+    PMallGoods.changeset(goods, %{reads: goods.reads + click}) |> Repo.update()
     CachedPMallGoods.refresh(goods)
   end
 
@@ -764,19 +765,23 @@ defmodule Acs.PMalls do
     Repo.transaction(fn ->
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcp_user_id)
+      draws = _get_vaild_draws(app_id, wcp_user_id)
       cond do
         nil == setting ->
           Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
         user_point + String.to_integer(setting.value) < 0 ->
           Repo.rollback(%{i18n_message: "pmall.draw.pointless"})
+        Enum.count(draws) == 0 ->
+          Repo.rollback(%{i18n_message: "pmall.draw.late"})
         true ->
-          rand_draw = _start_draw(app_id, wcp_user_id)
-          draw = get_draw(rand_draw.id)
           {:ok, add_point, total_point} = PMallsPoint.add_point(log_type, app_id, wcp_user_id)
+          rand_draw = _start_draw(draws)
+          draw = get_draw(rand_draw.id)
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcp_user_id, draw) do
-              %{add_point: add_point, total_point: total_point, i18n_message: "pmall.draw.success", 
-              index: draw.id, order_id: order.id, draw_name: draw.name}
+            goods = get_pmall_goods_detail(draw.goods_id)
+            %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point, 
+              index: draw.id, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
           else
             false ->
               %{index: draw.id, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
@@ -807,19 +812,21 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
-  defp _start_draw(app_id, wcp_user_id) do
+  defp _get_vaild_draws(app_id, wcp_user_id) do
     my_draw_ids = _get_my_draw_ids(app_id, wcp_user_id)
-    finally_draws = 
-      list_pmall_draws(app_id)
-      |> Enum.filter(fn draw -> draw.num > 0 end)
-      |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
-
+    list_pmall_draws(app_id)
+    |> Enum.filter(fn draw -> draw.num > 0 end)
+    |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+  end
+  
+  defp _start_draw(draws) do
     rand_draws = 
-      Enum.reduce(finally_draws, [], fn(draw, result) -> 
+      Enum.reduce(draws, [], fn(draw, result) -> 
         result ++ Enum.map(1..draw.rate, fn num -> draw end)
       end)
     Enum.random(rand_draws)
   end
+
 
   def update_draw_address(wcp_user_id, order_id, address) do
     with %LuckyDrawOrder{} = order  <- Repo.get(LuckyDrawOrder, order_id),
@@ -851,16 +858,6 @@ defmodule Acs.PMalls do
 
     Repo.one!(query)
   end
-
-  # defp check_pmall_draw_rate(app_id, rate) do
-  #   total = Repo.one(from d in LuckyDraw, select: sum(d.rate), where: d.app_id == ^app_id) || 0
-  #   case is_integer(total) do
-  #     true ->
-  #       (total + rate) <= 100
-  #     false ->
-  #       (Decimal.to_integer(total) + rate) <= 100
-  #   end
-  # end
 
   # 绑定手机
   def bind_mobile(app_id, open_id, mobile) do
@@ -903,12 +900,13 @@ defmodule Acs.PMalls do
 
     query = from q in LuckyDrawOrder,
       join: user in assoc(q, :wcp_user),
+      join: draw in assoc(q, :lucky_draw),
       where: q.app_id == ^app_id,
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
-      preload: [wcp_user: user]
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url], lucky_draw: [:id, :goods_id]]),
+      preload: [wcp_user: user, lucky_draw: draw]
 
     query = case show_only_win do
       true -> where(query, [q], q.lucky_draw_id != 8)

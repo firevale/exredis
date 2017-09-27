@@ -41,7 +41,8 @@ export default {
   pointDaySign: '日常签到',
   pointDayQuestion: '每日问答',
   pointRoulette: '幸运抽奖',
-  redeemCode: '兑换码',
+  redeemCode: 'CDKEY',
+  redeemCodeType: '兑换码类型',
   redeemCodeManage: '兑换码管理',
   redeemCodeLog: '兑换记录',
 }

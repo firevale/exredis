@@ -14,9 +14,15 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           id: %{type: :keyword},
           email: %{type: :keyword},
           mobile: %{type: :keyword},
+          resident_id: %{type: :keyword},
+          resident_name: %{type: :keyword},
+          gender: %{type: :keyword},
+          age: %{type: :integer},
           nickname: %{type: :text, analyzer: :ik_smart},
           device_id: %{type: :keyword},
-          inserted_at: %{type: :date}
+          avatar_url: %{type: :keyword},
+          inserted_at: %{type: :date},
+          updated_at: %{type: :date},
         }
       },
       sdk_users: %{
@@ -24,6 +30,7 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
         properties: %{
           id: %{type: :keyword},
           sdk: %{type: :keyword},
+          user_id: %{type: :keyword},
           nickname: %{type: :text, analyzer: :ik_smart},
         }        
       },
@@ -62,7 +69,7 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           app_id: %{type: :keyword},
           zone_id: %{type: :keyword},
           game_user_id: %{type: :keyword},
-          game_user_name: %{type: :keyword},
+          game_user_name: %{type: :text, analyzer: :ik_smart},
           game_user_level: %{type: :integer},
           pay_amount:  %{type: :integer},
           platform: %{type: :keyword},

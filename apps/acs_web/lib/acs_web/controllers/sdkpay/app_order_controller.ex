@@ -23,7 +23,7 @@ defmodule AcsWeb.SdkPay.AppOrderController do
       app_id: app.id,
       user_id: user.id,
       platform: platform,
-      app_user_id: app_user && app_user.id,
+      app_user_id: app_user && app_user.app_user_id,
       zone_id: zone_id,
       device_id: device_id,
       sdk: params["sdk"] || "firevale",

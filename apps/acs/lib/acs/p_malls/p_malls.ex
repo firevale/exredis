@@ -790,6 +790,10 @@ defmodule Acs.PMalls do
               draw_order = %{"name": draw.name, "pic": draw.pic, "status": 0,
               "app_id": app_id, "wcp_user_id": wcp_user_id, "lucky_draw_id": draw.id, "address": address
               }
+              draw_order = if draw.name == "谢谢您" , 
+              do: Map.put(draw_order, :status, 4) |>  Map.put(:paid_at, Timex.now), 
+              else: Map.put(draw_order, :status, 2)
+              
               # 扣除积分
               with {:ok, add_point, total_point} <-  PMallsPoint.add_point(log_type, app_id, wcp_user_id) do
                 # 减奖品数

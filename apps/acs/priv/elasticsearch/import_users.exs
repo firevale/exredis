@@ -16,6 +16,5 @@ Enum.map_every(0..count, limit, fn(offset) ->
 
   Acs.Repo.all(query) |> Enum.each(fn(user) -> 
     Acs.Search.ESUser.index(user)
-    Elasticsearch.delete(%{index: "acs", type: "user", id: user.id})
   end) 
 end)

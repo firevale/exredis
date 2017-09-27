@@ -40,7 +40,7 @@
             <div class=" has-text-left">
               <h3 class="title is-5 is-marginless">合计：</h3>
               <h5 class="subtitle is-6 is-marginless">充值金额：<strong>{{ sumAmount | formatPrice }} 元</strong> </h5>
-              <h5 class="subtitle is-6 is-marginless">活跃时长：<strong>{{ sumSeconds| secondFormatHour }}小时</strong>
+              <h5 class="subtitle is-6 is-marginless">游戏时长：<strong>{{ sumSeconds| secondFormatHour }}小时</strong>
               </h5>
             </div>
           </div>

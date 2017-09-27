@@ -37,7 +37,7 @@ export default {
       success: '祝贺您抽中{draw_name}奖品,{point}积分',
       pointless: '抱歉，您的积分不足',
       thanks: '谢谢参与，{point}积分',
-      soldout: '你来晚了，该物品己被抢光了',
+      late: '你来晚了，该物品己被抢光了',
       nonsetting: '没有配置',
     },
     question: {

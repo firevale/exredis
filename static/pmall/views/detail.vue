@@ -18,7 +18,8 @@
       </div>
     </div>
     <div class="content">
-      <h1 class="is-size-medium">详细规则：</h1> {{goods.description}}
+      <h1 class="is-size-medium">详细规则：</h1>
+      <quill-content v-if="goods.description" class="quill-editor ql-snow post-content"  :content="goods.description" ></quill-content>
     </div>
     <div v-show="goods.id>0" class="operate">
       <a v-if="!goods.active || goods.stock<=0" class="button btn-goods-down"></a>
@@ -88,15 +89,21 @@ export default {
         Toast.show(this.$t(result.i18n_message, {
           point: result.add_point
         }))
-        this.$router.push({
-          name: "new_address",
-          params: {
-            action: "exchange",
-            order_id: result.order_id
-          }
-        })
+
+        if (!result.is_virtual) {
+          this.editAddress("exchange", result.order_id)
+        }
       }
-    }
+    },
+    editAddress(action, order_id) {
+      this.$router.push({
+        name: "new_address",
+        params: {
+          action: action,
+          order_id: order_id
+        }
+      })
+    },
   }
 
 }

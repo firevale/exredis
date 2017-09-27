@@ -5,11 +5,11 @@ defmodule Acs.Cache.CachedAppWcpUser do
   alias   Acs.Repo
   alias   Acs.Wcp.AppWcpUser
 
-  def get(app_id, open_id) when is_bitstring(app_id) and is_bitstring(open_id) do
-    Excache.get!(key(app_id, open_id), fallback: fn(redis_key) ->    
+  def get(wcp_user_id) do
+    Excache.get!(key(wcp_user_id), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case refresh(app_id, open_id) do 
+          case refresh(wcp_user_id) do 
             nil -> {:ignore, nil}
             wcp_user -> {:commit, wcp_user}
           end
@@ -19,28 +19,33 @@ defmodule Acs.Cache.CachedAppWcpUser do
     end)
   end
 
-  def get_by_email(app_id, email) when is_bitstring(app_id) and is_bitstring(email) do
-    Excache.get!(email_key(app_id, email), fallback: fn(redis_key) ->    
+  def get_by_openid(app_id, openid) when is_bitstring(app_id) and is_bitstring(openid) do
+    Excache.get!(openid_key(app_id, openid), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case Repo.get_by(AppWcpUser, app_id: app_id, tf_email: email) do 
-            %AppWcpUser{} = wcp_user ->
-              Exredis.set(email_key(app_id, wcp_user.tf_email), AppWcpUser.to_redis(wcp_user))
-              Excache.del(email_key(app_id, wcp_user.tf_email))
-              {:commit, wcp_user}
-            _ ->
-              {:ignore, nil}
-          end
-
-        raw ->
-          {:commit, raw |> AppWcpUser.from_redis}
+          {:ignore, nil} 
+          
+        wcp_user_id ->
+          {:commit, get(wcp_user_id)}
       end
     end)
   end
 
-  def refresh(app_id, open_id) when is_bitstring(app_id) and is_bitstring(open_id) do
-    Excache.del(key(app_id, open_id))
-    case Repo.get_by(AppWcpUser, app_id: app_id, openid: open_id) do 
+  def get_by_email(app_id, email) when is_bitstring(app_id) and is_bitstring(email) do
+    Excache.get!(email_key(app_id, email), fallback: fn(redis_key) ->    
+      case Exredis.get(redis_key) do
+        nil -> 
+         {:ignore, nil} 
+
+        wcp_user_id ->
+          {:commit, get(wcp_user_id)}
+      end
+    end)
+  end
+
+  def refresh(wcp_user_id) do 
+    Excache.del(key(wcp_user_id))
+    case Repo.get(AppWcpUser, wcp_user_id) do 
       %AppWcpUser{} = wcp_user ->
         refresh(wcp_user)
       _ -> 
@@ -48,24 +53,27 @@ defmodule Acs.Cache.CachedAppWcpUser do
     end
   end
 
-  def refresh(%AppWcpUser{app_id: app_id, openid: open_id} = wcp_user) do 
-    Exredis.set(key(app_id, open_id), AppWcpUser.to_redis(wcp_user))
+  def refresh(%AppWcpUser{id: id, app_id: app_id, openid: openid} = wcp_user) do 
+    Exredis.set(key(id), AppWcpUser.to_redis(wcp_user))
+    Exredis.set(openid_key(app_id, openid), id)
+
+    Excache.del(key(id))
+    Excache.del(openid_key(app_id, openid))
+
     if not is_nil(wcp_user.tf_email) do 
-      Exredis.set(email_key(app_id, wcp_user.tf_email), AppWcpUser.to_redis(wcp_user))
+      Exredis.set(email_key(app_id, wcp_user.tf_email), id)
       Excache.del(email_key(app_id, wcp_user.tf_email))
     end
+
     wcp_user
   end
 
-  def clear_cache(app_id, open_id, email) do 
-    Exredis.del(email_key(app_id, email))
-    Exredis.del(key(app_id, open_id))
-    Excache.del(email_key(app_id, email)) 
-    Excache.del(key(app_id, open_id)) 
+  defp key(id) do 
+    "acs.app_wcp_user.#{id}"
   end
 
-  defp key(app_id, open_id) do 
-    "acs.app_wcp_user.#{app_id}.#{open_id}"
+  defp openid_key(app_id, openid) do 
+    "acs.app_wcp_user.#{app_id}.#{openid}"
   end
 
   defp email_key(app_id, email) do 

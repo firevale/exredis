@@ -899,12 +899,13 @@ defmodule Acs.PMalls do
 
     query = from q in LuckyDrawOrder,
       join: user in assoc(q, :wcp_user),
+      join: draw in assoc(q, :lucky_draw),
       where: q.app_id == ^app_id,
       order_by: [desc: q.inserted_at],
       limit: ^records_per_page,
       offset: ^((page - 1) * records_per_page),
-      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url]]),
-      preload: [wcp_user: user]
+      select: map(q, [:id, :name, :pic, :status, :address, :paid_at, :deliver_at, :close_at, :app_id, :lucky_draw_id, wcp_user: [:id, :nickname, :avatar_url], lucky_draw: [:id, :goods_id]]),
+      preload: [wcp_user: user, lucky_draw: draw]
 
     query = case show_only_win do
       true -> where(query, [q], q.lucky_draw_id != 8)

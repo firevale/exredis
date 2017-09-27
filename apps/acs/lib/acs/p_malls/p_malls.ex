@@ -469,7 +469,11 @@ defmodule Acs.PMalls do
 
   def get_user_point(app_id, wcp_user_id) do
     total_query = from log in PointLog, select: sum(log.point), where: log.app_id == ^app_id and log.wcp_user_id == ^wcp_user_id
-    Decimal.to_integer(Repo.one!(total_query))
+    point = Repo.one!(total_query)
+    case point do
+      nil -> 0
+      _ -> Decimal.to_integer(point)
+    end
   end
 
   def admin_add_pmall_point(wcp_user_id, app_id, log) do

@@ -40,22 +40,26 @@ defmodule Acs.Wcp do
     end    
   end
 
+  def get_app_wcp_user(wcp_user_id) do 
+    CachedAppWcpUser.get(wcp_user_id)
+  end
   def get_app_wcp_user(app_id, openid: openid) do 
     if String.starts_with?(openid, "gh_") do
       %{openid: app_id, nickname: "系统" }
     else
-      CachedAppWcpUser.get(app_id, openid)
+      CachedAppWcpUser.get_by_openid(app_id, openid)
     end
   end
   def get_app_wcp_user(app_id, email: email) do 
     CachedAppWcpUser.get_by_email(app_id, email)
   end
-  def get_app_wcp_user(app_id, nickname) do 
-    Repo.get_by(AppWcpUser, app_id: app_id, nickname: nickname)
+  def get_app_wcp_user(app_id, nickname: nickname) do 
+    CachedAppWcpUser.get_by_nickname(app_id, nickname)
   end
 
   def create_app_wcp_user!(attr) do 
-    AppWcpUser.changeset(%AppWcpUser{}, attr) |> Repo.insert!  
+    wcp_user = AppWcpUser.changeset(%AppWcpUser{}, attr) |> Repo.insert!  
+    CachedAppWcpUser.refresh(wcp_user)
   end
 
   def update_app_wcp_user!(%AppWcpUser{} = wcp_user, attr) do 

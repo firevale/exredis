@@ -17,6 +17,7 @@ defmodule AcsWeb.ItoolsAuthBind do
            sdk_user_id: itools_user_id, 
            email: nil,
            mobile: nil, 
+           nickname: nil,
            }),
          access_token <- Auth.create_access_token(%{
            app_id: app.id,

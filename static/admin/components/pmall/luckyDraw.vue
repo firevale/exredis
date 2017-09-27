@@ -15,6 +15,9 @@
               <p>{{ $t('admin.point.draw.name')}}</p>
             </div>
             <div class="column">
+              <p>{{ $t('admin.point.draw.goodsId')}}</p>
+            </div>
+            <div class="column">
               <p>{{ $t('admin.point.draw.num')}}</p>
             </div>
             <div class="column">
@@ -32,6 +35,9 @@
               v-for="(draw, index) in draws" :key="draw.id">
               <div class="column">
                 <p>{{ draw.name }}</p>
+              </div>
+              <div class="column">
+                <p>{{ draw.goods_id }}</p>
               </div>
               <div class="column">
                 <p>{{ draw.num }}</p>
@@ -157,24 +163,21 @@ export default {
     },
 
     addNewDraw: function() {
-      if (this.draws.length >= 8) {
-        alert("只能设置8个奖品");
-      } else {
-        openDrawDialog({
-          draw: {
-            id: '0',
-            name: '',
-            pic: '',
-            num: '',
-            rate: '',
-            app_id: this.$route.params.appId
-          },
-          visible: true,
-          callback: result => {
-            this.draws.unshift(result)
-          },
-        })
-      }
+      openDrawDialog({
+        draw: {
+          id: '0',
+          name: '',
+          pic: '',
+          num: '',
+          rate: '',
+          goods_id: '',
+          app_id: this.$route.params.appId
+        },
+        visible: true,
+        callback: result => {
+          this.draws.unshift(result)
+        },
+      })
     },
   },
 }

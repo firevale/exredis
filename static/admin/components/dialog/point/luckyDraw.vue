@@ -9,11 +9,20 @@
         <p class="control">
           <input class="input" type="text" v-model.trim="draw.name">
         </p>
+        <label class="label"> {{ $t('admin.point.draw.goodsId') }}: </label>
+        <p class="control">
+          <div class="select">
+            <select v-model.trim="draw.goods_id">
+              <option value="">未中奖</option>
+              <option v-for="goods in goodses" :value="goods.id">{{ goods.name + "("+ goods.id +")" }}</option>
+            </select>
+          </div>
+        </p>
         <label class="label"> {{ $t('admin.point.draw.num') }}: </label>
         <p class="control">
           <input class="input" type="number" v-model.trim="draw.num">
         </p>
-        <label class="label"> {{ $t('admin.point.draw.rate') }}(所有概率总和为100): </label>
+        <label class="label"> {{ $t('admin.point.draw.rate') }}: </label>
         <p class="control">
           <input class="input" type="number" v-model.trim="draw.rate">
         </p>
@@ -44,17 +53,34 @@ export default {
     callback: Function,
   },
 
+  created: function() {
+    this.getGoodsIds()
+  },
+
   data() {
     return {
+      goodses: [],
       processing: false,
       groups: ['basicInfo']
     }
   },
 
   methods: {
+    getGoodsIds: async function() {
+      this.processing = true
+      let result = await this.$acs.listPMallGoods({
+        page: 1,
+        records_per_page: 200,
+        keyword: ''
+      })
+      if (result.success) {
+        this.goodses = result.goodses
+      }
+      this.processing = false
+    },
+
     handleSubmit: async function() {
       this.processing = true
-
       let result = await this.$acs.updatePmallDraw(this.draw, this.$t(
         'admin.point.draw.updated'))
       if (result.success) {
@@ -63,7 +89,6 @@ export default {
         }
         this.visible = false
       }
-
       this.processing = false
     }
   },

@@ -3,17 +3,14 @@ defmodule Acs.Search.ESOrder do
 
   require Elasticsearch
 
-  alias Acs.Apps.App
   alias Acs.Apps.AppOrder
   alias Acs.Apps.AppGoods
   alias Acs.Cache.CachedAppGoods
-  alias Acs.Cache.CachedApp
 
   def index(%AppOrder{goods_id: nil}), do: nil
   def index(%AppOrder{paid_at: nil}), do: nil
   def index(%AppOrder{} = order) do 
-    with goods = %AppGoods{} <- CachedAppGoods.get(order.goods_id),
-         app = %App{} <- CachedApp.get(order.app_id)
+    with goods = %AppGoods{} <- CachedAppGoods.get(order.goods_id)
     do 
       Elasticsearch.index(%{
         index: "acs",
@@ -27,7 +24,7 @@ defmodule Acs.Search.ESOrder do
           goods_name: goods.name,
           goods_price: goods.price,
           goods_icon: goods.icon,
-          currency: app.currency,
+          currency: order.currency,
           fee: order.fee,
           transaction_currency: order.transaction_currency,
           device_id: order.device_id,

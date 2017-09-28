@@ -259,28 +259,4 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: true, result_code: "user_not_found"})
     end
   end
-
-  def request(app_id, wcs_user_id) do
-    try do
-      url = Application.get_env(:pmall, :point_subscribe)
-      response = Httpc.post_form(url, %{"app_id" => app_id, "wcs_user_id" => wcs_user_id})
-
-      d "response:  #{inspect response}"
-      if Httpc.success?(response) do
-        respone_body = JSON.decode(response.body)
-        Logger.info "/pmall/point_subscribe, response: #{inspect respone_body}"
-      else
-        Logger.error "/pmall/point_subscribe request failed #{inspect response}"
-      end
-    catch
-      :error, e ->
-        Logger.error "/pmall/point_subscribe exception: #{inspect e}"
-    end
-  end
-
- def test(conn,_parms) do
-  request("3E4125B15C4FE2AB3BA00CB1DC1A0EE5",1)
-  conn |> json(%{success: true})
- end
-
 end

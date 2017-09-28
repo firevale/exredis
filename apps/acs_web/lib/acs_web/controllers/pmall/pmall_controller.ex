@@ -7,6 +7,8 @@ defmodule AcsWeb.PMallController do
 
   alias Acs.Accounts
   alias Acs.PMallsPoint
+  alias Acs.Cache.CachedAdminSetting
+  alias Acs.Admin.Setting
 
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
@@ -165,6 +167,15 @@ defmodule AcsWeb.PMallController do
         {:error, %{i18n_message: i18n_message}} ->
           conn |> json(%{success: false, i18n_message: i18n_message})
       end
+  end
+
+  def get_draw_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
+    case CachedAdminSetting.get_fat(app_id,"抽奖图") do
+      nil ->
+        conn |> json(%{success: false})
+      %Setting{} = setting ->
+        conn |> json(%{success: true, setting: Map.take(setting, [:value])})
+    end
   end
 
   def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do

@@ -1,8 +1,7 @@
 <template>
-  <div class="draw-page bg-full bg-draw-page">
+  <div v-if="pic" class="draw-page bg-full bg-draw-page">
     <header></header>
-    <div class="rotate-container">
-      <img src="~assets/pmall/1245_34_03.png">
+    <div class="rotate-container bg-full bg-draw-turntable" :style="{'background-image': headImage}">
       <div class="bg-full bg-turn-needle"></div>
     </div>
     <footer class="is-flex flex-center flex-vcentered ">
@@ -22,14 +21,22 @@ import {
 } from 'vuex'
 import anime from 'animejs';
 import Toast from 'common/components/toast'
+import * as filter from 'common/js/filters'
 export default {
   computed: {
     ...mapGetters([
       'points'
-    ])
+    ]),
+    headImage() {
+      if (this.pic) {
+        return `url(${this.pic})`
+      }
+    },
   },
   data() {
     return {
+      pic: undefined,
+      isNormal: false,
       player: undefined,
       playerOptions: {
         rotateOffset: -18,
@@ -39,13 +46,28 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getDrawInfo()
+  },
   methods: {
     ...mapActions([
       'setUserPoints'
     ]),
+    getDrawInfo: async function() {
+      let result = await this.$acs.getDrawInfo()
+      if (result.success) {
+        this.pic = filter.imageStaticUrl(JSON.parse(result.setting.value).pic)
+        this.isNormal = true
+      }
+    },
     play: async function() {
-      if (this.processing) {
+      if (!this.isNormal) {
+        Toast.show("抱歉，暂未开启抽奖")
+        return
+      } else if (this.processing) {
+        return
+      } else if (this.points <= 10) {
+        Toast.show("抱歉，您的积分不足")
         return
       }
 

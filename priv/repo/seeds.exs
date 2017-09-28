@@ -143,3 +143,6 @@ Acs.Wcs.create_wcs_user!(%{
 })
 
 Exredis.flushdb()
+
+Code.eval_file("priv/repo/seeds_pmall.exs")
+Code.eval_file("priv/repo/seeds_questions.exs")

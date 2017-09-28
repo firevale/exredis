@@ -101,6 +101,10 @@ defmodule AcsWeb.Router do
     scope "/wcjs" do 
       get "/:app_id/signature", WcjsController, :signature
     end
+
+    scope "/pmall" do
+      post "/point_subscribe", PMallController, :point_subscribe
+    end 
   end # end scope ap
 
   scope "/cron", AcsWeb do

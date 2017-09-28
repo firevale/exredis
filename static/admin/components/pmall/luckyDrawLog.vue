@@ -1,13 +1,6 @@
 <template>
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
-      <div class="field">
-        <div class="control">
-          <label class="checkbox">
-            <input type="checkbox" v-model.trim="showOnlyWin" v-on:click="switchShow"> 只看中奖记录
-          </label>
-        </div>
-      </div>
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
@@ -121,10 +114,6 @@ export default {
         case 4:
           return '已完成'
       }
-    },
-
-    switchShow: function() {
-      this.getOrders(this.page, this.recordsPerPage)
     },
 
     getOrders: async function(page, recordsPerPage) {

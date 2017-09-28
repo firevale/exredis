@@ -54,6 +54,16 @@
                 </label>
               </div>
             </div>
+            <div v-if="goods.is_virtual" class="field is-horizontal">
+              <div class="field-label">
+                <label class="label">{{ $t('admin.mall.goods.virtual_param') }}</label>
+              </div>
+              <div class="field-body">
+                <label class="checkbox">
+                  <input class="input" type="text" v-model.trim="goods.virtual_param">
+                </label>
+              </div>
+            </div>
             <div v-if="!goods.is_virtual" class="field is-horizontal">
               <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
@@ -168,6 +178,7 @@ export default {
         stock: 0,
         app_id: this.$route.params.appId,
         is_virtual: true,
+        virtual_param: '',
         begin_time: '',
         end_time: '',
       }
@@ -447,6 +458,7 @@ export default {
         postage: this.goods.postage,
         stock: this.goods.stock,
         is_virtual: this.goods.is_virtual,
+        virtual_param: this.goods.virtual_param,
         begin_time: this.goods.begin_time,
         end_time: this.goods.end_time,
         is_new: this.isNew

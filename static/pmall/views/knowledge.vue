@@ -76,6 +76,9 @@ export default {
     this.loadData()
   },
   methods: {
+    ...mapActions([
+      'setUserPoints'
+    ]),
     loadData: async function() {
       let result = await this.$acs.getDailyQuestion()
       if (result.success) {
@@ -92,6 +95,7 @@ export default {
           if (result.answer) {
             this.isCorrect = true
             this.isWwrong = false
+            this.setUserPoints(result.total_point)
             Toast.show(this.$t(result.i18n_message, {
               point: result.add_point
             }))

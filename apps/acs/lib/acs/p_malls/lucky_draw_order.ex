@@ -13,7 +13,7 @@ defmodule Acs.PMalls.LuckyDrawOrder do
     field :close_at, :utc_datetime #关闭时间(手动／自动关闭)
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :wcp_user, Acs.Wcp.AppWcpUser
+    belongs_to :wcs_user, Acs.Wcs.WcsUser
     belongs_to :lucky_draw, Acs.PMalls.LuckyDraw
 
     timestamps()

@@ -170,6 +170,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/list_pmall_draw_orders", PMallController, :list_pmall_draw_orders
       post  "/update_pmall_draw_order", PMallController, :update_pmall_draw_order
       post  "/list_pmall_cdkeys", PMallController, :list_pmall_cdkeys
+      post  "/import_pmall_cdkeys", PMallController, :import_pmall_cdkeys
     end
 
   end

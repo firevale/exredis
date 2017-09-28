@@ -1,6 +1,5 @@
 defmodule Acs.Search.ESWcpMessage do 
     require Elasticsearch
-    alias Acs.Wcp.AppWcpMessage
 
     def index(%{} = message) do
       Elasticsearch.index(%{

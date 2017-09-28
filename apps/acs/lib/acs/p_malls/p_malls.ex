@@ -54,7 +54,7 @@ defmodule Acs.PMalls do
                 order_by: [desc: g.inserted_at],
                 limit: ^records_per_page,
                 offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
 
       query = if(String.length(keyword)>0) do
         query |> where([p], p.id in ^ids)
@@ -82,7 +82,7 @@ defmodule Acs.PMalls do
                 order_by: [desc: g.inserted_at],
                 limit: ^records_per_page,
                 offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
 
       query = if(String.length(keyword)>0) do
         query |> where([p], p.id in ^ids)
@@ -134,6 +134,7 @@ defmodule Acs.PMalls do
                                                 postage: goods["postage"],
                                                 stock: goods["stock"],
                                                 is_virtual: goods["is_virtual"],
+                                                virtual_param: goods["virtual_param"],
                                                 begin_time: goods["begin_time"],
                                                 end_time: goods["end_time"]})
             changed |> Repo.update!

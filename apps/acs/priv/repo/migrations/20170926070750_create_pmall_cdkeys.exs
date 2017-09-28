@@ -3,8 +3,8 @@ defmodule Acs.Repo.Migrations.CreatePMallCdkeys do
 
   def change do
     create table(:pmall_cdkeys) do
-      add :code, :string
-      add :code_type, :string
+      add :code, :string, size: 40
+      add :code_type, :string, size: 20
       add :assigned_at, :utc_datetime
       add :used_at, :utc_datetime
 

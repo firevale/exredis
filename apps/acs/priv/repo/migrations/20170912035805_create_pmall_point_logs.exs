@@ -15,7 +15,7 @@ defmodule Acs.Repo.Migrations.CreatePmallPointLogs do
     end
     create index(:pmall_point_logs, [:app_id])
     create index(:pmall_point_logs, [:log_type])
-    create index(:pmall_point_logs, [:wcp_user_id])
+    create index(:pmall_point_logs, [:wcs_user_id])
     
   end
 end

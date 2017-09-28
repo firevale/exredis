@@ -46,7 +46,7 @@ defmodule Acs.PMalls.PMallOrder do
     field :transaction_status, :string
 
     belongs_to :app,  Acs.Apps.App, type: :string
-    belongs_to :wcs_user, Acs.Wcp.WcsUser
+    belongs_to :wcs_user, Acs.Wcs.WcsUser
     has_one :details, Acs.PMalls.PMallOrderDetail, foreign_key: :pmall_order_id, references: :id
 
     timestamps()

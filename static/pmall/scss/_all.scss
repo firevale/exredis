@@ -1,10 +1,9 @@
-  // @import "./initial-bulma";
   @import "./variables";
   @import "~normalize.css";
   @import "./mixins";
   @import "./global";
-  @import "./other"; // $fa-font-path: '~font-awesome/fonts/';
-  // @import '~font-awesome/scss/font-awesome';
+  @import "./other";
+
   .button {
     display: block;
     background-size: contain;

@@ -982,4 +982,18 @@ defmodule Acs.PMalls do
     :ok
   end
 
+  def get_cdkey(app_id, code_type, wcs_user_id) do
+    query = from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), limit: 1
+    case Repo.one(query) do
+      nil -> nil
+
+      %Cdkey{} = cdkey ->
+        Cdkey.changeset(cdkey, %{
+          owner_id: wcs_user_id,
+          assigned_at: DateTime.utc_now(),
+        }) |> Repo.update() 
+        cdkey.code
+    end
+  end
+
 end

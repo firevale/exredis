@@ -55,7 +55,7 @@
 
    draw: {
     setting: '奖品设置',
-    log: '抽奖记录',
+    log: '中奖记录',
     editDraw: '编辑奖品信息',
     add: '添加新奖品',
     pic: '图片',
@@ -85,7 +85,7 @@
     deliverAt: '递送时间',
     closeAt: '关闭时间',
     operate: '操作',
-    notExist: '抽奖记录不存在',
+    notExist: '中奖记录不存在',
     updateSuccess: '更新成功',
     save: '保存',
     close: '关闭订单',

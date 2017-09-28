@@ -34,6 +34,7 @@ export default {
     stock: '库存',
     currency: '货币',
     is_virtual: '虚拟商品',
+    virtual_param: '虚拟参数',
     time: '时间',
     begin_time: '开始时间',
     end_time: '结束时间',

@@ -54,7 +54,7 @@ defmodule Acs.PMalls do
                 order_by: [desc: g.inserted_at],
                 limit: ^records_per_page,
                 offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
 
       query = if(String.length(keyword)>0) do
         query |> where([p], p.id in ^ids)
@@ -82,7 +82,7 @@ defmodule Acs.PMalls do
                 order_by: [desc: g.inserted_at],
                 limit: ^records_per_page,
                 offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :begin_time, :end_time])
+                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
 
       query = if(String.length(keyword)>0) do
         query |> where([p], p.id in ^ids)
@@ -134,6 +134,7 @@ defmodule Acs.PMalls do
                                                 postage: goods["postage"],
                                                 stock: goods["stock"],
                                                 is_virtual: goods["is_virtual"],
+                                                virtual_param: goods["virtual_param"],
                                                 begin_time: goods["begin_time"],
                                                 end_time: goods["end_time"]})
             changed |> Repo.update!
@@ -979,6 +980,20 @@ defmodule Acs.PMalls do
       {:ok, _cdkey} = Cdkey.changeset(%Cdkey{}, key) |> Repo.insert()
     end)
     :ok
+  end
+
+  def get_cdkey(app_id, code_type, wcs_user_id) do
+    query = from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), limit: 1
+    case Repo.one(query) do
+      nil -> nil
+
+      %Cdkey{} = cdkey ->
+        Cdkey.changeset(cdkey, %{
+          owner_id: wcs_user_id,
+          assigned_at: DateTime.utc_now(),
+        }) |> Repo.update() 
+        cdkey.code
+    end
   end
 
 end

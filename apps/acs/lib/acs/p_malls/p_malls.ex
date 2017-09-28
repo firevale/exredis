@@ -932,7 +932,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_redeem_codes(app_id, page, records_per_page, code_type) do
+  def list_pmall_cdkeys(app_id, page, records_per_page, code_type) do
     queryTotal = from g in Cdkey, select: count(1), where: g.app_id == ^app_id
     queryTotal = if String.length(code_type) > 0 do
       queryTotal |> where([g], g.code_type == ^code_type)
@@ -942,13 +942,13 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(Repo.one!(queryTotal) / records_per_page))
 
     query = from g in Cdkey,
-              join: u in assoc(g, :user),
+              join: u in assoc(g, :owner),
               where: g.app_id == ^app_id,
               order_by: [desc: g.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :code, :code_type, :assigned_at, user: [:id, :nickname, :email]]),
-              preload: [user: u]
+              select: map(g, [:id, :code, :code_type, :assigned_at, owner: [:id, :nickname]]),
+              preload: [owner: u]
 
     query = if String.length(code_type) > 0  do
       query |> where([g], g.code_type == ^code_type)

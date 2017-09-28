@@ -133,7 +133,7 @@ export default {
           memo: '',
           point: 0,
           wcp_user_id: '',
-          nickame: '',
+          openid: '',
         },
         visible: true,
         callback: log => {

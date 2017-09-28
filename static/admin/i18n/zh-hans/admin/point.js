@@ -109,5 +109,7 @@
     assigned_at: '分配时间',
     used_at: '使用时间',
     owner: '所有者',
+    addSuccess: '导入成功',
+    codeInfo: '每行一个cdkey',
    }
  }

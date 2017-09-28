@@ -57,6 +57,7 @@
     setting: '奖品设置',
     log: '中奖记录',
     editDraw: '编辑奖品信息',
+    backImage: '抽奖图',
     add: '添加新奖品',
     pic: '图片',
     name: '名称',

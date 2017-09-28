@@ -716,6 +716,14 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
+  defp _get_draw_ids(app_id) do
+    query = from d in LuckyDraw,
+      where: d.app_id == ^app_id,
+      select: map(d, [:id]),
+      order_by: [desc: d.inserted_at]
+    Repo.all(query)
+  end
+
   def update_pmall_draw(draw) do
     if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
       :notexist
@@ -782,14 +790,17 @@ defmodule Acs.PMalls do
           {:ok, add_point, total_point} = PMallsPoint.add_point(log_type, app_id, wcs_user_id)
           rand_draw = _start_draw(draws)
           draw = get_draw(rand_draw.id)
+          ids = _get_draw_ids(app_id)
+          index = Enum.find_index(ids, fn(x) -> x.id == draw.id end)
+
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcs_user_id, draw) do
             goods = get_pmall_goods_detail(draw.goods_id)
             %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point, 
-              index: draw.id, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
+              index: index + 1, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
           else
             false ->
-              %{index: draw.id, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
+              %{index: index + 1, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
             _ ->
               Repo.rollback(%{i18n_message: "pmall.draw.failed"})
           end
@@ -921,7 +932,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_redeem_codes(app_id, page, records_per_page, code_type) do
+  def list_pmall_cdkeys(app_id, page, records_per_page, code_type) do
     queryTotal = from g in Cdkey, select: count(1), where: g.app_id == ^app_id
     queryTotal = if String.length(code_type) > 0 do
       queryTotal |> where([g], g.code_type == ^code_type)
@@ -931,13 +942,13 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(Repo.one!(queryTotal) / records_per_page))
 
     query = from g in Cdkey,
-              join: u in assoc(g, :user),
+              join: u in assoc(g, :owner),
               where: g.app_id == ^app_id,
               order_by: [desc: g.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :code, :code_type, :assigned_at, user: [:id, :nickname, :email]]),
-              preload: [user: u]
+              select: map(g, [:id, :code, :code_type, :assigned_at, owner: [:id, :nickname]]),
+              preload: [owner: u]
 
     query = if String.length(code_type) > 0  do
       query |> where([g], g.code_type == ^code_type)

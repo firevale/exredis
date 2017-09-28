@@ -1,11 +1,11 @@
 <template>
   <div>
     <tabs type="boxed" layout="top" alignment="left" size="normal" :only-fade="false">
-      <tab-pane icon="fa fa-clone" :label="$t('admin.menu.redeemCodeType')">
-        <basic-info-editor group="redeemCodeType"></basic-info-editor>
+      <tab-pane icon="fa fa-clone" :label="$t('admin.menu.cdkeyType')">
+        <basic-info-editor group="cdkeyType"></basic-info-editor>
       </tab-pane>
-      <tab-pane icon="fa fa-support" :label="$t('admin.menu.redeemCodeManage')">
-        <redeem-codes></redeem-codes>
+      <tab-pane icon="fa fa-support" :label="$t('admin.menu.cdkeyManage')">
+        <cdkeys></cdkeys>
       </tab-pane>
     </tabs>
   </div>
@@ -21,14 +21,14 @@ import {
 } from 'vue-bulma-tabs'
 
 import basicInfoEditor from 'admin/components/setting/basicInfoEditor'
-import redeemCodes from 'admin/components/pmall/redeemCodes'
+import cdkeys from 'admin/components/pmall/cdkeys'
 
 export default {
   components: {
     Tabs,
     TabPane,
     basicInfoEditor,
-    redeemCodes
+    cdkeys
   },
 }
 </script>

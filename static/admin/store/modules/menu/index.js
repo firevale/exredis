@@ -216,12 +216,12 @@ const state = {
           label: i18n.t('admin.menu.pointOrder'),
         },
       }, {
-        name: 'RedeemCodes',
-        path: '/admin/app/:appId/redeemCodes',
+        name: 'Cdkeys',
+        path: '/admin/app/:appId/cdkeys',
         meta: {
           icon: 'fa-registered',
           level: '1,2,',
-          label: i18n.t('admin.menu.redeemCode'),
+          label: i18n.t('admin.menu.cdkey'),
         },
       },]
     },

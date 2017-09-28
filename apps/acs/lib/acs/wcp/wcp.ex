@@ -53,9 +53,6 @@ defmodule Acs.Wcp do
   def get_app_wcp_user(app_id, email: email) do 
     CachedAppWcpUser.get_by_email(app_id, email)
   end
-  def get_app_wcp_user(app_id, nickname: nickname) do 
-    CachedAppWcpUser.get_by_nickname(app_id, nickname)
-  end
 
   def create_app_wcp_user!(attr) do 
     wcp_user = AppWcpUser.changeset(%AppWcpUser{}, attr) |> Repo.insert!  

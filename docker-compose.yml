@@ -56,6 +56,11 @@ services:
       - "4000"
     ports:
       - "9527:9527"
+    extra_hosts:
+      - "xiaobin.firevale.com:192.168.1.8"
+      - "zhongxb.firevale.com:192.168.1.6"
+      - "minzz.firevale.com:192.168.1.5"
+      - "xiebing.firevale.com:192.168.1.3"
     environment:
       - "ACS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_dev"
       - "ACS_STATS_DATABASE_URL=ecto://root:firevale@acs_mysql/acs_stats_dev"

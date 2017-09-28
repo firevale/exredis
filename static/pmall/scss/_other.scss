@@ -192,29 +192,29 @@ span {
     position: absolute;
     top: virtual-m-rem(800);
     .item {
-      width: 22rem;
+      width: 77vw;
       padding-bottom: 2rem;
       &:last-child {
         margin-top: 1rem;
       }
-    }
-    input {
-      height: 2.5rem;
-      padding-left: .5rem;
-      &.is-code {
-        width: 12rem;
-        margin-right: .2rem;
+      input {
+        height: 2.5rem;
+        padding-left: 2px;
+        &.is-code {
+          width: calc(55% - 8px);
+          margin-right: 2px;
+        }
+        &.is-mobile {
+          width: calc(100% - 10px);
+        }
       }
-      &.is-mobile {
-        width: 21rem;
+      .btn-valid-code {
+        width: 42%;
+        height: 3.1rem;
+        color: $red;
+        background-color: $text;
+        border: 1px solid $red;
       }
-    }
-    .btn-valid-code {
-      width: 8.5rem;
-      height: 3.1rem;
-      color: $red;
-      background-color: $text;
-      border: 1px solid $red;
     }
   }
 }

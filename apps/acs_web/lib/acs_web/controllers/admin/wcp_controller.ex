@@ -71,8 +71,8 @@ defmodule AcsWeb.Admin.WcpController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def list_user_wcp_messages(conn, %{"app_id" => app_id,  "open_id" => open_id}) do
-    case Search.search_user_wcp_message(app_id: app_id, openid: open_id) do
+  def list_user_wcp_messages(conn, %{"app_id" => app_id,  "openid" => openid}) do
+    case Search.search_user_wcp_message(app_id: app_id, openid: openid) do
       {:ok, _total, messages} ->
         json(conn, %{success: true, messages: messages})
       _ ->
@@ -81,14 +81,14 @@ defmodule AcsWeb.Admin.WcpController do
   end
 
   def reply_user_wcp_message(%Plug.Conn{private: %{acs_admin_id: acs_admin_id}} = conn,
-                          %{"app_id" => app_id,  "open_id" => open_id, "content" => content}) do
+                          %{"app_id" => app_id,  "openid" => openid, "content" => content}) do
 
     admin_user = Accounts.get_user(acs_admin_id) |> Map.take([:nickname, :age, :email])
     
     with config = %AppWcpConfig{} <- Wcp.get_app_wcp_config(app_id),
-         wcp_user = %AppWcpUser{} <- Wcp.get_app_wcp_user(app_id, openid: open_id)
+         wcp_user = %AppWcpUser{} <- Wcp.get_app_wcp_user(app_id, openid: openid)
     do
-      case Exwcp.Message.Custom.send_text(config, open_id, content) do
+      case Exwcp.Message.Custom.send_text(config, openid, content) do
         %{errcode: 0, errmsg: "ok"} ->
           message = %{
             admin_user: admin_user,

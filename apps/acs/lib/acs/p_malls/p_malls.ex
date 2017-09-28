@@ -739,7 +739,7 @@ defmodule Acs.PMalls do
     
         %LuckyDraw{} = q ->
           # update
-          changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"]})
+          changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
           changed |> Repo.update!
           draw = Map.put(draw, "id", q.id)
           {:updateok, draw, changed.changes}

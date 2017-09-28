@@ -54,7 +54,7 @@
                 </label>
               </div>
             </div>
-            <div class="field is-horizontal">
+            <div v-if="goods.is_virtual" class="field is-horizontal">
               <div class="field-label">
                 <label class="label">{{ $t('admin.mall.goods.virtual_param') }}</label>
               </div>

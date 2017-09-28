@@ -17,6 +17,7 @@ defmodule Acs.Repo.Migrations.CreatePmallGoods do
       add :reads, :integer, default: 0
       add :active, :boolean, default: false
       add :is_virtual, :boolean, default: false  #是否虚拟物品
+      add :virtual_param, :string  #虚拟物品参数
       add :begin_time, :utc_datetime    #开始时间
       add :end_time, :utc_datetime    #结束时间
 

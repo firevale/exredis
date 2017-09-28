@@ -72,6 +72,7 @@ defmodule AcsWeb.Admin.PMallController do
                 "postage" => _postage,
                 "stock" => _stock,
                 "is_virtual" => _is_virtual,
+                "virtual_param" => _virtual_param,
                 "begin_time" => _begin_time,
                 "end_time" => _end_time,
                 "is_new" => _is_new} = goods) do

@@ -1,5 +1,5 @@
 use Mix.Config
 
 config :acs, WCS,
-  wcs_app_id: "wx093580929e0bb276",
-  wcs_app_secret: "1d9a8ddcb737e29b3ac048451b7d329f"
+  wcs_app_id: "wxd15ad03c04070298",
+  wcs_app_secret: "69671d25d3735da990d2c36f3f890dfa"

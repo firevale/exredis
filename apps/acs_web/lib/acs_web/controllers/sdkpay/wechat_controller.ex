@@ -165,7 +165,7 @@ defmodule AcsWeb.WechatController do
             device_id: device_id,
             platform: platform,
             ttl: app.token_ttl,
-            binding: %{wechat: %{access_token: access_token, open_id: openid}}
+            binding: %{wechat: %{access_token: access_token, openid: openid}}
           })
 
           conn |> json(%{

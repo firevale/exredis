@@ -279,17 +279,17 @@ export default {
         return post('/admin_actions/wcp/list_wcp_messages', data)
       },
 
-      listUserWcpMessages(app_id, open_id) {
+      listUserWcpMessages(app_id, openid) {
         return post('/admin_actions/wcp/list_user_wcp_messages', {
           app_id,
-          open_id
+          openid
         })
       },
 
-      replyUserWcpMessage(app_id, open_id, content) {
+      replyUserWcpMessage(app_id, openid, content) {
         return post('/admin_actions/wcp/reply_user_wcp_message', {
           app_id,
-          open_id,
+          openid,
           content
         })
       },
@@ -411,8 +411,8 @@ export default {
         return post('/admin_actions/pmall/update_pmall_draw_order', params, successMessage)
       },
 
-      listPMallRedeemCodes(params) {
-        return post('/admin_actions/pmall/list_pmall_redeem_codes', params)
+      listPMallCdkeys(params) {
+        return post('/admin_actions/pmall/list_pmall_cdkeys', params)
       },
     }
   }

@@ -356,12 +356,12 @@ defmodule AcsWeb.Admin.PMallController do
     end
   end
 
-  def list_pmall_redeem_codes(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+  def list_pmall_cdkeys(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                       %{"page" => page, 
                                       "records_per_page" => records_per_page,
                                       "code_type" => code_type}) do
-    {:ok, codes, total_page} = PMalls.list_pmall_redeem_codes(app_id, page, records_per_page, code_type)
-    conn |> json(%{success: true, codes: codes, total: total_page})
+    {:ok, codes, code_types, total_page} = PMalls.list_pmall_cdkeys(app_id, page, records_per_page, code_type)
+    conn |> json(%{success: true, codes: codes, code_types: code_types, total: total_page})
   end
 
 end

@@ -366,10 +366,10 @@ defmodule Acs.PMalls do
 
   end
 
-  def add_sign_user(app_id, open_id) do
+  def add_sign_user(app_id, openid) do
     sign_key_users = _sign_cache_key_users(app_id)
     score = DateTime.utc_now() |> DateTime.to_unix
-    Exredis.zadd(sign_key_users, score, open_id)
+    Exredis.zadd(sign_key_users, score, openid)
     Exredis.expire(sign_key_users, 172800)
   end
 
@@ -378,8 +378,8 @@ defmodule Acs.PMalls do
     total = Exredis.zcard(sign_key_users)
     open_ids = Exredis.zrange(sign_key_users, 0, 20)
     wcp_users =
-      Enum.map(open_ids, fn open_id ->
-        wcs_user = Wcs.get_wcs_user(openid: open_id)
+      Enum.map(open_ids, fn openid ->
+        wcs_user = Wcs.get_wcs_user(openid: openid)
         Map.take(wcs_user, [:id, :nickname, :avatar_url])
       end)
     {total, wcp_users}
@@ -728,6 +728,14 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
+  defp _get_draw_ids(app_id) do
+    query = from d in LuckyDraw,
+      where: d.app_id == ^app_id,
+      select: map(d, [:id]),
+      order_by: [desc: d.inserted_at]
+    Repo.all(query)
+  end
+
   def update_pmall_draw(draw) do
     if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
       :notexist
@@ -794,14 +802,17 @@ defmodule Acs.PMalls do
           {:ok, add_point, total_point} = PMallsPoint.add_point(log_type, app_id, wcs_user_id)
           rand_draw = _start_draw(draws)
           draw = get_draw(rand_draw.id)
+          ids = _get_draw_ids(app_id)
+          index = Enum.find_index(ids, fn(x) -> x.id == draw.id end)
+
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcs_user_id, draw) do
             goods = get_pmall_goods_detail(draw.goods_id)
             %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point, 
-              index: draw.id, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
+              index: index + 1, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
           else
             false ->
-              %{index: draw.id, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
+              %{index: index + 1, i18n_message: "pmall.draw.thanks", add_point: add_point, total_point: total_point}
             _ ->
               Repo.rollback(%{i18n_message: "pmall.draw.failed"})
           end
@@ -933,7 +944,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_redeem_codes(app_id, page, records_per_page, code_type) do
+  def list_pmall_cdkeys(app_id, page, records_per_page, code_type) do
     queryTotal = from g in Cdkey, select: count(1), where: g.app_id == ^app_id
     queryTotal = if String.length(code_type) > 0 do
       queryTotal |> where([g], g.code_type == ^code_type)
@@ -957,7 +968,8 @@ defmodule Acs.PMalls do
       query
     end
     codes = Repo.all(query)
-    {:ok, codes, total_page}
+    code_types = Acs.Admin.get_settings_by_group(app_id, "cdkeyType")
+    {:ok, codes, code_types, total_page}
   end
 
 end

@@ -2,52 +2,58 @@
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
-        <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="importCodes">
-            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.question.add') }}
+        <div class="columns">
+          <div class="column">
+            <a class="button is-primary" style="min-width: 100px" @click="importCodes">
+            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.cdkey.add') }}
           </a>
+          </div>
+          <div class="column" style="text-align:right">
+            <div class="select" v-if="codeTypes">
+              <select v-model.trim="codeType">
+                <option value="">所有类型</option>
+                <option v-for="ty in codeTypes" :value="tp.value">{{ tp.name }}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </article>
       <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
-            <div class="column is-6">
-              <p>{{ $t('admin.point.question.question') }}</p>
+            <div class="column">
+              <p>{{ $t('admin.point.cdkey.id') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.reads')}}</p>
+              <p>{{ $t('admin.point.cdkey.code') }}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.bingo')}}</p>
+              <p>{{ $t('admin.point.cdkey.code_type')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.edit')}}</p>
+              <p>{{ $t('admin.point.cdkey.owner')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.question.delete')}}</p>
+              <p>{{ $t('admin.point.cdkey.assigned_at')}}</p>
             </div>
           </div>
           <div v-if="codes">
             <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="codes && codes.length > 0"
-              v-for="(question, index) in codes" :key="question.id">
-              <div class="column is-6">
-                <p>{{ question.question }}</p>
+              v-for="(code, index) in codes" :key="code.id">
+              <div class="column">
+                <p>{{ code.id }}</p>
               </div>
               <div class="column">
-                <p>{{ question.reads }}</p>
+                <p>{{ code.code }}</p>
               </div>
               <div class="column">
-                <p>{{ question.bingo }}</p>
+                <p>{{ code.code_type }}</p>
               </div>
               <div class="column">
-                <a @click.prevent="editQuestion(question, index)">
-                  <i class="fa fa-pencil"></i>
-                </a>
+                <p>{{ code.owner }}</p>
               </div>
               <div class="column">
-                <a @click.prevent="delQuestion(question.id, index)">
-                  <i class="fa fa-trash-o"></i>
-                </a>
+                <p>{{ code.assigned_at | formatServerDateTime }}</p>
               </div>
             </div>
           </div>
@@ -72,7 +78,7 @@ import {
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
 
-import codeDialog from 'admin/components/dialog/point/redeemCode'
+import codeDialog from 'admin/components/dialog/point/cdkey'
 const codeDialogComponent = Vue.extend(codeDialog)
 
 const openCodeDialog = (propsData = {
@@ -89,6 +95,7 @@ export default {
   data() {
     return {
       codes: [],
+      codeTypes: [],
       codeType: '',
       page: 1,
       total: 1,
@@ -104,7 +111,7 @@ export default {
   methods: {
     getCodes: async function(page, recordsPerPage) {
       this.processing = true
-      let result = await this.$acs.listPMallRedeemCodes({
+      let result = await this.$acs.listPMallCdkeys({
         code_type: this.codeType,
         page: page,
         records_per_page: recordsPerPage
@@ -113,6 +120,7 @@ export default {
         this.total = result.total
         this.page = page
         this.codes = result.codes
+        this.codeTypes = result.code_types
       }
       this.processing = false
     },
@@ -123,7 +131,6 @@ export default {
 
     importCodes: function() {
       openCodeDialog({
-        codeType: '',
         visible: true,
         callback: result => {
           this.codes.unshift(result.codes)

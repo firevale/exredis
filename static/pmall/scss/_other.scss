@@ -29,9 +29,9 @@ $border-color: rgba($text, 0.1);
     background-image: url("~assets/pmall/1245_34.jpg");
     min-height: virtual-m-rem(2064);
   }
-  &.bg-draw-item {
-    background-image: url("~assets/pmall/1245_34_03.png");
-    background-size: virtual-m-pixel(990) virtual-m-pixel(982);
+  &.bg-draw-turntable {
+    // background-image: url("~assets/pmall/1245_34_03.png");
+    background-size: virtual-m-rem(990) virtual-m-rem(982);
     background-position-x: center;
   }
   &.bg-turn-needle {
@@ -198,19 +198,22 @@ span {
         margin-top: 1rem;
       }
       input {
-        height: 2.5rem;
-        padding-left: 2px;
+        height: 3rem;
+        line-height: 3rem;
+        padding-left: .1rem;
+        border: 0;
+        -webkit-appearance: none;
         &.is-code {
-          width: calc(55% - 8px);
-          margin-right: 2px;
+          width: 40vw;
+          margin-right: .1rem;
         }
         &.is-mobile {
-          width: calc(100% - 10px);
+          width: 76vw;
         }
       }
       .btn-valid-code {
-        width: 42%;
-        height: 3.1rem;
+        width: 34.5vw;
+        height: 3.3rem;
         color: $red;
         background-color: $text;
         border: 1px solid $red;

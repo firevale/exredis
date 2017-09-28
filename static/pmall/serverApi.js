@@ -112,6 +112,9 @@ export default {
       updateDrawAddress(params) {
         return post("/pmall_actions/update_draw_address", params)
       },
+      getDrawInfo() {
+        return post("/pmall_actions/get_draw_info")
+      },
     }
   }
 }

@@ -360,8 +360,8 @@ defmodule AcsWeb.Admin.PMallController do
                                       %{"page" => page, 
                                       "records_per_page" => records_per_page,
                                       "code_type" => code_type}) do
-    {:ok, codes, total_page} = PMalls.list_pmall_cdkeys(app_id, page, records_per_page, code_type)
-    conn |> json(%{success: true, codes: codes, total: total_page})
+    {:ok, codes, code_types, total_page} = PMalls.list_pmall_cdkeys(app_id, page, records_per_page, code_type)
+    conn |> json(%{success: true, codes: codes, code_types: code_types, total: total_page})
   end
 
 end

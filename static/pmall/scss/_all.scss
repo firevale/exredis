@@ -1,10 +1,9 @@
-  // @import "./initial-bulma";
   @import "./variables";
   @import "~normalize.css";
   @import "./mixins";
   @import "./global";
-  @import "./other"; // $fa-font-path: '~font-awesome/fonts/';
-  // @import '~font-awesome/scss/font-awesome';
+  @import "./other";
+
   .button {
     display: block;
     background-size: contain;
@@ -119,6 +118,11 @@
       background-image: url("~assets/pmall/1248_34_03.png"), url("~assets/pmall/1248_01_03.png");
       background-size: virtual-m-rem(21) virtual-m-rem(26), virtual-m-rem(683) virtual-m-rem(65);
       background-position: virtual-m-rem(10) virtual-m-rem(20), 0 0;
+    }
+    &.bg-sign-page {
+      width: virtual-m-pixel(1242);
+      height: virtual-m-pixel(2346);
+      background-image: url("~assets/pmall/1246_01.jpg");
     }
   }
 
@@ -290,29 +294,21 @@
   }
 
   .sign-page {
+    margin-top: 2px;
     $border-color: rgba(#d40200, 0.5);
+    background-image: url("~assets/pmall/1246_01.jpg");
+    background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
     .container {
       flex: 1;
       background-color: rgba(white, 0.8);
-      position: relative;
-      .container-background {
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: virtual-m-pixel(1242);
-        height: virtual-m-pixel(2346);
-      }
       .calender {
-        z-index: 10;
-        display: block;
-        flex: 0;
         margin-top: 2px;
         border: 1px solid $border-color;
-        .head-image,
-        .head-image>img {
+        .head-image {
           width: 100%;
-          height: virtual-m-rem(410);
+          height: virtual-m-pixel(410);
+          background-image: url("~assets/pmall/1246_01.jpg");
+          background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
         }
         .body {
           color: red;
@@ -353,7 +349,6 @@
       }
       .sign-awards {
         margin-top: virtual-m-rem(120);
-        z-index: 10;
         strong {
           color: red;
           font-size: $size4;
@@ -380,7 +375,6 @@
         }
       }
       .sign-others {
-        z-index: 10;
         margin-top: 2rem;
         .sign-users {
           background: white;

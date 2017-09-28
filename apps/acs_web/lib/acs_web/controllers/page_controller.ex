@@ -149,6 +149,7 @@ defmodule AcsWeb.PageController do
           {:ok, wcs_user_id} -> 
             conn 
               |> put_session(:wcs_user_id, wcs_user_id)
+              |> delete_session(:wcs_state)
               |> redirect(to: "/pmall/#{app_id}/index")
           _ ->
             conn |> send_resp(500, "something went wrong")

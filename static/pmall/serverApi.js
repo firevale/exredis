@@ -62,17 +62,6 @@ export default {
           this.tokens[tokenName]()
         }
       },
-
-      getUserInfo() {
-        return post('/pmall_actions/get_user_info')
-      },
-      listIndex() {
-        return post("/pmall_actions/list_index")
-      },
-      listGoods(params) {
-        let cancelToken = new axios.CancelToken(c => this.tokens.listGoods = c)
-        return post('/pmall_actions/list_goods', params, undefined, cancelToken)
-      },
       getGoods(params) {
         return post('/pmall_actions/get_goods_detail', params)
       },

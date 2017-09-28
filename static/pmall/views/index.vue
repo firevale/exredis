@@ -67,6 +67,17 @@ import {
   mapActions
 } from 'vuex'
 export default {
+  beforeRouteEnter: function(to, from, next) {
+    if (window.acsConfig.user.user_id) {
+      next()
+    }
+    else {
+      next({
+        name: 'bind_mobile',
+        params: to.params,
+      })
+    }
+  },
   data() {
     return {
       tasks: window.acsConfig.tasks,

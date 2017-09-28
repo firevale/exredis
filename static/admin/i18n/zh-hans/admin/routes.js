@@ -49,5 +49,5 @@ export default {
   PointDaySign: '日常签到',
   PointDayQuestion: '每日问答',
   PointLuckyDraw: '幸运抽奖',
-  RedeemCodes: 'CDKEY管理',
+  Cdkeys: 'CDKEY管理',
 }

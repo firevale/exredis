@@ -8,6 +8,11 @@ defmodule AcsWeb.PMallController do
   alias Acs.Accounts
   alias Acs.PMallsPoint
 
+  alias   Utils.Httpc
+  require Utils
+  alias   Utils.JSON
+  alias   Utils.Crypto
+
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
 
@@ -245,4 +250,47 @@ defmodule AcsWeb.PMallController do
     end
   end
 
+  def point_subscribe(conn,  params) do
+    app_id ="3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
+    wcs_user_id = "1"
+    mobile = "131"
+    with  app_id && wcs_user_id && mobile,
+      %WcsUser{} <-  Wcs.get_wcs_user(wcs_user_id),
+      {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id,mobile)
+    do
+      conn |> json(%{success: true, result_code: "ok"})
+    else
+      false ->
+        conn |> json(%{success: false, result_code: "argument_error"})
+      {:exist} ->
+        conn |> json(%{success: true, result_code: "subscribed"})
+      _ ->
+        conn |> json(%{success: true, result_code: "user_not_found"})
+    end
+  end
+
+  def test(conn, _params) do
+    try do 
+      response = Httpc.post_form("http://minzz.firevale.com/api/pmall/point_subscribe", 
+        %{"app_id" => "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", "wcs_user_id" => "1" , "mobile" => "13173700324"})
+
+      d "response:  #{inspect response}"
+      if Httpc.success?(response) do 
+        case JSON.decode(response.body) do 
+          %{success: true, result_code: result_code} -> 
+            conn |> json(%{success: true, result_code: result_code})
+          %{success: false, result_code: result_code} -> 
+            Logger.error "/pmall/point_subscribe failed, result_code: #{result_code}"
+            conn |> json(%{success: false, result_code: result_code})
+        end 
+      else
+        Logger.error "/pmall/point_subscribe request failed"
+        conn |> json(%{success: false, result_code: "request_failed"})
+      end
+    catch
+      :error, e ->
+        Logger.error "/pmall/point_subscribe exception: #{inspect e}"
+        conn |> json(%{success: false, exception: e})
+    end
+  end
 end

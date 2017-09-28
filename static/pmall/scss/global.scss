@@ -48,7 +48,14 @@ input::-webkit-inner-spin-button {
 
 @media screen and (orientation:landscape) {
   #app {
-    max-width: 375px;
+    max-width: 414px;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (min-width: 414px) {
+  #app {
+    max-width: 414px;
     margin: 0 auto;
   }
 }

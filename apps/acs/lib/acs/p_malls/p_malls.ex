@@ -39,32 +39,8 @@ defmodule Acs.PMalls do
     CachedPMallGoods.get(goods_id)
   end
 
-  def list_pmall_goods(app_id, page, records_per_page, keyword) do
-    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, false)
-
-    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id and g.active == true
-    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
-
-    if total == 0 do
-      :zero
-    else
-      total_page = round(Float.ceil(total / records_per_page))
-      query = from g in PMallGoods,
-                where: g.app_id == ^app_id and g.active == true,
-                order_by: [desc: g.inserted_at],
-                limit: ^records_per_page,
-                offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
-
-      query = if(String.length(keyword)>0) do
-        query |> where([p], p.id in ^ids)
-      else
-        query
-      end
-
-      goodses = Repo.all(query)
-      {:ok, goodses, total_page}
-    end
+  def list_pmall_goods(app_id) do
+    CachedPMallGoods.list(app_id) 
   end
 
   def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
@@ -84,7 +60,7 @@ defmodule Acs.PMalls do
                 offset: ^((page - 1) * records_per_page),
                 select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
 
-      query = if(String.length(keyword)>0) do
+      query = if String.length(keyword) > 0 do
         query |> where([p], p.id in ^ids)
       else
         query
@@ -96,60 +72,61 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_goods_pic(goods, image_path) do
-    PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
-    CachedPMallGoods.refresh(goods)
+    new_goods = PMallGoods.changeset(goods, %{pic: image_path}) |> Repo.update!
+    CachedPMallGoods.refresh(new_goods)
   end
 
   def update_pmall_goods(user_id, goods) do
     case goods["is_new"] do
       true ->
-        # add new
-        count = Repo.one!(from g in PMallGoods, select: count(1), where: g.app_id == ^goods["app_id"] and g.id == ^goods["id"])
-        if(count > 0) do
-          :exist
-        else
-          goods = goods |> Map.put("user_id", user_id)
-          case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
-            {:ok, new_goods} ->
-              goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-              CachedPMallGoods.refresh(goods["id"])
-              {:add_ok, goods}
-            {:error, %{errors: _errors}} ->
-              :error
-          end
+        case CachedPMallGoods.get(goods["id"]) do 
+          nil ->
+            goods = goods |> Map.put("user_id", user_id)
+            case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
+              {:ok, new_goods} ->
+                goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+                CachedPMallGoods.refresh(new_goods)
+                {:add_ok, goods}
+
+              {:error, %{errors: _errors}} ->
+                :error
+            end
+          _ ->
+            :exist
         end
 
       false ->
         # update
-        case Repo.get(PMallGoods, goods["id"]) do
+        case CachedPMallGoods.get(goods["id"]) do
           nil ->
             nil
 
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
             changed = PMallGoods.changeset(mg, %{name: goods["name"],
-                                                description: goods["description"],
-                                                pic: goods["pic"],
-                                                price: goods["price"],
-                                                postage: goods["postage"],
-                                                stock: goods["stock"],
-                                                is_virtual: goods["is_virtual"],
-                                                virtual_param: goods["virtual_param"],
-                                                begin_time: goods["begin_time"],
-                                                end_time: goods["end_time"]})
-            changed |> Repo.update!
-            CachedPMallGoods.refresh(goods["id"])
+                                                  description: goods["description"],
+                                                  pic: goods["pic"],
+                                                  price: goods["price"],
+                                                  postage: goods["postage"],
+                                                  stock: goods["stock"],
+                                                  is_virtual: goods["is_virtual"],
+                                                  begin_time: goods["begin_time"],
+                                                  end_time: goods["end_time"]})
+            new_goods = changed |> Repo.update!
+            CachedPMallGoods.refresh(new_goods)
             {:update_ok, goods, changed.changes}
         end
     end
   end
 
   def toggle_pmall_goods_status(goods_id) do
-    case Repo.get(PMallGoods, goods_id) do
+    case CachedPMallGoods.get(goods_id) do
       nil ->
         nil
+
       %PMallGoods{} = goods ->
-        PMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
+        new_goods = PMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
+        CachedPMallGoods.refresh(new_goods) 
         {:ok, !goods.active}
     end
   end
@@ -158,13 +135,14 @@ defmodule Acs.PMalls do
     case Repo.get(PMallGoods, goods_id) do
       nil ->
         nil
+
       %PMallGoods{} = goods ->
-        if(goods.sold > 0) do
+        if goods.sold > 0 do
           :sold
         else
           case Repo.delete(goods) do
             {:ok, _} ->
-              CachedPMallGoods.del(goods_id)
+              CachedPMallGoods.del(goods)
               :ok
 
             {:error, %{errors: errors}} ->
@@ -346,7 +324,7 @@ defmodule Acs.PMalls do
     sign_key = _sign_cache_key(app_id, wcs_user_id)
     sign_key_before = _sign_cache_key_before(app_id, wcs_user_id)
     sign_key_times = _sign_cache_key_times(app_id, wcs_user_id)
-
+    sign_key_users = _sign_cache_key_users(app_id)
     ## 连续签到次数
     times  =
       case Exredis.exists(sign_key_before) do
@@ -356,10 +334,14 @@ defmodule Acs.PMalls do
           Exredis.set(sign_key_times, 1)
           1
       end
+    ## 签到用户
+    score = DateTime.utc_now() |> DateTime.to_unix
+    Exredis.zadd(sign_key_users, score, wcs_user_id)
 
     ## 过期设置
     Exredis.expire(sign_key, 172800)
     Exredis.expire(sign_key_times, 172800)
+    Exredis.expire(sign_key_users, 172800)
 
     ## 添加积分
    {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcs_user_id)
@@ -367,20 +349,13 @@ defmodule Acs.PMalls do
 
   end
 
-  def add_sign_user(app_id, openid) do
-    sign_key_users = _sign_cache_key_users(app_id)
-    score = DateTime.utc_now() |> DateTime.to_unix
-    Exredis.zadd(sign_key_users, score, openid)
-    Exredis.expire(sign_key_users, 172800)
-  end
-
   def get_sign_users(app_id) do
     sign_key_users = _sign_cache_key_users(app_id)
     total = Exredis.zcard(sign_key_users)
     open_ids = Exredis.zrange(sign_key_users, 0, 20)
     wcp_users =
-      Enum.map(open_ids, fn openid ->
-        wcs_user = Wcs.get_wcs_user(openid: openid)
+      Enum.map(open_ids, fn wcs_user_id ->
+        wcs_user = Wcs.get_wcs_user(wcs_user_id)
         Map.take(wcs_user, [:id, :nickname, :avatar_url])
       end)
     {total, wcp_users}
@@ -508,6 +483,10 @@ defmodule Acs.PMalls do
     Repo.get(TaskBar, task_id)
   end
 
+  def list_pmall_tasks(app_id) do 
+    CachedPMallTaskBar.list(app_id)
+  end
+
   def get_task_list(app_id) do
     query = from tb in TaskBar,
               select: map(tb, [:id, :pic, :name, :sub_name, :point, :path, :active, :sort]),
@@ -518,50 +497,56 @@ defmodule Acs.PMalls do
   end
 
   def update_task_pic(task, image_path) do
-    TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
+    task = TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
+    CachedPMallTaskBar.refresh(task) 
   end
 
   # update_task
   def update_task(task) do
-    case Repo.get(TaskBar, task["id"]) do
+    case CachedPMallTaskBar.get(task["id"]) do
     nil ->
-      # add new
       case TaskBar.changeset(%TaskBar{}, task) |> Repo.insert do
         {:ok, new_task} ->
-          task = Map.put(task, "id", new_task.id) |> Map.put("inserted_at", new_task.inserted_at) |> Map.put("sort", new_task.id)
-          TaskBar.changeset(new_task, %{sort: new_task.id}) |> Repo.update!
-          {:addok, task}
+          new_task = TaskBar.changeset(new_task, %{sort: new_task.id}) |> Repo.update!
+          CachedPMallTaskBar.refresh(new_task)  
+          {:addok, new_task}
         {:error, %{errors: _errors}} ->
           :error
       end
 
-    %TaskBar{} = ns ->
+    %TaskBar{} = tb ->
       # update
-      TaskBar.changeset(ns, %{name: task["name"], sub_name: task["sub_name"], point: task["point"], path: task["path"], active: task["active"], sort: task["sort"]}) |> Repo.update!
-      task = Map.put(task, "id", ns.id) |> Map.put("inserted_at", ns.inserted_at)
-      {:updateok, task}
+      new_task = TaskBar.changeset(tb, %{
+        name: task["name"], 
+        sub_name: task["sub_name"], 
+        point: task["point"], 
+        path: task["path"], 
+        active: task["active"], 
+        sort: task["sort"]}) |> Repo.update!
+      CachedPMallTaskBar.refresh(new_task)  
+      {:updateok, new_task}
     end
   end
 
   def toggle_task_status(task_id) do
-    case Repo.get(TaskBar, task_id) do
+    case CachedPMallTaskBar.get(task_id) do
       nil ->
         nil
 
       %TaskBar{} = task ->
-        TaskBar.changeset(task, %{active: !task.active}) |> Repo.update!
-        :ok
+        new_task = TaskBar.changeset(task, %{active: !task.active}) |> Repo.update!
+        CachedPMallTaskBar.refresh(new_task) 
     end
   end
 
   def delete_task(task_id) do
-    case Repo.get(TaskBar, task_id) do
+    case CachedPMallTaskBar.get(task_id) do
       nil ->
         nil
       %TaskBar{} = task ->
         case Repo.delete(task) do
           {:ok, _} ->
-            CachedPMallTaskBar.del(task.app_id)
+            CachedPMallTaskBar.del(task)
             :ok
 
           {:error, %{errors: _errors}} ->
@@ -574,9 +559,9 @@ defmodule Acs.PMalls do
     changes = String.split(need_change, ",", trim: true)
     Enum.map(changes, fn x ->
         [a, b] = String.split(x, "=")
-        task = Repo.get(TaskBar, String.to_integer(a))
-        TaskBar.changeset(task, %{sort: String.to_integer(b)}) |> Repo.update!
-        CachedPMallTaskBar.refresh(task.app_id)
+        task = CachedPMallTaskBar.get(a)
+        new_task = TaskBar.changeset(task, %{sort: String.to_integer(b)}) |> Repo.update!
+        CachedPMallTaskBar.refresh(new_task)
       end)
     :ok
   end
@@ -980,6 +965,20 @@ defmodule Acs.PMalls do
       {:ok, _cdkey} = Cdkey.changeset(%Cdkey{}, key) |> Repo.insert()
     end)
     :ok
+  end
+
+  def get_cdkey(app_id, code_type, wcs_user_id) do
+    query = from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), limit: 1
+    case Repo.one(query) do
+      nil -> nil
+
+      %Cdkey{} = cdkey ->
+        Cdkey.changeset(cdkey, %{
+          owner_id: wcs_user_id,
+          assigned_at: DateTime.utc_now(),
+        }) |> Repo.update() 
+        cdkey.code
+    end
   end
 
 end

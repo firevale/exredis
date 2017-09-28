@@ -12,9 +12,6 @@ defmodule Acs.Apps do
   alias Acs.Malls
   alias Acs.Malls.Mall
 
-  alias Acs.PMalls
-  alias Acs.PMalls.PMall
-
   alias Acs.Apps.App
   alias Acs.Apps.AppOrder
   alias Acs.Apps.AppNews

@@ -35,7 +35,8 @@ export default {
 
   async mounted() {
     this.initProgress()
-    await this.getUserInfo()
+    this.setWcpUser(window.acsConfig.user)
+    this.setUserPoints(window.acsConfig.user.points)
   },
   methods: {
     ...mapActions([
@@ -58,13 +59,6 @@ export default {
         }
         return Promise.reject(error)
       })
-    },
-    async getUserInfo() {
-      let result = await this.$acs.getUserInfo()
-      if (result.success) {
-        this.setWcpUser(result.wcp_user)
-        this.setUserPoints(result.wcp_user.points)
-      }
     },
     onBtnBackClicked: function() {
       if (this.canGoBack) {

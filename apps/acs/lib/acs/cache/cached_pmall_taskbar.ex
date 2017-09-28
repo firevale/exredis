@@ -1,46 +1,93 @@
 defmodule Acs.Cache.CachedPMallTaskBar do
+  import  Ecto.Query
+  alias   Acs.Repo
+
   require Exredis
   require Excache
-  import  Ecto.Query
 
   alias   Utils.JSON
-  alias   Acs.Repo
   alias   Acs.PMalls.TaskBar
 
-  @key_base    "acs.pmall_task_bars"
+  @key_base    "acs.pmall_task"
 
-  def get(app_id)  do
-    Excache.get!(key(app_id), fallback: fn(redis_key) -> 
+  def get(task_id) do
+    Excache.get!(key(task_id), fallback: fn(redis_key) -> 
       case Exredis.get(redis_key) do
         nil ->
-          case refresh(app_id) do
-            nil -> {:ignore, nil}
-            v -> {:commit, v}
+          case refresh(task_id) do
+            nil -> 
+              {:ignore, nil}
+            v -> 
+              {:commit, v}
           end
         raw ->
-          {:commit, JSON.decode!(raw) }
+          {:commit, TaskBar.from_redis(raw)}
       end
     end)
   end
 
-  def refresh(app_id)  do
-    key(app_id) |> Excache.del
+  def list(app_id) do 
+    Excache.get!(list_key(app_id), fallback: fn(redis_key) -> 
+      case Exredis.get(redis_key) do
+        nil ->
+          query = from tb in TaskBar,
+            select: tb.id,
+            where: tb.app_id == ^app_id,
+            where: tb.active == true,
+            order_by: [asc: tb.sort]
 
-    query = from tb in TaskBar,
-      order_by: [desc: tb.sort],
-      where: tb.app_id == ^app_id,
-      select: map(tb, [:id, :name, :pic, :sub_name, :point, :path])
+          task_ids = Repo.all(query)
 
-    task_bars = Repo.all(query)
-    Exredis.set(key(app_id), JSON.encode!(task_bars))
-    Excache.del(key(app_id))
-    task_bars
+          tasks = for id <- task_ids do 
+            get(id)
+          end
+
+          Exredis.set(list_key(app_id), Poison.encode!(task_ids))
+
+          {:commit, tasks}
+          
+        raw ->
+          task_ids = Poison.decode!(raw)
+
+          tasks = for id <- task_ids, do: get(id)
+
+          {:commit, tasks}
+      end
+    end)    
   end
 
-  def del(app_id) do
-    key(app_id) |> Excache.del
-    key(app_id) |> Exredis.del
+  def refresh(%TaskBar{} = task) do 
+    Exredis.set(key(task.id), TaskBar.to_redis(task))
+    Excache.del(key(task.id))
+
+    refresh_list(task.app_id)
+
+    task
   end
 
-  defp key(app_id), do: "#{@key_base}.#{app_id}"
+  def refresh(task_id)  do
+    key(task_id) |> Excache.del
+
+    case Repo.get(TaskBar, task_id) do 
+      nil -> nil
+      %TaskBar{} = task ->
+        refresh(task)
+    end
+  end
+
+  def del(%TaskBar{} = task) do 
+    Exredis.del(key(task.id))
+    Excache.del(key(task.id))    
+
+    refresh_list(task.app_id)
+  end
+
+
+  defp refresh_list(app_id) do 
+    Exredis.del(list_key(app_id))
+    Excache.del(list_key(app_id))
+  end
+
+  defp key(task_id), do: "#{@key_base}.#{task_id}"
+  defp list_key(app_id), do: "#{@key_base}.__all__.#{app_id}"
 end

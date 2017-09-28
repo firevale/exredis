@@ -79,6 +79,9 @@ input::-webkit-inner-spin-button {
 .is-flex {
   display: flex;
   flex-wrap: wrap;
+  &.no-wrap{
+    flex-wrap: nowrap;
+  }
   &.is-row {
     flex-direction: row;
   }

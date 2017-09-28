@@ -956,7 +956,8 @@ defmodule Acs.PMalls do
       query
     end
     codes = Repo.all(query)
-    {:ok, codes, total_page}
+    code_types = Acs.Admin.get_settings_by_group(app_id, "cdkeyType")
+    {:ok, codes, code_types, total_page}
   end
 
 end

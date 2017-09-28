@@ -99,5 +99,15 @@
     topPic: '顶部图片',
     lunar: '农历宜忌',
     signAward: '签到奖品',
+   },
+
+   cdkey: {
+    add: '导入CDKEY',
+    id: '编号',
+    code: 'CDKEY',
+    code_type: '类型',
+    assigned_at: '分配时间',
+    used_at: '使用时间',
+    owner: '所有者',
    }
  }

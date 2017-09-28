@@ -133,14 +133,38 @@ defmodule AcsWeb.PageController do
   end
 
   #积分商城
-  def show_pmall_page(%Plug.Conn{private: %{wcs_user_id: wcp_user_id}} = conn, _params) do 
-    conn |> put_layout(:false)
-         |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
+  def show_pmall_page(%Plug.Conn{private: %{wcs_user_id: wcs_user_id}} = conn, %{"app_id" => app_id}) do 
+    conn 
+      |> put_layout(:false)
+      |> render("pmall.html", 
+                 wcs_user_id: wcs_user_id,
+                 app_id: app_id,
+                 cdn_scheme: @cdn_scheme, 
+                 cdn_domain: @cdn_domain)
   end
-  def show_pmall_page(conn, _params) do
-    conn |> put_layout(:false)
-         |> put_session(:wcs_user_id, 1) # TODO: delete this line
-         |> render("pmall.html", cdn_scheme: @cdn_scheme, cdn_domain: @cdn_domain)
+  def show_pmall_page(conn, %{"code" => code, "state" => state, "app_id" => app_id}) do
+    case get_session(conn, :wcs_state) do 
+      ^state ->
+        case Acs.Wcs.get_wcs_user_id_from_authorize_code(code) do 
+          {:ok, wcs_user_id} -> 
+            conn 
+              |> put_session(:wcs_user_id, wcs_user_id)
+              |> redirect(to: "/pmall/#{app_id}/index")
+          _ ->
+            conn |> send_resp(500, "something went wrong")
+        end
+      _ ->
+        conn |> send_resp(500, "something went wrong")
+    end
+  end
+  def show_pmall_page(conn, %{"app_id" => app_id}) do
+    redirect_url = Path.join(["#{AcsWeb.Endpoint.struct_url()}", "pmall", app_id, "index"]) |> URI.encode_www_form()
+    state = Utils.generate_token()
+    request_code_url = Acs.Wcs.get_request_code_url(redirect_url, state) 
+    d "#{request_code_url}"
+    conn 
+      |> put_session(:wcs_state, state)
+      |> redirect(external: request_code_url)
   end
 
   # 购买商品页面, 兼容旧版本

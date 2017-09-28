@@ -7,6 +7,8 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
+
+
 # config sm service provider to none
 # get verify code from console info log
 config :exsm, :provider, :meisheng
@@ -21,3 +23,9 @@ config :exsdks, :alipay,
   notify_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/api/pay/alipay/notify",
   callback_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/payment/pay_proxy?merchant_order_id={order_id}",
   merchant_url: "http://#{System.get_env("ACS_HOST") || "xiaobin.firevale.com"}/payment/pay_proxy?merchant_order_id={order_id}"
+
+  case System.get_env("NODE") do 
+    nil -> :ok
+    host -> 
+      import_config "dev_#{host}.exs"
+  end

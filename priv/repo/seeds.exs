@@ -139,6 +139,7 @@ Acs.Wcs.create_wcs_user!(%{
   sex: 1,
   city: "福州",
   country: "中国",
+  avatar_url: "//wx.qlogo.cn/mmopen/Q3auHgzwzM5Ww2uwmotYOb6icuTn8pU1K3zMTlDIQu3frgeZkcavycBkt0zLlyIW5Mia6OjwAib09EBSjM5rXGlINs3wrianmay19wdKlkqTibNw/0",
 })
 
 Exredis.flushdb()

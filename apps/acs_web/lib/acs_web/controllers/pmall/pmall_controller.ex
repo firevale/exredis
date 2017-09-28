@@ -11,22 +11,6 @@ defmodule AcsWeb.PMallController do
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
 
-  def list_index(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, params) do
-    #任务清单
-    tasks = PMalls.get_task_list(app_id)
-
-    #商品
-    goodses =
-      case PMalls.list_pmall_goods(app_id, 1, 5, "") do
-        {:ok, goodses, total_page} ->
-          goodses
-       _ ->
-          []
-      end
-
-    conn |> json(%{success: true, tasks: tasks, goodses: goodses})
-  end
-
   # list_pmall_goods
   def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,
                                       %{"page" => page,
@@ -47,18 +31,6 @@ defmodule AcsWeb.PMallController do
     goods = PMalls.get_pmall_goods_detail(goods_id)
     exchange_count =  PMalls.count_exchange_goods(app_id, wcs_user_id, goods_id)
     conn |> json(%{success: true, goods: goods, exchanged: exchange_count >= 1})
-  end
-
-  def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-    point = PMalls.get_user_point(app_id, wcs_user_id)
-    case Wcs.get_wcs_user(wcs_user_id) do
-      %WcsUser{} = user ->
-        wcp_user = Map.take(user, [:id, :nickname, :avatar_url, :app_id])
-        user_info = Map.merge(wcp_user, %{points: point, has_mobile: false })
-        conn |> json(%{success: true, wcp_user: user_info})
-      _ ->
-        conn |> json(%{success: false, i18n_message: "error.server.badRequestParams" })
-    end
   end
 
   def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
@@ -142,12 +114,12 @@ defmodule AcsWeb.PMallController do
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do
-    wcp_user = Wcp.get_app_wcp_user(wcs_user_id)
+    wcs_user = Wcp.get_app_wcs_user(wcs_user_id)
     result = PMalls.sign(app_id, wcs_user_id)
 
     case result do
       {:ok, sign_info} ->
-        PMalls.add_sign_user(app_id, wcp_user.openid)
+        PMalls.add_sign_user(app_id, wcs_user.openid)
         conn |> json(Map.merge(%{success: true}, sign_info))
 
       {:error, %{i18n_message: i18n_message}} ->
@@ -178,7 +150,7 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_default_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-    case Wcp.get_app_wcp_user(wcs_user_id) do
+    case Wcp.get_app_wcs_user(wcs_user_id) do
       nil ->
         conn |> json(%{success: false})
 

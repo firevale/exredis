@@ -19,7 +19,7 @@
       </div>
       <div class="tasks">
         <template v-for="task in tasks">
-          <router-link :to="{name: task.path}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
+          <router-link :key="task.id" :to="{name: task.path}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
             <img :src="task.pic | imageStaticUrl" />
             <p class="is-marginless">{{task.name}}</p>
             <p class="is-marginless is-size-small  ">
@@ -35,7 +35,7 @@
       <div class="bg-full bg-title-pmall-index">
       </div>
       <div class="pmall is-flex">
-        <div v-for="goods in goodses" class="column is-6">
+        <div v-for="goods in goodses" :key="goods.id" class="column is-6">
           <div class="item-box">
             <div class="item">
               <router-link class="image" :to="{name: 'detail', params:{ id: goods.id}}" tag="div"></router-link>
@@ -67,14 +67,10 @@ import {
   mapActions
 } from 'vuex'
 export default {
-  mounted() {
-    this.loadData()
-  },
-
   data() {
     return {
-      tasks: [],
-      goodses: []
+      tasks: window.acsConfig.tasks,
+      goodses: window.acsConfig.goodses, 
     }
   },
   computed: {
@@ -97,13 +93,6 @@ export default {
     ...mapActions([
       'setTransitionName',
     ]),
-    async loadData() {
-      let result = await this.$acs.listIndex()
-      if (result.success) {
-        this.tasks = result.tasks
-        this.goodses = result.goodses
-      }
-    }
   }
 }
 </script>

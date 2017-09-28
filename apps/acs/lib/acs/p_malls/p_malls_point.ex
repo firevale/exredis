@@ -31,12 +31,20 @@ defmodule Acs.PMallsPoint do
   end
 
   def exchange_goods_point(app_id, wcs_user_id, goods) do
+    memo = 
+      if goods.is_virtual do
+        code = PMalls.get_cdkey(app_id, goods.virtual_param, wcs_user_id)
+        "#{goods.name}:#{code}"
+      else
+        goods.name
+      end
+
     log = %{
-      app_id: app_id,
-      wcs_user_id: wcs_user_id,
-      log_type: "point_exchange_goods",
-      point: -goods.price,
-      memo: goods.name
+        app_id: app_id,
+        wcs_user_id: wcs_user_id,
+        log_type: "point_exchange_goods",
+        point: -goods.price,
+        memo: memo
     }
 
     PMalls.add_point(log)

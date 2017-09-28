@@ -931,13 +931,13 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(Repo.one!(queryTotal) / records_per_page))
 
     query = from g in Cdkey,
-              join: u in assoc(g, :user),
+              join: u in assoc(g, :owner),
               where: g.app_id == ^app_id,
               order_by: [desc: g.id],
               limit: ^records_per_page,
               offset: ^((page - 1) * records_per_page),
-              select: map(g, [:id, :code, :code_type, :assigned_at, user: [:id, :nickname, :email]]),
-              preload: [user: u]
+              select: map(g, [:id, :code, :code_type, :assigned_at, owner: [:id, :nickname]]),
+              preload: [owner: u]
 
     query = if String.length(code_type) > 0  do
       query |> where([g], g.code_type == ^code_type)

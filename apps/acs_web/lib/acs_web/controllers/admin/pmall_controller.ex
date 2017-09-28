@@ -38,7 +38,7 @@ defmodule AcsWeb.Admin.PMallController do
       %PMallGoods{} = goods ->
         {:ok, image_path} = DeployUploadedFile.deploy_image_file(from: image_file_path, to: "goods_icon/#{goods_id}")
         PMalls.update_pmall_goods_pic(goods, image_path)
-        # Admin.log_admin_operation(acs_admin_id, app_id, "update_pmall_goods_pic", %{pic: image_path})
+        Admin.log_admin_operation(acs_admin_id, app_id, "update_pmall_goods_pic", %{pic: image_path})
 
         conn |> json(%{success: true, pic_url: image_path})
 
@@ -135,10 +135,10 @@ defmodule AcsWeb.Admin.PMallController do
   end
 
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                                        %{"nickame" => nickame, 
+                                        %{"openid" => openid, 
                                           "point" => _point, 
                                           "memo" => _memo} = log) do
-    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, nickname: nickame) do
+    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, openid: openid) do
                     nil -> nil
                     %AppWcpUser{} = u -> u.id
                   end

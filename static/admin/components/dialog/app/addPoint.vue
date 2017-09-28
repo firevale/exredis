@@ -7,7 +7,7 @@
       <form name="pointLog" @submit.prevent="handleSubmit">
         <label class="label"> {{ $t('admin.point.wcpUserName') }}: </label>
         <p class="control">
-          <input class="input" type="text" v-model.trim="pointLog.nickame">
+          <input class="input" type="text" v-model.trim="pointLog.openid">
         </p>
         <label class="label"> {{ $t('admin.point.point') }}(扣分请输入负数): </label>
         <p class="control">
@@ -52,8 +52,8 @@ export default {
 
   methods: {
     handleSubmit: async function() {
-      if(!this.pointLog.nickame || !this.pointLog.point || !this.pointLog.memo){
-        alert('请填写微信用户昵称, 积分和备注!')
+      if(!this.pointLog.openid || !this.pointLog.point || !this.pointLog.memo){
+        alert('请填写微信用户openid, 积分和备注!')
         return
       }
 

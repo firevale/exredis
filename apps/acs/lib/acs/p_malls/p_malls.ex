@@ -346,7 +346,7 @@ defmodule Acs.PMalls do
     sign_key = _sign_cache_key(app_id, wcs_user_id)
     sign_key_before = _sign_cache_key_before(app_id, wcs_user_id)
     sign_key_times = _sign_cache_key_times(app_id, wcs_user_id)
-
+    sign_key_users = _sign_cache_key_users(app_id)
     ## 连续签到次数
     times  =
       case Exredis.exists(sign_key_before) do
@@ -356,10 +356,14 @@ defmodule Acs.PMalls do
           Exredis.set(sign_key_times, 1)
           1
       end
+    ## 签到用户
+    score = DateTime.utc_now() |> DateTime.to_unix
+    Exredis.zadd(sign_key_users, score, wcs_user_id)
 
     ## 过期设置
     Exredis.expire(sign_key, 172800)
     Exredis.expire(sign_key_times, 172800)
+    Exredis.expire(sign_key_users, 172800)
 
     ## 添加积分
    {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcs_user_id)
@@ -367,20 +371,13 @@ defmodule Acs.PMalls do
 
   end
 
-  def add_sign_user(app_id, openid) do
-    sign_key_users = _sign_cache_key_users(app_id)
-    score = DateTime.utc_now() |> DateTime.to_unix
-    Exredis.zadd(sign_key_users, score, openid)
-    Exredis.expire(sign_key_users, 172800)
-  end
-
   def get_sign_users(app_id) do
     sign_key_users = _sign_cache_key_users(app_id)
     total = Exredis.zcard(sign_key_users)
     open_ids = Exredis.zrange(sign_key_users, 0, 20)
     wcp_users =
-      Enum.map(open_ids, fn openid ->
-        wcs_user = Wcs.get_wcs_user(openid: openid)
+      Enum.map(open_ids, fn wcs_user_id ->
+        wcs_user = Wcs.get_wcs_user(wcs_user_id)
         Map.take(wcs_user, [:id, :nickname, :avatar_url])
       end)
     {total, wcp_users}

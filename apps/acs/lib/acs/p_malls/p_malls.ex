@@ -39,32 +39,8 @@ defmodule Acs.PMalls do
     CachedPMallGoods.get(goods_id)
   end
 
-  def list_pmall_goods(app_id, page, records_per_page, keyword) do
-    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, false)
-
-    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id and g.active == true
-    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
-
-    if total == 0 do
-      :zero
-    else
-      total_page = round(Float.ceil(total / records_per_page))
-      query = from g in PMallGoods,
-                where: g.app_id == ^app_id and g.active == true,
-                order_by: [desc: g.inserted_at],
-                limit: ^records_per_page,
-                offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
-
-      query = if(String.length(keyword)>0) do
-        query |> where([p], p.id in ^ids)
-      else
-        query
-      end
-
-      goodses = Repo.all(query)
-      {:ok, goodses, total_page}
-    end
+  def list_pmall_goods(app_id) do
+    CachedPMallGoods.list(app_id) 
   end
 
   def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
@@ -128,17 +104,16 @@ defmodule Acs.PMalls do
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
             changed = PMallGoods.changeset(mg, %{name: goods["name"],
-                                                description: goods["description"],
-                                                pic: goods["pic"],
-                                                price: goods["price"],
-                                                postage: goods["postage"],
-                                                stock: goods["stock"],
-                                                is_virtual: goods["is_virtual"],
-                                                virtual_param: goods["virtual_param"],
-                                                begin_time: goods["begin_time"],
-                                                end_time: goods["end_time"]})
-            changed |> Repo.update!
-            CachedPMallGoods.refresh(goods["id"])
+                                                  description: goods["description"],
+                                                  pic: goods["pic"],
+                                                  price: goods["price"],
+                                                  postage: goods["postage"],
+                                                  stock: goods["stock"],
+                                                  is_virtual: goods["is_virtual"],
+                                                  begin_time: goods["begin_time"],
+                                                  end_time: goods["end_time"]})
+            new_goods = changed |> Repo.update!
+            CachedPMallGoods.refresh(new_goods)
             {:update_ok, goods, changed.changes}
         end
     end

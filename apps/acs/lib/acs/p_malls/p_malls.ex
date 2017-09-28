@@ -921,7 +921,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_redeem_codes(app_id, page, records_per_page, code_type) do
+  def list_pmall_cdkeys(app_id, page, records_per_page, code_type) do
     queryTotal = from g in Cdkey, select: count(1), where: g.app_id == ^app_id
     queryTotal = if String.length(code_type) > 0 do
       queryTotal |> where([g], g.code_type == ^code_type)

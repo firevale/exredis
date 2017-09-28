@@ -7,6 +7,9 @@
       <tab-pane icon="fa fa-support" :label="$t('admin.point.draw.log')">
         <lucky-draw-log></lucky-draw-log>
       </tab-pane>
+      <tab-pane icon="fa fa-clone" :label="$t('admin.point.draw.backImage')">
+        <json-info-editor group="luckyDrawPic" :hasPic="true" :picWidth="990" :picHeight="982"></json-info-editor>
+      </tab-pane>
     </tabs>
   </div>
 </template>
@@ -22,6 +25,7 @@ import {
 
 import luckyDraw from 'admin/components/pmall/luckyDraw'
 import luckyDrawLog from 'admin/components/pmall/luckyDrawLog'
+import jsonInfoEditor from 'admin/components/setting/jsonInfoEditor'
 
 export default {
   components: {
@@ -29,6 +33,7 @@ export default {
     TabPane,
     luckyDraw,
     luckyDrawLog,
+    jsonInfoEditor,
   },
 }
 </script>

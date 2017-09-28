@@ -2,10 +2,8 @@ defmodule Acs.Search do
   use     Utils.LogAlias
   require Elasticsearch
 
-  alias  Acs.Repo
   import Ecto.Query, warn: false
 
-  alias Acs.Apps.AppOrder
   alias Acs.Cache.CachedUser
   alias Acs.Cache.CachedForum
   

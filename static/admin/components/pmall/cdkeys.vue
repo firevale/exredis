@@ -72,7 +72,7 @@ import {
 import Pagination from 'admin/components/Pagination'
 import Tooltip from 'vue-bulma-tooltip'
 
-import codeDialog from 'admin/components/dialog/point/redeemCode'
+import codeDialog from 'admin/components/dialog/point/cdkey'
 const codeDialogComponent = Vue.extend(codeDialog)
 
 const openCodeDialog = (propsData = {
@@ -104,7 +104,7 @@ export default {
   methods: {
     getCodes: async function(page, recordsPerPage) {
       this.processing = true
-      let result = await this.$acs.listPMallRedeemCodes({
+      let result = await this.$acs.listPMallCdkeys({
         code_type: this.codeType,
         page: page,
         records_per_page: recordsPerPage

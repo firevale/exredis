@@ -99,9 +99,9 @@ export default new Router({
           path: 'myLoginCodes',
           component: require('../views/app/loginCodes/myCodes')
         }, {
-          name: 'RedeemCodes',
-          path: 'redeemCodes',
-          component: require('../views/app/pointMall/redeemCodes')
+          name: 'Cdkeys',
+          path: 'cdkeys',
+          component: require('../views/app/pointMall/cdkeys')
         }, {
           name: 'WcpParams',
           path: 'wcpParams',

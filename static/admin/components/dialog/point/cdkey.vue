@@ -54,7 +54,6 @@ export default {
       type: Boolean,
       default: true
     },
-    question: Object,
     callback: Function,
   },
 

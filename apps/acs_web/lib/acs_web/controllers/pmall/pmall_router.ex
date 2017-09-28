@@ -4,10 +4,8 @@ defmodule AcsWeb.PMallRouter do
   scope "/", AcsWeb do
     pipe_through :pmall
 
-    post   "/list_index", PMallController, :list_index
     post   "/list_goods", PMallController, :list_goods
     post   "/get_goods_detail", PMallController, :get_goods_detail
-    post   "/get_user_info", PMallController, :get_user_info
     post   "/list_my_points", PMallController, :list_my_points
     post   "/list_my_exchanges", PMallController, :list_my_exchanges
     post   "/exchange", PMallController, :exchange   
@@ -22,7 +20,7 @@ defmodule AcsWeb.PMallRouter do
     post   "/answer_question", PMallController, :answer_question
     post   "/luck_draw", PMallController, :luck_draw
     post   "/update_draw_address", PMallController, :update_draw_address
-    get   "/test", PMallController, :test
+    get    "/test", PMallController, :test
   end
 
 end

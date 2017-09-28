@@ -39,10 +39,6 @@ defmodule Acs.PMalls do
     CachedPMallGoods.get(goods_id)
   end
 
-<<<<<<< HEAD
-  def list_pmall_goods(app_id) do
-    CachedPMallGoods.list(app_id) 
-=======
   def list_pmall_goods(app_id, page, records_per_page, keyword) do
     {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, false)
 
@@ -69,7 +65,6 @@ defmodule Acs.PMalls do
       goodses = Repo.all(query)
       {:ok, goodses, total_page}
     end
->>>>>>> 403055bfc39b79d4dc2bec7501f4ebe123c2e115
   end
 
   def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
@@ -133,18 +128,6 @@ defmodule Acs.PMalls do
           %PMallGoods{} = mg ->
             goods = Map.put(goods, "user_id", user_id)
             changed = PMallGoods.changeset(mg, %{name: goods["name"],
-<<<<<<< HEAD
-                                                  description: goods["description"],
-                                                  pic: goods["pic"],
-                                                  price: goods["price"],
-                                                  postage: goods["postage"],
-                                                  stock: goods["stock"],
-                                                  is_virtual: goods["is_virtual"],
-                                                  begin_time: goods["begin_time"],
-                                                  end_time: goods["end_time"]})
-            new_goods = changed |> Repo.update!
-            CachedPMallGoods.refresh(new_goods)
-=======
                                                 description: goods["description"],
                                                 pic: goods["pic"],
                                                 price: goods["price"],
@@ -156,7 +139,6 @@ defmodule Acs.PMalls do
                                                 end_time: goods["end_time"]})
             changed |> Repo.update!
             CachedPMallGoods.refresh(goods["id"])
->>>>>>> 403055bfc39b79d4dc2bec7501f4ebe123c2e115
             {:update_ok, goods, changed.changes}
         end
     end

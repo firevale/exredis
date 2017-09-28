@@ -46,6 +46,13 @@ input::-webkit-inner-spin-button {
   }
 }
 
+@media only screen and (min-width: 376px) {
+  #app {
+    max-width: 375px;
+    margin: 0 auto;
+  }
+}
+
 .root-container {
   width: 100%;
   height: 100%;

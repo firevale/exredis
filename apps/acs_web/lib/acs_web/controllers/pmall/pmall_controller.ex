@@ -11,21 +11,6 @@ defmodule AcsWeb.PMallController do
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
 
-  # list_pmall_goods
-  def list_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn,
-                                      %{"page" => page,
-                                        "records_per_page" => records_per_page}) do
-    {total_page, goodses} =
-      case PMalls.list_pmall_goods(app_id, page, records_per_page, "") do
-        {:ok, goodses, total_page} ->
-          {total_page, goodses}
-        _ ->
-          {0, []}
-      end
-
-    conn |> json(%{success: true, total: total_page, goodses: goodses})
-  end
-
   def get_goods_detail(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, %{"goods_id" =>goods_id})do
     PMalls.add_goods_click(goods_id, 1)
     goods = PMalls.get_pmall_goods_detail(goods_id)
@@ -145,8 +130,8 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def get_default_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-    case Wcp.get_app_wcs_user(wcs_user_id) do
+  def get_default_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
+    case Wcs.get_wcs_user(wcs_user_id) do
       nil ->
         conn |> json(%{success: false})
 
@@ -154,6 +139,7 @@ defmodule AcsWeb.PMallController do
         case Accounts.get_default_address(wcs_user.user_id) do
           nil ->
             conn |> json(%{success: false})
+            
           {:ok, address} ->
             conn |> json(%{success: true, address: address})
         end
@@ -214,7 +200,7 @@ defmodule AcsWeb.PMallController do
   end
 
   def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = params) do
-    with  %WcsUser{} <-  Wcs.get_wcs_user(wcs_user_id),
+    with %WcsUser{} <- Wcs.get_wcs_user(wcs_user_id),
       {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
     do
       conn |> json(%{success: true, result_code: "ok"})

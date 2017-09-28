@@ -480,9 +480,9 @@ defmodule Acs.PMalls do
     end
   end
 
-  def subscribe_point(app_id, wcs_user_id, mobile) do
+  def subscribe_point(app_id, wcs_user_id) do
     cache_key= "pmall:subscribe:#{app_id}"
-    val = "#{mobile}"
+    val = "#{wcs_user_id}"
     result = Exredis.sadd(cache_key, val)
     case  result do
       0 ->

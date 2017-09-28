@@ -1,17 +1,12 @@
 defmodule AcsWeb.PMallController do
   use AcsWeb, :controller
   require Exredis
-  
+
   alias Acs.Wcs
   alias Acs.Wcs.WcsUser
 
   alias Acs.Accounts
   alias Acs.PMallsPoint
-
-  alias   Utils.Httpc
-  require Utils
-  alias   Utils.JSON
-  alias   Utils.Crypto
 
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
@@ -66,7 +61,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, 
+  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"page" => page,
       "records_per_page" => records_per_page}) do
     result = PMalls.list_my_points(app_id, wcs_user_id, page, records_per_page)
@@ -78,7 +73,7 @@ defmodule AcsWeb.PMallController do
      end
   end
 
-  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, 
+  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"page" => page,
       "records_per_page" => records_per_page}) do
     result = PMalls.list_my_exchanges(app_id, wcs_user_id, page, records_per_page)
@@ -111,16 +106,16 @@ defmodule AcsWeb.PMallController do
 
   end
 
-  def update_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, 
-    %{"order_id" => order_id,  
-      "user_address" => 
+  def update_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
+    %{"order_id" => order_id,
+      "user_address" =>
         %{"id" => id,
           "name" => name,
-          "mobile" => mobile, 
-          "area" => area, 
-          "address" => address, 
+          "mobile" => mobile,
+          "area" => area,
+          "address" => address,
           "area_code" => area_code} = user_address}) do
-   
+
     result = PMalls.update_order_address( wcs_user_id, order_id, user_address)
     PMalls.save_address(wcs_user_id, user_address)
     case result do
@@ -136,13 +131,13 @@ defmodule AcsWeb.PMallController do
     %{"pic" => pic} = pic_raw
     {total, sign_users} = PMalls.get_sign_users(app_id)
     conn |> json(%{
-      success: true, 
-      signed: signed, 
-      sign_times: sign_times, 
-      pic: pic, 
+      success: true,
+      signed: signed,
+      sign_times: sign_times,
+      pic: pic,
       terms: terms,
-      awards: awards, 
-      sign_total: total, 
+      awards: awards,
+      sign_total: total,
       sign_users: sign_users})
   end
 
@@ -160,13 +155,13 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def bind_mobile(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, 
+  def bind_mobile(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"mobile" => mobile, "verify_code" => verify_code}) do
     case get_session(conn, :bind_mobile_verify_code) do
       ^verify_code ->
         case Acs.Wcs.bind_mobile(wcs_user_id, mobile) do
           :ok ->
-            {:ok, add_point, total_point} = PMallsPoint.add_point("point_bind_mobile", app_id, wcs_user_id) 
+            {:ok, add_point, total_point} = PMallsPoint.add_point("point_bind_mobile", app_id, wcs_user_id)
             conn |> delete_session(:bind_mobile_verify_code)
                  |> json(%{
                    success: true,
@@ -228,17 +223,17 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, 
+  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{
-      "order_id" => order_id,  
-      "user_address" => 
+      "order_id" => order_id,
+      "user_address" =>
         %{"id" => id,
           "name" => name,
-          "mobile" => mobile, 
-          "area" => area, 
-          "address" => address, 
+          "mobile" => mobile,
+          "area" => area,
+          "address" => address,
           "area_code" => area_code} = user_address}) do
-   
+
     result = PMalls.update_draw_address( wcs_user_id, order_id, user_address)
     PMalls.save_address(wcs_user_id, user_address)
     case result do
@@ -250,13 +245,9 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def point_subscribe(conn,  params) do
-    app_id ="3E4125B15C4FE2AB3BA00CB1DC1A0EE5"
-    wcs_user_id = "1"
-    mobile = "131"
-    with  app_id && wcs_user_id && mobile,
-      %WcsUser{} <-  Wcs.get_wcs_user(wcs_user_id),
-      {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id,mobile)
+  def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = params) do
+    with  %WcsUser{} <-  Wcs.get_wcs_user(wcs_user_id),
+      {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
     do
       conn |> json(%{success: true, result_code: "ok"})
     else
@@ -268,29 +259,5 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: true, result_code: "user_not_found"})
     end
   end
-
-  def test(conn, _params) do
-    try do 
-      response = Httpc.post_form("http://minzz.firevale.com/api/pmall/point_subscribe", 
-        %{"app_id" => "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", "wcs_user_id" => "1" , "mobile" => "13173700324"})
-
-      d "response:  #{inspect response}"
-      if Httpc.success?(response) do 
-        case JSON.decode(response.body) do 
-          %{success: true, result_code: result_code} -> 
-            conn |> json(%{success: true, result_code: result_code})
-          %{success: false, result_code: result_code} -> 
-            Logger.error "/pmall/point_subscribe failed, result_code: #{result_code}"
-            conn |> json(%{success: false, result_code: result_code})
-        end 
-      else
-        Logger.error "/pmall/point_subscribe request failed"
-        conn |> json(%{success: false, result_code: "request_failed"})
-      end
-    catch
-      :error, e ->
-        Logger.error "/pmall/point_subscribe exception: #{inspect e}"
-        conn |> json(%{success: false, exception: e})
-    end
-  end
+  
 end

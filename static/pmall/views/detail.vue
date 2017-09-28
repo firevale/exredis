@@ -21,7 +21,7 @@
       <h1 class="is-size-medium">详细规则：</h1>
       <quill-content v-if="goods.description" class="quill-editor ql-snow post-content"  :content="goods.description" ></quill-content>
     </div>
-    <div v-show="goods.id>0" class="operate">
+    <div v-show="goods.id" class="operate">
       <a v-if="!goods.active || goods.stock<=0" class="button btn-goods-down"></a>
       <a v-else-if="exchanged" class="button btn-conversion-limit"></a>
       <a v-else-if="points < goods.price" class="button btn-point-less"></a>
@@ -41,7 +41,7 @@ export default {
     return {
       exchanged: false,
       goods: {
-        id: 0,
+        id: undefined,
         name: '',
         price: 0,
         original_price: 0,

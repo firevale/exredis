@@ -1,7 +1,10 @@
 defmodule AcsWeb.PMallController do
   use AcsWeb, :controller
   require Exredis
-  alias Acs.Wcp
+  
+  alias Acs.Wcs
+  alias Acs.Wcs.WcsUser
+
   alias Acs.Accounts
   alias Acs.PMallsPoint
 
@@ -48,8 +51,8 @@ defmodule AcsWeb.PMallController do
 
   def get_user_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
     point = PMalls.get_user_point(app_id, wcs_user_id)
-    case Wcp.get_app_wcp_user(wcs_user_id) do
-      %AppWcpUser{} = user ->
+    case Wcs.get_wcs_user(wcs_user_id) do
+      %WcsUser{} = user ->
         wcp_user = Map.take(user, [:id, :nickname, :avatar_url, :app_id])
         user_info = Map.merge(wcp_user, %{points: point, has_mobile: false })
         conn |> json(%{success: true, wcp_user: user_info})

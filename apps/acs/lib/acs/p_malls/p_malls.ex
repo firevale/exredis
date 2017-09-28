@@ -942,7 +942,7 @@ defmodule Acs.PMalls do
     total_page = round(Float.ceil(Repo.one!(queryTotal) / records_per_page))
 
     query = from g in Cdkey,
-              join: u in assoc(g, :owner),
+              left_join: u in assoc(g, :owner),
               where: g.app_id == ^app_id,
               order_by: [desc: g.id],
               limit: ^records_per_page,
@@ -958,6 +958,15 @@ defmodule Acs.PMalls do
     codes = Repo.all(query)
     code_types = Acs.Admin.get_settings_by_group(app_id, "cdkeyType")
     {:ok, codes, code_types, total_page}
+  end
+
+  def import_pmall_cdkeys(app_id, code_type, codes) do
+    keys = String.split(codes, ["\n", "\r", "\r\n"], trim: true)
+    Enum.each(keys, fn(x) ->
+      key = %{code: x, code_type: code_type, app_id: app_id}
+      {:ok, _cdkey} = Cdkey.changeset(%Cdkey{}, key) |> Repo.insert()
+    end)
+    :ok
   end
 
 end

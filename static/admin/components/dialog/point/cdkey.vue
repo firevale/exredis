@@ -2,34 +2,18 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.titles.editQuestion') }}</h5>
+        <h5 class="title is-5">{{ $t('admin.point.cdkey.add') }}</h5>
       </div>
       <form name="section" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.point.question.question') }}: </label>
-        <p class="control">
-          <textarea class="textarea" style="height:120px" v-model.trim="question.question"></textarea>
-        </p>
-        <div class="field">
-          <p class="control">
-            <label class="label"> A: </label>
-            <label class="radio">
-              <input type="radio" :value="question.a1" v-model.trim="question.correct">
-            </label>
-            <label class="radio">
-              <input class="input" style="width:400px" type="text" v-model.trim="question.a1">
-            </label>
-          </p>
+        <label class="label"> {{ $t('admin.point.cdkey.code_type') }}: </label>
+        <div class="select">
+          <select v-model.trim="codeType">
+            <option v-for="tp in codeTypes" :value="tp.value">{{ tp.name }}</option>
+          </select>
         </div>
-        <div class="field">
-          <p class="control">
-            <label class="label"> B: </label>
-            <label class="radio">
-              <input type="radio" :value="question.a2" v-model.trim="question.correct">
-            </label>
-            <label class="radio">
-              <input class="input" style="width:400px" type="text" v-model.trim="question.a2">
-            </label>
-          </p>
+        <div class="column">
+          <label class="label"> {{ $t('admin.point.cdkey.codeInfo') }}: </label>
+          <textarea class="textarea" style="height:400px" v-model.trim="codes"></textarea>
         </div>
         <div class="has-text-centered" style="margin-top: 15px">
           <a class="button is-primary" :class="{'is-loading': processing}" @click.prevent="handleSubmit">{{ $t('admin.submit') }}</a>
@@ -54,11 +38,14 @@ export default {
       type: Boolean,
       default: true
     },
+    codeTypes: Array,
     callback: Function,
   },
 
   data() {
     return {
+      codeType: '',
+      codes: '',
       processing: false,
       groups: ['basicInfo']
     }
@@ -68,11 +55,14 @@ export default {
     handleSubmit: async function() {
       this.processing = true
 
-      let result = await this.$acs.updatePmallQuestion(this.question, this.$t(
-        'admin.point.question.updated'))
+      let result = await this.$acs.importPmallCdkeys({
+        code_type: this.codeType,
+        codes: this.codes
+      }, this.$t(
+        'admin.point.cdkey.addSuccess'))
       if (result.success) {
         if (this.callback) {
-          this.callback(result.question)
+          this.callback(result)
         }
         this.visible = false
       }

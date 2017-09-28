@@ -9,10 +9,10 @@
           </a>
           </div>
           <div class="column" style="text-align:right">
-            <div class="select" v-if="codeTypes">
-              <select v-model.trim="codeType">
+            <div class="select">
+              <select v-model.trim="codeType" @change="changeType">
                 <option value="">所有类型</option>
-                <option v-for="ty in codeTypes" :value="tp.value">{{ tp.name }}</option>
+                <option v-for="tp in codeTypes" :value="tp.value">{{ tp.name }}</option>
               </select>
             </div>
           </div>
@@ -125,15 +125,23 @@ export default {
       this.processing = false
     },
 
+    changeType: function() {
+      this.getCodes(this.page, this.recordsPerPage)
+    },
+
     onPageChange: function(page) {
       this.getCodes(page, this.recordsPerPage)
     },
 
     importCodes: function() {
       openCodeDialog({
+        codeTypes: this.codeTypes,
         visible: true,
         callback: result => {
-          this.codes.unshift(result.codes)
+          if(result.success) {
+            this.page = 1
+            this.getCodes(this.page, this.recordsPerPage)
+          }
         },
       })
     },

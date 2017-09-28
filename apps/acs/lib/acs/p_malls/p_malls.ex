@@ -480,6 +480,18 @@ defmodule Acs.PMalls do
     end
   end
 
+  def subscribe_point(app_id, wcs_user_id) do
+    cache_key= "pmall:subscribe:#{app_id}"
+    val = "#{wcs_user_id}"
+    result = Exredis.sadd(cache_key, val)
+    case  result do
+      0 ->
+        {:exist}
+      1 -> 
+        {:ok, add_point, total_point} = PMallsPoint.add_point("point_subscribe", app_id, wcs_user_id)
+    end
+  end
+
   def admin_add_pmall_point(wcs_user_id, app_id, log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("wcs_user_id", wcs_user_id) |> Map.put("log_type", "admin_op")
     add_point(log)

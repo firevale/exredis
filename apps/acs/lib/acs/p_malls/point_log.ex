@@ -11,7 +11,7 @@ defmodule Acs.PMalls.PointLog do
     field :memo, :string   #备注
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :wcp_user, Acs.Wcp.AppWcpUser
+    belongs_to :wcs_user, Acs.Wcs.WcsUser
 
     timestamps()
   end
@@ -21,7 +21,7 @@ defmodule Acs.PMalls.PointLog do
   @doc false
   def changeset(%PointLog{} = point_log, attrs) do
     point_log
-    |> cast(attrs, [:log_type, :point, :memo, :app_id, :wcp_user_id])
+    |> cast(attrs, [:log_type, :point, :memo, :app_id, :wcs_user_id])
     |> validate_required([:log_type, :point, :app_id])
   end
 end

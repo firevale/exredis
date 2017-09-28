@@ -132,3 +132,13 @@ Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "xiaobin@fir
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "zhongxiaobin@firevale.com", user_id: 100002, admin_level: 1}) |> Acs.Repo.insert
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "zhumingzhen@firevale.com", user_id: 100003, admin_level: 1}) |> Acs.Repo.insert
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "xiebing@firevale.com", user_id: 100004, admin_level: 1}) |> Acs.Repo.insert
+
+Acs.Wcs.create_wcs_user!(%{
+  openid: "oEYf7v2jOPd529gC1KkXylKPGPw0",
+  nickname: "晓滨",
+  sex: 1,
+  city: "福州",
+  country: "中国",
+})
+
+Exredis.flushdb()

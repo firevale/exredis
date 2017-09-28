@@ -10,7 +10,7 @@ defmodule Acs.PMalls.Cdkey do
     field :used_at, :utc_datetime
 
     belongs_to :app, Acs.Apps.App, type: :string
-    belongs_to :owner, Acs.Accounts.User
+    belongs_to :owner, Acs.Wcs.WcsUser
 
     timestamps()
   end

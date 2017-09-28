@@ -137,7 +137,7 @@ defmodule Acs.Admin do
     end
   end
 
-  def get_settings_by_group(nil, group), do: nil
+  def get_settings_by_group(nil, _group), do: nil
   def get_settings_by_group(_ , nil), do: nil
   def get_settings_by_group(app_id, group) do
     query = from s in Setting,

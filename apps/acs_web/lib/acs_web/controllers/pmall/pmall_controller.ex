@@ -114,14 +114,10 @@ defmodule AcsWeb.PMallController do
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do
-    wcs_user = Wcp.get_app_wcs_user(wcs_user_id)
     result = PMalls.sign(app_id, wcs_user_id)
-
     case result do
       {:ok, sign_info} ->
-        PMalls.add_sign_user(app_id, wcs_user.openid)
         conn |> json(Map.merge(%{success: true}, sign_info))
-
       {:error, %{i18n_message: i18n_message}} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
@@ -231,5 +227,4 @@ defmodule AcsWeb.PMallController do
         conn |> json(%{success: true, result_code: "user_not_found"})
     end
   end
-  
 end

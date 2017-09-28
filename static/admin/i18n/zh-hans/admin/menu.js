@@ -42,7 +42,6 @@ export default {
   pointDayQuestion: '每日问答',
   pointRoulette: '幸运抽奖',
   cdkey: 'CDKEY',
-  cdkeyType: '兑换码类型',
-  cdkeyManage: '兑换码管理',
-  cdkeyLog: '兑换记录',
+  cdkeyType: 'CDKEY类型',
+  cdkeyManage: 'CDKEY管理',
 }

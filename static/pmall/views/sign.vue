@@ -1,9 +1,8 @@
 <template>
-  <div class="sign-page">
-    <div class="container is-flex is-column">
-      <img class="container-background" :src="pic | imageStaticUrl">
+  <div class="sign-page" :style="{'background-image': headImage}">
+    <div class="container is-flex is-column no-wrap">
       <div class="calender">
-        <header class="head-image">
+        <header class="head-image" :style="{'background-image': headImage}">
         </header>
         <div class="body is-flex">
           <div class="column is-3 has-text-centered">
@@ -38,7 +37,6 @@
         <div class="awards is-flex">
           <div v-for="award in awards" class="award-box column is-2">
             <div class="award" :class="{'is-grey': award.got}" @click="takeAward(award)">
-              <img :src="award.pic | imageStaticUrl">
             </div>
           </div>
         </div>
@@ -66,13 +64,14 @@ import {
 import 'common/js/date'
 import chineseLunar from "chinese-lunar"
 import Toast from 'common/components/toast'
+import * as filter from 'common/js/filters'
 export default {
   data() {
     return {
       signed: undefined,
       sign_times: 0,
       sign_total: 0,
-      pic: '',
+      pic: undefined,
       terms: {
         should: '',
         bogey: '',
@@ -85,6 +84,11 @@ export default {
     ...mapGetters([
       'wcp_user',
     ]),
+    headImage() {
+      if (this.pic) {
+        return `url(${this.pic})`
+      }
+    },
     solar() {
       let current = new Date()
       var dateString = current.Format('yyyy年MM月')
@@ -115,8 +119,8 @@ export default {
       if (result.success) {
         this.signed = result.signed
         this.sign_times = result.sign_times
-        this.pic = result.pic
-        this.terms = result.terms
+        this.pic = filter.imageStaticUrl(result.pic),
+          this.terms = result.terms
         this.sign_total = result.sign_total
         this.sign_users = result.sign_users
         this.awards = result.awards.sort((a, b) => parseInt(a.days) < parseInt(b.days) ? -1 : 1)

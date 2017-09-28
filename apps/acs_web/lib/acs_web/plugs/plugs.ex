@@ -509,8 +509,12 @@ defmodule AcsWeb.Plugs do
       case get_session(conn, :wcs_user_id) do 
         nil ->
           conn 
-        wcp_user_id ->
-          conn |> put_private(:wcs_user_id, wcp_user_id)
+        wcs_user_id ->
+          case Acs.Wcs.get_wcs_user(wcs_user_id) do 
+            nil -> conn
+            _ ->
+              conn |> put_private(:wcs_user_id, wcs_user_id)
+          end
       end
     else
       _ ->

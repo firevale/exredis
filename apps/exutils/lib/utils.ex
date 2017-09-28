@@ -78,5 +78,10 @@ defmodule Utils do
     defp hex_(unquote(i)), do: unquote(h)
   end
 
+  def remove_url_scheme(nil), do: nil
+  def remove_url_scheme("http:" <> v), do: v
+  def remove_url_scheme("https:" <> v), do: v
+  def remove_url_scheme(v), do: v
+
 end
 

@@ -366,10 +366,10 @@ defmodule Acs.PMalls do
 
   end
 
-  def add_sign_user(app_id, open_id) do
+  def add_sign_user(app_id, openid) do
     sign_key_users = _sign_cache_key_users(app_id)
     score = DateTime.utc_now() |> DateTime.to_unix
-    Exredis.zadd(sign_key_users, score, open_id)
+    Exredis.zadd(sign_key_users, score, openid)
     Exredis.expire(sign_key_users, 172800)
   end
 
@@ -378,8 +378,8 @@ defmodule Acs.PMalls do
     total = Exredis.zcard(sign_key_users)
     open_ids = Exredis.zrange(sign_key_users, 0, 20)
     wcp_users =
-      Enum.map(open_ids, fn open_id ->
-        wcs_user = Wcs.get_wcs_user(openid: open_id)
+      Enum.map(open_ids, fn openid ->
+        wcs_user = Wcs.get_wcs_user(openid: openid)
         Map.take(wcs_user, [:id, :nickname, :avatar_url])
       end)
     {total, wcp_users}

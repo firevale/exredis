@@ -28,5 +28,6 @@ defmodule Acs.Wcs.WcsUser do
     |> validate_required([:openid])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:unionid)
+    |> unique_constraint(:openid)
   end
 end

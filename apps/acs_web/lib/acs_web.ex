@@ -87,6 +87,7 @@ defmodule AcsWeb do
       alias Acs.Admin.Setting
       alias Acs.Admin.OpLog
       alias Acs.AdminAuth
+      alias Acs.Wcs.WcsUser
 
       alias Acs.Auth
       alias Acs.Auth.AccessToken

@@ -5,57 +5,44 @@ defmodule Acs.Cache.CachedPMallUserPoints do
   alias   Acs.Repo
   alias   Acs.PMalls.UserPoints
 
-  # def get(wcs_user_id) do
-  #   Excache.get!(key(wcs_user_id), fallback: fn(redis_key) ->    
-  #     case Exredis.get(redis_key) do
-  #       nil -> 
-  #         case refresh(wcs_user_id) do 
-  #           nil -> {:ignore, nil}
-  #           wcs_user -> {:commit, wcs_user}
-  #         end
-  #       raw ->
-  #         {:commit, raw |> WcsUser.from_redis}
-  #     end
-  #   end)
-  # end
+  def get(app_id, wcs_user_id) do
+    Excache.get!(key(app_id, wcs_user_id), fallback: fn(redis_key) ->    
+      case Exredis.get(redis_key) do
+        nil -> 
+          case refresh(app_id, wcs_user_id) do 
+            nil -> {:ignore, nil}
+            user_points -> {:commit, user_points}
+          end
 
-  # def get_by_openid(openid) when is_bitstring(openid) do
-  #   Excache.get!(openid_key(openid), fallback: fn(redis_key) ->    
-  #     case Exredis.get(redis_key) do
-  #       nil -> 
-  #         {:ignore, nil} 
-          
-  #       wcs_user_id ->
-  #         {:commit, get(wcs_user_id)}
-  #     end
-  #   end)
-  # end
+        raw ->
+          {:commit, UserPoints.from_redis(raw)}
+      end
+    end)
+  end
 
-  # def refresh(%WcsUser{id: id, openid: openid} = wcs_user) do 
-  #   Exredis.set(key(id), WcsUser.to_redis(wcs_user))
-  #   Exredis.set(openid_key(openid), id)
+  def refresh(%UserPoints{app_id: app_id, wcs_user_id: wcs_user_id} = user_points) do 
+    Exredis.setex(key(app_id, wcs_user_id), 7200, UserPoints.to_redis(user_points))
+    Excache.del(key(app_id, wcs_user_id))
+    user_points
+  end
 
-  #   Excache.del(key(id))
-  #   Excache.del(openid_key(openid))
+  def refresh(app_id, wcs_user_id) do 
+    case Repo.get_by(UserPoints, app_id: app_id, wcs_user_id: wcs_user_id) do 
+      %UserPoints{} = user_points ->
+        refresh(user_points)
 
-  #   wcs_user
-  # end
+      nil -> 
+        user_points = UserPoints.changeset(%UserPoints{}, %{
+          app_id: app_id,
+          wcs_user_id: wcs_user_id,
+          point: 0
+        }) |> Repo.insert!
+        refresh(user_points)
+    end
+  end
 
-  # def refresh(wcs_user_id) do 
-  #   Excache.del(key(wcs_user_id))
-  #   case Repo.get(WcsUser, wcs_user_id) do 
-  #     %WcsUser{} = wcs_user ->
-  #       refresh(wcs_user)
-  #     _ -> 
-  #       nil
-  #   end
-  # end
+  defp key(app_id, wcs_user_id) do 
+    "acs.wcs_user_points.#{app_id}.#{wcs_user_id}"
+  end
 
-  # defp key(id) do 
-  #   "acs.wcs_user.#{id}"
-  # end
-
-  # defp openid_key(openid) do 
-  #   "acs.wcs_user.#{openid}"
-  # end
 end

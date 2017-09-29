@@ -1,7 +1,7 @@
 defmodule Acs.PMalls.UserPoints do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Acs.PMalls.PointLog
+  alias Acs.PMalls.UserPoints
 
   @derive {Poison.Encoder, except: [:app, :wcs_user, :__meta__]}
 
@@ -17,8 +17,8 @@ defmodule Acs.PMalls.UserPoints do
   use Utils.Redisable
 
   @doc false
-  def changeset(%PointLog{} = point_log, attrs) do
-    point_log
+  def changeset(%UserPoints{} = user_points, attrs) do
+    user_points
     |> cast(attrs, [:point, :app_id, :wcs_user_id])
     |> validate_required([:point, :app_id, :wcs_user_id])
     |> unique_constraint(:wcs_user_id, name: :pmall_user_points_app_id_wcs_user_id_index)

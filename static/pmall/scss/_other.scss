@@ -200,23 +200,29 @@ span {
       input {
         height: 3rem;
         line-height: 3rem;
-        padding-left: .1rem;
+        padding-left: .2rem;
         border: 0;
+        outline: none;
+        outline: none;
+        text-decoration: none;
         -webkit-appearance: none;
         &.is-code {
           width: 40vw;
           margin-right: .1rem;
         }
         &.is-mobile {
-          width: 76vw;
+          width: 74vw;
         }
       }
       .btn-valid-code {
-        width: 34.5vw;
+        width: 32vw;
         height: 3.3rem;
         color: $red;
         background-color: $text;
         border: 1px solid $red;
+        &.disabled {
+          background-color: rgba($grey-darker, 0.8);
+        }
       }
     }
   }

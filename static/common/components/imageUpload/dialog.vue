@@ -9,27 +9,27 @@
           </file-upload>
         </article>
       </div>
-      <div v-if="file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
+      <div v-if="upload && file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
           <label class="label">{{ $t('upload.filename' )}}:</label>
         </div>
         <div class="column has-text-left is-9">
           <label class="field-label">{{ file.name }}</label>
         </div>
-        <div class="column has-text-right is-2" style="margin-right: 0.5rem" v-if="blob">
+        <div class="column has-text-right is-2" style="margin-right: 0.5rem">
           <label class="label">{{ $t('upload.filesize' )}}:</label>
         </div>
-        <div class="column has-text-left is-9" v-if="blob">
-          <label class="field-label">{{ blob.size | humanReadableSize }}</label>
+        <div class="column has-text-left is-9" v-if="file">
+          <label class="field-label">{{ file.size | humanReadableSize }}</label>
         </div>
-        <template v-if="active">
+        <template v-if="file.active">
           <div class="column has-text-right is-2" style="margin-right: 0.5rem">
             <label class="label">{{ $t('upload.progress' )}}:</label>
           </div>
           <div class="column has-text-left is-9">
             <div class="control" style="padding-top: 0.375em">
-              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="progress || file.progress" max="100">
-                {{ progress || file.progress }}%
+              <progress class="progress is-small is-info" style="margin-top: 0.375em" :value="file.progress" max="100">
+                {{ file.progress }}%
               </progress>
             </div>
           </div>
@@ -37,7 +37,8 @@
       </div>
       <p class="is-danger">{{this.errorMessage}}</p>
       <div class="tile is-child is-full has-text-centered">
-        <a class="button is-info" :class="{'is-disabled': !file, 'is-loading': active}" @click="uploadBlob" :disabled="!file">
+        <a class="button is-info" :class="{'is-disabled': !file || file.success || file.active, 
+          'is-loading': upload && upload.active}" @click="upload.active = true" :disabled="!file || file.success || file.active">
           <span class="icon image-icon icon-upload"></span>
           <span>{{ $t('upload.title') }}</span>
         </a>
@@ -129,16 +130,18 @@ export default {
     return {
       file: undefined,
       upload: undefined,
-      active: false,
-      progress: undefined,
-      blob: undefined,
       errorMessage: '',
       uploadEvents: {
         add: file => {
           this.file = undefined
           this.upload.$el.style.backgroundImage = ''
 
-          if (!checkFileType('image/png, image/jpeg, image/jpg', file.file.type)) {
+          if (file.size > this.maxFileSize) {
+            this.errorMessage = this.$t('upload.fileIsTooLarge', {
+              maxFileSize: humanReadableSize('' + this.maxFileSize)
+            })
+            this.upload.clear()
+          } else if (!checkFileType('image/png, image/jpeg, image/jpg', file.file.type)) {
             this.errorMessage = this.$t('upload.invalidFileType', {
               fileType: file.file.type
             })
@@ -179,55 +182,8 @@ export default {
                   }
                 }
 
-                let destWidth = this.width || img.width
-                let destHeight = this.height || img.height
-
-                if (this.maxLength) {
-                  if (img.width > this.maxLength && img.width > img.height) {
-                    destHeight = Math.round((this.maxLength / img.width) * img.height)
-                    destWidth = this.maxLength
-                  }
-                  else if (img.height > this.maxLength && img.height > img.width) {
-                    destWidth = Math.round((this.maxLength / img.height) * img.width)
-                    destHeight = this.maxLength
-                  }
-                }
-
-                if (file.size > this.maxFileSize && destWidth > img.width * 2 && destHeight > img.height * 2 ) {
-                  let canvas = document.createElement('canvas')
-                  canvas.width = destWidth
-                  canvas.height = destHeight
-
-                  pica.resize(img, canvas, {
-                      quality: 3,
-                      unsharpAmount: 100,
-                      unsharpRadius: 2,
-                      unsharpThreshold: 220,
-                      alpha: this.destFormat == 'image/png'
-                    })
-                    .then(result => {
-                      let imageUrl = result.toDataURL()
-                      this.upload.$el.style.backgroundImage = `url(${imageUrl})`
-                      return pica.toBlob(result, this.destFormat, this.destQuality)
-                    })
-                    .then(blob => {
-                      if (blob.size > this.maxFileSize) {
-                        this.errorMessage = this.$t('upload.fileIsTooLarge', {
-                          maxFileSize: humanReadableSize('' + this.maxFileSize)
-                        })
-                        this.upload.clear()
-                      }
-                      else {
-                        this.blob = blob
-                        this.file = file
-                      }
-                    });
-                }
-                else {
-                  this.file = file
-                  console.log('this.file', this.file)
-                  this.upload.$el.style.backgroundImage = `url(${reader.result})`
-                }
+                this.file = file
+                this.upload.$el.style.backgroundImage = `url(${reader.result})`
               }
               img.src = reader.result
             }
@@ -251,45 +207,6 @@ export default {
             }
           })
         }
-      }
-    }
-  },
-
-  methods: {
-    uploadBlob: function() {
-      if (this.blob) {
-        this.active = true
-        this.progress = 0
-        let fd = new FormData()
-        Object.keys(this.data).forEach(key => {
-          fd.append(key, this.data[key])
-        })
-        fd.append('file', this.blob)
-        axios.post(this.postAction, fd, {
-          onUploadProgress: e => {
-            if (e.lengthComputable) {
-              this.progress = Math.abs(e.loaded / e.total * 100)
-            }
-          },
-        }).then(response => {
-          if (typeof this.callback == 'function') {
-            this.$nextTick(_ => {
-              this.callback(response.data)
-            })
-          }
-          this.file = undefined
-          this.active = false
-          this.visible = false
-        }).catch(e => {
-          console.error(e)
-          this.$nextTick(_ => {
-            this.callback({success: false})
-          })        
-        })
-      }
-      else {
-        this.upload.active = true
-        this.active = true
       }
     }
   },

@@ -22,6 +22,7 @@ $border-color: rgba($text, 0.1);
   background-size: 100% 100%;
   &.bg-bind-mobile {
     width: 100%;
+    min-height: virtual-m-rem(1700);
     height: virtual-m-rem(2034);
     background-image: url("~assets/pmall/1252_01.jpg");
   }

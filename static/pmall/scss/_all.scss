@@ -31,7 +31,6 @@
     &.btn-more-goods {
       width: 100%;
       height: 100%;
-      background-image: url("~assets/pmall/1242-2234-1_35.png") !important;
     }
     &.btn-pmall-more {
       margin: 0 auto;
@@ -118,11 +117,6 @@
       background-size: virtual-m-rem(21) virtual-m-rem(26), virtual-m-rem(683) virtual-m-rem(65);
       background-position: virtual-m-rem(10) virtual-m-rem(20), 0 0;
     }
-    &.bg-sign-page {
-      width: virtual-m-pixel(1242);
-      height: virtual-m-pixel(2346);
-      background-image: url("~assets/pmall/1246_01.jpg");
-    }
   }
 
   .loading {
@@ -200,12 +194,18 @@
           .item {
             margin: .1rem;
             padding: .5rem;
+            height: calc(100% - .2rem);
             background: #e1e5eb;
-            .image {
+            .thumb {
               background: $white;
               height: virtual-m-rem(266);
               border-radius: 3px;
               margin-bottom: .5rem;
+              position: relative;
+              img {
+                max-width: calc(100% - 6px);
+                max-height: calc(100% - 6px);
+              }
             }
             .item-content {
               .item-title {
@@ -269,8 +269,8 @@
           border-radius: 5px;
           margin-bottom: 1rem;
           img {
-            max-width: virtual-m-rem(1140);
-            max-width: virtual-m-rem(610);
+            max-width: virtual-m-rem(912);
+            max-height: virtual-m-rem(488);
           }
         }
         p.cost {
@@ -293,7 +293,6 @@
   }
 
   .sign-page {
-    margin-top: 2px;
     $border-color: rgba(#d40200, 0.5);
     background-image: url("~assets/pmall/1246_01.jpg");
     background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
@@ -301,7 +300,6 @@
       flex: 1;
       background-color: rgba(white, 0.8);
       .calender {
-        margin-top: 2px;
         border: 1px solid $border-color;
         .head-image {
           width: 100%;

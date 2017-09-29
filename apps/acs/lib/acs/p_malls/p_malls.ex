@@ -217,7 +217,7 @@ defmodule Acs.PMalls do
 
   def exchange_goods(app_id, wcs_user_id, goods_id, address \\ %{}) do
     Repo.transaction(fn ->
-      goods = get_pmall_goods(goods_id)
+      goods = Repo.get(PMallGoods, goods_id)
       exchange_count =  count_exchange_goods(app_id, wcs_user_id, goods_id)
       points = get_user_point(app_id, wcs_user_id)
       cond do

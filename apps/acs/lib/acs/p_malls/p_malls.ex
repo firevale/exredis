@@ -713,14 +713,6 @@ defmodule Acs.PMalls do
     end
   end
 
-  defp _get_draw_ids(app_id) do
-    query = from d in LuckyDraw,
-      where: d.app_id == ^app_id,
-      select: map(d, [:id]),
-      order_by: [desc: d.inserted_at]
-    Repo.all(query)
-  end
-
   def update_pmall_draw(draw) do
     if draw["goods_id"] && !get_pmall_goods(draw["goods_id"]) do
       :notexist
@@ -779,7 +771,7 @@ defmodule Acs.PMalls do
     Repo.transaction(fn ->
       setting  = CachedAdminSetting.get_fat(app_id, log_type)
       user_point = get_user_point(app_id, wcs_user_id)
-      draws = _get_vaild_draws(app_id, wcs_user_id)
+      draws = get_lucky_draws(app_id)
       cond do
         nil == setting ->
           Repo.rollback(%{i18n_message: "pmall.draw.nonsetting"})
@@ -788,12 +780,8 @@ defmodule Acs.PMalls do
         Enum.count(draws) == 0 ->
           Repo.rollback(%{i18n_message: "pmall.draw.late"})
         true ->
-          {:ok, add_point, total_point} = PMallTransaction.add_user_point(log_type, app_id, wcs_user_id)
-          rand_draw = _start_draw(draws)
-          draw = get_draw(rand_draw.id)
-          ids = _get_draw_ids(app_id)
-          index = Enum.find_index(ids, fn(x) -> x.id == draw.id end)
-
+          {:ok, add_point, total_point} = PMallTransaction.add_point(log_type, app_id, wcs_user_id)
+          {draw, index} = _start_draw!(draws, app_id, wcs_user_id)
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcs_user_id, draw) do
             goods = get_pmall_goods_detail(draw.goods_id)
@@ -811,7 +799,7 @@ defmodule Acs.PMalls do
 
   def _create_draw_order(app_id, wcs_user_id, draw) do
     # 减奖品数
-    LuckyDraw.changeset(draw, %{num: draw.num - 1}) |> Repo.update!
+    LuckyDraw.changeset(struct(LuckyDraw,draw), %{num: draw.num - 1}) |> Repo.update!
 
     # 创建抽奖订单
     draw_order = %{"name": draw.name, "pic": draw.pic,"app_id": app_id, 
@@ -822,26 +810,42 @@ defmodule Acs.PMalls do
     LuckyDrawOrder.changeset(%LuckyDrawOrder{}, draw_order) |> Repo.insert
   end
 
+  defp get_lucky_draws(app_id) do
+    draws = list_pmall_draws(app_id)
+    vaild_count = draws |> Enum.filter(fn draw -> draw.num >0 end) |> Enum.count
+    vaild_count > 0 && draws || []
+  end
+
   defp _get_my_draw_ids(app_id, wcs_user_id) do
     query = from order in LuckyDrawOrder,
       where: order.app_id == ^app_id and  order.wcs_user_id == ^wcs_user_id,
       select: order.lucky_draw_id
     Repo.all(query)
   end
-
-  defp _get_vaild_draws(app_id, wcs_user_id) do
-    my_draw_ids = _get_my_draw_ids(app_id, wcs_user_id)
-    list_pmall_draws(app_id)
-    |> Enum.filter(fn draw -> draw.num > 0 end)
-    |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+ 
+  defp _generate_rand_draws(draws) do
+    Enum.reduce(draws, [], fn(draw, result) -> 
+      result ++ Enum.map(1..draw.rate, fn num -> draw end) 
+    end)
   end
-  
-  defp _start_draw(draws) do
-    rand_draws = 
-      Enum.reduce(draws, [], fn(draw, result) -> 
-        result ++ Enum.map(1..draw.rate, fn num -> draw end)
-      end)
-    Enum.random(rand_draws)
+
+  defp _start_draw!(draws, app_id, wcs_user_id) do
+    my_draw_ids = _get_my_draw_ids(app_id, wcs_user_id)
+    draw_result =
+      draws
+      |> Enum.map(fn draw -> draw.num > 0 && draw || Map.put(draw, :goods_id, nil) end)
+      |> Enum.map(fn draw -> (not draw.id in my_draw_ids) && draw || Map.put(draw, :goods_id, nil) end)
+      |> _generate_rand_draws()
+      |> Enum.random()
+    
+    index = 
+      if draw_result.goods_id do
+        Enum.find_index(draws, fn draw -> draw.id == draw_result.id end)
+      else
+        Enum.find_index(draws, fn draw -> draw.goods_id == nil end)
+      end
+      
+    {draw_result, index}
   end
 
   def update_draw_address(wcs_user_id, order_id, address) do

@@ -11,13 +11,14 @@ defmodule Acs.Repo.Migrations.CreateWcsUesers do
       add :city, :string, size: 20
       add :country, :string, size: 20
       
+      add :app_id, references(:apps, type: :string, on_delete: :delete_all), size: 40
       add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
 
-    create unique_index(:wcs_users, [:openid])
-    create unique_index(:wcs_users, [:unionid])
-    create unique_index(:wcs_users, [:user_id])
+    create unique_index(:wcs_users, [:app_id, :openid])
+    create unique_index(:wcs_users, [:app_id, :unionid])
+    create unique_index(:wcs_users, [:app_id, :user_id])
   end
 end

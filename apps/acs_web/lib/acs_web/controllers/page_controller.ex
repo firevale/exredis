@@ -145,7 +145,7 @@ defmodule AcsWeb.PageController do
   def show_pmall_page(conn, %{"code" => code, "state" => state, "app_id" => app_id}) do
     case get_session(conn, :wcs_state) do 
       ^state ->
-        case Acs.Wcs.get_wcs_user_id_from_authorize_code(code) do 
+        case Acs.Wcs.get_wcs_user_id_from_authorize_code(app_id, code) do 
           {:ok, wcs_user_id} -> 
             conn 
               |> put_session(:wcs_user_id, wcs_user_id)

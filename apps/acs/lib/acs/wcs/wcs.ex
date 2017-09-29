@@ -24,11 +24,11 @@ defmodule Acs.Wcs do
     "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{@wcs_app_id}&redirect_uri=#{redirect_url}&response_type=code&scope=snsapi_userinfo&state=#{state}#wechat_redirect"
   end
 
-  def get_wcs_user_id_from_authorize_code(code) do 
+  def get_wcs_user_id_from_authorize_code(app_id, code) do 
     with {:ok, %{access_token: access_token, openid: openid}} <- get_api_weixin_access_token(code),
          {:ok, user_info} <- get_api_weixin_user_info(access_token, openid) 
     do
-      case get_wcs_user(openid: openid) do 
+      case get_wcs_user(app_id: app_id, openid: openid) do 
         nil ->
           wcs_user = create_wcs_user!(%{
             openid: openid,
@@ -77,8 +77,8 @@ defmodule Acs.Wcs do
     end    
   end
 
-  def get_wcs_user(openid: openid) do 
-    CachedWcsUser.get_by_openid(openid)
+  def get_wcs_user(app_id: app_id, openid: openid) do 
+    CachedWcsUser.get_by_openid(app_id, openid)
   end
   def get_wcs_user(wcs_user_id) do 
     CachedWcsUser.get(wcs_user_id)

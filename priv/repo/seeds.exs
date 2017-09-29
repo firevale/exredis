@@ -134,6 +134,7 @@ Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "zhumingzhen
 Acs.Admin.AdminUser.changeset(%Acs.Admin.AdminUser{}, %{account_id: "xiebing@firevale.com", user_id: 100004, admin_level: 1}) |> Acs.Repo.insert
 
 Acs.Wcs.create_wcs_user!(%{
+  app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5",
   openid: "oEYf7v2jOPd529gC1KkXylKPGPw0",
   nickname: "晓滨",
   sex: 1,

@@ -295,8 +295,8 @@ defmodule AcsWeb.Admin.PMallController do
         conn |> json(%{success: true, draw: draw, i18n_message: "admin.point.draw.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
-      :overflow ->
-        conn |> json(%{success: false, i18n_message: "admin.point.draw.overflow"})
+      :stockoverflow ->
+        conn |> json(%{success: false, i18n_message: "admin.point.cdkey.stockOverflow"}) 
       :notexist ->
         conn |> json(%{success: false, i18n_message: "admin.point.draw.goodsNotExist"})
       {:updateok, draw, changes} ->

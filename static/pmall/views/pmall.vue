@@ -23,41 +23,25 @@
         </div>
       </div>
     </div>
-    <div v-show="this.page != 0 && this.total>this.page" class="load-more">
-      <a class="button btn-pmall-more" @click="loadMore" style="margin-bottom:1rem"></a>
-    </div>
   </div>
 </template>
 <script>
 import Toast from 'common/components/toast'
 export default {
-  mounted() {
-    this.listGoods()
+  mounted() {},
+  computed: {
+    goodses() {
+      return window.acsConfig.goodses
+    }
   },
 
   data() {
     return {
       page: 0,
       total: 1,
-      goodses: [],
     }
   },
 
-  methods: {
-    loadMore() {
-      this.listGoods()
-    },
-    async listGoods() {
-      let result = await this.$acs.listGoods({
-        page: this.page + 1,
-        records_per_page: 10
-      })
-      if (result.success) {
-        this.goodses = this.goodses.concat(result.goodses)
-        this.total = result.total
-        this.page++
-      }
-    }
-  }
+  methods: {}
 }
 </script>

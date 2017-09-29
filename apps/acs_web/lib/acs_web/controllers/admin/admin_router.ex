@@ -171,6 +171,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/update_pmall_draw_order", PMallController, :update_pmall_draw_order
       post  "/list_pmall_cdkeys", PMallController, :list_pmall_cdkeys
       post  "/import_pmall_cdkeys", PMallController, :import_pmall_cdkeys
+      post  "/list_pmall_codetypes", PMallController, :list_pmall_codetypes
     end
 
   end

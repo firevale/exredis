@@ -737,27 +737,31 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_draw(draw) do
-    if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
+    if draw["goods_id"] && !get_pmall_goods(draw["goods_id"]) do
       :notexist
     else
-      case Repo.get(LuckyDraw, draw["id"]) do
-        nil ->
-          # add new
-          case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
-            {:ok, new_draw} ->
-              draw = Map.put(draw, "id", new_draw.id)
-              {:addok, draw}
-            {:error, %{errors: _errors}} ->
-              :error
-          end
-    
-        %LuckyDraw{} = q ->
-          # update
-          changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
-          changed |> Repo.update!
-          draw = Map.put(draw, "id", q.id)
-          {:updateok, draw, changed.changes}
+      if !check_cdkeys_enough(draw["goods_id"], draw["num"]) do
+        :stockoverflow
+      else
+        case Repo.get(LuckyDraw, draw["id"]) do
+          nil ->
+            # add new
+            case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
+              {:ok, new_draw} ->
+                draw = Map.put(draw, "id", new_draw.id)
+                {:addok, draw}
+              {:error, %{errors: _errors}} ->
+                :error
+            end
+      
+          %LuckyDraw{} = q ->
+            # update
+            changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
+            changed |> Repo.update!
+            draw = Map.put(draw, "id", q.id)
+            {:updateok, draw, changed.changes}
         end
+      end
     end
   end
 
@@ -998,7 +1002,28 @@ defmodule Acs.PMalls do
     end
   end
 
+  def check_cdkeys_enough(goods_id, stock) do
+    stock = case is_integer(stock) do
+              true -> stock
+              false -> String.to_integer(stock)
+            end
+    case get_pmall_goods(goods_id) do
+      nil -> false
+      %PMallGoods{} = mg ->
+        if mg.is_virtual do
+          check_cdkeys_enough(mg.app_id, mg.virtual_param, stock)
+        else
+          # 非虚拟商品不判断库存
+          true
+        end
+    end
+  end
+
   def check_cdkeys_enough(app_id, code_type, stock) do
+    stock = case is_integer(stock) do
+              true -> stock
+              false -> String.to_integer(stock)
+            end
     total = Repo.one(from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), select: count(1)) || 0
     total >= stock
   end

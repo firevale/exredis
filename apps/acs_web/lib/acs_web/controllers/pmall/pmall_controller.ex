@@ -184,7 +184,6 @@ defmodule AcsWeb.PMallController do
 
   def luck_draw(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
     result = PMalls.luck_draw(app_id, wcs_user_id)
-    d "-----------#{inspect result}"
     case result do
       {:ok, draw} ->
         conn |> json(Map.merge(%{success: true},draw))

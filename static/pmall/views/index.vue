@@ -49,7 +49,7 @@
                   <router-link class="button btn-conversion" style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}" tag="a"></router-link></h1>
                 <p class="is-marginless is-size-small   has-text-centered">兑换积分:
                   <span class="is-primary">{{goods.price}}</span>
-                  <router-link style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}" tag="a">查看礼品详情</router-link>
+                  <router-link style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}" tag="a">查看详情</router-link>
                 </p>
               </div>
             </div>

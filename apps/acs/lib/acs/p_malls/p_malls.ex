@@ -217,7 +217,7 @@ defmodule Acs.PMalls do
 
   def exchange_goods(app_id, wcs_user_id, goods_id, address \\ %{}) do
     Repo.transaction(fn ->
-      goods = get_pmall_goods(goods_id)
+      goods = Repo.get(PMallGoods, goods_id)
       exchange_count =  count_exchange_goods(app_id, wcs_user_id, goods_id)
       points = get_user_point(app_id, wcs_user_id)
       cond do
@@ -780,7 +780,7 @@ defmodule Acs.PMalls do
         Enum.count(draws) == 0 ->
           Repo.rollback(%{i18n_message: "pmall.draw.late"})
         true ->
-          {:ok, add_point, total_point} = PMallTransaction.add_point(log_type, app_id, wcs_user_id)
+          {:ok, add_point, total_point} = PMallTransaction.add_user_point(log_type, app_id, wcs_user_id)
           {draw, index} = _start_draw!(draws, app_id, wcs_user_id)
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcs_user_id, draw) do

@@ -1,13 +1,5 @@
 <template>
   <div>
-    <div class="control has-icon has-icon-left">
-      <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.titles.searchGoods')"
-        v-model="keyword">
-      <span class="icon is-small">
-        <i v-if="searching" class="fa fa-spinner fa-spin"></i>
-        <i v-else class="fa fa-search"></i>
-      </span>
-    </div>
     <router-link class="button is-primary pull-right" :to="{name: 'EditPointGoods', params: {goodsId: ''}}">
       <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
     </router-link>
@@ -46,9 +38,6 @@
           </div>
         </div>
       </div>
-      <article class="tile is-child is-12">
-        <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
-      </article>
     </div>
     <div class="box" v-else>
       <div class="hero-body has-text-centered">
@@ -84,8 +73,6 @@ import {
 } from 'admin/miscellaneous'
 
 import * as getters from 'admin/store/getters'
-import Pagination from 'admin/components/Pagination'
-import Tooltip from 'vue-bulma-tooltip'
 import {
   showMessageBox
 } from 'admin/components/dialog/messageBox'
@@ -93,13 +80,8 @@ import {
 export default {
   data: function() {
     return {
-      keyword: "",
-      searching: false,
       loading: false,
       goodses: [],
-      page: 1,
-      total: 1,
-      recordsPerPage: 8,
       appId: "",
     }
   },
@@ -123,18 +105,6 @@ export default {
   methods: {
     getPrice: function(price) {
       return price + "积分"
-    },
-
-    onPageChange: function(page) {
-      this.listPMallGoods(page, this.recordsPerPage)
-    },
-
-    onSearchBoxSubmit: function() {
-      if (this.keyword) {
-        this.searchGoods(1)
-      } else {
-        this.listPMallGoods(1, this.recordsPerPage)
-      }
     },
 
     onEdit: function(goods_id) {
@@ -181,35 +151,11 @@ export default {
         page: page,
         records_per_page: recordsPerPage
       })
-
       if (result.success) {
-        this.total = result.total
         this.goodses = result.goodses
-        this.page = page
       }
-
       this.loading = false
     },
-
-    searchGoods: async function(page) {
-      this.searching = true
-      let result = await this.$acs.listPMallGoods({
-        keyword: this.keyword,
-        page: page,
-        records_per_page: this.recordsPerPage
-      })
-      if (result.success) {
-        this.total = result.total
-        this.goodses = result.goodses
-        this.page = page
-      }
-      this.searching = false
-    },
   },
-
-  components: {
-    Pagination,
-    Tooltip
-  }
 }
 </script>

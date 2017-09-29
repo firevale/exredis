@@ -113,5 +113,6 @@
     owner: '所有者',
     addSuccess: '导入成功',
     codeInfo: '每行一个cdkey',
+    stockOverflow: '虚拟商品库存不足',
    }
  }

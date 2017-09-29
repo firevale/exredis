@@ -9,7 +9,7 @@
           </file-upload>
         </article>
       </div>
-      <div v-if="file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
+      <div v-if="upload && file" class="columns is-full is-gapless is-multiline is-mobile" style="margin-bottom: 0.5rem">
         <div class="column has-text-right is-2" style="margin-right: 0.5rem">
           <label class="label">{{ $t('upload.filename' )}}:</label>
         </div>

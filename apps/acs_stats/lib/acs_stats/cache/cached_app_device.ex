@@ -3,7 +3,6 @@ defmodule AcsStats.Cache.CachedAppDevice do
   require Excache
 
   alias   AcsStats.Repo
-  import  Ecto.Query
   use     Timex
 
   alias   AcsStats.Devices.AppDevice

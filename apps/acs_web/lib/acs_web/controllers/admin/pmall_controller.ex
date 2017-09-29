@@ -4,22 +4,11 @@ defmodule AcsWeb.Admin.PMallController do
   plug :check_is_admin 
 
     # list_pmall_goods
-  def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                                      %{"page" => page, 
-                                      "records_per_page" => records_per_page,
-                                      "keyword" => keyword}) do
-    case PMalls.list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
-      :zero ->
-        conn |> json(%{success: true, total: 0, goodses: []})
-      {:ok, goodses, total_page} ->
-        conn |> json(%{success: true, goodses: goodses, total: total_page})
-    end
-  end
-  def list_pmall_goods(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _params) do
+    conn |> json(%{success: true, total: 1, goodses: PMalls.list_all_pmall_goods(app_id)})
   end
 
-  def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
+  def get_pmall_goods_detail(conn,%{"goods_id" => goods_id})do
     goods = PMalls.get_pmall_goods(goods_id)
     conn |> json(%{success: true, goods: goods})
   end
@@ -77,6 +66,8 @@ defmodule AcsWeb.Admin.PMallController do
                 "end_time" => _end_time,
                 "is_new" => _is_new} = goods) do
     case PMalls.update_pmall_goods(user_id, goods) do
+      :stockoverflow ->
+        conn |> json(%{success: false, i18n_message: "admin.point.cdkey.stockOverflow"})      
       :exist ->
         conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
       {:add_ok, goods} ->
@@ -137,21 +128,27 @@ defmodule AcsWeb.Admin.PMallController do
 
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                         %{"openid" => openid, 
-                                          "point" => _point, 
-                                          "memo" => _memo} = log) do
-    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, openid: openid) do
-                    nil -> nil
-                    %AppWcpUser{} = u -> u.id
-                  end
+                                          "point" => point, 
+                                          "memo" => memo} = log) do
+    case Acs.Wcs.get_wcs_user(openid: openid) do
+      nil -> 
+        conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
 
-    if is_nil(wcp_user_id) do
-      conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
-    end
-    case PMalls.admin_add_pmall_point(wcp_user_id, app_id, log) do
-      {:ok, log} ->
-        conn |> json(%{success: true, log: log})
-      {:error, errors} ->
-        conn |> json(%{success: false, message: translate_errors(errors)})
+      %{id: wcs_user_id} -> 
+        case Acs.PMallTransaction.add_user_point("admin_op", app_id, wcs_user_id, point, memo) do
+          {:ok, _, _} ->
+            conn |> json(%{ 
+              success: true, 
+              log: 
+                log 
+                  |> Map.put("app_id", app_id)
+                  |> Map.put("wcs_user_id", wcs_user_id)
+                  |> Map.put("log_type", "admin_op")
+            })
+
+          {:error, errors} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
 
@@ -173,8 +170,10 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.update_task(task) do
       {:addok, task} ->
         conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.addSuccess"})
+
       {:updateok, task} ->
         conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.updateSuccess"})
+
       :error ->
         conn |> json(%{success: false, message: "admin.error.networkError"})
     end
@@ -255,8 +254,10 @@ defmodule AcsWeb.Admin.PMallController do
       {:addok, question} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", question)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.addSuccess"})
+
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+
       {:updateok, question, changes} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", changes)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.updateSuccess"})
@@ -268,9 +269,11 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.delete_pmall_question(question_id)do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.point.question.questionNotFound"})
+
       :ok ->
         Admin.log_admin_operation(user_id, app_id, "delete_pmall_question", params)
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+        
       :error ->
         conn |> json(%{success: false, i18n_message: "admin.error.networkError"})
     end
@@ -293,8 +296,8 @@ defmodule AcsWeb.Admin.PMallController do
         conn |> json(%{success: true, draw: draw, i18n_message: "admin.point.draw.addSuccess"})
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
-      :overflow ->
-        conn |> json(%{success: false, i18n_message: "admin.point.draw.overflow"})
+      :stockoverflow ->
+        conn |> json(%{success: false, i18n_message: "admin.point.cdkey.stockOverflow"}) 
       :notexist ->
         conn |> json(%{success: false, i18n_message: "admin.point.draw.goodsNotExist"})
       {:updateok, draw, changes} ->

@@ -77,6 +77,8 @@ defmodule AcsWeb.Admin.PMallController do
                 "end_time" => _end_time,
                 "is_new" => _is_new} = goods) do
     case PMalls.update_pmall_goods(user_id, goods) do
+      :stockoverflow ->
+        conn |> json(%{success: false, i18n_message: "admin.point.cdkey.stockOverflow"})      
       :exist ->
         conn |> json(%{success: false, i18n_message: "admin.mall.sameGoodsIdExist"})
       {:add_ok, goods} ->

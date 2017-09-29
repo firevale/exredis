@@ -196,11 +196,16 @@
             padding: .5rem;
             height: calc(100% - .2rem);
             background: #e1e5eb;
-            .image {
+            .thumb {
               background: $white;
               height: virtual-m-rem(266);
               border-radius: 3px;
               margin-bottom: .5rem;
+              position: relative;
+              img {
+                max-width: calc(100% - 6px);
+                max-height: calc(100% - 6px);
+              }
             }
             .item-content {
               .item-title {
@@ -265,7 +270,7 @@
           margin-bottom: 1rem;
           img {
             max-width: virtual-m-rem(912);
-            max-width: virtual-m-rem(488);
+            max-height: virtual-m-rem(488);
           }
         }
         p.cost {

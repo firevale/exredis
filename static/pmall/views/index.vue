@@ -39,7 +39,9 @@
         <div v-for="goods in goodses" :key="goods.id" class="column is-6">
           <div class="item-box">
             <div class="item">
-              <router-link class="image" :to="{name: 'detail', params:{ id: goods.id}}" tag="div"></router-link>
+              <router-link class="thumb is-flex flex-center flex-vcentered" :to="{name: 'detail', params:{ id: goods.id}}" tag="div">
+                  <img :src="goods.pic | imageStaticUrl">
+              </router-link>
               <div class="item-content is-flex is-column is-center">
                 <h1 class="is-size-medium  is-danger is-flex flex-vcentered flex-center">
                   <span class="item-title is-ellipsis">{{goods.name}}</span> 

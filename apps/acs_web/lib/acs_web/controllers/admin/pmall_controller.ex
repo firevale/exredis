@@ -371,4 +371,9 @@ defmodule AcsWeb.Admin.PMallController do
     :ok = PMalls.import_pmall_cdkeys(app_id, code_type, codes)
     conn |> json(%{success: true})
   end
+
+  def list_pmall_codetypes(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _params) do
+    code_types = PMalls.list_pmall_codetypes(app_id)
+    conn |> json(%{success: true, code_types: code_types})
+  end
 end

@@ -3,7 +3,7 @@ defmodule Acs.PMalls.LuckyDraw do
   import Ecto.Changeset
   alias Acs.PMalls.LuckyDraw
   
-  @derive {Poison.Encoder, except: [:app, :__meta__]}
+  @derive {Poison.Encoder, except: [:app, :goods, :__meta__]}
 
   schema "pmall_lucky_draws" do
     field :name, :string

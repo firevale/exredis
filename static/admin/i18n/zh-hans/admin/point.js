@@ -104,6 +104,7 @@
 
    cdkey: {
     add: '导入CDKEY',
+    refresh: '刷新',
     id: '编号',
     code: 'CDKEY',
     code_type: '类型',

@@ -139,21 +139,27 @@ defmodule AcsWeb.Admin.PMallController do
 
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                         %{"openid" => openid, 
-                                          "point" => _point, 
-                                          "memo" => _memo} = log) do
-    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, openid: openid) do
-                    nil -> nil
-                    %AppWcpUser{} = u -> u.id
-                  end
+                                          "point" => point, 
+                                          "memo" => memo} = log) do
+    case Acs.Wcs.get_wcs_user(openid: openid) do
+      nil -> 
+        conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
 
-    if is_nil(wcp_user_id) do
-      conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
-    end
-    case PMalls.admin_add_pmall_point(wcp_user_id, app_id, log) do
-      {:ok, log} ->
-        conn |> json(%{success: true, log: log})
-      {:error, errors} ->
-        conn |> json(%{success: false, message: translate_errors(errors)})
+      %{id: wcs_user_id} -> 
+        case Acs.PMallTransaction.add_user_point("admin_op", wcs_user_id, app_id, point, memo) do
+          {:ok, _, _} ->
+            conn |> json(%{ 
+              success: true, 
+              log: 
+                log 
+                  |> Map.put("app_id", app_id)
+                  |> Map.put("wcs_user_id", wcs_user_id)
+                  |> Map.put("log_type", "admin_op")
+            })
+
+          {:error, errors} ->
+            conn |> json(%{success: false, message: translate_errors(errors)})
+        end
     end
   end
 
@@ -175,8 +181,10 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.update_task(task) do
       {:addok, task} ->
         conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.addSuccess"})
+
       {:updateok, task} ->
         conn |> json(%{success: true, task: task, i18n_message: "admin.point.task.updateSuccess"})
+
       :error ->
         conn |> json(%{success: false, message: "admin.error.networkError"})
     end

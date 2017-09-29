@@ -465,14 +465,10 @@ defmodule Acs.PMalls do
     case result do
       0 ->
         {:exist}
+        
       1 -> 
-        {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
+        PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
     end
-  end
-
-  def admin_add_pmall_point(wcs_user_id, app_id, log) do
-    log = Map.put(log, "app_id", app_id) |> Map.put("wcs_user_id", wcs_user_id) |> Map.put("log_type", "admin_op")
-    log_user_points(log)
   end
 
   def add_goods_click(goods_id, click) do

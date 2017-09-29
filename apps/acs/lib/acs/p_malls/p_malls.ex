@@ -839,8 +839,8 @@ defmodule Acs.PMalls do
   defp _get_vaild_draws(app_id, wcs_user_id) do
     my_draw_ids = _get_my_draw_ids(app_id, wcs_user_id)
     list_pmall_draws(app_id)
-    |> Enum.filter(fn draw -> draw.num > 0 end)
-    |> Enum.filter(fn draw -> not draw.id in my_draw_ids end)
+    |> Enum.map(fn draw -> draw.num > 0 && draw || Map.put(draw, :goods_id, nil) end)
+    |> Enum.map(fn draw -> (not draw.id in my_draw_ids) && draw || Map.put(draw, :goods_id, nil) end)
   end
   
   defp _start_draw(draws) do

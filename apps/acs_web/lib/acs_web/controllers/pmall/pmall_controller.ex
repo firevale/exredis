@@ -174,11 +174,11 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_draw_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-    case CachedAdminSetting.get_fat(app_id,"抽奖图") do
-      nil ->
-        conn |> json(%{success: false})
-      %Setting{} = setting ->
-        conn |> json(%{success: true, setting: Map.take(setting, [:value])})
+    with {:ok, pic, draw_point} <- PMalls.get_draw_info(app_id) do
+      conn |> json(%{success: true, pic: pic, draw_point: draw_point})
+    else
+      _ ->
+        conn |> json(%{success: false, i18n_message: "pmall.draw.nonsetting"})
     end
   end
 

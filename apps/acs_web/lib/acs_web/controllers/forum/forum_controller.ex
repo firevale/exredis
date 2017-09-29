@@ -79,7 +79,7 @@ defmodule AcsWeb.ForumController do
                  "content" => content} = post) do
       
     check_out = conn.private[:check_txt]
-    if(check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       post = case Floki.find(content, "img") do
@@ -193,7 +193,7 @@ defmodule AcsWeb.ForumController do
                     %{"content" => content}) do
 
     check_out = conn.private[:check_txt]
-    if(check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       case Forums.add_comment(forum_post, forum_comment, content) do
@@ -333,7 +333,7 @@ defmodule AcsWeb.ForumController do
         low_quality: true)
     
     check_out = check_img(conn, image_path)
-    if (check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
@@ -348,7 +348,7 @@ defmodule AcsWeb.ForumController do
         low_quality: true)
     
     check_out = check_img(conn, image_path)
-    if(check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, post_id: forum_post.id, link: image_path, width: width, height: height})
@@ -474,7 +474,7 @@ defmodule AcsWeb.ForumController do
     
     check_out = check_img(conn, image_path)
 
-    if (check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, comment_id: forum_comment.id, link: image_path, width: width, height: height})
@@ -490,7 +490,7 @@ defmodule AcsWeb.ForumController do
         low_quality: true)
 
     check_out = check_img(conn, image_path)
-    if(check_out && !check_out.success) do
+    if check_out && !check_out.success do
       conn |> json(check_out)
     else
       conn |> json(%{success: true, comment_id: forum_comment.id, link: image_path, width: width, height: height})

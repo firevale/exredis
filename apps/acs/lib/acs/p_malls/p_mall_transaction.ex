@@ -36,7 +36,7 @@ defmodule Acs.PMallTransaction do
     user_points = CachedPMallUserPoints.get(app_id, wcs_user_id) 
     new_user_points = UserPoints.changeset(user_points, %{
       point: max(user_points.point + points, 0)
-    }) |> Repo.insert!
+    }) |> Repo.update!
     CachedPMallUserPoints.refresh(new_user_points) 
 
     {:ok, points, new_user_points.point}

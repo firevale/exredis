@@ -88,7 +88,7 @@ defmodule AcsWeb.PMallController do
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do
     {:ok, signed, sign_times, pic_raw, terms, awards} = PMalls.get_sign_info(app_id, wcs_user_id)
     %{"pic" => pic} = pic_raw
-    {total, sign_users} = PMalls.get_sign_users(app_id)
+    {total, sign_users} = PMalls.get_sign_users(app_id, 0)
     conn |> json(%{
       success: true,
       signed: signed,
@@ -98,6 +98,11 @@ defmodule AcsWeb.PMallController do
       awards: awards,
       sign_total: total,
       sign_users: sign_users})
+  end
+
+  def get_sign_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"start" => start } = params) do
+    {total, sign_users} = PMalls.get_sign_users(app_id, start)
+    conn |> json(%{ success: true,  sign_users: sign_users})
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do

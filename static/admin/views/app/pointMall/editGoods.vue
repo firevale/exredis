@@ -456,6 +456,11 @@ export default {
         return;
       }
 
+      if (this.goods.is_virtual && !this.goods.virtual_param) {
+        this.showWarning(this.$t('admin.mall.goods.needVirtualParam'))
+        return;
+      }
+
       this.handleSubmit()
     },
 

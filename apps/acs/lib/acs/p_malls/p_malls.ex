@@ -82,15 +82,19 @@ defmodule Acs.PMalls do
       true ->
         case CachedPMallGoods.get(goods["id"]) do 
           nil ->
-            goods = goods |> Map.put("user_id", user_id)
-            case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
-              {:ok, new_goods} ->
-                goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
-                CachedPMallGoods.refresh(new_goods)
-                {:add_ok, goods}
-
-              {:error, %{errors: _errors}} ->
-                :error
+            if goods["is_virtual"] == true && !check_cdkeys_enough(goods["app_id"], goods["virtual_param"], goods["stock"]) do
+              :stockoverflow
+            else
+              goods = goods |> Map.put("user_id", user_id)
+              case PMallGoods.changeset(%PMallGoods{}, goods) |> Repo.insert do
+                {:ok, new_goods} ->
+                  goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
+                  CachedPMallGoods.refresh(new_goods)
+                  {:add_ok, goods}
+  
+                {:error, %{errors: _errors}} ->
+                  :error
+              end
             end
           _ ->
             :exist
@@ -103,19 +107,24 @@ defmodule Acs.PMalls do
             nil
 
           %PMallGoods{} = mg ->
-            goods = Map.put(goods, "user_id", user_id)
-            changed = PMallGoods.changeset(mg, %{name: goods["name"],
-                                                  description: goods["description"],
-                                                  pic: goods["pic"],
-                                                  price: goods["price"],
-                                                  postage: goods["postage"],
-                                                  stock: goods["stock"],
-                                                  is_virtual: goods["is_virtual"],
-                                                  begin_time: goods["begin_time"],
-                                                  end_time: goods["end_time"]})
-            new_goods = changed |> Repo.update!
-            CachedPMallGoods.refresh(new_goods)
-            {:update_ok, goods, changed.changes}
+            if goods["is_virtual"] == true && !check_cdkeys_enough(goods["app_id"], goods["virtual_param"], goods["stock"]) do
+              :stockoverflow
+            else
+              goods = Map.put(goods, "user_id", user_id)
+              changed = PMallGoods.changeset(mg, %{name: goods["name"],
+                                                    description: goods["description"],
+                                                    pic: goods["pic"],
+                                                    price: goods["price"],
+                                                    postage: goods["postage"],
+                                                    stock: goods["stock"],
+                                                    is_virtual: goods["is_virtual"],
+                                                    virtual_param: goods["virtual_param"],
+                                                    begin_time: goods["begin_time"],
+                                                    end_time: goods["end_time"]})
+              new_goods = changed |> Repo.update!
+              CachedPMallGoods.refresh(new_goods)
+              {:update_ok, goods, changed.changes}
+            end
         end
     end
   end
@@ -350,10 +359,10 @@ defmodule Acs.PMalls do
 
   end
 
-  def get_sign_users(app_id) do
+  def get_sign_users(app_id, start, count \\ 5) do
     sign_key_users = _sign_cache_key_users(app_id)
     total = Exredis.zcard(sign_key_users)
-    open_ids = Exredis.zrange(sign_key_users, 0, 20)
+    open_ids = Exredis.zrange(sign_key_users, start, start + count)
     wcp_users =
       Enum.map(open_ids, fn wcs_user_id ->
         wcs_user = Wcs.get_wcs_user(wcs_user_id)
@@ -983,6 +992,11 @@ defmodule Acs.PMalls do
         }) |> Repo.update() 
         cdkey.code
     end
+  end
+
+  def check_cdkeys_enough(app_id, code_type, stock) do
+    total = Repo.one(from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), select: count(1)) || 0
+    total >= stock
   end
 
 end

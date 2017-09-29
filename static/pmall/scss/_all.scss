@@ -3,7 +3,6 @@
   @import "./mixins";
   @import "./global";
   @import "./other";
-
   .button {
     display: block;
     background-size: contain;
@@ -380,18 +379,13 @@
           background: white;
           border: 1px solid $border-color;
           border-radius: 5px;
-          height: virtual-m-rem(406);
-          .avatars {
-            padding-left: virtual-m-rem(48.5);
-            max-height: virtual-m-rem(406);
-            min-height: virtual-m-rem(406/1.8);
+          min-height: virtual-m-rem(185);
+          .avatar {
+            height: virtual-m-rem(185);
             img {
-              width: virtual-m-pixel(155);
-              height: virtual-m-pixel(155);
+              width: virtual-m-rem(155);
+              height: virtual-m-rem(155);
               border-radius: 50%;
-              &:not(:nth-child(7n)) {
-                margin-right: virtual-m-rem(10);
-              }
             }
           }
           .load-more {

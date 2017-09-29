@@ -217,7 +217,7 @@ defmodule AcsWeb.PMallController do
 
   def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = params) do
     with %WcsUser{} <- Wcs.get_wcs_user(wcs_user_id),
-      {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
+         {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
     do
       conn |> json(%{success: true, result_code: "ok"})
     else

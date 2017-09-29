@@ -3,6 +3,7 @@ defmodule Acs.PMalls.DayQuestion do
   import Ecto.Changeset
   alias Acs.PMalls.DayQuestion
 
+  @derive {Poison.Encoder, except: [:app, :__meta__]}
   schema "pmall_day_questions" do
     field :question, :string
     field :correct, :string, size: 200

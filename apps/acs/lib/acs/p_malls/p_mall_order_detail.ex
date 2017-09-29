@@ -3,7 +3,7 @@ defmodule Acs.PMalls.PMallOrderDetail do
   import Ecto.Changeset
   alias Acs.PMalls.PMallOrderDetail
 
-  @derive {Poison.Encoder, except: [:mall_order, :mall_goods, :__meta__]}
+  @derive {Poison.Encoder, except: [:pmall_order, :pmall_goods, :__meta__]}
   schema "pmall_order_details" do
     field :goods_name, :string
     field :goods_pic, :string

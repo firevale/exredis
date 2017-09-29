@@ -44,11 +44,11 @@
       <div class="sign-others">
         <p class="has-text-centered">共
           <span style="font-size:1.5rem">{{sign_total}}</span> 人签到</p>
-        <div class="sign-users">
-          <div class="avatars is-flex flex-left flex-vcentered">
-            <img v-for="user in sign_users" :src="user.avatar_url">
+        <div class="sign-users is-flex">
+          <div v-for="user in sign_users" class="column is-2 avatar is-flex flex-center flex-vcentered" >
+            <img :src="user.avatar_url">
           </div>
-          <div class="load-more is-flex flex-center flex-vcentered">
+          <div v-if="sign_total> sign_users.length" class="load-more is-flex flex-center flex-vcentered" @click="getSignUsers">
             查看更多
           </div>
         </div>
@@ -155,6 +155,15 @@ export default {
         }))
       }
     },
+    async getSignUsers() {
+      let result = await this.$acs.getSignUsers({
+        start: this.sign_users.length
+      })
+      
+      if (result.success) {
+        this.sign_users = this.sign_users.concat(result.sign_users)
+      }
+    }
   }
 }
 </script>

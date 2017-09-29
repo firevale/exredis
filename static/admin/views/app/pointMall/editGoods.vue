@@ -94,7 +94,7 @@
               <div v-dragula="pics" :bag="bagId" class="columns is-multiline container2">
                 <div class="column is-4" v-for="(pic, index) in pics" :key="pic">
                   <figure class="image" style="display: block" @click="onShowImageUpload(index)">
-                    <img :src="pic ? pic: 'https://placehold.it/228x122?text=1140X610' | imageStaticUrl" style="width:228px; height:122px;"></img>
+                    <img :src="pic ? pic: 'https://placehold.it/228x122?text=912X488' | imageStaticUrl" style="width:228px; height:122px;"></img>
                   </figure>
                 </div>
               </div>
@@ -288,8 +288,8 @@ export default {
             'x-csrf-token': window.acsConfig.csrfToken
           },
           title: this.$t('admin.titles.uploadGoodsPic'),
-          width: 1140,
-          height: 610,
+          width: 912,
+          height: 488,
           destFormat: 'image/jpg',
           callback: response => this.pics.splice(index, 1, response.pic_url),
         })

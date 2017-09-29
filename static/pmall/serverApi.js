@@ -94,6 +94,9 @@ export default {
       getSignInfo() {
         return post("/pmall_actions/get_sign_info")
       },
+      getSignUsers(params) {
+        return post("/pmall_actions/get_sign_users",params)
+      },
       getDefaultAddress(params) {
         return post('/pmall_actions/get_default_address', params)
       },

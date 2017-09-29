@@ -5,8 +5,8 @@ defmodule AcsWeb.PMallRouter do
     pipe_through :pmall
 
     post   "/get_goods_detail", PMallController, :get_goods_detail
-    post   "/list_my_points", PMallController, :list_my_points
-    post   "/list_my_exchanges", PMallController, :list_my_exchanges
+    post   "/list_my_point_logs", PMallController, :list_my_point_logs
+    post   "/list_my_exchange_point_logs", PMallController, :list_my_exchange_point_logs
     post   "/exchange", PMallController, :exchange   
     post   "/take_award", PMallController, :take_award   
     post   "/update_address", PMallController, :update_address

@@ -157,7 +157,7 @@ defmodule Acs.PMalls do
     {:ok, logs, total_page}
   end
 
-  def list_my_points(app_id, wcs_user_id, page, records_per_page) do
+  def list_my_point_logs(app_id, wcs_user_id, page, records_per_page) do
     {:ok, total, logs} = Acs.Search.list_my_point_logs(
       app_id: app_id, 
       wcs_user_id: wcs_user_id, 
@@ -169,7 +169,7 @@ defmodule Acs.PMalls do
     {:ok, logs, total_page}
   end
 
-  def list_my_exchanges(app_id, wcs_user_id, page, records_per_page) do
+  def list_my_exchange_point_logs(app_id, wcs_user_id, page, records_per_page) do
     {:ok, total, logs} = Acs.Search.list_my_exchange_point_logs(
       app_id: app_id, 
       wcs_user_id: wcs_user_id, 

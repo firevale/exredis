@@ -9,15 +9,15 @@
       </span>
     </div>
     <div v-if="orders.length > 0">
-      <div v-for="item in orders" class="media" style="align-items: stretch; margin:1rem auto;">
+      <div v-for="item in orders" :key="item.id" class="media" style="align-items: stretch; margin:1rem auto;">
         <div class="media-left">
           <p>{{item.id}}</p>
           <p> {{$t('admin.mall.order.status.'+item.status) }}</p>
           <p> {{ item.inserted_at | formatServerDateTime }}</p>
-          <p>{{item.user.nickname}}&nbsp;&nbsp;&nbsp;{{item.user.mobile}}</p>
+          <p>{{item.wcs_user.nickname}}</p>
         </div>
         <div class="media-content columns" style="border:1px solid grey;margin:0; padding:0 1rem;">
-          <div v-for="detail in item.details" class="cloumn">
+          <div v-for="detail in item.details" :key="detail.id" class="cloumn">
             <div class="media" style="padding-top:1rem;margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">

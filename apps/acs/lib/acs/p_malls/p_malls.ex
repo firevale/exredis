@@ -633,8 +633,9 @@ defmodule Acs.PMalls do
           case get_question(question_id) do
             nil ->
               Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
+
             %DayQuestion{} = question ->
-              if(exists_answer(app_id) == 0) do
+              if exists_answer(app_id) == 0 do
                 add_answer(app_id, question_id)
               end
 
@@ -664,6 +665,7 @@ defmodule Acs.PMalls do
       where: d.app_id == ^app_id,
       select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
+      
     Repo.all(query)
   end
 

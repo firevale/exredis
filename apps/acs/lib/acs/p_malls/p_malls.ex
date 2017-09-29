@@ -598,19 +598,26 @@ defmodule Acs.PMalls do
   def get_daily_question(app_id) do
     case Exredis.get(_answer_cache_key(app_id)) do
       nil ->
-        max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
-        query = from q in DayQuestion,
-                where: q.app_id == ^app_id and q.id >= ^max_id,
-                limit: 1,
-                order_by: [asc: q.inserted_at],
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
-
-        question = Repo.one(query)
-        {:ok, question}
+        count = 
+        case Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id) do
+          nil ->
+            nil
+          count ->
+            max_id = :rand.uniform(count)
+            query = from q in DayQuestion,
+                    where: q.app_id == ^app_id and q.id >= ^max_id,
+                    limit: 1,
+                    order_by: [asc: q.inserted_at],
+                    select: map(q, [:id, :question, :a1, :a2, :a3])
+    
+            question = Repo.one(query)
+            {:ok, question}
+        end
+        
       question_id ->
         query = from q in DayQuestion,
                 where: q.id == ^String.to_integer(question_id),
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
+                select: map(q, [:id, :question, :correct, :a1, :a2, :a3])
 
         question = Repo.one(query)
         {:ok, question}

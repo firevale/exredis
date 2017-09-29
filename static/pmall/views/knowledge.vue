@@ -34,7 +34,7 @@
           <div v-show="isCorrect" class="answer-yes is-flex flex-center">
             <img src="~assets/pmall/1247_r_03.png" />
           </div>
-          <div v-show="isWwrong" class="answer-error is-flex flex-center">
+          <div v-show="isWrong" class="answer-error is-flex flex-center">
             <img src="~assets/pmall/1247_2_03.png" />
           </div>
         </div>
@@ -67,7 +67,7 @@ export default {
         a2: '加载中'
       },
       isCorrect: false,
-      isWwrong: false,
+      isWrong: false,
       isComplete: false
     }
   },
@@ -85,22 +85,28 @@ export default {
         this.isComplete = result.exists > 0
         this.question = result.question
         this.unknow = "不知道"
+      } else {
+        Toast.show("抱歉，暂无答题")
       }
     },
     onSubmit: async function() {
+      if (this.correct == "") {
+        Toast.show("请选择答案")
+        return
+      }
       if (!this.processing) {
         this.processing = true
         let result = await this.$acs.answerQuestion(this.question.id, this.correct)
         if (result.success) {
           if (result.answer) {
             this.isCorrect = true
-            this.isWwrong = false
+            this.isWrong = false
             this.setUserPoints(result.total_point)
             Toast.show(this.$t(result.i18n_message, {
               point: result.add_point
             }))
           } else {
-            this.isWwrong = true
+            this.isWrong = true
             this.isCorrect = false
           }
         }

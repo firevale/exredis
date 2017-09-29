@@ -123,7 +123,7 @@ export default {
     uploadNewsPic: '修改题图(640X260, JPG或PNG)',
     uploadDrawPic: '修改题图(300X400, JPG或PNG)',
     uploadTaskPic: '修改题图(144X144, JPG或PNG)',
-    uploadGoodsPic: '修改商品题图(1140X610大小的png图)',
+    uploadGoodsPic: '修改商品题图(912X488大小的png图)',
     uploadSettingPic: '修改设置图({picWidth}X{picHeight}的JPG或PNG)',
     yes: '是',
     no: '否',

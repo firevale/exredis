@@ -21,11 +21,12 @@ export default {
   beforeRouteEnter: function(to, from, next) {
     if (window.acsConfig.user.user_id || to.name == 'bind_mobile') {
       next()
-    }
-    else {
+    } else {
       next({
         name: 'bind_mobile',
-        params: {...to.params, back: to}
+        params: { ...to.params,
+          back: to
+        }
       })
     }
   },

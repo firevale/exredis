@@ -8,53 +8,45 @@
           </a>
         </div>
       </article>
-      <article class="tile is-child is-12">
-        <div class="table-responsive">
-          <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
-            <div class="column">
-              <p>{{ $t('admin.point.id') }}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.user') }}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.log_type') }}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.point')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.memo')}}</p>
-            </div>
-            <div class="column">
-              <p>{{ $t('admin.point.inserted_at')}}</p>
-            </div>
+      <div class="control has-icon has-icon-left">
+        <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.pointLog.searchTip')"
+          v-model="keyword">
+        <span class="icon is-small">
+          <i v-if="loading" class="fa fa-spinner fa-spin"></i>
+          <i v-else class="fa fa-search"></i>
+        </span>
+      </div>
+      <div class="box" style="padding: 0.75rem" v-for="log in logs" :key="log.id" >
+        <article class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img :src="log.wcs_user.avatar_url" alt="wechat avatar">
+            </figure>
           </div>
-          <div v-if="logs">
-            <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="logs && logs.length > 0"
-              v-for="(log, index) in logs" :key="log.id">
-              <div class="column">
-                <p>{{ log.id }}</p>
+          <div class="media-content">
+            <nav class="level is-mobile" style="margin-bottom: 0.25rem">
+              <div class="level-left">
+                <span class="level-item">
+                  <small>{{log.wcs_user.nickname}}</small>
+                </span>
               </div>
-              <div class="column">
-                <p>{{ log.wcs_user.nickname }}</p>
-              </div>              
-              <div class="column">
-                <p>{{ log.log_type }}</p>
+              <div class="level-right">
+                <p class="level-item">
+                  <small><timeago :since="log.inserted_at | convertServerDateTime" :auto-update="60"></timeago></small>
+                </p>
               </div>
-              <div class="column">
-                <p>{{ log.point }}</p>
-              </div>
-              <div class="column">
-                <p>{{ log.memo }}</p>
-              </div>
-              <div class="column">
-                <p>{{ log.inserted_at | formatServerDateTime }}</p>
-              </div>
-            </div>
+            </nav>
+            <p class="content">
+              <span> {{log.memo}} </span>
+              <br/>
+              <span> {{log.inserted_at | formatServerDateTime}} </span>
+              <span class="title is-5 pull-right" :class="log.point > 0 ? 'is-primary' : 'is-danger'">
+                {{log.point > 0 ? `+${log.point}` : log.point}}&nbsp;分
+              </span>
+            </p>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
       <article class="tile is-child is-12">
         <pagination :page-count="total" :current-page="page" :on-page-change="onPageChange"></pagination>
       </article>
@@ -97,7 +89,8 @@ export default {
       total: 1,
       recordsPerPage: 20,
       loading: false,
-      userId: ''
+      userId: '',
+      keyword: '',
     }
   },
 
@@ -106,23 +99,24 @@ export default {
   },
 
   methods: {
-    getLogs: async function(page, recordsPerPage) {
+    getLogs: async function(page) {
       this.loading = true
       let result = await this.$acs.listPMallPointLogs({
+        keyword: this.keyword,
         user_id: this.userId,
         page: page,
-        records_per_page: recordsPerPage
+        records_per_page: this.recordsPerPage
       })
       this.loading = false
       if (result.success) {
-        this.total = result.total_page
+        this.total = result.total
         this.logs = result.logs
         this.page = page
       }
     },
 
     onPageChange: function(page) {
-      this.getLogs(page, this.recordsPerPage)
+      this.getLogs(page)
     },
 
     addPoint: function() {
@@ -138,9 +132,15 @@ export default {
         visible: true,
         callback: log => {
           this.page = 1
-          this.getLogs(this.page, this.recordsPerPage)
+          this.keyword = ''
+          this.getLogs(this.page)
         },
       })
+    },
+
+    onSearchBoxSubmit: async function() {
+      this.logs = []
+      await this.getLogs(1)
     },
   },
 

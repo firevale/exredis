@@ -130,10 +130,10 @@ defmodule Acs.Accounts do
       nil ->
         nil
       %UserAddress{} = address ->
-        if(address.is_default)do
+        if address.is_default do
           queryTotal = from us in UserAddress, select: count(1), where: us.user_id == ^user_id
           count = Repo.one!(queryTotal)
-          if(count <= 1 )do
+          if count <= 1  do
             case Repo.delete(address) do
               {:ok, _} ->
                 :ok
@@ -237,7 +237,7 @@ defmodule Acs.Accounts do
       nil ->
         nil
       %UserAddress{} = us ->
-        if(us.user_id !== user_id)do
+        if us.user_id !== user_id do
           :illegal
         else
           UserAddress.changeset(us, address) |> Repo.update!

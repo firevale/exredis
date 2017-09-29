@@ -222,7 +222,7 @@ defmodule Acs.Forums do
             offset: ^((page - 1) * records_per_page),
             preload: [user: u]
 
-    query = if(author_id > 0) do
+    query = if author_id > 0 do
       query |> where([p], p.user_id == ^author_id)
     else
       query

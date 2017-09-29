@@ -640,7 +640,7 @@ defmodule Acs.PMalls do
               end
 
               with {:ok, add_point, total_point} <-  PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id) do
-                if(question.correct == correct) do
+                if question.correct == correct do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
                 
                   add_answer_user(app_id, wcs_user_id, question_id)
@@ -665,7 +665,7 @@ defmodule Acs.PMalls do
       where: d.app_id == ^app_id,
       select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
-      
+
     Repo.all(query)
   end
 
@@ -850,7 +850,7 @@ defmodule Acs.PMalls do
               nil ->
                 nil
               %UserAddress{} = us ->
-                if(us.user_id == wcs_user.user_id)do
+                if us.user_id == wcs_user.user_id do
                   UserAddress.changeset(us, address) |> Repo.update!
                 end
             end

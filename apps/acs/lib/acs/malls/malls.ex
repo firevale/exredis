@@ -89,7 +89,7 @@ defmodule Acs.Malls do
       true ->
         # add new
         count = Repo.one!(from g in MallGoods, select: count(1), where: g.app_id == ^goods.app_id and g.id == ^goods.id)
-        if(count > 0) do
+        if count > 0 do
           :exist
         else
           goods = goods |> Map.put("user_id", user_id)
@@ -216,7 +216,7 @@ defmodule Acs.Malls do
       nil ->
         nil
       %MallGoods{} = goods ->
-        if(goods.sold > 0) do
+        if goods.sold > 0 do
           :sold
         else
           case Repo.delete(goods) do
@@ -339,10 +339,10 @@ defmodule Acs.Malls do
       order_id <- create_order_id(user_id, order.pay_type)
     do
       final_price = goods.price * order.quantity + goods.postage
-      if(order.quantity <= 0 or final_price < 0) do
+      if order.quantity <= 0 or final_price < 0 do
         :badrequest
       else
-        if(goods.stock == 0 or goods.stock < order.quantity) do
+        if goods.stock == 0 or goods.stock < order.quantity do
           :stockout
         else
           Repo.transaction(fn ->

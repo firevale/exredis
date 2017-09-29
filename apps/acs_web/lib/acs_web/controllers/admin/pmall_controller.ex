@@ -121,8 +121,8 @@ defmodule AcsWeb.Admin.PMallController do
   end
 
   def list_pmall_point_logs(%Plug.Conn{private: %{acs_session_user_id: _user_id, acs_app_id: app_id}} = conn, 
-                                         %{"user_id" => user_id, "page" => page, "records_per_page" => records_per_page}) do
-    {:ok, logs, total_page} = PMalls.list_pmall_point_logs(app_id, user_id, page, records_per_page)
+                                         %{"keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+    {:ok, logs, total_page} = PMalls.list_pmall_point_logs(app_id, keyword, page, records_per_page)
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 

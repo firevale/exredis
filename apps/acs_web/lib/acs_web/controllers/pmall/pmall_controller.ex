@@ -120,7 +120,7 @@ defmodule AcsWeb.PMallController do
       ^verify_code ->
         case Acs.Wcs.bind_mobile(wcs_user_id, mobile) do
           :ok ->
-            {:ok, add_point, total_point} = PMallTransaction.add_point("point_bind_mobile", app_id, wcs_user_id)
+            {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_bind_mobile", app_id, wcs_user_id)
             conn |> delete_session(:bind_mobile_verify_code)
                  |> json(%{
                    success: true,

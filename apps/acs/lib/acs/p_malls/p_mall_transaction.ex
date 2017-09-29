@@ -17,12 +17,12 @@ defmodule Acs.PMallTransaction do
 
   def add_point(log_type, app_id, wcs_user_id) do
     %Acs.Admin.Setting{} = setting  = CachedAdminSetting.get_fat(app_id, log_type)
-    add_point(app_id, wcs_user_id, setting.value, setting.memo)
+    add_point(log_type, app_id, wcs_user_id, setting.value, setting.memo)
   end
-  def add_point(app_id, wcs_user_id, points, memo) when is_bitstring(points) do
-    add_point(app_id, wcs_user_id, String.to_integer(points), memo)
+  def add_point(log_type, app_id, wcs_user_id, points, memo) when is_bitstring(points) do
+    add_point(log_type, app_id, wcs_user_id, String.to_integer(points), memo)
   end
-  def add_point(app_id, wcs_user_id, points, memo) when is_integer(points) do
+  def add_point(log_type, app_id, wcs_user_id, points, memo) when is_integer(points) do
     log = %{
       app_id: app_id,
       wcs_user_id: wcs_user_id,

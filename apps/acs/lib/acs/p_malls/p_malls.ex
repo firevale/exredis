@@ -566,30 +566,22 @@ defmodule Acs.PMalls do
   end
 
   def get_daily_question(app_id) do
-    case Exredis.get(_answer_cache_key(app_id)) do
+    case Exredis.get(_question_cache_key(app_id)) do
       nil ->
-        count = 
         case Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id) do
           nil ->
             nil
           count ->
             max_id = :rand.uniform(count)
-            query = from q in DayQuestion,
-                    where: q.app_id == ^app_id and q.id >= ^max_id,
-                    limit: 1,
-                    order_by: [asc: q.inserted_at],
-                    select: map(q, [:id, :question, :a1, :a2, :a3])
-    
-            question = Repo.one(query)
+            query = from q in DayQuestion,where: q.app_id == ^app_id and q.id >= ^max_id,limit: 1
+
+            %DayQuestion{} = question = Repo.one(query)
+            cached_day_question(app_id, question)
             {:ok, question}
         end
         
-      question_id ->
-        query = from q in DayQuestion,
-                where: q.id == ^String.to_integer(question_id),
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3])
-
-        question = Repo.one(query)
+      cached ->
+        question = DayQuestion.from_redis(cached)
         {:ok, question}
     end
   end
@@ -633,11 +625,11 @@ defmodule Acs.PMalls do
   end
 
   # 答题
-  def _answer_cache_key(app_id), do: "acs.pmall_answer_#{app_id}_#{Timex.today}"
-  def _answer_cache_key_user(app_id, wcs_user_id), do: "acs.pmall_answer_#{app_id}_#{wcs_user_id}_#{Timex.today}"
+  def _question_cache_key(app_id), do: "acs.pmall_day_question_#{app_id}_#{Timex.today}"
+  def _answer_cache_key_user(app_id, wcs_user_id), do: "acs.pmall_day_answer_#{app_id}_#{wcs_user_id}_#{Timex.today}"
 
   def exists_answer(app_id) do
-    answer_key = _answer_cache_key(app_id)
+    answer_key = _question_cache_key(app_id)
     Exredis.exists(answer_key)
   end
 
@@ -646,13 +638,12 @@ defmodule Acs.PMalls do
     Exredis.exists(answer_key_user)
   end
   
-  defp add_answer(app_id, question_id) do
-    answer_key = _answer_cache_key(app_id)
-    Exredis.set(answer_key, question_id)
-    Exredis.expire(answer_key, 86400)
+  defp cached_day_question(app_id, question) do
+    answer_key = _question_cache_key(app_id)
+    Exredis.setex(answer_key, 86400, DayQuestion.to_redis(question))
   end
 
-  defp add_answer_user(app_id, wcs_user_id,question_id) do
+  defp cached_answer_user(app_id, wcs_user_id,question_id) do
     answer_key_user = _answer_cache_key_user(app_id, wcs_user_id)
     Exredis.set(answer_key_user, question_id)
     Exredis.expire(answer_key_user, 86400)
@@ -669,18 +660,18 @@ defmodule Acs.PMalls do
               Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
             %DayQuestion{} = question ->
               if(exists_answer(app_id) == 0) do
-                add_answer(app_id, question_id)
+                cached_day_question(app_id, question)
               end
 
               with {:ok, add_point, total_point} <-  PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id) do
                 if(question.correct == correct) do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
                 
-                  add_answer_user(app_id, wcs_user_id, question_id)
+                  cached_answer_user(app_id, wcs_user_id, question_id)
                   %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.success", answer: true}
                 else
                   DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
-                  add_answer_user(app_id, wcs_user_id, question_id)
+                  cached_answer_user(app_id, wcs_user_id, question_id)
 
                   %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.failed", answer: false}
                 end

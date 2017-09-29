@@ -265,8 +265,10 @@ defmodule AcsWeb.Admin.PMallController do
       {:addok, question} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", question)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.addSuccess"})
+
       :error ->
         conn |> json(%{success: false, i18n_message: "error.server.networkError"})
+
       {:updateok, question, changes} ->
         Admin.log_admin_operation(user_id, question["app_id"], "update_pmall_question", changes)
         conn |> json(%{success: true, question: question, i18n_message: "admin.point.question.updateSuccess"})
@@ -278,9 +280,11 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.delete_pmall_question(question_id)do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.point.question.questionNotFound"})
+
       :ok ->
         Admin.log_admin_operation(user_id, app_id, "delete_pmall_question", params)
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
+        
       :error ->
         conn |> json(%{success: false, i18n_message: "admin.error.networkError"})
     end

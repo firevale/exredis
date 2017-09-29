@@ -4,6 +4,9 @@
       <article class="tile is-child is-12">
         <div class="columns">
           <div class="column">
+            <a class="button is-primary" style="min-width: 100px" @click="changeType">
+            <i class="fa fa-refresh" style="margin-right: 5px"></i> {{ $t('admin.point.cdkey.refresh') }}
+          </a>
             <a class="button is-primary" style="min-width: 100px" @click="importCodes">
             <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.cdkey.add') }}
           </a>
@@ -138,7 +141,7 @@ export default {
         codeTypes: this.codeTypes,
         visible: true,
         callback: result => {
-          if(result.success) {
+          if (result.success) {
             this.page = 1
             this.getCodes(this.page, this.recordsPerPage)
           }

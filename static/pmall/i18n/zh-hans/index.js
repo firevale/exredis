@@ -49,7 +49,7 @@ export default {
       }
     },
     bindMobile: {
-      hasBind: '已绑定',
+      hasBind: '手机已绑定',
       notFound: '用户不存在',
       success: '绑定成功,+{point}积分',
       failed: '绑定失败',

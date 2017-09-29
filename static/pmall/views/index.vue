@@ -74,6 +74,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+import Toast from 'common/components/toast'
 export default {
 
   data() {
@@ -105,7 +106,11 @@ export default {
     doTask(path) {
       if (path=="subscribe") {
         window.location = `//jqxs.firevale.com/m?subscribe=true&from=pmall&wcs_user_id=${wcp_user.id}`
-      } else {
+      }
+      else if (path == "bind_mobile" && this.wcp_user.user_id > 0) {
+        Toast.show("手机已绑定")
+      }
+       else {
         this.$router.push({
           name: path
         })

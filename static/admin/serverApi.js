@@ -415,6 +415,10 @@ export default {
         return post('/admin_actions/pmall/list_pmall_cdkeys', params)
       },
 
+      listPMallCodetypes() {
+        return post('/admin_actions/pmall/list_pmall_codetypes')
+      },
+
       importPmallCdkeys(params, successMessage) {
         return post('/admin_actions/pmall/import_pmall_cdkeys', params, successMessage)
       },

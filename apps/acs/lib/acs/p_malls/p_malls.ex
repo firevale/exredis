@@ -957,6 +957,10 @@ defmodule Acs.PMalls do
     {:ok, codes, code_types, total_page}
   end
 
+  def list_pmall_codetypes(app_id) do
+    Acs.Admin.get_settings_by_group(app_id, "cdkeyType")
+  end
+
   def import_pmall_cdkeys(app_id, code_type, codes) do
     keys = String.split(codes, ["\n", "\r", "\r\n"], trim: true)
     Enum.each(keys, fn(x) ->

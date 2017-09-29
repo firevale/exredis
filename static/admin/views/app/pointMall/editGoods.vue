@@ -49,9 +49,9 @@
                 <label class="label">{{ $t('admin.mall.goods.is_virtual') }}</label>
               </div>
               <div class="field-body">
-                <label class="checkbox">
+                <div class="checkbox">
                   <input type="checkbox" v-model.trim="goods.is_virtual">
-                </label>
+                </div>
               </div>
             </div>
             <div v-if="goods.is_virtual" class="field is-horizontal">
@@ -59,9 +59,12 @@
                 <label class="label">{{ $t('admin.mall.goods.virtual_param') }}</label>
               </div>
               <div class="field-body">
-                <label class="checkbox">
-                  <input class="input" type="text" v-model.trim="goods.virtual_param">
-                </label>
+                <div class="select">
+                  <select v-model.trim="goods.virtual_param">
+                    <option value="">请选择</option>
+                    <option v-for="tp in codeTypes" :value="tp.value">{{ tp.name }}</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div v-if="!goods.is_virtual" class="field is-horizontal">
@@ -184,6 +187,7 @@ export default {
       }
       this.pics = new Array(6);
     }
+    this.getCodeTypes()
   },
 
   computed: {
@@ -218,6 +222,7 @@ export default {
   data() {
     return {
       goods: {},
+      codeTypes: [],
       pics: [],
       loading: false,
       deleting: false,
@@ -304,6 +309,15 @@ export default {
           2)
         this.pics = this.goods.pic ? this.goods.pic.split('|') : "|||||".split('|')
         this.pics.length = 6
+      }
+      this.loading = false
+    },
+
+    getCodeTypes: async function() {
+      this.loading = true
+      let result = await this.$acs.listPMallCodetypes()
+      if (result.success) {
+        this.codeTypes = result.code_types
       }
       this.loading = false
     },

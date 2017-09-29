@@ -31,6 +31,7 @@ defmodule Acs.PMalls do
   alias Acs.Cache.CachedPMallTaskBar
   alias Acs.Cache.CachedAppWcpUser
   alias Acs.Cache.CachedAdminSetting
+  alias Acs.Cache.CachedPMallUserPoints
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -354,7 +355,7 @@ defmodule Acs.PMalls do
     Exredis.expire(sign_key_users, 172800)
 
     ## 添加积分
-   {:ok, add_point, total_point} = PMallTransaction.add_point("point_day_sign", app_id, wcs_user_id)
+   {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_day_sign", app_id, wcs_user_id)
    {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
 
   end
@@ -430,7 +431,7 @@ defmodule Acs.PMalls do
     do
       cache_key = _sign_cache_key_awards(app_id, wcs_user_id)
       Exredis.hset(cache_key, days, 1)
-      PMallTransaction.add_point("point_day_sign", app_id, wcs_user_id, point, "连续签到#{days}天奖励")
+      PMallTransaction.add_user_point("point_day_sign", app_id, wcs_user_id, point, "连续签到#{days}天奖励")
     else
       false ->
         {:error, "pmall.award.unreached"}
@@ -445,8 +446,7 @@ defmodule Acs.PMalls do
   def log_user_points(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->
-        log = Map.put(log, "id", new_log.id) |> Map.put("inserted_at", new_log.inserted_at)
-        {:ok, log}
+        {:ok, new_log}
 
       {:error, %{errors: errors}} ->
         {:error, errors}
@@ -454,16 +454,8 @@ defmodule Acs.PMalls do
   end
 
   def get_user_point(app_id, wcs_user_id) do
-    total_query = from log in PointLog, 
-      select: sum(log.point), 
-      where: log.app_id == ^app_id and log.wcs_user_id == ^wcs_user_id
-
-    point = Repo.one!(total_query)
-
-    case point do
-      nil -> 0
-      _ -> Decimal.to_integer(point)
-    end
+    %{point: points} = CachedPMallUserPoints.get(app_id, wcs_user_id)
+    points
   end
 
   def add_subscribe_point(app_id, wcs_user_id) do
@@ -474,7 +466,7 @@ defmodule Acs.PMalls do
       0 ->
         {:exist}
       1 -> 
-        {:ok, add_point, total_point} = PMallTransaction.add_point("point_subscribe", app_id, wcs_user_id)
+        {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
     end
   end
 
@@ -695,7 +687,7 @@ defmodule Acs.PMalls do
                 add_answer(app_id, question_id)
               end
 
-              with {:ok, add_point, total_point} <-  PMallTransaction.add_point("point_day_question", app_id, wcs_user_id) do
+              with {:ok, add_point, total_point} <-  PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id) do
                 if(question.correct == correct) do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
                 
@@ -807,7 +799,7 @@ defmodule Acs.PMalls do
         Enum.count(draws) == 0 ->
           Repo.rollback(%{i18n_message: "pmall.draw.late"})
         true ->
-          {:ok, add_point, total_point} = PMallTransaction.add_point(log_type, app_id, wcs_user_id)
+          {:ok, add_point, total_point} = PMallTransaction.add_user_point(log_type, app_id, wcs_user_id)
           rand_draw = _start_draw(draws)
           draw = get_draw(rand_draw.id)
           ids = _get_draw_ids(app_id)

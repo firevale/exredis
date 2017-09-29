@@ -155,6 +155,7 @@ export default {
         headers: {
           'x-csrf-token': window.acsConfig.csrfToken
         },
+        maxFileSize: 1024*1024,
         extensions: ['png', 'jpg', 'jpeg'],
         title: this.$t('admin.titles.uploadSettingPic', {
           picWidth: this.picWidth,

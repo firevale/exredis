@@ -84,6 +84,12 @@ export default {
             Toast.show(this.$t(result.i18n_message, {
               point: result.add_point
             }))
+            if (this.$route.back) {
+              this.$router.replace(back)
+            }
+            else {
+              this.$router.replace({name: 'index', params: this.$route.params})
+            }
           } else {
             Toast.show(this.$t(result.i18n_message))
           }

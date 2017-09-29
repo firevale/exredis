@@ -19,7 +19,8 @@
       </div>
       <div class="tasks">
         <template v-for="task in tasks">
-          <router-link :key="task.id" :to="{name: task.path}" class="task is-flex is-column flex-center flex-vcentered" tag="div">
+          <router-link :key="task.id" :to="{name: task.path}" class="task is-flex is-column flex-center flex-vcentered"
+            tag="div">
             <img :src="task.pic | imageStaticUrl" />
             <p class="is-marginless">{{task.name}}</p>
             <p class="is-marginless is-size-small  ">
@@ -45,16 +46,20 @@
                   <router-link class="button btn-conversion" style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}" tag="a"></router-link></h1>
                 <p class="is-marginless is-size-small   has-text-centered">兑换积分:
                   <span class="is-primary">{{goods.price}}</span>
-                  <router-link style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}"
-                    tag="a">查看礼品详情</router-link>
+                  <router-link style="margin-left:1rem" :to="{name: 'detail', params:{ id: goods.id}}" tag="a">查看礼品详情</router-link>
                 </p>
               </div>
             </div>
           </div>
         </div>
-        <div class="column is-6">
+        <div v-if="goodses.length > 0" class="column is-6">
           <div class="item-box">
-            <router-link class="button btn-more-goods" :to="{name: 'pmall'}" tag="div"></router-link>
+            <router-link class="item is-flex flex-vcentered flex-center" :to="{name: 'pmall'}" tag="div">
+              <p class="is-size-normal is-danger">
+                更多商品
+                <span class="is-size-small">>></span>
+              </p>
+            </router-link>
           </div>
         </div>
       </div>
@@ -71,7 +76,7 @@ export default {
   data() {
     return {
       tasks: window.acsConfig.tasks,
-      goodses: window.acsConfig.goodses, 
+      goodses: window.acsConfig.goodses,
     }
   },
   computed: {

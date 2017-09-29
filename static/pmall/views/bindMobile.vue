@@ -18,14 +18,20 @@
   </div>
 </template>
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 import * as utils from 'common/js/utils'
 import Toast from 'common/components/toast'
-
 
 export default {
   mounted() {},
 
   computed: {
+    ...mapGetters([
+      'wcp_user'
+    ]),
     btnFetchVerifyCodeTitle() {
       if (this.cooldownCounter > 0) {
         return '重新发送(' + this.cooldownCounter + 's)'
@@ -44,6 +50,9 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'setUserPoints'
+    ]),
     cooldownTimer: function() {
       if (this.cooldownCounter > 0) {
         this.cooldownCounter--;
@@ -53,7 +62,9 @@ export default {
 
     sendMobileVerifyCode: async function() {
       try {
-        if (utils.isValidMobileNumber(this.mobile)) {
+        if (this.wcp_user.user_id > 0) {
+          Toast.show('手机已绑定')
+        } else if (utils.isValidMobileNumber(this.mobile)) {
           this.sendingVerifyCode = true
           let result = await this.$acs.sendBindMobileVerifyCode(this.mobile)
           if (result.success) {
@@ -72,7 +83,9 @@ export default {
       }
     },
     onSubmit: async function() {
-      if (!this.processing) {
+      if (this.wcp_user.user_id > 0) {
+        Toast.show('手机已绑定')
+      } else if (!this.processing) {
         if (!utils.isValidMobileNumber(this.mobile)) {
           Toast.show('请输入正确的手机号码')
         } else if (this.verify_code == "") {
@@ -81,9 +94,11 @@ export default {
           this.processing = true
           let result = await this.$acs.bindMobile(this.mobile, this.verify_code)
           if (result.success) {
+            this.setUserPoints(result.total_point)
             Toast.show(this.$t(result.i18n_message, {
               point: result.add_point
             }))
+
             if (this.$route.back) {
               this.$router.replace(back)
             } else {

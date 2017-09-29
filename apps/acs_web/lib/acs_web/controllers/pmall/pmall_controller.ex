@@ -8,6 +8,7 @@ defmodule AcsWeb.PMallController do
   alias Acs.Accounts
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Admin.Setting
+  alias Acs.PMallTransaction
 
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id

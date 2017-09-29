@@ -12,7 +12,7 @@ Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: app_id, name: "point
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: app_id, name: "point_exchange_goods", value: "0", group: "point", memo: "购物兑换积分", active: true}) |> Acs.Repo.insert
 
 Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: app_id, name: "手机绑定", pic: "/images/task_pics/1/c35f3e49d3141f900e89e7dc2b7f2cda.jpg", sub_name: "限一次", point: 10, path: "bind_mobile", active: true, sort: 1}) |> Acs.Repo.insert
-Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: app_id, name: "官网预约", pic: "/images/task_pics/2/655beab6711b7b832a879b9978a28c50.jpg", sub_name: "限一次", point: 5, path: "/gwyy", active: true, sort: 2}) |> Acs.Repo.insert
+Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: app_id, name: "官网预约", pic: "/images/task_pics/2/655beab6711b7b832a879b9978a28c50.jpg", sub_name: "限一次", point: 5, path: "subscribe", active: true, sort: 2}) |> Acs.Repo.insert
 Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: app_id, name: "每日签到", pic: "/images/task_pics/3/c977755fc959c4de0a9debc8df435075.jpg", sub_name: "/日", point: 2, path: "sign", active: true, sort: 3}) |> Acs.Repo.insert
 Acs.PMalls.TaskBar.changeset(%Acs.PMalls.TaskBar{}, %{app_id: app_id, name: "每日问答", pic: "/images/task_pics/4/a3166cad54ac36073c3d5b8877764fbd.jpg", sub_name: "/日", point: 5, path: "knowledge", active: true, sort: 4}) |> Acs.Repo.insert
 

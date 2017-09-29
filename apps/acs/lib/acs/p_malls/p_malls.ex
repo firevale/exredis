@@ -983,4 +983,39 @@ defmodule Acs.PMalls do
     total >= stock
   end
 
+  def list_pmall_orders(app_id, keyword, page, records_per_page) do
+    {:ok, searchTotal, ids} = Search.search_pmall_orders(app_id, keyword, page, records_per_page)
+
+    queryTotal = from o in PMallOrder, select: count(1), where: o.app_id == ^app_id
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      {:ok, [], 0}
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = 
+        from order in PMallOrder,
+          left_join: details in assoc(order, :details),
+          left_join: user in assoc(order, :wcs_user),
+          select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+            user: [:id, :nickname],
+            details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+          where: order.app_id == ^app_id,
+          order_by: [desc: order.inserted_at],
+          limit: ^records_per_page,
+          offset: ^((page - 1) * records_per_page),
+          preload: [wcs_user: user, details: details]
+
+       query =
+         if(String.length(keyword)>0) do
+          where(query, [o], o.id in ^ids)
+         else
+          query
+         end
+
+      orders = Repo.all(query)
+      {:ok, orders, total_page}
+    end
+  end
+
 end

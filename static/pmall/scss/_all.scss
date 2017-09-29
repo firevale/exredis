@@ -293,7 +293,6 @@
   }
 
   .sign-page {
-    margin-top: 2px;
     $border-color: rgba(#d40200, 0.5);
     background-image: url("~assets/pmall/1246_01.jpg");
     background-size: virtual-m-pixel(1242) virtual-m-pixel(2346);
@@ -301,7 +300,6 @@
       flex: 1;
       background-color: rgba(white, 0.8);
       .calender {
-        margin-top: 2px;
         border: 1px solid $border-color;
         .head-image {
           width: 100%;

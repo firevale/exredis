@@ -12,29 +12,34 @@ defmodule Acs.PMallTransaction do
   alias Acs.PMalls
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PointLog
+  alias Acs.PMalls.UserPoints
 
   alias Acs.Cache.CachedAdminSetting
+  alias Acs.Cache.CachedPMallUserPoints
 
-  def add_point(log_type, app_id, wcs_user_id) do
+  def add_user_point(log_type, app_id, wcs_user_id) do
     %Acs.Admin.Setting{} = setting  = CachedAdminSetting.get_fat(app_id, log_type)
-    add_point(log_type, app_id, wcs_user_id, setting.value, setting.memo)
+    add_user_point(log_type, app_id, wcs_user_id, setting.value, setting.memo)
   end
-  def add_point(log_type, app_id, wcs_user_id, points, memo) when is_bitstring(points) do
-    add_point(log_type, app_id, wcs_user_id, String.to_integer(points), memo)
+  def add_user_point(log_type, app_id, wcs_user_id, points, memo) when is_bitstring(points) do
+    add_user_point(log_type, app_id, wcs_user_id, String.to_integer(points), memo)
   end
-  def add_point(log_type, app_id, wcs_user_id, points, memo) when is_integer(points) do
-    log = %{
+  def add_user_point(log_type, app_id, wcs_user_id, points, memo) when is_integer(points) do
+    PMalls.log_user_points(%{
       app_id: app_id,
       wcs_user_id: wcs_user_id,
       log_type: log_type,
       point: points,
       memo: memo
-    }
+    })
 
-    PMalls.log_user_points(log)
-    total_point = PMalls.get_user_point(app_id, wcs_user_id)
+    user_points = CachedPMallUserPoints.get(app_id, wcs_user_id) 
+    new_user_points = UserPoints.changeset(user_points, %{
+      point: max(user_points.point + points, 0)
+    }) |> Repo.insert!
+    CachedPMallUserPoints.refresh(new_user_points) 
 
-    {:ok, points, total_point}
+    {:ok, points, new_user_points.point}
   end
 
   def exchange_goods_point(app_id, wcs_user_id, goods) do
@@ -46,18 +51,7 @@ defmodule Acs.PMallTransaction do
         goods.name
       end
 
-    log = %{
-        app_id: app_id,
-        wcs_user_id: wcs_user_id,
-        log_type: "point_exchange_goods",
-        point: -goods.price,
-        memo: memo
-    }
-
-    PMalls.log_user_points(log)
-    total_point = PMalls.get_user_point(app_id, wcs_user_id)
-
-    {:ok, -goods.price, total_point}
+    add_user_point("point_exchange_goods", app_id, wcs_user_id, -goods.price, memo) 
   end
 
 

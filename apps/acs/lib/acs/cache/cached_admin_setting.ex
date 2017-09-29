@@ -49,6 +49,7 @@ defmodule Acs.Cache.CachedAdminSetting do
         Exredis.set(fat_key(app_id, name), Setting.to_redis(setting))
         Excache.del(key(app_id, name))
         Excache.del(fat_key(app_id, name))
+        Excache.del(group_key(app_id, setting.group))
         setting
     end
   end

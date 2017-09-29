@@ -75,7 +75,6 @@ defmodule AcsWeb do
       alias Acs.Wcp.AppWcpUser
 
       alias Acs.PMalls
-      alias Acs.PMalls.PointLog
       alias Acs.PMalls.TaskBar
       alias Acs.PMalls.PMallGoods
       alias Acs.PMalls.LuckyDraw

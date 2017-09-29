@@ -3,7 +3,7 @@ defmodule Acs.Wcs.WcsUser do
   import Ecto.Changeset
   alias Acs.Wcs.WcsUser
 
-  @derive {Poison.Encoder, except: [:app, :__meta__]}
+  @derive {Poison.Encoder, except: [:user, :__meta__]}
 
   schema "wcs_users" do
     field :openid, :string       

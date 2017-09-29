@@ -33,7 +33,7 @@
                 <p>{{ order.name }}</p>
               </div>
               <div class="column">
-                <p>{{ order.wcp_user.nickname }}</p>
+                <p>{{ order.wcs_user.nickname }}</p>
               </div>
               <div class="column">
                 <p>{{ getStatus(order.status) }}</p>

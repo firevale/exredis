@@ -422,6 +422,10 @@ export default {
       importPmallCdkeys(params, successMessage) {
         return post('/admin_actions/pmall/import_pmall_cdkeys', params, successMessage)
       },
+
+      listPMallOrders(params) {
+        return post('/admin_actions/pmall/list_pmall_orders', params)
+      },
     }
   }
 }

@@ -11,8 +11,9 @@ defmodule Acs.PMallTransaction do
 
   alias Acs.PMalls
   alias Acs.PMalls.PMallGoods
-  alias Acs.PMalls.PointLog
   alias Acs.PMalls.UserPoints
+
+  alias Acs.Search.ESPMallPointLog
 
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Cache.CachedPMallUserPoints
@@ -25,18 +26,20 @@ defmodule Acs.PMallTransaction do
     add_user_point(log_type, app_id, wcs_user_id, String.to_integer(points), memo)
   end
   def add_user_point(log_type, app_id, wcs_user_id, points, memo) when is_integer(points) do
-    PMalls.log_user_points(%{
+    ESPMallPointLog.index(%{
       app_id: app_id,
       wcs_user_id: wcs_user_id,
       log_type: log_type,
       point: points,
-      memo: memo
+      memo: memo,
+      inserted_at: DateTime.utc_now(),
     })
 
     user_points = CachedPMallUserPoints.get(app_id, wcs_user_id) 
     new_user_points = UserPoints.changeset(user_points, %{
       point: max(user_points.point + points, 0)
     }) |> Repo.update!
+
     CachedPMallUserPoints.refresh(new_user_points) 
 
     {:ok, points, new_user_points.point}

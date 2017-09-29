@@ -14,6 +14,8 @@ defmodule Acs.Wcs do
   alias Acs.Wcs.WcsUser
   alias Acs.Cache.CachedWcsUser
 
+  alias Acs.Search.ESWcsUser
+
   @cfg Application.get_env(:acs, WCS, [wcs_app_id: "wx093580929e0bb276", wcs_app_secret:  "1d9a8ddcb737e29b3ac048451b7d329f"])
   @wcs_app_id @cfg[:wcs_app_id]
   @wcs_app_secret @cfg[:wcs_app_secret]
@@ -81,17 +83,16 @@ defmodule Acs.Wcs do
   def get_wcs_user(wcs_user_id) do 
     CachedWcsUser.get(wcs_user_id)
   end
-  def get_wcs_user!(openid: openid) do
-    Repo.get_by(WcsUser, openid: openid)
-  end
 
   def create_wcs_user!(attr) do 
     wcs_user = WcsUser.changeset(%WcsUser{}, attr) |> Repo.insert!  
+    ESWcsUser.index(wcs_user)
     CachedWcsUser.refresh(wcs_user)
   end
 
   def update_wcs_user!(%WcsUser{} = wcs_user, attr) do 
     new_wcs_user = WcsUser.changeset(wcs_user, attr) |> Repo.update!  
+    ESWcsUser.index(wcs_user)
     CachedWcsUser.refresh(new_wcs_user)
   end
 

@@ -14,7 +14,6 @@ defmodule Acs.PMalls do
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PMallOrder
   alias Acs.PMalls.PMallOrderDetail
-  alias Acs.PMalls.PointLog
   alias Acs.PMalls.TaskBar
   alias Acs.PMalls.DayQuestion
   alias Acs.PMalls.LuckyDraw
@@ -145,63 +144,40 @@ defmodule Acs.PMalls do
     end
   end
 
-  def list_pmall_point_logs(app_id, wcs_user_id, page, records_per_page) do
-    total_query = from pl in PointLog, where: pl.app_id == ^app_id, select: count(pl.id)
-    total_query = case String.length(wcs_user_id) do
-      0 -> total_query
-      _ -> where(total_query, [pl], pl.wcs_user_id == ^wcs_user_id)
+  def list_pmall_point_logs(app_id, keyword, page, records_per_page) do
+    {:ok, total, logs} = Acs.Search.search_pmall_point_logs(
+      app_id: app_id, 
+      keyword: keyword, 
+      page: page, 
+      records_per_page: records_per_page)
+    total_page = round(Float.ceil(total / records_per_page))
+    logs = for log <- logs do 
+      Map.put(log, :wcs_user, Wcs.get_wcs_user(log.wcs_user_id))
     end
-    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
-
-    query = from pl in PointLog,
-              join: u in assoc(pl, :wcs_user),
-              select: map(pl, [:id, :log_type, :point, :memo, :wcs_user_id, :inserted_at, wcs_user: [:id, :nickname]]),
-              limit: ^records_per_page,
-              where: pl.app_id == ^app_id,
-              offset: ^((page - 1) * records_per_page),
-              order_by: [desc: pl.id],
-              preload: [wcs_user: u]
-
-    query = case String.length(wcs_user_id) do
-      0 -> query
-      _ -> where(query, [pl], pl.wcs_user_id == ^wcs_user_id)
-    end
-    logs = Repo.all(query)
     {:ok, logs, total_page}
   end
 
-  def list_my_points(app_id, wcs_user_id, page, records_per_page) do
-    total_query = from pl in PointLog, where: pl.app_id == ^app_id and pl.wcs_user_id == ^wcs_user_id, select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
+  def list_my_point_logs(app_id, wcs_user_id, page, records_per_page) do
+    {:ok, total, logs} = Acs.Search.list_my_point_logs(
+      app_id: app_id, 
+      wcs_user_id: wcs_user_id, 
+      page: page, 
+      records_per_page: records_per_page)
 
-    query =
-      from pl in PointLog,
-        select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
-        limit: ^records_per_page,
-        where: pl.app_id == ^app_id and pl.wcs_user_id == ^wcs_user_id,
-        offset: ^((page - 1) * records_per_page),
-        order_by: [desc: pl.id]
+    total_page = round(Float.ceil(total / records_per_page))
 
-    logs = Repo.all(query)
     {:ok, logs, total_page}
   end
 
-  def list_my_exchanges(app_id, wcs_user_id, page, records_per_page) do
-    total_query =
-      from pl in PointLog,
-        where: pl.app_id == ^app_id and pl.wcs_user_id == ^wcs_user_id and pl.log_type == "point_exchange_goods",
-        select: count(pl.id)
-    total_page = round(Float.ceil(Repo.one!(total_query) / records_per_page))
+  def list_my_exchange_point_logs(app_id, wcs_user_id, page, records_per_page) do
+    {:ok, total, logs} = Acs.Search.list_my_exchange_point_logs(
+      app_id: app_id, 
+      wcs_user_id: wcs_user_id, 
+      page: page, 
+      records_per_page: records_per_page)
 
-    query =
-      from pl in PointLog,
-        select: map(pl, [:id, :log_type, :point, :memo, :inserted_at]),
-        limit: ^records_per_page,
-        where: pl.app_id == ^app_id and pl.wcs_user_id == ^wcs_user_id and pl.log_type == "point_exchange_goods",
-        offset: ^((page - 1) * records_per_page),
-        order_by: [desc: pl.id]
+    total_page = round(Float.ceil(total / records_per_page))
 
-    logs = Repo.all(query)
     {:ok, logs, total_page}
   end
 
@@ -425,16 +401,6 @@ defmodule Acs.PMalls do
   end
 
   # 积分
-  def log_user_points(log) do
-    case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
-      {:ok, new_log} ->
-        {:ok, new_log}
-
-      {:error, %{errors: errors}} ->
-        {:error, errors}
-    end
-  end
-
   def get_user_point(app_id, wcs_user_id) do
     %{point: points} = CachedPMallUserPoints.get(app_id, wcs_user_id)
     points
@@ -658,6 +624,7 @@ defmodule Acs.PMalls do
           case get_question(question_id) do
             nil ->
               Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
+
             %DayQuestion{} = question ->
               if(exists_answer(app_id) == 0) do
                 cached_day_question(app_id, question)
@@ -689,6 +656,7 @@ defmodule Acs.PMalls do
       where: d.app_id == ^app_id,
       select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
+      
     Repo.all(query)
   end
 
@@ -951,7 +919,7 @@ defmodule Acs.PMalls do
       query
     end
     codes = Repo.all(query)
-    code_types = Acs.Admin.get_settings_by_group(app_id, "cdkeyType")
+    code_types = CachedAdminSetting.list_group(app_id, "cdkeyType")
     {:ok, codes, code_types, total_page}
   end
 
@@ -1006,6 +974,41 @@ defmodule Acs.PMalls do
             end
     total = Repo.one(from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), select: count(1)) || 0
     total >= stock
+  end
+
+  def list_pmall_orders(app_id, keyword, page, records_per_page) do
+    {:ok, searchTotal, ids} = Search.search_pmall_orders(app_id, keyword, page, records_per_page)
+
+    queryTotal = from o in PMallOrder, select: count(1), where: o.app_id == ^app_id
+    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
+
+    if total == 0 do
+      {:ok, [], 0}
+    else
+      total_page = round(Float.ceil(total / records_per_page))
+      query = 
+        from order in PMallOrder,
+          left_join: details in assoc(order, :details),
+          left_join: user in assoc(order, :wcs_user),
+          select: map(order, [:id, :goods_name, :status, :price, :final_price, :currency, :postage, :inserted_at,
+            user: [:id, :nickname],
+            details: [:id, :goods_name, :goods_pic, :price, :amount] ]),
+          where: order.app_id == ^app_id,
+          order_by: [desc: order.inserted_at],
+          limit: ^records_per_page,
+          offset: ^((page - 1) * records_per_page),
+          preload: [wcs_user: user, details: details]
+
+       query =
+         if(String.length(keyword)>0) do
+          where(query, [o], o.id in ^ids)
+         else
+          query
+         end
+
+      orders = Repo.all(query)
+      {:ok, orders, total_page}
+    end
   end
 
 end

@@ -379,4 +379,12 @@ defmodule AcsWeb.Admin.PMallController do
     code_types = PMalls.list_pmall_codetypes(app_id)
     conn |> json(%{success: true, code_types: code_types})
   end
+
+  def list_pmall_orders(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                                      %{"page" => page, 
+                                      "keyword" => keyword,
+                                      "records_per_page" => records_per_page}) do
+    {:ok, orders, total_page} = PMalls.list_pmall_orders(app_id, keyword, page, records_per_page)
+    conn |> json(%{success: true, orders: orders, total: total_page})
+  end
 end

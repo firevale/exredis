@@ -9,15 +9,15 @@
       </span>
     </div>
     <div v-if="orders.length > 0">
-      <div v-for="item in orders" class="media" style="align-items: stretch; margin:1rem auto;">
+      <div v-for="item in orders" :key="item.id" class="media" style="align-items: stretch; margin:1rem auto;">
         <div class="media-left">
           <p>{{item.id}}</p>
           <p> {{$t('admin.mall.order.status.'+item.status) }}</p>
           <p> {{ item.inserted_at | formatServerDateTime }}</p>
-          <p>{{item.user.nickname}}&nbsp;&nbsp;&nbsp;{{item.user.mobile}}</p>
+          <p>{{item.wcs_user.nickname}}</p>
         </div>
         <div class="media-content columns" style="border:1px solid grey;margin:0; padding:0 1rem;">
-          <div v-for="detail in item.details" class="cloumn">
+          <div v-for="detail in item.details" :key="detail.id" class="cloumn">
             <div class="media" style="padding-top:1rem;margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
@@ -113,14 +113,6 @@ export default {
   watch: {},
 
   methods: {
-    getAppIcon: function(order) {
-      if (this.app && this.app.icon) {
-        return this.app.icon
-      } else {
-        return 'https://placehold.it/32x32?text=' + app.name
-      }
-    },
-
     getOrderTransactionId: function(order) {
       if (order.transaction_id.startsWith('empty.')) {
         return ''
@@ -176,7 +168,7 @@ export default {
 
     fetchOrders: async function() {
       this.loading = true
-      let result = result = await this.$acs.listMallOrders({
+      let result = result = await this.$acs.listPMallOrders({
         app_id: this.$route.params.appId,
         keyword: this.keyword,
         page: this.page + 1,

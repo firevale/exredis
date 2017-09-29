@@ -504,4 +504,104 @@ defmodule Acs.Search do
     end
   end
 
+  def search_pmall_point_logs(app_id: app_id, keyword: "", page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        term: %{app_id: app_id}
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_pmall_point_logs(query)
+  end
+
+  def search_pmall_point_logs(app_id: app_id, keyword: keyword, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        bool: %{
+          must: [
+            %{term: %{app_id: app_id}}
+          ],
+          should: [
+            %{term: %{wcs_user_id: keyword}},
+            %{term: %{log_type: keyword}},
+            %{term: %{device_id: keyword}},
+            %{match: %{memo: keyword}},
+            %{has_parent: %{
+              parent_type: "wcs_users",
+              query: %{
+                bool: %{
+                  should: [
+                    %{term: %{openid: keyword}},
+                    %{term: %{city: keyword}},
+                    %{match: %{nickname: keyword}},
+                  ],
+                  minimum_should_match: 1
+              }},
+              inner_hits: %{}
+            }},
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_pmall_point_logs(query)
+  end
+
+  def list_my_point_logs(app_id: app_id, wcs_user_id: wcs_user_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        bool: %{
+          must: [
+            %{term: %{app_id: app_id}},
+            %{term: %{wcs_user_id: wcs_user_id}},
+          ]
+        }
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_pmall_point_logs(query)
+  end
+
+  def list_my_exchange_point_logs(app_id: app_id, wcs_user_id: wcs_user_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        bool: %{
+          must: [
+            %{term: %{app_id: app_id}},
+            %{term: %{wcs_user_id: wcs_user_id}},
+            %{term: %{log_type: "point_exchange_goods"}},
+          ]
+        }
+      },
+      sort: %{inserted_at: %{order: :desc}},
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_pmall_point_logs(query)
+  end
+
+  def _search_pmall_point_logs(query) do 
+    case Elasticsearch.search(%{index: "pmall", type: "point_logs", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total} = result}} ->
+        logs = Enum.map(hits, &(&1._source))
+        {:ok, total, logs}
+
+      e ->
+        error "search orders failed: #{inspect e, pretty: true}"
+        e
+    end 
+  end
+
 end

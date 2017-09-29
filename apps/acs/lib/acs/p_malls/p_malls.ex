@@ -349,10 +349,10 @@ defmodule Acs.PMalls do
 
   end
 
-  def get_sign_users(app_id) do
+  def get_sign_users(app_id, start, count \\ 5) do
     sign_key_users = _sign_cache_key_users(app_id)
     total = Exredis.zcard(sign_key_users)
-    open_ids = Exredis.zrange(sign_key_users, 0, 20)
+    open_ids = Exredis.zrange(sign_key_users, start, start + count)
     wcp_users =
       Enum.map(open_ids, fn wcs_user_id ->
         wcs_user = Wcs.get_wcs_user(wcs_user_id)

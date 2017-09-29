@@ -4,22 +4,11 @@ defmodule AcsWeb.Admin.PMallController do
   plug :check_is_admin 
 
     # list_pmall_goods
-  def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                                      %{"page" => page, 
-                                      "records_per_page" => records_per_page,
-                                      "keyword" => keyword}) do
-    case PMalls.list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
-      :zero ->
-        conn |> json(%{success: true, total: 0, goodses: []})
-      {:ok, goodses, total_page} ->
-        conn |> json(%{success: true, goodses: goodses, total: total_page})
-    end
-  end
-  def list_pmall_goods(conn, _params) do
-    conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
+  def list_pmall_goods(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, _params) do
+    conn |> json(%{success: true, total: 1, goodses: PMalls.list_all_pmall_goods(app_id)})
   end
 
-  def get_pmall_goods_detail(conn,%{"goods_id" =>goods_id})do
+  def get_pmall_goods_detail(conn,%{"goods_id" => goods_id})do
     goods = PMalls.get_pmall_goods(goods_id)
     conn |> json(%{success: true, goods: goods})
   end

@@ -6,7 +6,6 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcs.WcsUser
 
   alias Acs.Accounts
-  alias Acs.PMallTransaction
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Admin.Setting
 
@@ -85,7 +84,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do
+  def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
     {:ok, signed, sign_times, pic_raw, terms, awards} = PMalls.get_sign_info(app_id, wcs_user_id)
     %{"pic" => pic} = pic_raw
     {total, sign_users} = PMalls.get_sign_users(app_id, 0)
@@ -100,12 +99,12 @@ defmodule AcsWeb.PMallController do
       sign_users: sign_users})
   end
 
-  def get_sign_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"start" => start } = params) do
+  def get_sign_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"start" => start } = _params) do
     {total, sign_users} = PMalls.get_sign_users(app_id, start)
     conn |> json(%{ success: true,  sign_users: sign_users})
   end
 
-  def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, params) do
+  def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
     result = PMalls.sign(app_id, wcs_user_id)
     case result do
       {:ok, sign_info} ->
@@ -215,7 +214,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = params) do
+  def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = _params) do
     with %WcsUser{} <- Wcs.get_wcs_user(wcs_user_id),
          {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
     do

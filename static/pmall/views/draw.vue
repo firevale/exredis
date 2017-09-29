@@ -38,6 +38,7 @@ export default {
       pic: undefined,
       isNormal: false,
       player: undefined,
+      drawPoint: 1,
       playerOptions: {
         rotateOffset: -18,
         duration: 5000,
@@ -56,7 +57,8 @@ export default {
     getDrawInfo: async function() {
       let result = await this.$acs.getDrawInfo()
       if (result.success) {
-        this.pic = filter.imageStaticUrl(JSON.parse(result.setting.value).pic)
+        this.pic = filter.imageStaticUrl(result.pic.pic)
+        this.drawPoint = parseInt(result.draw_point)
         this.isNormal = true
       }
     },
@@ -66,7 +68,7 @@ export default {
         return
       } else if (this.processing) {
         return
-      } else if (this.points <= 10) {
+      } else if ((this.points + this.drawPoint) < 0) {
         Toast.show("抱歉，您的积分不足")
         return
       }

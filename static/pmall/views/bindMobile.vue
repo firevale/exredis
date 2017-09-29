@@ -4,12 +4,12 @@
     <i class="icon icon-logo"></i>
     <div class="items is-flex flex-center flex-vcentered">
       <div class="item">
-        <input class="input is-mobile" type="number" v-model.trim="mobile" placeholder="请输入手机号">
+        <input class="input is-mobile is-radiusless" type="number" v-model.trim="mobile" placeholder="请输入手机号">
       </div>
       <div class="item">
-        <input class="input is-code" type="text" v-model.trim="verify_code" placeholder="请输入验证码">
-        <input class="btn-valid-code size-normal" type="button" :disabled="cooldownCounter > 0" :value="btnFetchVerifyCodeTitle"
-          @click="sendMobileVerifyCode">
+        <input class="input is-code is-radiusless" type="text" v-model.trim="verify_code" placeholder="请输入验证码">
+        <input class="btn-valid-code size-normal is-radiusless" type="button" :class="cooldownCounter > 0 ? 'disabled':'' "
+          :disabled="cooldownCounter > 0" :value="btnFetchVerifyCodeTitle" @click="sendMobileVerifyCode">
       </div>
       <div class="control is-flex flex-center">
         <a class="button btn-bind-mobile" @click="onSubmit"></a>
@@ -86,9 +86,11 @@ export default {
             }))
             if (this.$route.back) {
               this.$router.replace(back)
-            }
-            else {
-              this.$router.replace({name: 'index', params: this.$route.params})
+            } else {
+              this.$router.replace({
+                name: 'index',
+                params: this.$route.params
+              })
             }
           } else {
             Toast.show(this.$t(result.i18n_message))

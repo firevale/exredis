@@ -146,7 +146,7 @@ defmodule AcsWeb.Admin.PMallController do
         conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
 
       %{id: wcs_user_id} -> 
-        case Acs.PMallTransaction.add_user_point("admin_op", wcs_user_id, app_id, point, memo) do
+        case Acs.PMallTransaction.add_user_point("admin_op", app_id, wcs_user_id, point, memo) do
           {:ok, _, _} ->
             conn |> json(%{ 
               success: true, 

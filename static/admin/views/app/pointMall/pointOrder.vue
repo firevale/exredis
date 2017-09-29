@@ -113,14 +113,6 @@ export default {
   watch: {},
 
   methods: {
-    getAppIcon: function(order) {
-      if (this.app && this.app.icon) {
-        return this.app.icon
-      } else {
-        return 'https://placehold.it/32x32?text=' + app.name
-      }
-    },
-
     getOrderTransactionId: function(order) {
       if (order.transaction_id.startsWith('empty.')) {
         return ''
@@ -176,7 +168,7 @@ export default {
 
     fetchOrders: async function() {
       this.loading = true
-      let result = result = await this.$acs.listMallOrders({
+      let result = result = await this.$acs.listPMallOrders({
         app_id: this.$route.params.appId,
         keyword: this.keyword,
         page: this.page + 1,

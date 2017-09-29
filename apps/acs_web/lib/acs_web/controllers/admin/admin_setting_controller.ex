@@ -106,8 +106,7 @@ defmodule AcsWeb.Admin.AdminSettingController do
 
   plug :check_upload_image, [
     param_name: "file", 
-    format: ["png", "jpg", "jpeg"],
-    reformat: "jpg"
+    format: ["png", "jpg", "jpeg"]
     ] when action == :upload_setting_pic
   def upload_setting_pic(conn, %{"setting_id" => setting_id, "file" => %{path: image_file_path}}) do
     {:ok, image_path, width, height} = 

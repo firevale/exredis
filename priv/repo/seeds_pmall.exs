@@ -36,7 +36,7 @@ Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "sign_award_5", value: "{\"days\":\"30\",\"point\":\"100\",\"pic\":\"/images/setting_pics/26/8b61581a1db9beb68ed9491435d3484a.jpg\"}", group: "signAward", memo: "签到30天奖励", active: true}) |> Acs.Repo.insert
 Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "sign_award_6", value: "{\"point\":\"200\",\"days\":\"50\",\"pic\":\"/images/setting_pics/27/8b61581a1db9beb68ed9491435d3484a.jpg\"}", group: "signAward", memo: "签到50天奖励", active: true}) |> Acs.Repo.insert
 
-Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "抽奖图", value: "{\"pic\":\"/images/setting_pics/30/2ccf84222e238bb1ca674979c8cc7ecc.jpg\"}", group: "luckyDrawPic", memo: "抽奖图", active: true}) |> Acs.Repo.insert
+Acs.Admin.Setting.changeset(%Acs.Admin.Setting{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "抽奖图", value: "{\"pic\":\"/images/setting_pics/31/f21ccd1c4fb26fc0aa4b51b151191217.png\"}", group: "luckyDrawPic", memo: "抽奖图", active: true}) |> Acs.Repo.insert
 
 Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "衣服", num: 10, rate: 5 }) |> Acs.Repo.insert
 Acs.PMalls.LuckyDraw.changeset(%Acs.PMalls.LuckyDraw{}, %{app_id: "3E4125B15C4FE2AB3BA00CB1DC1A0EE5", name: "雨伞", num: 10, rate: 10 }) |> Acs.Repo.insert

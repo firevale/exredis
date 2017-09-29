@@ -466,7 +466,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def subscribe_point(app_id, wcs_user_id) do
+  def add_subscribe_point(app_id, wcs_user_id) do
     cache_key= "pmall:subscribe:#{app_id}"
     val = "#{wcs_user_id}"
     result = Exredis.sadd(cache_key, val)

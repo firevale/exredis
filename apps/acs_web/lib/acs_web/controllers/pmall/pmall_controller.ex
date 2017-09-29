@@ -174,11 +174,11 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_draw_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-    case CachedAdminSetting.get_fat(app_id,"抽奖图") do
-      nil ->
-        conn |> json(%{success: false})
-      %Setting{} = setting ->
-        conn |> json(%{success: true, setting: Map.take(setting, [:value])})
+    with {:ok, pic, draw_point} <- PMalls.get_draw_info(app_id) do
+      conn |> json(%{success: true, pic: pic, draw_point: draw_point})
+    else
+      _ ->
+        conn |> json(%{success: false, i18n_message: "pmall.draw.nonsetting"})
     end
   end
 
@@ -214,9 +214,9 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def point_subscribe(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = _params) do
+  def add_subscribe_point(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = _params) do
     with %WcsUser{} <- Wcs.get_wcs_user(wcs_user_id),
-      {:ok, add_point, total_point} <- PMalls.subscribe_point(app_id, wcs_user_id)
+         {:ok, add_point, total_point} <- PMalls.add_subscribe_point(app_id, wcs_user_id)
     do
       conn |> json(%{success: true, result_code: "ok"})
     else

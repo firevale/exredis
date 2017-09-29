@@ -18,17 +18,18 @@ import * as acs from 'common/js/acs'
 import axios from 'axios'
 
 export default {
-  // beforeRouteEnter: function(to, from, next) {
-  //   // if (window.acsConfig.user.user_id || to.name == 'bind_mobile') {
-  //   //   next()
-  //   // }
-  //   // else {
-  //   //   next({
-  //   //     name: 'bind_mobile',
-  //   //     params: {...to.params, back: to}
-  //   //   })
-  //   // }
-  // },
+  beforeRouteEnter: function(to, from, next) {
+    if (window.acsConfig.user.user_id || to.name == 'bind_mobile') {
+      next()
+    } else {
+      next({
+        name: 'bind_mobile',
+        params: { ...to.params,
+          back: to
+        }
+      })
+    }
+  },
   data: function() {
     return {
       loading: false,

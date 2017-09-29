@@ -71,7 +71,7 @@ export default {
       },
       listMyExchangePointLogs(params) {
         let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchangePointLogs = c)
-        return post('/pmall_actions/list_my_point_exchange_logs', params, undefined, cancelToken)
+        return post('/pmall_actions/list_my_exchange_point_logs', params, undefined, cancelToken)
       },
       takeAward(params){
         return post("/pmall_actions/take_award", params)

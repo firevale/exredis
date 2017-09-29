@@ -140,10 +140,10 @@ defmodule AcsWeb.Admin.PMallController do
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
                                         %{"openid" => openid, 
                                           "point" => _point, 
-                                          "memo" => _memo} = log) do
-    wcp_user_id = case Acs.Wcp.get_app_wcp_user(app_id, openid: openid) do
+                                          "memo" => _memo} = log) do                 
+    wcp_user_id = case Acs.Wcs.get_wcs_user!(openid: openid) do
                     nil -> nil
-                    %AppWcpUser{} = u -> u.id
+                    %WcsUser{} = u -> u.id
                   end
 
     if is_nil(wcp_user_id) do

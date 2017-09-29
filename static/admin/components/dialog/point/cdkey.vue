@@ -8,6 +8,7 @@
         <label class="label"> {{ $t('admin.point.cdkey.code_type') }}: </label>
         <div class="select">
           <select v-model.trim="codeType">
+            <option value="">请选择</option>
             <option v-for="tp in codeTypes" :value="tp.value">{{ tp.name }}</option>
           </select>
         </div>

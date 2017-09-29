@@ -68,7 +68,8 @@ export default {
       },
       isCorrect: false,
       isWrong: false,
-      isComplete: false
+      isComplete: false,
+      isNill: true
     }
   },
 
@@ -85,7 +86,9 @@ export default {
         this.isComplete = result.exists > 0
         this.question = result.question
         this.unknow = "不知道"
+        this.isNill = false
       } else {
+        this.isNill = true
         Toast.show("抱歉，暂无答题")
       }
     },
@@ -94,7 +97,7 @@ export default {
         Toast.show("请选择答案")
         return
       }
-      if (!this.processing) {
+      if (!this.processing && !this.isNill) {
         this.processing = true
         let result = await this.$acs.answerQuestion(this.question.id, this.correct)
         if (result.success) {

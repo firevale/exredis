@@ -103,7 +103,7 @@ defmodule AcsWeb.Router do
     end
 
     scope "/pmall" do
-      post "/point_subscribe", PMallController, :point_subscribe
+      post "/add_subscribe_point", PMallController, :add_subscribe_point
     end 
   end # end scope ap
 

@@ -466,7 +466,7 @@ defmodule Acs.PMalls do
     end
   end
 
-  def subscribe_point(app_id, wcs_user_id) do
+  def add_subscribe_point(app_id, wcs_user_id) do
     cache_key= "pmall:subscribe:#{app_id}"
     val = "#{wcs_user_id}"
     result = Exredis.sadd(cache_key, val)
@@ -722,6 +722,18 @@ defmodule Acs.PMalls do
       select: map(d, [:id, :name, :pic, :num, :rate, :app_id, :goods_id]),
       order_by: [desc: d.inserted_at]
     Repo.all(query)
+  end
+
+  def get_draw_info(app_id) do
+    pic = CachedAdminSetting.get_fat(app_id,"抽奖图")
+    draw_point = CachedAdminSetting.get_fat(app_id,"point_luck_draw")
+    with true <- pic != nil,
+         true <- draw_point != nil do
+      {:ok, Poison.decode!(pic.value), Poison.decode!(draw_point.value)}
+    else
+      _ ->
+        {:error}
+    end
   end
 
   defp _get_draw_ids(app_id) do

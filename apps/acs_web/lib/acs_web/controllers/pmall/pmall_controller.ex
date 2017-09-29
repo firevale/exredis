@@ -19,10 +19,10 @@ defmodule AcsWeb.PMallController do
     conn |> json(%{success: true, goods: goods, exchanged: exchange_count >= 1})
   end
 
-  def list_my_points(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
+  def list_my_point_logs(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"page" => page,
       "records_per_page" => records_per_page}) do
-    result = PMalls.list_my_points(app_id, wcs_user_id, page, records_per_page)
+    result = PMalls.list_my_point_logs(app_id, wcs_user_id, page, records_per_page)
     case result do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})
@@ -31,10 +31,10 @@ defmodule AcsWeb.PMallController do
      end
   end
 
-  def list_my_exchanges(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
+  def list_my_exchange_point_logs(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"page" => page,
       "records_per_page" => records_per_page}) do
-    result = PMalls.list_my_exchanges(app_id, wcs_user_id, page, records_per_page)
+    result = PMalls.list_my_exchange_point_logs(app_id, wcs_user_id, page, records_per_page)
     case result do
       {:ok, point_logs, total} ->
         conn |> json(%{success: true, point_logs: point_logs, total: total})

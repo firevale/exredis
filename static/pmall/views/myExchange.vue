@@ -29,8 +29,8 @@ export default {
   },
   methods: {
     loadData: async function() {
-      this.$acs.cancel('listMyPoints')
-      let result = await this.$acs.listMyExchanges({
+      this.$acs.cancel('listMyExchangePointLogs')
+      let result = await this.$acs.listMyExchangePointLogs({
         page: this.page + 1,
         records_per_page: 10
       })

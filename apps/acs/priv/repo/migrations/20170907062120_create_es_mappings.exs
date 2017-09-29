@@ -208,11 +208,8 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           goods_name: %{type: :text, analyzer: :ik_smart},
           app_id: %{type: :keyword},
           platform: %{type: :keyword},
-          device_id: %{type: :keyword},
           user_ip: %{type: :keyword},
           user_id: %{type: :integer},
-          currency: %{type: :keyword},
-          paid_type: %{type: :keyword},
           memo: %{type: :text, analyzer: :ik_smart},
           address: %{
             properties: %{
@@ -238,7 +235,35 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           active: %{type: :boolean},
           inserted_at: %{type: :date}
         }
-      }
+      },
+      wcs_users: %{
+        properties: %{
+          id: %{type: :keyword},
+          openid: %{type: :keyword},
+          unionid: %{type: :keyword},
+          nickname: %{type: :text, analyzer: :ik_smart}, 
+          sex: %{type: :integer},
+          avatar_url: %{type: :keyword},
+          city: %{type: :keyword},
+          country: %{type: :keyword},
+          user_id: %{type: :integer},
+          inserted_at: %{type: :date},
+          updated_at: %{type: :date},
+        }
+      },
+      point_logs: %{
+        _parent: %{type: :wcs_users},
+        properties: %{
+          id: %{type: :keyword},
+          app_id: %{type: :keyword},
+          wcs_user_id: %{type: :keyword},
+          log_type: %{type: :keyword},
+          point: %{type: :keyword},
+          memo: %{type: :text, analyzer: :ik_smart},
+          inserted_at: %{type: :date},
+          updated_at: %{type: :date},
+        }
+      },  
     }
 
     Elasticsearch.create_index("pmall", %{}, mappings)

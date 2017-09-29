@@ -724,6 +724,18 @@ defmodule Acs.PMalls do
     Repo.all(query)
   end
 
+  def get_draw_info(app_id) do
+    pic = CachedAdminSetting.get_fat(app_id,"抽奖图")
+    draw_point = CachedAdminSetting.get_fat(app_id,"point_luck_draw")
+    with true <- pic != nil,
+         true <- draw_point != nil do
+      {:ok, Poison.decode!(pic.value), Poison.decode!(draw_point.value)}
+    else
+      _ ->
+        {:error}
+    end
+  end
+
   defp _get_draw_ids(app_id) do
     query = from d in LuckyDraw,
       where: d.app_id == ^app_id,

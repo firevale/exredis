@@ -31,6 +31,7 @@ defmodule Acs.PMalls do
   alias Acs.Cache.CachedPMallTaskBar
   alias Acs.Cache.CachedAppWcpUser
   alias Acs.Cache.CachedAdminSetting
+  alias Acs.Cache.CachedPMallUserPoints
 
   def get_pmall_goods(goods_id) do
     Repo.get(PMallGoods, goods_id)
@@ -44,32 +45,14 @@ defmodule Acs.PMalls do
     CachedPMallGoods.list(app_id) 
   end
 
-  def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
-    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, true)
+  # list pmall goods including inactive goods
+  def list_all_pmall_goods(app_id) do 
+    query = from g in PMallGoods,
+      select: g,
+      where: g.app_id == ^app_id,
+      order_by: [desc: g.inserted_at]  
 
-    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id
-    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
-
-    if total == 0 do
-      :zero
-    else
-      total_page = round(Float.ceil(total / records_per_page))
-      query = from g in PMallGoods,
-                where: g.app_id == ^app_id,
-                order_by: [desc: g.inserted_at],
-                limit: ^records_per_page,
-                offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
-
-      query = if String.length(keyword) > 0 do
-        query |> where([p], p.id in ^ids)
-      else
-        query
-      end
-
-      goodses = Repo.all(query)
-      {:ok, goodses, total_page}
-    end
+    Repo.all(query)
   end
 
   def update_pmall_goods_pic(goods, image_path) do
@@ -354,7 +337,7 @@ defmodule Acs.PMalls do
     Exredis.expire(sign_key_users, 172800)
 
     ## 添加积分
-   {:ok, add_point, total_point} = PMallTransaction.add_point("point_day_sign", app_id, wcs_user_id)
+   {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_day_sign", app_id, wcs_user_id)
    {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
 
   end
@@ -430,7 +413,7 @@ defmodule Acs.PMalls do
     do
       cache_key = _sign_cache_key_awards(app_id, wcs_user_id)
       Exredis.hset(cache_key, days, 1)
-      PMallTransaction.add_point("point_day_sign", app_id, wcs_user_id, point, "连续签到#{days}天奖励")
+      PMallTransaction.add_user_point("point_day_sign", app_id, wcs_user_id, point, "连续签到#{days}天奖励")
     else
       false ->
         {:error, "pmall.award.unreached"}
@@ -445,8 +428,7 @@ defmodule Acs.PMalls do
   def log_user_points(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->
-        log = Map.put(log, "id", new_log.id) |> Map.put("inserted_at", new_log.inserted_at)
-        {:ok, log}
+        {:ok, new_log}
 
       {:error, %{errors: errors}} ->
         {:error, errors}
@@ -454,16 +436,8 @@ defmodule Acs.PMalls do
   end
 
   def get_user_point(app_id, wcs_user_id) do
-    total_query = from log in PointLog, 
-      select: sum(log.point), 
-      where: log.app_id == ^app_id and log.wcs_user_id == ^wcs_user_id
-
-    point = Repo.one!(total_query)
-
-    case point do
-      nil -> 0
-      _ -> Decimal.to_integer(point)
-    end
+    %{point: points} = CachedPMallUserPoints.get(app_id, wcs_user_id)
+    points
   end
 
   def add_subscribe_point(app_id, wcs_user_id) do
@@ -473,14 +447,10 @@ defmodule Acs.PMalls do
     case result do
       0 ->
         {:exist}
-      1 -> 
-        {:ok, add_point, total_point} = PMallTransaction.add_point("point_subscribe", app_id, wcs_user_id)
-    end
-  end
 
-  def admin_add_pmall_point(wcs_user_id, app_id, log) do
-    log = Map.put(log, "app_id", app_id) |> Map.put("wcs_user_id", wcs_user_id) |> Map.put("log_type", "admin_op")
-    log_user_points(log)
+      1 -> 
+        PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
+    end
   end
 
   def add_goods_click(goods_id, click) do
@@ -598,19 +568,26 @@ defmodule Acs.PMalls do
   def get_daily_question(app_id) do
     case Exredis.get(_answer_cache_key(app_id)) do
       nil ->
-        max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
-        query = from q in DayQuestion,
-                where: q.app_id == ^app_id and q.id >= ^max_id,
-                limit: 1,
-                order_by: [asc: q.inserted_at],
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
-
-        question = Repo.one(query)
-        {:ok, question}
+        count = 
+        case Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id) do
+          nil ->
+            nil
+          count ->
+            max_id = :rand.uniform(count)
+            query = from q in DayQuestion,
+                    where: q.app_id == ^app_id and q.id >= ^max_id,
+                    limit: 1,
+                    order_by: [asc: q.inserted_at],
+                    select: map(q, [:id, :question, :a1, :a2, :a3])
+    
+            question = Repo.one(query)
+            {:ok, question}
+        end
+        
       question_id ->
         query = from q in DayQuestion,
                 where: q.id == ^String.to_integer(question_id),
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
+                select: map(q, [:id, :question, :correct, :a1, :a2, :a3])
 
         question = Repo.one(query)
         {:ok, question}
@@ -695,7 +672,7 @@ defmodule Acs.PMalls do
                 add_answer(app_id, question_id)
               end
 
-              with {:ok, add_point, total_point} <-  PMallTransaction.add_point("point_day_question", app_id, wcs_user_id) do
+              with {:ok, add_point, total_point} <-  PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id) do
                 if(question.correct == correct) do
                   DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
                 
@@ -737,27 +714,31 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_draw(draw) do
-    if(draw["goods_id"] && !get_pmall_goods(draw["goods_id"])) do
+    if draw["goods_id"] && !get_pmall_goods(draw["goods_id"]) do
       :notexist
     else
-      case Repo.get(LuckyDraw, draw["id"]) do
-        nil ->
-          # add new
-          case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
-            {:ok, new_draw} ->
-              draw = Map.put(draw, "id", new_draw.id)
-              {:addok, draw}
-            {:error, %{errors: _errors}} ->
-              :error
-          end
-    
-        %LuckyDraw{} = q ->
-          # update
-          changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
-          changed |> Repo.update!
-          draw = Map.put(draw, "id", q.id)
-          {:updateok, draw, changed.changes}
+      if !check_cdkeys_enough(draw["goods_id"], draw["num"]) do
+        :stockoverflow
+      else
+        case Repo.get(LuckyDraw, draw["id"]) do
+          nil ->
+            # add new
+            case LuckyDraw.changeset(%LuckyDraw{}, draw) |> Repo.insert do
+              {:ok, new_draw} ->
+                draw = Map.put(draw, "id", new_draw.id)
+                {:addok, draw}
+              {:error, %{errors: _errors}} ->
+                :error
+            end
+      
+          %LuckyDraw{} = q ->
+            # update
+            changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
+            changed |> Repo.update!
+            draw = Map.put(draw, "id", q.id)
+            {:updateok, draw, changed.changes}
         end
+      end
     end
   end
 
@@ -1010,7 +991,28 @@ defmodule Acs.PMalls do
     end
   end
 
+  def check_cdkeys_enough(goods_id, stock) do
+    stock = case is_integer(stock) do
+              true -> stock
+              false -> String.to_integer(stock)
+            end
+    case get_pmall_goods(goods_id) do
+      nil -> false
+      %PMallGoods{} = mg ->
+        if mg.is_virtual do
+          check_cdkeys_enough(mg.app_id, mg.virtual_param, stock)
+        else
+          # 非虚拟商品不判断库存
+          true
+        end
+    end
+  end
+
   def check_cdkeys_enough(app_id, code_type, stock) do
+    stock = case is_integer(stock) do
+              true -> stock
+              false -> String.to_integer(stock)
+            end
     total = Repo.one(from k in Cdkey, where: k.app_id == ^app_id and k.code_type == ^code_type and is_nil(k.owner_id), select: count(1)) || 0
     total >= stock
   end

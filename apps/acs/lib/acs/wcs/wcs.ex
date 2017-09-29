@@ -81,6 +81,9 @@ defmodule Acs.Wcs do
   def get_wcs_user(wcs_user_id) do 
     CachedWcsUser.get(wcs_user_id)
   end
+  def get_wcs_user!(openid: openid) do
+    Repo.get_by(WcsUser, openid: openid)
+  end
 
   def create_wcs_user!(attr) do 
     wcs_user = WcsUser.changeset(%WcsUser{}, attr) |> Repo.insert!  

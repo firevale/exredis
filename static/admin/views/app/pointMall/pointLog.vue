@@ -37,7 +37,7 @@
                 <p>{{ log.id }}</p>
               </div>
               <div class="column">
-                <p>{{ log.wcp_user.nickname }}</p>
+                <p>{{ log.wcs_user.nickname }}</p>
               </div>              
               <div class="column">
                 <p>{{ log.log_type }}</p>
@@ -137,7 +137,8 @@ export default {
         },
         visible: true,
         callback: log => {
-          this.logs.unshift(log)
+          this.page = 1
+          this.getLogs(this.page, this.recordsPerPage)
         },
       })
     },

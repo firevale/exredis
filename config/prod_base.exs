@@ -32,3 +32,7 @@ config :logger,
   ]
 
 
+config :exsm, Exsm.Repo, log: false
+config :acs_stats, AcsStats.Repo, log: false
+config :acs, Acs.Repo, log: false
+

@@ -65,13 +65,13 @@ export default {
       getGoods(params) {
         return post('/pmall_actions/get_goods_detail', params)
       },
-      listMyPoints(params) {
-        let cancelToken = new axios.CancelToken(c => this.tokens.listMyPoints = c)
-        return post('/pmall_actions/list_my_points', params, undefined, cancelToken)
+      listMyPointLogs(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listMyPointLogs = c)
+        return post('/pmall_actions/list_my_point_logs', params, undefined, cancelToken)
       },
-      listMyExchanges(params) {
-        let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchanges = c)
-        return post('/pmall_actions/list_my_exchanges', params, undefined, cancelToken)
+      listMyExchangePointLogs(params) {
+        let cancelToken = new axios.CancelToken(c => this.tokens.listMyExchangePointLogs = c)
+        return post('/pmall_actions/list_my_point_exchange_logs', params, undefined, cancelToken)
       },
       takeAward(params){
         return post("/pmall_actions/take_award", params)

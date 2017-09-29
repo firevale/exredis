@@ -23,7 +23,7 @@ defmodule Acs.Cache.CachedWcsUser do
     Excache.get!(openid_key(openid), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case Repo.get(WcsUser, openid: openid) do 
+          case Repo.get_by(WcsUser, openid: openid) do 
             %{id: wcs_user_id} -> 
               Exredis.set(redis_key, wcs_user_id) 
               {:commit, get(wcs_user_id)}

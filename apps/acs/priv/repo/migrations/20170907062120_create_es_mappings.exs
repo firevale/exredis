@@ -239,6 +239,7 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
       wcs_users: %{
         properties: %{
           id: %{type: :keyword},
+          app_id: %{type: :keyword},
           openid: %{type: :keyword},
           unionid: %{type: :keyword},
           nickname: %{type: :text, analyzer: :ik_smart}, 

@@ -19,11 +19,11 @@ defmodule Acs.Cache.CachedWcsUser do
     end)
   end
 
-  def get_by_openid(openid) when is_bitstring(openid) do
-    Excache.get!(openid_key(openid), fallback: fn(redis_key) ->    
+  def get_by_openid(app_id, openid) when is_bitstring(openid) and is_bitstring(app_id) do
+    Excache.get!(openid_key(app_id, openid), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          case Repo.get_by(WcsUser, openid: openid) do 
+          case Repo.get_by(WcsUser, app_id: app_id, openid: openid) do 
             %{id: wcs_user_id} -> 
               Exredis.set(redis_key, wcs_user_id) 
               {:commit, get(wcs_user_id)}
@@ -38,12 +38,12 @@ defmodule Acs.Cache.CachedWcsUser do
     end)
   end
 
-  def refresh(%WcsUser{id: id, openid: openid} = wcs_user) do 
+  def refresh(%WcsUser{id: id, app_id: app_id, openid: openid} = wcs_user) do 
     Exredis.set(key(id), WcsUser.to_redis(wcs_user))
-    Exredis.set(openid_key(openid), id)
+    Exredis.set(openid_key(app_id, openid), id)
 
     Excache.del(key(id))
-    Excache.del(openid_key(openid))
+    Excache.del(openid_key(app_id, openid))
 
     wcs_user
   end
@@ -63,7 +63,7 @@ defmodule Acs.Cache.CachedWcsUser do
     "acs.wcs_user.#{id}"
   end
 
-  defp openid_key(openid) do 
-    "acs.wcs_user.#{openid}"
+  defp openid_key(app_id, openid) do 
+    "acs.wcs_user.#{app_id}.#{openid}"
   end
 end

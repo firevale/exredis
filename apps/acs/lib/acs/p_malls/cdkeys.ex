@@ -3,6 +3,7 @@ defmodule Acs.PMalls.Cdkey do
   import Ecto.Changeset
   alias Acs.PMalls.Cdkey
 
+  @derive {Poison.Encoder, except: [:app, :owner, :__meta__]}
   schema "pmall_cdkeys" do
     field :code, :string
     field :code_type, :string

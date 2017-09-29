@@ -6,7 +6,7 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcs.WcsUser
 
   alias Acs.Accounts
-  alias Acs.PMallsPoint
+  alias Acs.PMallTransaction
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Admin.Setting
 

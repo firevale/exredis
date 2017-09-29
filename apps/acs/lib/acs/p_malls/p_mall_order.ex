@@ -15,7 +15,7 @@ defmodule Acs.PMalls.PMallOrder do
     def cheat, do: 403
   end
 
-  @derive {Poison.Encoder, except: [:app, :wcp_user, :details, :__meta__]}
+  @derive {Poison.Encoder, except: [:app, :wcs_user, :details, :__meta__]}
   @primary_key false
   schema "pmall_orders" do
     field :id, :string, primary_key: true

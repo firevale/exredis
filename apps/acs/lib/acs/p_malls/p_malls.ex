@@ -9,7 +9,7 @@ defmodule Acs.PMalls do
   
   use Utils.LogAlias
 
-  alias Acs.PMallsPoint
+  alias Acs.PMallTransaction
   alias Acs.PMalls.PMallGoods
   alias Acs.PMalls.PMallOrder
   alias Acs.PMalls.PMallOrderDetail
@@ -353,7 +353,7 @@ defmodule Acs.PMalls do
     Exredis.expire(sign_key_users, 172800)
 
     ## 添加积分
-   {:ok, add_point, total_point} = Acs.PMallsPoint.add_point("point_day_sign", app_id, wcs_user_id)
+   {:ok, add_point, total_point} = Acs.PMallTransaction.add_point("point_day_sign", app_id, wcs_user_id)
    {:ok, %{sign_times: times, add_point: add_point, total_point: total_point}}
 
   end
@@ -429,7 +429,7 @@ defmodule Acs.PMalls do
     do
       cache_key = _sign_cache_key_awards(app_id, wcs_user_id)
       Exredis.hset(cache_key, days, 1)
-      PMallsPoint.take_award_point(app_id, wcs_user_id, days, point)
+      PMallsPoint.add_point(app_id, wcs_user_id, point, "连续签到#{days}天奖励")
     else
       false ->
         {:error, "pmall.award.unreached"}
@@ -441,7 +441,7 @@ defmodule Acs.PMalls do
   end
 
   # 积分
-  def add_point(log) do
+  def log_user_points(log) do
     case PointLog.changeset(%PointLog{}, log) |> Repo.insert do
       {:ok, new_log} ->
         log = Map.put(log, "id", new_log.id) |> Map.put("inserted_at", new_log.inserted_at)
@@ -469,7 +469,7 @@ defmodule Acs.PMalls do
     cache_key= "pmall:subscribe:#{app_id}"
     val = "#{wcs_user_id}"
     result = Exredis.sadd(cache_key, val)
-    case  result do
+    case result do
       0 ->
         {:exist}
       1 -> 
@@ -479,7 +479,7 @@ defmodule Acs.PMalls do
 
   def admin_add_pmall_point(wcs_user_id, app_id, log) do
     log = Map.put(log, "app_id", app_id) |> Map.put("wcs_user_id", wcs_user_id) |> Map.put("log_type", "admin_op")
-    add_point(log)
+    log_user_points(log)
   end
 
   def add_goods_click(goods_id, click) do
@@ -869,7 +869,6 @@ defmodule Acs.PMalls do
         d "#{inspect other}"
         {:error, "pmall.address.failed"}
     end
-
   end
 
   def save_address(wcs_user_id, address) do

@@ -1,12 +1,13 @@
-defmodule Acs.PMallsPoint do
+defmodule Acs.PMallTransaction do
   @moduledoc """
   The PMalls context.
   """
 
   import Ecto.Query, warn: false
+  use Utils.LogAlias
+
   alias Acs.Repo
   alias Acs.Search
-  use Utils.LogAlias
 
   alias Acs.PMalls
   alias Acs.PMalls.PMallGoods
@@ -16,18 +17,24 @@ defmodule Acs.PMallsPoint do
 
   def add_point(log_type, app_id, wcs_user_id) do
     %Acs.Admin.Setting{} = setting  = CachedAdminSetting.get_fat(app_id, log_type)
+    add_point(app_id, wcs_user_id, setting.value, setting.memo)
+  end
+  def add_point(app_id, wcs_user_id, points, memo) when is_bitstring(points) do
+    add_point(app_id, wcs_user_id, String.to_integer(points), memo)
+  end
+  def add_point(app_id, wcs_user_id, points, memo) when is_integer(points) do
     log = %{
       app_id: app_id,
       wcs_user_id: wcs_user_id,
       log_type: log_type,
-      point: setting.value,
-      memo: setting.memo
+      point: points,
+      memo: memo
     }
 
-    PMalls.add_point(log)
+    PMalls.log_user_points(log)
     total_point = PMalls.get_user_point(app_id, wcs_user_id)
 
-    {:ok, String.to_integer(setting.value), total_point}
+    {:ok, points, total_point}
   end
 
   def exchange_goods_point(app_id, wcs_user_id, goods) do
@@ -47,25 +54,11 @@ defmodule Acs.PMallsPoint do
         memo: memo
     }
 
-    PMalls.add_point(log)
+    PMalls.log_user_points(log)
     total_point = PMalls.get_user_point(app_id, wcs_user_id)
 
     {:ok, -goods.price, total_point}
   end
 
-  def take_award_point(app_id, wcs_user_id, days, points) do
-    log = %{
-      app_id: app_id,
-      wcs_user_id: wcs_user_id,
-      log_type: "point_sign_award",
-      point: points,
-      memo: "连续签到#{days}天奖励"
-    }
-
-    PMalls.add_point(log)
-    total_point = PMalls.get_user_point(app_id, wcs_user_id)
-
-    {:ok, points, total_point}
-  end
 
 end

@@ -45,32 +45,14 @@ defmodule Acs.PMalls do
     CachedPMallGoods.list(app_id) 
   end
 
-  def list_pmall_goods_admin(app_id, page, records_per_page, keyword) do
-    {:ok, searchTotal, ids} = Search.search_pmall_goods(keyword, page, records_per_page, true)
+  # list pmall goods including inactive goods
+  def list_all_pmall_goods(app_id) do 
+    query = from g in PMallGoods,
+      select: g,
+      where: g.app_id == ^app_id,
+      order_by: [desc: g.inserted_at]  
 
-    queryTotal = from g in PMallGoods, select: count(1), where: g.app_id == ^app_id
-    total = if String.length(keyword)>0 , do: searchTotal, else: Repo.one!(queryTotal)
-
-    if total == 0 do
-      :zero
-    else
-      total_page = round(Float.ceil(total / records_per_page))
-      query = from g in PMallGoods,
-                where: g.app_id == ^app_id,
-                order_by: [desc: g.inserted_at],
-                limit: ^records_per_page,
-                offset: ^((page - 1) * records_per_page),
-                select: map(g, [:id, :name, :currency, :pic, :price, :original_price, :postage, :stock, :sold, :active, :is_virtual, :virtual_param, :begin_time, :end_time])
-
-      query = if String.length(keyword) > 0 do
-        query |> where([p], p.id in ^ids)
-      else
-        query
-      end
-
-      goodses = Repo.all(query)
-      {:ok, goodses, total_page}
-    end
+    Repo.all(query)
   end
 
   def update_pmall_goods_pic(goods, image_path) do
@@ -465,7 +447,7 @@ defmodule Acs.PMalls do
     case result do
       0 ->
         {:exist}
-        
+
       1 -> 
         PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
     end
@@ -586,19 +568,26 @@ defmodule Acs.PMalls do
   def get_daily_question(app_id) do
     case Exredis.get(_answer_cache_key(app_id)) do
       nil ->
-        max_id = :rand.uniform(Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id))
-        query = from q in DayQuestion,
-                where: q.app_id == ^app_id and q.id >= ^max_id,
-                limit: 1,
-                order_by: [asc: q.inserted_at],
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
-
-        question = Repo.one(query)
-        {:ok, question}
+        count = 
+        case Repo.one!(from q in DayQuestion, select: max(q.id), where: q.app_id == ^app_id) do
+          nil ->
+            nil
+          count ->
+            max_id = :rand.uniform(count)
+            query = from q in DayQuestion,
+                    where: q.app_id == ^app_id and q.id >= ^max_id,
+                    limit: 1,
+                    order_by: [asc: q.inserted_at],
+                    select: map(q, [:id, :question, :a1, :a2, :a3])
+    
+            question = Repo.one(query)
+            {:ok, question}
+        end
+        
       question_id ->
         query = from q in DayQuestion,
                 where: q.id == ^String.to_integer(question_id),
-                select: map(q, [:id, :question, :correct, :a1, :a2, :a3, :a4, :a5, :a6, :reads, :bingo, :app_id])
+                select: map(q, [:id, :question, :correct, :a1, :a2, :a3])
 
         question = Repo.one(query)
         {:ok, question}

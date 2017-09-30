@@ -21,7 +21,7 @@ config :bugsnag, :release_stage, "ksbj"
 config :bugsnag, use_logger: true
 
 config :acs_web, WCS,
-  wcs_app_id: "wx093580929e0bb276",
-  wcs_app_secret: "1d9a8ddcb737e29b3ac048451b7d329f"
+  wcs_app_id: "wxc9d1413556db5af5",
+  wcs_app_secret: "ec432fc2a33a06356d6360629ae8211f"
 
 

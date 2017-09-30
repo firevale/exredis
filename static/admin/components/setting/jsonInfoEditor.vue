@@ -14,16 +14,16 @@
             <div class="column" v-if="this.hasPic">
               <p>{{ $t('admin.setting.pic') }}</p>
             </div>
-            <div class="column">
+            <div v-if="!randomName" class="column">
               <p>{{ $t('admin.setting.configName') }}</p>
             </div>
-            <div class="column" style="width:500px;">
-              <p>{{ $t('admin.setting.configValue') }}</p>
+            <div v-if="columns" v-for="column in columns.split('|')" :key="column" class="column">
+              <p>{{ column.split("=")[0] }}</p>
             </div>
-            <div class="column">
+            <div v-if="!hideMemo" class="column">
               <p>{{ $t('admin.setting.memo')}}</p>
             </div>
-            <div class="column">
+            <div v-if="!(columns == '' && hasPic)" class="column">
               <p>{{ $t('admin.setting.edit')}}</p>
             </div>
             <div class="column">
@@ -40,16 +40,16 @@
                   </figure>
                 </center>
               </div>
-              <div class="column">
+              <div v-if="!randomName" class="column">
                 <p>{{ setting.name }}</p>
               </div>
-              <div class="column" style="width:500px; word-break:break-all;">
-                <p>{{ setting.value }}</p>
+              <div v-if="columns" v-for="column in columns.split('|')" :key="column" class="column">
+                <p>{{ getValue(setting.value, column.split('=')[1]) }}</p>
               </div>
-              <div class="column">
+              <div v-if="!hideMemo" class="column">
                 <p>{{ setting.memo }}</p>
               </div>
-              <div class="column">
+              <div v-if="!(columns == '' && hasPic)" class="column">
                 <a @click.prevent="editSettingInfo(setting, index)">
                   <i class="fa fa-pencil"></i>
                 </a>
@@ -108,6 +108,14 @@ export default {
       type: Boolean,
       default: false
     },
+    randomName: {
+      type: Boolean,
+      default: false
+    },
+    hideMemo: {
+      type: Boolean,
+      default: false
+    },
     columns: {
       type: String,
       default: ''
@@ -144,6 +152,15 @@ export default {
       return resize + '?text=' + width + 'X' + height
     },
 
+    getValue(value, name) {
+      if (value.length > 0) {
+        let jobj = JSON.parse(value)
+        return jobj[name]
+      } else {
+        return ''
+      }
+    },
+
     updateSettingPic: function(setting) {
       showImageUploadDialog(this.$i18n, {
         postAction: '/admin_actions/setting/upload_setting_pic',
@@ -155,7 +172,7 @@ export default {
         headers: {
           'x-csrf-token': window.acsConfig.csrfToken
         },
-        maxFileSize: 1024*1024,
+        maxFileSize: 1024 * 1024,
         extensions: ['png', 'jpg', 'jpeg'],
         title: this.$t('admin.titles.uploadSettingPic', {
           picWidth: this.picWidth,
@@ -205,6 +222,8 @@ export default {
       openSettingInfoDialog({
         setting: setting,
         visible: true,
+        randomName: this.randomName,
+        hideMemo: this.hideMemo,
         columns: this.columns,
         callback: new_setting => {
           this.settings[index] = new_setting
@@ -234,22 +253,57 @@ export default {
     },
 
     addNewSetting: function() {
-      openSettingInfoDialog({
-        setting: {
-          id: '',
-          name: '',
-          value: '',
-          group: this.group,
-          memo: '',
-          active: true,
-        },
-        visible: true,
-        columns: this.columns,
-        callback: setting => {
-          this.settings.unshift(setting)
-        },
-      })
+      let setting = {
+        id: '',
+        name: '',
+        value: '',
+        group: this.group,
+        memo: '',
+        active: true,
+      }
+      if (this.columns == '' && this.hasPic) {
+        this.addSetting(setting)
+      } else {
+        openSettingInfoDialog({
+          setting: setting,
+          randomName: this.randomName,
+          hideMemo: this.hideMemo,
+          visible: true,
+          columns: this.columns,
+          callback: setting => {
+            this.settings.unshift(setting)
+          },
+        })
+      }
     },
+
+    addSetting: async function(setting) {
+      this.processing = true
+      if (this.randomName) setting.name = this.generateUUID()
+      let result = await this.$acs.updateSettingByName({
+        setting_name: setting.name,
+        setting_value: setting.value ? setting.value : '{}',
+        group: setting.group,
+        memo: setting.memo,
+        active: true
+      }, this.$t('admin.notification.message.configUpdated', {
+        configName: setting.name
+      }))
+      if (result.success) {
+        this.settings.unshift(result.setting)
+      }
+      this.processing = false
+    },
+
+    generateUUID: function() {
+      var d = new Date().getTime();
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {  
+        var r = (d + Math.random() * 16) % 16 | 0;  
+        d = Math.floor(d / 16);  
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+      return uuid;
+    }
   },
 
 }

@@ -5,18 +5,19 @@
         <h5 class="title is-5">{{ $t('admin.titles.editSettingInfo') }}</h5>
       </div>
       <form name="section" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.setting.configName') }}: </label>
-        <p class="control">
+        <label v-if="!randomName" class="label"> {{ $t('admin.setting.configName') }}: </label>
+        <p v-if="!randomName" class="control">
           <input class="input" type="text" v-model.trim="setting.name">
         </p>
         <div v-if="columns" v-for="column in columns.split('|')" :key="column">
           <label class="label"> {{ column.split("=")[0] }}: </label>
           <p class="control">
-            <input class="input" :id="column.split('=')[1]" type="text" :value="getValue(setting.value,column.split('=')[1])" @input="updateMessage">
+            <input class="input" :id="column.split('=')[1]" type="text" :value="getValue(setting.value,column.split('=')[1])"
+              @input="updateMessage">
           </p>
         </div>
-        <label class="label"> {{ $t('admin.setting.memo') }}: </label>
-        <p class="control">
+        <label v-if="!hideMemo" class="label"> {{ $t('admin.setting.memo') }}: </label>
+        <p v-if="!hideMemo" class="control">
           <input class="input" type="text" v-model.trim="setting.memo">
         </p>
         <div class="has-text-centered" style="margin-top: 15px">
@@ -45,6 +46,14 @@ export default {
     columns: {
       type: String,
       default: ''
+    },
+    randomName: {
+      type: Boolean,
+      default: false
+    },
+    hideMemo: {
+      type: Boolean,
+      default: false
     },
     setting: Object,
     callback: Function,
@@ -77,6 +86,7 @@ export default {
     },
     handleSubmit: async function() {
       this.processing = true
+      if(this.randomName) this.setting.name = this.generateUUID()
       let result = await this.$acs.updateSettingByName({
         setting_name: this.setting.name,
         setting_value: this.setting.value ? this.setting.value : '{}',
@@ -93,6 +103,15 @@ export default {
         this.visible = false
       }
       this.processing = false
+    },
+    generateUUID: function() {
+      var d = new Date().getTime();
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {  
+        var r = (d + Math.random() * 16) % 16 | 0;  
+        d = Math.floor(d / 16);  
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+      return uuid;
     }
   },
 

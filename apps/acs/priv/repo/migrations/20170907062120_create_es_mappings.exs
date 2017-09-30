@@ -202,29 +202,6 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
     Elasticsearch.delete_index("pmall")
 
     mappings = %{
-      orders: %{
-        properties: %{
-          id: %{type: :keyword},
-          goods_name: %{type: :text, analyzer: :ik_smart},
-          app_id: %{type: :keyword},
-          platform: %{type: :keyword},
-          user_ip: %{type: :keyword},
-          user_id: %{type: :integer},
-          memo: %{type: :text, analyzer: :ik_smart},
-          address: %{
-            properties: %{
-              name: %{type: :keyword},
-              mobile: %{type: :keyword},
-              address: %{type: :text, analyzer: :ik_smart},
-              area: %{type: :text, analyzer: :ik_smart},                 
-              area_code: %{type: :keyword}
-            }
-          },
-          transaction_id: %{type: :keyword},
-          status: %{type: :integer},
-          inserted_at: %{type: :date}
-        }
-      },
       goods: %{
         properties: %{
           id: %{type: :keyword},
@@ -265,6 +242,32 @@ defmodule Acs.Repo.Migrations.CreateEsMappings do
           updated_at: %{type: :date},
         }
       },  
+      orders: %{
+        _parent: %{type: :wcs_users},
+        properties: %{
+          id: %{type: :keyword},
+          goods_name: %{type: :text, analyzer: :ik_smart},
+          app_id: %{type: :keyword},
+          platform: %{type: :keyword},
+          user_ip: %{type: :keyword},
+          wcs_user_id: %{type: :keyword},
+          user_id: %{type: :integer},
+          memo: %{type: :text, analyzer: :ik_smart},
+          address: %{
+            type: :nested,
+            properties: %{
+              name: %{type: :keyword},
+              mobile: %{type: :keyword},
+              address: %{type: :text, analyzer: :ik_smart},
+              area: %{type: :text, analyzer: :ik_smart},                 
+              area_code: %{type: :keyword}
+            }
+          },
+          transaction_id: %{type: :keyword},
+          status: %{type: :integer},
+          inserted_at: %{type: :date}
+        }
+      },
     }
 
     Elasticsearch.create_index("pmall", %{}, mappings)

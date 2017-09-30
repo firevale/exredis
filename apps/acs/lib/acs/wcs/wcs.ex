@@ -96,6 +96,19 @@ defmodule Acs.Wcs do
     CachedWcsUser.refresh(new_wcs_user)
   end
 
+  def list_wcs_users(app_id, keyword, page, records_per_page) do
+    {:ok, total, users} = Acs.Search.search_wcs_user(
+      keyword: keyword, 
+      app_id: app_id, 
+      page: page, 
+      records_per_page: records_per_page)
+    total_page = round(Float.ceil(total / records_per_page))
+    users = for user <- users do 
+      Map.put(user, :point, Acs.PMalls.get_user_point(user.app_id, user.id))
+    end
+    {:ok, users, total_page}
+  end
+
   def bind_mobile(wcs_user_id, mobile) do
     with wcs_user = %WcsUser{} <- get_wcs_user(wcs_user_id),
          nil <- wcs_user.user_id

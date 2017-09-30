@@ -9,6 +9,7 @@ defmodule AcsWeb.PMallController do
   alias Acs.Cache.CachedAdminSetting
   alias Acs.Admin.Setting
   alias Acs.PMallTransaction
+  alias Acs.PMallSign
 
   plug :fetch_app_id
   plug :fetch_session_wcs_user_id
@@ -54,17 +55,6 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-  def take_award(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, %{"days" => days}) do
-    result = PMalls.take_sign_award(app_id, wcs_user_id, days)
-    case result do
-      {:ok, add_point, total_point} ->
-        conn |> json(%{success: true, add_point: add_point, total_point: total_point, i18n_message: "pmall.award.gotSuccess"})
-      {:error, i18n_message} ->
-        conn |> json(%{success: false, i18n_message: i18n_message})
-    end
-
-  end
-
   def update_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"order_id" => order_id,
       "user_address" =>
@@ -86,9 +76,9 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_sign_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
-    {:ok, signed, sign_times, pic_raw, terms, awards} = PMalls.get_sign_info(app_id, wcs_user_id)
+    {:ok, signed, sign_times, pic_raw, terms, awards} = PMallSign.get_sign_info(app_id, wcs_user_id)
     %{"pic" => pic} = pic_raw
-    {total, sign_users} = PMalls.get_sign_users(app_id, 0)
+    {total, sign_users} = PMallSign.get_sign_users(app_id, 0)
     conn |> json(%{
       success: true,
       signed: signed,
@@ -101,16 +91,26 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_sign_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"start" => start } = _params) do
-    {total, sign_users} = PMalls.get_sign_users(app_id, start)
+    {total, sign_users} = PMallSign.get_sign_users(app_id, start)
     conn |> json(%{ success: true,  sign_users: sign_users})
   end
 
   def sign(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
-    result = PMalls.sign(app_id, wcs_user_id)
+    result = PMallSign.sign(app_id, wcs_user_id)
     case result do
       {:ok, sign_info} ->
         conn |> json(Map.merge(%{success: true}, sign_info))
       {:error, %{i18n_message: i18n_message}} ->
+        conn |> json(%{success: false, i18n_message: i18n_message})
+    end
+  end
+
+  def take_award(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, %{"days" => days}) do
+    result = PMallSign.take_sign_award(app_id, wcs_user_id, days)
+    case result do
+      {:ok, add_point, total_point} ->
+        conn |> json(%{success: true, add_point: add_point, total_point: total_point, i18n_message: "pmall.award.gotSuccess"})
+      {:error, i18n_message} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
     end
   end

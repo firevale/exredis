@@ -17,12 +17,10 @@
               </figure>
             </div>
             <div class="column is-parent is-vertical" style="padding: 0.25rem">
-              <article class="tile is-child">
-                <p class="subtitle is-6">{{ goods.name}}</p>
-                <p class="subtitle is-6">{{ $t('admin.point.goods.priceList', {price: getPrice(goods.price)})
-                  }}
-                </p>
-                <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
+              <article class="tile is-child" style="line-height:200%;">
+                <p>{{ goods.name}}</p>
+                <p>{{ $t('admin.point.goods.priceList', {price: getPrice(goods.price)}) }}</p>
+                <p>{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>
                 <p class="field">
                   <span class="tag is-primary" v-if="goods.active==true">{{ $t('admin.mall.goods.up') }} </span>
                   <span class="tag is-dark" v-else>{{ $t('admin.mall.goods.down') }}</span>

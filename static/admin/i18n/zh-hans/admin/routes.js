@@ -50,5 +50,6 @@ export default {
   PointDayQuestion: '每日问答',
   PointLuckyDraw: '幸运抽奖',
   Cdkeys: 'CDKEY管理',
+  PMallOrderInfo: '订单详情',
   WcsUsers: '微信用户',
 }

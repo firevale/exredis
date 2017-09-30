@@ -43,6 +43,9 @@ export default {
     ...mapGetters([
       'transitionName',
     ]),
+    showProgress() {
+      return this.$route.name != 'draw'
+    }
   },
 
   async mounted() {
@@ -56,7 +59,7 @@ export default {
     ]),
     initProgress() {
       axios.interceptors.request.use(config => {
-        this.loading = true
+        this.loading = this.showProgress && true
         return config
       }, error => {
         return Promise.reject(error)

@@ -12,7 +12,9 @@
    searchPointLog: '请输入微信昵称、openid、备注关键字查询',
    
    goods: {
-    original_price: '原价',
+    price: '单价(积分)',
+    original_price: '原价(¥)',
+    priceList: '单价：{price}',
    },
 
    task: {
@@ -82,14 +84,14 @@
     name: '奖品',
     user: '获奖者',
     status: '状态',
-    paidAt: '时间',
-    address: '地址',
+    paidAt: '中奖时间',
+    address: '配送地址',
     deliverAt: '递送时间',
     closeAt: '关闭时间',
     operate: '操作',
     notExist: '中奖记录不存在',
     updateSuccess: '更新成功',
-    save: '保存',
+    save: '保存地址',
     close: '关闭订单',
     finish: '完成订单',
     delivered: '已寄出',

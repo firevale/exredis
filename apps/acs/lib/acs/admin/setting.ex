@@ -23,6 +23,6 @@ defmodule Acs.Admin.Setting do
   def changeset(%Setting{} = setting, attrs) do
     setting
     |> cast(attrs, [:name, :value, :memo, :active, :group, :app_id])
-    |> validate_required([:name, :value, :active, :memo, :group, :app_id])
+    |> validate_required([:name, :value, :active, :group, :app_id])
   end
 end

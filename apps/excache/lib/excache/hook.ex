@@ -28,28 +28,29 @@ defmodule Excache.Hook do
   The return type of this function should be `{ :ok, new_state }`, anything else
   is not accepted.
   """
-  def handle_notify({:del, [key | _]} = msg, {:ok, _}, %{node: node, last_pub_key: last_pub_key, last_msg: last_msg} = state) do
+  def handle_notify({:del, [key | _]} = msg, {:ok, _}, %{node: node, last_pub_key: last_pub_key} = state) do
     case last_pub_key do 
       ^key -> 
-        {:ok, %{node: node, last_pub_key: nil, last_msg: msg}}
-        
+        {:ok, %{state | last_pub_key: nil, last_msg: msg}}
+
       _ ->
         payload = Poison.encode!(%{action: :del, key: key, node: node})
-        d "publish #{inspect payload}, #{inspect msg}, #{inspect state}"
+        info "excache publish payload: #{inspect payload}"
         Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
-        {:ok, %{node: node, last_pub_key: key, last_msg: msg}}
+        {:ok, %{state | last_msg: msg}}
     end
   end
 
-  def handle_notify(msg, _results, %{node: node}) do
-    {:ok, %{node: node, last_pub_key: nil, last_msg: msg}}
+  def handle_notify(msg, _results,  state) do
+    {:ok, %{state | last_msg: msg}}
   end
+
 
   @doc """
   Provides a way to retrieve the last action taken inside the cache.
   """
-  def handle_call(:last_key, _ctx, %{last_pub_key: key} = state) do
-    {:reply, key, state}
+  def handle_call({:last_pub_key, key}, _ctx, state) do
+    {:reply, :ok, %{state | last_pub_key: key}}
   end
 
 end

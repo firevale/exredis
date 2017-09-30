@@ -11,7 +11,7 @@ defmodule Excache.Fastlane do
 
   def fastlane(_pid, %{channel: "cachex", payload: payload}, _options) do
     payload = Poison.decode!(payload, keys: :atoms)
-    d "receive payload: #{inspect payload}"
+    info "excache pubsub receive payload: #{inspect payload}"
     handle_payload(payload)
   end
   def fastlane(_pid, %{channel: channel, payload: payload}, _options) do
@@ -22,8 +22,10 @@ defmodule Excache.Fastlane do
     case System.get_env("NODE") do 
       ^node -> 
         :do_nothing
+
       _ -> 
-        if Cachex.exists?(:default, key), do: Cachex.del(:default, key)
-      end
+        :ok = GenServer.call(Excache.Hook, {:last_pub_key, key})
+         Cachex.del(:default, key)
+    end
   end
 end

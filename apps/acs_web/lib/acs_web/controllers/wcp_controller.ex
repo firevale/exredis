@@ -42,7 +42,7 @@ defmodule AcsWeb.WcpController do
                   country: user_info.country,
                   app_id: app_id
                 }) 
-                
+
               what ->
                 raise "get user info from wechat server failed, #{inspect what}"
             end
@@ -53,7 +53,7 @@ defmodule AcsWeb.WcpController do
           ESWcpMessage.index(%{from: %{
               openid: wcp_user.openid, 
               nickname: wcp_user.nickname,
-              avatar_url: user_info.headimgurl |> Utils.remove_url_scheme(),
+              avatar_url: wcp_user.avatar_url |> Utils.remove_url_scheme(),
             },
             to: %{openid: msg.tousername, nickname: "系统"},
             msg_type: msg.msgtype,

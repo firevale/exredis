@@ -12,7 +12,7 @@ export default {
       signed: '你已经签到过了，明日再来'
     },
     award:{
-      gotSuccess:'领取成功,+{point}',
+      gotSuccess:'领取成功,+{point}积分',
       unreached: '你还未达到领奖要求',
       got: '你己领取过啦',
       illegal: '非法操作'

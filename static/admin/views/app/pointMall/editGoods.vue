@@ -22,7 +22,7 @@
             </div>
             <div class="field is-horizontal">
               <div class="field-label">
-                <label class="label">{{ $t('admin.mall.goods.price') }}</label>
+                <label class="label">{{ $t('admin.point.goods.price') }}</label>
               </div>
               <div class="field-body">
                 <input class="input" type="number" v-model.trim="goods.price">
@@ -65,14 +65,6 @@
                     <option v-for="tp in codeTypes" :value="tp.value">{{ tp.name }}</option>
                   </select>
                 </div>
-              </div>
-            </div>
-            <div v-if="!goods.is_virtual" class="field is-horizontal">
-              <div class="field-label">
-                <label class="label">{{ $t('admin.mall.goods.postage') }}</label>
-              </div>
-              <div class="field-body">
-                <input class="input" type="number" v-model.trim="realPostage">
               </div>
             </div>
             <div class="field is-horizontal">
@@ -230,7 +222,6 @@ export default {
       publishing: false,
       isNew: false,
       editor: undefined,
-      realPostage: 0.00,
       bagId: "picBag"
     }
   },
@@ -256,12 +247,6 @@ export default {
         console.log(this.pics)
       }
     )
-  },
-
-  watch: {
-    realPostage: function() {
-      this.goods.postage = Math.round(this.realPostage * 100)
-    }
   },
 
   methods: {
@@ -305,8 +290,6 @@ export default {
       })
       if (result.success) {
         this.goods = result.goods
-        if (this.goods.postage > 0) this.realPostage = parseFloat(this.goods.postage / 100).toFixed(
-          2)
         this.pics = this.goods.pic ? this.goods.pic.split('|') : "|||||".split('|')
         this.pics.length = 6
       }

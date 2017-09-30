@@ -17,7 +17,7 @@
             <div class="column is-parent is-vertical">
               <article class="tile is-child">
                 <p class="subtitle is-6">{{ goods.name}}</p>
-                <p class="subtitle is-6">{{ $t('admin.mall.goods.priceList', {price: getPrice(goods.price), postage: getPrice(goods.postage)})
+                <p class="subtitle is-6">{{ $t('admin.point.goods.priceList', {price: getPrice(goods.price)})
                   }}
                 </p>
                 <p class="subtitle is-6">{{ $t('admin.mall.goods.stockList', {stock: goods.stock, sold: goods.sold}) }}</p>

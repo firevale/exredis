@@ -10,24 +10,24 @@
     </div>
     <div v-if="orders.length > 0">
       <div v-for="item in orders" :key="item.id" class="media" style="align-items: stretch; margin:1rem auto;">
-        <div class="media-left">
-          <p>{{item.id}}</p>
+        <div class="media-left" style="width:220px">
+          <p> 订单号: {{item.id}}</p>
+          <p>{{item.wcs_user.nickname}}</p>
           <p> {{$t('admin.mall.order.status.'+item.status) }}</p>
           <p> {{ item.inserted_at | formatServerDateTime }}</p>
-          <p>{{item.wcs_user.nickname}}</p>
         </div>
-        <div class="media-content columns" style="border:1px solid grey;margin:0; padding:0 1rem;">
-          <div v-for="detail in item.details" :key="detail.id" class="cloumn">
+        <div class="columns" style="border:1px solid grey;margin:0; padding:0 1rem;">
+          <div class="cloumn">
             <div class="media" style="padding-top:1rem;margin-right:1rem;">
               <figure class="media-left">
                 <p class="image is-64x64">
-                  <img :src="detail.goods_pic" style="width: 64px;height:64px">
+                  <img :src="item.details.goods_pic | imageStaticUrl" style="width: 64px;height:64px">
                 </p>
               </figure>
               <div class="media-content">
-                <p>{{detail.goods_name}} </p>
-                <p :class="['currency', item.currency]">{{detail.price | formatPrice}}</p>
-                <p> X{{detail.amount}}</p>
+                <p>{{item.details.goods_name}} </p>
+                <p :class="['currency', item.currency]">{{item.details.price | formatPoint}}</p>
+                <p> X{{item.details.amount}}</p>
               </div>
             </div>
           </div>
@@ -35,17 +35,14 @@
         <div class="media-right level" style="width:220px">
           <div class="level-item">
             <div>
-              <p>{{$t('admin.mall.order.fields.postage')}}:
-                <span :class="['currency', item.currency]">{{item.postage | formatPrice}}</span>
-              </p>
               <p>{{$t('admin.mall.order.fields.total')}}:
-                <span :class="['currency', item.currency]">{{item.price | formatPrice}}</span>
+                <span :class="['currency', item.currency]">{{item.price | formatPoint}}</span>
               </p>
             </div>
           </div>
           <div class="level-item">
             <!--<a class="button"> {{$t('admin.mall.order.viewDetail')}} </a>-->
-            <router-link class="button" :to="{name: 'MallOrderInfo', params: {orderId: item.id, orderInfo:item }}">{{$t('admin.mall.order.buttons.viewDetail')}}</router-link>
+            <router-link class="button" :to="{name: 'PMallOrderInfo', params: {orderId: item.id, orderInfo:item }}">{{$t('admin.mall.order.buttons.viewDetail')}}</router-link>
           </div>
         </div>
       </div>
@@ -110,52 +107,7 @@ export default {
     await this.fetchOrders()
   },
 
-  watch: {},
-
   methods: {
-    getOrderTransactionId: function(order) {
-      if (order.transaction_id.startsWith('empty.')) {
-        return ''
-      } else {
-        return order.transaction_id
-      }
-    },
-
-    getOrderPlatformIcon: function(order) {
-      let result = 'fa fa-'
-      switch (order.platform) {
-        case 'android':
-          result = result + 'android'
-          break
-        case 'ios':
-          result = result + 'apple '
-          break
-        case 'wp8':
-          result = result + 'windows '
-          break
-        default:
-          result = result + 'apple '
-          break
-      }
-
-      switch (order.status) {
-        case 0:
-          result = result + ' is-primary'
-          break;
-        case 1:
-          result = result + ' is-info'
-          break;
-        case 2:
-          result = result + ' is-success'
-          break;
-        case 3:
-          result = result + ' is-danger'
-          break;
-      }
-
-      return result
-    },
-
     onPageChange: async function(page) {
       this.page = page
       await this.fetchOrders()
@@ -168,7 +120,7 @@ export default {
 
     fetchOrders: async function() {
       this.loading = true
-      let result = result = await this.$acs.listPMallOrders({
+      let result = await this.$acs.listPMallOrders({
         app_id: this.$route.params.appId,
         keyword: this.keyword,
         page: this.page + 1,

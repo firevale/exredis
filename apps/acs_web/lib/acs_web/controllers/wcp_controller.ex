@@ -28,16 +28,24 @@ defmodule AcsWeb.WcpController do
           openid = msg.fromusername
 
           wcp_user = if is_nil(wcp_user) do 
-            user_info =  Exwcp.User.info(config, openid)
-            Wcp.create_app_wcp_user!(%{
-              openid: user_info.openid,
-              nickname: user_info.nickname,
-              sex: user_info.sex,
-              avatar_url: user_info.headimgurl |> Utils.remove_url_scheme(),
-              city: user_info.city,
-              country: user_info.country,
-              app_id: app_id
-            }) 
+            case Exwcp.User.info(config, openid) do 
+              %{subscribe: 0} ->
+                raise "user not subscribe while get user info"
+
+              %{openid: ^openid} = user_info -> 
+                Wcp.create_app_wcp_user!(%{
+                  openid: user_info.openid,
+                  nickname: user_info.nickname,
+                  sex: user_info.sex,
+                  avatar_url: user_info.headimgurl |> Utils.remove_url_scheme(),
+                  city: user_info.city,
+                  country: user_info.country,
+                  app_id: app_id
+                }) 
+
+              what ->
+                raise "get user info from wechat server failed, #{inspect what}"
+            end
           else 
             wcp_user
           end
@@ -45,7 +53,7 @@ defmodule AcsWeb.WcpController do
           ESWcpMessage.index(%{from: %{
               openid: wcp_user.openid, 
               nickname: wcp_user.nickname,
-              avatar_url: user_info.headimgurl |> Utils.remove_url_scheme(),
+              avatar_url: wcp_user.avatar_url |> Utils.remove_url_scheme(),
             },
             to: %{openid: msg.tousername, nickname: "系统"},
             msg_type: msg.msgtype,

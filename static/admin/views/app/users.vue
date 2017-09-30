@@ -11,7 +11,7 @@
     <div class="box" v-if="!initing && users.length > 0">
       <div class="columns is-multiline">
         <div class="column is-3" v-for="user in users" :key="user.id">
-          <div class="box">
+          <div class="box" style="padding: 0.75rem">
             <article class="media">
               <div class="media-left">
                 <figure class="image is-48x48">
@@ -26,9 +26,18 @@
                     </span>
                   </div>
                   <div class="level-right">
-                    <span class="level-item">
-                      <span class="icon is-small is-primary" style="cursor: pointer" @click="showDetail(user.id)"><i class="fa fa-clone"></i></span>
-                    </span>
+                    <router-link class="level-item" :to="{name: 'Orders', params: {appId: $route.params.appId, keyword: user.id}}">
+                      <tooltip label="查询订单" placement="top">
+                        <span class="icon is-small is-primary" style="cursor: pointer"><i class="fa fa-bars"></i></span>
+                      </tooltip>
+                    </router-link>
+                    <div class="level-item">
+                      <tooltip label="查看详细信息" placement="top">
+                        <span class="icon is-small is-primary" style="cursor: pointer" @click="showDetail(user.id)">
+                          <i class="fa fa-search-plus"></i>
+                        </span>
+                      </tooltip>
+                    </div>
                   </div>
                 </nav>
                 <div class="content">
@@ -94,6 +103,10 @@ export default {
       total: 1,
       recordsPerPage: 20,
     }
+  },
+
+  created: async function() {
+    this.keyword = this.$route.params.keyword || ''
   },
 
   mounted: async function() {

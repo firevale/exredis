@@ -23,7 +23,7 @@ defmodule Excache.Fastlane do
       ^node -> 
         :do_nothing
       _ -> 
-        Cachex.del(:default, key)
+        if Cachex.exists?(:default, key), do: Cachex.del(:default, key)
       end
   end
 end

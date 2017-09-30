@@ -90,6 +90,13 @@ const state = {
         level: '1,2,3,',
         label: i18n.t('admin.menu.userManage'),
       },
+    }, {
+      path: '/admin/app/:appId/orders',
+      meta: {
+        icon: 'fa-money',
+        level: '1,2,3,',
+        label: i18n.t('admin.menu.orderManage'),
+      },
     },
     {
       meta: {
@@ -161,14 +168,6 @@ const state = {
       }, ]
     },
     {
-      path: '/admin/app/:appId/orders',
-      meta: {
-        icon: 'fa-money',
-        level: '1,2,3,',
-        label: i18n.t('admin.menu.orderManage'),
-      },
-    },
-    {
       path: '/admin/app/:appId/editforum',
       meta: {
         must: 'has_forum',
@@ -195,6 +194,13 @@ const state = {
         expanded: false,
       },
       children: [{
+        name: 'wcsUsers',
+        path: '/admin/app/:appId/wcsUsers',
+        meta: {
+          level: '1,2,',
+          label: i18n.t('admin.menu.wcsUsers'),
+        }
+      }, {
         name: 'PointLog',
         path: '/admin/app/:appId/pointLog',
         meta: {
@@ -223,7 +229,7 @@ const state = {
           level: '1,2,',
           label: i18n.t('admin.menu.cdkey'),
         },
-      },]
+      }, ]
     },
     {
       meta: {
@@ -269,7 +275,7 @@ const state = {
           level: '1,2,',
           label: i18n.t('admin.menu.pointRoulette'),
         },
-      },]
+      }, ]
     },
     {
       path: '/admin/app/:appId/activity',

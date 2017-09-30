@@ -24,14 +24,14 @@ defmodule Excache do
 
   def del(key, options \\ []) do
     result = Cachex.del(:default, key, options)
-    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")})
+    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")}) |> Base.encode64
     Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
     result
   end
 
   def del!(key, options \\ []) do 
     result = Cachex.del!(:default, key, options)
-    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")})
+    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")}) |> Base.encode64
     Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
     result
   end

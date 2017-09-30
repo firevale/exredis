@@ -2,6 +2,15 @@
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
+        <div class="columns">
+          <div class="column">
+            <a class="button is-primary" style="min-width: 100px" @click="refresh">
+            <i class="fa fa-refresh" style="margin-right: 5px"></i> {{ $t('admin.point.cdkey.refresh') }}
+          </a>
+          </div>
+        </div>
+      </article>
+      <article class="tile is-child is-12">
         <div class="table-responsive">
           <div class="columns is-gapless has-text-centered" style="border-bottom: 1px solid #ccc; padding:5px; color:#aaa;">
             <div class="column">
@@ -139,6 +148,10 @@ export default {
           this.orders[index] = result
         },
       })
+    },
+
+    refresh: function() {
+      this.getOrders(this.page, this.recordsPerPage)
     },
 
     onPageChange: function(page) {

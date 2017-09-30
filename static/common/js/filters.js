@@ -86,6 +86,10 @@ export const formatPrice = val => {
     return 0
 }
 
+export const formatPoint = val => {
+  return val + '积分';
+}
+
 export const secondFormatHour = val => {
   if (val)
     return parseFloat(val / 3600).toFixed(1)

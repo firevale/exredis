@@ -2,10 +2,15 @@
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
       <article class="tile is-child is-12">
-        <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addNewDraw">
+        <div class="columns">
+          <div class="column is-2">
+            <a class="button is-primary" style="min-width: 100px" @click="addNewDraw">
             <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.draw.add') }}
           </a>
+          </div>
+          <div class="column is-4" style="text-align:left;">
+            <label class="label" style="color:red;">注意：请至少保留一个抽奖商品为未中奖状态</label>
+          </div>
         </div>
       </article>
       <article class="tile is-child is-12">
@@ -26,9 +31,9 @@
             <div class="column">
               <p>{{ $t('admin.point.draw.edit')}}</p>
             </div>
-            <div class="column">
+            <!-- <div class="column">
               <p>{{ $t('admin.point.draw.delete')}}</p>
-            </div>
+            </div> -->
           </div>
           <div v-if="draws">
             <div class="columns has-text-centered" style="border-bottom: 1px solid #ccc;" v-show="draws && draws.length > 0"
@@ -50,11 +55,11 @@
                   <i class="fa fa-pencil"></i>
                 </a>
               </div>
-              <div class="column">
+              <!-- <div class="column">
                 <a @click.prevent="delDraw(draw.id, index)">
                   <i class="fa fa-trash-o"></i>
                 </a>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

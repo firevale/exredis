@@ -191,6 +191,10 @@ export default new Router({
           name: 'EditPointGoods',
           path: 'pointMall/edit_goods',
           component: require('../views/app/pointMall/editGoods')
+        },{
+          name: 'PMallOrderInfo',
+          path: 'pointMall/order/:orderId',
+          component: require('../views/app/pointMall/orderInfo')
         },
       ],
     }, {

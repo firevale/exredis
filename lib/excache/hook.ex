@@ -1,5 +1,6 @@
 defmodule Excache.Hook do
   use     Cachex.Hook
+  use     Utils.LogAlias
 
   @moduledoc """
   A very small example hook which simply logs all actions to stdout and keeps
@@ -12,7 +13,8 @@ defmodule Excache.Hook do
   value you return in the tuple will be the state of your hook.
   """
   def init(_options \\ []) do
-    {:ok, nil}
+    node = System.get_env("NODE")
+    {:ok, %{node: node, last_pub_key: nil, last_msg: nil}}
   end
 
   @doc """
@@ -26,22 +28,28 @@ defmodule Excache.Hook do
   The return type of this function should be `{ :ok, new_state }`, anything else
   is not accepted.
   """
-  def handle_notify({:del, [key | _]} = msg, {:ok, _}, _state) do
-    node = System.get_env("NODE")
-    payload = Poison.encode!(%{action: :del, key: key, node: node})
-    Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
-    {:ok, msg}
+  def handle_notify({:del, [key | _]} = msg, {:ok, _}, %{node: node, last_pub_key: last_pub_key, last_msg: last_msg} = state) do
+    case last_pub_key do 
+      ^key -> 
+        {:ok, %{node: node, last_pub_key: nil, last_msg: msg}}
+        
+      _ ->
+        payload = Poison.encode!(%{action: :del, key: key, node: node})
+        d "publish #{inspect payload}, #{inspect msg}, #{inspect state}"
+        Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
+        {:ok, %{node: node, last_pub_key: key, last_msg: msg}}
+    end
   end
 
-  def handle_notify(msg, _results, _state) do
-    {:ok, msg}
+  def handle_notify(msg, _results, %{node: node}) do
+    {:ok, %{node: node, last_pub_key: nil, last_msg: msg}}
   end
 
   @doc """
   Provides a way to retrieve the last action taken inside the cache.
   """
-  def handle_call(:last_action, _ctx, state) do
-    {:reply, state, state}
+  def handle_call(:last_key, _ctx, %{last_pub_key: key} = state) do
+    {:reply, key, state}
   end
 
 end

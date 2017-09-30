@@ -11,9 +11,12 @@
             <label class="label"> {{ $t('admin.point.drawLog.user') }}: {{ order.wcs_user.nickname }}</label>
             <label class="label"> {{ $t('admin.point.drawLog.status') }}: {{ getStatus(order.status) }}</label>
             <label class="label"> {{ $t('admin.point.drawLog.paidAt') }}: {{ order.paid_at | formatServerDateTime }}</label>
-            <label class="label"> {{ $t('admin.point.drawLog.deliverAt') }}: {{ order.deliver_at | formatServerDateTime}}</label>
-            <label class="label"> {{ $t('admin.point.drawLog.closeAt') }}: {{ order.close_at | formatServerDateTime}}</label>
-            <label class="label"> {{ $t('admin.point.drawLog.address') }}: </label>
+            <!-- <label class="label"> {{ $t('admin.point.drawLog.deliverAt') }}: {{ order.deliver_at | formatServerDateTime}}</label>
+            <label class="label"> {{ $t('admin.point.drawLog.closeAt') }}: {{ order.close_at | formatServerDateTime}}</label> -->
+            <label class="label"> {{ $t('admin.mall.order.fields.address.name') }}: {{ order.address.name }} </label>
+            <label class="label"> {{ $t('admin.mall.order.fields.address.mobile')}}: {{ order.address.mobile }} </label>
+            <label class="label"> {{ $t('admin.mall.order.fields.address.address')}}: {{ order.address.area }}{{ order.address.address
+              }} </label>
           </div>
           <div class="column">
             <label class="label"> {{ $t('admin.point.draw.goodsId') }}: {{ goods.name }}</label>
@@ -26,11 +29,8 @@
             </div>
           </div>
         </div>
-        <p class="control">
-          <textarea class="textarea" style="height:120px" :value="JSON.stringify(order.address)" @input="updateMessage"></textarea>
-        </p>
         <div class="has-text-centered" style="margin-top: 15px">
-          <a class="button is-primary" v-if="order.status<2" @click.prevent="updateOrder(order)">{{ $t('admin.point.drawLog.save') }}</a>
+          <!-- <a class="button is-primary" v-if="order.status<2" @click.prevent="updateOrder(order)">{{ $t('admin.point.drawLog.save') }}</a> -->
           <a class="button is-primary" @click.prevent="closeWin">{{ $t('admin.point.drawLog.closeWin') }}</a>
           <!-- <a class="button is-primary" v-if="order.status==1" @click.prevent="updateOrderStatus(order, 2)">{{ $t('admin.point.drawLog.delivered') }}</a>
           <a class="button is-primary" @click.prevent="updateOrderStatus(order, -1)">{{ $t('admin.point.drawLog.close') }}</a> -->

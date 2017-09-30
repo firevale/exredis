@@ -527,7 +527,6 @@ defmodule Acs.Search do
           should: [
             %{term: %{wcs_user_id: keyword}},
             %{term: %{log_type: keyword}},
-            %{term: %{device_id: keyword}},
             %{match: %{memo: keyword}},
             %{has_parent: %{
               parent_type: "wcs_users",

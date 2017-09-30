@@ -106,6 +106,10 @@ export default {
     }
   },
 
+  created: async function() {
+    this.keyword = this.$route.params.keyword || ''
+  },
+
   computed: {
     ...mapGetters([
       'goods', 'app'

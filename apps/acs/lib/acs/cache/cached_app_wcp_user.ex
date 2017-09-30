@@ -23,7 +23,13 @@ defmodule Acs.Cache.CachedAppWcpUser do
     Excache.get!(openid_key(app_id, openid), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-          {:ignore, nil} 
+          case Repo.get_by(AppWcpUser, app_id: app_id, openid: openid) do 
+            %{id: wcp_user_id} -> 
+              Exredis.set(redis_key, wcp_user_id) 
+              {:commit, get(wcp_user_id)}
+            _ ->
+              {:ignore, nil} 
+          end
           
         wcp_user_id ->
           {:commit, get(wcp_user_id)}
@@ -35,7 +41,13 @@ defmodule Acs.Cache.CachedAppWcpUser do
     Excache.get!(email_key(app_id, email), fallback: fn(redis_key) ->    
       case Exredis.get(redis_key) do
         nil -> 
-         {:ignore, nil} 
+          case Repo.get_by(WcsUser, app_id: app_id, tf_email: email) do 
+            %{id: wcp_user_id} -> 
+              Exredis.set(redis_key, wcp_user_id) 
+              {:commit, get(wcp_user_id)} 
+            _ ->
+              {:ignore, nil} 
+          end
 
         wcp_user_id ->
           {:commit, get(wcp_user_id)}

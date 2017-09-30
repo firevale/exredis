@@ -24,10 +24,6 @@ defmodule Excache.Application do
         limit: %Cachex.Limit{limit: 100_000, policy: Cachex.Policy.LRW, reclaim: 0.5},
         record_stats: true,
         ttl_interval: :timer.seconds(3600),
-        hooks: [%Cachex.Hook{
-          module: Excache.Hook,
-          server_args: [name: Excache.Hook]
-          }],
         ]]),                                                          
     ]
 

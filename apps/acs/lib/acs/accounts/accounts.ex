@@ -9,7 +9,10 @@ defmodule Acs.Accounts do
   alias Acs.Accounts.User
   alias Acs.Accounts.UserAddress
   alias Acs.Accounts.UserSdkBinding
+
   alias Acs.Cache.CachedUser
+  alias Acs.Cache.CachedUserSdkBindings
+
   alias Utils.Password
   alias Acs.Search.ESUser
   alias Acs.Search.ESSdkUser
@@ -89,6 +92,7 @@ defmodule Acs.Accounts do
                 nickname: nickname,
                 sdk_user_id: sdk_user_id}) |> Repo.insert!
               CachedUser.refresh(user)
+              CachedUserSdkBindings.refresh(user.id)
               ESUser.index(user)
               ESSdkUser.index(sdk_user)
               
@@ -101,6 +105,7 @@ defmodule Acs.Accounts do
               user_id: user.id, 
               nickname: nickname,
               sdk_user_id: sdk_user_id}) |> Repo.insert!            
+            CachedUserSdkBindings.refresh(user.id)
             ESSdkUser.index(sdk_user)
             {:ok, user}
         end
@@ -115,6 +120,10 @@ defmodule Acs.Accounts do
       select: count(1),
       where: u.nickname == ^nickname and u.id != ^user_id
     Repo.one!(query) > 0
+  end
+
+  def get_user_sdk_bindings(user_id) when is_integer(user_id) do 
+    CachedUserSdkBindings.get(user_id)
   end
   
   def get_user_addresses(user_id) do

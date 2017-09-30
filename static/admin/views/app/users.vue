@@ -44,6 +44,9 @@
                   <span>昵称:&nbsp<small>{{user.nickname}}</small><br/></span>
                   <span v-show="user.email">email:&nbsp<small>{{user.email}}</small><br/></span>
                   <span v-show="user.mobile">手机:&nbsp<small>{{user.mobile}}</small><br/></span>
+                  <template v-for="sdkBinding in user.sdk_bindings">
+                    <span :key="sdkBinding.sdk_user_id">{{sdkBinding.sdk}}:&nbsp;<small>{{sdkBinding.sdk_user_id}}&nbsp;{{sdkBinding.nickname}}</small><br/></span>
+                  </template>
                 </div>
               </div>
             </article>          

@@ -29,7 +29,7 @@
               <p>{{ $t('admin.point.drawLog.paidAt')}}</p>
             </div>
             <div class="column">
-              <p>{{ $t('admin.point.drawLog.operate')}}</p>
+              <p>{{ $t('admin.point.drawLog.detail')}}</p>
             </div>
           </div>
           <div v-if="orders">

@@ -45,7 +45,7 @@
         <p class="has-text-centered">共
           <span style="font-size:1.5rem">{{sign_total}}</span> 人签到</p>
         <div class="sign-users is-flex">
-          <div v-for="user in sign_users" class="column is-2 avatar is-flex flex-center flex-vcentered" >
+          <div v-for="user in sign_users" class="column is-2 avatar is-flex flex-center flex-vcentered">
             <img :src="user.avatar_url">
           </div>
           <div v-if="sign_total> sign_users.length" class="load-more is-flex flex-center flex-vcentered" @click="getSignUsers">
@@ -119,8 +119,8 @@ export default {
       if (result.success) {
         this.signed = result.signed
         this.sign_times = result.sign_times
-        this.pic = filter.imageStaticUrl(result.pic),
-          this.terms = result.terms
+        this.pic = filter.imageStaticUrl(result.pic)
+        this.terms = result.terms
         this.sign_total = result.sign_total
         this.sign_users = result.sign_users
         this.awards = result.awards.sort((a, b) => parseInt(a.days) < parseInt(b.days) ? -1 : 1)
@@ -159,7 +159,7 @@ export default {
       let result = await this.$acs.getSignUsers({
         start: this.sign_users.length
       })
-      
+
       if (result.success) {
         this.sign_users = this.sign_users.concat(result.sign_users)
       }

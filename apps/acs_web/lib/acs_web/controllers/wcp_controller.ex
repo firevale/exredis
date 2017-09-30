@@ -29,6 +29,9 @@ defmodule AcsWeb.WcpController do
 
           wcp_user = if is_nil(wcp_user) do 
             case Exwcp.User.info(config, openid) do 
+              %{subscribe: 0} ->
+                raise "user not subscribe while get user info"
+
               %{openid: ^openid} = user_info -> 
                 Wcp.create_app_wcp_user!(%{
                   openid: user_info.openid,
@@ -39,6 +42,7 @@ defmodule AcsWeb.WcpController do
                   country: user_info.country,
                   app_id: app_id
                 }) 
+                
               what ->
                 raise "get user info from wechat server failed, #{inspect what}"
             end

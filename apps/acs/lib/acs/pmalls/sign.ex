@@ -10,13 +10,13 @@ defmodule Acs.PMallSign do
   @key_base  "acs.pmall"
 
   # 签到
-  def local_date() , do: Timex.to_date(Timex.local())
+  def local_today(), do: Timex.to_date(Timex.local())
   def local_yesterday(), do: Timex.to_date(Timex.shift(Timex.local(),days: -1))
-  def _sign_cache_key(app_id, wcs_user_id), do: "#{@key_base}:sign:#{app_id}:#{local_date()}:#{wcs_user_id}"
+  def _sign_cache_key(app_id, wcs_user_id), do: "#{@key_base}:sign:#{app_id}:#{local_today()}:#{wcs_user_id}"
   def _sign_cache_key_before(app_id, wcs_user_id), do: "#{@key_base}:sign:#{app_id}:#{local_yesterday()}:#{wcs_user_id}"
   def _sign_cache_key_times(app_id, wcs_user_id), do: "#{@key_base}:signtimes:#{app_id}:#{wcs_user_id}"
-  def _sign_cache_key_users(app_id), do: "#{@key_base}:sign_users:#{app_id}:#{local_date()}"
-  def _sign_cache_key_calendar(app_id, group_name), do: "#{@key_base}:sign_calendar:#{app_id}:#{group_name}:#{local_date()}"
+  def _sign_cache_key_users(app_id), do: "#{@key_base}:sign_users:#{app_id}:#{local_today()}"
+  def _sign_cache_key_calendar(app_id, group_name), do: "#{@key_base}:sign_calendar:#{app_id}:#{group_name}:#{local_today()}"
   def _sign_cache_key_awards(app_id, wcs_user_id), do: "#{@key_base}:sign_awards:#{app_id}:#{wcs_user_id}"
   def sign(app_id, wcs_user_id) do
     sign_key = _sign_cache_key(app_id, wcs_user_id)

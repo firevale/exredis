@@ -39,7 +39,7 @@
             <p class="content">
               <span> {{log.memo}} </span>
               <br/>
-              <span> {{log.inserted_at | formatServerDateTime}} </span>
+              <span> <small>{{ log.inserted_at | formatServerDateTime }}</small> </span>
               <span class="title is-5 pull-right" :class="log.point > 0 ? 'is-primary' : 'is-danger'">
                 {{log.point > 0 ? `+${log.point}` : log.point}}&nbsp;分
               </span>

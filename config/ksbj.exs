@@ -20,7 +20,7 @@ config :exservice, KSFile,
 config :bugsnag, :release_stage, "ksbj" 
 config :bugsnag, use_logger: true
 
-config :acs_web, WCS,
+config :acs, WCS,
   wcs_app_id: "wxc9d1413556db5af5",
   wcs_app_secret: "ec432fc2a33a06356d6360629ae8211f"
 

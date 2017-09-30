@@ -1,8 +1,8 @@
 <template>
-  <div v-if="pic" class="draw-page bg-full bg-draw-page">
+  <div class="draw-page bg-full bg-draw-page">
     <header></header>
     <div class="rotate-container bg-full bg-draw-turntable" :style="{'background-image': headImage}">
-      <div class="bg-full bg-turn-needle"></div>
+      <div v-show="headImage" class="bg-full bg-turn-needle"></div>
     </div>
     <footer class="is-flex flex-center flex-vcentered ">
       <div class="my-total is-flex flex-center flex-vcentered is-size-medium">

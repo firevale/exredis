@@ -595,7 +595,7 @@ defmodule Acs.Search do
   def _search_pmall_point_logs(query) do 
     case Elasticsearch.search(%{index: "pmall", type: "point_logs", query: query, params: %{timeout: "1m"}}) do
       {:ok, %{hits: %{hits: hits, total: total} = result}} ->
-        logs = Enum.map(hits, &(&1._source))
+        logs = Enum.map(hits, &( Map.put(&1._source, :id, &1._id )))
         {:ok, total, logs}
 
       e ->

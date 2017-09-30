@@ -30,5 +30,7 @@ defmodule Acs.Wcp.AppWcpUser do
     |> validate_required([:app_id, :openid])
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:unionid, name: :app_wcp_users_app_id_unionid_index)
+    |> unique_constraint(:openid, name: :app_wcp_users_app_id_openid_index)
+    |> unique_constraint(:user_id, name: :app_wcp_users_app_id_user_id_index)
   end
 end

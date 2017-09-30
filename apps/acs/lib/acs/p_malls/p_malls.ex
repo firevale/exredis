@@ -236,7 +236,7 @@ defmodule Acs.PMalls do
       snapshots = Map.put(%{}, goods.id, mapGoods)
       new_order = %{"id": order_id, "goods_name": goods.name, "price": goods.price,
         "discount": 0, "final_price": goods.price, "app_id": app_id, "wcs_user_id": wcs_user_id,
-        "address": address, "snapshots": snapshots
+        "address": address, "snapshots": snapshots, "currency": goods.currency, "status": PMallOrder.Status.paid
       }
 
      PMallOrder.changeset(%PMallOrder{}, new_order) |> Repo.insert!

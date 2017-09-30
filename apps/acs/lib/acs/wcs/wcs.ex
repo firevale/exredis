@@ -31,6 +31,7 @@ defmodule Acs.Wcs do
       case get_wcs_user(app_id: app_id, openid: openid) do 
         nil ->
           wcs_user = create_wcs_user!(%{
+            app_id: app_id,
             openid: openid,
             unionid: Map.get(user_info, :unionid, nil),
             nickname: Map.get(user_info, :nickname, ""), 

@@ -28,7 +28,7 @@ $border-color: rgba($text, 0.1);
   }
   &.bg-draw-page {
     background-image: url("~assets/pmall/1245_34.jpg");
-    min-height: virtual-m-rem(2064);
+    height: virtual-m-pixel(2064);
   }
   &.bg-draw-turntable {
     // background-image: url("~assets/pmall/1245_34_03.png");

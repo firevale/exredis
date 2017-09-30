@@ -144,6 +144,11 @@ export default new Router({
           component: require('../views/app/stats/statsTiming')
         },
         {
+          name: 'WcsUsers',
+          path: 'wcsUsers',
+          component: require('../views/app/pointMall/wcsUsers')
+        },
+        {
           name: 'PointLog',
           path: 'pointLog',
           component: require('../views/app/pointMall/pointLog')

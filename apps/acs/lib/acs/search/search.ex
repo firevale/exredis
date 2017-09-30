@@ -604,4 +604,65 @@ defmodule Acs.Search do
     end 
   end
 
+  def search_wcs_user(keyword: "", app_id: app_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        term: %{app_id: app_id}
+      },
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+      sort: %{ inserted_at: %{ order: :desc} }
+    }
+    _search_wcs_user(query)
+  end
+
+  def search_wcs_user(keyword: keyword, app_id: app_id, page: page, records_per_page: records_per_page) do 
+    query = %{
+      query: %{
+        bool: %{
+          must: %{
+            term: %{app_id: app_id}
+          },
+          should: [
+            %{term: %{openid: %{value: keyword, boost: 4.0}}},
+            %{term: %{unionid: %{value: keyword, boost: 4.0}}},
+            %{match: %{nickname: %{query: keyword, boost: 3.0}}},
+            %{term: %{city: %{value: keyword}}},
+            %{has_child: %{
+              type: "orders",
+              query: %{
+                bool: %{
+                  should: [
+                    %{term: %{user_id: keyword}},
+                    %{match: %{memo: %{query: keyword}}},
+                    %{match: %{"address.address" => %{query: keyword}}},
+                    %{term: %{"address.name" => keyword}},
+                    %{term: %{"address.mobile" => keyword}},
+                  ],
+                  minimum_should_match: 1
+              }}
+            }},            
+          ],
+          minimum_should_match: 1,
+          boost: 1.0,
+        },
+      },
+      from: (page - 1) * records_per_page,
+      size: records_per_page,
+    }
+
+    _search_wcs_user(query)
+  end
+
+  defp _search_wcs_user(query) do
+    case Elasticsearch.search(%{index: "pmall", type: "wcs_users", query: query, params: %{timeout: "1m"}}) do
+      {:ok, %{hits: %{hits: hits, total: total}}} ->
+        users = Enum.map(hits, &(&1._source))
+        {:ok, total, users }
+
+      error ->
+        raise "search failed: #{inspect error}"
+    end
+  end
+
 end

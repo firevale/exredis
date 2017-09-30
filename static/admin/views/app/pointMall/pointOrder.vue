@@ -9,10 +9,15 @@
       </span>
     </div>
     <div v-if="orders.length > 0">
-      <div v-for="item in orders" :key="item.id" class="media" style="align-items: stretch; margin:1rem auto;">
+      <div v-for="item in orders" :key="item.id" class="media" style="align-items: stretch; margin:1rem auto; padding: 0.75rem">
+        <div class="media-left">
+          <figure class="image is-48x48">
+            <img :src="item.wcs_user.avatar_url" alt="wechat avatar">
+          </figure>
+          <p>{{item.wcs_user.nickname}}</p>
+        </div>
         <div class="media-left" style="width:220px">
           <p> 订单号: {{item.id}}</p>
-          <p>{{item.wcs_user.nickname}}</p>
           <p> {{$t('admin.mall.order.status.'+item.status) }}</p>
           <p> {{ item.inserted_at | formatServerDateTime }}</p>
         </div>

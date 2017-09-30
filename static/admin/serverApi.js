@@ -426,6 +426,10 @@ export default {
       listPMallOrders(params) {
         return post('/admin_actions/pmall/list_pmall_orders', params)
       },
+
+      getPMallOrder(params) {
+        return post('/admin_actions/pmall/get_pmall_order', params)
+      },
     }
   }
 }

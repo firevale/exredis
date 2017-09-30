@@ -11,7 +11,9 @@
    userNotExist: '用户不存在',
    
    goods: {
-    original_price: '原价',
+    price: '单价(积分)',
+    original_price: '原价(¥)',
+    priceList: '单价：{price}',
    },
 
    task: {

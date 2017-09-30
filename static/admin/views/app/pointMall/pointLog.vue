@@ -1,15 +1,8 @@
 <template>
   <div class="tile is-ancestor">
     <div class="tile is-parent is-vertical">
-      <article class="tile is-child is-12">
-        <div class="column">
-          <a class="button is-primary" style="min-width: 100px" @click="addPoint">
-            <i class="fa fa-plus" style="margin-right: 5px"></i> {{ $t('admin.point.add') }}
-          </a>
-        </div>
-      </article>
       <div class="control has-icon has-icon-left">
-        <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.pointLog.searchTip')"
+        <input type="text" class="input" @keyup.enter="onSearchBoxSubmit" :placeholder="$t('admin.point.searchPointLog')"
           v-model="keyword">
         <span class="icon is-small">
           <i v-if="loading" class="fa fa-spinner fa-spin"></i>
@@ -95,6 +88,7 @@ export default {
   },
 
   created: async function() {
+    this.keyword = this.$route.params.keyword || ''
     this.getLogs(this.page, this.recordsPerPage)
   },
 
@@ -117,25 +111,6 @@ export default {
 
     onPageChange: function(page) {
       this.getLogs(page)
-    },
-
-    addPoint: function() {
-      openPointDialog({
-        pointLog: {
-          id: 0,
-          log_type: 'admin_op',
-          memo: '',
-          point: 0,
-          wcp_user_id: '',
-          openid: '',
-        },
-        visible: true,
-        callback: log => {
-          this.page = 1
-          this.keyword = ''
-          this.getLogs(this.page)
-        },
-      })
     },
 
     onSearchBoxSubmit: async function() {

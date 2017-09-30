@@ -15,15 +15,15 @@
         <div class="answer column is-6 has-text-left">
           <ul>
             <li class="is-flex flex-vcentered">
-              <input type="radio" v-model.trim="correct" :value="question.a1">&nbsp;A
+              <input type="radio" v-model.trim="correct" :value="question.a1"  :disabled="isComplete">&nbsp;A
               <span class="subtitle is-size-small is-grey-dark">{{question.a1}}</span>
             </li>
             <li class="is-flex flex-vcentered">
-              <input type="radio" v-model.trim="correct" :value="question.a2">&nbsp;B
+              <input type="radio" v-model.trim="correct" :value="question.a2" :disabled="isComplete">&nbsp;B
               <span class="subtitle is-size-small is-grey-dark">{{question.a2}}</span>
             </li>
             <li class="is-flex flex-vcentered">
-              <input type="radio" v-model.trim="correct" :value="unknow">&nbsp;C
+              <input type="radio" v-model.trim="correct" :value="unknow" :disabled="isComplete">&nbsp;C
               <span class="subtitle is-size-small is-grey-dark">{{unknow}}</span>
             </li>
           </ul>

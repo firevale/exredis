@@ -15,6 +15,7 @@
     price: '单价(积分)',
     original_price: '原价(¥)',
     priceList: '单价：{price}',
+    nickname: '昵称',
    },
 
    task: {

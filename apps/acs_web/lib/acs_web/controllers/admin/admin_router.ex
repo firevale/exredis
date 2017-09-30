@@ -175,6 +175,7 @@ defmodule AcsWeb.AdminRouter do
       post  "/list_pmall_codetypes", PMallController, :list_pmall_codetypes
 
       post  "/list_pmall_orders", PMallController, :list_pmall_orders
+      post  "/get_pmall_order", PMallController, :get_pmall_order
     end
 
   end

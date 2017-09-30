@@ -546,10 +546,10 @@ defmodule Acs.PMalls do
   end
 
   def update_pmall_draw(draw) do
-    if draw["goods_id"] && !get_pmall_goods(draw["goods_id"]) do
+    if String.length(draw["goods_id"]) >0 && !get_pmall_goods(draw["goods_id"]) do
       :notexist
     else
-      if !check_cdkeys_enough(draw["goods_id"], draw["num"]) do
+      if String.length(draw["goods_id"]) >0 && !check_cdkeys_enough(draw["goods_id"], draw["num"]) do
         :stockoverflow
       else
         case Repo.get(LuckyDraw, draw["id"]) do

@@ -11,7 +11,6 @@ defmodule Excache.Fastlane do
 
   def fastlane(_pid, %{channel: "cachex", payload: payload}, _options) do
     payload = :erlang.binary_to_term(payload)
-    info "excache pubsub receive payload: #{inspect payload}"
     handle_payload(payload)
   end
   def fastlane(_pid, %{channel: channel, payload: payload}, _options) do

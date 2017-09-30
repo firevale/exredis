@@ -6,7 +6,7 @@ defmodule Acs.PMalls do
   import Ecto.Query, warn: false
   alias Acs.Repo
   alias Acs.Search
-  
+
   use Utils.LogAlias
 
   alias Acs.PMallTransaction
@@ -40,15 +40,15 @@ defmodule Acs.PMalls do
   end
 
   def list_pmall_goods(app_id) do
-    CachedPMallGoods.list(app_id) 
+    CachedPMallGoods.list(app_id)
   end
 
   # list pmall goods including inactive goods
-  def list_all_pmall_goods(app_id) do 
+  def list_all_pmall_goods(app_id) do
     query = from g in PMallGoods,
       select: g,
       where: g.app_id == ^app_id,
-      order_by: [desc: g.inserted_at]  
+      order_by: [desc: g.inserted_at]
 
     Repo.all(query)
   end
@@ -61,7 +61,7 @@ defmodule Acs.PMalls do
   def update_pmall_goods(user_id, goods) do
     case goods["is_new"] do
       true ->
-        case CachedPMallGoods.get(goods["id"]) do 
+        case CachedPMallGoods.get(goods["id"]) do
           nil ->
             if goods["is_virtual"] == true && !check_cdkeys_enough(goods["app_id"], goods["virtual_param"], goods["stock"]) do
               :stockoverflow
@@ -72,7 +72,7 @@ defmodule Acs.PMalls do
                   goods = Map.put(goods, "inserted_at", new_goods.inserted_at) |> Map.put("active", false)
                   CachedPMallGoods.refresh(new_goods)
                   {:add_ok, goods}
-  
+
                 {:error, %{errors: _errors}} ->
                   :error
               end
@@ -117,7 +117,7 @@ defmodule Acs.PMalls do
 
       %PMallGoods{} = goods ->
         new_goods = PMallGoods.changeset(goods, %{active: !goods.active}) |> Repo.update!
-        CachedPMallGoods.refresh(new_goods) 
+        CachedPMallGoods.refresh(new_goods)
         {:ok, !goods.active}
     end
   end
@@ -145,12 +145,12 @@ defmodule Acs.PMalls do
 
   def list_pmall_point_logs(app_id, keyword, page, records_per_page) do
     {:ok, total, logs} = Acs.Search.search_pmall_point_logs(
-      app_id: app_id, 
-      keyword: keyword, 
-      page: page, 
+      app_id: app_id,
+      keyword: keyword,
+      page: page,
       records_per_page: records_per_page)
     total_page = round(Float.ceil(total / records_per_page))
-    logs = for log <- logs do 
+    logs = for log <- logs do
       Map.put(log, :wcs_user, Wcs.get_wcs_user(log.wcs_user_id))
     end
     {:ok, logs, total_page}
@@ -158,9 +158,9 @@ defmodule Acs.PMalls do
 
   def list_my_point_logs(app_id, wcs_user_id, page, records_per_page) do
     {:ok, total, logs} = Acs.Search.list_my_point_logs(
-      app_id: app_id, 
-      wcs_user_id: wcs_user_id, 
-      page: page, 
+      app_id: app_id,
+      wcs_user_id: wcs_user_id,
+      page: page,
       records_per_page: records_per_page)
 
     total_page = round(Float.ceil(total / records_per_page))
@@ -170,9 +170,9 @@ defmodule Acs.PMalls do
 
   def list_my_exchange_point_logs(app_id, wcs_user_id, page, records_per_page) do
     {:ok, total, logs} = Acs.Search.list_my_exchange_point_logs(
-      app_id: app_id, 
-      wcs_user_id: wcs_user_id, 
-      page: page, 
+      app_id: app_id,
+      wcs_user_id: wcs_user_id,
+      page: page,
       records_per_page: records_per_page)
 
     total_page = round(Float.ceil(total / records_per_page))
@@ -271,7 +271,7 @@ defmodule Acs.PMalls do
 
   end
 
-  
+
 
   # 积分
   def get_user_point(app_id, wcs_user_id) do
@@ -287,7 +287,7 @@ defmodule Acs.PMalls do
       0 ->
         {:exist}
 
-      1 -> 
+      1 ->
         PMallTransaction.add_user_point("point_subscribe", app_id, wcs_user_id)
     end
   end
@@ -302,7 +302,7 @@ defmodule Acs.PMalls do
     Repo.get(TaskBar, task_id)
   end
 
-  def list_pmall_tasks(app_id) do 
+  def list_pmall_tasks(app_id) do
     CachedPMallTaskBar.list(app_id)
   end
 
@@ -317,7 +317,7 @@ defmodule Acs.PMalls do
 
   def update_task_pic(task, image_path) do
     task = TaskBar.changeset(task, %{pic: image_path}) |> Repo.update!
-    CachedPMallTaskBar.refresh(task) 
+    CachedPMallTaskBar.refresh(task)
   end
 
   # update_task
@@ -327,7 +327,7 @@ defmodule Acs.PMalls do
       case TaskBar.changeset(%TaskBar{}, task) |> Repo.insert do
         {:ok, new_task} ->
           new_task = TaskBar.changeset(new_task, %{sort: new_task.id}) |> Repo.update!
-          CachedPMallTaskBar.refresh(new_task)  
+          CachedPMallTaskBar.refresh(new_task)
           {:addok, new_task}
         {:error, %{errors: _errors}} ->
           :error
@@ -336,13 +336,13 @@ defmodule Acs.PMalls do
     %TaskBar{} = tb ->
       # update
       new_task = TaskBar.changeset(tb, %{
-        name: task["name"], 
-        sub_name: task["sub_name"], 
-        point: task["point"], 
-        path: task["path"], 
-        active: task["active"], 
+        name: task["name"],
+        sub_name: task["sub_name"],
+        point: task["point"],
+        path: task["path"],
+        active: task["active"],
         sort: task["sort"]}) |> Repo.update!
-      CachedPMallTaskBar.refresh(new_task)  
+      CachedPMallTaskBar.refresh(new_task)
       {:updateok, new_task}
     end
   end
@@ -354,7 +354,7 @@ defmodule Acs.PMalls do
 
       %TaskBar{} = task ->
         new_task = TaskBar.changeset(task, %{active: !task.active}) |> Repo.update!
-        CachedPMallTaskBar.refresh(new_task) 
+        CachedPMallTaskBar.refresh(new_task)
     end
   end
 
@@ -418,7 +418,7 @@ defmodule Acs.PMalls do
             cached_day_question(app_id, question)
             {:ok, question}
         end
-        
+
       cached ->
         question = DayQuestion.from_redis(cached)
         {:ok, question}
@@ -476,7 +476,7 @@ defmodule Acs.PMalls do
     answer_key_user = _answer_cache_key_user(app_id, wcs_user_id)
     Exredis.exists(answer_key_user)
   end
-  
+
   defp cached_day_question(app_id, question) do
     answer_key = _question_cache_key(app_id)
     Exredis.setex(answer_key, 86400, DayQuestion.to_redis(question))
@@ -489,39 +489,27 @@ defmodule Acs.PMalls do
   end
 
   def answer_question(question_id, app_id, wcs_user_id, correct) do
-    Repo.transaction(fn ->
-      case exists_answer_user(app_id, wcs_user_id) do
-        1 ->
-          Repo.rollback(%{i18n_message: "pmall.question.exists"})
-        _ ->
-          case get_question(question_id) do
-            nil ->
-              Repo.rollback(%{i18n_message: "pmall.question.nonexists"})
-
-            %DayQuestion{} = question ->
-              if(exists_answer(app_id) == 0) do
-                cached_day_question(app_id, question)
-              end
-
-              with {:ok, add_point, total_point} <-  PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id) do
-                if question.correct == correct do
-                  DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
-                
-                  cached_answer_user(app_id, wcs_user_id, question_id)
-                  %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.success", answer: true}
-                else
-                  DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
-                  cached_answer_user(app_id, wcs_user_id, question_id)
-
-                  %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.failed", answer: false}
-                end
-              else
-                _ ->
-                  Repo.rollback(%{i18n_message: "pmall.question.answer.failed"})
-              end
-          end
-        end
-      end)
+    with 0 <- exists_answer_user(app_id, wcs_user_id),
+      %DayQuestion{} = question <- get_question(question_id)
+    do
+      if exists_answer(app_id) == 0  do
+        cached_day_question(app_id, question)
+      end
+      cached_answer_user(app_id, wcs_user_id, question_id)
+      if question.correct == correct do
+        DayQuestion.changeset(question, %{reads: question.reads + 1 , bingo: question.bingo + 1}) |> Repo.update!
+        {:ok, add_point, total_point} = PMallTransaction.add_user_point("point_day_question", app_id, wcs_user_id)
+        {:ok, %{add_point: add_point, total_point: total_point,i18n_message: "pmall.question.answer.success", answer: true}}
+      else
+        DayQuestion.changeset(question, %{reads: question.reads + 1}) |> Repo.update!
+        {:ok, %{i18n_message: "pmall.question.answer.failed", answer: false}}
+      end
+    else
+      1 ->
+        {:error, %{i18n_message: "pmall.question.exists"}}
+      nil ->
+        {:error, %{i18n_message: "pmall.question.nonexists"}}
+    end
   end
 
   def list_pmall_draws(app_id) do
@@ -562,7 +550,7 @@ defmodule Acs.PMalls do
               {:error, %{errors: _errors}} ->
                 :error
             end
-      
+
           %LuckyDraw{} = q ->
             # update
             changed = LuckyDraw.changeset(q, %{name: draw["name"], num: draw["num"], rate: draw["rate"], goods_id: draw["goods_id"]})
@@ -617,7 +605,7 @@ defmodule Acs.PMalls do
           with  true <- draw.goods_id != nil,
             {:ok, order} <- _create_draw_order(app_id, wcs_user_id, draw) do
             goods = get_pmall_goods_detail(draw.goods_id)
-            %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point, 
+            %{i18n_message: "pmall.draw.success", add_point: add_point, total_point: total_point,
               index: index + 1, order_id: order.id, draw_name: draw.name, is_virtual: goods.is_virtual}
           else
             false ->
@@ -634,11 +622,11 @@ defmodule Acs.PMalls do
     LuckyDraw.changeset(struct(LuckyDraw,draw), %{num: draw.num - 1}) |> Repo.update!
 
     # 创建抽奖订单
-    draw_order = %{"name": draw.name, "pic": draw.pic,"app_id": app_id, 
+    draw_order = %{"name": draw.name, "pic": draw.pic,"app_id": app_id,
     "wcs_user_id": wcs_user_id, "lucky_draw_id": draw.id, "address": %{},
       "status": 4, "paid_at": Timex.now
     }
-    
+
     LuckyDrawOrder.changeset(%LuckyDrawOrder{}, draw_order) |> Repo.insert
   end
 
@@ -654,10 +642,10 @@ defmodule Acs.PMalls do
       select: order.lucky_draw_id
     Repo.all(query)
   end
- 
+
   defp _generate_rand_draws(draws) do
-    Enum.reduce(draws, [], fn(draw, result) -> 
-      result ++ Enum.map(1..draw.rate, fn num -> draw end) 
+    Enum.reduce(draws, [], fn(draw, result) ->
+      result ++ Enum.map(1..draw.rate, fn num -> draw end)
     end)
   end
 
@@ -669,14 +657,14 @@ defmodule Acs.PMalls do
       |> Enum.map(fn draw -> (not draw.id in my_draw_ids) && draw || Map.put(draw, :goods_id, nil) end)
       |> _generate_rand_draws()
       |> Enum.random()
-    
-    index = 
+
+    index =
       if draw_result.goods_id do
         Enum.find_index(draws, fn draw -> draw.id == draw_result.id end)
       else
         Enum.find_index(draws, fn draw -> draw.goods_id == nil end)
       end
-      
+
     {draw_result, index}
   end
 
@@ -702,7 +690,7 @@ defmodule Acs.PMalls do
   end
 
   def save_address(wcs_user_id, address) do
-    case Wcs.get_wcs_user(wcs_user_id) do 
+    case Wcs.get_wcs_user(wcs_user_id) do
       nil -> nil
       wcs_user ->
         case Accounts.get_address_quantity(wcs_user.user_id) do
@@ -818,7 +806,7 @@ defmodule Acs.PMalls do
         Cdkey.changeset(cdkey, %{
           owner_id: wcs_user_id,
           assigned_at: DateTime.utc_now(),
-        }) |> Repo.update() 
+        }) |> Repo.update()
         cdkey.code
     end
   end
@@ -859,7 +847,7 @@ defmodule Acs.PMalls do
       {:ok, [], 0}
     else
       total_page = round(Float.ceil(total / records_per_page))
-      query = 
+      query =
         from order in PMallOrder,
           left_join: details in assoc(order, :details),
           left_join: user in assoc(order, :wcs_user),

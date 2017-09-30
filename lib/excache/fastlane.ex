@@ -10,7 +10,7 @@ defmodule Excache.Fastlane do
   end
 
   def fastlane(_pid, %{channel: "cachex", payload: payload}, _options) do
-    payload = :erlang.binary_to_term(payload)
+    payload = payload |> Base.decode64! |> :erlang.binary_to_term
     handle_payload(payload)
   end
   def fastlane(_pid, %{channel: channel, payload: payload}, _options) do

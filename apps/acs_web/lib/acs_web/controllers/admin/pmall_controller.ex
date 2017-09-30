@@ -103,7 +103,7 @@ defmodule AcsWeb.Admin.PMallController do
 
   # delete_pmall_goods
   def delete_pmall_goods(%Plug.Conn{private: %{acs_admin_id: user_id, acs_app_id: app_id}} = conn,
-                   %{"goods_id" => goods_id} = params) do
+                         %{"goods_id" => goods_id} = params) do
     case PMalls.delete_pmall_goods(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
@@ -120,17 +120,23 @@ defmodule AcsWeb.Admin.PMallController do
     conn |> json(%{success: false, i18n_message: "error.server.badRequestParams"})
   end
 
-  def list_pmall_point_logs(%Plug.Conn{private: %{acs_session_user_id: _user_id, acs_app_id: app_id}} = conn, 
-                                         %{"keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+  def list_pmall_point_logs(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                            %{"keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
     {:ok, logs, total_page} = PMalls.list_pmall_point_logs(app_id, keyword, page, records_per_page)
     conn |> json(%{success: true, logs: logs, total: total_page})
   end
 
+  def list_wcs_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
+                     %{"keyword" => keyword, "page" => page, "records_per_page" => records_per_page}) do
+    {:ok, users, total_page} = Acs.Wcs.list_wcs_users(app_id, keyword, page, records_per_page)
+    conn |> json(%{success: true, users: users, total_page: total_page})
+  end
+
   def admin_add_pmall_point(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, 
-                                        %{"openid" => openid, 
-                                          "point" => point, 
-                                          "memo" => memo} = log) do
-    case Acs.Wcs.get_wcs_user(openid: openid) do
+                            %{"wcs_user_id" => wcs_user_id, 
+                              "point" => point, 
+                              "memo" => memo} = log) do
+    case Acs.Wcs.get_wcs_user(wcs_user_id) do
       nil -> 
         conn |> json(%{success: false, i18n_message: "admin.point.userNotExist"})
 
@@ -386,5 +392,11 @@ defmodule AcsWeb.Admin.PMallController do
                                       "records_per_page" => records_per_page}) do
     {:ok, orders, total_page} = PMalls.list_pmall_orders(app_id, keyword, page, records_per_page)
     conn |> json(%{success: true, orders: orders, total: total_page})
+  end
+
+    def get_pmall_order(%Plug.Conn{private: %{acs_app_id: _app_id}} = conn, 
+                                      %{"order_id" => order_id}) do
+    order = PMalls.get_pmall_order!(order_id)
+    conn |> json(%{success: true, order: order})
   end
 end

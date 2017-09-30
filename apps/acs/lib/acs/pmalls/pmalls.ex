@@ -872,4 +872,17 @@ defmodule Acs.PMalls do
     end
   end
 
+  def get_pmall_order!(order_id) do
+    query = 
+      from o in PMallOrder,
+        left_join: details in assoc(o, :details),
+        left_join: user in assoc(o, :wcs_user),
+        select: map(o, [:id, :goods_name, :status, :price, :address, :inserted_at,
+          user: [:id, :nickname, :openid, :avatar_url],
+          details: [:id, :goods_name, :goods_pic, :price, :amount, :pmall_goods_id]]),
+        where: o.id ==^order_id,
+        preload: [wcs_user: user, details: details]
+    Repo.one(query)
+  end
+
 end

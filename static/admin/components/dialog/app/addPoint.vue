@@ -2,13 +2,9 @@
   <modal :visible="visible">
     <div class="box">
       <div class="has-text-centered" style="width: 100%; margin-bottom: 10px">
-        <h5 class="title is-5">{{ $t('admin.point.add') }}</h5>
+        <h5 class="title is-5"> 给{{pointLog.nickname}}{{ $t('admin.point.add') }}</h5>
       </div>
       <form name="pointLog" @submit.prevent="handleSubmit">
-        <label class="label"> {{ $t('admin.point.wcpUserName') }}: </label>
-        <p class="control">
-          <input class="input" type="text" v-model.trim="pointLog.openid">
-        </p>
         <label class="label"> {{ $t('admin.point.point') }}(扣分请输入负数): </label>
         <p class="control">
           <input class="input" type="number" v-model.trim="pointLog.point">
@@ -52,13 +48,15 @@ export default {
 
   methods: {
     handleSubmit: async function() {
-      if(!this.pointLog.openid || !this.pointLog.point || !this.pointLog.memo){
+      console.log(this.poitLog)
+      if (!this.pointLog.wcs_user_id || !this.pointLog.point || !this.pointLog.memo) {
         alert('请填写微信用户openid, 积分和备注!')
         return
       }
 
       this.processing = true
-      let result = await this.$acs.adminAddPMallPoint(this.pointLog,
+      let result = await this.$acs.adminAddPMallPoint(
+        this.pointLog,
         this.$t('admin.notification.message.pointUpdated'))
 
       if (this.callback) {

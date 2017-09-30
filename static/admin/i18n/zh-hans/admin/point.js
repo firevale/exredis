@@ -9,11 +9,13 @@
    user: '用户',
    wcpUserName: '微信用户openid',
    userNotExist: '用户不存在',
+   searchPointLog: '请输入微信昵称、openid、备注关键字查询',
    
    goods: {
     price: '单价(积分)',
     original_price: '原价(¥)',
     priceList: '单价：{price}',
+    nickname: '昵称',
    },
 
    task: {

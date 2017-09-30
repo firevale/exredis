@@ -330,6 +330,10 @@ export default {
         return post('/admin_actions/log/list_admin_operate_logs', params)
       },
 
+      listWcsUsers(params) {
+        return post('/admin_actions/pmall/list_wcs_users', params)
+      },
+
       listPMallPointLogs(params) {
         return post('/admin_actions/pmall/list_pmall_point_logs', params)
       },

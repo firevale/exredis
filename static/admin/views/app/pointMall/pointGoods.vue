@@ -1,20 +1,22 @@
 <template>
   <div>
-    <router-link class="button is-primary pull-right" :to="{name: 'EditPointGoods', params: {goodsId: ''}}">
-      <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
-    </router-link>
-    <div class="tile is-parent is-vertical" v-if="goodses.length > 0">
+    <div class="tile" style="margin-bottom: 1rem">
+      <router-link class="button is-primary pull-right" :to="{name: 'EditPointGoods', params: {goodsId: ''}}">
+        <span class="icon is-small" style="margin-right: 5px;"><i class="fa fa-plus"></i></span>{{ $t('admin.mall.goods.add')}}
+      </router-link>
+    </div>
+    <div class="box" v-if="goodses.length > 0">
       <div class="columns is-multiline">
-        <div v-for="(goods, index) in goodses" class="column is-half">
-          <div class="columns">
-            <div class="column is-parent is-one-third">
+        <div v-for="(goods, index) in goodses" :key="goods.id" class="column is-4">
+          <div class="columns box" style="margin: 0.25rem">
+            <div class="column is-parent is-one-third" style="padding: 0.25rem">
               <figure class="image" style="display: block">
                 <img v-if="goods.pic" :src="goods.pic.split('|')[0] ? goods.pic.split('|')[0]: 'https://placehold.it/228x122?text=未上传' | imageStaticUrl"
                   style="width:228px; height:122px;"></img>
                 <img v-else src="https://placehold.it/228x122?text=未上传" style="width:228px; height:122px;"></img>
               </figure>
             </div>
-            <div class="column is-parent is-vertical">
+            <div class="column is-parent is-vertical" style="padding: 0.25rem">
               <article class="tile is-child">
                 <p class="subtitle is-6">{{ goods.name}}</p>
                 <p class="subtitle is-6">{{ $t('admin.point.goods.priceList', {price: getPrice(goods.price)})

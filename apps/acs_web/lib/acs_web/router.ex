@@ -31,6 +31,10 @@ defmodule AcsWeb.Router do
     get  "/payment/*path", PageController, :show_payment_page
 
     get  "/img/*path", ImageController, :get_image
+  end
+
+  scope "/", AcsWeb do
+    pipe_through :user # Use the default browser stack
 
     post "/check_register_verify_code", VerifyCodeController, :check_register_verify_code
     post "/reset_register_captcha", VerifyCodeController, :reset_register_captcha

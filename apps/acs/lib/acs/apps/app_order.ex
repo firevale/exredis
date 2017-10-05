@@ -37,7 +37,7 @@ defmodule Acs.Apps.AppOrder do
     field :transaction_id, :string
     field :transaction_status, :string
     field :cp_result, :string
-    field :app_user_id, :integer
+    field :app_user_id, :string
 
     belongs_to :app,  Acs.Apps.App, type: :string
     belongs_to :user, Acs.Accounts.User

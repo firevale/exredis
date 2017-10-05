@@ -16,14 +16,17 @@ defmodule AcsWeb.SdkPay.AppOrderController do
                                params: %{"cp_order_id" => cp_order_id} = params
                      } = conn, _options) do
 
-    app_user = AcsStats.get_app_user(app.id, zone_id, user.id)
+    app_user_id = case AcsStats.get_app_user(app.id, zone_id, user.id) do 
+      %{app_user_id: v} -> v
+      _ -> nil
+    end
 
     order_info = %{
       id: Utils.generate_token(16),
       app_id: app.id,
       user_id: user.id,
       platform: platform,
-      app_user_id: app_user && app_user.app_user_id,
+      app_user_id: app_user_id,
       zone_id: zone_id,
       device_id: device_id,
       sdk: params["sdk"] || "firevale",

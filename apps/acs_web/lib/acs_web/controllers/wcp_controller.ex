@@ -58,8 +58,8 @@ defmodule AcsWeb.WcpController do
             to: %{openid: msg.tousername, nickname: "系统"},
             msg_type: msg.msgtype,
             content: case msg.msgtype do 
-              "text" -> msg.content
               "event" -> "event: #{msg.event}, event_key: #{Map.get(msg, :eventkey, "null")}"
+              _ -> msg.content
             end,
             inserted_at: Ecto.DateTime.utc(),
             create_time: msg.createtime,

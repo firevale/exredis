@@ -56,7 +56,7 @@ defmodule Acs.Wcp do
 
   def create_app_wcp_user!(attr) do 
     wcp_user = AppWcpUser.changeset(%AppWcpUser{}, attr) 
-      |> Repo.insert!(on_conflict: :replace_all, conflict_target: :openid)  
+      |> Repo.insert!(on_conflict: :replace_all)  
     CachedAppWcpUser.refresh(wcp_user)
   end
 

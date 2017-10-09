@@ -92,6 +92,7 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.toggle_pmall_goods_status(goods_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "error.server.goodsNotFound"})
+        
       {:ok, active} ->
         Admin.log_admin_operation(user_id, app_id, "toggle_pmall_goods_status", %{"goods_id" => goods_id, "active" => active})
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"}) 
@@ -193,7 +194,7 @@ defmodule AcsWeb.Admin.PMallController do
     case PMalls.toggle_task_status(task_id) do
       nil ->
         conn |> json(%{success: false, i18n_message: "admin.point.task.taskNotFound"})
-      :ok ->
+      %TaskBar{} ->
         conn |> json(%{success: true, i18n_message: "admin.operateSuccess"})
     end
   end

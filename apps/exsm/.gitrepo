@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = ssh://git@gitpub.firevale.com:10022/platform/exsm.git
+	branch = umbrella
+	commit = e1533a1593029605dfc6289a3f3580d1cb693621
+	parent = fc5202e188b61bf5a6f074e83d0c79dffbe5d92f
+	cmdver = 0.3.1

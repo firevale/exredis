@@ -268,13 +268,15 @@ defmodule Exredis do
 
 end
 
-defmodule Exedis.Script do
+defmodule Exredis.Script do
   alias Exredis.Helper
 
   defmacro defredis_script(name, file_path: file_path) do
     case File.read(file_path) do
-      {:ok, content} -> quote do: defredis_script(unquote(name), unquote(content))
-      _ -> :erlang.error "Script file is missing at #{file_path}"
+      {:ok, content} -> 
+        quote do: defredis_script(unquote(name), unquote(content))
+      _ -> 
+        :erlang.error "Script file is missing at #{file_path}"
     end
   end
 
@@ -283,11 +285,13 @@ defmodule Exedis.Script do
     quote bind_quoted: [script_sha: script_sha, name: name, script: script] do
       def unquote(name)(keys \\ [], argv \\ []) do
         query_args = [length(keys)] ++ keys ++ argv
-        case Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args) do
-          <<"NOSCRIPT", _ :: binary>> -> 
+        try do 
+          {:ok, val} = Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args) 
+          val
+        catch
+          :error, %Redix.Error{message: "NOSCRIPT No matching script. Please use EVAL."} ->
             load_script unquote(script)
             unquote(name)(keys, argv)
-          reply -> reply
         end
       end
     end

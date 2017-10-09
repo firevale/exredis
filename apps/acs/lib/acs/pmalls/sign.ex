@@ -66,7 +66,7 @@ defmodule Acs.PMallSign do
         wcs_user = Wcs.get_wcs_user(wcs_user_id)
         Map.take(wcs_user, [:id, :nickname, :avatar_url])
       end)
-    {total, wcp_users}
+    {total, wcp_users |> Enum.reverse}
   end
 
   def get_sign_info(app_id, wcs_user_id) do

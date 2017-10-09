@@ -25,12 +25,16 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_super
       post  "/get_setting", AdminSettingController, :get_setting
       post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
-      post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
       post  "/delete_setting", AdminSettingController, :delete_setting
       post  "/add_setting", AdminSettingController, :add_setting
       post  "/update_setting", AdminSettingController, :update_setting
       post  "/update_setting_by_name", AdminSettingController, :update_setting_by_name
       post  "/upload_setting_pic", AdminSettingController, :upload_setting_pic
+    end
+
+    scope "/setting" do
+      pipe_through :admin_app
+      post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
     end
 
     scope "/app" do

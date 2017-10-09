@@ -1,12 +1,9 @@
   @import "./initial-bulma";
-  @import "./bulma-fix";
   $fa-font-path: '~font-awesome/fonts/';
   @import '~font-awesome/scss/font-awesome';
   @import "common/scss/mixins";
   @import "./global";
   @import "./icons";
-  @import 'common/scss/animation.scss';
-  @import "./jqxs_m_p";
   .header {
     height: virtual-m-rem(130);
     padding: 0 virtual-m-rem(50);

@@ -14,6 +14,8 @@ Object.keys(filters).forEach(function (k) {
   Vue.filter(k, filters[k])
 })
 
+import 'forum/scss/theme_jqxs.scss'
+
 const transitionSlideLeftToRight = 'slide-right'
 const transitionSlideRightToLeft = 'slide-left'
 

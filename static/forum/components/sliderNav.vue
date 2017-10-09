@@ -97,7 +97,7 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "forum/scss/jqxs_mobile";
+@import "forum/scss/theme_jqxs";
 .slider-nav {
   .nav {
     // $item-width: 13.2rem;

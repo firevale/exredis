@@ -1,7 +1,10 @@
 defmodule Acs.PMallSign do
   require Timex
   import Ecto.Query, warn: false
+<<<<<<< HEAD
   alias Acs.Repo
+=======
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
   alias Acs.Wcs
   alias Acs.PMallTransaction
   alias Acs.Cache.CachedAdminSetting

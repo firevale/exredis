@@ -13,7 +13,11 @@ defmodule AcsWeb.LenovoAuthBind do
     with %AppSdkBinding{binding: %{"app_id" => lenovo_app_id}} <- Apps.get_app_sdk_binding(app.id, "lenovo"),
          %{success: true, 
            account_id: lenovo_user_id, 
+<<<<<<< HEAD
            user_name: lenovo_nickname} <- SDKLenovo.validate_session(lenovo_app_id, lenovo_access_token),
+=======
+           user_name: _lenovo_nickname} <- SDKLenovo.validate_session(lenovo_app_id, lenovo_access_token),
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: "lenovo", 
            sdk_user_id: lenovo_user_id, 

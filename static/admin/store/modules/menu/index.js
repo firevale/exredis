@@ -189,7 +189,7 @@ const state = {
       meta: {
         must: 'has_pmall',
         icon: 'fa-shopping-bag',
-        level: '1,2,',
+        level: '1,2,3,',
         label: i18n.t('admin.menu.pointsMall'),
         expanded: false,
       },
@@ -197,28 +197,32 @@ const state = {
         name: 'wcsUsers',
         path: '/admin/app/:appId/wcsUsers',
         meta: {
+<<<<<<< HEAD
           level: '1,2,',
+=======
+          level: '1,2,3,',
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
           label: i18n.t('admin.menu.wcsUsers'),
         }
       }, {
         name: 'PointLog',
         path: '/admin/app/:appId/pointLog',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointLog'),
         }
       }, {
         name: 'PointGoods',
         path: '/admin/app/:appId/pointGoods',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointGoods'),
         },
       }, {
         name: 'PointOrder',
         path: '/admin/app/:appId/pointOrder',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointOrder'),
         },
       }, {
@@ -226,7 +230,11 @@ const state = {
         path: '/admin/app/:appId/cdkeys',
         meta: {
           icon: 'fa-registered',
+<<<<<<< HEAD
           level: '1,2,',
+=======
+          level: '1,2,3,',
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
           label: i18n.t('admin.menu.cdkey'),
         },
       }, ]
@@ -235,7 +243,7 @@ const state = {
       meta: {
         must: 'has_pmall',
         icon: 'fa-tasks',
-        level: '1,2,',
+        level: '1,2,3,',
         label: i18n.t('admin.menu.pointTasks'),
         expanded: false,
       },
@@ -244,35 +252,35 @@ const state = {
         path: '/admin/app/:appId/pointSetting',
         meta: {
           icon: 'fa-registered',
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointSetting'),
         },
       }, {
         name: 'PointTaskbar',
         path: '/admin/app/:appId/pointTaskbar',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointTaskbar'),
         }
       }, {
         name: 'PointDaySign',
         path: '/admin/app/:appId/pointDaySign',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointDaySign'),
         },
       }, {
         name: 'PointDayQuestion',
         path: '/admin/app/:appId/pointDayQuestion',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointDayQuestion'),
         },
       }, {
         name: 'PointLuckyDraw',
         path: '/admin/app/:appId/pointLuckyDraw',
         meta: {
-          level: '1,2,',
+          level: '1,2,3,',
           label: i18n.t('admin.menu.pointRoulette'),
         },
       }, ]

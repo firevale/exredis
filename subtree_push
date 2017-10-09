@@ -3,6 +3,11 @@
 for p in extcp exes exsm exredis excache exutils exsdks exwcp exservice exmail
 do
    git subtree pull --prefix=apps/$p --squash -m wip $p acs 
+<<<<<<< HEAD
    git subtree push --prefix=apps/$p $p acs 
   #  git subtree split --rejoin --prefix=apps/$p  
+=======
+   git subtree split --rejoin --prefix=apps/$p  
+   git subtree push --prefix=apps/$p $p acs 
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
 done

@@ -9,7 +9,11 @@ defmodule AcsWeb.NdcomAuthBind do
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
             %{"ndcom_session_id" => ndcom_session_id,
+<<<<<<< HEAD
               "ndcom_user_id" => ndcom_user_id} = params) do
+=======
+              "ndcom_user_id" => ndcom_user_id} = _params) do
+>>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     with %AppSdkBinding{binding: %{
            "app_id" => ndcom_app_id, 
            "app_key" => ndcom_app_key}} <- Apps.get_app_sdk_binding(app.id, "ndcom"),

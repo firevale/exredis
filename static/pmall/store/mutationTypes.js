@@ -1,4 +1,0 @@
-export const SET_TRANSITION_NAME = 'SET_TRANSITION_NAME'
-export const SET_WCP_USER = 'SET_WCP_USER'
-export const SET_USER_POINT = 'SET_USER_POINT'
-export const ADD_USER_POINT = 'ADD_USER_POINT'

@@ -1,6 +1,0 @@
-#!/bin/sh
-
-for p in extcp exes exsm exredis excache exutils exsdks exwcp exservice exmail
-do
-  git subrepo pull apps/$p
-done

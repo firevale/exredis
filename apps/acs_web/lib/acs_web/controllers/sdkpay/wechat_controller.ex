@@ -24,7 +24,7 @@ defmodule AcsWeb.WechatController do
         _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
       end
 
-      case SDKWechat.prepay(order, wechat_info, ip_address, notify_url) do
+      case SDKWechat.prepay(order, wechat_info.app_id, wechat_info.partnerid, wechat_info.sign_key, ip_address, notify_url) do
         {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
           conn |> json(%{
             success: true,
@@ -60,8 +60,7 @@ defmodule AcsWeb.WechatController do
         [val | _] -> val
         _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
       end
-
-      case SDKWechat.mallprepay(order, wechat_info, ip_address, notify_url) do
+      case SDKWechat.mallprepay(order, wechat_info.app_id, wechat_info.partnerid, wechat_info.sign_key, ip_address, notify_url) do
         {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
           conn |> json(%{
             success: true,
@@ -139,59 +138,6 @@ defmodule AcsWeb.WechatController do
       _ ->
         conn |> text(xml_response("FAIL", "unknown error"))
     end
-  end
-
-  # authlogin
-  def authlogin(%Plug.Conn{private: %{acs_app_id: _app_id,
-                                      acs_device_id: device_id,
-                                      acs_platform: platform,
-                                      acs_app: %App{} = app }} = conn,
-                %{"state" => state, "code" => code}) do
-    session_state = get_session(conn, :wechat_login_state)
-   
-    with true <- session_state == state,
-        %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"),
-        {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code)
-    do
-      case Accounts.bind_sdk_user(%{sdk: "wechat", 
-                                    sdk_user_id: openid, 
-                                    email: nil,
-                                    mobile: nil,
-                                    nickname: nil}) do 
-        {:ok, user} -> 
-          access_token = Auth.create_access_token(%{
-            app_id: app.id, 
-            user_id: user.id,
-            device_id: device_id,
-            platform: platform,
-            ttl: app.token_ttl,
-            binding: %{wechat: %{access_token: access_token, openid: openid}}
-          })
-
-          conn |> json(%{
-            success: true,
-            access_token: access_token.id,
-            expires_at: AccessToken.expired_at(access_token),
-            user_id: "#{user.id}",
-            user_email: user.email || "",
-            nick_name:  user.nickname,
-            is_anonymous: false,
-            sdk: :wechat,
-            binding: access_token.binding              
-          })
-
-        _ ->
-          conn |> json(%{success: false, message: "can't bind sdk user"})
-      end
-    else
-      false -> conn |> json(%{success: false, message: "invalid request params"})
-      {:error, errmsg} -> conn |> json(%{success: false, message: errmsg})
-    end
-
-  end
-  def authlogin(conn, _params) do
-    d "req : #{inspect conn.private, pretty: true}"
-    conn |> json(%{success: false, message: "invalid request params"})
   end
 
   defp get_wechat_sign_key(%AppOrder{app_id: app_id}) do

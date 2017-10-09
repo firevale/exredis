@@ -154,7 +154,6 @@ $border-color: rgba($text, 0.1);
   }
   &.bg-draw-page {
     background-image: url("~assets/pmall/1245_34.jpg");
-    height: virtual-m-pixel(2064);
   }
   &.bg-draw-turntable {
     // background-image: url("~assets/pmall/1245_34_03.png");
@@ -190,15 +189,6 @@ $border-color: rgba($text, 0.1);
     background-image: url("~assets/pmall/1252_03.png");
     position: absolute;
     top: virtual-m-rem(400);
-  }
-}
-
-span {
-  &.title {
-    font-size: $size5;
-  }
-  &.subtitle {
-    font-size: $size6;
   }
 }
 
@@ -481,9 +471,10 @@ span {
 }
 
 .draw-page {
+  min-height: virtual-m-rem(2064);
   header {
     width: 100vw;
-    height: virtual-m-pixel(800);
+    height: virtual-m-rem(740);
   }
   .rotate-container {
     width: 100%;
@@ -650,6 +641,14 @@ span {
         border-top: none;
         border-bottom: none;
         position: relative;
+        span {
+          &.title {
+            font-size: $size5;
+          }
+          &.subtitle {
+            font-size: $size6;
+          }
+        }
         ul {
           padding: .5rem 0 0 0;
           list-style: none;

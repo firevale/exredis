@@ -82,7 +82,7 @@ export default {
     doTask(path) {
       if (path == "subscribe") {
         window.location =
-          `//jqxs.firevale.com/m?subscribe=true&from=pmall&wcs_user_id=${wcp_user.id}`
+          `//jqxs.firevale.com/m?subscribe=true&from=pmall&wcs_user_id=${this.wcp_user.id}`
       } else if (path == "bind_mobile" && this.wcp_user.user_id > 0) {
         Toast.show("手机已绑定")
       } else {

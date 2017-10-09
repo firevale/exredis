@@ -12,7 +12,7 @@ defmodule AcsWeb.WechatAuthBind do
 
     with true <- session_state == state,
          %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"), 
-         {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code),
+         {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info.app_id, wechat_info.app_secret, code),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: "wechat", 
            sdk_user_id: openid, 

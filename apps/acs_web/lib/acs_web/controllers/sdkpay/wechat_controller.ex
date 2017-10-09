@@ -24,7 +24,7 @@ defmodule AcsWeb.WechatController do
         _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
       end
 
-      case SDKWechat.prepay(order, wechat_info, ip_address, notify_url) do
+      case SDKWechat.prepay(order, wechat_info.app_id, wechat_info.partnerid, wechat_info.sign_key, ip_address, notify_url) do
         {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
           conn |> json(%{
             success: true,
@@ -60,8 +60,7 @@ defmodule AcsWeb.WechatController do
         [val | _] -> val
         _ -> conn.remote_ip |> :inet_parse.ntoa |> to_string
       end
-
-      case SDKWechat.mallprepay(order, wechat_info, ip_address, notify_url) do
+      case SDKWechat.mallprepay(order, wechat_info.app_id, wechat_info.partnerid, wechat_info.sign_key, ip_address, notify_url) do
         {:ok, partnerid, prepay_id, noncestr, timestamp, sign} ->
           conn |> json(%{
             success: true,

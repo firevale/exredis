@@ -72,6 +72,8 @@ defmodule Acs.Admin do
 
   def list_admin_apps(user_id) when is_integer(user_id) do 
     admin_level = AdminAuth.get_admin_level(user_id)
+
+    d "admin_level: #{admin_level} user_id: #{user_id}"
     
     query =  
       from app in App,

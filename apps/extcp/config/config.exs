@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :exutils, key: :value
+#     config :extcp, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:exutils, :key)
+#     Application.get_env(:extcp, :key)
 #
 # You can also configure a 3rd-party app:
 #

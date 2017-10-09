@@ -4,6 +4,7 @@ defmodule Exwcp.ApiBase do
   """
 
   use HTTPoison.Base
+  require Exwcp
 
   @base_url "https://api.weixin.qq.com/cgi-bin/"
 

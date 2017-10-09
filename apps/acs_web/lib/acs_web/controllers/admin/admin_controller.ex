@@ -76,7 +76,7 @@ defmodule AcsWeb.Admin.AdminController do
           case Apps.create_app_goods(goods_attr) do 
             {:ok, goods} ->
               Admin.log_admin_operation(acs_admin_id, app_id, "add_new_app_goods", goods_attr)  
-              conn |> json(%{success: true, goods: goods})
+              conn |> json(%{success: true, goods: goods |> Repo.preload(:product_ids)})
             
             {:error, %{errors: errors}} ->
               conn |> json(%{success: false, message: translate_errors(errors)})

@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = ssh://git@gitpub.firevale.com:10022/platform/exredis.git
+	branch = umbrella
+	commit = 9f0f462d7dd9e6266e16370ce9a6ebcd27303d2f
+	parent = a3ec52b9675e70a45fcc2db5f81d35a49a99eab2
+	cmdver = 0.3.1

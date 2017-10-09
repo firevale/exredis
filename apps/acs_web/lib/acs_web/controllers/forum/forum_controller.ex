@@ -433,11 +433,7 @@ defmodule AcsWeb.ForumController do
   @cdn_domain  @ksfile_cfg[:cdn_domain]  
 
   # check image by netease dun
-<<<<<<< HEAD
-  defp check_img(conn, image_path) do
-=======
   defp check_img(_conn, image_path) do
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     image_path = case String.starts_with?(String.downcase(image_path), "http") do
       true -> image_path
       false -> Path.join(["#{@cdn_scheme}://#{@cdn_domain}/acs/", image_path])

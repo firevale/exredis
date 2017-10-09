@@ -25,10 +25,6 @@ defmodule AcsWeb.AdminRouter do
       pipe_through :admin_super
       post  "/get_setting", AdminSettingController, :get_setting
       post  "/get_setting_from_redis", AdminSettingController, :get_setting_from_redis
-<<<<<<< HEAD
-      post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
-=======
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
       post  "/delete_setting", AdminSettingController, :delete_setting
       post  "/add_setting", AdminSettingController, :add_setting
       post  "/update_setting", AdminSettingController, :update_setting
@@ -36,14 +32,11 @@ defmodule AcsWeb.AdminRouter do
       post  "/upload_setting_pic", AdminSettingController, :upload_setting_pic
     end
 
-<<<<<<< HEAD
-=======
     scope "/setting" do
       pipe_through :admin_customer_service
       post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
     end
 
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     scope "/app" do
       pipe_through :admin_app
       post "/update_app_sdk_info", AppSdkInfoController, :update_app_sdk_info
@@ -152,11 +145,7 @@ defmodule AcsWeb.AdminRouter do
     end
 
     scope "/pmall" do
-<<<<<<< HEAD
-      pipe_through :admin_app
-=======
       pipe_through :admin_customer_service
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
 
       post  "/list_pmall_goods", PMallController, :list_pmall_goods
       post  "/update_pmall_goods", PMallController, :update_pmall_goods

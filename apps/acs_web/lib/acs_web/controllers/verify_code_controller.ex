@@ -3,10 +3,6 @@ defmodule AcsWeb.VerifyCodeController do
 
   alias Utils.Captcha
   alias Acs.Accounts
-<<<<<<< HEAD
-  alias Exsm.MeishengService
-=======
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
   alias Exmail.EmailService
   require Exsm
 

@@ -197,11 +197,7 @@ const state = {
         name: 'wcsUsers',
         path: '/admin/app/:appId/wcsUsers',
         meta: {
-<<<<<<< HEAD
-          level: '1,2,',
-=======
           level: '1,2,3,',
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
           label: i18n.t('admin.menu.wcsUsers'),
         }
       }, {
@@ -230,11 +226,7 @@ const state = {
         path: '/admin/app/:appId/cdkeys',
         meta: {
           icon: 'fa-registered',
-<<<<<<< HEAD
-          level: '1,2,',
-=======
           level: '1,2,3,',
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
           label: i18n.t('admin.menu.cdkey'),
         },
       }, ]

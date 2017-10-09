@@ -6,11 +6,6 @@ defmodule AcsWeb.PMallController do
   alias Acs.Wcs.WcsUser
 
   alias Acs.Accounts
-<<<<<<< HEAD
-  alias Acs.Cache.CachedAdminSetting
-  alias Acs.Admin.Setting
-=======
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
   alias Acs.PMallTransaction
   alias Acs.PMallSign
 
@@ -58,17 +53,6 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-<<<<<<< HEAD
-  def update_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
-    %{"order_id" => order_id,
-      "user_address" =>
-        %{"id" => id,
-          "name" => name,
-          "mobile" => mobile,
-          "area" => area,
-          "address" => address,
-          "area_code" => area_code} = user_address}) do
-=======
   def update_address(%Plug.Conn{private: %{acs_app_id: _app_id, wcs_user_id: wcs_user_id}} = conn,
     %{"order_id" => order_id,
       "user_address" =>
@@ -78,16 +62,11 @@ defmodule AcsWeb.PMallController do
           "area" => _area,
           "address" => _address,
           "area_code" => _area_code} = user_address}) do
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
 
     result = PMalls.update_order_address( wcs_user_id, order_id, user_address)
     PMalls.save_address(wcs_user_id, user_address)
     case result do
-<<<<<<< HEAD
-      {:ok, order} ->
-=======
       {:ok, _order} ->
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
         conn |> json(%{success: true})
       {:error, i18n_message} ->
         conn |> json(%{success: false, i18n_message: i18n_message})
@@ -110,11 +89,7 @@ defmodule AcsWeb.PMallController do
   end
 
   def get_sign_users(%Plug.Conn{private: %{acs_app_id: app_id}} = conn, %{"start" => start } = _params) do
-<<<<<<< HEAD
-    {total, sign_users} = PMallSign.get_sign_users(app_id, start)
-=======
     {_total, sign_users} = PMallSign.get_sign_users(app_id, start)
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     conn |> json(%{ success: true,  sign_users: sign_users})
   end
 
@@ -160,11 +135,7 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-<<<<<<< HEAD
-  def get_default_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
-=======
   def get_default_address(%Plug.Conn{private: %{acs_app_id: _app_id, wcs_user_id: wcs_user_id}} = conn, _params) do
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     case Wcs.get_wcs_user(wcs_user_id) do
       nil ->
         conn |> json(%{success: false})
@@ -201,11 +172,7 @@ defmodule AcsWeb.PMallController do
       end
   end
 
-<<<<<<< HEAD
-  def get_draw_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn, _) do
-=======
   def get_draw_info(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: _wcs_user_id}} = conn, _) do
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     with {:ok, pic, draw_point} <- PMalls.get_draw_info(app_id) do
       conn |> json(%{success: true, pic: pic, draw_point: draw_point})
     else
@@ -224,18 +191,6 @@ defmodule AcsWeb.PMallController do
     end
   end
 
-<<<<<<< HEAD
-  def update_draw_address(%Plug.Conn{private: %{acs_app_id: app_id, wcs_user_id: wcs_user_id}} = conn,
-    %{
-      "order_id" => order_id,
-      "user_address" =>
-        %{"id" => id,
-          "name" => name,
-          "mobile" => mobile,
-          "area" => area,
-          "address" => address,
-          "area_code" => area_code} = user_address}) do
-=======
   def update_draw_address(%Plug.Conn{private: %{acs_app_id: _app_id, wcs_user_id: wcs_user_id}} = conn,
     %{
       "order_id" => order_id,
@@ -246,16 +201,11 @@ defmodule AcsWeb.PMallController do
           "area" => _area,
           "address" => _address,
           "area_code" => _area_code} = user_address}) do
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
 
     result = PMalls.update_draw_address( wcs_user_id, order_id, user_address)
     PMalls.save_address(wcs_user_id, user_address)
     case result do
-<<<<<<< HEAD
-      {:ok, order} ->
-=======
       {:ok, _order} ->
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
         conn |> json(%{success: true})
 
       {:error, i18n_message} ->
@@ -265,11 +215,7 @@ defmodule AcsWeb.PMallController do
 
   def add_subscribe_point(conn,  %{"app_id" => app_id, "wcs_user_id" => wcs_user_id} = _params) do
     with %WcsUser{} <- Wcs.get_wcs_user(wcs_user_id),
-<<<<<<< HEAD
-         {:ok, add_point, total_point} <- PMalls.add_subscribe_point(app_id, wcs_user_id)
-=======
          {:ok, _add_point, _total_point} <- PMalls.add_subscribe_point(app_id, wcs_user_id)
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     do
       conn |> json(%{success: true, result_code: "ok"})
     else

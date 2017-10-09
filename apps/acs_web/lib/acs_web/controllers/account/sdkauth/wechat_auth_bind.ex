@@ -1,22 +1,21 @@
-defmodule AcsWeb.NdcomAuthBind do
+defmodule AcsWeb.WechatAuthBind do
   use     AcsWeb, :controller
-  require Logger
-  require SDKNdcom
+  require SDKWechat
 
   def bind(%Plug.Conn{
               private: %{
                 acs_app: %App{} = app,
                 acs_device_id: device_id,
                 acs_platform: platform}} = conn, 
-            %{"ndcom_session_id" => ndcom_session_id,
-              "ndcom_user_id" => ndcom_user_id} = _params) do
-    with %AppSdkBinding{binding: %{
-           "app_id" => ndcom_app_id, 
-           "app_key" => ndcom_app_key}} <- Apps.get_app_sdk_binding(app.id, "ndcom"),
-         true <- SDKNdcom.validate_session(ndcom_app_id, ndcom_app_key, ndcom_session_id, ndcom_user_id),
+            %{"state" => state, "code" => code}) do
+    session_state = get_session(conn, :wechat_login_state)
+
+    with true <- session_state == state,
+         %AppSdkBinding{binding: %{} = wechat_info} <- Apps.get_app_sdk_binding(app.id, "wechat"), 
+         {:ok, access_token, openid} <- SDKWechat.get_auth_access_token(wechat_info, code),
          {:ok, user} <- Accounts.bind_sdk_user(%{
-           sdk: "ndcom", 
-           sdk_user_id: ndcom_user_id, 
+           sdk: "wechat", 
+           sdk_user_id: openid, 
            email: nil,
            mobile: nil, 
            nickname: nil,
@@ -27,7 +26,7 @@ defmodule AcsWeb.NdcomAuthBind do
            device_id: device_id,
            platform: platform,
            ttl: app.token_ttl,
-           binding: %{ndcom: %{session_id: ndcom_session_id, user_id: ndcom_user_id}}
+           binding:  %{wechat: %{access_token: access_token, openid: openid}}
          })
     do 
       conn |> json(%{
@@ -35,15 +34,17 @@ defmodule AcsWeb.NdcomAuthBind do
         access_token: access_token.id,
         expires_at: AccessToken.expired_at(access_token),
         user_id: "#{user.id}",
-        user_email: user.email,
+        user_email: user.email || "",
         nick_name:  user.nickname,
         is_anonymous: false,
-        sdk: "ndcom",
+        sdk: :wechat,
         binding: access_token.binding              
       })
     else
       _ ->
-        conn |> json(%{success: false, message: "something went wrong"}) 
+        conn |> json(%{success: false, message: "can't bind sdk user"}) 
+      {:error, errmsg} -> 
+        conn |> json(%{success: false, message: errmsg})
     end
   end 
   def bind(conn, _params), do: conn |> json(%{success: false, message: "invalid request"})

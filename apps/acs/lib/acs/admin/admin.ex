@@ -29,10 +29,7 @@ defmodule Acs.Admin do
     }) |> Repo.insert_or_update()
     
     AdminAuth.refresh_admin_ids()
-<<<<<<< HEAD
-=======
     AdminAuth.refresh_admin_level(user_id, nil)
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     AdminAuth.refresh_admin_level(user_id, app_id)
 
     res
@@ -46,10 +43,7 @@ defmodule Acs.Admin do
       %AdminUser{} = admin_user ->
         res = AdminUser.changeset(admin_user, %{active: false}) |> Repo.update
         AdminAuth.refresh_admin_ids()
-<<<<<<< HEAD
-=======
         AdminAuth.refresh_admin_level(admin_user.user_id, nil)
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
         AdminAuth.refresh_admin_level(admin_user.user_id, app_id)
         res
     end
@@ -80,11 +74,8 @@ defmodule Acs.Admin do
 
   def list_admin_apps(user_id) when is_integer(user_id) do 
     admin_level = AdminAuth.get_admin_level(user_id)
-<<<<<<< HEAD
-=======
 
     d "admin_level: #{admin_level} user_id: #{user_id}"
->>>>>>> 000a86a3f018eade02f4043c3619c80588e39ea0
     
     query =  
       from app in App,

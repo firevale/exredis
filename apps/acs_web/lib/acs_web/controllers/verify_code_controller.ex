@@ -3,7 +3,6 @@ defmodule AcsWeb.VerifyCodeController do
 
   alias Utils.Captcha
   alias Acs.Accounts
-  alias Exsm.MeishengService
   alias Exmail.EmailService
   require Exsm
 

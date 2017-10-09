@@ -1,0 +1,264 @@
+// bulma variables inital
+@import '~bulma/sass/utilities/initial-variables';
+//initial
+$red: #e8021e;
+$orange: #ff6600;
+$essence: #f5a623;
+$olive: #D68533;
+$blue: #29a1e9;
+$green: hsl(141, 71%, 48%);
+$grey: #ececec;
+$white: #ffffff;
+$grey-darker: hsl(0, 0%, 21%);
+$grey-dark: hsl(0, 0%, 29%);
+$grey-light: #a7a6a6;
+$primary: #b3182e;
+$info: $orange;
+$success: $blue;
+$warning: $red;
+$danger: $red;
+$light: $white !default;
+$dark: $grey-darker !default;
+$light-invert: $dark !default;
+$dark-invert: $light !default;
+$grey-light-invert:$white;
+$size-1: 3rem;
+$size-2: 2.5rem;
+$size-3: 2rem;
+$size-4: 1.3rem;
+$size-5: 1.167rem;
+$size-6: 1rem;
+$size-7: 0.85rem;
+$size-small:0.85rem;
+$size-normal:$size-6;
+$size-medium: $size-5;
+$size-large: $size-4;
+$weight-light: 300;
+$weight-normal: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+$text: $grey-dark;
+$text-strong: $grey-darker;
+$text2: #767676;
+// Generic
+$body-size: 12px;
+$body-background-color:$grey;
+$family-primary: Helvetica Tahoma Arial "PingFang SC" "Hiragino Sans GB" "Heiti SC" "Microsoft YaHei" "WenQuanYi Micro Hei";
+$link: $text;
+$strong-color: $primary;
+$strong-weight: $weight-normal;
+small {
+  font-size: .85rem !important;
+}
+
+//title
+$title-color: $text;
+$title-size: $size-5;
+$title-weight: $weight-normal;
+$title-strong-color: $blue;
+$title-strong-weight: inherit;
+$subtitle-color:$text2;
+$subtitle-size: $size-7;
+$subtitle-weight: $weight-normal;
+$subtitle-strong-color: $grey-darker;
+$subtitle-strong-weight: $weight-semibold;
+.title {
+  &:not(:last-child) {
+    margin-bottom: .5rem !important;
+  }
+  &:not(.is-spaced)+.subtitle {
+    margin-top: 0!important;
+  }
+}
+
+.subtitle {
+  &:not(:last-child) {
+    margin-bottom: 0 !important;
+  }
+}
+
+//content
+$content-blockquote-background-color: $white;
+$content-blockquote-border-left: 1px solid $text2;
+$content-blockquote-padding: 0 .5rem;
+.content {
+  padding: .5rem 0;
+  blockquote {
+    margin-bottom: .5rem;
+  }
+}
+
+//button
+$button-link-color: $info;
+$button-link-hover-background-color: transparent;
+$button-link-hover-color:$info;
+.button {
+  padding-left: .85rem !important;
+  padding-right: .85rem !important;
+  &.is-grey {
+    background-color: $grey-light;
+    border-color: transparent;
+    color: $grey-light-invert;
+  }
+  &.is-link {
+    text-decoration: none !important;
+    padding: 0 !important;
+    height: auto !important;
+    &:focus,
+    &:active {
+      padding: 0 !important;
+      text-decoration: none !important;
+      box-shadow: none !important; // background-color: transparent !important;
+    }
+  }
+  &.is-large {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+//tag
+$tag-radius:5px;
+$tag-colors: ("primary" $primary) ("info" $info) ("success" $success) ("warning" $warning) ("danger" $danger);
+$tag-background-color: transparent;
+.tag {
+  padding: 0 .5rem !important;
+  height: auto !important;
+  line-height: 1.1 !important;
+  margin-left: 1rem;
+  @each $tag in $tag-colors {
+    $name: nth($tag, 1);
+    $color: nth($tag, 2);
+    &.is-#{$name} {
+      background-color: transparent !important;
+      color: $color !important;
+      border: 1px solid $color;
+    }
+  }
+}
+
+//Card
+$card-shadow: none;
+$card-header-weight: $weight-normal;
+$card-header-color: $primary;
+.card {
+  .card-header-title {
+    font-size: $size-5;
+    padding: .5rem .65rem;
+  }
+  .card-content {
+    padding: .65rem
+  }
+  &+.card {
+    margin-top: .9rem;
+  }
+  .card {
+    border: 1px solid rgba($black, 0.1);
+    .card-header {
+      .card-header-title {
+        font-size: $size-normal;
+        color: $text;
+      }
+    }
+    .card-footer {
+      .card-footer-item {
+        padding: .5rem .65rem;
+      }
+    }
+  }
+}
+
+//progress
+.progress {
+  border-radius: 0 !important;
+  height: 0.55rem !important;
+  margin-top: 0.5rem;
+}
+
+//column
+$column-gap: 0; //无效？？
+.columns {
+  &.is-gapless {
+    &:not(:last-child) {
+      margin-bottom: 0rem !important;
+    }
+  }
+}
+
+//modal
+$modal-background-background-color: rgba($black, 0.4);
+$modal-content-margin-mobile:10px;
+$modal-close-top: 5px;
+$modal-close-right: 5px;
+$modal-card-title-color: $text2;
+$modal-card-head-padding:1.5rem .65rem;
+$modal-card-head-background-color: $white;
+$modal-card-head-border-bottom: none;
+$modal-card-foot-border-top:none;
+.modal {
+  .modal-content {
+    padding: 2rem;
+    border-radius: 5px;
+    background: rgba($white, 0.9);
+    font-size: $size-medium;
+    &.is-menu {
+      align-self: flex-end;
+      padding: 0;
+      margin-bottom: 5px;
+      ul {
+        text-align: center;
+        li {
+          height: 4rem;
+          line-height: 4rem;
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba($black, 0.1);
+          }
+        }
+      }
+    }
+    .modal-close {
+      position: absolute !important;
+      &:after,
+      &:before {
+        background-color: $light-invert;
+      }
+    }
+  }
+  .modal-card {
+    .modal-card-head {
+      .modal-card-title {
+        width: 100%;
+        font-size: $size-normal;
+      }
+    }
+    .modal-card-body {
+      padding: .65rem;
+    }
+    .modal-card-foot {
+      &.is-centred {
+        justify-content: center;
+      }
+      .button {
+        min-width: 10rem;
+      }
+    }
+  }
+}
+
+//form
+.field {
+  .control {
+    .input.is-primary {
+      border-color: rgba($primary, 0.2) !important;
+    }
+  }
+  .help {
+    display: flex !important;
+    align-items: center;
+  }
+}
+
+//helpers
+//Box
+@import '~bulma'

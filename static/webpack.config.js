@@ -66,6 +66,15 @@ var plugins = [
     }
   }),
   new webpack.optimize.CommonsChunkPlugin({
+    name: "forum_mobile_commons",
+    filename: 'js/forum_mobile_commons.js',
+    chunks: ['forum_mobile'],
+    minChunks: function(module, count) {
+      return ((module.resource && module.resource.indexOf(path.join(__dirname,
+        './node_modules')) === 0))
+    }
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
     name: "pmall_commons",
     filename: 'js/pmall_commons.js',
     chunks: ['pmall'],
@@ -93,6 +102,7 @@ module.exports = {
     app: ['./app'],
     admin: ['./admin'],
     forum: ['./forum'],
+    forum_mobile: ['./forum_mobile'],
     pmall: ['./pmall'],
   },
 
@@ -114,6 +124,7 @@ module.exports = {
       admin: path.join(__dirname, './admin'),
       app: path.join(__dirname, './app'),
       forum: path.join(__dirname, './forum'),
+      forum_mobile: path.join(__dirname, './forum_mobile'),
       pmall: path.join(__dirname, './pmall'),
     }
   },

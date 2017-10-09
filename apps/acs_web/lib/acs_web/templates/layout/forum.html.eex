@@ -10,8 +10,13 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <link href="<%= static_url(@conn, "/css/forum_commons.css") %>" rel="stylesheet"/>
-    <link href="<%= static_url(@conn, "/css/forum.css") %>" rel="stylesheet"/>
+    <% if @conn.private[:is_mobile] do %>
+      <link href="<%= static_url(@conn, "/css/forum_mobile_commons.css") %>" rel="stylesheet"/>
+      <link href="<%= static_url(@conn, "/css/forum_mobile.css") %>" rel="stylesheet"/>
+    <% else %>
+      <link href="<%= static_url(@conn, "/css/forum_commons.css") %>" rel="stylesheet"/>
+      <link href="<%= static_url(@conn, "/css/forum.css") %>" rel="stylesheet"/>
+    <% end %>
   </head>
   <body class="<%= @conn.private[:acs_body_class] %>">
     <div id="app">
@@ -48,8 +53,13 @@
         <%= render @view_module, @view_template, assigns %>
       }
     </script>
-    <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>
-    <script src="<%= static_url(@conn, "/js/forum.js") %>"></script>
+    <% if @conn.private[:is_mobile] do %>
+      <script src="<%= static_url(@conn, "/js/forum_mobile_commons.js") %>"></script>
+      <script src="<%= static_url(@conn, "/js/forum_mobile.js") %>"></script>
+    <% else %>
+      <script src="<%= static_url(@conn, "/js/forum_commons.js") %>"></script>
+      <script src="<%= static_url(@conn, "/js/forum.js") %>"></script>
+    <% end %>
   </body>
 </html>
 

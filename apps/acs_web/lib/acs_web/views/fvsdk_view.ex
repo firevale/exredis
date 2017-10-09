@@ -30,7 +30,7 @@ defmodule AcsWeb.FVSdkView do
       @android_custom_iap_channels channels 
   end
 
-  def render("app_info.ios.3.json", %{app: nil, sdk: sdk}) do 
+  def render("app_info.ios.3.json", %{app: nil, sdk: _sdk}) do 
     %{success: false,
       message: "application not found"
      }
@@ -52,7 +52,7 @@ defmodule AcsWeb.FVSdkView do
       goods: transform_goods(app.goods, sdk)
      }
   end
-  def render("app_info.android.3.json", %{app: nil, sdk: sdk}) do 
+  def render("app_info.android.3.json", %{app: nil, sdk: _sdk}) do 
     %{success: false,
       message: "application not found"
      }

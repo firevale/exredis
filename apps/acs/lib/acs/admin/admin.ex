@@ -29,6 +29,7 @@ defmodule Acs.Admin do
     }) |> Repo.insert_or_update()
     
     AdminAuth.refresh_admin_ids()
+    AdminAuth.refresh_admin_level(user_id, nil)
     AdminAuth.refresh_admin_level(user_id, app_id)
 
     res
@@ -42,6 +43,7 @@ defmodule Acs.Admin do
       %AdminUser{} = admin_user ->
         res = AdminUser.changeset(admin_user, %{active: false}) |> Repo.update
         AdminAuth.refresh_admin_ids()
+        AdminAuth.refresh_admin_level(admin_user.user_id, nil)
         AdminAuth.refresh_admin_level(admin_user.user_id, app_id)
         res
     end

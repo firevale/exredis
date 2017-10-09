@@ -38,7 +38,7 @@
               <div class="admin-user">
                 <div v-for="item in users" :key="item.user.id" class="level-item" v-if="item.admin_level==3">
                   <span class="tag is-info is-medium">
-                    {{item.user.nickname}}
+                    {{item.user.email}}
                     <button @click="deleteUsers(item)" class="delete is-small"></button>
                   </span>
                 </div>

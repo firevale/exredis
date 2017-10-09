@@ -1,7 +1,7 @@
 <template>
   <div class="know-ledge">
     <header class="is-flex flex-center">
-      <img src="~assets/pmall/1247_03.png" />
+      <img :src="'/images/task_pics/5/242e3dcea296cad653b1bd100cca093e.png' | imageStaticUrl" />
     </header>
     <div class="items is-flex">
       <div class="q-item">
@@ -10,7 +10,7 @@
       </div>
       <div class="a-item is-flex">
         <div class="column is-3 has-text-left">
-          <img src="~assets/pmall/1247_03_01.png" />
+          <img :src="'/images/task_pics/5/5bcb3d9cc4f1f6d174c43981d0e6bd78.png' | imageStaticUrl" />
         </div>
         <div class="answer column is-6 has-text-left">
           <ul>
@@ -32,14 +32,14 @@
             <a v-else class="button btn-answer-complete"></a>
           </div>
           <div v-show="isCorrect" class="answer-yes is-flex flex-center">
-            <img src="~assets/pmall/1247_r_03.png" />
+            <img :src="'/images/task_pics/5/edf17c3eab754066135b7d6a6c7cd1b5.png' | imageStaticUrl" />
           </div>
           <div v-show="isWrong" class="answer-error is-flex flex-center">
-            <img src="~assets/pmall/1247_2_03.png" />
+            <img :src="'/images/task_pics/5/83ea7fe8252846b0d24eb556bca0a6e3.png' | imageStaticUrl"/>
           </div>
         </div>
         <div class="column is-3 has-text-right">
-          <img src="~assets/pmall/1247_03_02.png" />
+          <img :src="'/images/task_pics/5/2e9083b44ca2468b9ea01cf22cf74393.png' | imageStaticUrl" />
         </div>
       </div>
       <div class="n-item">

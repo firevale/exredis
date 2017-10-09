@@ -33,7 +33,7 @@ defmodule AcsWeb.AdminRouter do
     end
 
     scope "/setting" do
-      pipe_through :admin_app
+      pipe_through :admin_customer_service
       post  "/get_settings_by_group", AdminSettingController, :get_settings_by_group
     end
 
@@ -145,7 +145,7 @@ defmodule AcsWeb.AdminRouter do
     end
 
     scope "/pmall" do
-      pipe_through :admin_app
+      pipe_through :admin_customer_service
 
       post  "/list_pmall_goods", PMallController, :list_pmall_goods
       post  "/update_pmall_goods", PMallController, :update_pmall_goods

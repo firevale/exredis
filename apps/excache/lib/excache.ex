@@ -7,8 +7,6 @@ defmodule Excache do
   def set!(key, value, options \\ []), do: Cachex.set!(:default, key, value, options)
   def update(key, value, options \\ []), do: Cachex.update(:default, key, value, options)
   def update!(key, value, options \\ []), do: Cachex.update!(:default, key, value, options)
-  def del(key, options \\ []), do: Cachex.del(:default, key, options)
-  def del!(key, options \\ []), do: Cachex.del!(:default, key, options)
   def clear(options \\ []), do: Cachex.clear(:default, options)
   def clear!(options \\ []), do: Cachex.clear!(:default, options)
   def count(options \\ []), do: Cachex.count(:default, options)
@@ -23,4 +21,18 @@ defmodule Excache do
   def expire(key, expiration, options \\ []), do: Cachex.expire(:default, key, expiration, options)
   def expire_at(key, timestamp, options \\ []), do: Cachex.expire_at(:default, key, timestamp, options)
   def keys(options \\ []), do: Cachex.keys(:default, options)
+
+  def del(key, options \\ []) do
+    result = Cachex.del(:default, key, options)
+    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")}) |> Base.encode64
+    Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
+    result
+  end
+
+  def del!(key, options \\ []) do 
+    result = Cachex.del!(:default, key, options)
+    payload = :erlang.term_to_binary(%{action: :del, key: key, node: System.get_env("NODE")}) |> Base.encode64
+    Redix.PubSub.Fastlane.publish(Excache.PubSub.Redis, "cachex", payload)
+    result
+  end
 end

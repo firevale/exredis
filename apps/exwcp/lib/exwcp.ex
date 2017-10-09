@@ -3,7 +3,7 @@ defmodule Exwcp do
   require Exredis
   require Poison
 
-  def access_token(wcp_config = %{wcp_app_id: wcp_app_id, wcp_app_key: wcp_app_key}) do
+  def access_token(wcp_config = %{wcp_app_id: _, wcp_app_key: _}) do
     token_info = 
       Excache.get!(key(wcp_config), fallback: fn(redis_key) -> 
         case Exredis.get(redis_key) do 
@@ -30,7 +30,7 @@ defmodule Exwcp do
     token_info.access_token
   end
 
-  defp refresh_access_token(wcp_config = %{wcp_app_id: wcp_app_id, wcp_app_key: wcp_app_key}) do
+  defp refresh_access_token(wcp_config = %{wcp_app_id: _, wcp_app_key: _}) do
     now = DateTime.to_unix(DateTime.utc_now)
     case Exwcp.AccessToken.get_token(wcp_config) do 
       %{access_token: _} = token_info ->

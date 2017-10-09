@@ -8,6 +8,10 @@ defmodule Exwcp.ApiFile do
 
   @base_url "http://file.api.weixin.qq.com/cgi-bin/"
 
+  def process_url(path) do
+    @base_url <> path
+  end
+
   def process_response(%Response{headers: headers, body: body}) do
     content_type = :proplists.get_value("Content-Type", headers)
     if content_type in ["application/json", "text/plain"] do

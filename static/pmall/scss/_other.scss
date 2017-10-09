@@ -193,15 +193,6 @@ $border-color: rgba($text, 0.1);
   }
 }
 
-span {
-  &.title {
-    font-size: $size5;
-  }
-  &.subtitle {
-    font-size: $size6;
-  }
-}
-
 .loading {
   position: fixed;
   top: 50%;
@@ -650,6 +641,14 @@ span {
         border-top: none;
         border-bottom: none;
         position: relative;
+        span {
+          &.title {
+            font-size: $size5;
+          }
+          &.subtitle {
+            font-size: $size6;
+          }
+        }
         ul {
           padding: .5rem 0 0 0;
           list-style: none;

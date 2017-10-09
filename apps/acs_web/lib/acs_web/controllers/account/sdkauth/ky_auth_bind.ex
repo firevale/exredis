@@ -10,7 +10,7 @@ defmodule AcsWeb.KYAuthBind do
                 acs_platform: platform}} = conn, 
             %{"ky_session_id" => ky_session_id}) do
     with %AppSdkBinding{binding: %{"app_key" => ky_app_key}} <- Apps.get_app_sdk_binding(app.id, "ky"),
-         %{id: ky_user_id, nickname: ky_nickname} <- SDKKY.validate_session(ky_app_key, ky_session_id),
+         %{id: ky_user_id, nickname: _ky_nickname} <- SDKKY.validate_session(ky_app_key, ky_session_id),
          {:ok, user} <- Accounts.bind_sdk_user(%{
            sdk: "ky", 
            sdk_user_id: ky_user_id, 

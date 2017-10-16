@@ -101,22 +101,25 @@ defmodule Utils.Crypto do
   end
 
   def rsa_priv_key_from_string(key_str) do 
-    pem_bin = "-----BEGIN RSA PRIVATE KEY-----\r\n" 
-               <> split_key_str(String.replace(key_str, "\n", ""), []) 
-               <> " \r\n-----END RSA PRIVATE KEY-----\r\n"
-
-    [entry] = :public_key.pem_decode(pem_bin)
-
+    [entry] = key_str |> rsa_private_key_string() |> :public_key.pem_decode()
     :public_key.pem_entry_decode(entry)
   end
 
-  def rsa_key_from_string(key_str) do 
-    pem_bin = "-----BEGIN PUBLIC KEY-----\r\n" 
-               <> split_key_str(String.replace(key_str, "\n", ""), []) 
-               <> " \r\n-----END PUBLIC KEY-----\r\n"
+  def rsa_private_key_string(key_str) do 
+    "-----BEGIN RSA PRIVATE KEY-----\r\n" <> 
+      split_key_str(String.replace(key_str, "\n", ""), []) <> 
+      " \r\n-----END RSA PRIVATE KEY-----\r\n"
+  end
 
-    [entry] = :public_key.pem_decode(pem_bin)
+  def rsa_key_from_string(key_str) do 
+    [entry] = key_str |> rsa_public_key_string() |> :public_key.pem_decode()
     :public_key.pem_entry_decode(entry)
+  end
+
+  def rsa_public_key_string(key_str) do 
+    "-----BEGIN PUBLIC KEY-----\r\n" <> 
+      split_key_str(String.replace(key_str, "\n", ""), []) <> 
+      " \r\n-----END PUBLIC KEY-----\r\n"
   end
 
   defp split_key_str("", strs) do 

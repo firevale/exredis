@@ -106,9 +106,9 @@ defmodule Utils.Crypto do
   end
 
   def rsa_private_key_string(key_str) do 
-    "-----BEGIN RSA PRIVATE KEY-----\r\n" <> 
+    "-----BEGIN RSA PRIVATE KEY-----\n" <> 
       split_key_str(String.replace(key_str, "\n", ""), []) <> 
-      " \r\n-----END RSA PRIVATE KEY-----\r\n"
+      " \n-----END RSA PRIVATE KEY-----\n"
   end
 
   def rsa_key_from_string(key_str) do 

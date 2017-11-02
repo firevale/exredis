@@ -9,6 +9,10 @@ defmodule Utils.Crypto do
     :crypto.hmac(:sha, key, source) |> Utils.to_hex |> String.downcase  
   end
 
+  def hmacsha1_sign_base(source, key) when is_bitstring(source) and is_bitstring(key) do 
+    :crypto.hmac(:sha, key, source) |> Base.encode64
+  end
+
   def hmacsha256_sign(source, key) when is_bitstring(source) and is_bitstring(key) do 
     :crypto.hmac(:sha256, key, source) |> Utils.to_hex |> String.downcase
   end

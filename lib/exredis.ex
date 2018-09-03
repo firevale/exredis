@@ -1,4 +1,4 @@
-defmodule ExredisLockError do 
+defmodule ExredisLockError do
   defexception message: "lock redis key error"
 end
 
@@ -125,6 +125,7 @@ defmodule Exredis do
   defredis :spop, [:key]
   defredis :spop, [:key, :count]
   defredis :srandmember, [:key]#, :count]
+  defredis :srandmember, [:key, :count]
   defredis :srem, [:key, :member]#, ...]
   defredis :strlen, [:key], &int_reply/1
   defredis :subscribe, [:channel]#, ...]
@@ -173,12 +174,12 @@ defmodule Exredis do
   ################################################################################
   # redis lock
   ################################################################################
-  defmodule Redis.LockFailed do 
+  defmodule Redis.LockFailed do
     @moduledoc """
     Raised at compilation time when the query cannot be compiled.
     """
     defexception [:message]
-  end 
+  end
 
   @doc """
     Lock a given key for updating
@@ -187,19 +188,19 @@ defmodule Exredis do
       Don't lock a key for long-time process
 
     Example:
-    
+
     DataRedis.lock_for("beers_on_the_wall", fn() ->
       DataRedis.decr "beers_on_the_wall"
     end)
   """
-  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 60_000) do 
-    if lock(key, ttl, max_attempts) do 
+  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 60_000) do
+    if lock(key, ttl, max_attempts) do
       try do
         fun.()
       after
         unlock(key)
       end
-    else 
+    else
       raise Redis.LockFailed, message: "failed fetch redis lock for key: #{key}"
     end
   end
@@ -209,37 +210,37 @@ defmodule Exredis do
   @doc """
     Lock a given key
   """
-  def lock(key, ttl \\ 60, max_attempts \\ 60_000) do 
+  def lock(key, ttl \\ 60, max_attempts \\ 60_000) do
     do_lock(lock_key(key), lock_value(ttl), max_attempts)
   end
 
   @doc """
     Unlock a given key
   """
-  def unlock(key) do 
+  def unlock(key) do
     current_lock_key = key |> lock_key
-    case get(current_lock_key) do 
+    case get(current_lock_key) do
       :undefined -> true
       current_lock_value ->
         {lock_ts, lock_pid} = current_lock_value |> Base.decode64! |> :erlang.binary_to_term
 
-        if :erlang.system_time(:seconds) < lock_ts and lock_pid == self() do 
+        if :erlang.system_time(:seconds) < lock_ts and lock_pid == self() do
           del(current_lock_key)
           true
-        else 
+        else
           false
         end
     end
   end
 
-  defp do_lock(lock_key, _lock_value, 0) do 
+  defp do_lock(lock_key, _lock_value, 0) do
     raise ExredisLockError, message: "can't require lock key #{lock_key}"
   end
-  defp do_lock(lock_key, lock_value, attempts) do 
-    case setnx(lock_key, lock_value) do 
+  defp do_lock(lock_key, lock_value, attempts) do
+    case setnx(lock_key, lock_value) do
       1 -> true
       0 ->
-        now = :erlang.system_time(:seconds) 
+        now = :erlang.system_time(:seconds)
 
         case get(lock_key) do
           :undefined ->
@@ -248,16 +249,16 @@ defmodule Exredis do
           current_lock_value ->
             {lock_ts, _lock_pid} = current_lock_value |> Base.decode64! |> :erlang.binary_to_term
 
-            if lock_ts < now do  
-              case getset(lock_key, lock_value) do 
+            if lock_ts < now do
+              case getset(lock_key, lock_value) do
                 ^current_lock_value -> true
                 _other_lock_value ->
                   :timer.sleep(@wait_duration)
-                  do_lock(lock_key, lock_value, attempts - 1) 
+                  do_lock(lock_key, lock_value, attempts - 1)
               end
             else
               :timer.sleep(@wait_duration)
-              do_lock(lock_key, lock_value, attempts - 1) 
+              do_lock(lock_key, lock_value, attempts - 1)
             end
         end
     end
@@ -273,9 +274,9 @@ defmodule Exredis.Script do
 
   defmacro defredis_script(name, file_path: file_path) do
     case File.read(file_path) do
-      {:ok, content} -> 
+      {:ok, content} ->
         quote do: defredis_script(unquote(name), unquote(content))
-      _ -> 
+      _ ->
         :erlang.error "Script file is missing at #{file_path}"
     end
   end
@@ -285,8 +286,8 @@ defmodule Exredis.Script do
     quote bind_quoted: [script_sha: script_sha, name: name, script: script] do
       def unquote(name)(keys \\ [], argv \\ []) do
         query_args = [length(keys)] ++ keys ++ argv
-        try do 
-          {:ok, val} = Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args) 
+        try do
+          {:ok, val} = Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args)
           val
         catch
           :error, %Redix.Error{message: "NOSCRIPT No matching script. Please use EVAL."} ->
@@ -301,7 +302,7 @@ defmodule Exredis.Script do
     case Helper.command(["SCRIPT", "LOAD", script]) do
       <<"ERR", error :: binary>> ->
         throw error
-      reply -> 
+      reply ->
         reply
     end
   end

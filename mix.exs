@@ -4,7 +4,7 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.4",
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -22,7 +22,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:redix, "~> 0.6"},
+      {:redix, "~> 0.7"},
     ]
   end
 end

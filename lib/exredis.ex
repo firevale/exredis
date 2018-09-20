@@ -159,6 +159,30 @@ defmodule Exredis do
   # defredis :hscan, [:key, :cursor]
   # defredis :zscan, [:key, :cursor]
 
+  def withscores(command_name, key, start, stop) do
+    command = [command_name, key, start, stop, "WITHSCORES"]
+    {:ok, res} = Exredis.Helper.command(command)
+    res
+      |> Enum.chunk_every(2)
+      |> Enum.map(fn [a, b] -> {a, b} end)
+  end
+
+  def zrankwithscores(key, start, stop) do
+    withscores("ZRANK", key, start, stop)
+  end
+
+  def zrevrankwithscores(key, start, stop) do
+    withscores("ZREVRANK", key, start, stop)
+  end
+
+  def zrangewithscores(key, start, stop) do
+    withscores("ZRANGE", key, start, stop)
+  end
+
+  def zrevrangewithscores(key, start, stop) do
+    withscores("ZREVRANGE", key, start, stop)
+  end
+
   defp int_reply(reply) do
     try do
       reply |> String.to_integer

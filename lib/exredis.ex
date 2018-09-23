@@ -200,12 +200,12 @@ defmodule Exredis do
 
   @spec zrangewithscores(String.t() | atom(), integer(), integer()) :: [{String.t(), integer()}]
   def zrangewithscores(key, start, stop) do
-    withscores("ZRANGE", key, start, stop)
+    withscores("ZRANGE", to_string(key), to_string(start), to_string(stop))
   end
 
   @spec zrangewithscores(String.t() | atom(), integer(), integer()) :: [{String.t(), integer()}]
   def zrevrangewithscores(key, start, stop) do
-    withscores("ZREVRANGE", key, start, stop)
+    withscores("ZREVRANGE", to_string(key), to_string(start), to_string(stop))
   end
 
   defp int_reply(reply) do

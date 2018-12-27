@@ -3,6 +3,7 @@ defmodule ExredisTest do
   doctest Exredis
 
   test "greets the world" do
-    assert Exredis.hello() == :world
+    Exredis.set("hello", "world")
+    assert Exredis.get("hello") == "world"
   end
 end

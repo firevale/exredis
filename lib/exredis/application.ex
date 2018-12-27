@@ -10,9 +10,21 @@ defmodule Exredis.Application do
 
     pool_size = Application.get_env(:exredis, :pool_size, 5)
 
-    redix_workers = for i <- 0..(pool_size - 1) do
-      worker(Redix, [Keyword.merge(Exredis.Helper.conn_cfg(), name: :"redix_#{i}", sync_connect: true, exit_on_disconnection: true)], id: {Redix, i})
-    end
+    redix_workers =
+      for i <- 0..(pool_size - 1) do
+        worker(
+          Redix,
+          [
+            Keyword.merge(Exredis.Helper.conn_cfg(),
+              name: :"redix_#{i}",
+              sync_connect: true,
+              exit_on_disconnection: true,
+              backoff_max: 5_000
+            )
+          ],
+          id: {Redix, i}
+        )
+      end
 
     Supervisor.start_link(redix_workers, strategy: :rest_for_one, name: Exredis.Supervisor)
   end

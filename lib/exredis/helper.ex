@@ -10,11 +10,26 @@ defmodule Exredis.Helper do
         f = unquote(fun)
         command = List.flatten [unquote_splicing(method)|[unquote_splicing(margs)]]
         {:ok, res} = Exredis.Helper.command(command)
-        if f, do: f.(res), else: res
+        if is_function(f), do: f.(res), else: res
       end
     end
   end
 
+  @spec command([binary()]) ::
+          {:error,
+           atom()
+           | %{
+               :__exception__ => any(),
+               :__struct__ => Redix.ConnectionError | Redix.Error,
+               optional(:message) => binary(),
+               optional(:reason) => atom()
+             }}
+          | {:ok,
+             nil
+             | binary()
+             | [nil | binary() | [any()] | integer() | Redix.Error.t()]
+             | integer()
+             | Redix.Error.t()}
   def command(command) do
     Redix.command(:"redix_#{random_index()}", command)
   end

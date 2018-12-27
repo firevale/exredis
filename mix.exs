@@ -22,7 +22,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:redix, "0.9.0"},
+      {:redix, "0.8.2"},
     ]
   end
 end

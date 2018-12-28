@@ -1,13 +1,11 @@
-defmodule ExredisLockError do
-  defexception message: "lock redis key error"
-end
-
 defmodule Exredis do
   @moduledoc """
   High-level API
   """
 
   import Exredis.Helper
+
+  defdelegate flushdb(), to: RedixCluster
 
   defredis(:append, [:key, :value], &int_reply/1)
   defredis(:auth, [:password])
@@ -34,7 +32,6 @@ defmodule Exredis do
   defredis(:expire, [:key, :seconds], &int_reply/1)
   defredis(:expireat, [:key, :timestamp], &int_reply/1)
   defredis(:flushall, [], &sts_reply/1)
-  defredis(:flushdb, [])
   defredis(:get, [:key])
   defredis(:getbit, [:key, :offset], &int_reply/1)
   defredis(:getrange, [:key, :start, :end])
@@ -191,19 +188,19 @@ defmodule Exredis do
 
   defp withscores(command_name, key, start, stop) do
     command = [command_name, key, start, stop, "WITHSCORES"]
-    {:ok, res} = Exredis.Helper.command(command)
+    {:ok, res} = RedixCluster.command(command)
 
     res
     |> Enum.chunk_every(2)
     |> Enum.map(fn [a, b] -> {a, String.to_integer(b)} end)
   end
 
-  @spec zrangewithscores(String.t() | atom(), integer(), integer()) :: [{String.t(), integer()}]
+  @spec zrangewithscores(String.t() | atom, integer, integer) :: [{String.t(), integer}]
   def zrangewithscores(key, start, stop) do
     withscores("ZRANGE", to_string(key), to_string(start), to_string(stop))
   end
 
-  @spec zrangewithscores(String.t() | atom(), integer(), integer()) :: [{String.t(), integer()}]
+  @spec zrevrangewithscores(String.t() | atom, integer, integer) :: [{String.t(), integer}]
   def zrevrangewithscores(key, start, stop) do
     withscores("ZREVRANGE", to_string(key), to_string(start), to_string(stop))
   end
@@ -219,119 +216,9 @@ defmodule Exredis do
   defp multi_int_reply(reply), do: reply |> Enum.map(&int_reply/1)
   defp sts_reply("OK"), do: :ok
   defp sts_reply(reply), do: reply
-
-  ################################################################################
-  # redis lock
-  ################################################################################
-  defmodule Redis.LockFailed do
-    @moduledoc """
-    Raised at compilation time when the query cannot be compiled.
-    """
-    defexception [:message]
-  end
-
-  @doc """
-    Lock a given key for updating
-
-    Note:
-      Don't lock a key for long-time process
-
-    Example:
-
-    DataRedis.lock_for("beers_on_the_wall", fn() ->
-      DataRedis.decr "beers_on_the_wall"
-    end)
-  """
-  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 60_000) do
-    if lock(key, ttl, max_attempts) do
-      try do
-        fun.()
-      after
-        unlock(key)
-      end
-    else
-      raise Redis.LockFailed, message: "failed fetch redis lock for key: #{key}"
-    end
-  end
-
-  @wait_duration 1
-
-  @doc """
-    Lock a given key
-  """
-  def lock(key, ttl \\ 60, max_attempts \\ 60_000) do
-    do_lock(lock_key(key), lock_value(ttl), max_attempts)
-  end
-
-  @doc """
-    Unlock a given key
-  """
-  def unlock(key) do
-    current_lock_key = key |> lock_key
-
-    case get(current_lock_key) do
-      :undefined ->
-        true
-
-      current_lock_value ->
-        {lock_ts, lock_pid} = current_lock_value |> Base.decode64!() |> :erlang.binary_to_term()
-
-        if :erlang.system_time(:seconds) < lock_ts and lock_pid == self() do
-          del(current_lock_key)
-          true
-        else
-          false
-        end
-    end
-  end
-
-  defp do_lock(lock_key, _lock_value, 0) do
-    raise ExredisLockError, message: "can't require lock key #{lock_key}"
-  end
-
-  defp do_lock(lock_key, lock_value, attempts) do
-    case setnx(lock_key, lock_value) do
-      1 ->
-        true
-
-      0 ->
-        now = :erlang.system_time(:seconds)
-
-        case get(lock_key) do
-          :undefined ->
-            do_lock(lock_key, lock_value, attempts - 1)
-
-          current_lock_value ->
-            {lock_ts, _lock_pid} =
-              current_lock_value |> Base.decode64!() |> :erlang.binary_to_term()
-
-            if lock_ts < now do
-              case getset(lock_key, lock_value) do
-                ^current_lock_value ->
-                  true
-
-                _other_lock_value ->
-                  :timer.sleep(@wait_duration)
-                  do_lock(lock_key, lock_value, attempts - 1)
-              end
-            else
-              :timer.sleep(@wait_duration)
-              do_lock(lock_key, lock_value, attempts - 1)
-            end
-        end
-    end
-  end
-
-  defp lock_key(key), do: "__redis__:__lock__:#{key}"
-
-  defp lock_value(ttl),
-    do:
-      {:erlang.system_time(:seconds) + ttl, self()} |> :erlang.term_to_binary() |> Base.encode64()
 end
 
 defmodule Exredis.Script do
-  alias Exredis.Helper
-
   defmacro defredis_script(name, file_path: file_path) do
     case File.read(file_path) do
       {:ok, content} ->
@@ -350,20 +237,20 @@ defmodule Exredis.Script do
         query_args = [length(keys)] ++ keys ++ argv
 
         try do
-          {:ok, val} = Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args)
+          {:ok, val} = RedixCluster.command(["EVALSHA", unquote(script_sha)] ++ query_args)
           val
         catch
           :error, %Redix.Error{message: "NOSCRIPT No matching script. Please use EVAL."} ->
-            load_script(unquote(script))
+            load_script!(unquote(script))
             unquote(name)(keys, argv)
         end
       end
     end
   end
 
-  def load_script(script) do
-    case Helper.command(["SCRIPT", "LOAD", script]) do
-      <<"ERR", error::binary>> ->
+  def load_script!(script) do
+    case RedixCluster.load_script(script) do
+      {:error, %Redix.Error{message: "ERR" <> _} = error} ->
         throw(error)
 
       reply ->

@@ -1,4 +1,9 @@
 %{
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [], [], "hexpm"},
+  "crc": {:hex, :crc, "0.9.1", "0b1ee24ca7bcadd687edb3494dbdc560fafa86f4ab7229cee03ebdd5c24fe702", [:mix, :rebar3], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm"},
+  "exredis": {:git, "https://gitpub.firevale.com/platform/redix_cluster.git", "6a11ec0ea0f4f58339ca41c7910ce9be1788fbae", [tag: "v0.9.0"]},
+  "poolboy": {:hex, :poolboy, "1.5.1", "6b46163901cfd0a1b43d692657ed9d7e599853b3b21b95ae5ae0a777cf9b6ca8", [:rebar], [], "hexpm"},
   "redix": {:hex, :redix, "0.9.0", "c631c921354587e054bf1e2a6b7d0120d617352fc42b624b9ca79ea484d0326c", [:mix], [], "hexpm"},
+  "redix_cluster": {:git, "https://gitpub.firevale.com/platform/redix_cluster.git", "587563e76736b0d79cd5cd656597d1a5fe0eb655", [tag: "v0.9.0"]},
 }

@@ -15,12 +15,7 @@ defmodule Exredis.Application do
         worker(
           Redix,
           [
-            Keyword.merge(Exredis.Helper.conn_cfg(),
-              name: :"redix_#{i}",
-              sync_connect: true,
-              exit_on_disconnection: true,
-              backoff_max: 5_000
-            )
+            Keyword.merge(Exredis.Helper.conn_cfg(), name: :"redix_#{i}")
           ],
           id: {Redix, i}
         )

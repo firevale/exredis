@@ -35,4 +35,6 @@ defmodule Exredis.Helper do
       end
     end
   end
+
+  defdelegate command(command), to: RedixCluster
 end

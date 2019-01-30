@@ -80,7 +80,6 @@ defmodule Exredis.Helper do
     [
       host: host,
       port: port,
-      database: db,
       password: password,
       sync_connect: sync_connect,
       exit_on_disconnection: exit_on_disconnection,

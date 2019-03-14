@@ -8,12 +8,22 @@ defmodule Exredis.Helper do
 
     method = Enum.map(cmd, fn x -> Atom.to_string(x) |> String.upcase() end)
 
-    quote do
-      def unquote(cmd_name)(unquote_splicing(margs)) do
-        f = unquote(fun)
-        command = List.flatten([unquote_splicing(method) | [unquote_splicing(margs)]])
-        {:ok, res} = Exredis.Helper.command(command)
-        if is_function(f), do: f.(res), else: res
+    if is_function(fun) do
+      quote do
+        def unquote(cmd_name)(unquote_splicing(margs)) do
+          command = List.flatten([unquote_splicing(method) | [unquote_splicing(margs)]])
+          {:ok, res} = Exredis.Helper.command(command)
+          f = unquote(fun)
+          f.(res)
+        end
+      end
+    else
+      quote do
+        def unquote(cmd_name)(unquote_splicing(margs)) do
+          command = List.flatten([unquote_splicing(method) | [unquote_splicing(margs)]])
+          {:ok, res} = Exredis.Helper.command(command)
+          res
+        end
       end
     end
   end
@@ -38,10 +48,7 @@ defmodule Exredis.Helper do
   end
 
   def conn_cfg() do
-    host = Application.get_env(:exredis, :host, "localhost")
-    port = Application.get_env(:exredis, :port, 6379)
-    db = Application.get_env(:exredis, :db, 0)
-    password = Application.get_env(:exredis, :password, nil)
+    uri = Application.get_env(:exredis, :uri, false)
     sync_connect = Application.get_env(:exredis, :sync_connect, false)
     exit_on_disconnection = Application.get_env(:exredis, :exit_on_disconnection, false)
     backoff_initial = Application.get_env(:exredis, :backoff_initial, 500)
@@ -49,45 +56,20 @@ defmodule Exredis.Helper do
     timeout = Application.get_env(:exredis, :timeout, 5000)
     socket_opts = Application.get_env(:exredis, :socket_opts, [])
 
-    host =
-      case host do
+    uri =
+      case uri do
         {:env, varname} -> System.get_env(varname)
         v -> v
       end
 
-    db =
-      case db do
-        {:env, varname} -> System.get_env(varname) |> String.to_integer()
-        v when is_integer(v) -> v
-        v when is_bitstring(v) -> String.to_integer(v)
-        _ -> 0
-      end
-
-    port =
-      case port do
-        {:env, varname} -> System.get_env(varname) |> String.to_integer()
-        v when is_integer(v) -> v
-        v when is_bitstring(v) -> String.to_integer(v)
-        _ -> 6379
-      end
-
-    password =
-      case password do
-        {:env, varname} -> System.get_env(varname)
-        v -> v
-      end
-
-    [
-      host: host,
-      port: port,
-      password: password,
+    Keyword.merge(Redix.URI.opts_from_uri(uri),
       sync_connect: sync_connect,
       exit_on_disconnection: exit_on_disconnection,
       backoff_initial: backoff_initial,
       backoff_max: backoff_max,
       timeout: timeout,
       socket_opts: socket_opts
-    ]
+    )
   end
 
   @pool_size Application.get_env(:exredis, :pool_size, 5)

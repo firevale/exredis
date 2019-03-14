@@ -203,7 +203,9 @@ defmodule Exredis do
     withscores("ZRANGE", to_string(key), to_string(start), to_string(stop))
   end
 
-  @spec zrangewithscores(String.t() | atom(), integer(), integer()) :: [{String.t(), integer()}]
+  @spec zrevrangewithscores(String.t() | atom(), integer(), integer()) :: [
+          {String.t(), integer()}
+        ]
   def zrevrangewithscores(key, start, stop) do
     withscores("ZREVRANGE", to_string(key), to_string(start), to_string(stop))
   end
@@ -230,103 +232,15 @@ defmodule Exredis do
     defexception [:message]
   end
 
-  @doc """
-    Lock a given key for updating
+  def lock_for!(resource, fun, ttl \\ 60) do
+    case Redlock.transaction(resource, ttl, fun) do
+      {:error, :lock_failure} ->
+        raise Redis.LockFailed, message: "lock #{resource} failed"
 
-    Note:
-      Don't lock a key for long-time process
-
-    Example:
-
-    DataRedis.lock_for("beers_on_the_wall", fn() ->
-      DataRedis.decr "beers_on_the_wall"
-    end)
-  """
-  def lock_for(key, fun, ttl \\ 60, max_attempts \\ 60_000) do
-    if lock(key, ttl, max_attempts) do
-      try do
-        fun.()
-      after
-        unlock(key)
-      end
-    else
-      raise Redis.LockFailed, message: "failed fetch redis lock for key: #{key}"
+      result ->
+        result
     end
   end
-
-  @wait_duration 1
-
-  @doc """
-    Lock a given key
-  """
-  def lock(key, ttl \\ 60, max_attempts \\ 60_000) do
-    do_lock(lock_key(key), lock_value(ttl), max_attempts)
-  end
-
-  @doc """
-    Unlock a given key
-  """
-  def unlock(key) do
-    current_lock_key = key |> lock_key
-
-    case get(current_lock_key) do
-      :undefined ->
-        true
-
-      current_lock_value ->
-        {lock_ts, lock_pid} = current_lock_value |> Base.decode64!() |> :erlang.binary_to_term()
-
-        if :erlang.system_time(:seconds) < lock_ts and lock_pid == self() do
-          del(current_lock_key)
-          true
-        else
-          false
-        end
-    end
-  end
-
-  defp do_lock(lock_key, _lock_value, 0) do
-    raise ExredisLockError, message: "can't require lock key #{lock_key}"
-  end
-
-  defp do_lock(lock_key, lock_value, attempts) do
-    case setnx(lock_key, lock_value) do
-      1 ->
-        true
-
-      0 ->
-        now = :erlang.system_time(:seconds)
-
-        case get(lock_key) do
-          :undefined ->
-            do_lock(lock_key, lock_value, attempts - 1)
-
-          current_lock_value ->
-            {lock_ts, _lock_pid} =
-              current_lock_value |> Base.decode64!() |> :erlang.binary_to_term()
-
-            if lock_ts < now do
-              case getset(lock_key, lock_value) do
-                ^current_lock_value ->
-                  true
-
-                _other_lock_value ->
-                  :timer.sleep(@wait_duration)
-                  do_lock(lock_key, lock_value, attempts - 1)
-              end
-            else
-              :timer.sleep(@wait_duration)
-              do_lock(lock_key, lock_value, attempts - 1)
-            end
-        end
-    end
-  end
-
-  defp lock_key(key), do: "__redis__:__lock__:#{key}"
-
-  defp lock_value(ttl),
-    do:
-      {:erlang.system_time(:seconds) + ttl, self()} |> :erlang.term_to_binary() |> Base.encode64()
 end
 
 defmodule Exredis.Script do

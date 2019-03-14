@@ -4,9 +4,9 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.9.3",
-      elixir: "~> 1.6",
-      start_permanent: Mix.env == :prod,
+      version: "0.9.4",
+      elixir: "~> 1.8",
+      start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
@@ -23,6 +23,10 @@ defmodule Exredis.Mixfile do
   defp deps do
     [
       {:redix, "~> 0.9"},
+      {:poolboy, "~> 1.5"},
+      {:fastglobal, "~> 1.0.0"},
+      {:ex_hash_ring, "~> 3.0"},
+      {:secure_random, "~> 0.5.1"}
     ]
   end
 end

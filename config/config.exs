@@ -3,9 +3,7 @@
 use Mix.Config
 
 config :exredis,
-  host: {:env, "REDIS_HOSTNAME"},
-  port: {:env, "REDIS_PORT"}, 
-  db: {:env, "REDIS_DATABASE"},
+  uri: "redis://localhost:6379",
   pool_size: 10
 
 # This configuration is loaded before any dependency and is restricted

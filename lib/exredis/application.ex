@@ -19,7 +19,7 @@ defmodule Exredis.Application do
       retry_interval_max: 3_000,
       reconnection_interval_base: 500,
       reconnection_interval_max: 5_000,
-      servers: [[host: "localhost", port: 6379]]
+      servers: [opts]
     ]
 
     redix_workers =

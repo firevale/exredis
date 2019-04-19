@@ -14,9 +14,9 @@ defmodule Exredis.Application do
     redlock_opts = [
       pool_size: 2,
       drift_factor: 0.01,
-      max_retry: 10,
-      retry_interval_base: 300,
-      retry_interval_max: 3_000,
+      max_retry: 500,
+      retry_interval_base: 50,
+      retry_interval_max: 200,
       reconnection_interval_base: 500,
       reconnection_interval_max: 5_000,
       servers: [opts]

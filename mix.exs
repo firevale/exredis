@@ -4,9 +4,9 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.9.1",
+      version: "0.10.2",
       elixir: "~> 1.6",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() not in [:dev, :test],
       deps: deps()
     ]
   end
@@ -21,7 +21,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:redix_cluster, git: "https://gitpub.firevale.com/platform/redix_cluster.git", tag: "v0.9.0"},
+      {:redix_cluster, git: "https://gitpub.firevale.com/platform/redix_cluster.git", tag: "v0.10.2"},
     ]
   end
 end

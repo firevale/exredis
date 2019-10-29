@@ -80,7 +80,7 @@ defmodule Redlock.Executor do
 
       {:ok, value}
     else
-      Logger.info("<Redlock> failed to lock '#{resource}', retry after interval")
+      # Logger.info("<Redlock> failed to lock '#{resource}', retry after interval")
       calc_backoff(config, attempts) |> Process.sleep()
       do_lock(resource, ttl, value, attempts + 1, config)
     end

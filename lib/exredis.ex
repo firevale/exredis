@@ -210,17 +210,17 @@ defmodule Exredis do
     withscores("ZREVRANGE", to_string(key), to_string(start), to_string(stop))
   end
 
-  defp int_reply(reply) do
-    try do
-      reply |> String.to_integer()
-    rescue
-      _ in ArgumentError -> reply
-    end
-  end
+  # defp int_reply(reply) do
+  #   try do
+  #     reply |> String.to_integer()
+  #   rescue
+  #     _ in ArgumentError -> reply
+  #   end
+  # end
 
-  defp multi_int_reply(reply), do: reply |> Enum.map(&int_reply/1)
-  defp sts_reply("OK"), do: :ok
-  defp sts_reply(reply), do: reply
+  # defp multi_int_reply(reply), do: reply |> Enum.map(&int_reply/1)
+  # defp sts_reply("OK"), do: :ok
+  # defp sts_reply(reply), do: reply
 
   ################################################################################
   # redis lock

@@ -33,7 +33,7 @@ defmodule Redlock.Command do
         :ok
 
       {:ok, nil} ->
-        Logger.info("<Redlock> resource:#{resource} is already locked")
+        # Logger.info("<Redlock> resource:#{resource} is already locked")
         {:error, :already_locked}
 
       other ->

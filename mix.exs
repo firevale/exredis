@@ -4,9 +4,9 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.10.1",
+      version: "0.10.11",
       elixir: "~> 1.8",
-      start_permanent: Mix.env() == :prod,
+      start_permanent: Mix.env() not in [:dev, :test],
       deps: deps()
     ]
   end
@@ -14,7 +14,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :redix],
+      extra_applications: [:logger, :confex, :redix, :redlock],
       mod: {Exredis.Application, []}
     ]
   end
@@ -24,9 +24,10 @@ defmodule Exredis.Mixfile do
     [
       {:redix, "~> 0.10"},
       {:poolboy, "~> 1.5"},
-      {:fastglobal, "~> 1.0.0"},
-      {:ex_hash_ring, "~> 3.0"},
-      {:secure_random, "~> 0.5.1"}
+      {:redlock, git: gitpub("redlock"), tag: "v1.0.11"},
+      {:confex, "~> 3.4"}
     ]
   end
+
+  defp gitpub(repo), do: "https://gitpub.firevale.com/platform/#{repo}.git"
 end

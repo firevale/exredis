@@ -6,34 +6,41 @@ defmodule Exredis.Application do
   use Application
 
   def start(_type, _args) do
-    import Supervisor.Spec
+    config =
+      Application.get_all_env(:exredis)
+      |> Confex.Resolver.resolve!()
 
-    pool_size = Application.get_env(:exredis, :pool_size, 5)
-    opts = Exredis.Helper.conn_cfg()
+    unless config[:url] do
+      raise "redis url is not configured!"
+    end
 
-    redlock_opts = [
-      pool_size: 2,
-      drift_factor: 0.01,
-      max_retry: 500,
-      retry_interval_base: 50,
-      retry_interval_max: 200,
-      reconnection_interval_base: 500,
-      reconnection_interval_max: 5_000,
-      servers: [opts]
+    redis_url_opts =
+      Keyword.get(config, :url)
+      |> Redix.URI.opts_from_uri()
+
+    pool_args = Keyword.get(config, :pool, [])
+
+    pool_args =
+      [size: 10, max_overflow: 20]
+      |> Keyword.merge(pool_args)
+
+    pool_args = pool_args ++ [name: {:local, :exredis}, worker_module: Redix]
+
+    redix_opts =
+      config
+      |> Keyword.delete(:pool)
+      |> Keyword.delete(:redlock)
+      |> Keyword.delete(:url)
+      |> Keyword.merge(redis_url_opts)
+
+    lock_opts =
+      Keyword.get(config, :redlock, [])
+      |> Keyword.merge(servers: [redix_opts])
+
+    children = [
+      {Redlock, lock_opts},
+      :poolboy.child_spec(:exredis, pool_args, redix_opts)
     ]
-
-    redix_workers =
-      for i <- 0..(pool_size - 1) do
-        worker(
-          Redix,
-          [
-            Keyword.merge(opts, name: :"redix_#{i}")
-          ],
-          id: {Redix, i}
-        )
-      end
-
-    children = [{Redlock, redlock_opts} | redix_workers]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Exredis.Supervisor)
   end

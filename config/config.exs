@@ -3,8 +3,20 @@
 use Mix.Config
 
 config :exredis,
-  uri: "redis://localhost:6379",
-  pool_size: 10
+  url: {:system, :string, "REDIS_URL", "redis://localhost:6379/15"},
+  pool: [
+    size: {:system, :integer, "REDIS_POOL_SIZE", 10},
+    max_overflow: {:system, :integer, "REDIS_POOL_OVERFLOW", 20}
+  ],
+  redlock: [
+    pool_size: 2,
+    drift_factor: 0.01,
+    max_retry: 100,
+    retry_interval_base: 300,
+    retry_interval_max: 3_000,
+    reconnection_interval_base: 500,
+    reconnection_interval_max: 5_000
+  ]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

@@ -4,7 +4,7 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.10.11",
+      version: "0.10.12",
       elixir: "~> 1.8",
       start_permanent: Mix.env() not in [:dev, :test],
       deps: deps()
@@ -24,7 +24,7 @@ defmodule Exredis.Mixfile do
     [
       {:redix, "~> 0.10"},
       {:poolboy, "~> 1.5"},
-      {:redlock, git: gitpub("redlock"), tag: "v1.0.11"},
+      {:redlock, git: gitpub("redlock"), tag: "v1.0.12"},
       {:confex, "~> 3.4"}
     ]
   end

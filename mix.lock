@@ -4,7 +4,7 @@
   "fastglobal": {:hex, :fastglobal, "1.0.0", "f3133a0cda8e9408aac7281ec579c4b4a8386ce0e99ca55f746b9f58192f455b", [:mix], [], "hexpm"},
   "poolboy": {:hex, :poolboy, "1.5.2", "392b007a1693a64540cead79830443abf5762f5d30cf50bc95cb2c1aaafa006b", [:rebar3], [], "hexpm"},
   "redix": {:hex, :redix, "0.10.2", "a9eabf47898aa878650df36194aeb63966d74f5bd69d9caa37babb32dbb93c5d", [:mix], [{:telemetry, "~> 0.4.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm"},
-  "redlock": {:git, "https://gitpub.firevale.com/platform/redlock.git", "4138fd52284a65fd26021d832cb42eed8800d54f", [tag: "v1.0.11"]},
+  "redlock": {:git, "https://gitpub.firevale.com/platform/redlock.git", "23f157e9381a4a8c7b57f176ce9d26cad2139937", [tag: "v1.0.12"]},
   "secure_random": {:hex, :secure_random, "0.5.1", "c5532b37c89d175c328f5196a0c2a5680b15ebce3e654da37129a9fe40ebf51b", [:mix], [], "hexpm"},
   "telemetry": {:hex, :telemetry, "0.4.0", "8339bee3fa8b91cb84d14c2935f8ecf399ccd87301ad6da6b71c09553834b2ab", [:rebar3], [], "hexpm"},
 }

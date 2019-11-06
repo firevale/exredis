@@ -32,10 +32,12 @@ defmodule Exredis.Application do
       |> Keyword.delete(:redlock)
       |> Keyword.delete(:url)
       |> Keyword.merge(redis_url_opts)
+      |> Keyword.put(:socket_opts, [keepalive: true])
+      |> Keyword.put(:sync_connect, true)
 
     lock_opts =
       Keyword.get(config, :redlock, [])
-      |> Keyword.merge(servers: [redix_opts])
+      |> Keyword.merge(servers: [redis_url_opts])
 
     children = [
       {Redlock, lock_opts},

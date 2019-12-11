@@ -32,7 +32,7 @@ defmodule Exredis.Application do
       |> Keyword.delete(:redlock)
       |> Keyword.delete(:url)
       |> Keyword.merge(redis_url_opts)
-      |> Keyword.put(:socket_opts, [keepalive: true])
+      |> Keyword.put(:socket_opts, keepalive: true)
       |> Keyword.put(:sync_connect, true)
 
     lock_opts =

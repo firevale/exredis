@@ -263,11 +263,11 @@ defmodule Exredis.Script do
       def unquote(name)(keys \\ [], argv \\ []) do
         query_args = [length(keys)] ++ keys ++ argv
 
-        try do
-          {:ok, val} = Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args)
-          val
-        catch
-          :error, %Redix.Error{message: "NOSCRIPT No matching script. Please use EVAL."} ->
+        case Helper.command(["EVALSHA", unquote(script_sha)] ++ query_args) do
+          {:ok, val} ->
+            val
+
+          {:error, %Redix.Error{message: "NOSCRIPT No matching script. Please use EVAL."}} ->
             load_script(unquote(script))
             unquote(name)(keys, argv)
         end

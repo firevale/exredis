@@ -221,26 +221,6 @@ defmodule Exredis do
   # defp multi_int_reply(reply), do: reply |> Enum.map(&int_reply/1)
   # defp sts_reply("OK"), do: :ok
   # defp sts_reply(reply), do: reply
-
-  ################################################################################
-  # redis lock
-  ################################################################################
-  defmodule Redis.LockFailed do
-    @moduledoc """
-    Raised at compilation time when the query cannot be compiled.
-    """
-    defexception [:message]
-  end
-
-  def lock_for!(resource, fun, ttl \\ 60) do
-    case Redlock.transaction(resource, ttl, fun) do
-      {:error, :lock_failure} ->
-        raise Redis.LockFailed, message: "lock #{resource} failed"
-
-      result ->
-        result
-    end
-  end
 end
 
 defmodule Exredis.Script do

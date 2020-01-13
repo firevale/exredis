@@ -4,9 +4,9 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.10.13",
+      version: "0.10.14",
       elixir: "~> 1.8",
-      start_permanent: Mix.env() not in [:dev, :test],
+      start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
@@ -24,10 +24,7 @@ defmodule Exredis.Mixfile do
     [
       {:redix, "~> 0.10"},
       {:poolboy, "~> 1.5"},
-      {:redlock, git: gitpub("redlock"), tag: "v1.0.12"},
       {:confex, "~> 3.4"}
     ]
   end
-
-  defp gitpub(repo), do: "https://gitpub.firevale.com/platform/#{repo}.git"
 end

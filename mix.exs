@@ -4,7 +4,7 @@ defmodule Exredis.Mixfile do
   def project do
     [
       app: :exredis,
-      version: "0.10.14",
+      version: "0.10.15",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -14,7 +14,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :confex, :redix, :redlock],
+      extra_applications: [:logger, :confex, :redix],
       mod: {Exredis.Application, []}
     ]
   end

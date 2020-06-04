@@ -14,8 +14,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :confex, :redix],
-      mod: {Exredis.Application, []}
+      extra_applications: [:logger, :confex, :redix]
     ]
   end
 

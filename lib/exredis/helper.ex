@@ -69,6 +69,16 @@ defmodule Exredis.Helper do
       |> Keyword.put(:socket_opts, keepalive: true)
       |> Keyword.put(:sync_connect, true)
 
-    :poolboy.child_spec(:exredis, pool_args, redix_opts)
+    {id, start, restart, shutdown, type, modules} =
+      :poolboy.child_spec(:exredis, pool_args, redix_opts)
+
+    %{
+      id: id,
+      start: start,
+      restart: restart,
+      shutdown: shutdown,
+      type: type,
+      modules: modules
+    }
   end
 end

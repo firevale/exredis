@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="crc" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/crc/lib" />
+      <root url="file://$PROJECT_DIR$/deps/crc/src" />
+      <root url="file://$PROJECT_DIR$/deps/crc/priv" />
+      <root url="file://$PROJECT_DIR$/deps/crc/c_src" />
+    </SOURCES>
+  </library>
+</component>

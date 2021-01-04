@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="secure_random" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/secure_random/lib" />
+    </SOURCES>
+  </library>
+</component>

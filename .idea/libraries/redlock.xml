@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="redlock" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/redlock/lib" />
+    </SOURCES>
+  </library>
+</component>

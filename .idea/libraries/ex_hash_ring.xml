@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ex_hash_ring" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/ex_hash_ring/lib" />
+    </SOURCES>
+  </library>
+</component>

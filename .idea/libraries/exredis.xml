@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="exredis" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/exredis/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/exredis/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/exredis/lib" />
+    </SOURCES>
+  </library>
+</component>

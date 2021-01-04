@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="redix_cluster" type="mix">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/redix_cluster/lib" />
+    </SOURCES>
+  </library>
+</component>

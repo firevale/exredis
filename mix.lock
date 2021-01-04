@@ -1,6 +1,6 @@
 %{
-  "confex": {:hex, :confex, "3.4.0", "8b1c3cc7a93320291abb31223a178df19d7f722ee816c05a8070c8c9a054560d", [:mix], [], "hexpm", "4a14e15185c772389979cf4c050ddcc7a25a4d62759da13a170e0ca7274a22c7"},
+  "confex": {:hex, :confex, "3.5.0", "163857c73dd8f88a3815663f4bc00bee1b9c65daf40aa6e0d6ef272757fd22c7", [:mix], [], "hexpm", "34a9e31230c7fbb3dbe60db00341d0c84ee44ba3caf84b498f501c0bc8563570"},
   "poolboy": {:hex, :poolboy, "1.5.2", "392b007a1693a64540cead79830443abf5762f5d30cf50bc95cb2c1aaafa006b", [:rebar3], [], "hexpm", "dad79704ce5440f3d5a3681c8590b9dc25d1a561e8f5a9c995281012860901e3"},
-  "redix": {:hex, :redix, "0.11.2", "f6c696928bc0c81f9a04ea53299c353f7552ae3f4c5d1e884f3a6257098b9d66", [:mix], [{:castore, "~> 0.1.0", [hex: :castore, repo: "hexpm", optional: true]}, {:telemetry, "~> 0.4.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "ae74e25026c4a0d17cad3c12814b313b28ac4277f3725220ae1df2f96320c38d"},
+  "redix": {:hex, :redix, "1.0.0", "4f310341744ffceab3031394450a4e603d4d1001a697c3f18ae57ae776cbd3fb", [:mix], [{:castore, "~> 0.1.0", [hex: :castore, repo: "hexpm", optional: true]}, {:telemetry, "~> 0.4.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "8c8d9b33b5491737adcd5bb9e0f43b85212a384ac0042f64c156113518266ecb"},
   "telemetry": {:hex, :telemetry, "0.4.2", "2808c992455e08d6177322f14d3bdb6b625fbcfd233a73505870d8738a2f4599", [:rebar3], [], "hexpm", "2d1419bd9dda6a206d7b5852179511722e2b18812310d304620c7bd92a13fcef"},
 }

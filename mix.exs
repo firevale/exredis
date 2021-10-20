@@ -21,7 +21,7 @@ defmodule Exredis.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:redix, "~> 1.0"},
+      {:redix, "~> 1.1"},
       {:poolboy, "~> 1.5"},
       {:confex, "~> 3.5"}
     ]

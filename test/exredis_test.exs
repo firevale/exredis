@@ -3,7 +3,7 @@ defmodule ExredisTest do
   doctest Exredis
 
   setup do
-    {:ok, _} = start_supervised(Exredis.Helper.supervisor(), shutdown: 30_000)
+    # {:ok, _} = start_supervised(Exredis.Helper.supervisor(), shutdown: 30_000)
     :ok
   end
 

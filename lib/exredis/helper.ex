@@ -51,7 +51,7 @@ defmodule Exredis.Helper do
 
     redis_url_opts =
       Keyword.get(config, :url)
-      |> Redix.URI.opts_from_uri()
+      |> Redix.URI.to_start_options()
 
     pool_args = Keyword.get(config, :pool, [])
 
